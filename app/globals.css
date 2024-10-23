@@ -5,3 +5,13 @@
 * {
   margin: "0px";
 }
+
+
+/* In styles/global.css or a new file */
+@font-face {
+  font-family: 'Roca';
+  src: url('/fonts/Roca.woff2') format('woff2'),
+       url('/fonts/Roca.ttf') format('truetype');
+  font-weight: 400; /* or 700 depending on what you downloaded */
+  font-style: normal;
+}
