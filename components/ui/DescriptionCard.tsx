@@ -1,7 +1,7 @@
 import { StaticImageData } from "next/image";
-import { Roboto } from "@next/font/google";
 import React from "react";
 import Button from "./Button";
+import localFont from "next/font/local";
 
 interface descriptionCardProps {
   index: number;
@@ -23,7 +23,7 @@ const DescriptionCard: React.FC<descriptionCardProps> = ({
   const { image, title, button } = description;
   return (
     <div className="flex items-center justify-between gap-20 ">
-      <img src={image.src} alt={title + "image"} className="w-2/5 rounded-md" />
+      <img src={image.src} alt={title + "image"} className={`${index%2!==0 && 'order-2'} w-2/5 rounded-md`} />
 
       <div className="w-full text-primary-1">
         <h1 className={` font-semibold text-4xl `}>{title}</h1>

@@ -2,16 +2,35 @@
 @tailwind components;
 @tailwind utilities;
 
-* {
-  margin: "0px";
+@layer base {
+  :root {
+    --primary-navy: #33495f;
+    --primary-gold: #fdc776;
+    --primary-cream: #f7f1de;
+  }
+
+  /* Set default fonts and colors */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-roca text-primary-1;
+  }
+
+  body {
+    @apply font-open-sans text-primary-1 bg-white;
+  }
 }
 
+/* Create reusable utility classes */
+@layer components {
+  .heading-primary {
+    @apply font-roca text-primary-1;
+  }
 
-/* In styles/global.css or a new file */
-@font-face {
-  font-family: 'Roca';
-  src: url('/fonts/Roca.woff2') format('woff2'),
-       url('/fonts/Roca.ttf') format('truetype');
-  font-weight: 400; /* or 700 depending on what you downloaded */
-  font-style: normal;
+  .text-body {
+    @apply font-open-sans text-primary-1;
+  }
 }

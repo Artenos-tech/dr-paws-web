@@ -27,6 +27,7 @@ export default function Home() {
         </div>
 
         {/* Description Card */}
+        <h1 className="my-5">Veterinary care, redesigned to be better</h1>
         <DescriptionCardList />
       </main>
     </div>

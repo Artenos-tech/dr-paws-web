@@ -1,21 +1,37 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { Open_Sans } from "next/font/google";
 import "./globals.css";
+import NavBar from "@/components/layout/navbar";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
+// Load Open Sans from Google Fonts
+const openSans = Open_Sans({
+  subsets: ["latin"],
+  variable: "--font-open-sans",
+  display: "swap",
 });
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
+
+// Load Roca from local font files
+const roca = localFont({
+  src: [
+    {
+      path: "./fonts/roca/RocaOne-Rg.woff2",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "./fonts/roca/RocaOne-Rg.woff",
+      weight: "400",
+      style: "normal",
+    },
+  ],
+  variable: "--font-roca",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Dr Paws",
-  description: "The Neighbourhood Vet",
+  title: "Dr. Paws",
+  description: "The neighbourhood vet",
 };
 
 export default function RootLayout({
@@ -24,8 +40,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" data-theme="light">
-      <body>{children}</body>
+    <html lang="en" data-theme="drPaws">
+      <body className={`${openSans.variable} ${roca.variable} font-open-sans`}>
+        <NavBar />
+        {children}
+      </body>
     </html>
   );
 }
