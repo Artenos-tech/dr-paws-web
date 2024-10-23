@@ -2,26 +2,35 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --primary-navy: #33495f;
+    --primary-gold: #fdc776;
+    --primary-cream: #f7f1de;
+  }
+
+  /* Set default fonts and colors */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-roca text-primary-1;
+  }
+
+  body {
+    @apply font-open-sans text-primary-1 bg-white;
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-}
+/* Create reusable utility classes */
+@layer components {
+  .heading-primary {
+    @apply font-roca text-primary-1;
+  }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  .text-body {
+    @apply font-open-sans text-primary-1;
   }
 }
