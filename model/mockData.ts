@@ -1,10 +1,10 @@
-import clinic1 from "../assets/clinic-1.png";
-import description1 from "../assets/description1.png";
-import description2 from "../assets/description2.png";
-import description3 from "../assets/description3.png";
-import description4 from "../assets/description4.png";
-import description5 from "../assets/description5.png";
-import description6 from "../assets/description6.png";
+import clinic1 from "../app/assets/images/clinic-1.png";
+import description1 from "../app/assets/images/description1.png";
+import description2 from "../app/assets/images/description2.png";
+import description3 from "../app/assets/images/description3.png";
+import description4 from "../app/assets/images/description4.png";
+import description5 from "../app/assets/images/description5.png";
+import description6 from "../app/assets/images/description6.png";
 
 export const clinicItems = [
   {

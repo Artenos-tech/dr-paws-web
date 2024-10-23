@@ -5,14 +5,11 @@ import { clinicItems } from "@/model/mockData";
 
 export default function Home() {
   return (
-    <div className="w-full max-w-[1000px] mx-auto">
-      <main>
-        <h1>Button</h1>
-        {/* Sample button */}
-        <Button text="Book demo" background="bg-secondary-1" />
-        <Button text="Book demo" background="bg-primary-1" />
-        <Button text="Book a Member" background="bg-accent" />
-        <Button text="Book a Member" background="bg-secondary-2" />
+    <div>
+      <main className="w-full overflow-x-hidden max-w-[1000px] mx-auto my-10">
+        {/* Description Card */}
+        <h1 className="my-5">Veterinary care, redesigned to be better</h1>
+        <DescriptionCardList />
 
         {/* Clinic items */}
         <h1>Check card the places we call home</h1>
@@ -26,9 +23,12 @@ export default function Home() {
           ))}
         </div>
 
-        {/* Description Card */}
-        <h1 className="my-5">Veterinary care, redesigned to be better</h1>
-        <DescriptionCardList />
+        <h1>Button</h1>
+        {/* Sample button */}
+        <Button text="Book demo" background="bg-secondary-1" />
+        <Button text="Book demo" background="bg-primary-1" />
+        <Button text="Book a Member" background="bg-accent" />
+        <Button text="Book a Member" background="bg-secondary-2" />
       </main>
     </div>
   );
