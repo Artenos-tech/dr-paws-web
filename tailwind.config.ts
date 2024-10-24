@@ -14,18 +14,17 @@ const config: Config = {
         "open-sans": ["Open Sans", "sans-serif"],
       },
       colors: {
-        primary: {
-          1: "#33495F",
-          2: "#FDC776",
-          3: "#F7F1DE",
-        },
-        secondary: {
-          1: "#5281A2",
-          2: "#9FA983",
-        },
+        "primary-1": "#33495F",
+        "primary-2": "#FDC776",
+        "primary-3": "#F7F1DE",
+        "secondary-1": "#5281A2",
+        "secondary-2": "#9FA983",
         accent: "#74A7B3",
         background: "var(--background)",
         foreground: "var(--foreground)",
+      },
+      backgroundImage: {
+        banner: "url('/assets/images/home-banner.png')",
       },
     },
   },
@@ -35,16 +34,16 @@ const config: Config = {
       {
         drPaws: {
           primary: "#33495F",
-          "primary-focus": "#2A3D51", // Slightly darker shade of the navy
-          "primary-content": "#FFFFFF", // White text on navy background
+          "primary-focus": "#293A4C",
+          "primary-content": "#FFFFFF",
 
-          secondary: "#FDC776",
-          "secondary-focus": "#FBB85C", // Slightly darker shade of the gold
-          "secondary-content": "#33495F", // Navy text on gold background
+          secondary: "#5281A2",
+          "secondary-focus": "#426782",
+          "secondary-content": "#FFFFFF",
 
-          accent: "#F7F1DE",
-          "accent-focus": "#F0E5C7", // Slightly darker shade of the cream
-          "accent-content": "#33495F", // Navy text on cream background
+          accent: "#74A7B3",
+          "accent-focus": "#538B99",
+          "accent-content": "#FFFFFF",
 
           "base-100": "#ffffff",
           "base-200": "#f9fafb",
