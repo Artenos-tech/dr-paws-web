@@ -3,7 +3,7 @@ import logo from "@/public/assets/images/logo/logo.svg";
 
 const Footer = () => {
   return (
-    <footer className="footer bg-primary-3 text-neutral-content p-10 w-full mx-auto">
+    <footer className="footer bg-primary-3 text-neutral-content p-10 w-full mx-auto ">
       <nav>
         <Image src={logo} alt="Dr. Paws Logo" width={100} height={30} />
         <a className="link link-hover">hello@bearhug.co</a>

@@ -24,7 +24,9 @@ const FaqItem: React.FC<FaqProps> = ({ items = [], heading }) => {
   };
 
   return (
-    <div className="max-w-lg lg:max-w-3xl xl:max-w-4xl mx-auto mt-8 px-4 sm:px-6 lg:px-8">
+    
+      <div className="max-w-xl lg:max-w-4xl xl:max-w-6xl mx-auto mt-8 px-4 sm:px-6 lg:px-8">
+
       {/* Ensuring proper padding on different screen sizes */}
       <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-4">
         {heading}
