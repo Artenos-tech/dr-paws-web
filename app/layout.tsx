@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Open_Sans } from "next/font/google";
 import "./globals.css";
-import NavBar from "@/components/layout/navbar";
+import NavBar from "@/public/assets/images/navbar";
 
 // Load Open Sans from Google Fonts
 const openSans = Open_Sans({
@@ -41,9 +41,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" data-theme="drPaws">
-      <body className={`${openSans.variable} ${roca.variable} font-open-sans`}>
+      <body
+        className={`${openSans.variable} ${roca.variable} font-open-sans w-full overflow-x-hidden`}
+      >
         <NavBar />
-        {children}
+        <div className="w-full">{children}</div>
       </body>
     </html>
   );

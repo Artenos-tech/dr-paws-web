@@ -1,14 +1,14 @@
-import clinic1 from "../app/assets/images/clinic-1.png";
-import description1 from "../app/assets/images/description1.png";
-import description2 from "../app/assets/images/description2.png";
-import description3 from "../app/assets/images/description3.png";
-import description4 from "../app/assets/images/description4.png";
-import description5 from "../app/assets/images/description5.png";
-import description6 from "../app/assets/images/description6.png";
+import clinic1 from "../public/assets/images/clinic-1.png";
+import description1 from "../public/assets/images/description1.png";
+import description2 from "../public/assets/images/description2.png";
+import description3 from "../public/assets/images/description3.png";
+import description4 from "../public/assets/images/description4.png";
+import description5 from "../public/assets/images/description5.png";
+import description6 from "../public/assets/images/description6.png";
 
-import dogImg from "../app/assets/images/dogimg.png";
-import catImg from "../app/assets/images/catimg.png";
-import birdImg from "../app/assets/images/birdimg.png";
+import dogImg from "../public/assets/images/dogimg.png";
+import catImg from "../public/assets/images/catimg.png";
+import birdImg from "../public/assets/images/birdimg.png";
 
 export const clinicItems = [
   {
