@@ -42,7 +42,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" data-theme="drPaws">
-      <body className={`${openSans.variable} ${roca.variable} font-open-sans`}>
+      <body
+        className={`${openSans.variable} ${roca.variable} font-open-sans w-full overflow-x-hidden`}
+      >
         <NavBar />
         {children}
         <Footer />

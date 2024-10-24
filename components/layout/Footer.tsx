@@ -1,5 +1,5 @@
 import Image from "next/image";
-import logo from "@/app/assets/images/logo/logo.svg";
+import logo from "@/public/assets/images/logo/logo.svg";
 
 const Footer = () => {
   return (
