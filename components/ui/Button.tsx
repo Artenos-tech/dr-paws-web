@@ -2,21 +2,19 @@ import React from "react";
 import { Open_Sans } from "next/font/google";
 
 type buttonProps = {
-  text: string;
-  background: string;
-  rounded?: boolean;
+  buttonText: string;
+  buttonBackground: string;
+  buttonLink?: string;
 };
 
 const openSans = Open_Sans({ subsets: ["latin"], weight: ["700"] });
 
-const Button: React.FC<buttonProps> = ({ text, background, rounded }) => {
+const Button: React.FC<buttonProps> = ({ buttonText, buttonBackground }) => {
   return (
     <button
-      className={`${background} ${openSans} ${
-        rounded ? "rounded-none rounded-b-md w-full" : "rounded-full"
-      } btn px-10 text-white tracking-wider`}
+      className={`${buttonBackground} ${openSans}  btn rounded-full px-10 text-white tracking-wider`}
     >
-      {text}
+      {buttonText}
     </button>
   );
 };

@@ -10,8 +10,8 @@ interface descriptionCardProps {
     title: string;
     desciption: string;
     button: {
-      text: string;
-      background: string;
+      buttonText: string;
+      buttonBackground: string;
     };
   };
 }
@@ -22,12 +22,16 @@ const DescriptionCard: React.FC<descriptionCardProps> = ({
 }) => {
   const { image, title, button } = description;
   return (
-    <div className="flex items-center justify-between gap-20 ">
-      <img src={image.src} alt={title + "image"} className={`${index%2!==0 && 'order-2'} w-2/5 rounded-md`} />
+    <div className="md:flex md:items-center md:justify-between gap-20 w-3/4 md:w-full ">
+      <img
+        src={image.src}
+        alt={title + "image"}
+        className={`${index % 2 !== 0 && "md:order-2"} w-11/12 mx-auto md:w-2/5 rounded-md`}
+      />
 
-      <div className="w-full text-primary-1">
-        <h1 className={` font-semibold text-4xl `}>{title}</h1>
-        <p className="text-sm my-5">{description.desciption}</p>
+      <div className="w-full text-center md:text-left text-primary-1 my-3 md:my-0">
+        <h1 className={` font-semibold text-xl md:text-4xl `}>{title}</h1>
+        <p className="text-xs md:text-sm my-3 md:my-5">{description.desciption}</p>
         <Button {...button} />
       </div>
     </div>

@@ -1,19 +1,28 @@
-import Button from "@/components/ui/Button";
+import BannerCard from "@/components/ui/BannerCard";
 import ClinicItem from "@/components/ui/ClinicItem";
+import ClinicItemCarousel from "@/components/ui/ClinicItemCarousel";
 import DescriptionCardList from "@/components/ui/DescriptionCardList";
-import { clinicItems } from "@/model/mockData";
+import { bannerItems, clinicItems } from "@/model/mockData";
 
 export default function Home() {
   return (
     <div>
+      <div className="flex items-center justify-center gap-5 my-10">
+      {bannerItems.map((banItem, banIndex) => (
+        <BannerCard key={banIndex} banItem={banItem} />
+      ))}
+      </div>
       <main className="w-full overflow-x-hidden max-w-[1000px] mx-auto my-10">
         {/* Description Card */}
-        <h1 className="my-5">Veterinary care, redesigned to be better</h1>
+        <h1 className="my-5 text-center">
+          Veterinary care, redesigned to be better
+        </h1>
         <DescriptionCardList />
 
         {/* Clinic items */}
-        <h1>Check card the places we call home</h1>
-        <div className="p-5 flex flex-wrap gap-3">
+        <h1 className="text-center">Check card the places we call home</h1>
+        {/* This component is larger view */}
+        <div className="p-5 flex items-center justify-center flex-wrap gap-3">
           {clinicItems.map((clinic, clinicIndex) => (
             <ClinicItem
               key={clinicIndex}
@@ -22,13 +31,8 @@ export default function Home() {
             />
           ))}
         </div>
-
-        <h1>Button</h1>
-        {/* Sample button */}
-        <Button text="Book demo" background="bg-secondary-1" />
-        <Button text="Book demo" background="bg-primary-1" />
-        <Button text="Book a Member" background="bg-accent" />
-        <Button text="Book a Member" background="bg-secondary-2" />
+        {/* this is component will show clinic card in carousel */}
+        <ClinicItemCarousel />
       </main>
     </div>
   );

@@ -6,94 +6,58 @@ import description4 from "../app/assets/images/description4.png";
 import description5 from "../app/assets/images/description5.png";
 import description6 from "../app/assets/images/description6.png";
 
+import dogImg from "../app/assets/images/dogimg.png";
+import catImg from "../app/assets/images/catimg.png";
+import birdImg from "../app/assets/images/birdimg.png";
+
 export const clinicItems = [
   {
     image: clinic1,
     clinicName: "Indiranagar Clinic",
     branch: "OPD",
     description: "Surgery",
-    button: {
-      text: "Book a Visit",
-      background: "bg-secondary-1",
-      rounded: true,
-    },
   },
   {
     image: clinic1,
     clinicName: "Indiranagar Clinic",
     branch: "OPD",
     description: "Surgery",
-    button: {
-      text: "Book a Visit",
-      background: "bg-secondary-1",
-      rounded: true,
-    },
   },
   {
     image: clinic1,
     clinicName: "Indiranagar Clinic",
     branch: "OPD",
     description: "Surgery",
-    button: {
-      text: "Book a Visit",
-      background: "bg-secondary-1",
-      rounded: true,
-    },
   },
   {
     image: clinic1,
     clinicName: "Indiranagar Clinic",
     branch: "OPD",
     description: "Surgery",
-    button: {
-      text: "Book a Visit",
-      background: "bg-secondary-1",
-      rounded: true,
-    },
   },
   {
     image: clinic1,
     clinicName: "Indiranagar Clinic",
     branch: "OPD",
     description: "Surgery",
-    button: {
-      text: "Book a Visit",
-      background: "bg-secondary-1",
-      rounded: true,
-    },
   },
   {
     image: clinic1,
     clinicName: "Indiranagar Clinic",
     branch: "OPD",
     description: "Surgery",
-    button: {
-      text: "Book a Visit",
-      background: "bg-secondary-1",
-      rounded: true,
-    },
   },
   {
     image: clinic1,
     clinicName: "Indiranagar Clinic",
     branch: "OPD",
     description: "Surgery",
-    button: {
-      text: "Book a Visit",
-      background: "bg-secondary-1",
-      rounded: true,
-    },
   },
   {
     image: clinic1,
     clinicName: "Indiranagar Clinic",
     branch: "OPD",
     description: "Surgery",
-    button: {
-      text: "Book a Visit",
-      background: "bg-secondary-1",
-      rounded: true,
-    },
   },
 ];
 
@@ -104,8 +68,9 @@ export const descriptionItems = [
     desciption:
       "Our modern clinics make you feel like you never left home, making visits stress-free for you and your pet",
     button: {
-      text: "Book a Visit",
-      background: "bg-secondary-1",
+      buttonText: "Book a Visit",
+      buttonBackground: "bg-secondary-1",
+      buttonLink: "",
     },
   },
   {
@@ -114,8 +79,9 @@ export const descriptionItems = [
     desciption:
       "Our memberships provide great value care and provide all the services you’re likely to need. Even if you’re facing an emergency, our memberships cover you.",
     button: {
-      text: "Book a Member",
-      background: "bg-accent",
+      buttonText: "Book a Member",
+      buttonBackground: "bg-accent",
+      buttonLink: "",
     },
   },
   {
@@ -124,8 +90,9 @@ export const descriptionItems = [
     desciption:
       "We’re in the business of looking after your best friend. We’ll listen and answer all your questions and treat your pet like our own",
     button: {
-      text: "Book a Visit",
-      background: "bg-secondary-1",
+      buttonText: "Book a Visit",
+      buttonBackground: "bg-secondary-1",
+      buttonLink: "",
     },
   },
   {
@@ -134,8 +101,9 @@ export const descriptionItems = [
     desciption:
       "Book appointments in a few taps, and always stay updated and informed on your pet’s health with our app",
     button: {
-      text: "Book a Member",
-      background: "bg-accent",
+      buttonText: "Book a Member",
+      buttonBackground: "bg-accent",
+      buttonLink: "",
     },
   },
   {
@@ -144,8 +112,9 @@ export const descriptionItems = [
     desciption:
       "We’re pet-lovers first and business-people second. No over-testing, prescribing unnecessary medicines, or pushing procedures that are not needed",
     button: {
-      text: "Book a Visit",
-      background: "bg-secondary-1",
+      buttonText: "Book a Visit",
+      buttonBackground: "bg-secondary-1",
+      buttonLink: "",
     },
   },
   {
@@ -154,8 +123,24 @@ export const descriptionItems = [
     desciption:
       "Aside from our world-class veterinary care, our clinics offer grooming, boarding, sitting, nutritionist, and training services",
     button: {
-      text: "See Our Services",
-      background: "bg-secondary-2",
+      buttonText: "See Our Services",
+      buttonBackground: "bg-secondary-2",
+      buttonLink: "",
     },
+  },
+];
+
+export const bannerItems = [
+  {
+    bannerImage: dogImg,
+    bannerText: "Dog",
+  },
+  {
+    bannerImage: catImg,
+    bannerText: "Cat",
+  },
+  {
+    bannerImage: birdImg,
+    bannerText: "Bird",
   },
 ];
