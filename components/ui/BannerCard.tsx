@@ -11,7 +11,7 @@ interface bannerCardProps {
 const BannerCard: React.FC<bannerCardProps> = ({ banItem }) => {
   const { bannerImage, bannerText } = banItem;
   return (
-    <div className="rounded-3xl w-[120px] h-[140px] flex flex-col items-center justify-between">
+    <div className="rounded-t-3xl w-[120px] h-[140px] flex flex-col items-center justify-between bg-white">
       <div className="p-4">
         <h1 className="text-secondary-1 text-center text-lg font-semibold">
           {bannerText}

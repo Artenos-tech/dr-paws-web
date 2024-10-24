@@ -9,15 +9,14 @@ interface ClinicItemProps {
     branch: string;
     description: string;
   };
-  background: string;
 }
 
-const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, background }) => {
+const ClinicItem: React.FC<ClinicItemProps> = ({ clinic }) => {
   const { image, clinicName, branch, description } = clinic;
   return (
     <>
       <div
-        className={`${background} w-56 shadow-md rounded-md md:block hidden`}
+        className={`bg-tint w-56 shadow-md rounded-md md:block hidden`}
       >
         <img
           src={image.src}

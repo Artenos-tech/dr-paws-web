@@ -34,7 +34,3 @@
     @apply font-open-sans text-primary-1;
   }
 }
-
-.bg-banner{
-  background-image:url('/app/assets/images/bannerbackground.png')
-}

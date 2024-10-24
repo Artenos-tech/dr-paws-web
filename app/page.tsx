@@ -8,10 +8,11 @@ export default function Home() {
   return (
     <div>
       <div className="flex items-center justify-center gap-5 my-10">
-      {bannerItems.map((banItem, banIndex) => (
-        <BannerCard key={banIndex} banItem={banItem} />
-      ))}
+        {bannerItems.map((banItem, banIndex) => (
+          <BannerCard key={banIndex} banItem={banItem} />
+        ))}
       </div>
+
       <main className="w-full overflow-x-hidden max-w-[1000px] mx-auto my-10">
         {/* Description Card */}
         <h1 className="my-5 text-center">
@@ -24,11 +25,7 @@ export default function Home() {
         {/* This component is larger view */}
         <div className="p-5 flex items-center justify-center flex-wrap gap-3">
           {clinicItems.map((clinic, clinicIndex) => (
-            <ClinicItem
-              key={clinicIndex}
-              clinic={clinic}
-              background="bg-tint"
-            />
+            <ClinicItem key={clinicIndex} clinic={clinic} />
           ))}
         </div>
         {/* this is component will show clinic card in carousel */}
