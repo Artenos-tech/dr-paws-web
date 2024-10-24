@@ -1,18 +1,23 @@
-import Faq from "@/Components/Faq";
+import Faq from "@/components/ui/FaqItem";
 import Image from "next/image";
-import { mockItems } from "@/model/mockData";
+import { FaqData, reviewData } from "@/model/mockData";
 import { mock } from "node:test";
+import ReviewCard from "@/components/ui/ReviewCard";
+import FaqList from "@/components/ui/FaqList";
+import Footer from "@/components/layout/Footer";
 const Home: React.FC = () => {
   return (
     <div>
       <main>
         <div>
-          {mockItems.map((faq, faqIndex) => (
-            <Faq key={faqIndex} heading={faq.heading} items={faq.qaList} />
-          ))}
+          {/* <ReviewCard name={reviewData.name} review={reviewData.review} /> */}
+          <FaqList />
         </div>
       </main>
     </div>
   );
 };
 export default Home;
+{
+  /* <ReviewCard name={reviewData.name} review={reviewData.review} /> */
+}

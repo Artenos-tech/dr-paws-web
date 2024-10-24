@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Open_Sans } from "next/font/google";
 import { AiOutlineDown, AiOutlineRight } from "react-icons/ai"; // Import icons
 
-const openSans = Open_Sans({ subsets: ["latin"], weight: ["700"] });
+
 
 interface FaqItem {
   question: string;
@@ -16,7 +16,7 @@ interface FaqProps {
   heading: string;
 }
 
-const Faq: React.FC<FaqProps> = ({ items = [], heading }) => {
+const FaqItem: React.FC<FaqProps> = ({ items = [], heading }) => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const toggleCollapse = (index: number) => {
@@ -53,4 +53,4 @@ const Faq: React.FC<FaqProps> = ({ items = [], heading }) => {
   );
 };
 
-export default Faq;
+export default FaqItem;
