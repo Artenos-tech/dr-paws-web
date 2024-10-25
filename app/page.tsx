@@ -1,4 +1,5 @@
 import CircleImageCard from "@/components/ui/CircleImageCard";
+import Gallery from "@/components/ui/Gallery";
 import MembershipCard from "@/components/ui/MembershipCard";
 import OutlineButton from "@/components/ui/OutlineButton";
 import { circleImageList, membershipDataList } from "@/model/mockData";
@@ -9,6 +10,7 @@ export default function Home() {
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
         <div className="bg-banner bg-cover  bg-no-repeat h-96 w-screen md:h-[500px] lg:h-[600px] min-h-[300px]"></div>
         <div className="w-full max-w-[1000px] mx-auto my-10">
+          <Gallery />
           <div className="flex items-center gap-3">
             {" "}
             {circleImageList.map((cirImg, cirIndex) => (
@@ -19,7 +21,11 @@ export default function Home() {
           <OutlineButton outlineBtnText="Edit Profile" />
 
           {membershipDataList.map((membershipData, index) => (
-            <MembershipCard key={index} membershipData={membershipData} index={index} />
+            <MembershipCard
+              key={index}
+              membershipData={membershipData}
+              index={index}
+            />
           ))}
         </div>
       </main>
