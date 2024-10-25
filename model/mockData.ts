@@ -1,68 +1,214 @@
-import BuddyDog from "@/public/assets/images/yourPets/BuddyDog.svg";
-import CatMoca from "@/public/assets/images/yourPets/MocaCat.svg";
-import Puppy from "@/public/assets/images/yourPets/Puppy.svg";
-import CatMillie from "@/public/assets/images/yourPets/CatMillie.svg";
-import DogJigsaw from "@/public/assets/images/yourPets/DogJigsaw.svg";
-import DoctorImage from "@/public/assets/images/Doctor/DoctorImage.svg"; // Adjust this path
-import image1 from "@/public/assets/images/ReviewImages/image1.svg";
-import image2 from "@/public/assets/images/ReviewImages/image2.svg";
-import image3 from "@/public/assets/images/ReviewImages/image3.svg";
+import clinic1 from "../public/assets/images/clinic-1.png";
+import description1 from "../public/assets/images/description1.png";
+import description2 from "../public/assets/images/description2.png";
+import description3 from "../public/assets/images/description3.png";
+import description4 from "../public/assets/images/description4.png";
+import description5 from "../public/assets/images/description5.png";
+import description6 from "../public/assets/images/description6.png";
+import dogImg from "../public/assets/images/dogimg.png";
+import catImg from "../public/assets/images/catimg.png";
+import birdImg from "../public/assets/images/birdimg.png";
 
-export const petMockData = [
-  { name: "Buddy", title: "Care Senior Member", image: BuddyDog },
-  { name: "Puppy", title: "Care Junior Member", image: Puppy },
-  { name: "Moca", title: "Star Member", image: CatMoca },
-  { name: "Millie", title: "Grooming Member", image: CatMillie },
-  { name: "Jigsaw", title: "Care Member", image: DogJigsaw },
+export const FaqData = [
+  {
+    heading: "About BearHug",
+    qaList: [
+      {
+        question: "What makes BearHug different?",
+        answer:
+          "BearHug provides personalized pet care with a focus on comfort and health.",
+      },
+      {
+        question: "How much do you charge for your services?",
+        answer:
+          "Our pricing varies based on the services provided. Contact us for a detailed quote.",
+      },
+      {
+        question: "What animals does BearHug treat?",
+        answer:
+          "Dr. Paws is a versatile veterinarian offering expert care to a variety of animals, including cats, dogs, hamsters, unicorns (just kidding, we wish!), and many more.",
+      },
+    ],
+  },
+  {
+    heading: "At the clinic",
+    qaList: [
+      {
+        question: "What makes BearHug different?",
+        answer:
+          "BearHug provides personalized pet care with a focus on comfort and health.",
+      },
+      {
+        question: "How much do you charge for your services?",
+        answer:
+          "Our pricing varies based on the services provided. Contact us for a detailed quote.",
+      },
+      {
+        question: "What animals does BearHug treat?",
+        answer:
+          "Dr. Paws is a versatile veterinarian offering expert care to a variety of animals, including cats, dogs, hamsters, unicorns (just kidding, we wish!), and many more.",
+      },
+    ],
+  },
+  {
+    heading: "About BearHug",
+    qaList: [
+      {
+        question: "What makes BearHug different?",
+        answer:
+          "BearHug provides personalized pet care with a focus on comfort and health.",
+      },
+      {
+        question: "How much do you charge for your services?",
+        answer:
+          "Our pricing varies based on the services provided. Contact us for a detailed quote.",
+      },
+      {
+        question: "What animals does BearHug treat?",
+        answer:
+          "Dr. Paws is a versatile veterinarian offering expert care to a variety of animals, including cats, dogs, hamsters, unicorns (just kidding, we wish!), and many more.",
+      },
+    ],
+  },
 ];
-export const tabs = {
-  "Planned check-ups":
-    "Regular check-ups and preventative measures are essential to keep your pet in the best health. Take care of any vaccinations, get any help you need, or simply visit us to ensure your pet is doing just fine!",
-  "Sickness & Emergency":
-    "When your pet falls ill or faces an emergency, we know it's a stressful time. We're here for you and will do our best to get your pet back to their usual happy & healthy self.",
-  Diagnostics:
-    "When your pet isn't feeling their best, it's important to get to the bottom of it as soon as possible. We offer a wide range of tests and scans, coupled with strong interpretation expertise to make sure the right treatment plan is offered right away.",
-  "Planned surgeries":
-    "Occasionally it becomes essential to take a more serious course of action to help your animal. We offer a wide range of surgical procedures to ensure your animal gets back to health, as soon as possible. Wherever we can't help, we'll refer you to a vet that can.",
-  Dental:
-    "Just like in humans, oral health is an essential part of making sure your animal maintains great health internally and externally. We offer a range of dental treatments to keep your animal pain-free with great hygiene.",
-  Grooming:
-    "Who doesn't like to see their best friend looking and feeling their best? Dr. Paws specially designed grooming studios help you take care of your animal so they turn heads and feel amazing at all times.",
-  "Pet Services":
-    "Occasionally it becomes essential to take a more serious course of action to help your animal. We offer a wide range of surgical procedures to ensure your animal gets back to health, as soon as possible. Wherever we can't help, we'll refer you to a vet that can.",
-};
 
-export const doctorMockData = {
-  name: "Dr. Emily Thompson",
-  description: "DMV - Animal Welfare",
-  experience: "10 Years of Experience",
-  location: "Andheri West, Indiranagar",
-  image: DoctorImage,
-};
-
-export const reviewImageCardData = [
-  {
-    name: "Rahul shah",
-    review:
-      "The veterinarians were knowledgeable and showed genuine love for animals. Highly recommended!",
-    image: image1,
-  },
-  {
-    name: "Rahul shah",
-    review:
-      "The veterinarians were knowledgeable and showed genuine love for animals. Highly recommended!",
-    image: image2,
-  },
-  {
-    name: "Rahul shah",
-    review:
-      "The veterinarians were knowledgeable and showed genuine love for animals. Highly recommended!",
-    image: image3,
-  },
-];
-export const single ={
-  name: "rahul shah",
+export const reviewData = {
+  name: "Rahul Shah",
   review:
-    " The veterinarians were knowledgeable and showed genuine love for animals. Highly recommended!",
-  image: image1,
-}
+    "Dr. Paws is Fantastic Execptional care, friendly staff, and a welcoming atmosphere, Highly recommend for pet owners!",
+};
+
+export const clinicItems = [
+  {
+    image: clinic1,
+    clinicName: "Indiranagar Clinic",
+    branch: "OPD",
+    description: "Surgery",
+  },
+  {
+    image: clinic1,
+    clinicName: "Indiranagar Clinic",
+    branch: "OPD",
+    description: "Surgery",
+  },
+  {
+    image: clinic1,
+    clinicName: "Indiranagar Clinic",
+    branch: "OPD",
+    description: "Surgery",
+  },
+  {
+    image: clinic1,
+    clinicName: "Indiranagar Clinic",
+    branch: "OPD",
+    description: "Surgery",
+  },
+  {
+    image: clinic1,
+    clinicName: "Indiranagar Clinic",
+    branch: "OPD",
+    description: "Surgery",
+  },
+  {
+    image: clinic1,
+    clinicName: "Indiranagar Clinic",
+    branch: "OPD",
+    description: "Surgery",
+  },
+  {
+    image: clinic1,
+    clinicName: "Indiranagar Clinic",
+    branch: "OPD",
+    description: "Surgery",
+  },
+  {
+    image: clinic1,
+    clinicName: "Indiranagar Clinic",
+    branch: "OPD",
+    description: "Surgery",
+  },
+];
+
+export const descriptionItems = [
+  {
+    image: description1,
+    title: "A Clinic That Feels Like Home",
+    desciption:
+      "Our modern clinics make you feel like you never left home, making visits stress-free for you and your pet",
+    button: {
+      buttonText: "Book a Visit",
+      buttonBackground: "bg-secondary-1",
+      buttonLink: "",
+    },
+  },
+  {
+    image: description2,
+    title: "Memberships That Work",
+    desciption:
+      "Our memberships provide great value care and provide all the services you’re likely to need. Even if you’re facing an emergency, our memberships cover you.",
+    button: {
+      buttonText: "Book a Member",
+      buttonBackground: "bg-accent",
+      buttonLink: "",
+    },
+  },
+  {
+    image: description3,
+    title: "Doctors That Care",
+    desciption:
+      "We’re in the business of looking after your best friend. We’ll listen and answer all your questions and treat your pet like our own",
+    button: {
+      buttonText: "Book a Visit",
+      buttonBackground: "bg-secondary-1",
+      buttonLink: "",
+    },
+  },
+  {
+    image: description4,
+    title: "Everything In Your Control",
+    desciption:
+      "Book appointments in a few taps, and always stay updated and informed on your pet’s health with our app",
+    button: {
+      buttonText: "Book a Member",
+      buttonBackground: "bg-accent",
+      buttonLink: "",
+    },
+  },
+  {
+    image: description5,
+    title: "Only The Necessary Care",
+    desciption:
+      "We’re pet-lovers first and business-people second. No over-testing, prescribing unnecessary medicines, or pushing procedures that are not needed",
+    button: {
+      buttonText: "Book a Visit",
+      buttonBackground: "bg-secondary-1",
+      buttonLink: "",
+    },
+  },
+  {
+    image: description6,
+    title: "All The Services You Need, Under One Roof",
+    desciption:
+      "Aside from our world-class veterinary care, our clinics offer grooming, boarding, sitting, nutritionist, and training services",
+    button: {
+      buttonText: "See Our Services",
+      buttonBackground: "bg-secondary-2",
+      buttonLink: "",
+    },
+  },
+];
+
+export const bannerItems = [
+  {
+    bannerImage: dogImg,
+    bannerText: "Dog",
+  },
+  {
+    bannerImage: catImg,
+    bannerText: "Cat",
+  },
+  {
+    bannerImage: birdImg,
+    bannerText: "Bird",
+  },
+];
