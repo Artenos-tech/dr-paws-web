@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import { Open_Sans } from "next/font/google";
 import "./globals.css";
 import NavBar from "@/components/layout/navbar";
+import Footer from "@/components/layout/Footer";
 
 // Load Open Sans from Google Fonts
 const openSans = Open_Sans({
@@ -45,7 +46,8 @@ export default function RootLayout({
         className={`${openSans.variable} ${roca.variable} font-open-sans w-full overflow-x-hidden`}
       >
         <NavBar />
-        <div className="w-full">{children}</div>
+        {children}
+        <Footer />
       </body>
     </html>
   );
