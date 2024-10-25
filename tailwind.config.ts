@@ -22,6 +22,7 @@ const config: Config = {
         accent: "#74A7B3",
         background: "var(--background)",
         foreground: "var(--foreground)",
+        tint: "#FFFCF3",
       },
       backgroundImage: {
         banner: "url('/assets/images/home-banner.png')",
