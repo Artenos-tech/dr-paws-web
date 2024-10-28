@@ -1,9 +1,10 @@
 import { clinicItems } from "@/model/mockData";
+import Image from "next/image";
 import React from "react";
 
 const ClinicItemCarousel = () => {
   return (
-    <div className="md:hidden block">
+    <div className="">
       <div className="carousel carousel-center bg-neutral rounded-box max-w-md space-x-4 p-4">
         <div className="carousel-item">
           {clinicItems.map((clinic, clinicIndex) => (
@@ -11,10 +12,10 @@ const ClinicItemCarousel = () => {
               key={clinicIndex}
               className="carousel-item w-56 flex flex-col mr-5"
             >
-              <img
+              <Image
                 src={clinic.image.src}
-                alt={clinic.clinicName + "image"}
-                className="rounded-t-md"
+                alt={`${clinic.clinicName}`}
+                className="rounded-t-md object-cover w-full h-56"
               />
               <div className="p-2">
                 <h1 className="text-primary-1 text-base font-semibold">
