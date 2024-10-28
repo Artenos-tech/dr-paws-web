@@ -8,6 +8,7 @@ import description6 from "../public/assets/images/description6.png";
 import dogImg from "../public/assets/images/dogimg.png";
 import catImg from "../public/assets/images/catimg.png";
 import birdImg from "../public/assets/images/birdimg.png";
+import doctorImage from "../public/assets/images/clinic/doctor.png";
 
 export const FaqData = [
   {
@@ -210,5 +211,50 @@ export const bannerItems = [
   {
     bannerImage: birdImg,
     bannerText: "Bird",
+  },
+];
+
+export const doctors = [
+  {
+    name: "Dr. Emily Thompson",
+    description: "DMV - Animal Welfare",
+    experience: "10 Years of Experience",
+    location: "Andheri West, Indiranagar",
+    image: doctorImage,
+  },
+  {
+    name: "Dr. Nampally Rohit",
+    description: "DMV - Veterinary Medicine",
+    experience: "8 Years of Experience",
+    location: "HSR, Bangalore",
+    image: doctorImage,
+  },
+  {
+    name: "Dr. Sarah Johnson",
+    description: "DMV - Small Animal Surgery",
+    experience: "12 Years of Experience",
+    location: "Jayanagar, Bangalore",
+    image: doctorImage,
+  },
+  {
+    name: "Dr. Rajesh Sharma",
+    description: "DMV - Exotic Animals",
+    experience: "15 Years of Experience",
+    location: "Whitefield, Bangalore",
+    image: doctorImage,
+  },
+  {
+    name: "Dr. Priya Menon",
+    description: "DMV - Animal Dermatology",
+    experience: "7 Years of Experience",
+    location: "Vasant Kunj, Delhi",
+    image: doctorImage,
+  },
+  {
+    name: "Dr. John Doe",
+    description: "DMV - Veterinary Medicine",
+    experience: "8 Years of Experience",
+    location: "Koramangala, Bangalore",
+    image: doctorImage,
   },
 ];
