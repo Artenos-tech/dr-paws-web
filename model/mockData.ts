@@ -72,11 +72,14 @@ export const FaqData = [
   },
 ];
 
-export const reviewData = {
-  name: "Rahul Shah",
-  review:
-    "Dr. Paws is Fantastic Execptional care, friendly staff, and a welcoming atmosphere, Highly recommend for pet owners!",
-};
+export const reviewData = 
+  {
+    name: "Rahul Shah",
+    review:
+      "Dr. Paws is Fantastic Execptional care, friendly staff, and a welcoming atmosphere, Highly recommend for pet owners!",
+  }
+  
+;
 
 export const clinicItems = [
   {

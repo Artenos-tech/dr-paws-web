@@ -5,9 +5,7 @@ import { Menu } from "lucide-react";
 export default function NavBar() {
   return (
     <div className="bg-primary-3 w-full">
-      {/* Parent container with 80% width for inner items and justify-between */}
       <div className="navbar w-[80%] mx-auto flex justify-between">
-        {/* Left side (Start) */}
         <div className="navbar-start flex items-center">
           <div className="dropdown">
             <label tabIndex={0} className="btn btn-ghost lg:hidden">
@@ -48,8 +46,6 @@ export default function NavBar() {
             className="lg:block"
           />
         </div>
-
-        {/* Center section (only visible on larger screens) */}
         <div className="navbar-center hidden lg:flex">
           <ul className="menu menu-horizontal px-1 space-x-4">
             <li>
