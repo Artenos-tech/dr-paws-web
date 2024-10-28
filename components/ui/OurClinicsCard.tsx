@@ -1,7 +1,10 @@
+"use client";
+
 import React from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { StaticImageData } from "next/image";
+import { useRouter } from "next/navigation";
 
 interface ClinicItemProps {
   clinic: {
@@ -15,6 +18,11 @@ interface ClinicItemProps {
 
 const OurClinicsCard: React.FC<ClinicItemProps> = ({ clinic, className }) => {
   const { image, clinicName, branch, description } = clinic;
+  const router = useRouter();
+
+  const handleBookVisit = () => {
+    router.push(`/clinic/${clinicName}`);
+  };
   return (
     <div
       className={cn(
@@ -37,7 +45,10 @@ const OurClinicsCard: React.FC<ClinicItemProps> = ({ clinic, className }) => {
           <p>{description}</p>
         </div>
       </div>
-      <button className="bg-[#5281a2] h-[50px] text-white py-2 mt-auto">
+      <button
+        className="bg-[#5281a2] h-[50px] text-white py-2 mt-auto"
+        onClick={handleBookVisit}
+      >
         Book a Visit
       </button>
     </div>
