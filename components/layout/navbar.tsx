@@ -1,14 +1,13 @@
 import Image from "next/image";
 import Profile from "@/public/assets/images/profileThumnail.svg";
 import { Menu } from "lucide-react";
+import Button from "../ui/Button";
 
 export default function NavBar() {
   return (
     <div className="bg-primary-3 w-full">
-      {/* Parent container with 80% width for inner items and justify-between */}
-      <div className="navbar w-[80%] mx-auto flex justify-between">
-        {/* Left side (Start) */}
-        <div className="navbar-start flex items-center">
+      <div className="navbar w-full sm:w-[80%]">
+        <div className="navbar-start items-center">
           <div className="dropdown">
             <label tabIndex={0} className="btn btn-ghost lg:hidden">
               <Menu className="h-5 w-5 bg-primary-3" />
@@ -48,8 +47,6 @@ export default function NavBar() {
             className="lg:block"
           />
         </div>
-
-        {/* Center section (only visible on larger screens) */}
         <div className="navbar-center hidden lg:flex">
           <ul className="menu menu-horizontal px-1 space-x-4">
             <li>
@@ -80,8 +77,8 @@ export default function NavBar() {
         </div>
 
         {/* Right side (End) */}
-        <div className="navbar-end flex items-center gap-5">
-          <a className="btn btn-secondary">Button</a>
+        <div className="navbar-end flex items-center gap-2 sm:gap-5">
+          <Button buttonText="Book a visit" buttonBackground="secondary-" />
           <Image src={Profile} alt="User logo" width={40} height={40} />
         </div>
       </div>
