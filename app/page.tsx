@@ -47,6 +47,7 @@ export default function Home() {
               Check out the places we call home
             </h1>
             <ClinicItemList />
+            <ClinicItemCarousel />
           </div>
           {/* this is component will show clinic card in carousel */}
 
@@ -66,9 +67,9 @@ export default function Home() {
           <div className="w-full my-20">
             <h1 className="text-2xl text-center text-primary-1">Reviews</h1>
             <div className="flex justify-center items-center my-20">
-              <div className="relative flex flex-col items-center justify-center sm:flex-row border-yellow-500">
+              <div className="relative flex flex-col items-center justify-center lg:flex-row border-yellow-500">
                 {/* Container for Green Background and Lady Image */}
-                <div className="relative w-[250px] h-[280px] sm:w-[376px] sm:h-[421px]">
+                <div className="relative w-[250px] h-[280px] md:w-[300px] md:h-[336px] lg:w-[376px] lg:h-[421px]">
                   {/* Green Background */}
                   <Image
                     src={GreenBackground}
@@ -77,7 +78,7 @@ export default function Home() {
                     objectFit="cover"
                   />
                   {/* Lady Image */}
-                  <div className="absolute bottom-0 left-0 w-[220px] h-[250px] sm:w-[348px] sm:h-[357px]">
+                  <div className="absolute bottom-0 left-0 w-[220px] h-[250px] md:w-[264px] md:h-[300px] lg:w-[348px] lg:h-[357px]">
                     <Image
                       src={Lady}
                       alt="Girl with Cat"
@@ -88,24 +89,24 @@ export default function Home() {
                 </div>
 
                 {/* Review Cards */}
-                <div className="flex flex-col mt-4 sm:mt-0 sm:flex-none">
+                <div className="flex flex-col mt-4 lg:mt-0 lg:flex-none">
                   {/* ReviewCard 1 */}
                   <ReviewCard
                     name={reviewData.name}
                     review={reviewData.review}
-                    className="w-[330px] sm:min-w-[410px] sm:absolute sm:-top-14 sm:-right-[92%]"
+                    className="w-[290px] md:w-[330px] lg:min-w-[410px] lg:absolute lg:-top-14 lg:-right-[92%]"
                   />
                   {/* ReviewCard 2 */}
                   <ReviewCard
                     name={reviewData.name}
                     review={reviewData.review}
-                    className="w-[330px] sm:min-w-[405px] sm:absolute sm:-bottom-14 sm:-right-[80%]"
+                    className="w-[290px] md:w-[330px] lg:min-w-[405px] lg:absolute lg:-bottom-14 lg:-right-[80%]"
                   />
                   {/* ReviewCard 3 */}
                   <ReviewCard
                     name={reviewData.name}
                     review={reviewData.review}
-                    className="w-[330px] sm:min-w-[365px] sm:absolute sm:top-[15%] sm:-left-[90%]"
+                    className="w-[290px] md:w-[330px] lg:min-w-[365px] lg:absolute lg:top-[15%] lg:-left-[90%]"
                   />
                 </div>
               </div>
