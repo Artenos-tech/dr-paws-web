@@ -1,13 +1,15 @@
+"use client";
 import Image from "next/image";
 import DescritionImage from "@/public/assets/images/ServicesPage/DescriptionImage.png";
 import Button from "@/components/ui/Button";
 import ServicePageTab from "@/components/ui/ServicePageTab";
+import { ServiceTabsData } from "@/model/mockData";
 
 const Services = () => {
   return (
     <div className="flex flex-col w-full h-full items-center justify-items-center font-roca pb-20 flex-grow">
       <main className="flex flex-col gap-[80px] row-start-2 items-center w-[70%]">
-        <div className="w-full flex flex-col lg:flex-row items-center justify-center p-1 lg:space-x-8 space-y-8 lg:space-y-0 mt-[80px]">
+        <div className="w-full flex flex-col lg:flex-row items-center justify-center p-4 lg:space-x-8 space-y-8 lg:space-y-0 mt-[80px] border">
           <div className="flex-shrink-0">
             <Image
               src={DescritionImage}
@@ -17,26 +19,24 @@ const Services = () => {
               className="rounded-lg"
             />
           </div>
-          <div className="flex items-center justify-center w-full lg:items-start lg:justify-end">
-            <div className="text-center items-center  lg:text-left w-[450px] h-[170px] flex flex-col gap-4">
-              <h2 className="text-3xl font-bold ">
-                Come And Visit Us At Our Place!
-              </h2>
-              <p className="text-lg text-gray-700">
-                We are opening our homely Dr. Paws clinics across neighbourhoods
-                all over the country. If we're not near you right now, we hope
-                to be very soon!
-              </p>
-              <div className="w-fit">
-                <Button
-                  buttonText="Book a Visit"
-                  buttonBackground="secondary-1"
-                />
-              </div>
+          <div className="flex flex-col items-center lg:items-start lg:text-left w-full lg:w-[450px] h-auto gap-4">
+            <h2 className="text-4xl lg:text-5xl text-center lg:text-left">
+              We're here, whatever your friend needs
+            </h2>
+            <p className="text-lg text-gray-700 text-center lg:text-left">
+              Our modern friendly clinics offer all the services you'll need
+              to keep your animal happy and healthy.
+            </p>
+            <div className="w-fit">
+              <Button
+                buttonText="Book a Visit"
+                buttonBackground="secondary-1"
+              />
             </div>
           </div>
         </div>
         <div>
+          <ServicePageTab tabs={ServiceTabsData} />
         </div>
       </main>
     </div>

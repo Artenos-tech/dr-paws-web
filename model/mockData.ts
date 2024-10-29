@@ -13,7 +13,54 @@ import description6 from "../public/assets/images/description6.png";
 import dogImg from "../public/assets/images/dogimg.png";
 import catImg from "../public/assets/images/catimg.png";
 import birdImg from "../public/assets/images/birdimg.png";
-import {ServiceCategory, Service} from "@/model/typeDefinitions"
+import { ServiceCategory, Service } from "@/model/typeDefinitions";
+import Vaccination from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/Vaccinations.png";
+import Deworming from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/Deworming.png";
+import GeneralCheckUp from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/General check up.png";
+import BehaviorlCounceling from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/Behavioral Counseling.png";
+import NutritionalCounceling from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/NutritionalCounceling.png";
+import DigestiveProblems from "@/public/assets/images/ServicesPage/Sickness and Emergency/Digestive Problems.png";
+import AllergiesAndRashes from "@/public/assets/images/ServicesPage/Sickness and Emergency/Allergies and rashes.png";
+import EarInfections from "@/public/assets/images/ServicesPage/Sickness and Emergency/EarInfections.png";
+import Lethargy from "@/public/assets/images/ServicesPage/Sickness and Emergency/Lethargy.png";
+import Limping from "@/public/assets/images/ServicesPage/Sickness and Emergency/Limping.png";
+import AnimalBites from "@/public/assets/images/ServicesPage/Sickness and Emergency/Animal Bites.png";
+import EyeIssues from "@/public/assets/images/ServicesPage/Sickness and Emergency/EyeIssues.png";
+import Accident from "@/public/assets/images/ServicesPage/Sickness and Emergency/Accident and trauma.png";
+import Ultrasound from "@/public/assets/images/ServicesPage/Dignostics/Ultrsound.png";
+import Microscopy from "@/public/assets/images/ServicesPage/Dignostics/Microscopy.png";
+import Parasite from "@/public/assets/images/ServicesPage/Dignostics/Parasite.png";
+import Blood from "@/public/assets/images/ServicesPage/Dignostics/Blood.png";
+import Xray from "@/public/assets/images/ServicesPage/Dignostics/XRay.png";
+import Sprays from "@/public/assets/images/ServicesPage/Planned Surgeries/Sprays.png";
+import Tumors from "@/public/assets/images/ServicesPage/Planned Surgeries/Tumor.png";
+import Blader from "@/public/assets/images/ServicesPage/Planned Surgeries/Blader.png";
+import Foreign from "@/public/assets/images/ServicesPage/Planned Surgeries/Foreign.png";
+import Ortho from "@/public/assets/images/ServicesPage/Planned Surgeries/Orthopedic.png";
+import ToothEx from "@/public/assets/images/ServicesPage/Dental/ToothExt.png";
+import ToothRes from "@/public/assets/images/ServicesPage/Dental/ToothRes.png";
+import Gum from "@/public/assets/images/ServicesPage/Dental/Gum.png";
+import Xray1 from "@/public/assets/images/ServicesPage/Dental/Xray-1.png";
+import Dental from "@/public/assets/images/ServicesPage/Dental/Dental.png";
+import HairCut from "@/public/assets/images/ServicesPage/Grooming/HairCut.png";
+import NailCut from "@/public/assets/images/ServicesPage/Grooming/NailCut.png";
+import EarClean from "@/public/assets/images/ServicesPage/Grooming/EarClean.png";
+import Bath from "@/public/assets/images/ServicesPage/Grooming/Bath.png";
+import HairStyle from "@/public/assets/images/ServicesPage/Grooming/HairStyle.png";
+import Boarding from "@/public/assets/images/ServicesPage/Pet Services/Boarding.png";
+import Sitting from "@/public/assets/images/ServicesPage/Pet Services/Sitting.png";
+import Training from "@/public/assets/images/ServicesPage/Pet Services/Training.png";
+
+
+
+
+
+
+
+
+
+
+
 
 export const circleImageList = [
   {
@@ -285,14 +332,11 @@ export const FaqData = [
   },
 ];
 
-export const reviewData = 
-  {
-    name: "Rahul Shah",
-    review:
-      "Dr. Paws is Fantastic Execptional care, friendly staff, and a welcoming atmosphere, Highly recommend for pet owners!",
-  }
-  
-;
+export const reviewData = {
+  name: "Rahul Shah",
+  review:
+    "Dr. Paws is Fantastic Execptional care, friendly staff, and a welcoming atmosphere, Highly recommend for pet owners!",
+};
 
 export const clinicItems = [
   {
@@ -372,7 +416,7 @@ export const descriptionItems = [
     image: description3,
     title: "Doctors That Care",
     desciption:
-      "We’re in the business of looking after your best friend. We’ll listen and answer all your questions and treat your pet like our own",
+      "We’re in the business of looking after your best friend. We'll listen and answer all your questions and treat your pet like our own",
     button: {
       buttonText: "Book a Visit",
       buttonBackground: "bg-secondary-1",
@@ -394,7 +438,7 @@ export const descriptionItems = [
     image: description5,
     title: "Only The Necessary Care",
     desciption:
-      "We’re pet-lovers first and business-people second. No over-testing, prescribing unnecessary medicines, or pushing procedures that are not needed",
+      "We're pet-lovers first and business-people second. No over-testing, prescribing unnecessary medicines, or pushing procedures that are not needed",
     button: {
       buttonText: "Book a Visit",
       buttonBackground: "bg-secondary-1",
@@ -452,7 +496,7 @@ export const servicesData: Record<ServiceCategory, Service[]> = {
     { name: "Injury and Wound Care" },
     { name: "Fever and Infections" },
   ],
-  "Diagnostics": [
+  Diagnostics: [
     { name: "Blood Tests" },
     { name: "X-Rays" },
     { name: "Ultrasound Imaging" },
@@ -464,13 +508,13 @@ export const servicesData: Record<ServiceCategory, Service[]> = {
     { name: "Tumor Removal" },
     { name: "Orthopedic Surgery" },
   ],
-  "Dental": [
+  Dental: [
     { name: "Teeth Cleaning" },
     { name: "Oral Examinations" },
     { name: "Gum Disease Treatment" },
     { name: "Tooth Extraction" },
   ],
-  "Grooming": [
+  Grooming: [
     { name: "Bathing" },
     { name: "Hair Trimming" },
     { name: "Nail Clipping" },
@@ -483,3 +527,207 @@ export const servicesData: Record<ServiceCategory, Service[]> = {
     { name: "Pet Health Insurance Consultation" },
   ],
 };
+
+export const ServiceTabsData = [
+  {
+    id: "planned-checkups",
+    title: "Planned check-ups",
+    description:
+      "Regular check-ups and preventative measures are essential to keep your pet in the best health. Take care of any vaccinations, get any help you need, or simply visit us to ensure your pet is doing just fine!",
+    imageDetails: [
+      {
+        img: Vaccination,
+        imgText: "Vaccinations",
+      },
+      {
+        img: Deworming,
+        imgText: "Deworming",
+      },
+      {
+        img: GeneralCheckUp,
+        imgText: "General Check-up",
+      },
+      {
+        img: BehaviorlCounceling,
+        imgText: "Behavioral Counseling",
+      },
+      {
+        img: NutritionalCounceling,
+        imgText: "Nutritional Counseling",
+      },
+    ],
+  },
+  {
+    id: "sickness-emergency",
+    title: "Sickness & Emergency",
+    description:
+      "When your pet falls ill or faces an emergency, we know it's a stressful time. We're here for you and will do our best to get your pet back to their usual happy & healthy self.",
+    imageDetails: [
+      {
+        img: DigestiveProblems,
+        imgText: "Digestive Problems",
+      },
+      {
+        img: AllergiesAndRashes,
+        imgText: "Allergies & Rashes",
+      },
+      {
+        img: EarInfections,
+        imgText: "Ear Infections",
+      },
+      {
+        img: Lethargy,
+        imgText: "Lethargy",
+      },
+      {
+        img: Limping,
+        imgText: "Limping",
+      },
+      {
+        img: AnimalBites,
+        imgText: "Animal Bites",
+      },
+      {
+        img: EyeIssues,
+        imgText: "Eye Issues",
+      },
+      {
+        img: Accident,
+        imgText: "Accident / Trauma",
+      },
+    ],
+  },
+  {
+    id: "Diagonstics",
+    title: "Diagonstics",
+    description: "When your pet isn’t feeling their best, it’s important to get to the bottom if it as soon as possible. We offer a wide range of tests and scans, coupled with strong interpretation expertise to make sure the right treatment plan is offered right away.",
+    imageDetails: [
+      {
+        img: Ultrasound,
+        imgText: "Ultrasound & ECG",
+      },
+      {
+        img: Microscopy,
+        imgText: "Microscopy",
+      },
+      {
+        img: Parasite,
+        imgText: "Parasite Detection",
+      },
+      {
+        img: Blood,
+        imgText: "Blood & Urine Tests",
+      },
+      {
+        img: Xray,
+        imgText: "X-Ray (Body & Dental)",
+      },
+    ],
+  },
+  {
+    id: "Planned Surgeries",
+    title: "Planned Surgeries",
+    description:
+      "Occasionally it becomes essential to take a more serious course of action to help your animal. We offer a wide range of surgical procedures to ensure your animal gets back to health, as soon as possible. Wherever we can’t help we’ll refer you to a vet that can.",
+    imageDetails: [
+      {
+        img: Sprays,
+        imgText: "Spays & Neuters",
+      },
+      {
+        img: Tumors,
+        imgText: "Tumour / Mass Removal",
+      },
+      {
+        img: Blader,
+        imgText: "Bladder Stone Removal",
+      },
+      {
+        img: Foreign,
+        imgText: "Foreign Body Removal",
+      },
+      {
+        img: Ortho,
+        imgText: "Orthopedic Surgeries",
+      },
+    ],
+  },
+  {
+    id: "Dental",
+    title: "Dental",
+    description:
+      "Just like in us humans, oral health is an essential part of making sure your animal maintains great health internally and externally. We offer a range of dental treatments to keep your animal pain-free with great hygiene",
+    imageDetails: [
+      {
+        img:ToothEx,
+        imgText: "Tooth Extraction",
+      },
+      {
+        img:ToothRes,
+        imgText: "Tooth Restoration",
+      },
+      {
+        img:Xray1,
+        imgText: "X-Ray",
+      },
+      {
+        img:Gum,
+        imgText: "Gum Treatment",
+      },
+      {
+        img:Dental,
+        imgText: "Dental Cleaning / Polishing",
+      },
+    ],
+  },
+  {
+    id: "Grooming",
+    title: "Grooming",
+    description:
+      "Who doesn’t like to see their best friend looking and feeling their best? Dr. Paws specially designed grooming studios help you to take care of your animal so they turn heads and feel amazing at all times",
+    imageDetails: [
+      {
+        img: HairCut,
+        imgText: "Hair Cuts",
+      },
+      {
+        img: NailCut,
+        imgText: "Nail Clipping",
+      },
+      {
+        img:EarClean,
+        imgText: "Ear Cleaning",
+      },
+      {
+        img:Bath,
+        imgText: "Bathing",
+      },
+      {
+        img:HairStyle,
+        imgText: "Hair Styling & Brushing",
+      },
+    ],
+  },
+  {
+    id: "Pet Services",
+    title: "Pet Services",
+    description:
+      "Occasionally it becomes essential to take a more serious course of action to help your animal. We offer a wide range of surgical procedures to ensure your animal gets back to health, as soon as possible. Wherever we can’t help we’ll refer you to a vet that can.",
+    imageDetails: [
+      {
+        img: Boarding,
+        imgText: "Dog & Cat Boarding",
+      },
+      {
+        img:Sitting,
+        imgText: "Dog & Cat Sitting",
+      },
+      {
+        img: Training,
+        imgText: "Dog Training",
+      },
+      
+      
+    ],
+  },
+];
