@@ -9,6 +9,7 @@ import dogImg from "../public/assets/images/dogimg.png";
 import catImg from "../public/assets/images/catimg.png";
 import birdImg from "../public/assets/images/birdimg.png";
 import doctorImage from "../public/assets/images/clinic/doctor.png";
+import ClinicImage from "../public/assets/images/clinic/ClinicImage.png";
 
 export const FaqData = [
   {
@@ -257,4 +258,15 @@ export const doctors = [
     location: "Koramangala, Bangalore",
     image: doctorImage,
   },
+];
+
+export const photos = [
+  clinic1,
+  description1,
+  description2,
+  description3,
+  description4,
+  description5,
+  description6,
+  ClinicImage,
 ];

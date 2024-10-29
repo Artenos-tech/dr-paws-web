@@ -1,12 +1,12 @@
 "use client";
-import { LocationCard } from "./LocationCard";
-import DoctorCard from "./DoctorCard";
-import { doctors } from "@/model/mockData";
-
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
+
+import { LocationCard } from "./LocationCard";
+import DoctorCard from "./DoctorCard";
+import { doctors } from "@/model/mockData";
 
 const Overview = () => {
   return (
@@ -49,32 +49,33 @@ const Overview = () => {
           <LocationCard />
         </div>
       </div>
-      <div className="flex flex-col items-center px-8"> {/* Added padding to push cards inward */}
-  <h1 className="text-2xl font-roca text-primary-1 font-[400] mb-6">
-    Meet the Superheroes
-  </h1>
-  <div className="w-full">
-    <Swiper
-      modules={[Navigation]}
-      navigation
-      spaceBetween={30}
-      slidesPerView={1}
-      breakpoints={{
-        750: { slidesPerView: 1 },
-        1068: { slidesPerView: 2 },
-        1224: { slidesPerView: 3 },
-      }}
-      className="w-full"
-    >
-      {doctors.map((doctor, index) => (
-        <SwiperSlide key={index}>
-          <DoctorCard doctor={doctor} />
-        </SwiperSlide>
-      ))}
-    </Swiper>
-  </div>
-</div>
-
+      <div className="flex flex-col items-center px-8">
+        {" "}
+        {/* Added padding to push cards inward */}
+        <h1 className="text-2xl font-roca text-primary-1 font-[400] mb-6">
+          Meet the Superheroes
+        </h1>
+        <div className="w-full">
+          <Swiper
+            modules={[Navigation]}
+            navigation
+            spaceBetween={30}
+            slidesPerView={1}
+            breakpoints={{
+              750: { slidesPerView: 1 },
+              1068: { slidesPerView: 2 },
+              1224: { slidesPerView: 3 },
+            }}
+            className="w-full"
+          >
+            {doctors.map((doctor, index) => (
+              <SwiperSlide key={index}>
+                <DoctorCard doctor={doctor} />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
+      </div>
     </div>
   );
 };
