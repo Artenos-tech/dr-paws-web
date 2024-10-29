@@ -12,7 +12,7 @@ const ClinicItemCarousel = () => {
               key={clinicIndex}
               className="carousel-item w-56 flex flex-col mr-5"
             >
-              <Image
+              <img
                 src={clinic.image.src}
                 alt={`${clinic.clinicName}`}
                 className="rounded-t-md object-cover w-full h-56"
