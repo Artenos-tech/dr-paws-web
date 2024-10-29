@@ -19,6 +19,7 @@ import {ServiceCategory, Service} from "@/model/typeDefinitions"
 import Customer1 from "../public/assets/images/clinic/customer1.png"
 import Customer2 from "../public/assets/images/clinic/customer2.png"
 import Customer3 from "../public/assets/images/clinic/customer3.png"
+import ClinicOT from "../public/assets/images/clinic/clinicopertn.png";
 
 export const circleImageList = [
   {
@@ -487,7 +488,7 @@ export const photos = [
   description4,
   description5,
   description6,
-  ClinicImage,
+  ClinicOT,
 ];
 
 
