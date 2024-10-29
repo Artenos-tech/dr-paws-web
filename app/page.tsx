@@ -1,19 +1,14 @@
 import FaqList from "@/components/ui/FaqList";
 import ReviewCard from "@/components/ui/ReviewCard";
 import { reviewData } from "@/model/mockData";
-import BannerCard from "@/components/ui/BannerCard";
-import ClinicItem from "@/components/ui/ClinicItem";
 import ClinicItemCarousel from "@/components/ui/ClinicItemCarousel";
 import DescriptionCardList from "@/components/ui/DescriptionCardList";
-import { bannerItems, clinicItems } from "@/model/mockData";
 import BannerList from "@/components/ui/BannerList";
 import ClinicItemList from "@/components/ui/ClinicItemList";
 import Services from "@/components/ui/Services";
 import Image from "next/image";
 import GreenBackground from "@/public/assets/images/reviewImages/greenBackground.svg";
 import Lady from "@/public/assets/images/reviewImages/Girl.png";
-import Yellow from "@/public/assets/images/petValues/Yellow.svg";
-import DocWithDog from "@/public/assets/images/petValues/DocWithDog.png";
 import YellowAndDocWithDog from "@/public/assets/images/petValues/YellowAndDocWithDog.svg";
 
 import TickMark from "@/public/assets/images/petValues/TickMark.svg";
@@ -59,7 +54,7 @@ export default function Home() {
           <div className="flex flex-col items-center justify-center w-full ml-4 sm:ml-0">
             <div className="w-[80%] mx-auto text-center mt-20 mb-10 sm:w-[40%]">
               <h1 className="w-[100%] mx-auto text-2xl sm:w-[50%]">
-                Whatever your pet needs, we're there
+                Whatever your pet needs, we&apos;re there
               </h1>
               <p>
                 Discover our most commonly requested services. For anything not
@@ -190,7 +185,7 @@ export default function Home() {
             <h1 className="text-2xl">Still have questions?</h1>
             <p className="text-[20px]">
               If your question is still not answered, please get in touch and
-              we'd be happy to help
+              we&apos;d be happy to help
             </p>
           </div>
 

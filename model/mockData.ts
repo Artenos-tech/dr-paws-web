@@ -1,3 +1,8 @@
+import circleImg1 from "@/public/assets/images/circleImg1.jpg";
+import circleImg2 from "@/public/assets/images/circleImg2.png";
+import circleImg3 from "@/public/assets/images/circleImg3.png";
+import membershipImg1 from "@/public/assets/images/membershipImg1.png";
+import planLogo1 from "@/public/assets/images/planLogo1.png";
 import clinic1 from "../public/assets/images/clinic-1.png";
 import description1 from "../public/assets/images/description1.png";
 import description2 from "../public/assets/images/description2.png";
@@ -8,7 +13,214 @@ import description6 from "../public/assets/images/description6.png";
 import dogImg from "../public/assets/images/dogimg.png";
 import catImg from "../public/assets/images/catimg.png";
 import birdImg from "../public/assets/images/birdimg.png";
-import {ServiceCategory, Service} from '@/model/typeDefinitions'
+import {ServiceCategory, Service} from "@/model/typeDefinitions"
+
+export const circleImageList = [
+  {
+    image: circleImg1,
+    circleText: "Dog & Cat Boarding",
+  },
+  {
+    image: circleImg2,
+    circleText: "Deworming",
+  },
+  {
+    image: circleImg3,
+    circleText: "Dog Training",
+  },
+];
+
+export const membershipDataList = [
+  {
+    planName: "Star Care & Grooming",
+    planLogo: planLogo1,
+    pet: {
+      name: "Moca",
+      image: membershipImg1,
+    },
+    benefits: [
+      "6 free-of-cost consultations every year",
+      "50% discount on additional consultations",
+      "Annual deworming",
+      "20% discount on diagnostic tests and scans",
+      "20% discount on planned surgeries and procedures",
+      "10% off retail products & medicines",
+      "10% off any grooming service",
+    ],
+    planInfo: {
+      expiresOn: "March 31, 2024",
+      nextPaymentOn: "Feb 5, 2024",
+    },
+  },
+  {
+    planName: "Star Care & Grooming",
+    planLogo: planLogo1,
+    pet: {
+      name: "Moca",
+      image: membershipImg1,
+    },
+    benefits: [
+      "6 free-of-cost consultations every year",
+      "50% discount on additional consultations",
+      "Annual deworming",
+      "20% discount on diagnostic tests and scans",
+      "20% discount on planned surgeries and procedures",
+      "10% off retail products & medicines",
+      "10% off any grooming service",
+    ],
+    planInfo: {
+      expiresOn: "March 31, 2024",
+      nextPaymentOn: "Feb 5, 2024",
+    },
+  },
+  {
+    planName: "Star Care & Grooming",
+    planLogo: planLogo1,
+    pet: {
+      name: "Moca",
+      image: membershipImg1,
+    },
+    benefits: [
+      "6 free-of-cost consultations every year",
+      "50% discount on additional consultations",
+      "Annual deworming",
+      "20% discount on diagnostic tests and scans",
+      "20% discount on planned surgeries and procedures",
+      "10% off retail products & medicines",
+      "10% off any grooming service",
+    ],
+    planInfo: {
+      expiresOn: "March 31, 2024",
+      nextPaymentOn: "Feb 5, 2024",
+    },
+  },
+  {
+    planName: "Star Care & Grooming",
+    planLogo: planLogo1,
+    pet: {
+      name: "Moca",
+      image: membershipImg1,
+    },
+    benefits: [
+      "6 free-of-cost consultations every year",
+      "50% discount on additional consultations",
+      "Annual deworming",
+      "20% discount on diagnostic tests and scans",
+      "20% discount on planned surgeries and procedures",
+      "10% off retail products & medicines",
+      "10% off any grooming service",
+    ],
+    planInfo: {
+      expiresOn: "March 31, 2024",
+      nextPaymentOn: "Feb 5, 2024",
+    },
+  },
+  {
+    planName: "Star Care & Grooming",
+    planLogo: planLogo1,
+    pet: {
+      name: "Moca",
+      image: membershipImg1,
+    },
+    benefits: [
+      "6 free-of-cost consultations every year",
+      "50% discount on additional consultations",
+      "Annual deworming",
+      "20% discount on diagnostic tests and scans",
+      "20% discount on planned surgeries and procedures",
+      "10% off retail products & medicines",
+      "10% off any grooming service",
+    ],
+    planInfo: {
+      expiresOn: "March 31, 2024",
+      nextPaymentOn: "Feb 5, 2024",
+    },
+  },
+  {
+    planName: "Star Care & Grooming",
+    planLogo: planLogo1,
+    pet: {
+      name: "Moca",
+      image: membershipImg1,
+    },
+    benefits: [
+      "6 free-of-cost consultations every year",
+      "50% discount on additional consultations",
+      "Annual deworming",
+      "20% discount on diagnostic tests and scans",
+      "20% discount on planned surgeries and procedures",
+      "10% off retail products & medicines",
+      "10% off any grooming service",
+    ],
+    planInfo: {
+      expiresOn: "March 31, 2024",
+      nextPaymentOn: "Feb 5, 2024",
+    },
+  },
+  {
+    planName: "Star Care & Grooming",
+    planLogo: planLogo1,
+    pet: {
+      name: "Moca",
+      image: membershipImg1,
+    },
+    benefits: [
+      "6 free-of-cost consultations every year",
+      "50% discount on additional consultations",
+      "Annual deworming",
+      "20% discount on diagnostic tests and scans",
+      "20% discount on planned surgeries and procedures",
+      "10% off retail products & medicines",
+      "10% off any grooming service",
+    ],
+    planInfo: {
+      expiresOn: "March 31, 2024",
+      nextPaymentOn: "Feb 5, 2024",
+    },
+  },
+  {
+    planName: "Star Care & Grooming",
+    planLogo: planLogo1,
+    pet: {
+      name: "Moca",
+      image: membershipImg1,
+    },
+    benefits: [
+      "6 free-of-cost consultations every year",
+      "50% discount on additional consultations",
+      "Annual deworming",
+      "20% discount on diagnostic tests and scans",
+      "20% discount on planned surgeries and procedures",
+      "10% off retail products & medicines",
+      "10% off any grooming service",
+    ],
+    planInfo: {
+      expiresOn: "March 31, 2024",
+      nextPaymentOn: "Feb 5, 2024",
+    },
+  },
+  {
+    planName: "Star Care & Grooming",
+    planLogo: planLogo1,
+    pet: {
+      name: "Moca",
+      image: membershipImg1,
+    },
+    benefits: [
+      "6 free-of-cost consultations every year",
+      "50% discount on additional consultations",
+      "Annual deworming",
+      "20% discount on diagnostic tests and scans",
+      "20% discount on planned surgeries and procedures",
+      "10% off retail products & medicines",
+      "10% off any grooming service",
+    ],
+    planInfo: {
+      expiresOn: "March 31, 2024",
+      nextPaymentOn: "Feb 5, 2024",
+    },
+  },
+];
 
 export const FaqData = [
   {
@@ -216,9 +428,6 @@ export const bannerItems = [
     bannerText: "Bird",
   },
 ];
-
-// mockData.ts
-
 
 export const serviceCategories: ServiceCategory[] = [
   "Planned Check-Ups",
