@@ -1,0 +1,15 @@
+import React from "react";
+import FaqItem from "./FaqItem";
+import { FaqData } from "@/model/mockData";
+
+const FaqList = () => {
+  return (
+    <div className="w-[70%] mx-auto mb-20 md:mb-40">
+      {FaqData.map((faq, faqIndex) => (
+        <FaqItem key={faqIndex} heading={faq.heading} items={faq.qaList} />
+      ))}
+    </div>
+  );
+};
+
+export default FaqList;
