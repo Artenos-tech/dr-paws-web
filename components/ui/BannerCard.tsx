@@ -11,23 +11,24 @@ interface bannerCardProps {
 const BannerCard: React.FC<bannerCardProps> = ({ banItem }) => {
   const { bannerImage, bannerText } = banItem;
   return (
-    <div className="rounded-t-3xl w-[120px] h-[140px] flex flex-col items-center justify-between bg-white">
-      <div className="p-4">
-        <h1 className="text-secondary-1 text-center text-lg font-semibold">
+    <div className="w-[100px] md:w-[120px] lg:w-[150px] flex flex-col items-center">
+      <div className="bg-white rounded-t-3xl w-full flex flex-col items-center p-2 md:p-4">
+        <h1 className="text-secondary-1 text-center text-xs md:text-sm lg:text-base">
           {bannerText}
         </h1>
-        <div className="w-[80px] h-[62px]">
+        <div className="mt-1">
           <img
             src={bannerImage.src}
-            alt={bannerText + "img"}
-            className="w-14 my-4 mx-auto h-[60px] object-contain"
+            alt={`${bannerText} img`}
+            className="w-[40px] h-[50px] md:w-[50px] md:h-[60px] lg:w-[60px] lg:h-[70px] object-contain mx-auto"
           />
         </div>
       </div>
-
-      <button className="w-full py-3 font-semibold tracking-wider bg-secondary-1 text-white rounded-none rounded-b-3xl border-none text-xs">
-        Book a Visit
-      </button>
+      <div className="w-full">
+        <button className="w-full py-2 tracking-wider bg-secondary-1 hover:bg-primary-1 text-white rounded-b-3xl text-xs md:text-sm">
+          Book a Visit
+        </button>
+      </div>
     </div>
   );
 };

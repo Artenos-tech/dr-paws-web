@@ -16,7 +16,7 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic }) => {
   return (
     <>
       <div
-        className={`bg-tint w-56 shadow-md rounded-md md:block hidden`}
+        className={`bg-[#FFFCF3] w-54 shadow-md rounded-md md:block hidden`}
       >
         <img
           src={image.src}
@@ -24,7 +24,7 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic }) => {
           className="rounded-t-md"
         />
         <div className="p-2">
-          <h1 className="text-primary-1 text-base font-semibold">
+          <h1 className="text-primary-1 text-base">
             {clinicName}
           </h1>
           <div className="flex gap-2 text-primary-1 text-xs mt-2 ">
