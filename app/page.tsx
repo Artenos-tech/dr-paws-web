@@ -55,7 +55,7 @@ export default function Home() {
             <ClinicItemCarousel />
           </div>
           {/* this is component will show clinic card in carousel */}
-          
+
           <div className="flex flex-col items-center justify-center w-full ml-4 sm:ml-0">
             <div className="w-[80%] mx-auto text-center mt-20 mb-10 sm:w-[40%]">
               <h1 className="w-[100%] mx-auto text-2xl sm:w-[50%]">
@@ -70,7 +70,7 @@ export default function Home() {
           </div>
 
           <div className="w-full my-20">
-            <h1 className="text-2xl text-center text-primary-1">Review</h1>
+            <h1 className="text-2xl text-center text-primary-1">Reviews</h1>
             <div className="flex justify-center items-center my-20">
               <div className="relative flex flex-col items-center justify-center sm:flex-row border-yellow-500">
                 {/* Container for Green Background and Lady Image */}
