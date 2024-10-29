@@ -16,7 +16,7 @@ const DoctorCard: React.FC<DoctorCardProps> = ({ doctor }) => {
   const { name, description, experience, location, image } = doctor;
 
   return (
-    <div className="rounded-xl border border-primary-3 shadow-md bg-primary-3 text-primary-1 p-4 sm:p-6 w-full sm:w-[280px] md:w-[300px] flex flex-col items-center text-center space-y-4">
+    <div className="rounded-xl border border-primary-3 shadow-md bg-primary-3 text-primary-1 p-4 sm:p-6 w-full sm:w-full md:w-[300px] lg:w-[310px] flex flex-col items-center text-center space-y-4">
       <Image
         src={image}
         alt={name}

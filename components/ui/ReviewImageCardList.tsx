@@ -1,10 +1,11 @@
 import React from "react";
 import ReviewImageCard from "./ReviewImageCard";
+import { StaticImageData } from "next/image";
 
 interface ReviewData {
   name: string;
   review: string;
-  image: string;
+  image: string | StaticImageData;
 }
 
 interface ReviewImageCardListProps {

@@ -13,6 +13,8 @@ import description6 from "../public/assets/images/description6.png";
 import dogImg from "../public/assets/images/dogimg.png";
 import catImg from "../public/assets/images/catimg.png";
 import birdImg from "../public/assets/images/birdimg.png";
+import doctorImage from "../public/assets/images/clinic/doctor.png";
+import ClinicImage from "../public/assets/images/clinic/ClinicImage.png";
 import { ServiceCategory, Service } from "@/model/typeDefinitions";
 import Vaccination from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/Vaccinations.png";
 import Deworming from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/Deworming.png";
@@ -61,6 +63,10 @@ import Training from "@/public/assets/images/ServicesPage/Pet Services/Training.
 
 
 
+import Customer1 from "../public/assets/images/clinic/customer1.png"
+import Customer2 from "../public/assets/images/clinic/customer2.png"
+import Customer3 from "../public/assets/images/clinic/customer3.png"
+import ClinicOT from "../public/assets/images/clinic/clinicopertn.png";
 
 export const circleImageList = [
   {
@@ -473,6 +479,63 @@ export const bannerItems = [
   },
 ];
 
+export const doctors = [
+  {
+    name: "Dr. Emily Thompson",
+    description: "DMV - Animal Welfare",
+    experience: "10 Years of Experience",
+    location: "Andheri West, Indiranagar",
+    image: doctorImage,
+  },
+  {
+    name: "Dr. Nampally Rohit",
+    description: "DMV - Veterinary Medicine",
+    experience: "8 Years of Experience",
+    location: "HSR, Bangalore",
+    image: doctorImage,
+  },
+  {
+    name: "Dr. Sarah Johnson",
+    description: "DMV - Small Animal Surgery",
+    experience: "12 Years of Experience",
+    location: "Jayanagar, Bangalore",
+    image: doctorImage,
+  },
+  {
+    name: "Dr. Rajesh Sharma",
+    description: "DMV - Exotic Animals",
+    experience: "15 Years of Experience",
+    location: "Whitefield, Bangalore",
+    image: doctorImage,
+  },
+  {
+    name: "Dr. Priya Menon",
+    description: "DMV - Animal Dermatology",
+    experience: "7 Years of Experience",
+    location: "Vasant Kunj, Delhi",
+    image: doctorImage,
+  },
+  {
+    name: "Dr. John Doe",
+    description: "DMV - Veterinary Medicine",
+    experience: "8 Years of Experience",
+    location: "Koramangala, Bangalore",
+    image: doctorImage,
+  },
+];
+
+export const photos = [
+  clinic1,
+  description1,
+  description2,
+  description3,
+  description4,
+  description5,
+  description6,
+  ClinicOT,
+];
+
+
 export const serviceCategories: ServiceCategory[] = [
   "Planned Check-Ups",
   "Sickness & Emergency",
@@ -527,6 +590,7 @@ export const servicesData: Record<ServiceCategory, Service[]> = {
     { name: "Pet Health Insurance Consultation" },
   ],
 };
+
 
 export const ServiceTabsData = [
   {
@@ -729,5 +793,26 @@ export const ServiceTabsData = [
       
       
     ],
+  },
+];
+
+export const reviews = [
+  {
+    image: Customer1,
+    name: "Vishnu K",
+    review:
+      "Dr. Paws is Fantastic Execptional care, friendly staff, and a welcoming atmosphere, Highly recommend for pet owners!",
+  },
+  {
+    image: Customer2,
+    name: "Rahul Shah",
+    review:
+      "I’m very happy with the staff & Vets in the clinic, all are helpful & friendly.",
+  },
+  {
+    image: Customer3,
+    name: "Bindu Naidu",
+    review:
+      "We've been taking our pet Milo to the clinic recently. The staff are very friendly and the vets knowledgeable.",
   },
 ];

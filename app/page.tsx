@@ -47,7 +47,6 @@ export default function Home() {
               Check out the places we call home
             </h1>
             <ClinicItemList />
-            <ClinicItemCarousel />
           </div>
           {/* this is component will show clinic card in carousel */}
 
