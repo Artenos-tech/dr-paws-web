@@ -25,7 +25,7 @@ const BannerCard: React.FC<bannerCardProps> = ({ banItem }) => {
         </div>
       </div>
       <div className="w-full">
-        <button className="w-full py-2 tracking-wider bg-secondary-1 text-white rounded-b-3xl text-xs md:text-sm">
+        <button className="w-full py-2 tracking-wider bg-secondary-1 hover:bg-primary-1 text-white rounded-b-3xl text-xs md:text-sm">
           Book a Visit
         </button>
       </div>

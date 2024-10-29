@@ -8,6 +8,7 @@ import description6 from "../public/assets/images/description6.png";
 import dogImg from "../public/assets/images/dogimg.png";
 import catImg from "../public/assets/images/catimg.png";
 import birdImg from "../public/assets/images/birdimg.png";
+import {ServiceCategory, Service} from '@/model/typeDefinitions'
 
 export const FaqData = [
   {
@@ -215,3 +216,61 @@ export const bannerItems = [
     bannerText: "Bird",
   },
 ];
+
+// mockData.ts
+
+
+export const serviceCategories: ServiceCategory[] = [
+  "Planned Check-Ups",
+  "Sickness & Emergency",
+  "Diagnostics",
+  "Planned Surgeries",
+  "Dental",
+  "Grooming",
+  "Pet Services",
+];
+
+export const servicesData: Record<ServiceCategory, Service[]> = {
+  "Planned Check-Ups": [
+    { name: "Vaccinations" },
+    { name: "Deworming" },
+    { name: "Nutritional Counselling" },
+    { name: "Behavioural Counselling" },
+  ],
+  "Sickness & Emergency": [
+    { name: "Emergency Treatment" },
+    { name: "Pain Management" },
+    { name: "Injury and Wound Care" },
+    { name: "Fever and Infections" },
+  ],
+  "Diagnostics": [
+    { name: "Blood Tests" },
+    { name: "X-Rays" },
+    { name: "Ultrasound Imaging" },
+    { name: "Urinalysis" },
+  ],
+  "Planned Surgeries": [
+    { name: "Spaying & Neutering" },
+    { name: "Dental Surgery" },
+    { name: "Tumor Removal" },
+    { name: "Orthopedic Surgery" },
+  ],
+  "Dental": [
+    { name: "Teeth Cleaning" },
+    { name: "Oral Examinations" },
+    { name: "Gum Disease Treatment" },
+    { name: "Tooth Extraction" },
+  ],
+  "Grooming": [
+    { name: "Bathing" },
+    { name: "Hair Trimming" },
+    { name: "Nail Clipping" },
+    { name: "Ear Cleaning" },
+  ],
+  "Pet Services": [
+    { name: "Microchipping" },
+    { name: "Pet Travel Certificates" },
+    { name: "Adoption Counseling" },
+    { name: "Pet Health Insurance Consultation" },
+  ],
+};

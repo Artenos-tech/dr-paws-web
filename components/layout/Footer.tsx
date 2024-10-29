@@ -3,7 +3,8 @@ import logo from "@/public/assets/images/logo/logo.svg";
 
 const Footer = () => {
   return (
-    <footer className="footer bg-primary-3 p-10 sm:p-6 w-full flex flex-col sm:flex-row justify-evenly sm:items-center">
+    <footer className="footer bg-primary-3 p-10">
+      
       <nav>
         <Image src={logo} alt="Dr. Paws Logo" width={100} height={30} />
         <a className="link link-hover">hello@bearhug.co</a>
@@ -27,6 +28,7 @@ const Footer = () => {
         <a className="link link-hover">LinkedIn</a>
         <a className="link link-hover">Twitter</a>
       </nav>
+      
     </footer>
   );
 };
