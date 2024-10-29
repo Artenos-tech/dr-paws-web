@@ -2,9 +2,7 @@ import ClinicGallery from "@/components/ui/ClinicGallery";
 import ClinicPhotos from "@/components/ui/ClinicPhotos";
 import ClinicReviews from "@/components/ui/ClinicReviews";
 import ClinicTabBar from "@/components/ui/ClinicTabBar";
-import { LocationCard } from "@/components/ui/LocationCard";
 import Overview from "@/components/ui/OverView";
-import { notFound } from "next/navigation";
 import React from "react";
 
 interface ClinicDetailsProps {

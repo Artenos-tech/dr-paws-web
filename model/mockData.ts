@@ -16,6 +16,9 @@ import birdImg from "../public/assets/images/birdimg.png";
 import doctorImage from "../public/assets/images/clinic/doctor.png";
 import ClinicImage from "../public/assets/images/clinic/ClinicImage.png";
 import {ServiceCategory, Service} from "@/model/typeDefinitions"
+import Customer1 from "../public/assets/images/clinic/customer1.png"
+import Customer2 from "../public/assets/images/clinic/customer2.png"
+import Customer3 from "../public/assets/images/clinic/customer3.png"
 
 export const circleImageList = [
   {
@@ -542,3 +545,24 @@ export const servicesData: Record<ServiceCategory, Service[]> = {
     { name: "Pet Health Insurance Consultation" },
   ],
 };
+
+export const reviews = [
+  {
+    image: Customer1,
+    name: "Vishnu K",
+    review:
+      "Dr. Paws is Fantastic Execptional care, friendly staff, and a welcoming atmosphere, Highly recommend for pet owners!",
+  },
+  {
+    image: Customer2,
+    name: "Rahul Shah",
+    review:
+      "I’m very happy with the staff & Vets in the clinic, all are helpful & friendly.",
+  },
+  {
+    image: Customer3,
+    name: "Bindu Naidu",
+    review:
+      "We've been taking our pet Milo to the clinic recently. The staff are very friendly and the vets knowledgeable.",
+  },
+];

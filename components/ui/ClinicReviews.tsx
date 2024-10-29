@@ -1,11 +1,11 @@
 "use client";
 
+import ReviewImageCardList from "./ReviewImageCardList";
+import { reviews } from "@/model/mockData";
 function ClinicReviews() {
   return (
     <div className="w-full">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-
-      </div>
+      <ReviewImageCardList reviews={reviews} />
     </div>
   );
 }
