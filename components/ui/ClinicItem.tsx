@@ -16,7 +16,7 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic }) => {
   return (
     <>
       <div
-        className={`bg-[#FFFCF3] w-54 shadow-md rounded-md md:block hidden`}
+        className={`bg-[#FFFCF3] w-54 shadow-md rounded-md `}
       >
         <img
           src={image.src}

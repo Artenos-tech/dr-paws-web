@@ -27,7 +27,16 @@ const config: Config = {
         banner: "url('/assets/images/home-banner.png')",
       },
     },
+    screens: {
+      sm: "640px",
+      md: "768px",
+      lg: "1024px", // Keep the default lg breakpoint
+      custom: "1080px", // Add your custom breakpoint
+      xl: "1280px",
+      "2xl": "1536px",
+    },
   },
   plugins: [],
 };
+
 export default config;
