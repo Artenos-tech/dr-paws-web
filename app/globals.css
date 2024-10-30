@@ -136,3 +136,14 @@
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
+
+/*clinics page/ overview/ swiper*/
+
+.swiper-slide {
+  height: auto !important;
+}
+/* Hide default navigation buttons */
+.swiper-button-next,
+.swiper-button-prev {
+  display: none !important;
+}

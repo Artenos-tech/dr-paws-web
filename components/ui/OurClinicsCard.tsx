@@ -21,7 +21,7 @@ const OurClinicsCard: React.FC<ClinicItemProps> = ({ clinic, className }) => {
   const router = useRouter();
 
   const handleBookVisit = () => {
-    router.push(`/clinic/${clinicName}`);
+    router.push(`/clinics/${clinicName}`);
   };
   return (
     <div
@@ -29,6 +29,7 @@ const OurClinicsCard: React.FC<ClinicItemProps> = ({ clinic, className }) => {
         "bg-[#fffcf3] shadow-md rounded-md overflow-hidden flex flex-col h-full",
         className
       )}
+      onClick={handleBookVisit}
     >
       <Image
         src={image}
@@ -36,7 +37,7 @@ const OurClinicsCard: React.FC<ClinicItemProps> = ({ clinic, className }) => {
         className="w-full h-[240px] object-cover"
       />
       <div className="p-4 flex-1">
-        <h3 className="text-lg font-semibold mb-2 text-gray-800">
+        <h3 className="text-lg font-sans font-semibold mb-2 text-gray-800">
           {clinicName}
         </h3>
         <div className="flex gap-1 text-sm text-gray-600 mb-4">

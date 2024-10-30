@@ -1,24 +1,75 @@
-import { photos } from "@/model/mockData";
+"use client";
+import { photos } from "@/model/mockData"; // photos is an array of image objects
 import Image from "next/image";
+import React, { useState, useEffect } from "react";
+import ReactModal from "react-modal";
+import { IoMdClose } from "react-icons/io";
 
 function ClinicPhotos() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [currentImage, setCurrentImage] = useState<string>("");
+
+  // Ensure ReactModal can find the root app element for accessibility
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const appElement = document.getElementById("__next");
+      if (appElement) {
+        ReactModal.setAppElement(appElement);
+      } else {
+        console.warn("ReactModal: App element with id '__next' not found.");
+      }
+    }
+  }, []);
+
+  const openModal = (imageSrc: string) => {
+    setCurrentImage(imageSrc);
+    setIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsOpen(false);
+    setCurrentImage("");
+  };
+
   return (
-    <div className="w-full">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+    <div className="w-full py-[40px]">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[20px] justify-items-center sm:justify-items-start">
         {photos.map((photo, index) => (
           <div
             key={index}
-            className="w-full max-w-[245px] h-full max-h-[245px] rounded-[5px] overflow-hidden border border-gray-300 shadow-md"
+            className="w-full max-w-[245px] h-full max-h-[245px] rounded-[5px] overflow-hidden border border-gray-300 shadow-md cursor-pointer"
+            onClick={() => openModal(photo.src)}
           >
             <Image
-              src={photo}
-              alt={"clinic image"}
-              // layout="responsive"
+              src={photo.src}
+              alt="clinic image"
+              width={245}
+              height={245}
               className="w-full h-full object-cover"
             />
           </div>
         ))}
       </div>
+
+      <ReactModal
+        isOpen={isOpen}
+        onRequestClose={closeModal}
+        className="modal-box w-11/12 max-w-4xl shadow-none bg-transparent relative outline-none"
+        overlayClassName="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+        contentLabel="Clinic Photo"
+        shouldFocusAfterRender={false}
+      >
+        <div className="w-full h-[80vh] relative flex items-center justify-center">
+          {currentImage && (
+            <Image
+              src={currentImage}
+              alt="clinic image"
+              fill
+              style={{ objectFit: "contain" }}
+            />
+          )}
+        </div>
+      </ReactModal>
     </div>
   );
 }

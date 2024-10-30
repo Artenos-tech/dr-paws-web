@@ -14,7 +14,7 @@ import dogImg from "../public/assets/images/dogimg.png";
 import catImg from "../public/assets/images/catimg.png";
 import birdImg from "../public/assets/images/birdimg.png";
 import doctorImage from "../public/assets/images/clinic/doctor.png";
-import ClinicImage from "../public/assets/images/clinic/ClinicImage.png";
+import ClinicDog from "../public/assets/images/clinic/maggidog.png";
 import { ServiceCategory, Service } from "@/model/typeDefinitions";
 import Vaccination from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/Vaccinations.png";
 import Deworming from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/Deworming.png";
@@ -525,8 +525,8 @@ export const doctors = [
 ];
 
 export const photos = [
-  clinic1,
   description1,
+  ClinicDog,
   description2,
   description3,
   description4,

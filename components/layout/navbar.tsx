@@ -11,7 +11,7 @@ export default function NavBar() {
 
   return (
     <div className="bg-primary-3 w-full">
-      <div className="mx-auto px-14 md:px-40">
+      <div className="mx-auto px-14 md:px-52">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <div className="flex-shrink-0">
