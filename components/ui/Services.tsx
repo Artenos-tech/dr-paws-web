@@ -8,15 +8,14 @@ import Button from "./Button";
 import { ServiceCategory } from "@/model/typeDefinitions";
 import { serviceCategories, servicesData } from "@/model/mockData";
 
-
-
 const Services: React.FC = () => {
-  const [selectedCategory, setSelectedCategory] = useState<ServiceCategory>("Planned Check-Ups");
+  const [selectedCategory, setSelectedCategory] =
+    useState<ServiceCategory>("Planned Check-Ups");
 
   return (
     <div className="flex max-w-4xl mx-auto px-4">
-
-  <div className="sm:w-[100px] md:w-[150px] lg:w-[200px] min-h-[400px] flex-shrink-0 border bg-gray-100">
+  {/* Sidebar */}
+  <div className="w-[30%] min-h-[400px] flex-shrink-0 border bg-gray-100">
     {serviceCategories.map((category) => (
       <div
         key={category}
@@ -32,8 +31,8 @@ const Services: React.FC = () => {
     ))}
   </div>
 
-
-  <div className="flex-1 p-5 flex flex-col bg-primary-3 w-[220px] sm:w-[300px] md:w-[450px] lg:w-[600px]">
+  {/* Main Content */}
+  <div className="flex-1 p-5 flex flex-col bg-primary-3 w-full max-w-full">
     <div className="mx-4 flex-1">
       <h2 className="text-xl md:text-2xl font-semibold mb-4 text-center md:text-left">
         {selectedCategory}
@@ -49,12 +48,13 @@ const Services: React.FC = () => {
     </div>
 
     {/* Centered "View Services" Button */}
-    <div className="flex justify-center items-center mt-auto">
-      <Button buttonText="View Services" buttonBackground="secondary-2" />
+    <div className="flex justify-center items-center mt-auto mb-4">
+      <button className="font-open-sans btn rounded-full px-10 py-2 text-white tracking-wider bg-secondary-2">
+        View Services
+      </button>
     </div>
   </div>
 </div>
-
   );
 };
 
