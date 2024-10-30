@@ -1,5 +1,6 @@
 "use client";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
@@ -49,28 +50,40 @@ const Overview = () => {
           <LocationCard />
         </div>
       </div>
-      <div className="flex flex-col items-center px-8">
-        {" "}
-        {/* Added padding to push cards inward */}
+
+      <div className="flex flex-col items-center overflow-hidden">
         <h1 className="text-2xl font-roca text-primary-1 font-[400] mb-6">
           Meet the Superheroes
         </h1>
-        <div className="w-full">
+
+        <div className="relative px-8 max-w-screen-xl w-full mx-auto">
+          <button className="custom-swiper-button-prev absolute -left-[18px] top-1/2 -translate-y-1/2 z-10 rounded-full p-2 transition-colors">
+            <ChevronLeft size={42} className="text-[#5281A2]" />
+          </button>
+          <button className="custom-swiper-button-next absolute -right-[18px] top-1/2 -translate-y-1/2 z-10 rounded-full p-2  transition-colors">
+            <ChevronRight size={42} className="text-[#5281A2]" />
+          </button>
+
           <Swiper
             modules={[Navigation]}
-            navigation
+            navigation={{
+              prevEl: ".custom-swiper-button-prev",
+              nextEl: ".custom-swiper-button-next",
+            }}
             spaceBetween={30}
             slidesPerView={1}
             breakpoints={{
-              750: { slidesPerView: 1 },
-              1068: { slidesPerView: 2 },
-              1224: { slidesPerView: 3 },
+              640: { slidesPerView: 1 },
+              972: { slidesPerView: 2 },
+              1280: { slidesPerView: 3 },
             }}
             className="w-full"
           >
             {doctors.map((doctor, index) => (
               <SwiperSlide key={index}>
-                <DoctorCard doctor={doctor} />
+                <div className="flex justify-center">
+                  <DoctorCard doctor={doctor} />
+                </div>
               </SwiperSlide>
             ))}
           </Swiper>
@@ -81,3 +94,28 @@ const Overview = () => {
 };
 
 export default Overview;
+
+{
+  /* 
+<div className="w-full">
+<Swiper
+  modules={[Navigation]}
+  navigation
+  spaceBetween={30}
+  slidesPerView={1}
+  breakpoints={{
+    750: { slidesPerView: 1 },
+    1068: { slidesPerView: 2 },
+    1224: { slidesPerView: 3 },
+  }}
+  className="w-full"
+>
+  {doctors.map((doctor, index) => (
+    <SwiperSlide key={index}>
+      <DoctorCard doctor={doctor} />
+    </SwiperSlide>
+  ))}
+</Swiper>
+</div> 
+*/
+}
