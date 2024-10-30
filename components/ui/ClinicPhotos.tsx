@@ -32,8 +32,8 @@ function ClinicPhotos() {
   };
 
   return (
-    <div className="w-full">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[20px]">
+    <div className="w-full py-[40px]">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[20px] justify-items-center sm:justify-items-start">
         {photos.map((photo, index) => (
           <div
             key={index}
@@ -59,7 +59,6 @@ function ClinicPhotos() {
         contentLabel="Clinic Photo"
         shouldFocusAfterRender={false}
       >
-
         <div className="w-full h-[80vh] relative flex items-center justify-center">
           {currentImage && (
             <Image

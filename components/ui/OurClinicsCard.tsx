@@ -29,6 +29,7 @@ const OurClinicsCard: React.FC<ClinicItemProps> = ({ clinic, className }) => {
         "bg-[#fffcf3] shadow-md rounded-md overflow-hidden flex flex-col h-full",
         className
       )}
+      onClick={handleBookVisit}
     >
       <Image
         src={image}
