@@ -10,7 +10,7 @@ type buttonProps = {
 const Button: React.FC<buttonProps> = ({ buttonText, buttonBackground }) => {
   return (
     <button
-      className={`font-open-sans btn rounded-full px-10 text-white tracking-wider ${buttonBackground} `}
+      className={`font-open-sans btn rounded-full px-10 py-2 text-white tracking-wider ${buttonBackground} `}
     >
       {buttonText}
     </button>

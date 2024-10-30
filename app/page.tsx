@@ -10,22 +10,21 @@ import Image from "next/image";
 import GreenBackground from "@/public/assets/images/reviewImages/greenBackground.svg";
 import Lady from "@/public/assets/images/reviewImages/Girl.png";
 import YellowAndDocWithDog from "@/public/assets/images/petValues/YellowAndDocWithDog.svg";
-
 import TickMark from "@/public/assets/images/petValues/TickMark.svg";
 
 export default function Home() {
   return (
     <div className="w-full h-full items-center justify-items-center font-roca">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
+      <main className="w-full flex flex-col gap-8 row-start-2 items-center sm:items-start">
         <div className="bg-banner bg-cover bg-center bg-no-repeat h-96 w-full md:h-[500px] lg:h-[600px] min-h-[300px]">
-          <div className="flex flex-col items-center ml-8  md:items-start gap-5 w-full md:w-2/3 lg:w-1/3 mx-auto  mt-6 md:ml-20 md:mt-10 lg:mt-12 lg:ml-20 text-center md:text-left">
-            <h1 className="text-[32px] md:text-[48px] lg:text-[64px] leading-tight md:leading-snug lg:leading-none text-white ">
+          <div className="flex flex-col items-center md:items-start gap-5 w-full md:w-2/3 lg:w-1/3 mx-auto mt-6 md:ml-40 md:mt-10 lg:mt-12 lg:ml-40 text-center md:text-left">
+            <h1 className="text-[32px] md:text-[48px] lg:text-[64px] leading-tight md:leading-snug lg:leading-none text-white">
               Veterinary Care re-imagined
               <p className="text-primary-3 text-[24px] md:text-[32px]">
                 by pet lovers
               </p>
             </h1>
-            <p className="text-white w-full md:w-[80%] lg:w-[70%] text-[14px] md:text-[16px] lg:text-[18px]">
+            <p className="text-white w-full md:w-[80%] lg:w-[70%] text-[14px] md:text-[16px] lg:text-[18px] px-2">
               Book a visit to one of our clinics right now. Which friend will we
               meet?
             </p>
@@ -35,7 +34,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="ml-14 sm:ml-0">
+        <div>
           <div className="flex flex-col items-center justify-center">
             <h1 className="mt-4 mb-16 text-center text-primary-1 text-2xl w-[80%] sm:w-full">
               Veterinary care, redesigned to be better
@@ -51,7 +50,7 @@ export default function Home() {
           </div>
           {/* this is component will show clinic card in carousel */}
 
-          <div className="flex flex-col items-center justify-center w-full ml-4 sm:ml-0">
+          <div className="flex flex-col items-center justify-center w-full">
             <div className="w-[80%] mx-auto text-center mt-20 mb-10 sm:w-[40%]">
               <h1 className="w-[100%] mx-auto text-2xl sm:w-[50%]">
                 Whatever your pet needs, we&apos;re there

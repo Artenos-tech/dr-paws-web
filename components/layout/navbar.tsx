@@ -1,87 +1,135 @@
+"use client";
+
 import Image from "next/image";
 import Profile from "@/public/assets/images/profileThumnail.svg";
 import { Menu } from "lucide-react";
 import Button from "../ui/Button";
+import { useState } from "react";
 
 export default function NavBar() {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
     <div className="bg-primary-3 w-full">
-      <div className="navbar w-full sm:w-[80%]">
-        <div className="navbar-start items-center">
-          <div className="dropdown">
-            <label tabIndex={0} className="btn btn-ghost lg:hidden">
-              <Menu className="h-5 w-5 bg-primary-3" />
-            </label>
-            <ul
-              tabIndex={0}
-              className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
-            >
-              <li>
-                <a>Locations</a>
-                <ul className="p-2">
-                  <li>
-                    <a>Location 1</a>
-                  </li>
-                  <li>
-                    <a>Location 2</a>
-                  </li>
-                </ul>
-              </li>
-              <li>
-                <a>Our Services</a>
-              </li>
-              <li>
-                <a>Our Team</a>
-              </li>
-              <li>
-                <a>Membership</a>
-              </li>
-            </ul>
+      <div className="mx-auto px-14 md:px-40">
+        <div className="flex justify-between items-center h-16">
+          <div className="flex items-center">
+            <div className="flex-shrink-0">
+              <Image
+                src="/assets/images/logo/logo.svg"
+                alt="Dr. Paws Logo"
+                width={100}
+                height={30}
+                priority
+              />
+            </div>
           </div>
-          <Image
-            src="/assets/images/logo/logo.svg"
-            alt="Dr. Paws Logo"
-            width={100}
-            height={30}
-            priority
-            className="lg:block"
-          />
-        </div>
-        <div className="navbar-center hidden lg:flex">
-          <ul className="menu menu-horizontal px-1 space-x-4">
-            <li>
-              <details>
-                <summary className="cursor-pointer text-primary-1">
+          <div className="hidden md:block">
+            <div className="ml-10 flex items-baseline space-x-4">
+              <div className="relative group">
+                <button className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
                   Locations
-                </summary>
-                <ul className="p-2 bg-primary-3 text-primary-1">
-                  <li>
-                    <a>Location 1</a>
-                  </li>
-                  <li>
-                    <a>Location 2</a>
-                  </li>
-                </ul>
-              </details>
-            </li>
-            <li>
-              <a className="text-primary-1">Our Services</a>
-            </li>
-            <li>
-              <a className="text-primary-1">Our Team</a>
-            </li>
-            <li>
-              <a className="text-primary-1">Membership</a>
-            </li>
-          </ul>
-        </div>
-
-        {/* Right side (End) */}
-        <div className="navbar-end flex items-center gap-2 sm:gap-5">
-          <Button buttonText="Book a visit" buttonBackground="secondary-" />
-          <Image src={Profile} alt="User logo" width={40} height={40} />
+                </button>
+                <div className="absolute z-10 hidden group-hover:block bg-white border rounded-md mt-1">
+                  <a
+                    href="#"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    Location 1
+                  </a>
+                  <a
+                    href="#"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    Location 2
+                  </a>
+                </div>
+              </div>
+              <a
+                href="#"
+                className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+              >
+                Our Services
+              </a>
+              <a
+                href="#"
+                className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+              >
+                Our Team
+              </a>
+              <a
+                href="#"
+                className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+              >
+                Membership
+              </a>
+            </div>
+          </div>
+          <div className="hidden md:flex items-center space-x-4">
+            <Button
+              buttonText="Book a visit"
+              buttonBackground="bg-secondary-1"
+            />
+            <Image src={Profile} alt="User logo" width={40} height={40} />
+          </div>
+          <div className="-mr-2 flex md:hidden">
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              type="button"
+              className="bg-primary-3 inline-flex items-center justify-center p-2 rounded-md text-primary-1 hover:text-white hover:bg-primary-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-primary-3 focus:ring-white"
+              aria-controls="mobile-menu"
+              aria-expanded="false"
+            >
+              <span className="sr-only">Open main menu</span>
+              <Menu className="h-6 w-6" />
+            </button>
+          </div>
         </div>
       </div>
+
+      {isOpen && (
+        <div className="md:hidden" id="mobile-menu">
+          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+            <a
+              href="#"
+              className="text-primary-1 hover:bg-primary-2 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+            >
+              Locations
+            </a>
+            <a
+              href="#"
+              className="text-primary-1 hover:bg-primary-2 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+            >
+              Our Services
+            </a>
+            <a
+              href="#"
+              className="text-primary-1 hover:bg-primary-2 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+            >
+              Our Team
+            </a>
+            <a
+              href="#"
+              className="text-primary-1 hover:bg-primary-2 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+            >
+              Membership
+            </a>
+          </div>
+          <div className="pt-4 pb-3 border-t border-primary-2">
+            <div className="flex items-center px-5">
+              <div className="flex-shrink-0">
+                <Image src={Profile} alt="User logo" width={40} height={40} />
+              </div>
+              <div className="ml-3">
+                <Button
+                  buttonText="Book a visit"
+                  buttonBackground="secondary-"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

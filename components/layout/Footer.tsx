@@ -3,32 +3,89 @@ import logo from "@/public/assets/images/logo/logo.svg";
 
 const Footer = () => {
   return (
-    <footer className="footer bg-primary-3 p-10">
-      
-      <nav>
-        <Image src={logo} alt="Dr. Paws Logo" width={100} height={30} />
-        <a className="link link-hover">hello@bearhug.co</a>
-        <a className="link link-hover">+91 9307491737</a>
-      </nav>
-      <nav>
-        <h6 className="text-primary-1 font-semibold">Company</h6>
-        <a className="link link-hover">Team</a>
-        <a className="link link-hover">Careers</a>
-      </nav>
-      <nav>
-        <h6 className="text-primary-1 font-semibold">Get Care</h6>
-        <a className="link link-hover">Services</a>
-        <a className="link link-hover">Locations</a>
-        <a className="link link-hover">Membership</a>
-        <a className="link link-hover">Download App</a>
-      </nav>
-      <nav>
-        <h6 className="text-primary-1 font-semibold">Social</h6>
-        <a className="link link-hover">Instagram</a>
-        <a className="link link-hover">LinkedIn</a>
-        <a className="link link-hover">Twitter</a>
-      </nav>
-      
+    <footer className="bg-primary-3 py-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div>
+            <Image src={logo} alt="Dr. Paws Logo" width={100} height={30} />
+            <a
+              href="mailto:hello@bearhug.co"
+              className="block mt-2 text-primary-1 hover:text-primary-2"
+            >
+              hello@bearhug.co
+            </a>
+            <a
+              href="tel:+919307491737"
+              className="block mt-1 text-primary-1 hover:text-primary-2"
+            >
+              +91 9307491737
+            </a>
+          </div>
+          <div>
+            <h6 className="text-primary-1 font-semibold mb-2">Company</h6>
+            <a
+              href="#"
+              className="block mt-1 text-primary-1 hover:text-primary-2"
+            >
+              Team
+            </a>
+            <a
+              href="#"
+              className="block mt-1 text-primary-1 hover:text-primary-2"
+            >
+              Careers
+            </a>
+          </div>
+          <div>
+            <h6 className="text-primary-1 font-semibold mb-2">Get Care</h6>
+            <a
+              href="#"
+              className="block mt-1 text-primary-1 hover:text-primary-2"
+            >
+              Services
+            </a>
+            <a
+              href="#"
+              className="block mt-1 text-primary-1 hover:text-primary-2"
+            >
+              Locations
+            </a>
+            <a
+              href="#"
+              className="block mt-1 text-primary-1 hover:text-primary-2"
+            >
+              Membership
+            </a>
+            <a
+              href="#"
+              className="block mt-1 text-primary-1 hover:text-primary-2"
+            >
+              Download App
+            </a>
+          </div>
+          <div>
+            <h6 className="text-primary-1 font-semibold mb-2">Social</h6>
+            <a
+              href="#"
+              className="block mt-1 text-primary-1 hover:text-primary-2"
+            >
+              Instagram
+            </a>
+            <a
+              href="#"
+              className="block mt-1 text-primary-1 hover:text-primary-2"
+            >
+              LinkedIn
+            </a>
+            <a
+              href="#"
+              className="block mt-1 text-primary-1 hover:text-primary-2"
+            >
+              Twitter
+            </a>
+          </div>
+        </div>
+      </div>
     </footer>
   );
 };

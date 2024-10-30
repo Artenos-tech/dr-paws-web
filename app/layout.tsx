@@ -16,13 +16,33 @@ const openSans = Open_Sans({
 const roca = localFont({
   src: [
     {
-      path: "./fonts/roca/RocaOne-Rg.woff2",
+      path: "./fonts/Roca-Font/Roca Regular.ttf",
+      weight: "300",
+      style: "normal",
+    },
+    {
+      path: "./fonts/Roca-Font/Roca Bold.ttf",
+      weight: "300",
+      style: "normal",
+    },
+    {
+      path: "./fonts/Roca-Font/Roca Light.ttf",
+      weight: "300",
+      style: "normal",
+    },
+    {
+      path: "./fonts/Roca-Font/Roca Thin.ttf",
+      weight: "300",
+      style: "normal",
+    },
+    {
+      path: "./fonts/Roca-Font/Roca Heavy.ttf",
       weight: "400",
       style: "normal",
     },
     {
-      path: "./fonts/roca/RocaOne-Rg.woff",
-      weight: "400",
+      path: "./fonts/Roca-Font/Roca Italic.ttf",
+      weight: "300",
       style: "normal",
     },
   ],
@@ -41,13 +61,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" data-theme="drPaws">
-      <body
-        className={`${openSans.variable} ${roca.variable} font-open-sans w-full overflow-x-hidden`}
-      >
-        <NavBar />
-        {children}
-        <Footer />
+    <html lang="en" className={`${roca.variable} ${openSans.variable}`}>
+      <body className={`w-full min-h-screen overflow-x-hidden`}>
+        <div className="w-full overflow-x-hidden">
+          <NavBar />
+          {children}
+          <Footer />
+        </div>
       </body>
     </html>
   );
