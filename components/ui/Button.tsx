@@ -1,5 +1,7 @@
+"use client";
+
 import React from "react";
-import { Open_Sans } from "next/font/google";
+import { useRouter } from "next/navigation";
 
 type buttonProps = {
   buttonText: string;
@@ -7,9 +9,15 @@ type buttonProps = {
   buttonLink?: string;
 };
 
-const Button: React.FC<buttonProps> = ({ buttonText, buttonBackground }) => {
+const Button: React.FC<buttonProps> = ({
+  buttonText,
+  buttonBackground,
+  buttonLink,
+}) => {
+  const router = useRouter();
   return (
     <button
+      onClick={() => (buttonLink ? router.push(buttonLink) : null)}
       className={`font-open-sans btn rounded-full px-10 py-2 text-white tracking-wider ${buttonBackground} `}
     >
       {buttonText}

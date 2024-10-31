@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { ServiceTabsData } from "@/model/mockData";
 import Image, { StaticImageData } from "next/image";
 import { ChevronDown } from "lucide-react";
 
@@ -62,7 +61,7 @@ const ServiceTab = ({ tabs }: ServiceTabProps) => {
       {/* Tabs Navigation - Desktop */}
       <div className="relative mb-16 hidden lg:block">
         <div className="absolute bottom-0 left-0 w-full h-1.5 bg-primary-3"></div>
-        <div className="flex items-center justify-center space-x-[28px]">
+        <div className="flex items-center justify-between space-x-[28px]">
           {tabs.map((tab) => (
             <button
               key={tab.id}

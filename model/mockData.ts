@@ -53,19 +53,9 @@ import Boarding from "@/public/assets/images/ServicesPage/Pet Services/Boarding.
 import Sitting from "@/public/assets/images/ServicesPage/Pet Services/Sitting.png";
 import Training from "@/public/assets/images/ServicesPage/Pet Services/Training.png";
 
-
-
-
-
-
-
-
-
-
-
-import Customer1 from "../public/assets/images/clinic/customer1.png"
-import Customer2 from "../public/assets/images/clinic/customer2.png"
-import Customer3 from "../public/assets/images/clinic/customer3.png"
+import Customer1 from "../public/assets/images/clinic/customer1.png";
+import Customer2 from "../public/assets/images/clinic/customer2.png";
+import Customer3 from "../public/assets/images/clinic/customer3.png";
 import ClinicOT from "../public/assets/images/clinic/clinicopertn.png";
 
 export const circleImageList = [
@@ -402,9 +392,9 @@ export const descriptionItems = [
     desciption:
       "Our modern clinics make you feel like you never left home, making visits stress-free for you and your pet",
     button: {
-      buttonText: "Book a Visit",
+      buttonText: "See Our Clinics",
       buttonBackground: "bg-secondary-1",
-      buttonLink: "",
+      buttonLink: "/clinics",
     },
   },
   {
@@ -459,7 +449,7 @@ export const descriptionItems = [
     button: {
       buttonText: "See Our Services",
       buttonBackground: "bg-secondary-2",
-      buttonLink: "",
+      buttonLink: "/services",
     },
   },
 ];
@@ -535,7 +525,6 @@ export const photos = [
   ClinicOT,
 ];
 
-
 export const serviceCategories: ServiceCategory[] = [
   "Planned Check-Ups",
   "Sickness & Emergency",
@@ -590,7 +579,6 @@ export const servicesData: Record<ServiceCategory, Service[]> = {
     { name: "Pet Health Insurance Consultation" },
   ],
 };
-
 
 export const ServiceTabsData = [
   {
@@ -664,7 +652,8 @@ export const ServiceTabsData = [
   {
     id: "Diagonstics",
     title: "Diagonstics",
-    description: "When your pet isn’t feeling their best, it’s important to get to the bottom if it as soon as possible. We offer a wide range of tests and scans, coupled with strong interpretation expertise to make sure the right treatment plan is offered right away.",
+    description:
+      "When your pet isn’t feeling their best, it’s important to get to the bottom if it as soon as possible. We offer a wide range of tests and scans, coupled with strong interpretation expertise to make sure the right treatment plan is offered right away.",
     imageDetails: [
       {
         img: Ultrasound,
@@ -723,23 +712,23 @@ export const ServiceTabsData = [
       "Just like in us humans, oral health is an essential part of making sure your animal maintains great health internally and externally. We offer a range of dental treatments to keep your animal pain-free with great hygiene",
     imageDetails: [
       {
-        img:ToothEx,
+        img: ToothEx,
         imgText: "Tooth Extraction",
       },
       {
-        img:ToothRes,
+        img: ToothRes,
         imgText: "Tooth Restoration",
       },
       {
-        img:Xray1,
+        img: Xray1,
         imgText: "X-Ray",
       },
       {
-        img:Gum,
+        img: Gum,
         imgText: "Gum Treatment",
       },
       {
-        img:Dental,
+        img: Dental,
         imgText: "Dental Cleaning / Polishing",
       },
     ],
@@ -759,15 +748,15 @@ export const ServiceTabsData = [
         imgText: "Nail Clipping",
       },
       {
-        img:EarClean,
+        img: EarClean,
         imgText: "Ear Cleaning",
       },
       {
-        img:Bath,
+        img: Bath,
         imgText: "Bathing",
       },
       {
-        img:HairStyle,
+        img: HairStyle,
         imgText: "Hair Styling & Brushing",
       },
     ],
@@ -783,15 +772,13 @@ export const ServiceTabsData = [
         imgText: "Dog & Cat Boarding",
       },
       {
-        img:Sitting,
+        img: Sitting,
         imgText: "Dog & Cat Sitting",
       },
       {
         img: Training,
         imgText: "Dog Training",
       },
-      
-      
     ],
   },
 ];

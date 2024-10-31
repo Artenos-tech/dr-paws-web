@@ -1,6 +1,5 @@
-'use client'
+"use client";
 import React from "react";
-import Button from "./Button";
 import { StaticImageData } from "next/image";
 import { useRouter } from "next/navigation";
 

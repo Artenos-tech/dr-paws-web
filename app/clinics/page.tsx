@@ -1,5 +1,6 @@
 import Image from "next/image";
 import DogImage from "@/public/assets/images/clinic/ClinicImage.png";
+import ClinicThumbnail from "@/public/assets/images/clinic/ClinicThumbnail.svg";
 import { clinicItems } from "@/model/mockData";
 import OurClinicsCard from "@/components/ui/OurClinicsCard";
 import ClinicLocationForm from "@/components/ui/ClinicLocationForm";
@@ -8,9 +9,9 @@ export default function Clinics() {
   const limitedClinicItems = clinicItems.slice(0, 5);
   return (
     <div className="flex flex-col w-full h-full items-center justify-items-center font-roca pb-20 flex-grow">
-      <main className="flex flex-col gap-[80px] row-start-2 items-center w-[73%]">
+      <main className="flex flex-col gap-8 md:gap-20 row-start-2 items-center px-8 md:px-32 lg:px-40">
         {/* cover */}
-        <div className="w-full flex flex-col lg:flex-row items-center justify-center p-1 lg:space-x-8 space-y-8 lg:space-y-0 mt-16">
+        <div className="w-full flex flex-col lg:flex-row items-center justify-center space-y-8 lg:space-y-0 mt-16">
           <div className="flex-shrink-0 w-full lg:w-auto">
             <Image
               src={DogImage}
@@ -22,13 +23,13 @@ export default function Clinics() {
           </div>
           <div className="flex items-center justify-center w-full lg:items-start lg:justify-center">
             <div className="text-center lg:text-left w-full lg:w-[377px] h-auto">
-              <h2 className="text-3xl lg:text-[48px] font-light mb-4 leading-tight">
+              <h1 className="text-3xl lg:text-[48px] mb-4 leading-tight">
                 Come And Visit Us At Our Place!
-              </h2>
+              </h1>
               <p className="text-sm lg:text-[14px] text-gray-700 px-1">
                 We are opening our homely Dr. Paws clinics across neighbourhoods
-                all over the country. If we're not near you right now, we hope
-                to be very soon!
+                all over the country. If we&apos;re not near you right now, we
+                hope to be very soon!
               </p>
             </div>
           </div>
@@ -36,10 +37,10 @@ export default function Clinics() {
 
         {/* our clinics */}
         <div className="container flex flex-col items-center mx-auto py-2">
-          <h2 className="text-[28px] font-light font-roca text-center mb-8">
+          <h1 className="text-[28px] font-roca text-center mb-8">
             Our Clinics
-          </h2>
-          <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full justify-items-stretch">
+          </h1>
+          <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full justify-items-stretch mb-10">
             {limitedClinicItems.map((clinic, index) => (
               <OurClinicsCard
                 key={index}
@@ -49,15 +50,21 @@ export default function Clinics() {
             ))}
 
             {/* Static card */}
-            <div className="bg-gray-100 shadow-md rounded-md p-8 flex items-center justify-center text-center w-full">
-              <div>
-                <div className="text-4xl mb-4">
-                  <span className="inline-block text-gray-600">💡</span>
-                </div>
-                <p className="font-bold text-xl mb-2">
-                  Where Should The Next Dr. Paws Clinic Be?
-                </p>
+            <div className="bg-primary-3 shadow-md rounded-md p-8 flex flex-col items-center justify-center text-center w-full">
+              {/* <div> */}
+              <div className="text-4xl mb-4">
+                {/* <span className="inline-block text-gray-600">💡</span> */}
+                <Image
+                  src={ClinicThumbnail}
+                  alt="Clinic Thumbnail"
+                  width={40}
+                  height={40}
+                />
               </div>
+              <p className="font-bold text-xl mb-2">
+                Where Should The Next Dr. Paws Clinic Be?
+              </p>
+              {/* </div> */}
             </div>
           </div>
         </div>

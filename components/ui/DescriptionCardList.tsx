@@ -4,7 +4,7 @@ import DescriptionCard from "./DescriptionCard";
 
 const DescriptionCardList = () => {
   return (
-    <div className="flex flex-col justify-center items-center gap-5 md:gap-16">
+    <div className="flex flex-col justify-center items-center gap-8 md:gap-14">
       {descriptionItems.map((description, index) => (
         <DescriptionCard key={index} index={index} description={description} />
       ))}

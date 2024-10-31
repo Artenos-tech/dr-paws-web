@@ -1,5 +1,4 @@
 import { clinicItems } from "@/model/mockData";
-import Image from "next/image";
 import React from "react";
 
 const ClinicItemCarousel = () => {

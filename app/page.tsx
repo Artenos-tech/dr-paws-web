@@ -1,7 +1,6 @@
 import FaqList from "@/components/ui/FaqList";
 import ReviewCard from "@/components/ui/ReviewCard";
 import { reviewData } from "@/model/mockData";
-import ClinicItemCarousel from "@/components/ui/ClinicItemCarousel";
 import DescriptionCardList from "@/components/ui/DescriptionCardList";
 import BannerList from "@/components/ui/BannerList";
 import ClinicItemList from "@/components/ui/ClinicItemList";
@@ -17,14 +16,20 @@ export default function Home() {
     <div className="w-full h-full items-center justify-items-center font-roca">
       <main className="w-full flex flex-col gap-8 row-start-2 items-center sm:items-start">
         <div className="bg-banner bg-cover bg-center bg-no-repeat h-96 w-full md:h-[500px] lg:h-[600px] min-h-[300px]">
-          <div className="flex flex-col items-center md:items-start gap-5 w-full md:w-2/3 lg:w-1/3 mx-auto mt-6 md:ml-40 md:mt-10 lg:mt-12 lg:ml-40 text-center md:text-left">
-            <h1 className="text-[32px] md:text-[48px] lg:text-[64px] leading-tight md:leading-snug lg:leading-none text-white">
-              Veterinary Care re-imagined
-              <p className="text-primary-3 text-[24px] md:text-[32px]">
+          <div className="flex flex-col items-center md:items-start gap-5 w-full md:w-2/3 lg:w-1/3 mx-auto mt-6 md:ml-32 md:mt-10 lg:mt-12 lg:ml-40 text-center md:text-left">
+            <div>
+              <h1 className="text-[32px] md:text-[48px] lg:text-[64px] leading-tight md:leading-snug lg:leading-none text-white">
+                Veterinary Care
+              </h1>
+              <h1 className="text-[32px] md:text-[48px] lg:text-[64px] leading-tight md:leading-snug lg:leading-none text-white">
+                {" "}
+                re-imagined
+              </h1>
+              <h1 className="text-primary-3 text-[24px] md:text-[32px]">
                 by pet lovers
-              </p>
-            </h1>
-            <p className="text-white w-full md:w-[80%] lg:w-[70%] text-[14px] md:text-[16px] lg:text-[18px] px-2">
+              </h1>
+            </div>
+            <p className="text-white w-full md:w-[80%] lg:w-[70%] text-[14px] md:text-[16px] lg:text-[18px] px-10 md:px-0">
               Book a visit to one of our clinics right now. Which friend will we
               meet?
             </p>
@@ -36,21 +41,21 @@ export default function Home() {
 
         <div>
           <div className="flex flex-col items-center justify-center">
-            <h1 className="mt-4 mb-16 text-center text-primary-1 text-2xl w-[80%] sm:w-full">
+            <h1 className="mt-4 mb-16 text-center text-primary-1 text-md md:text-2xl px-8">
               Veterinary care, redesigned to be better
             </h1>
             <DescriptionCardList />
           </div>
-          <div className="w-[90%] mx-auto sm:w-[70%]">
-            <h1 className="w-[90%] mx-auto text-center mt-12 text-2xl sm:w-[30%]">
+          <div className="mx-auto mt-12 lg:mt-32">
+            <h1 className="mx-auto text-center text-2xl w-[65%] md:w-[35%] lg:w-[14%]">
               Check out the places we call home
             </h1>
             <ClinicItemList />
           </div>
 
-          <div className="flex flex-col items-center justify-center w-full">
-            <div className="w-[80%] mx-auto text-center mt-20 mb-10 sm:w-[40%]">
-              <h1 className="w-[100%] mx-auto text-2xl sm:w-[50%]">
+          <div className="flex flex-col items-center justify-center w-full mt-20 px-8 md:px-32 lg:scroll-px-40">
+            <div className="mx-auto text-center mb-10">
+              <h1 className="mx-auto text-2xl px-1 md:px-20">
                 Whatever your pet needs, we&apos;re there
               </h1>
               <p>
@@ -61,9 +66,9 @@ export default function Home() {
           </div>
           <Services />
 
-          <div className="w-full my-20">
+          <div className="w-full mt-20">
             <h1 className="text-2xl text-center text-primary-1">Reviews</h1>
-            <div className="flex justify-center items-center my-20">
+            <div className="flex justify-center items-center mt-10 md:mt-20">
               <div className="relative flex flex-col items-center justify-center custom:flex-row border-yellow-500">
                 {/* Container for Green Background and Lady Image */}
                 <div className="relative w-[250px] h-[280px] md:w-[300px] md:h-[336px] lg:w-[376px] lg:h-[421px]">
@@ -110,7 +115,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="w-[75%] mx-auto mt-40 flex flex-col gap-8">
+          <div className="w-[75%] mx-auto mt-20 md:mt-40 flex flex-col gap-8">
             <h1 className="text-[28px] text-center">
               Our vets bring the magic to Dr. Paws
             </h1>

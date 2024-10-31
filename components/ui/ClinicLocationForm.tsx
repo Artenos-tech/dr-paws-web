@@ -45,7 +45,7 @@ export default function ClinicLocationForm() {
       console.log(data);
       toast.success("Successfully submitted. Our team will get back to you.");
       reset();
-    } catch (error) {
+    } catch {
       toast.error("Something went wrong. Please try again.");
     } finally {
       setIsSubmitting(false);

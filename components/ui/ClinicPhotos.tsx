@@ -3,7 +3,6 @@ import { photos } from "@/model/mockData"; // photos is an array of image object
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import ReactModal from "react-modal";
-import { IoMdClose } from "react-icons/io";
 
 function ClinicPhotos() {
   const [isOpen, setIsOpen] = useState(false);

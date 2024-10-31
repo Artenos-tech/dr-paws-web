@@ -11,42 +11,50 @@ export default function NavBar() {
 
   return (
     <div className="bg-primary-3 w-full">
-      <div className="mx-auto px-14 md:px-52">
+      <div className="mx-auto px-8 md:px-32 lg:px-40">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <Image
-                src="/assets/images/logo/logo.svg"
-                alt="Dr. Paws Logo"
-                width={100}
-                height={30}
-                priority
-              />
+              <a href="/">
+                <Image
+                  src="/assets/images/logo/logo.svg"
+                  alt="Dr. Paws Logo"
+                  width={100}
+                  height={30}
+                  priority
+                />
+              </a>
             </div>
           </div>
-          <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-4">
+          <div className="hidden lg:block">
+            <div className="flex items-baseline space-x-4">
               <div className="relative group">
                 <button className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
                   Locations
                 </button>
-                <div className="absolute z-10 hidden group-hover:block bg-white border rounded-md mt-1">
+                {/* <div className="hidden absolute z-10 -ml-4 mt-3 transform w-44 px-2 py-2 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 group-hover:block">
                   <a
-                    href="#"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    href="/locations"
+                    className="text-primary-1 hover:bg-primary-2 hover:text-white block px-3 py-2 rounded-md text-sm font-medium"
                   >
                     Location 1
                   </a>
                   <a
-                    href="#"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    href="/locations"
+                    className="text-primary-1 hover:bg-primary-2 hover:text-white block px-3 py-2 rounded-md text-sm font-medium"
                   >
                     Location 2
                   </a>
-                </div>
+                  <a
+                    href="/locations"
+                    className="text-primary-1 hover:bg-primary-2 hover:text-white block px-3 py-2 rounded-md text-sm font-medium"
+                  >
+                    Location 3
+                  </a>
+                </div> */}
               </div>
               <a
-                href="#"
+                href="/services"
                 className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
               >
                 Our Services
@@ -65,14 +73,14 @@ export default function NavBar() {
               </a>
             </div>
           </div>
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden lg:flex items-center space-x-4">
             <Button
               buttonText="Book a visit"
               buttonBackground="bg-secondary-1"
             />
             <Image src={Profile} alt="User logo" width={40} height={40} />
           </div>
-          <div className="-mr-2 flex md:hidden">
+          <div className="-mr-2 flex lg:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
               type="button"
@@ -88,44 +96,40 @@ export default function NavBar() {
       </div>
 
       {isOpen && (
-        <div className="md:hidden" id="mobile-menu">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+        <div className="lg:hidden" id="mobile-menu">
+          <div className="px-8 pt-2 pb-3 space-y-1 md:px-32 flex flex-col justify-end">
             <a
               href="#"
-              className="text-primary-1 hover:bg-primary-2 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+              className="text-primary-1 hover:bg-primary-2 hover:text-white block py-2 px-2 rounded-md text-base font-medium"
             >
               Locations
             </a>
             <a
-              href="#"
-              className="text-primary-1 hover:bg-primary-2 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+              href="/services"
+              className="text-primary-1 hover:bg-primary-2 hover:text-white block py-2 px-2 rounded-md text-base font-medium"
             >
               Our Services
             </a>
             <a
               href="#"
-              className="text-primary-1 hover:bg-primary-2 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+              className="text-primary-1 hover:bg-primary-2 hover:text-white block py-2 px-2 rounded-md text-base font-medium"
             >
               Our Team
             </a>
             <a
               href="#"
-              className="text-primary-1 hover:bg-primary-2 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+              className="text-primary-1 hover:bg-primary-2 hover:text-white block py-2 px-2 rounded-md text-base font-medium"
             >
               Membership
             </a>
           </div>
           <div className="pt-4 pb-3 border-t border-primary-2">
-            <div className="flex items-center px-5">
-              <div className="flex-shrink-0">
-                <Image src={Profile} alt="User logo" width={40} height={40} />
-              </div>
-              <div className="ml-3">
-                <Button
-                  buttonText="Book a visit"
-                  buttonBackground="secondary-"
-                />
-              </div>
+            <div className="flex items-center px-8 md:px-32 space-x-4">
+              <Image src={Profile} alt="User logo" width={40} height={40} />
+              <Button
+                buttonText="Book a visit"
+                buttonBackground="bg-secondary-1"
+              />
             </div>
           </div>
         </div>
