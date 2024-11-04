@@ -65,7 +65,10 @@ export default function RootLayout({
       <body className={`w-full min-h-screen overflow-x-hidden`}>
         <div className="w-full overflow-x-hidden">
           <NavBar />
-          {children}
+          <div className="mt-16"> {/* Adjust margin here */}
+            {children}
+          </div>
+          
           <Footer />
         </div>
       </body>

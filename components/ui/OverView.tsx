@@ -12,7 +12,7 @@ import { doctors } from "@/model/mockData";
 const Overview = () => {
   return (
     <div className="w-full flex flex-col gap-[80px]">
-      <div className="w-full flex flex-col md:flex-row justify-between space-y-6 md:space-y-0">
+      <div className="w-full flex flex-col lg:flex-row justify-between space-y-6 md:space-y-8">
         {/* Contact & Timings Section */}
         <div className="flex flex-col items-start pt-[50px]">
           <div className="mb-6">
@@ -28,16 +28,16 @@ const Overview = () => {
           </div>
           <div>
             <h2 className="text-2xl font-roca font-semibold mb-3">Timings</h2>
-            <div className="text-lg">
-              <p>
+            <div className="text-lg border">
+              <p className="flex  justify-between">
                 Monday to Friday:{" "}
                 <span className="text-xl font-roca ml-4">09:00 - 19:00</span>
               </p>
-              <p>
+              <p className="flex  justify-between">
                 Saturday:{" "}
                 <span className="text-xl font-roca ml-4">10:00 - 17:00</span>
               </p>
-              <p>
+              <p className="flex  justify-between">
                 Sunday:{" "}
                 <span className="text-xl font-roca ml-4">10:00 - 15:00</span>
               </p>
