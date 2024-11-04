@@ -47,10 +47,13 @@ export default function Home() {
             <DescriptionCardList />
           </div>
           <div className="mx-auto mt-12 lg:mt-32">
-            <h1 className="mx-auto text-center text-2xl w-[65%] md:w-[35%] lg:w-[14%]">
-              Check out the places we call home
+            <h1 className="mx-auto text-center text-2xl">
+              Check out the places
             </h1>
-            <ClinicItemList />
+            <h1 className="mx-auto text-center text-2xl">we call home</h1>
+            <div className="mx-auto pt-5 px-8 md:px-32 lg:px-40">
+              <ClinicItemList showStaticCard={false} enlargedView={false} />
+            </div>
           </div>
 
           <div className="flex flex-col items-center justify-center w-full mt-20 px-8 md:px-32 lg:scroll-px-40">

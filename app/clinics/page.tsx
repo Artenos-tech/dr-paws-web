@@ -1,12 +1,9 @@
 import Image from "next/image";
 import DogImage from "@/public/assets/images/clinic/ClinicImage.png";
-import ClinicThumbnail from "@/public/assets/images/clinic/ClinicThumbnail.svg";
-import { clinicItems } from "@/model/mockData";
-import OurClinicsCard from "@/components/ui/OurClinicsCard";
 import ClinicLocationForm from "@/components/ui/ClinicLocationForm";
+import ClinicItemList from "@/components/ui/ClinicItemList";
 
 export default function Clinics() {
-  const limitedClinicItems = clinicItems.slice(0, 5);
   return (
     <div className="flex flex-col w-full h-full items-center justify-items-center font-roca pb-20 flex-grow">
       <main className="flex flex-col gap-8 md:gap-20 row-start-2 items-center px-8 md:px-32 lg:px-40">
@@ -40,32 +37,8 @@ export default function Clinics() {
           <h1 className="text-[28px] font-roca text-center mb-8">
             Our Clinics
           </h1>
-          <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full justify-items-stretch mb-10">
-            {limitedClinicItems.map((clinic, index) => (
-              <OurClinicsCard
-                key={index}
-                clinic={clinic}
-                className="w-full h-auto"
-              />
-            ))}
-
-            {/* Static card */}
-            <div className="bg-primary-3 shadow-md rounded-md p-8 flex flex-col items-center justify-center text-center w-full">
-              {/* <div> */}
-              <div className="text-4xl mb-4">
-                {/* <span className="inline-block text-gray-600">💡</span> */}
-                <Image
-                  src={ClinicThumbnail}
-                  alt="Clinic Thumbnail"
-                  width={40}
-                  height={40}
-                />
-              </div>
-              <p className="font-bold text-xl mb-2">
-                Where Should The Next Dr. Paws Clinic Be?
-              </p>
-              {/* </div> */}
-            </div>
+          <div>
+            <ClinicItemList showStaticCard={true} enlargedView={true} />
           </div>
         </div>
 

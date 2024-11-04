@@ -15,7 +15,7 @@ import catImg from "../public/assets/images/catimg.png";
 import birdImg from "../public/assets/images/birdimg.png";
 import doctorImage from "../public/assets/images/clinic/doctor.png";
 import ClinicDog from "../public/assets/images/clinic/maggidog.png";
-import { ServiceCategory, Service } from "@/model/typeDefinitions";
+import { ServiceCategory, Service, Clinic } from "@/model/typeDefinitions";
 import Vaccination from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/Vaccinations.png";
 import Deworming from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/Deworming.png";
 import GeneralCheckUp from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/General check up.png";
@@ -334,50 +334,58 @@ export const reviewData = {
     "Dr. Paws is Fantastic Execptional care, friendly staff, and a welcoming atmosphere, Highly recommend for pet owners!",
 };
 
-export const clinicItems = [
+export const clinicItems: Clinic[] = [
   {
+    id: "1",
     image: clinic1,
     clinicName: "Indiranagar Clinic",
     branch: "OPD",
     description: "Surgery",
   },
   {
+    id: "2",
     image: clinic1,
     clinicName: "Indiranagar Clinic",
     branch: "OPD",
     description: "Surgery",
   },
   {
+    id: "3",
     image: clinic1,
     clinicName: "Indiranagar Clinic",
     branch: "OPD",
     description: "Surgery",
   },
   {
+    id: "4",
     image: clinic1,
     clinicName: "Indiranagar Clinic",
     branch: "OPD",
     description: "Surgery",
   },
   {
+    id: "5",
     image: clinic1,
     clinicName: "Indiranagar Clinic",
     branch: "OPD",
     description: "Surgery",
   },
   {
+    id: "6",
     image: clinic1,
     clinicName: "Indiranagar Clinic",
     branch: "OPD",
     description: "Surgery",
   },
   {
+    id: "7",
     image: clinic1,
     clinicName: "Indiranagar Clinic",
     branch: "OPD",
     description: "Surgery",
   },
   {
+    id: "8",
     image: clinic1,
     clinicName: "Indiranagar Clinic",
     branch: "OPD",

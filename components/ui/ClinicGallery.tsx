@@ -1,24 +1,33 @@
 "use client";
+
 import { photos } from "@/model/mockData"; // photos is an array of images
 import React, { useState, useEffect } from "react";
 import ReactModal from "react-modal";
 import { IoIosArrowBack, IoIosArrowForward, IoMdClose } from "react-icons/io";
+import { Clinic } from "@/model/typeDefinitions";
 
-function ClinicGallery() {
+interface ClinicGalleryProps {
+  clinic: Clinic;
+}
+
+function ClinicGallery({ clinic }: ClinicGalleryProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const limitedGalleryItems = photos.slice(0, 7);
+  const [isMounted, setIsMounted] = useState(false);
 
+  console.log(clinic);
   // Ensure setAppElement is called only on the client side after the DOM is ready
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const appElement = document.getElementById("__next");
-      if (appElement) {
-        ReactModal.setAppElement(appElement);
-      } else {
-        console.warn("ReactModal: App element with id '__next' not found.");
-      }
+    setIsMounted(true);
+    // if (typeof window !== "undefined") {
+    const appElement = document.getElementById("__next");
+    if (appElement) {
+      ReactModal.setAppElement(appElement);
+    } else {
+      console.warn("ReactModal: App element with id '__next' not found.");
     }
+    // }
   }, []);
 
   const openModal = (index: number) => {
@@ -29,6 +38,10 @@ function ClinicGallery() {
   const closeModal = () => {
     setIsOpen(false);
   };
+
+  if (!isMounted) {
+    return null;
+  }
 
   return (
     <div>

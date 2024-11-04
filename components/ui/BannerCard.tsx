@@ -1,4 +1,4 @@
-import { StaticImageData } from "next/image";
+import Image, { StaticImageData } from "next/image";
 import React from "react";
 
 interface bannerCardProps {
@@ -17,9 +17,11 @@ const BannerCard: React.FC<bannerCardProps> = ({ banItem }) => {
           {bannerText}
         </h1>
         <div className="mt-1">
-          <img
+          <Image
             src={bannerImage.src}
             alt={`${bannerText} img`}
+            width={40}
+            height={50}
             className="w-[40px] h-[50px] md:w-[50px] md:h-[60px] lg:w-[60px] lg:h-[70px] object-contain mx-auto"
           />
         </div>

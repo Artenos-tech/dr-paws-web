@@ -7,17 +7,19 @@ import ReactModal from "react-modal";
 function ClinicPhotos() {
   const [isOpen, setIsOpen] = useState(false);
   const [currentImage, setCurrentImage] = useState<string>("");
+  const [isMounted, setIsMounted] = useState(false);
 
   // Ensure ReactModal can find the root app element for accessibility
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const appElement = document.getElementById("__next");
-      if (appElement) {
-        ReactModal.setAppElement(appElement);
-      } else {
-        console.warn("ReactModal: App element with id '__next' not found.");
-      }
+    setIsMounted(true);
+    // if (typeof window !== "undefined") {
+    const appElement = document.getElementById("__next");
+    if (appElement) {
+      ReactModal.setAppElement(appElement);
+    } else {
+      console.warn("ReactModal: App element with id '__next' not found.");
     }
+    // }
   }, []);
 
   const openModal = (imageSrc: string) => {
@@ -29,6 +31,10 @@ function ClinicPhotos() {
     setIsOpen(false);
     setCurrentImage("");
   };
+
+  if (!isMounted) {
+    return null;
+  }
 
   return (
     <div className="w-full py-[40px]">

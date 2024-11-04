@@ -5,6 +5,7 @@ import Profile from "@/public/assets/images/profileThumnail.svg";
 import { Menu } from "lucide-react";
 import Button from "../ui/Button";
 import { useState } from "react";
+import Link from "next/link";
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -15,7 +16,7 @@ export default function NavBar() {
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <a href="/">
+              <Link href="/">
                 <Image
                   src="/assets/images/logo/logo.svg"
                   alt="Dr. Paws Logo"
@@ -23,7 +24,7 @@ export default function NavBar() {
                   height={30}
                   priority
                 />
-              </a>
+              </Link>
             </div>
           </div>
           <div className="hidden lg:block">
@@ -53,12 +54,12 @@ export default function NavBar() {
                   </a>
                 </div> */}
               </div>
-              <a
+              <Link
                 href="/services"
                 className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
               >
                 Our Services
-              </a>
+              </Link>
               <a
                 href="#"
                 className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium"

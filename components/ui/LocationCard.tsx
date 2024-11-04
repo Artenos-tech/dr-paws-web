@@ -1,28 +1,37 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { MapPin } from "lucide-react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import dynamic from "next/dynamic";
 import "leaflet/dist/leaflet.css";
-import L from "leaflet";
-
-// delete (L.Icon.Default.prototype as any)._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl:
-    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
-  iconUrl:
-    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
-  shadowUrl:
-    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
-});
 
 const LOCATION = {
   lat: 12.9725533,
   lng: 77.6397607,
 };
 
+const Map = dynamic(
+  () => {
+    return import("./MapWrapper").then((mod) => mod.MapWrapper);
+  },
+  {
+    loading: () => (
+      <div className="h-full w-full bg-gray-100 animate-pulse rounded-lg" />
+    ),
+    ssr: false,
+  }
+);
+
 export const LocationCard: React.FC = () => {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const getDirections = () => {
+    if (typeof window === "undefined") return;
+
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -39,7 +48,6 @@ export const LocationCard: React.FC = () => {
         }
       );
     } else {
-      // Geolocation not available
       window.open(
         `https://www.google.com/maps/search/?api=1&query=${LOCATION.lat},${LOCATION.lng}`,
         "_blank"
@@ -53,20 +61,7 @@ export const LocationCard: React.FC = () => {
         Location
       </h2>
       <div className="mb-4 rounded-lg h-64 md:h-auto md:flex-1">
-        {/* Applied 'md:flex-1' to make it expand on medium and larger screens */}
-        <MapContainer
-          center={[LOCATION.lat, LOCATION.lng]}
-          zoom={15}
-          style={{ height: "100%", width: "100%" }}
-        >
-          <TileLayer
-            // attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-          <Marker position={[LOCATION.lat, LOCATION.lng]}>
-            <Popup>Om Heera Panna Mall</Popup>
-          </Marker>
-        </MapContainer>
+        {isMounted && <Map location={LOCATION} />}
       </div>
       <div className="flex items-start mb-4">
         <MapPin className="h-5 w-5 mr-2 mt-1 text-gray-500" />

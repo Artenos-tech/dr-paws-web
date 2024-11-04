@@ -1,23 +1,18 @@
 "use client";
 import React from "react";
-import { StaticImageData } from "next/image";
 import { useRouter } from "next/navigation";
+import { Clinic } from "@/model/typeDefinitions";
 
 interface ClinicItemProps {
-  clinic: {
-    image: StaticImageData;
-    clinicName: string;
-    branch: string;
-    description: string;
-  };
+  clinic: Clinic;
 }
 
 const ClinicItem: React.FC<ClinicItemProps> = ({ clinic }) => {
-  const { image, clinicName, branch, description } = clinic;
+  const { image, clinicName, branch, description, id } = clinic;
   const router = useRouter();
 
   const handleBookVisit = () => {
-    router.push(`/clinics/${clinicName}`);
+    router.push(`/clinics/${id}`);
   };
   return (
     <>
