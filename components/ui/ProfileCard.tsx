@@ -21,7 +21,7 @@ export default function ProfileCard({ profile }: ProfileCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <div className="flex flex-col lg:flex-row items-start lg:items-center gap-6 md:gap-8 mt-16">
+    <div className="flex flex-col lg:flex-row items-start lg:items-center gap-6 md:gap-8 mt-16 w-full">
       {/* Profile Image */}
       <div className="relative w-20 h-20 md:w-32 md:h-32 rounded-full overflow-hidden bg-orange-400 flex-shrink-0">
         <Image src={image} alt={name} fill className="object-cover" priority />

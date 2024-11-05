@@ -1,11 +1,13 @@
 "use client";
 
+import React, { useState, useEffect } from "react";
 import ProfileCard from "@/components/ui/ProfileCard";
-import React, { useState } from "react";
 import ProfileImage from "@/public/assets/images/Profile/Profile.png";
 import AddPetModal from "@/components/ui/AddPetModal";
+import PetCard from "@/components/ui/PetCard";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { v4 as uuidv4 } from "uuid";
 
 const ProfileData = {
   name: "John Doe",
@@ -17,6 +19,7 @@ const ProfileData = {
 
 // Define the Pet type
 interface Pet {
+  petId: string;
   name: string;
   type: string;
 }
@@ -25,17 +28,30 @@ const Profile: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [pets, setPets] = useState<Pet[]>([]);
 
-  const addPet = (pet: Pet): void => {
-    setPets((prevPets) => [...prevPets, pet]);
+  useEffect(() => {
+    const savedPets = localStorage.getItem("pets");
+    setPets(savedPets ? JSON.parse(savedPets) : []);
+  }, []);
+
+  const addPet = (pet: Omit<Pet, "petId">): void => {
+    const newPet = { ...pet, petId: uuidv4() };
+    setPets((prevPets) => {
+      const updatedPets = [...prevPets, newPet];
+      localStorage.setItem("pets", JSON.stringify(updatedPets));
+      return updatedPets;
+    });
   };
+  
 
   return (
     <div className="flex flex-col w-full h-full items-center font-roca pb-20 flex-grow">
-      <main className="flex flex-col gap-8 md:gap-20 items-center px-8 md:px-32 lg:px-40">
+      <main className="flex flex-col w-full gap-8 md:gap-16 items-center px-8 md:px-32 lg:px-40">
         <ProfileCard profile={ProfileData} />
 
+        <hr className="w-full" />
+
         <div className="flex flex-col w-full min-h-[350px] gap-2">
-          <div className="flex items-center justify-between px-4">
+          <div className="flex items-center justify-between">
             <h1 className="text-2xl text-secondary-1">Your Pets</h1>
             {pets.length > 0 && (
               <button
@@ -61,16 +77,8 @@ const Profile: React.FC = () => {
             </div>
           ) : (
             <div className="flex flex-wrap gap-4 p-4">
-              {pets.map((pet, index) => (
-                <div
-                  key={index}
-                  className="w-[150px] p-4 border border-secondary-2 text-center rounded-lg shadow-md"
-                >
-                  <h2 className="text-xl font-bold text-secondary-1">
-                    {pet.name}
-                  </h2>
-                  <p className="text-sm text-secondary-1">{pet.type}</p>
-                </div>
+              {pets.map((pet) => (
+                <PetCard key={pet.petId} pet={pet} />
               ))}
             </div>
           )}
@@ -79,7 +87,7 @@ const Profile: React.FC = () => {
         <AddPetModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
-          onSubmit={(pet: Pet) => {
+          onSubmit={(pet: Omit<Pet, "petId">) => {
             addPet(pet);
             setIsModalOpen(false);
           }}
