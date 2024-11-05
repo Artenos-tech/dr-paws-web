@@ -13,6 +13,7 @@ const ProfileData = {
 };
 
 interface ProfileCardProps {
+
   name: string;
   image: string;
   contact: string;
@@ -22,10 +23,10 @@ interface ProfileCardProps {
 
 export default function ProfileCard({
   name,
-  image,
-  contact,
-  email,
-  address,
+//   image,
+//   contact,
+//   email,
+//   address,
 }: ProfileCardProps) {
   return (
     <div className="flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-8 p-16">

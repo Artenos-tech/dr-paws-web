@@ -57,7 +57,7 @@ const ServiceTab = ({ tabs }: ServiceTabProps) => {
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto">
+    <div className="w-full mx-auto">
       {/* Tabs Navigation - Desktop */}
       <div className="relative mb-16 hidden lg:block">
         <div className="absolute bottom-0 left-0 w-full h-1.5 bg-primary-3"></div>
