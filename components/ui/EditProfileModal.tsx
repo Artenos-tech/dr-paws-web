@@ -96,7 +96,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ isOpen, onClose }) 
             </div>
           </div>
 
-          <div>
+          <div className="flex flex-col gap-4">
             <label>Name</label>
             <input {...registerProfile("name")} className="input rounded-md p-2 border w-full" />
             {profileErrors.name && <span className="text-red-500 text-sm">{profileErrors.name.message}</span>}

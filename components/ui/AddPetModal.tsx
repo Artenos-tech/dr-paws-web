@@ -5,7 +5,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-toastify";
-import Dropdown from "react-dropdown";
 import "react-dropdown/style.css";
 
 const petSchema = z.object({
