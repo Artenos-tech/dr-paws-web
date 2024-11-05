@@ -3,6 +3,7 @@ import Modal from "react-modal";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import ProfileImage from "@/public/assets/images/Profile/Profile.png";
 import Image from "next/image";
 
 interface EditProfileModalProps {
@@ -46,9 +47,12 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ isOpen, onClose }) 
   } = useForm<BillingFormData>({ resolver: zodResolver(billingSchema) });
 
   const onProfileSubmit = (data: ProfileFormData) => {
-    console.log("Profile Data:", data);
-    onClose();
+    // Save the updated profile data to local storage
+    localStorage.setItem("userProfile", JSON.stringify(data));
+    console.log("Profile Data saved to local storage:", data);
+    onClose(); // Close the modal after saving
   };
+  
 
   const onBillingSubmit = (data: BillingFormData) => {
     console.log("Billing Data:", data);
@@ -84,7 +88,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ isOpen, onClose }) 
           <div className="flex flex-col items-center mb-4">
             <div className="relative">
               <Image
-                src="/path/to/profile-pic.png"
+                src={ProfileImage}
                 alt="Profile"
                 width={64}
                 height={64}

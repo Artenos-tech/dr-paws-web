@@ -1,19 +1,10 @@
-"use client";
+'use client'
 
+import React, { useState, useEffect } from "react";
 import ProfileCard from "@/components/ui/ProfileCard";
-import React, { useState } from "react";
-import ProfileImage from "@/public/assets/images/Profile/Profile.png";
 import AddPetModal from "@/components/ui/AddPetModal";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
-const ProfileData = {
-  name: "John Doe",
-  contact: "0937948568",
-  image: ProfileImage,
-  email: "jondoe@gmail.com",
-  address: "Andheri West, Mumbai",
-};
 
 // Define the Pet type
 interface Pet {
@@ -24,15 +15,40 @@ interface Pet {
 const Profile: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [pets, setPets] = useState<Pet[]>([]);
+  const [profileData, setProfileData] = useState<any>(null);
 
   const addPet = (pet: Pet): void => {
     setPets((prevPets) => [...prevPets, pet]);
   };
 
+  useEffect(() => {
+    // Check if the user data is already in local storage
+    let storedProfileData = localStorage.getItem("userProfile");
+
+    if (!storedProfileData) {
+      // If not found, set the default user data in local storage
+      const defaultProfileData = {
+        name: "John Doe",
+        contact: "0937948568",
+        image: "/assets/images/Profile/Profile.png", // Set the path to your default image
+        email: "jondoe@gmail.com",
+        address: "Andheri West, Mumbai",
+      };
+      localStorage.setItem("userProfile", JSON.stringify(defaultProfileData));
+      // Fetch again from local storage after setting default
+      storedProfileData = localStorage.getItem("userProfile");
+    }
+
+    // Now, parse and set the profile data in the state
+    if (storedProfileData) {
+      setProfileData(JSON.parse(storedProfileData));
+    }
+  }, []);
+
   return (
     <div className="flex flex-col w-full h-full items-center font-roca pb-20 flex-grow">
       <main className="flex flex-col gap-8 md:gap-20 items-center px-8 md:px-32 lg:px-40">
-        <ProfileCard profile={ProfileData} />
+        {profileData && <ProfileCard profile={profileData} />}
 
         <div className="flex flex-col w-full min-h-[350px] gap-2">
           <div className="flex items-center justify-between px-4">
