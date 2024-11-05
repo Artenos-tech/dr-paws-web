@@ -12,7 +12,7 @@ export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="fixed bg-primary-3 w-full">
+    <div className="fixed left-0 toop-0 z-50 bg-primary-3 w-full">
       <div className="mx-auto px-8 md:px-32 lg:px-40">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
@@ -128,7 +128,7 @@ export default function NavBar() {
           </div>
           <div className="pt-4 pb-3 border-t border-primary-2">
             <div className="flex items-center px-8 md:px-32 space-x-4">
-              {/* <Image src={Profile} alt="User logo" width={40} height={40} /> */}
+              <Image src={Profile} alt="User logo" width={40} height={40} />
               
               <Button
                 buttonText="Book a visiting"
