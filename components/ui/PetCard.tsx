@@ -5,7 +5,7 @@ import React from "react";
 
 interface petCardProps {
   pet: {
-    petId: string
+    petId: string;
     name: string;
     type: string;
   };
@@ -16,7 +16,7 @@ const PetCard: React.FC<petCardProps> = ({ pet }) => {
   const router = useRouter();
 
   const handlePetProfileView = () => {
-    router.push(`/petprofile/${petId}`);
+    router.push(`/user/profile/pet-profile/${petId}`);
   };
   return (
     <div
