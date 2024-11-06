@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import ProfileForm from "./ProfileForm";
@@ -37,27 +35,10 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
     contact: string;
     email: string;
     address: string;
+    image: string;
   }) => {
-    const updatedProfile = {
-      ...data,
-      image: profileData.image,
-    };
+    const updatedProfile = { ...data };
     onSave(updatedProfile);
-    onClose();
-  };
-
-  const handleBillingSave = (data: {
-    firstName: string;
-    lastName: string;
-    cardNumber: string;
-    expiry: string;
-    cvv: string;
-    cardName: string;
-    billingAddress: string;
-  }) => {
-    // Save billing data to localStorage
-    localStorage.setItem("billingData", JSON.stringify(data));
-    console.log("Billing Data:", data);
     onClose();
   };
 
@@ -77,36 +58,18 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
       style={{ content: { maxHeight: "80vh", padding: "1rem" } }}
     >
       <div className="flex justify-around w-full border-b pb-3 text-gray-700 mb-4">
-        <button
-          onClick={() => setActiveTab("profile")}
-          className={`px-6 py-2 ${
-            activeTab === "profile"
-              ? "border-b-2 border-blue-500 font-semibold"
-              : ""
-          }`}
-        >
+        <button onClick={() => setActiveTab("profile")} className={`px-6 py-2 ${activeTab === "profile" ? "border-b-2 border-blue-500 font-semibold" : ""}`}>
           Profile
         </button>
-        <button
-          onClick={() => setActiveTab("billing")}
-          className={`px-6 py-2 ${
-            activeTab === "billing"
-              ? "border-b-2 border-blue-500 font-semibold"
-              : ""
-          }`}
-        >
+        <button onClick={() => setActiveTab("billing")} className={`px-6 py-2 ${activeTab === "billing" ? "border-b-2 border-blue-500 font-semibold" : ""}`}>
           Billing Information
         </button>
       </div>
 
       {activeTab === "profile" ? (
-        <ProfileForm
-          profileData={profileData}
-          onSubmit={handleProfileSave}
-          onCancel={onClose}
-        />
+        <ProfileForm profileData={profileData} onSubmit={handleProfileSave} onCancel={onClose} />
       ) : (
-        <BillingForm onSubmit={handleBillingSave} onCancel={onClose} />
+        <BillingForm onSubmit={(data) => console.log("Billing Data:", data)} onCancel={onClose} />
       )}
     </Modal>
   );

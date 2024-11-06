@@ -1,10 +1,10 @@
 'use client'
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
-import ProfileImage from "@/public/assets/images/Profile/Profile.png";
+import ImageEdit from '@/public/assets/images/Profile/ImageEdit.png'
 
 const profileSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -19,8 +19,8 @@ const profileSchema = z.object({
 type ProfileFormData = z.infer<typeof profileSchema>;
 
 interface ProfileFormProps {
-  profileData: ProfileFormData;
-  onSubmit: (data: ProfileFormData) => void;
+  profileData: ProfileFormData & { image: string };
+  onSubmit: (data: ProfileFormData & { image: string }) => void;
   onCancel: () => void;
 }
 
@@ -35,30 +35,38 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ profileData, onSubmit, onCanc
     defaultValues: profileData,
   });
 
+  const [image, setImage] = useState(profileData.image);
+
   useEffect(() => {
     reset(profileData);
+    setImage(profileData.image);
   }, [profileData, reset]);
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => setImage(reader.result as string);
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleFormSubmit = (data: ProfileFormData) => {
+    onSubmit({ ...data, image });
+  };
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
       <div className="flex flex-col items-center mb-4">
         <div className="relative">
-          <Image
-            src={ProfileImage}
-            alt="Profile"
-            width={80}
-            height={80}
-            className="rounded-full"
+          <Image src={image} alt="Profile" width={120} height={120} className="rounded-full" />
+          <Image src={ImageEdit} alt="Image Edit" className="absolute bottom-0 right-0 "/>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            className="absolute bottom-0 right-0 opacity-0 w-full h-full cursor-pointer"
           />
-          <button
-            type="button"
-            className="absolute bottom-0 right-0 bg-gray-300 rounded-full p-1"
-            onClick={() => {
-              alert("Image change functionality not implemented.");
-            }}
-          >
-            ✎
-          </button>
         </div>
       </div>
 
@@ -114,17 +122,10 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ profileData, onSubmit, onCanc
         )}
       </div>
       <div className="flex justify-between mt-6">
-        <button
-          onClick={onCancel}
-          type="button"
-          className="text-gray-500 border border-gray-400 rounded-lg px-4 py-2"
-        >
+        <button onClick={onCancel} type="button" className="text-gray-500 border border-gray-400 rounded-lg px-4 py-2">
           Cancel
         </button>
-        <button
-          type="submit"
-          className="bg-blue-500 text-white rounded-lg px-4 py-2"
-        >
+        <button type="submit" className="bg-blue-500 text-white rounded-lg px-4 py-2">
           Save
         </button>
       </div>
@@ -132,4 +133,4 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ profileData, onSubmit, onCanc
   );
 };
 
-export default ProfileForm; 
+export default ProfileForm;

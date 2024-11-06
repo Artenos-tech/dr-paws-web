@@ -1,10 +1,11 @@
-'use client'
+ 'use client'
 import React, { useState, useEffect } from "react";
 import ProfileCard from "@/components/ui/ProfileCard";
 import AddPetModal from "@/components/ui/AddPetModal";
 import EditProfileModal from "@/components/ui/EditProfileModal";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import profileImage from "/public/assets/images/Profile/Profile.png"; // Import the image as StaticImageData
 
 interface Pet {
   name: string;
@@ -28,7 +29,7 @@ const Profile: React.FC = () => {
       const defaultProfileData = {
         name: "John Doe",
         contact: "0937948568",
-        image: "/assets/images/Profile/Profile.png",
+        image: profileImage, // Use imported StaticImageData
         email: "jondoe@gmail.com",
         address: "Andheri West, Mumbai",
       };
@@ -37,13 +38,16 @@ const Profile: React.FC = () => {
     }
 
     if (storedProfileData) {
-      setProfileData(JSON.parse(storedProfileData));
+      const parsedData = JSON.parse(storedProfileData);
+      setProfileData({
+        ...parsedData,
+        image: parsedData.image || profileImage,
+      });
     }
   };
 
   useEffect(() => {
     fetchProfileData();
-    console.log(profileData);
   }, []);
 
   const handleProfileUpdate = (updatedProfile: any) => {
