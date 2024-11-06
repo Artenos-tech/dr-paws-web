@@ -84,14 +84,36 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
 
   const calculateAge = (birthday: string): string => {
     if (!birthday) return "";
+    if (birthday === "N/A") return "N/A";
+
     const birthDate = new Date(birthday);
-    const ageDifMs = Date.now() - birthDate.getTime();
-    const ageDate = new Date(ageDifMs);
-    return `${Math.abs(ageDate.getUTCFullYear() - 1970)} years`;
+    const now = new Date();
+
+    let years = now.getUTCFullYear() - birthDate.getUTCFullYear();
+    let months = now.getUTCMonth() - birthDate.getUTCMonth();
+    let days = now.getUTCDate() - birthDate.getUTCDate();
+
+    // Adjust for month and day differences
+    if (days < 0) {
+      months -= 1;
+      days += new Date(now.getUTCFullYear(), now.getUTCMonth(), 0).getDate();
+    }
+
+    if (months < 0) {
+      years -= 1;
+      months += 12;
+    }
+
+    // Construct the age string
+    const yearStr = years > 0 ? `${years} years` : "";
+    const monthStr = months > 0 ? `${months} months` : "";
+    const dayStr = days > 0 ? `${days} days` : "";
+
+    return [yearStr, monthStr, dayStr].filter(Boolean).join(", ");
   };
 
   return (
-    <div className="bg-primary-3 my-5 rounded-lg p-8 w-full max-w-[1000px]">
+    <div className="bg-primary-3 my-5 rounded-lg p-4 md:p-8 w-full max-w-[1050px]">
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col md:flex-row md:justify-between md:items-start w-full"
@@ -104,7 +126,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
             height={160}
             className="object-cover w-[130px] h-[130px] rounded-full"
           />
-          <div className="flex flex-col flex-grow mx-10 gap-3">
+          <div className="flex flex-col flex-grow mx-5 md:mx-10 gap-3">
             {isEditing ? (
               <>
                 <input
@@ -112,74 +134,107 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                   {...register("name", { required: "Pet name is required" })}
                   className="outline-none border w-full p-1 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
                 />
-                {errors.type && (
-                  <p className="text-red-500 text-xs">{errors.type.message}</p>
+                {errors.name && (
+                  <p className="text-red-500 text-xs">{errors.name.message}</p>
                 )}
               </>
             ) : (
-              <h1 className="text-secondary-1 text-lg text-center md:text-left my-5 md:my-0">{pet?.name}</h1>
+              <h1 className="text-secondary-1 text-lg text-center md:text-left my-5 md:my-0">
+                {pet?.name}
+              </h1>
             )}
 
             <div className="flex justify-between md:flex gap-2">
               <div className="w-1/3">
-                <label className="text-secondary-1 text-xs md:text-sm" htmlFor="type">
+                <label
+                  className="text-secondary-1 text-xs md:text-sm"
+                  htmlFor="type"
+                >
                   Type of Pet
                 </label>
                 {isEditing ? (
-                  <input
-                    type="text"
-                    {...register("type", { required: "Type is required" })}
-                    className="outline-none border w-full p-1 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
-                  />
+                  <>
+                    <select
+                      {...register("type", { required: "Type is required" })}
+                      className="outline-none border w-full p-1 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
+                      defaultValue={pet?.type}
+                    >
+                      <option value="" disabled>
+                        Type of Pet
+                      </option>
+                      <option value="Dog">Dog</option>
+                      <option value="Cat">Cat</option>
+                      <option value="Bird">Bird</option>
+                      <option value="Rabbit">Rabbit</option>
+                      <option value="Hamster">Hamster</option>
+                      <option value="Other">Other</option>
+                    </select>{" "}
+                    {errors.type && (
+                      <p className="text-red-500 text-xs">
+                        {errors.type.message}
+                      </p>
+                    )}
+                  </>
                 ) : (
-                  <p className="text-primary-1 font-medium text-sm md:text-md">
+                  <p className="text-primary-1 font-medium text-sm md:text-base">
                     {pet?.type}
                   </p>
                 )}
-                {errors.type && (
-                  <p className="text-red-500 text-xs">{errors.type.message}</p>
-                )}
               </div>
               <div className="w-1/3">
-                <label className="text-secondary-1 text-xs md:text-sm" htmlFor="breed">
+                <label
+                  className="text-secondary-1 text-xs md:text-sm"
+                  htmlFor="breed"
+                >
                   Breed
                 </label>
                 {isEditing ? (
-                  <input
-                    type="text"
-                    {...register("breed", { required: "Breed is required" })}
-                    className="outline-none border w-full p-1 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
-                  />
+                  <>
+                    <input
+                      type="text"
+                      {...register("breed", { required: "Breed is required" })}
+                      className="outline-none border w-full p-1 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
+                    />
+                    {errors.breed && (
+                      <p className="text-red-500 text-xs">
+                        {errors.breed.message}
+                      </p>
+                    )}
+                  </>
                 ) : (
-                  <p className="text-primary-1 font-medium text-sm md:text-md">
-                    {pet?.breed || ""}
+                  <p className="text-primary-1 font-medium text-xs md:text-base">
+                    {pet?.breed || "N/A"}
                   </p>
-                )}
-                {errors.breed && (
-                  <p className="text-red-500 text-xs">{errors.breed.message}</p>
                 )}
               </div>
               <div className="w-1/3">
-                <label className="text-secondary-1 text-xs md:text-sm" htmlFor="gender">
+                <label
+                  className="text-secondary-1 text-xs md:text-sm"
+                  htmlFor="gender"
+                >
                   Gender
                 </label>
                 {isEditing ? (
-                  <select
-                    {...register("gender", { required: "Gender is required" })}
-                    className="outline-none border w-full p-1 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
-                    defaultValue={pet?.gender}
-                  >
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                  </select>
+                  <>
+                    <select
+                      {...register("gender", {
+                        required: "Gender is required",
+                      })}
+                      className="outline-none border w-full p-1 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
+                      defaultValue={pet?.gender}
+                    >
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                    </select>
+                    {errors.gender && (
+                      <p className="text-red-500 text-xs">
+                        {errors.gender.message}
+                      </p>
+                    )}
+                  </>
                 ) : (
-                  <p className="text-primary-1 font-medium text-sm md:text-md">
-                    {pet?.gender || "Not specified"}
-                  </p>
-                )}
-                {errors.gender && (
-                  <p className="text-red-500 text-xs">
-                    {errors.gender.message}
+                  <p className="text-primary-1 font-medium text-xs md:text-base">
+                    {pet?.gender || "N/A"}
                   </p>
                 )}
               </div>
@@ -187,36 +242,50 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
 
             <div className="flex justify-between md:flex gap-2">
               <div className="w-1/3">
-                <label className="text-secondary-1 text-xs md:text-sm" htmlFor="age">
+                <label
+                  className="text-secondary-1 text-xs md:text-sm"
+                  htmlFor="age"
+                >
                   Age
                 </label>
-                {isEditing ? (
+                {/* {isEditing ? (
+                <></>
                   <input
                     type="text"
                     disabled
                     value={calculateAge(pet?.birthday || "")}
                     className="outline-none border w-full p-1 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
                   />
-                ) : (
-                  <p className="text-primary-1 font-medium text-sm md:text-md">
-                    {calculateAge(pet?.birthday || "")}
-                  </p>
-                )}
+                ) : ( */}
+                <p className="text-primary-1 font-medium text-xs md:text-base">
+                  {calculateAge(pet?.birthday || "N/A")}
+                </p>
+                {/* )} */}
               </div>
               <div className="w-1/3">
-                <label className="text-secondary-1 text-xs md:text-sm" htmlFor="birthday">
+                <label
+                  className="text-secondary-1 text-xs md:text-sm"
+                  htmlFor="birthday"
+                >
                   Birthday
                 </label>
                 {isEditing ? (
-                  <input
-                    type="date"
-                    {...register("birthday", {
-                      required: "Birthday is required",
-                    })}
-                    className="outline-none border w-full p-1 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
-                  />
+                  <>
+                    <input
+                      type="date"
+                      {...register("birthday", {
+                        required: "Birthday is required",
+                      })}
+                      className="outline-none border w-full p-1 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
+                    />
+                    {errors.birthday && (
+                      <p className="text-red-500 text-xs">
+                        {errors.birthday.message}
+                      </p>
+                    )}
+                  </>
                 ) : (
-                  <p className="text-primary-1 font-medium text-sm md:text-md">
+                  <p className="text-primary-1 font-medium text-xs md:text-base">
                     {new Date(pet?.birthday || "").toLocaleDateString("en-GB", {
                       day: "numeric",
                       month: "long",
@@ -224,36 +293,36 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                     })}
                   </p>
                 )}
-                {errors.birthday && (
-                  <p className="text-red-500 text-xs">
-                    {errors.birthday.message}
-                  </p>
-                )}
               </div>
               <div className="w-1/3">
-                <label className="text-secondary-1 text-xs md:text-sm" htmlFor="weight">
+                <label
+                  className="text-secondary-1 text-xs md:text-sm"
+                  htmlFor="weight"
+                >
                   Weight (kg)
                 </label>
                 {isEditing ? (
-                  <input
-                    type="text"
-                    {...register("weight", {
-                      required: "Weight is required",
-                      pattern: {
-                        value: /^\d+(\.\d{1,2})?$/,
-                        message: "Invalid weight format",
-                      },
-                    })}
-                    className="outline-none border w-full p-1 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
-                  />
+                  <>
+                    <input
+                      type="text"
+                      {...register("weight", {
+                        required: "Weight is required",
+                        pattern: {
+                          value: /^\d+(\.\d{1,2})?$/,
+                          message: "Invalid weight format",
+                        },
+                      })}
+                      className="outline-none border w-full p-1 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
+                    />
+                    {errors.weight && (
+                      <p className="text-red-500 text-xs">
+                        {errors.weight.message}
+                      </p>
+                    )}
+                  </>
                 ) : (
-                  <p className="text-primary-1 font-medium text-sm md:text-md">
-                    {pet?.weight ? `${pet.weight} kg` : ""}
-                  </p>
-                )}
-                {errors.weight && (
-                  <p className="text-red-500 text-xs">
-                    {errors.weight.message}
+                  <p className="text-primary-1 font-medium text-xs md:text-base">
+                    {pet?.weight ? `${pet.weight} kg` : "N/A"}
                   </p>
                 )}
               </div>

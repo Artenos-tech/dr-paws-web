@@ -20,12 +20,13 @@ const PetProfile: React.FC<PetProfileProps> = ({ params }) => {
 };
 
 export async function generateStaticParams() {
-  // Return a list of default or common pet IDs.
   const pets = [
-    { petId: "1" },
-    { petId: "2" },
-    { petId: "3" },
-  ]; // You can expand this list with real data if accessible.
+    { petId: "ca0e53c4-9293-4b83-9f48-615bb3b02017" },
+    { petId: "30e126d5-abc9-4355-b30c-e07ac60d68d6" },
+    { petId: "1ece2a1c-0502-4c38-890f-c9b657cddf8b" },
+    { petId: "0c75aba4-c086-4ec5-a8c4-fdcd5d3f3abc" },
+    { petId: "43744f21-8fbb-40c6-99e7-6be32700ff98" },
+  ];
 
   return pets.map((pet) => ({
     petProfileId: pet.petId,
