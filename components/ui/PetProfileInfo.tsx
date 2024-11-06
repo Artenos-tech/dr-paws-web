@@ -60,7 +60,6 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
 
   const handleEditClick = () => {
     if (!isEditing && pet) {
-      // Populate form with current pet values
       for (const key in pet) {
         setValue(key as keyof Pet, pet[key as keyof Pet]);
       }
@@ -93,7 +92,6 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
     let months = now.getUTCMonth() - birthDate.getUTCMonth();
     let days = now.getUTCDate() - birthDate.getUTCDate();
 
-    // Adjust for month and day differences
     if (days < 0) {
       months -= 1;
       days += new Date(now.getUTCFullYear(), now.getUTCMonth(), 0).getDate();
@@ -104,10 +102,9 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
       months += 12;
     }
 
-    // Construct the age string
-    const yearStr = years > 0 ? `${years} years` : "";
-    const monthStr = months > 0 ? `${months} months` : "";
-    const dayStr = days > 0 ? `${days} days` : "";
+    const yearStr = years > 0 ? `${years} yrs` : "";
+    const monthStr = months > 0 ? `${months} mths` : "";
+    const dayStr = days > 0 ? `${days} d` : "";
 
     return [yearStr, monthStr, dayStr].filter(Boolean).join(", ");
   };
