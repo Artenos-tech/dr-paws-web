@@ -1,19 +1,19 @@
 'use client'
-
 import React, { useState, useEffect } from "react";
 import ProfileCard from "@/components/ui/ProfileCard";
 import AddPetModal from "@/components/ui/AddPetModal";
+import EditProfileModal from "@/components/ui/EditProfileModal";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-// Define the Pet type
 interface Pet {
   name: string;
   type: string;
 }
 
 const Profile: React.FC = () => {
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [pets, setPets] = useState<Pet[]>([]);
   const [profileData, setProfileData] = useState<any>(null);
 
@@ -21,34 +21,44 @@ const Profile: React.FC = () => {
     setPets((prevPets) => [...prevPets, pet]);
   };
 
-  useEffect(() => {
-    // Check if the user data is already in local storage
+  const fetchProfileData = () => {
     let storedProfileData = localStorage.getItem("userProfile");
 
     if (!storedProfileData) {
-      // If not found, set the default user data in local storage
       const defaultProfileData = {
         name: "John Doe",
         contact: "0937948568",
-        image: "/assets/images/Profile/Profile.png", // Set the path to your default image
+        image: "/assets/images/Profile/Profile.png",
         email: "jondoe@gmail.com",
         address: "Andheri West, Mumbai",
       };
       localStorage.setItem("userProfile", JSON.stringify(defaultProfileData));
-      // Fetch again from local storage after setting default
-      storedProfileData = localStorage.getItem("userProfile");
+      storedProfileData = JSON.stringify(defaultProfileData);
     }
 
-    // Now, parse and set the profile data in the state
     if (storedProfileData) {
       setProfileData(JSON.parse(storedProfileData));
     }
+  };
+
+  useEffect(() => {
+    fetchProfileData();
   }, []);
+
+  const handleProfileUpdate = (updatedProfile: any) => {
+    setProfileData(updatedProfile);
+    localStorage.setItem("userProfile", JSON.stringify(updatedProfile));
+  };
 
   return (
     <div className="flex flex-col w-full h-full items-center font-roca pb-20 flex-grow">
       <main className="flex flex-col gap-8 md:gap-20 items-center px-8 md:px-32 lg:px-40">
-        {profileData && <ProfileCard profile={profileData} />}
+        {profileData && (
+          <ProfileCard
+            profile={profileData}
+            onEdit={() => setIsEditModalOpen(true)}
+          />
+        )}
 
         <div className="flex flex-col w-full min-h-[350px] gap-2">
           <div className="flex items-center justify-between px-4">
@@ -101,6 +111,13 @@ const Profile: React.FC = () => {
           }}
         />
       </main>
+
+      <EditProfileModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        onSave={handleProfileUpdate}
+        profileData={profileData}
+      />
 
       <ToastContainer
         position="top-center"
