@@ -1,7 +1,7 @@
 import React from "react";
 import PetProfileInfo from "@/components/ui/PetProfileInfo";
-import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
 import BackButton from "@/components/ui/BackButton";
+import petImg from "@/public/assets/images/pets/petImg.png"
 
 interface PetProfileProps {
   params: {
@@ -16,7 +16,7 @@ const PetProfile: React.FC<PetProfileProps> = ({ params }) => {
     <div className="flex flex-col w-full h-screen items-center font-roca pb-20 flex-grow">
       <main className="flex flex-col w-full items-center px-8 md:px-32 lg:px-40">
         <BackButton />
-        <PetProfileInfo petProfileId={petProfileId} />
+        <PetProfileInfo petProfileId={petProfileId} petImg={petImg} />
       </main>
     </div>
   );
@@ -29,6 +29,7 @@ export async function generateStaticParams() {
     { petId: "1ece2a1c-0502-4c38-890f-c9b657cddf8b" },
     { petId: "0c75aba4-c086-4ec5-a8c4-fdcd5d3f3abc" },
     { petId: "43744f21-8fbb-40c6-99e7-6be32700ff98" },
+    { petId: "0303adda-78eb-46e2-8c90-b59f77e8e097" },
   ];
 
   return pets.map((pet) => ({

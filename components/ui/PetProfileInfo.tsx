@@ -1,29 +1,22 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import pet1 from "@/public/assets/images/pets/pet1.png";
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 import { useForm } from "react-hook-form";
 import { FiEdit2 } from "react-icons/fi";
-
-interface Pet {
-  petId: string;
-  name: string;
-  type: string;
-  breed: string;
-  gender: string;
-  age: string;
-  birthday: string;
-  weight: string;
-}
+import { Pet } from "@/model/typeDefinitions";
+import petImg from "@/public/assets/images/pets/petImg.png";
+import ImageEdit from "@/public/assets/images/Profile/ImageEdit.png";
 
 interface PetProfileInfoProps {
   petProfileId: string;
+  petImg: StaticImageData;
 }
 
 const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
   const [pet, setPet] = useState<Pet | null>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [image, setImage] = useState<string>(petImg.src);
 
   const {
     register,
@@ -39,6 +32,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
       age: "",
       birthday: "",
       weight: "",
+      petImg: petImg.src,
     },
   });
 
@@ -50,7 +44,6 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
       setPet(foundPet || null);
 
       if (foundPet) {
-        // Set form fields with pet data
         for (const key in foundPet) {
           setValue(key as keyof Pet, foundPet[key as keyof Pet]);
         }
@@ -68,16 +61,28 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
   };
 
   const onSubmit = (data: Pet) => {
-    setPet(data);
-    setIsEditing(false);
-
     const storedPets = localStorage.getItem("pets");
-    if (storedPets) {
-      const pets: Pet[] = JSON.parse(storedPets);
-      const updatedPets = pets.map((pet) =>
-        pet.petId === petProfileId ? { ...pet, ...data } : pet
-      );
-      localStorage.setItem("pets", JSON.stringify(updatedPets));
+    const pets: Pet[] = storedPets ? JSON.parse(storedPets) : [];
+
+    const updatedPets = pets.map((pet) =>
+      pet.petId === petProfileId ? { ...data, petImg: image } : pet
+    );
+
+    localStorage.setItem("pets", JSON.stringify(updatedPets));
+    setPet({ ...data, petImg: image });
+    setIsEditing(false);
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const result = reader.result as string;
+        setImage(result);
+        setValue("petImg", result);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -115,14 +120,41 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col md:flex-row md:justify-between md:items-start w-full"
       >
-        <div className="flex flex-col items-center md:flex-row md:justify-between w-full md:order-none order-1 ">
-          <Image
+        <div className="flex flex-col items-center md:flex-row md:justify-between w-full md:order-none order-1">
+          {/* <Image
             src={pet1.src}
             alt="pet-profile"
             width={160}
             height={160}
             className="object-cover w-[130px] h-[130px] rounded-full md:self-start"
           />
+          <Image src={petImg} alt="pet logo" className="w-24 h-24 mx-auto" /> */}
+          <div className="relative flex flex-col">
+            <Image
+              src={pet?.petImg || image}
+              alt="Profile"
+              width={130}
+              height={130}
+              className="rounded-full md:self-start"
+            />
+            {isEditing && (
+              <>
+                <Image
+                  src={ImageEdit}
+                  alt="Image Edit"
+                  className="absolute bottom-0 right-0"
+                />
+                <input
+                  type="file"
+                  accept="image/*"
+                  {...register("petImg")}
+                  onChange={handleImageChange}
+                  className="absolute bottom-0 right-0 opacity-0 w-full h-full cursor-pointer"
+                  aria-label="Upload pet profile image"
+                />
+              </>
+            )}
+          </div>
           <div className="flex flex-col flex-grow mx-3 md:mx-10 md:gap-3">
             {isEditing ? (
               <>
@@ -235,7 +267,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                   </p>
                 )}
               </div>
-            
+
               <div className="">
                 <label
                   className="text-secondary-1 text-xs md:text-sm"
@@ -283,7 +315,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                   <p className="text-primary-1 font-medium text-xs md:text-base">
                     {new Date(pet?.birthday || "").toLocaleDateString("en-GB", {
                       day: "numeric",
-                      month: "long",
+                      month: "short",
                       year: "numeric",
                     })}
                   </p>
@@ -325,29 +357,37 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
           </div>
         </div>
 
-        <div className="self-end md:self-start mb-5 md:mb-0 flex items-center">
+        {!isEditing && (
           <button
             type="button"
             onClick={handleEditClick}
-            className="btn border border-secondary-1 text-secondary-1 px-4 font-semibold py-2 rounded-full text-xs"
+            className="btn border self-end md:self-start border-secondary-1 text-secondary-1 px-4 font-semibold py-2 rounded-full text-xs"
           >
-            {isEditing ? (
-              "Cancel"
-            ) : (
-              <p className="flex items-center gap-1">
-                <FiEdit2 /> Edit
-              </p>
-            )}
+            <p className="flex items-center gap-1">
+              <FiEdit2 /> Edit
+            </p>
           </button>
-          {isEditing && (
-            <button
-              type="submit"
-              className="btn border bg-secondary-1 text-white px-4 text-xs font-semibold py-2 rounded-full ml-3"
-            >
-              Submit
-            </button>
-          )}
-        </div>
+        )}
+
+        {isEditing && (
+          <div className="self-end md:self-start my-5 md:my-0 order-2">
+            <div className="flex items-center">
+              <button
+                type="button"
+                onClick={handleEditClick}
+                className="btn border  border-secondary-1 text-secondary-1 px-4 font-semibold py-2 rounded-full text-xs"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="btn border bg-secondary-1 text-white px-4 text-xs font-semibold py-2 rounded-full ml-3"
+              >
+                Submit
+              </button>
+            </div>
+          </div>
+        )}
       </form>
     </div>
   );

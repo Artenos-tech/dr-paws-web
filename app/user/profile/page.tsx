@@ -8,6 +8,8 @@ import PetCard from "@/components/ui/PetCard";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { v4 as uuidv4 } from "uuid";
+import petImg from "@/public/assets/images/pets/petImg.png";
+import { StaticImageData } from "next/image";
 
 const ProfileData = {
   name: "John Doe",
@@ -22,6 +24,7 @@ interface Pet {
   petId: string;
   name: string;
   type: string;
+  petImg: StaticImageData;
 }
 
 const Profile: React.FC = () => {
@@ -33,15 +36,14 @@ const Profile: React.FC = () => {
     setPets(savedPets ? JSON.parse(savedPets) : []);
   }, []);
 
-  const addPet = (pet: Omit<Pet, "petId">): void => {
-    const newPet = { ...pet, petId: uuidv4() };
+  const addPet = (pet: Omit<Pet, "petId" | "petImg">): void => {
+    const newPet = { ...pet, petId: uuidv4(), petImg };
     setPets((prevPets) => {
       const updatedPets = [...prevPets, newPet];
       localStorage.setItem("pets", JSON.stringify(updatedPets));
       return updatedPets;
     });
   };
-  
 
   return (
     <div className="flex flex-col w-full h-full items-center font-roca pb-20 flex-grow">
@@ -76,7 +78,7 @@ const Profile: React.FC = () => {
               </button>
             </div>
           ) : (
-            <div className="flex flex-wrap gap-4 p-4">
+            <div className="flex justify-center items-center md:justify-start  flex-wrap gap-4 my-4">
               {pets.map((pet) => (
                 <PetCard key={pet.petId} pet={pet} />
               ))}
@@ -87,7 +89,7 @@ const Profile: React.FC = () => {
         <AddPetModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
-          onSubmit={(pet: Omit<Pet, "petId">) => {
+          onSubmit={(pet: Omit<Pet, "petId" | "petImg">) => {
             addPet(pet);
             setIsModalOpen(false);
           }}
