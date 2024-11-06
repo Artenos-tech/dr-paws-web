@@ -43,6 +43,7 @@ const Profile: React.FC = () => {
 
   useEffect(() => {
     fetchProfileData();
+    console.log(profileData);
   }, []);
 
   const handleProfileUpdate = (updatedProfile: any) => {
