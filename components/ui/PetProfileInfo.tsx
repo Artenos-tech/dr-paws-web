@@ -104,26 +104,26 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
 
     const yearStr = years > 0 ? `${years} yrs` : "";
     const monthStr = months > 0 ? `${months} mths` : "";
-    const dayStr = days > 0 ? `${days} d` : "";
+    // const dayStr = days > 0 ? `${days} d` : "";
 
-    return [yearStr, monthStr, dayStr].filter(Boolean).join(", ");
+    return [yearStr, monthStr].filter(Boolean).join(", ");
   };
 
   return (
-    <div className="bg-primary-3 my-5 rounded-lg p-4 md:p-8 w-full max-w-[1050px]">
+    <div className="bg-primary-3 rounded-lg p-4 md:p-8 w-full">
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col md:flex-row md:justify-between md:items-start w-full"
       >
-        <div className="flex flex-col items-center md:flex-row md:justify-between  w-full md:order-none order-1 ">
+        <div className="flex flex-col items-center md:flex-row md:justify-between w-full md:order-none order-1 ">
           <Image
             src={pet1.src}
             alt="pet-profile"
             width={160}
             height={160}
-            className="object-cover w-[130px] h-[130px] rounded-full"
+            className="object-cover w-[130px] h-[130px] rounded-full md:self-start"
           />
-          <div className="flex flex-col flex-grow mx-5 md:mx-10 gap-3">
+          <div className="flex flex-col flex-grow mx-3 md:mx-10 md:gap-3">
             {isEditing ? (
               <>
                 <input
@@ -141,8 +141,8 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
               </h1>
             )}
 
-            <div className="flex justify-between md:flex gap-2">
-              <div className="w-1/3">
+            <div className="grid grid-cols-2 grid-rows-3 lg:grid-cols-3 lg:grid-rows-2 w-full gap-4 md:gap-3 lg:gap-2">
+              <div className="">
                 <label
                   className="text-secondary-1 text-xs md:text-sm"
                   htmlFor="type"
@@ -173,12 +173,12 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                     )}
                   </>
                 ) : (
-                  <p className="text-primary-1 font-medium text-sm md:text-base">
+                  <p className="text-primary-1 font-medium text-xs md:text-base">
                     {pet?.type}
                   </p>
                 )}
               </div>
-              <div className="w-1/3">
+              <div className="">
                 <label
                   className="text-secondary-1 text-xs md:text-sm"
                   htmlFor="breed"
@@ -204,7 +204,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                   </p>
                 )}
               </div>
-              <div className="w-1/3">
+              <div className="">
                 <label
                   className="text-secondary-1 text-xs md:text-sm"
                   htmlFor="gender"
@@ -235,10 +235,8 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                   </p>
                 )}
               </div>
-            </div>
-
-            <div className="flex justify-between md:flex gap-2">
-              <div className="w-1/3">
+            
+              <div className="">
                 <label
                   className="text-secondary-1 text-xs md:text-sm"
                   htmlFor="age"
@@ -259,7 +257,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                 </p>
                 {/* )} */}
               </div>
-              <div className="w-1/3">
+              <div className="">
                 <label
                   className="text-secondary-1 text-xs md:text-sm"
                   htmlFor="birthday"
@@ -291,7 +289,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                   </p>
                 )}
               </div>
-              <div className="w-1/3">
+              <div className="">
                 <label
                   className="text-secondary-1 text-xs md:text-sm"
                   htmlFor="weight"
@@ -326,6 +324,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
             </div>
           </div>
         </div>
+
         <div className="self-end md:self-start mb-5 md:mb-0 flex items-center">
           <button
             type="button"

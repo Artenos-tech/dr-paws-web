@@ -1,5 +1,7 @@
 import React from "react";
 import PetProfileInfo from "@/components/ui/PetProfileInfo";
+import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
+import BackButton from "@/components/ui/BackButton";
 
 interface PetProfileProps {
   params: {
@@ -11,8 +13,9 @@ const PetProfile: React.FC<PetProfileProps> = ({ params }) => {
   const { petProfileId } = params;
 
   return (
-    <div className="flex flex-col w-full h-full items-center font-roca pb-20 flex-grow">
-      <main className="flex flex-col w-full gap-8 md:gap-16 items-center px-8 md:px-32 lg:px-40">
+    <div className="flex flex-col w-full h-screen items-center font-roca pb-20 flex-grow">
+      <main className="flex flex-col w-full items-center px-8 md:px-32 lg:px-40">
+        <BackButton />
         <PetProfileInfo petProfileId={petProfileId} />
       </main>
     </div>

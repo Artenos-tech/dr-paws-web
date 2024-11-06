@@ -20,7 +20,7 @@ const PetCard: React.FC<petCardProps> = ({ pet }) => {
   };
   return (
     <div
-      className="w-[150px] p-4 border border-secondary-2 text-center rounded-lg shadow-md"
+      className="w-[150px] p-4 border border-secondary-2 text-center rounded-lg shadow-md cursor-pointer"
       onClick={handlePetProfileView}
     >
       <h2 className="text-xl font-bold text-secondary-1">{name}</h2>
