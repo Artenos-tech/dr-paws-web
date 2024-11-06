@@ -53,23 +53,49 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
       isOpen={isOpen}
       onRequestClose={onClose}
       contentLabel="Edit Profile Modal"
-      className="max-w-md mx-auto my-20 p-4 bg-[#F8F4EA] rounded-xl shadow-lg overflow-y-auto"
+      className="min-h-[570px] min-w-[350px] max-w-md mx-auto my-10 p-4 bg-[#F8F4EA] rounded-xl shadow-lg overflow-y-auto"
       overlayClassName="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center"
       style={{ content: { maxHeight: "80vh", padding: "1rem" } }}
     >
-      <div className="flex justify-around w-full border-b pb-3 text-gray-700 mb-4">
-        <button onClick={() => setActiveTab("profile")} className={`px-6 py-2 ${activeTab === "profile" ? "border-b-2 border-blue-500 font-semibold" : ""}`}>
+      <div className="relative flex justify-around w-[85%] mx-auto border-b-2 border-gray-300 mb-4 text-gray-700">
+        {/* Profile Tab */}
+        <button
+          onClick={() => setActiveTab("profile")}
+          className={`relative py-2 transition-colors w-1/2 ${
+            activeTab === "profile" ? " font-semibold" : "text-gray-500"
+          }`}
+        >
           Profile
+          {activeTab === "profile" && (
+            <span className="absolute bottom-[-2.5px] left-0 right-0 mx-auto w-full h-[3px] bg-secondary-1 rounded-full"></span>
+          )}
         </button>
-        <button onClick={() => setActiveTab("billing")} className={`px-6 py-2 ${activeTab === "billing" ? "border-b-2 border-blue-500 font-semibold" : ""}`}>
+
+        {/* Billing Information Tab */}
+        <button
+          onClick={() => setActiveTab("billing")}
+          className={`relative py-2 transition-colors w-1/2 ${
+            activeTab === "billing" ? " font-semibold" : "text-gray-500"
+          }`}
+        >
           Billing Information
+          {activeTab === "billing" && (
+            <span className="absolute bottom-[-2.5px] left-0 right-0 mx-auto w-full h-[3px] bg-secondary-1 rounded-full"></span>
+          )}
         </button>
       </div>
 
       {activeTab === "profile" ? (
-        <ProfileForm profileData={profileData} onSubmit={handleProfileSave} onCancel={onClose} />
+        <ProfileForm
+          profileData={profileData}
+          onSubmit={handleProfileSave}
+          onCancel={onClose}
+        />
       ) : (
-        <BillingForm onSubmit={(data) => console.log("Billing Data:", data)} onCancel={onClose} />
+        <BillingForm
+          onSubmit={(data) => console.log("Billing Data:", data)}
+          onCancel={onClose}
+        />
       )}
     </Modal>
   );

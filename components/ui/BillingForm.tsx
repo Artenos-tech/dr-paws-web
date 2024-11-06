@@ -54,13 +54,17 @@ const BillingForm: React.FC<BillingFormProps> = ({ onSubmit, onCancel }) => {
   }, [reset]);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="space-y-3 w-[85%] mx-auto"
+    >
       <div className="flex gap-4">
         <div className="flex flex-col gap-2 w-1/2">
-          <label>First Name</label>
+          <label className="text-sm">First Name</label>
           <input
             {...register("firstName")}
-            className="input rounded-md p-2 border w-full"
+            placeholder="First Name"
+            className="input rounded-md p-2 border w-full border-[#74A7B3]"
           />
           {errors.firstName && (
             <span className="text-red-500 text-sm">
@@ -69,10 +73,11 @@ const BillingForm: React.FC<BillingFormProps> = ({ onSubmit, onCancel }) => {
           )}
         </div>
         <div className="flex flex-col gap-2 w-1/2">
-          <label>Last Name</label>
+          <label className="text-sm">Last Name</label>
           <input
             {...register("lastName")}
-            className="input rounded-md p-2 border w-full"
+            placeholder="Last Name"
+            className="input rounded-md p-2 border w-full border-[#74A7B3]"
           />
           {errors.lastName && (
             <span className="text-red-500 text-sm">
@@ -82,13 +87,14 @@ const BillingForm: React.FC<BillingFormProps> = ({ onSubmit, onCancel }) => {
         </div>
       </div>
       <div className="flex flex-col gap-2">
-        <label>Card Number</label>
+        <label className="text-sm">Card Number</label>
         <input
           {...register("cardNumber")}
           type="text"
           maxLength={16}
           pattern="\d*"
-          className="input rounded-md p-2 border w-full"
+          placeholder="1234 1234 1234 1234"
+          className="input rounded-md p-2 border w-full border-[#74A7B3]"
         />
         {errors.cardNumber && (
           <span className="text-red-500 text-sm">
@@ -98,12 +104,12 @@ const BillingForm: React.FC<BillingFormProps> = ({ onSubmit, onCancel }) => {
       </div>
       <div className="flex gap-4">
         <div className="flex flex-col gap-2 w-1/2">
-          <label>Expiration Date (MM/YY)</label>
+          <label className="text-sm">Expiration Date</label>
           <input
             {...register("expiry")}
             type="text"
             placeholder="MM/YY"
-            className="input rounded-md p-2 border w-full"
+            className="input rounded-md p-2 border w-full border-[#74A7B3]"
           />
           {errors.expiry && (
             <span className="text-red-500 text-sm">
@@ -112,26 +118,25 @@ const BillingForm: React.FC<BillingFormProps> = ({ onSubmit, onCancel }) => {
           )}
         </div>
         <div className="flex flex-col gap-2 w-1/2">
-          <label>CVV</label>
+          <label className="text-sm">CVV</label>
           <input
             {...register("cvv")}
             type="password"
             maxLength={3}
             pattern="\d*"
-            className="input rounded-md p-2 border w-full"
+            placeholder="CVV"
+            className="input rounded-md p-2 border w-full border-[#74A7B3]"
           />
           {errors.cvv && (
-            <span className="text-red-500 text-sm">
-              {errors.cvv.message}
-            </span>
+            <span className="text-red-500 text-sm">{errors.cvv.message}</span>
           )}
         </div>
       </div>
       <div className="flex flex-col gap-2">
-        <label>Name on Card</label>
+        <label className="text-sm">Name on Card</label>
         <input
           {...register("cardName")}
-          className="input rounded-md p-2 border w-full"
+          className="input rounded-md p-2 border w-full border-[#74A7B3]"
         />
         {errors.cardName && (
           <span className="text-red-500 text-sm">
@@ -140,10 +145,10 @@ const BillingForm: React.FC<BillingFormProps> = ({ onSubmit, onCancel }) => {
         )}
       </div>
       <div className="flex flex-col gap-2">
-        <label>Billing Address</label>
+        <label className="text-sm">Billing Address</label>
         <input
           {...register("billingAddress")}
-          className="input rounded-md p-2 border w-full"
+          className="input rounded-md p-2 border w-full border-[#74A7B3]"
         />
         {errors.billingAddress && (
           <span className="text-red-500 text-sm">
@@ -151,17 +156,17 @@ const BillingForm: React.FC<BillingFormProps> = ({ onSubmit, onCancel }) => {
           </span>
         )}
       </div>
-      <div className="flex justify-between mt-6">
+      <div className="flex gap-4 pt-4">
         <button
           onClick={onCancel}
           type="button"
-          className="text-gray-500 border border-gray-400 rounded-lg px-4 py-2"
+          className="text-secondary-1 border-2 border-secondary-1 rounded-full px-4 py-2 flex-1"
         >
           Cancel
         </button>
         <button
           type="submit"
-          className="bg-blue-500 text-white rounded-lg px-4 py-2"
+          className="bg-secondary-1 text-white rounded-full px-4 py-2 flex-1"
         >
           Save Billing Info
         </button>

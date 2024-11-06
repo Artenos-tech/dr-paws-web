@@ -7,12 +7,12 @@ import React from "react";
 interface ProfileCardProps {
   profile: {
     name: string;
-    image: StaticImageData; 
+    image: StaticImageData;
     contact: string;
     email: string;
     address: string;
   };
-  onEdit: () => void; 
+  onEdit: () => void;
 }
 
 const ProfileCard: React.FC<ProfileCardProps> = ({ profile, onEdit }) => {
@@ -20,15 +20,15 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ profile, onEdit }) => {
 
   return (
     <div className="flex flex-col lg:flex-row items-start lg:items-center gap-6 md:gap-8 mt-16">
-
       <div className="relative w-20 h-20 md:w-32 md:h-32 rounded-full overflow-hidden bg-orange-400 flex-shrink-0">
         <Image src={image} alt={name} fill className="object-cover" priority />
       </div>
 
-
       <div className="flex-grow space-y-6">
-        <div className="flex justify-between items-start gap-4">
-          <h1 className="text-3xl md:text-4xl font-semibold text-secondary-1">{name}</h1>
+        <div className="flex justify-between items-start gap-9">
+          <h1 className="text-3xl md:text-4xl font-semibold text-secondary-1">
+            {name}
+          </h1>
           <button
             onClick={onEdit}
             className="flex items-center gap-1 text-sm text-secondary-1 border px-4 py-2 rounded-full border-secondary-1 hover:bg-blue-50"

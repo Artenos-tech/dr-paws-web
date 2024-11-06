@@ -1,10 +1,10 @@
-'use client'
+"use client";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
-import ImageEdit from '@/public/assets/images/Profile/ImageEdit.png'
+import ImageEdit from "@/public/assets/images/Profile/ImageEdit.png";
 
 const profileSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -24,7 +24,11 @@ interface ProfileFormProps {
   onCancel: () => void;
 }
 
-const ProfileForm: React.FC<ProfileFormProps> = ({ profileData, onSubmit, onCancel }) => {
+const ProfileForm: React.FC<ProfileFormProps> = ({
+  profileData,
+  onSubmit,
+  onCancel,
+}) => {
   const {
     register,
     handleSubmit,
@@ -56,11 +60,24 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ profileData, onSubmit, onCanc
   };
 
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
-      <div className="flex flex-col items-center mb-4">
+    <form
+      onSubmit={handleSubmit(handleFormSubmit)}
+      className="space-y-3 flex flex-col mx-auto w-[85%]"
+    >
+      <div className="flex flex-col items-center">
         <div className="relative">
-          <Image src={image} alt="Profile" width={120} height={120} className="rounded-full" />
-          <Image src={ImageEdit} alt="Image Edit" className="absolute bottom-0 right-0 "/>
+          <Image
+            src={image}
+            alt="Profile"
+            width={90}
+            height={90}
+            className="rounded-full"
+          />
+          <Image
+            src={ImageEdit}
+            alt="Image Edit"
+            className="absolute bottom-0 right-0 "
+          />
           <input
             type="file"
             accept="image/*"
@@ -70,62 +87,61 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ profileData, onSubmit, onCanc
         </div>
       </div>
 
-      <div className="flex flex-col gap-2">
-        <label>Name</label>
+      <div className="flex flex-col gap-1">
+        <label className="text-sm">Name</label>
         <input
           {...register("name")}
-          className="input rounded-md p-2 border w-full"
+          className="rounded-md p-2 border w-full border-accent"
         />
         {errors.name && (
-          <span className="text-red-500 text-sm">
-            {errors.name.message}
-          </span>
+          <span className="text-red-500 text-sm">{errors.name.message}</span>
         )}
       </div>
-      <div className="flex flex-col gap-2">
-        <label>Contact No</label>
+      <div className="flex flex-col gap-1">
+        <label className="text-sm">Contact No</label>
         <input
           {...register("contact")}
           type="text"
           maxLength={10}
           pattern="\d*"
-          className="input rounded-md p-2 border w-full"
+          className="rounded-md p-2 border w-full border-[#74A7B3]"
         />
         {errors.contact && (
-          <span className="text-red-500 text-sm">
-            {errors.contact.message}
-          </span>
+          <span className="text-red-500 text-sm">{errors.contact.message}</span>
         )}
       </div>
-      <div className="flex flex-col gap-2">
-        <label>Email</label>
+      <div className="flex flex-col gap-1">
+        <label className="text-sm">Email</label>
         <input
           {...register("email")}
-          className="input rounded-md p-2 border w-full"
+          className="input rounded-md p-2 border w-full border-[#74A7B3]"
         />
         {errors.email && (
-          <span className="text-red-500 text-sm">
-            {errors.email.message}
-          </span>
+          <span className="text-red-500 text-sm">{errors.email.message}</span>
         )}
       </div>
-      <div className="flex flex-col gap-2">
-        <label>Address</label>
+      <div className="flex flex-col gap-1">
+        <label className="text-sm">Address</label>
         <input
           {...register("address")}
-          className="input rounded-md p-2 border w-full"
+          className="input rounded-md p-2 border w-full border-[#74A7B3]"
         />
         {errors.address && (
-          <span className="text-red-500 text-sm">
-            {errors.address.message}
-          </span>
+          <span className="text-red-500 text-sm">{errors.address.message}</span>
         )}
       </div>
-      <div className="flex justify-between mt-6">
-        <button onClick={onCancel} type="button" className="text-gray-500 border border-gray-400 rounded-lg px-4 py-2">
+      <div className="flex gap-2">
+        <button
+          onClick={onCancel}
+          type="button"
+          className="text-secondary-1 border-2 border-secondary-1 rounded-full px-4 py-2 flex-1"
+        >
           Cancel
         </button>
-        <button type="submit" className="bg-blue-500 text-white rounded-lg px-4 py-2">
+        <button
+          type="submit"
+          className="bg-secondary-1 text-white rounded-full px-4 py-2 flex-1"
+        >
           Save
         </button>
       </div>
