@@ -62,7 +62,7 @@ export default function NavBar() {
                 Our Services
               </Link>
               <a
-                href="#"
+                href="/team"
                 className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
               >
                 Our Team
@@ -114,7 +114,7 @@ export default function NavBar() {
               Our Services
             </a>
             <a
-              href="#"
+              href="/team"
               className="text-primary-1 hover:bg-primary-2 hover:text-white block py-2 px-2 rounded-md text-base font-medium"
             >
               Our Team
