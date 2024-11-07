@@ -15,7 +15,7 @@ const billingSchema = z.object({
   billingAddress: z.string().min(1, "Billing address is required"),
 });
 
-type BillingFormData = z.infer<typeof billingSchema>;
+export type BillingFormData = z.infer<typeof billingSchema>;
 
 interface BillingFormProps {
   onSubmit: (data: BillingFormData) => void;

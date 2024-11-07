@@ -3,6 +3,7 @@ import Modal from "react-modal";
 import ProfileForm from "./ProfileForm";
 import BillingForm from "./BillingForm";
 import { ProfileData } from "./ProfileCard";
+import {BillingFormData} from './BillingForm'
 
 interface EditProfileModalProps {
   isOpen: boolean;
@@ -18,9 +19,17 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
   profileData,
 }) => {
   const [activeTab, setActiveTab] = useState<"profile" | "billing">("profile");
+  const [billingData, setBillingData] = useState<BillingFormData | null>(null);
 
   const handleProfileSave = (data: ProfileData) => {
     onSave(data);
+    onClose();
+  };
+
+  const handleBillingSave = (data: BillingFormData) => {
+    setBillingData(data);
+    localStorage.setItem("billingData", JSON.stringify(data));
+    console.log(billingData);
     onClose();
   };
 
@@ -75,7 +84,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
         />
       ) : (
         <BillingForm
-          onSubmit={(data) => console.log("Billing Data:", data)}
+          onSubmit={handleBillingSave}
           onCancel={onClose}
         />
       )}
