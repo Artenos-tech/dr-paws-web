@@ -57,7 +57,7 @@ const TeamPage = () => {
         <div>
           <h1 className="text-4xl font-normal text-center">Our Team</h1>
 
-          <div className="flex justify-center items-center lg:justify-start flex-wrap gap-8 my-7">
+          <div className="flex justify-center items-center lg:justify-start flex-wrap gap-8 lg:gap-20 my-7">
             {doctors.map((doctor: Doctor, index: number) => (
               <div key={index}>
                 <DoctorCard doctor={doctor} />
