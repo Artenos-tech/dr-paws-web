@@ -66,7 +66,7 @@ const Profile: React.FC = () => {
           {pets.length === 0 ? (
             <div className="flex flex-col items-center justify-center flex-1 gap-2">
               <h3 className="text-secondary-1">
-                You haven't added any <span>pets yet</span>
+                You haven&apos;t added any <span>pets yet</span>
               </h3>
               <button
                 onClick={() => setIsModalOpen(true)}

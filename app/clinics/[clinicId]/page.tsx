@@ -7,7 +7,6 @@ import React from "react";
 
 import { clinicItems } from "@/model/mockData";
 import { Clinic } from "@/model/typeDefinitions";
-import Button from "@/components/ui/Button";
 
 export async function generateStaticParams() {
   // Return paths in the format expected by Next.js

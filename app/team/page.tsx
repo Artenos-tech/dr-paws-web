@@ -1,6 +1,5 @@
 import React from "react";
 import teamImg from "@/public/assets/images/team/teamImg.png";
-import Image from "next/image";
 import { doctors } from "@/model/mockData";
 import DoctorCard from "@/components/ui/DoctorCard";
 import { Doctor } from "@/model/typeDefinitions";

@@ -1,6 +1,5 @@
 import React from "react";
 import PetProfileInfo from "@/components/ui/PetProfileInfo";
-import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
 import BackButton from "@/components/ui/BackButton";
 
 interface PetProfileProps {
