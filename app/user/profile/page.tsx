@@ -7,9 +7,9 @@ import AddPetModal from "@/components/ui/AddPetModal";
 import PetCard from "@/components/ui/PetCard";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { v4 as uuidv4 } from "uuid";
 import petImg from "@/public/assets/images/pets/petImg.png";
 import { StaticImageData } from "next/image";
+import OutlineButton from "@/components/ui/OutlineButton";
 
 const ProfileData = {
   name: "John Doe",
@@ -31,18 +31,31 @@ const Profile: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [pets, setPets] = useState<Pet[]>([]);
 
+  // Initialize petIdCounter as a string
+  const [petIdCounter, setPetIdCounter] = useState<string>("1");
+
   useEffect(() => {
     const savedPets = localStorage.getItem("pets");
-    setPets(savedPets ? JSON.parse(savedPets) : []);
+    const parsedPets = savedPets ? JSON.parse(savedPets) : [];
+    setPets(parsedPets);
+
+    // Set petIdCounter based on the last petId in the list, converting to a string
+    if (parsedPets.length > 0) {
+      const maxId = Math.max(
+        ...parsedPets.map((pet: Pet) => parseInt(pet.petId))
+      );
+      setPetIdCounter((maxId + 1).toString());
+    }
   }, []);
 
   const addPet = (pet: Omit<Pet, "petId" | "petImg">): void => {
-    const newPet = { ...pet, petId: uuidv4(), petImg };
+    const newPet: Pet = { ...pet, petId: petIdCounter, petImg };
     setPets((prevPets) => {
       const updatedPets = [...prevPets, newPet];
       localStorage.setItem("pets", JSON.stringify(updatedPets));
       return updatedPets;
     });
+    setPetIdCounter((parseInt(petIdCounter) + 1).toString());
   };
 
   return (
@@ -56,12 +69,10 @@ const Profile: React.FC = () => {
           <div className="flex items-center justify-between">
             <h1 className="text-2xl text-secondary-1">Your Pets</h1>
             {pets.length > 0 && (
-              <button
-                onClick={() => setIsModalOpen(true)}
-                className="text-sm text-secondary-1 border px-5 py-2 rounded-full border-secondary-1 hover:bg-blue-50"
-              >
-                + Add Pet
-              </button>
+              <OutlineButton
+                outlineBtnText="Add Pet"
+                outlineBtnLink={() => setIsModalOpen(true)}
+              />
             )}
           </div>
 
@@ -78,7 +89,7 @@ const Profile: React.FC = () => {
               </button>
             </div>
           ) : (
-            <div className="flex justify-center items-center md:justify-start  flex-wrap gap-4 my-4">
+            <div className="flex justify-center items-center md:justify-start  flex-wrap gap-4 my-8 md:my-4">
               {pets.map((pet) => (
                 <PetCard key={pet.petId} pet={pet} />
               ))}
@@ -97,7 +108,7 @@ const Profile: React.FC = () => {
       </main>
 
       <ToastContainer
-        position="top-center"
+        position="top-right"
         autoClose={1000}
         hideProgressBar={false}
         newestOnTop={false}

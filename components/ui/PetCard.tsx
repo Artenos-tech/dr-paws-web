@@ -27,7 +27,7 @@ const PetCard: React.FC<petCardProps> = ({ pet }) => {
       onClick={handlePetProfileView}
     >
       <div className="bg-primary-3 rounded-2xl p-4 space-y-3">
-        <Image src={petImg || petLogo} alt="pet logo" width={24} height={24} className="w-24 h-24 mx-auto" />
+        <Image src={petImg || petLogo} alt="pet logo" width={24} height={24} className="w-24 h-24 mx-auto rounded-full object-cover" />
         <h2 className="text-xl font-bold text-secondary-1">{name}</h2>
       </div>
       <div className="rounded-b-md pb-6">

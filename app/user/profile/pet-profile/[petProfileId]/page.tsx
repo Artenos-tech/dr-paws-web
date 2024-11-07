@@ -1,7 +1,7 @@
 import React from "react";
 import PetProfileInfo from "@/components/ui/PetProfileInfo";
 import BackButton from "@/components/ui/BackButton";
-import petImg from "@/public/assets/images/pets/petImg.png"
+import petImg from "@/public/assets/images/pets/petImg.png";
 
 interface PetProfileProps {
   params: {
@@ -24,14 +24,13 @@ const PetProfile: React.FC<PetProfileProps> = ({ params }) => {
 
 export async function generateStaticParams() {
   const pets = [
-    { petId: "ca0e53c4-9293-4b83-9f48-615bb3b02017" },
-    { petId: "30e126d5-abc9-4355-b30c-e07ac60d68d6" },
-    { petId: "1ece2a1c-0502-4c38-890f-c9b657cddf8b" },
-    { petId: "0c75aba4-c086-4ec5-a8c4-fdcd5d3f3abc" },
-    { petId: "43744f21-8fbb-40c6-99e7-6be32700ff98" },
-    { petId: "0303adda-78eb-46e2-8c90-b59f77e8e097" },
+    { petId: "1" },
+    { petId: "2" },
+    { petId: "3" },
+    { petId: "4" },
+    { petId: "5" },
+    { petId: "6" },
   ];
-
   return pets.map((pet) => ({
     petProfileId: pet.petId,
   }));

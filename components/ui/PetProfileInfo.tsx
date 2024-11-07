@@ -7,6 +7,7 @@ import { FiEdit2 } from "react-icons/fi";
 import { Pet } from "@/model/typeDefinitions";
 import petImg from "@/public/assets/images/pets/petImg.png";
 import ImageEdit from "@/public/assets/images/Profile/ImageEdit.png";
+import OutlineButton from "./OutlineButton";
 
 interface PetProfileInfoProps {
   petProfileId: string;
@@ -16,7 +17,7 @@ interface PetProfileInfoProps {
 const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
   const [pet, setPet] = useState<Pet | null>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [image, setImage] = useState<string>(petImg.src);
+  const [image, setImage] = useState<string | StaticImageData>(petImg.src);
 
   const {
     register,
@@ -40,8 +41,12 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
     const storedPets = localStorage.getItem("pets");
     if (storedPets) {
       const pets: Pet[] = JSON.parse(storedPets);
-      const foundPet = pets.find((pet) => pet.petId === petProfileId);
+      const foundPet = pets.find(
+        (pet) => Number(pet.petId) === Number(petProfileId)
+      );
+
       setPet(foundPet || null);
+      setImage(foundPet?.petImg || image);
 
       if (foundPet) {
         for (const key in foundPet) {
@@ -65,7 +70,9 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
     const pets: Pet[] = storedPets ? JSON.parse(storedPets) : [];
 
     const updatedPets = pets.map((pet) =>
-      pet.petId === petProfileId ? { ...data, petImg: image } : pet
+      Number(pet.petId) === Number(petProfileId)
+        ? { ...data, petImg: image }
+        : pet
     );
 
     localStorage.setItem("pets", JSON.stringify(updatedPets));
@@ -131,11 +138,11 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
           <Image src={petImg} alt="pet logo" className="w-24 h-24 mx-auto" /> */}
           <div className="relative flex flex-col">
             <Image
-              src={pet?.petImg || image}
+              src={image}
               alt="Profile"
               width={130}
               height={130}
-              className="rounded-full md:self-start"
+              className="rounded-full w-[130px] h-[130px] md:self-start"
             />
             {isEditing && (
               <>
@@ -161,7 +168,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                 <input
                   type="text"
                   {...register("name", { required: "Pet name is required" })}
-                  className="outline-none border w-full p-1 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
+                  className="outline-none border w-full p-1 px-2 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
                 />
                 {errors.name && (
                   <p className="text-red-500 text-xs">{errors.name.message}</p>
@@ -185,7 +192,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                   <>
                     <select
                       {...register("type", { required: "Type is required" })}
-                      className="outline-none border w-full p-1 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
+                      className="outline-none border w-full p-1 px-2 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
                       defaultValue={pet?.type}
                     >
                       <option value="" disabled>
@@ -222,7 +229,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                     <input
                       type="text"
                       {...register("breed", { required: "Breed is required" })}
-                      className="outline-none border w-full p-1 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
+                      className="outline-none border w-full px-2 p-1 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
                     />
                     {errors.breed && (
                       <p className="text-red-500 text-xs">
@@ -249,12 +256,13 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                       {...register("gender", {
                         required: "Gender is required",
                       })}
-                      className="outline-none border w-full p-1 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
+                      className="outline-none border w-full px-2 p-1 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
                       defaultValue={pet?.gender}
                     >
                       <option value="Male">Male</option>
                       <option value="Female">Female</option>
                     </select>
+
                     {errors.gender && (
                       <p className="text-red-500 text-xs">
                         {errors.gender.message}
@@ -303,7 +311,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                       {...register("birthday", {
                         required: "Birthday is required",
                       })}
-                      className="outline-none border w-full p-1 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
+                      className="outline-none border px-2 w-full p-1 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
                     />
                     {errors.birthday && (
                       <p className="text-red-500 text-xs">
@@ -339,7 +347,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                           message: "Invalid weight format",
                         },
                       })}
-                      className="outline-none border w-full p-1 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
+                      className="outline-none border px-2 w-full p-1 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
                     />
                     {errors.weight && (
                       <p className="text-red-500 text-xs">
@@ -357,28 +365,22 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
           </div>
         </div>
 
-        {!isEditing && (
-          <button
-            type="button"
-            onClick={handleEditClick}
-            className="btn border self-end md:self-start border-secondary-1 text-secondary-1 px-4 font-semibold py-2 rounded-full text-xs"
-          >
-            <p className="flex items-center gap-1">
-              <FiEdit2 /> Edit
-            </p>
-          </button>
-        )}
+        <div className="self-end md:self-start">
+          {!isEditing && (
+            <OutlineButton
+              outlineBtnText="Edit"
+              outlineBtnLink={() => handleEditClick()}
+            />
+          )}
+        </div>
 
         {isEditing && (
           <div className="self-end md:self-start my-5 md:my-0 order-2">
             <div className="flex items-center">
-              <button
-                type="button"
-                onClick={handleEditClick}
-                className="btn border  border-secondary-1 text-secondary-1 px-4 font-semibold py-2 rounded-full text-xs"
-              >
-                Cancel
-              </button>
+              <OutlineButton
+                outlineBtnText="Cancel"
+                outlineBtnLink={() => handleEditClick()}
+              />
               <button
                 type="submit"
                 className="btn border bg-secondary-1 text-white px-4 text-xs font-semibold py-2 rounded-full ml-3"
