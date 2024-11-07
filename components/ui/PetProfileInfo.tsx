@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import Image, { StaticImageData } from "next/image";
 import { useForm } from "react-hook-form";
-import { FiEdit2 } from "react-icons/fi";
 import { Pet } from "@/model/typeDefinitions";
 import petImg from "@/public/assets/images/pets/petImg.png";
 import ImageEdit from "@/public/assets/images/Profile/ImageEdit.png";
@@ -365,7 +364,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
           </div>
         </div>
 
-        <div className="self-end md:self-start">
+        <div className="self-end md:self-start mb-3">
           {!isEditing && (
             <OutlineButton
               outlineBtnText="Edit"

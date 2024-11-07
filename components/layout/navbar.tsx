@@ -8,7 +8,6 @@ import Button from "../ui/Button";
 import Link from "next/link";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { MdChevronRight } from "react-icons/md";
-import ProfileDropdown from "../ui/DropDownMenu";
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);

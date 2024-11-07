@@ -79,7 +79,7 @@ const Profile: React.FC = () => {
           {pets.length === 0 ? (
             <div className="flex flex-col items-center justify-center flex-1 gap-2">
               <h3 className="text-secondary-1">
-                You haven't added any <span>pets yet</span>
+                You haven&apos;t added any <span>pets yet</span>
               </h3>
               <button
                 onClick={() => setIsModalOpen(true)}
@@ -108,7 +108,7 @@ const Profile: React.FC = () => {
       </main>
 
       <ToastContainer
-        position="top-right"
+        position="bottom-right"
         autoClose={1000}
         hideProgressBar={false}
         newestOnTop={false}
@@ -118,6 +118,13 @@ const Profile: React.FC = () => {
         draggable
         pauseOnHover
         theme="light"
+        style={{
+          position: "fixed",
+          bottom: "20px",
+          right: "0px",
+          top: "auto",
+          left: "auto",
+        }}
       />
     </div>
   );
