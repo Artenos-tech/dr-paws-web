@@ -28,7 +28,7 @@ const Overview = () => {
           </div>
           <div>
             <h2 className="text-2xl font-roca font-semibold mb-3">Timings</h2>
-            <div className="text-lg border">
+            <div className="text-lg">
               <p className="flex  justify-between">
                 Monday to Friday:{" "}
                 <span className="text-xl font-roca ml-4">09:00 - 19:00</span>

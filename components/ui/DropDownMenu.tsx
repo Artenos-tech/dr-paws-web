@@ -4,7 +4,7 @@ import { MdChevronRight } from "react-icons/md";
 export default function ProfileDropdown() {
   return (
     <DropdownMenu.Root>
-      <DropdownMenu.Trigger className="flex items-center outline-none">
+      <DropdownMenu.Trigger className="flex items-center">
         <img
           src="/assets/images/profileThumnail.svg"
           alt="User logo"
