@@ -31,7 +31,7 @@ const DescriptionCard: React.FC<descriptionCardProps> = ({
         />
       </div>
       <div className="w-full text-center lg:text-left text-primary-1 my-3 md:my-8 lg:my-0">
-        <h1 className={`text-xl md:text-4xl`}>{title}</h1>
+        <h1 className={`text-md md:text-2xl`}>{title}</h1>
         <p className="text-sm md:text-base my-3 md:my-5">
           {description.desciption}
         </p>

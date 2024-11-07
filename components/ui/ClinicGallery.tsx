@@ -5,6 +5,7 @@ import React, { useState, useEffect } from "react";
 import ReactModal from "react-modal";
 import { IoIosArrowBack, IoIosArrowForward, IoMdClose } from "react-icons/io";
 import { Clinic } from "@/model/typeDefinitions";
+import Button from "./Button";
 
 interface ClinicGalleryProps {
   clinic: Clinic;
@@ -73,7 +74,18 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
           </div>
         ))}
       </div>
-
+      <div className="w-full flex justify-between mt-8">
+          <div className="flex flex-col gap-2">
+            <h1 className="text-xl md:text-4xl">Andheri West Clinic</h1>
+            <p>Grooming | OPD | Surgery</p>
+          </div>
+          <div>
+          <Button
+                buttonText="Book a visit"
+                buttonBackground="bg-secondary-1"
+              />
+          </div>
+        </div>          
       {/* Modal */}
       <ReactModal
         isOpen={isOpen}
