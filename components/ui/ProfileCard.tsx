@@ -1,20 +1,18 @@
 "use client";
-
-// import { Pencil } from "lucide-react";
-import Image, { StaticImageData } from "next/image";
+import Image from "next/image";
 import React from "react";
 import OutlineButton from "./OutlineButton";
 
-
+export interface ProfileData {
+  name: string;
+  image: string;
+  contact: string;
+  email: string;
+  address: string;
+}
 
 interface ProfileCardProps {
-  profile: {
-    name: string;
-    image: StaticImageData;
-    contact: string;
-    email: string;
-    address: string;
-  };
+  profile: ProfileData;
   onEdit: () => void;
 }
 
@@ -22,7 +20,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ profile, onEdit }) => {
   const { name, image, contact, email, address } = profile;
 
   return (
-    <div className=" w-full flex flex-col lg:flex-row items-start lg:items-center gap-6 md:gap-8 mt-16">
+    <div className="w-full flex flex-col lg:flex-row items-start lg:items-center gap-6 md:gap-8 mt-16">
       <div className="relative w-20 h-20 md:w-32 md:h-32 rounded-full overflow-hidden bg-orange-400 flex-shrink-0">
         <Image src={image} alt={name} fill className="object-cover" priority />
       </div>
@@ -32,13 +30,6 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ profile, onEdit }) => {
           <h1 className="text-3xl md:text-4xl font-semibold text-secondary-1">
             {name}
           </h1>
-          {/* <button
-            onClick={onEdit}
-            className="flex items-center gap-1 text-sm text-secondary-1 border px-4 py-2 rounded-full border-secondary-1 hover:bg-blue-50"
-          >
-            <Pencil className="w-4 h-4" />
-            Edit Profile
-          </button> */}
           <OutlineButton 
            outlineBtnText="Edit Profile"
            outlineBtnLink={onEdit} />

@@ -5,7 +5,8 @@ import AddPetModal from "@/components/ui/AddPetModal";
 import EditProfileModal from "@/components/ui/EditProfileModal";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import profileImage from "/public/assets/images/Profile/Profile.png"; // Import the image as StaticImageData
+import { ProfileData } from "@/components/ui/ProfileCard";
+import defaultProfileImage from "/public/assets/images/Profile/Profile.png";
 
 interface Pet {
   name: string;
@@ -16,7 +17,7 @@ const Profile: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [pets, setPets] = useState<Pet[]>([]);
-  const [profileData, setProfileData] = useState<any>(null);
+  const [profileData, setProfileData] = useState<ProfileData | null>(null);
 
   const addPet = (pet: Pet): void => {
     setPets((prevPets) => [...prevPets, pet]);
@@ -26,10 +27,10 @@ const Profile: React.FC = () => {
     let storedProfileData = localStorage.getItem("userProfile");
 
     if (!storedProfileData) {
-      const defaultProfileData = {
+      const defaultProfileData: ProfileData = {
         name: "John Doe",
         contact: "0937948568",
-        image: profileImage, // Use imported StaticImageData
+        image: defaultProfileImage.src,
         email: "jondoe@gmail.com",
         address: "Andheri West, Mumbai",
       };
@@ -41,7 +42,7 @@ const Profile: React.FC = () => {
       const parsedData = JSON.parse(storedProfileData);
       setProfileData({
         ...parsedData,
-        image: parsedData.image || profileImage,
+        image: parsedData.image || defaultProfileImage.src,
       });
     }
   };
@@ -50,7 +51,7 @@ const Profile: React.FC = () => {
     fetchProfileData();
   }, []);
 
-  const handleProfileUpdate = (updatedProfile: any) => {
+  const handleProfileUpdate = (updatedProfile: ProfileData) => {
     setProfileData(updatedProfile);
     localStorage.setItem("userProfile", JSON.stringify(updatedProfile));
   };
@@ -117,12 +118,14 @@ const Profile: React.FC = () => {
         />
       </main>
 
-      <EditProfileModal
-        isOpen={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
-        onSave={handleProfileUpdate}
-        profileData={profileData}
-      />
+      {profileData && (
+        <EditProfileModal
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          onSave={handleProfileUpdate}
+          profileData={profileData}
+        />
+      )}
 
       <ToastContainer
         position="top-center"

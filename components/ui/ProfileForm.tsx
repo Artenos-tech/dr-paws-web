@@ -5,6 +5,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import ImageEdit from "@/public/assets/images/Profile/ImageEdit.png";
+import { ProfileData } from "./ProfileCard";
 
 const profileSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -19,8 +20,8 @@ const profileSchema = z.object({
 type ProfileFormData = z.infer<typeof profileSchema>;
 
 interface ProfileFormProps {
-  profileData: ProfileFormData & { image: string };
-  onSubmit: (data: ProfileFormData & { image: string }) => void;
+  profileData: ProfileData;
+  onSubmit: (data: ProfileData) => void;
   onCancel: () => void;
 }
 

@@ -2,24 +2,13 @@ import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import ProfileForm from "./ProfileForm";
 import BillingForm from "./BillingForm";
+import { ProfileData } from "./ProfileCard";
 
 interface EditProfileModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (updatedProfile: {
-    name: string;
-    contact: string;
-    image: string;
-    email: string;
-    address: string;
-  }) => void;
-  profileData: {
-    name: string;
-    contact: string;
-    image: string;
-    email: string;
-    address: string;
-  };
+  onSave: (updatedProfile: ProfileData) => void;
+  profileData: ProfileData;
 }
 
 const EditProfileModal: React.FC<EditProfileModalProps> = ({
@@ -30,15 +19,8 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<"profile" | "billing">("profile");
 
-  const handleProfileSave = (data: {
-    name: string;
-    contact: string;
-    email: string;
-    address: string;
-    image: string;
-  }) => {
-    const updatedProfile = { ...data };
-    onSave(updatedProfile);
+  const handleProfileSave = (data: ProfileData) => {
+    onSave(data);
     onClose();
   };
 
@@ -60,7 +42,6 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
       }}
     >
       <div className="relative flex justify-around w-[85%] mx-auto border-b-2 border-gray-300 mb-4 text-gray-700">
-        {/* Profile Tab */}
         <button
           onClick={() => setActiveTab("profile")}
           className={`relative py-2 transition-colors w-1/2 ${
@@ -73,7 +54,6 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
           )}
         </button>
 
-        {/* Billing Information Tab */}
         <button
           onClick={() => setActiveTab("billing")}
           className={`relative py-2 transition-colors w-1/2 ${
