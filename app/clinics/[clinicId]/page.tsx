@@ -7,7 +7,7 @@ import React from "react";
 
 import { clinicItems } from "@/model/mockData";
 import { Clinic } from "@/model/typeDefinitions";
-import Button from "@/components/ui/Button";
+
 
 export async function generateStaticParams() {
   // Return paths in the format expected by Next.js
@@ -50,7 +50,7 @@ const ClinicDetails: React.FC<ClinicDetailsProps> = ({ params }) => {
     <div className="flex flex-col w-full h-full items-center justify-items-center font-roca pb-20 flex-grow">
       <main className="flex flex-col gap-[80px] row-start-2 items-center w-[70%]">
         <ClinicGallery clinic={clinic} />
-       
+
         <ClinicTabBar tabs={tabs} />
       </main>
     </div>

@@ -62,16 +62,16 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
   return (
     <form
       onSubmit={handleSubmit(handleFormSubmit)}
-      className="space-y-3 flex flex-col mx-auto w-[85%]"
+      className="space-y-4 flex flex-col mx-auto w-[85%]"
     >
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center mt-2">
         <div className="relative">
           <Image
             src={image}
             alt="Profile"
-            width={90}
-            height={90}
-            className="rounded-full"
+            width={100}
+            height={100}
+            className="rounded-full h-[120px] w-[120px]"
           />
           <Image
             src={ImageEdit}
@@ -87,7 +87,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
         </div>
       </div>
 
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col ">
         <label className="text-sm">Name</label>
         <input
           {...register("name")}
@@ -97,7 +97,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
           <span className="text-red-500 text-sm">{errors.name.message}</span>
         )}
       </div>
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col ">
         <label className="text-sm">Contact No</label>
         <input
           {...register("contact")}
@@ -110,7 +110,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
           <span className="text-red-500 text-sm">{errors.contact.message}</span>
         )}
       </div>
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col ">
         <label className="text-sm">Email</label>
         <input
           {...register("email")}
@@ -120,7 +120,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
           <span className="text-red-500 text-sm">{errors.email.message}</span>
         )}
       </div>
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col ">
         <label className="text-sm">Address</label>
         <input
           {...register("address")}
@@ -130,7 +130,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
           <span className="text-red-500 text-sm">{errors.address.message}</span>
         )}
       </div>
-      <div className="flex gap-2">
+      <div className="flex gap-2 pt-2">
         <button
           onClick={onCancel}
           type="button"

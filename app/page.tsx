@@ -50,7 +50,9 @@ export default function Home() {
             <h1 className="mx-auto text-center text-xl md:text-4xl">
               Check out the places
             </h1>
-            <h1 className="mx-auto text-center text-xl md:text-4xl">we call home</h1>
+            <h1 className="mx-auto text-center text-xl md:text-4xl">
+              we call home
+            </h1>
             <div className="mx-auto pt-5 px-8 md:px-32 lg:px-40">
               <ClinicItemList showStaticCard={false} enlargedView={false} />
             </div>
@@ -70,7 +72,9 @@ export default function Home() {
           <Services />
 
           <div className="w-full mt-20">
-            <h1 className="text-xl md:text-4xl text-center text-primary-1">Reviews</h1>
+            <h1 className="text-xl md:text-4xl text-center text-primary-1">
+              Reviews
+            </h1>
             <div className="flex justify-center items-center mt-10 md:mt-20">
               <div className="relative flex flex-col items-center justify-center custom:flex-row border-yellow-500">
                 {/* Container for Green Background and Lady Image */}
@@ -182,7 +186,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="w-[75%] mx-auto text-center my-20 sm:w-[50%] md:[45%] lg:[40%]">
+          <div className="mx-auto text-center my-20 flex flex-col px-8 md:px-32 lg:px-40">
             <h1 className="text-xl md:text-4xl">Still have questions?</h1>
             <p className=" md:text-xl">
               If your question is still not answered, please get in touch and
