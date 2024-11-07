@@ -811,3 +811,68 @@ export const reviews = [
       "We've been taking our pet Milo to the clinic recently. The staff are very friendly and the vets knowledgeable.",
   },
 ];
+
+export const membershipData = [
+  {
+    title: "Care Junior",
+    icon: "/icons/egg-icon.svg",
+    description: "Our plan that helps prepare you and your puppy or kitten for a lifetime together",
+    benefits: [
+      { text: "6 free-of-cost consultations every year" },
+      { text: "50% discount on additional consultations" },
+      { text: "Comprehensive vaccination programme" },
+      { text: "Annual deworming" },
+      { text: "10 free training sessions" },
+      { text: "10% discount on diagnostic tests and scans" },
+      { text: "10% off retail products & medicines" },
+      { text: "10% off any grooming service" }
+    ]
+  },
+  {
+    title: "Care Senior",
+    icon: "/icons/cat-dog-icon.svg",
+    description: "Our plan to keep your pet healthy and happy for life",
+    benefits: [
+      { text: "6 free-of-cost consultations every year" },
+      { text: "50% discount on additional consultations" },
+      { text: "Free annual vaccination boosters" },
+      { text: "Annual deworming" },
+      { text: "20% discount on diagnostic tests and scans" },
+      { text: "20% discount on planned surgeries and procedures" },
+      { text: "10% off retail products & medicines" },
+      { text: "10% off any grooming service" }
+    ]
+  },
+  {
+    title: "Grooming",
+    icon: "/icons/bath-icon.svg",
+    description: "Our plan to keep your furry friend looking and feeling fab!",
+    benefits: [
+      { text: "6 free spa sessions per year" },
+      { text: "2 free haircuts every year" },
+      { text: "50% off any other grooming service" },
+      { text: "50% off veterinary consultations" },
+      { text: "10% off vaccinations" },
+      { text: "Annual deworming" },
+      { text: "10% off diagnostic test and scans" },
+      { text: "10% discount on planned surgeries and procedures" }
+    ]
+  },
+  {
+    title: "Star Care Grooming",
+    icon: "/icons/star-icon.svg",
+    description: "Our best value plan that keeps your pet healthy and looking great",
+    benefits: [
+      { text: "Unlimited vet consultations" },
+      { text: "12 free spa sessions per year" },
+      { text: "2 free haircuts every year" },
+      { text: "50% off any other grooming service" },
+      { text: "Free annual vaccination boosters" },
+      { text: "Annual deworming consultation" },
+      { text: "25% discount on diagnostic tests and scans" },
+      { text: "25% discount on planned surgeries and procedures" },
+      { text: "15% off retail products & medicines" }
+    ],
+    isPopular: true
+  }
+];
