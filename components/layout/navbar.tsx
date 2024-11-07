@@ -75,7 +75,7 @@ export default function NavBar() {
               </a>
             </div>
           </div>
-          <div className="hidden lg:flex items-center space-x-4">
+          <div className="hidden lg:flex items-center space-x-4 text-xs">
             <Button
               buttonText="Book a visit"
               buttonBackground="bg-secondary-1"
