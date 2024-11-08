@@ -6,7 +6,6 @@ import ProfileImage from "@/public/assets/images/Profile/Profile.png";
 import AddPetModal from "@/components/ui/AddPetModal";
 import PetCard from "@/components/ui/PetCard";
 import "react-toastify/dist/ReactToastify.css";
-import petImg from "@/public/assets/images/pets/petImg.png";
 import { StaticImageData } from "next/image";
 import OutlineButton from "@/components/ui/OutlineButton";
 import toast, { Toaster } from "react-hot-toast";
