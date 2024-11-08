@@ -56,7 +56,7 @@ const BillingForm: React.FC<BillingFormProps> = ({ onSubmit, onCancel }) => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="space-y-4 w-[85%] mx-auto mt-4"
+      className="space-y-4 w-[85%] mx-auto mt-[34px]"
     >
       <div className="flex gap-4">
         <div className="flex flex-col gap-2 w-1/2">

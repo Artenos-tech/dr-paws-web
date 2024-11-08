@@ -6,6 +6,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import ImageEdit from "@/public/assets/images/Profile/ImageEdit.png";
 import { ProfileData } from "./ProfileCard";
+import { FaTrash } from "react-icons/fa6";
+import ProfileLogo from '@/public/assets/images/Profile/profileLogo.jpg'
+
 
 const profileSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -60,6 +63,10 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
     onSubmit({ ...data, image });
   };
 
+  const handleDeleteImage = () => {
+    setImage(ProfileLogo.src)
+  }
+
   return (
     <form
       onSubmit={handleSubmit(handleFormSubmit)}
@@ -68,7 +75,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
       <div className="flex flex-col items-center mt-2">
         <div className="relative">
           <Image
-            src={image}
+            src={image ?? ProfileLogo}
             alt="Profile"
             width={100}
             height={100}
@@ -83,8 +90,15 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
             type="file"
             accept="image/*"
             onChange={handleImageChange}
-            className="absolute bottom-0 right-0 opacity-0 w-full h-full cursor-pointer"
+            className="absolute bottom-0 right-0 opacity-0 w-1/2 h-1/2 cursor-pointer"
           />
+          { image !== ProfileLogo.src && <button
+            type="button"
+            className="absolute bottom-0 left-0 p-3 bg-red-500 rounded-full z-10"
+            onClick={handleDeleteImage}
+          >
+            <FaTrash size={10} fill="white" />
+          </button>}
         </div>
       </div>
 
