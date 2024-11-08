@@ -18,7 +18,7 @@ const Button: React.FC<buttonProps> = ({
   return (
     <button
       onClick={() => (buttonLink ? router.push(buttonLink) : null)}
-      className={`font-open-sans btn rounded-full px-10 py-2 tracking-wider ${buttonBackground} `}
+      className={`font-open-sans btn rounded-full text-white px-10 py-2 tracking-wider bg-${buttonBackground} `}
     >
       {buttonText}
     </button>

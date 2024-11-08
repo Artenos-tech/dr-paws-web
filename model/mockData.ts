@@ -57,6 +57,11 @@ import Customer1 from "../public/assets/images/clinic/customer1.png";
 import Customer2 from "../public/assets/images/clinic/customer2.png";
 import Customer3 from "../public/assets/images/clinic/customer3.png";
 import ClinicOT from "../public/assets/images/clinic/clinicopertn.png";
+import CareJunior from '@/public/assets/images/Membership/Care Junior.png'
+import CareSenior from '@/public/assets/images/Membership/Care Senior.png'
+import Grooming from '@/public/assets/images/Membership/Grooming.png'
+import StarCare from '@/public/assets/images/Membership/Star Care and Grooming.png'
+
 
 export const circleImageList = [
   {
@@ -815,7 +820,7 @@ export const reviews = [
 export const membershipData = [
   {
     title: "Care Junior",
-    icon: "/icons/egg-icon.svg",
+    icon: CareJunior,
     description: "Our plan that helps prepare you and your puppy or kitten for a lifetime together",
     benefits: [
       { text: "6 free-of-cost consultations every year" },
@@ -830,7 +835,7 @@ export const membershipData = [
   },
   {
     title: "Care Senior",
-    icon: "/icons/cat-dog-icon.svg",
+    icon: CareSenior,
     description: "Our plan to keep your pet healthy and happy for life",
     benefits: [
       { text: "6 free-of-cost consultations every year" },
@@ -845,7 +850,7 @@ export const membershipData = [
   },
   {
     title: "Grooming",
-    icon: "/icons/bath-icon.svg",
+    icon: Grooming,
     description: "Our plan to keep your furry friend looking and feeling fab!",
     benefits: [
       { text: "6 free spa sessions per year" },
@@ -860,7 +865,7 @@ export const membershipData = [
   },
   {
     title: "Star Care Grooming",
-    icon: "/icons/star-icon.svg",
+    icon: StarCare,
     description: "Our best value plan that keeps your pet healthy and looking great",
     benefits: [
       { text: "Unlimited vet consultations" },

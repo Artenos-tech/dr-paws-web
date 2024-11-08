@@ -1,12 +1,14 @@
 import React from "react";
 import Image, { StaticImageData } from "next/image";
 import MembershipDesc from "@/public/assets/images/Membership/MembershipDesc.png";
+import MemberCard from "@/components/ui/MemberCard";
+import { membershipData } from "@/model/mockData";
 
 const Membership = () => {
   return (
     <div className="w-full h-full items-center justify-items-center font-roca">
-      <main className="w-full  flex flex-col gap-8 row-start-2 items-center ">
-        <div className="w-[80%] flex flex-col lg:flex-row items-center justify-center space-y-8 lg:space-y-0 my-16">
+      <main className="flex flex-col row-start-2 items-center w-full ">
+        <div className="w-full flex flex-col px-8 md:px-32 lg:px-40 lg:flex-row items-center justify-center space-y-8 lg:space-y-0 my-16">
           <div className="flex-shrink-0 w-full  lg:w-auto">
             <Image
               src={MembershipDesc}
@@ -29,6 +31,14 @@ const Membership = () => {
             </div>
           </div>
         </div>
+        <div className="bg-primary-3  w-full text-center text-3xl my-16 pb-12">
+            <h1 className="pt-12 pb-16">Become A Member</h1>
+            <div className="w-[85%] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 ">
+          {membershipData.map((plan, index) => (
+            <MemberCard key={index} plan={plan} />
+          ))}
+        </div>
+          </div>
 
         
       </main>
