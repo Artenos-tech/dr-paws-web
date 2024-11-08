@@ -129,10 +129,10 @@ export default function NavBar() {
           <div className="pt-4 pb-3 border-t border-primary-2">
             <div className="flex items-center px-8 md:px-32 space-x-4">
               <Image src={Profile} alt="User logo" width={40} height={40} />
-              
+
               <Button
-                buttonText="Book a visiting"
-                buttonBackground="bg-secondary-1"
+                buttonText="Book a visit"
+                buttonBackground="secondary-1"
               />
             </div>
           </div>
