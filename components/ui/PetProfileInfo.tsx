@@ -4,20 +4,19 @@ import React, { useEffect, useState } from "react";
 import Image, { StaticImageData } from "next/image";
 import { useForm } from "react-hook-form";
 import { Pet } from "@/model/typeDefinitions";
-import petImg from "@/public/assets/images/pets/petImg.png";
+import defaultImage from "@/public/assets/images/pets/petImg.png";
 import ImageEdit from "@/public/assets/images/Profile/ImageEdit.png";
 import OutlineButton from "./OutlineButton";
 import { FaTrash } from "react-icons/fa6";
 
 interface PetProfileInfoProps {
   petProfileId: string;
-  petImg: StaticImageData;
 }
 
 const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
   const [pet, setPet] = useState<Pet | null>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [image, setImage] = useState<string | StaticImageData>(petImg.src);
+  const [image, setImage] = useState<string | StaticImageData>("");
 
   const {
     register,
@@ -33,7 +32,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
       age: "",
       birthday: "",
       weight: "",
-      petImg: petImg.src,
+      petImage: defaultImage.src,
     },
   });
 
@@ -46,7 +45,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
       );
 
       setPet(foundPet || null);
-      setImage(foundPet?.petImg || image);
+      setImage(foundPet?.petImage || "");
 
       if (foundPet) {
         for (const key in foundPet) {
@@ -59,7 +58,8 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
   const handleEditCancelClick = () => {
     if (pet) {
       for (const key in pet) {
-        setImage(pet.petImg || petImg.src);
+        // Reseting to previous image or default image when user clicks on cancel button
+        setImage(pet.petImage || defaultImage.src);
         setValue(key as keyof Pet, pet[key as keyof Pet]);
       }
     }
@@ -67,17 +67,19 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
   };
 
   const onSubmit = (data: Pet) => {
+    
+    const updateAgeByBirdthday = calculateAge(data.birthday);
     const storedPets = localStorage.getItem("pets");
     const pets: Pet[] = storedPets ? JSON.parse(storedPets) : [];
 
     const updatedPets = pets.map((pet) =>
       Number(pet.petId) === Number(petProfileId)
-        ? { ...data, petImg: image }
+        ? { ...data, petImage: image, age: updateAgeByBirdthday }
         : pet
     );
 
     localStorage.setItem("pets", JSON.stringify(updatedPets));
-    setPet({ ...data, petImg: image });
+    setPet({ ...data, petImage: image });
     setIsEditing(false);
   };
 
@@ -88,7 +90,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
       reader.onload = () => {
         const result = reader.result as string;
         setImage(result);
-        setValue("petImg", result);
+        setValue("petImage", result);
       };
       reader.readAsDataURL(file);
     }
@@ -117,9 +119,9 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
 
     const yearStr = years > 0 ? `${years} yrs` : "";
     const monthStr = months > 0 ? `${months} mths` : "";
-    // const dayStr = days > 0 ? `${days} d` : "";
+    const dayStr = days > 0 ? `${days} d` : "";
 
-    return [yearStr, monthStr].filter(Boolean).join(", ");
+    return [yearStr, monthStr, dayStr].filter(Boolean).join(", ");
   };
 
   return (
@@ -131,7 +133,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
         <div className="flex flex-col items-center lg:flex-row lg:justify-between w-full lg:order-none order-1">
           <div className="relative flex flex-col lg:w-1/3 xl:w-1/6">
             <Image
-              src={image}
+              src={image || defaultImage}
               alt="Profile"
               width={130}
               height={130}
@@ -139,15 +141,16 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
             />
             {isEditing && (
               <>
-                {petImg.src !== image && (
+                {image !== defaultImage.src && (
                   <button
                     type="button"
                     className="absolute bottom-0 left-0 p-3 bg-red-500 rounded-full z-10"
-                    onClick={() => setImage(petImg.src)}
+                    onClick={() => setImage(defaultImage.src)}
                   >
                     <FaTrash size={10} fill="white" />
                   </button>
                 )}
+
                 <Image
                   src={ImageEdit}
                   alt="Image Edit"
@@ -157,7 +160,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                   <input
                     type="file"
                     accept="image/*"
-                    {...register("petImg")}
+                    {...register("petImage")}
                     onChange={handleImageChange}
                     className="absolute bottom-0 right-0 opacity-0 w-full h-full cursor-pointer px-5"
                     aria-label="Upload pet profile image"

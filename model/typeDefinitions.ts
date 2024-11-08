@@ -31,5 +31,5 @@ export interface Pet {
   age: string;
   birthday: string;
   weight: string;
-  petImg: StaticImageData | string
+  petImage: StaticImageData | string
 }

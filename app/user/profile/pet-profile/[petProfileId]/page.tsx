@@ -16,7 +16,7 @@ const PetProfile: React.FC<PetProfileProps> = ({ params }) => {
     <div className="flex flex-col w-full h-screen items-center font-roca pb-20 flex-grow">
       <main className="flex flex-col w-full items-center px-8 md:px-32 lg:px-40">
         <BackButton />
-        <PetProfileInfo petProfileId={petProfileId} petImg={petImg} />
+        <PetProfileInfo petProfileId={petProfileId} />
       </main>
     </div>
   );

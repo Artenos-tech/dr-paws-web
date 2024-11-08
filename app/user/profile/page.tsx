@@ -24,7 +24,7 @@ interface Pet {
   petId: string;
   name: string;
   type: string;
-  petImg: StaticImageData;
+  petImage: StaticImageData | string;
 }
 
 const Profile: React.FC = () => {
@@ -48,8 +48,8 @@ const Profile: React.FC = () => {
     }
   }, []);
 
-  const addPet = (pet: Omit<Pet, "petId" | "petImg">): void => {
-    const newPet: Pet = { ...pet, petId: petIdCounter, petImg };
+  const addPet = (pet: Omit<Pet, "petId" | "petImage">): void => {
+    const newPet: Pet = { ...pet, petId: petIdCounter, petImage: "" };
     setPets((prevPets) => {
       const updatedPets = [...prevPets, newPet];
       localStorage.setItem("pets", JSON.stringify(updatedPets));
@@ -108,7 +108,7 @@ const Profile: React.FC = () => {
         <AddPetModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
-          onSubmit={(pet: Omit<Pet, "petId" | "petImg">) => {
+          onSubmit={(pet: Omit<Pet, "petId" | "petImage">) => {
             addPet(pet);
             setIsModalOpen(false);
           }}
