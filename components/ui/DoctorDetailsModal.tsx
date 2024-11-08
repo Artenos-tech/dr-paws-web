@@ -32,14 +32,28 @@ const DoctorDetailsModal: React.FC<doctorDetailsProps> = ({
           <IoClose />
         </button>
         <div className="space-y-4 md:space-y-8 lg:space-y-12 w-full lg:w-1/2  order-1 lg:order-none">
-          <h1 className="text-xl md:text-2xl">{name}</h1>
+          <h1 className="text-xl md:text-2xl text-center lg:text-left my-3 lg:my-0">{name}</h1>
 
-          <div className="flex flex-col gap-3 md:gap-5">
-            <div className="flex items-start gap-1">
-              <CiStethoscope size={20} fontWeight={800} className="mt-1" />
-              <div className="space-y-1">
-                <p>Experience</p>
-                <p className="font-semibold text-sm md:text-base">{experience}</p>
+          <div className="flex flex-col md:items-center lg:items-start gap-3 md:gap-5 w-full text-center lg:text-left">
+            <div className="flex gap-1">
+              <CiStethoscope
+                size={20}
+                fontWeight={800}
+                className="mt-1 hidden lg:block"
+              />
+              <div className="space-y-1 w-full">
+                <p className="flex items-center justify-center lg:justify-start gap-1">
+                  {" "}
+                  <CiStethoscope
+                    size={20}
+                    fontWeight={800}
+                    className="mt-1 block lg:hidden"
+                  />
+                  Experience
+                </p>
+                <p className="font-semibold text-sm md:text-base">
+                  {experience}
+                </p>
               </div>
             </div>
             <div className="flex items-start gap-1">
@@ -48,22 +62,48 @@ const DoctorDetailsModal: React.FC<doctorDetailsProps> = ({
                 alt="star medal"
                 width={20}
                 height={20}
-                className="mt-1"
+                className="mt-1 hidden lg:block"
               />
               <div className="space-y-1 w-full">
-                <p>Specialization</p>
-                <p className="font-semibold text-sm md:text-base w-full md:w-11/12 lg:w-3/4 ">{specialization}</p>
+                <p className="flex items-center justify-center lg:justify-start gap-1">
+                  <Image
+                    src={starMedal.src}
+                    alt="star medal"
+                    width={20}
+                    height={20}
+                    className="mt-1 block lg:hidden"
+                  />
+                  Specialization
+                </p>
+                {/*  w-full md:w-11/12 lg:w-3/4  */}
+                <p className="font-semibold text-sm md:text-base">
+                  {specialization}
+                </p>
               </div>
             </div>
             <div className="flex items-start gap-1">
-              <CiLocationOn size={20} fontWeight={800} className="mt-1" />
-              <div className="space-y-1">
-                <p>Clinics</p>
+              <CiLocationOn
+                size={20}
+                fontWeight={800}
+                className="mt-1 hidden lg:block"
+              />
+              <div className="space-y-1 w-full">
+                <p className="flex items-center justify-center lg:justify-start gap-1">
+                  {" "}
+                  <CiLocationOn
+                    size={20}
+                    fontWeight={800}
+                    className="mt-1 block lg:hidden"
+                  />{" "}
+                  Clinics
+                </p>
                 <p className="font-semibold text-sm md:text-base">{location}</p>
               </div>
             </div>
             <div className="mt-4 md:mt-8">
-              <p className="font-semibold text-base md:text-lg mb-1">About The Vet</p>
+              <p className="font-semibold text-base md:text-lg mb-1">
+                About The Vet
+              </p>
               <p className="w-full text-sm md:text-base">{aboutVet}</p>
             </div>
           </div>
@@ -74,9 +114,11 @@ const DoctorDetailsModal: React.FC<doctorDetailsProps> = ({
             alt="doctor with pet"
             width={500}
             height={600}
-             className="w-full md:w-[320px] md:mx-auto lg:ml-auto"
+            className="w-full md:w-[320px] md:mx-auto lg:ml-auto"
           />
-          <p className="text-center self-start lg:w-[270px] md:mx-auto mt-6 text-xs md:text-sm">{tag}</p>
+          <p className="text-center self-start lg:w-[270px] md:mx-auto mt-6 text-xs md:text-sm">
+            {tag}
+          </p>
         </div>
       </div>
     </Modal>
