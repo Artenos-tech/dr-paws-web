@@ -5,11 +5,11 @@ import ProfileCard from "@/components/ui/ProfileCard";
 import ProfileImage from "@/public/assets/images/Profile/Profile.png";
 import AddPetModal from "@/components/ui/AddPetModal";
 import PetCard from "@/components/ui/PetCard";
-import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import petImg from "@/public/assets/images/pets/petImg.png";
 import { StaticImageData } from "next/image";
 import OutlineButton from "@/components/ui/OutlineButton";
+import toast, { Toaster } from "react-hot-toast";
 
 const ProfileData = {
   name: "John Doe",
@@ -55,11 +55,19 @@ const Profile: React.FC = () => {
       localStorage.setItem("pets", JSON.stringify(updatedPets));
       return updatedPets;
     });
+    toast.success("Pet added successfully!", {
+      duration: 3000,
+      style: {
+        backgroundColor: "#4CAF50",
+        color: "#fff",
+        fontWeight: 700,
+      },
+    });
     setPetIdCounter((parseInt(petIdCounter) + 1).toString());
   };
 
   return (
-    <div className="flex flex-col w-full h-full items-center font-roca pb-20 flex-grow">
+    <div className="flex flex-col w-full h-full items-center font-roca pb-20 flex-grow ">
       <main className="flex flex-col w-full gap-8 md:gap-16 items-center px-8 md:px-32 lg:px-40">
         <ProfileCard profile={ProfileData} />
 
@@ -106,11 +114,10 @@ const Profile: React.FC = () => {
           }}
         />
       </main>
-
-      <ToastContainer
+      <Toaster position="bottom-right" />
+      {/* <ToastContainer
         position="bottom-right"
-        autoClose={1000}
-        hideProgressBar={false}
+        autoClose={3000}
         newestOnTop={false}
         closeOnClick
         rtl={false}
@@ -120,12 +127,12 @@ const Profile: React.FC = () => {
         theme="light"
         style={{
           position: "fixed",
-          bottom: "20px",
+          bottom: "0px",
           right: "0px",
           top: "auto",
           left: "auto",
         }}
-      />
+      /> */}
     </div>
   );
 };

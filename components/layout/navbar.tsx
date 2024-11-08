@@ -179,6 +179,7 @@ export default function NavBar() {
                       Profile
                     </DropdownMenu.Item>
                     <DropdownMenu.Item
+                      onClick={() => setIsOpen(false)}
                       asChild
                       className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none "
                     >

@@ -7,6 +7,7 @@ import { Pet } from "@/model/typeDefinitions";
 import petImg from "@/public/assets/images/pets/petImg.png";
 import ImageEdit from "@/public/assets/images/Profile/ImageEdit.png";
 import OutlineButton from "./OutlineButton";
+import { FaTrash } from "react-icons/fa6";
 
 interface PetProfileInfoProps {
   petProfileId: string;
@@ -55,9 +56,10 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
     }
   }, [petProfileId, setValue]);
 
-  const handleEditClick = () => {
-    if (!isEditing && pet) {
+  const handleEditCancelClick = () => {
+    if (pet) {
       for (const key in pet) {
+        setImage(pet.petImg || petImg.src);
         setValue(key as keyof Pet, pet[key as keyof Pet]);
       }
     }
@@ -121,21 +123,13 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
   };
 
   return (
-    <div className="bg-primary-3 rounded-lg p-4 md:p-8 w-full">
+    <div className="bg-primary-3 rounded-lg p-4 md:p-6 lg:p-8 w-full">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col md:flex-row md:justify-between md:items-start w-full"
+        className="flex flex-col lg:flex-row lg:justify-between md:items-start w-full"
       >
-        <div className="flex flex-col items-center md:flex-row md:justify-between w-full md:order-none order-1">
-          {/* <Image
-            src={pet1.src}
-            alt="pet-profile"
-            width={160}
-            height={160}
-            className="object-cover w-[130px] h-[130px] rounded-full md:self-start"
-          />
-          <Image src={petImg} alt="pet logo" className="w-24 h-24 mx-auto" /> */}
-          <div className="relative flex flex-col">
+        <div className="flex flex-col items-center lg:flex-row lg:justify-between w-full lg:order-none order-1">
+          <div className="relative flex flex-col lg:w-1/3 xl:w-1/6">
             <Image
               src={image}
               alt="Profile"
@@ -145,41 +139,52 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
             />
             {isEditing && (
               <>
-                <Image
-                  src={ImageEdit}
-                  alt="Image Edit"
-                  className="absolute bottom-0 right-0"
-                />
-                <input
-                  type="file"
-                  accept="image/*"
-                  {...register("petImg")}
-                  onChange={handleImageChange}
-                  className="absolute bottom-0 right-0 opacity-0 w-full h-full cursor-pointer"
-                  aria-label="Upload pet profile image"
-                />
+                {petImg.src !== image && (
+                  <button
+                    type="button"
+                    className="absolute bottom-0 left-0 p-3 bg-red-500 rounded-full z-10"
+                    onClick={() => setImage(petImg.src)}
+                  >
+                    <FaTrash size={10} fill="white" />
+                  </button>
+                )}
+                  <Image
+                    src={ImageEdit}
+                    alt="Image Edit"
+                    className="absolute bottom-0 right-0 "
+                  />
+                <div className="px-5">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    {...register("petImg")}
+                    onChange={handleImageChange}
+                    className="absolute bottom-0 right-0 opacity-0 w-full h-full cursor-pointer px-5"
+                    aria-label="Upload pet profile image"
+                  />
+                </div>
               </>
             )}
           </div>
-          <div className="flex flex-col flex-grow mx-3 md:mx-10 md:gap-3">
+          <div className="flex flex-col flex-grow mx-3 md:mx-10 md:gap-3 w-full lg:w-11/12">
             {isEditing ? (
               <>
                 <input
                   type="text"
                   {...register("name", { required: "Pet name is required" })}
-                  className="outline-none border w-full p-1 px-2 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
+                  className="outline-none border w-full p-1 px-2 text-xs  md:text-sm rounded my-5 mb:my-2 bg-transparent border-secondary-1"
                 />
                 {errors.name && (
                   <p className="text-red-500 text-xs">{errors.name.message}</p>
                 )}
               </>
             ) : (
-              <h1 className="text-secondary-1 text-lg text-center md:text-left my-5 md:my-0">
+              <h1 className="text-secondary-1 text-lg text-center lg:text-left my-5 md:my-3 lg:my-0">
                 {pet?.name}
               </h1>
             )}
 
-            <div className="grid grid-cols-2 grid-rows-3 lg:grid-cols-3 lg:grid-rows-2 w-full gap-4 md:gap-3 lg:gap-2">
+            <div className="grid grid-cols-2 grid-rows-3 md:grid-cols-3 md:grid-rows-2 w-full gap-4 md:gap-12 lg:gap-3 ">
               <div className="">
                 <label
                   className="text-secondary-1 text-xs md:text-sm"
@@ -216,7 +221,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                   </p>
                 )}
               </div>
-              <div className="">
+              <div className="ml-4 md:ml-0">
                 <label
                   className="text-secondary-1 text-xs md:text-sm"
                   htmlFor="breed"
@@ -238,7 +243,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                   </>
                 ) : (
                   <p className="text-primary-1 font-medium text-xs md:text-base">
-                    {pet?.breed || "N/A"}
+                    {pet?.breed || ""}
                   </p>
                 )}
               </div>
@@ -270,12 +275,12 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                   </>
                 ) : (
                   <p className="text-primary-1 font-medium text-xs md:text-base">
-                    {pet?.gender || "N/A"}
+                    {pet?.gender || ""}
                   </p>
                 )}
               </div>
 
-              <div className="">
+              <div className="ml-4 md:ml-0">
                 <label
                   className="text-secondary-1 text-xs md:text-sm"
                   htmlFor="age"
@@ -292,7 +297,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                   />
                 ) : ( */}
                 <p className="text-primary-1 font-medium text-xs md:text-base">
-                  {calculateAge(pet?.birthday || "N/A")}
+                  {pet?.birthday ? calculateAge(pet?.birthday || "N/A") : ""}
                 </p>
                 {/* )} */}
               </div>
@@ -320,15 +325,20 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                   </>
                 ) : (
                   <p className="text-primary-1 font-medium text-xs md:text-base">
-                    {new Date(pet?.birthday || "").toLocaleDateString("en-GB", {
-                      day: "numeric",
-                      month: "short",
-                      year: "numeric",
-                    })}
+                    {pet?.birthday
+                      ? new Date(pet?.birthday || "").toLocaleDateString(
+                          "en-GB",
+                          {
+                            day: "numeric",
+                            month: "short",
+                            year: "numeric",
+                          }
+                        )
+                      : ""}
                   </p>
                 )}
               </div>
-              <div className="">
+              <div className="ml-4 md:ml-0">
                 <label
                   className="text-secondary-1 text-xs md:text-sm"
                   htmlFor="weight"
@@ -356,29 +366,45 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                   </>
                 ) : (
                   <p className="text-primary-1 font-medium text-xs md:text-base">
-                    {pet?.weight ? `${pet.weight} kg` : "N/A"}
+                    {pet?.weight ? `${pet.weight} kg` : ""}
                   </p>
                 )}
               </div>
             </div>
           </div>
+          {isEditing && (
+            <div className="self-end md:self-end lg:self-start my-5 md:mt-3 md:my-0 order-2">
+              <div className="flex items-center">
+                <OutlineButton
+                  outlineBtnText="Cancel"
+                  outlineBtnLink={() => handleEditCancelClick()}
+                />
+                <button
+                  type="submit"
+                  className="btn border bg-secondary-1 text-white px-4 text-xs font-semibold py-2 rounded-full ml-3"
+                >
+                  Submit
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
-        <div className="self-end md:self-start mb-3">
+        <div className="self-end lg:self-start mb-3">
           {!isEditing && (
             <OutlineButton
               outlineBtnText="Edit"
-              outlineBtnLink={() => handleEditClick()}
+              outlineBtnLink={() => handleEditCancelClick()}
             />
           )}
         </div>
 
-        {isEditing && (
+        {/* {isEditing && (
           <div className="self-end md:self-start my-5 md:my-0 order-2">
             <div className="flex items-center">
               <OutlineButton
                 outlineBtnText="Cancel"
-                outlineBtnLink={() => handleEditClick()}
+                outlineBtnLink={() => handleEditCancelClick()}
               />
               <button
                 type="submit"
@@ -388,7 +414,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
               </button>
             </div>
           </div>
-        )}
+        )} */}
       </form>
     </div>
   );

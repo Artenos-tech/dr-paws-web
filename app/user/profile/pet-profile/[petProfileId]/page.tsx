@@ -30,6 +30,8 @@ export async function generateStaticParams() {
     { petId: "4" },
     { petId: "5" },
     { petId: "6" },
+    { petId: "7" },
+    { petId: "8" },
   ];
   return pets.map((pet) => ({
     petProfileId: pet.petId,
