@@ -4,8 +4,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Toaster, toast } from "react-hot-toast";
 
 const formSchema = z.object({
   firstName: z.string().min(2, "First name must be at least 2 characters"),
@@ -43,10 +43,14 @@ export default function ClinicLocationForm() {
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000));
       console.log(data);
-      toast.success("Successfully submitted. Our team will get back to you.");
+      toast.success("Successfully submitted. Our team will get back to you.", {
+        duration: 3000,
+      });
       reset();
     } catch {
-      toast.error("Something went wrong. Please try again.");
+      toast.error("Something went wrong. Please try again.", {
+        duration: 3000,
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -147,7 +151,8 @@ export default function ClinicLocationForm() {
           )}
         </button>
       </form>
-      <ToastContainer
+      <Toaster position="bottom-right" />
+      {/* <ToastContainer
         position="top-right"
         autoClose={3000}
         hideProgressBar={false}
@@ -158,7 +163,7 @@ export default function ClinicLocationForm() {
         draggable
         pauseOnHover
         theme="colored"
-      />
+      /> */}
     </div>
   );
 }

@@ -148,11 +148,11 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                     <FaTrash size={10} fill="white" />
                   </button>
                 )}
-                  <Image
-                    src={ImageEdit}
-                    alt="Image Edit"
-                    className="absolute bottom-0 right-0 "
-                  />
+                <Image
+                  src={ImageEdit}
+                  alt="Image Edit"
+                  className="absolute bottom-0 right-0 "
+                />
                 <div className="px-5">
                   <input
                     type="file"
