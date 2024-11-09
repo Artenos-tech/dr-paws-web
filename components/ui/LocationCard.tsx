@@ -57,7 +57,7 @@ export const LocationCard: React.FC = () => {
         <MapContainer
           center={[LOCATION.lat, LOCATION.lng]}
           zoom={15}
-          style={{ height: "100%", width: "100%" }}
+          style={{ height: "100%", width: "100%", zIndex: 0 }}
         >
           <TileLayer
             // attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'

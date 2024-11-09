@@ -28,7 +28,7 @@ const Overview = () => {
           </div>
           <div>
             <h2 className="text-2xl font-roca font-semibold mb-3">Timings</h2>
-            <div className="text-lg border">
+            <div className="text-lg">
               <p className="flex  justify-between">
                 Monday to Friday:{" "}
                 <span className="text-xl font-roca ml-4">09:00 - 19:00</span>
@@ -94,28 +94,3 @@ const Overview = () => {
 };
 
 export default Overview;
-
-{
-  /* 
-<div className="w-full">
-<Swiper
-  modules={[Navigation]}
-  navigation
-  spaceBetween={30}
-  slidesPerView={1}
-  breakpoints={{
-    750: { slidesPerView: 1 },
-    1068: { slidesPerView: 2 },
-    1224: { slidesPerView: 3 },
-  }}
-  className="w-full"
->
-  {doctors.map((doctor, index) => (
-    <SwiperSlide key={index}>
-      <DoctorCard doctor={doctor} />
-    </SwiperSlide>
-  ))}
-</Swiper>
-</div> 
-*/
-}
