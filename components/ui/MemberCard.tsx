@@ -14,18 +14,19 @@ export interface MembershipPlan {
 }
 interface MemberCardProps {
   plan: MembershipPlan;
+  onSelect: (plan: MembershipPlan) => void;
 }
 
-export default function MemberCard({ plan }: MemberCardProps) {
+export default function MemberCard({ plan, onSelect }: MemberCardProps) {
   return (
     <div className={`relative bg-white rounded-2xl p-6 shadow-lg flex flex-col items-center h-full max-w-sm ${plan.isPopular ? 'border-2 border-sky-200' : ''}`}>
-    {plan.isPopular && (
-      <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-        <div className="bg-sky-100 text-sky-800 px-4 py-1 rounded-full text-sm font-medium">
-          Most Popular
+      {plan.isPopular && (
+        <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+          <div className="bg-sky-100 text-sky-800 px-4 py-1 rounded-full text-sm font-medium">
+            Most Popular
+          </div>
         </div>
-      </div>
-    )}
+      )}
 
       <div className="w-20 h-20 mb-4 relative ">
         <Image
@@ -55,12 +56,10 @@ export default function MemberCard({ plan }: MemberCardProps) {
         </ul>
       </div>
 
-      <div className="mt-auto text-base w-full ">
-        {/* <button className="w-full bg-accent hover:bg-teal-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">
-          Select
-        </button> */}
-        
-        <Button buttonText="Select" buttonBackground="bg-accent" />
+      <div className="mt-auto text-base w-full">
+        <div onClick={() => onSelect(plan)}>
+          <Button buttonText="Select" buttonBackground="bg-accent" />
+        </div>
       </div>
     </div>
   );
