@@ -62,13 +62,13 @@ export default function NavBar() {
               buttonBackground="bg-secondary-1"
             />
             <DropdownMenu.Root>
-              <DropdownMenu.Trigger>
+              <DropdownMenu.Trigger className="outline-none">
                 <Image
                   src={Profile}
                   alt="User logo"
                   width={40}
                   height={40}
-                  className="cursor-pointer"
+                  className="cursor-pointer outline-none"
                 />
               </DropdownMenu.Trigger>
               <DropdownMenu.Portal>
