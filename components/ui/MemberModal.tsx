@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { X } from "lucide-react";
 import Image from "next/image";
 import Button from "./Button";
 import { MembershipPlan } from "./MemberCard";
+import { useRouter } from "next/navigation";
 
 interface ModalProps {
   isOpen: boolean;
@@ -11,22 +12,42 @@ interface ModalProps {
 }
 
 const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
+  const router = useRouter();
+  const [selectedPlan, setSelectedPlan] = useState({
+    duration: "2 Year",
+    price: "6,999",
+  });
+
   if (!isOpen) return null;
 
   const yearlyPlans = [
     {
-      price: "₹6,999/Yr",
-      forYear: "For 1 Year",
+      duration: "1 Year",
+      price: "6,999",
     },
     {
-      price: "₹6,999/Yr",
-      forYear: "For 2 Year",
+      duration: "2 Year",
+      price: "6,999",
     },
     {
-      price: "₹5,499/Yr",
-      forYear: "For 3 Year",
+      duration: "3 Year",
+      price: "5,499",
     },
   ];
+
+  const handleContinue = () => {
+    const params = new URLSearchParams({
+      title: plan.title,
+      duration: selectedPlan.duration,
+      price: selectedPlan.price,
+    });
+    router.push(`/membership/payment?${params.toString()}`);
+  };
+
+  const handlePaymentPlan = (yearPlan: { duration: string; price: string }) => {
+    console.log(selectedPlan);
+    setSelectedPlan(yearPlan);
+  };
 
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center">
@@ -38,7 +59,6 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
         >
           <X size={24} />
         </button>
-        
 
         <div className="grid grid-cols-1 md:grid-cols-2 h-full">
           {/* Left Section */}
@@ -86,15 +106,20 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
                 {yearlyPlans.map((yearPlan, index) => (
                   <div
                     key={index}
-                    className="bg-white rounded-lg p-4 hover:border hover:border-sky-200 cursor-pointer"
+                    className={`bg-white rounded-lg p-4 cursor-pointer ${
+                      selectedPlan.duration === yearPlan.duration
+                        ? "border-2 border-accent"
+                        : ""
+                    }`}
+                    onClick={() => handlePaymentPlan(yearPlan)}
                   >
-                    <div className="flex items-center w-full" >
+                    <div className="flex items-center w-full">
                       <div>
                         <span className="text-2xl font-semibold text-primary-1">
-                          {yearPlan.price}{" "}
+                          ₹{yearPlan.price}/Yr{" "}
                         </span>
                         <div className="text-sm text-gray-600">
-                          {yearPlan.forYear}
+                          For {yearPlan.duration}
                         </div>
                       </div>
                     </div>
@@ -109,7 +134,12 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
             <div className="mt-auto">
               <div className="flex justify-end">
                 <div className="">
-                  <Button buttonText="Continue" buttonBackground="bg-accent" />
+                  <div onClick={handleContinue}>
+                    <Button
+                      buttonText="Continue"
+                      buttonBackground="bg-accent"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
