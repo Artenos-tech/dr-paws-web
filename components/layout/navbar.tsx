@@ -80,7 +80,7 @@ export default function NavBar() {
               buttonText="Book a visit"
               buttonBackground="bg-secondary-1"
             />
-            {/* <Image src={Profile} alt="User logo" width={40} height={40} /> */}
+
             <ProfileDropdown />
           </div>
           <div className="-mr-2 flex lg:hidden">
