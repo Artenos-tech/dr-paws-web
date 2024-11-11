@@ -54,15 +54,11 @@ const Membership = () => {
         <div className="bg-primary-3 w-full text-center text-3xl my-16 pb-12">
           <h1 className="pt-12 pb-8 lg:pb-16">Become A Member</h1>
 
-          {/* Wrapper for the Swiper and navigation buttons */}
-          <div className="relative w-[85%] mx-auto">
-            {/* Left Navigation Button */}
-            <button className="custom-swiper-button-prev absolute left-[-40px] top-1/2 transform -translate-y-1/2 z-10 rounded-full p-2 transition-colors">
+          <div className="block xl:hidden w-[85%] mx-auto relative h-[600px]">
+            <button className="custom-swiper-button-prev absolute -left-[48px] top-1/2 -translate-y-1/2 z-10 rounded-full p-2 transition-colors">
               <ChevronLeft size={42} className="text-[#5281A2]" />
             </button>
-
-            {/* Right Navigation Button */}
-            <button className="custom-swiper-button-next absolute right-[-40px] top-1/2 transform -translate-y-1/2 z-10 rounded-full p-2 transition-colors">
+            <button className="custom-swiper-button-next absolute -right-[48px] top-1/2 -translate-y-1/2 z-10 rounded-full p-2 transition-colors">
               <ChevronRight size={42} className="text-[#5281A2]" />
             </button>
 
@@ -94,12 +90,17 @@ const Membership = () => {
           <div className="hidden xl:block px-8 md:px-32 lg:px-40">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               {membershipData.map((plan, index) => (
-                <MemberCard key={index} plan={plan} onSelect={handlePlanSelect} />
+                <MemberCard
+                  key={index}
+                  plan={plan}
+                  onSelect={handlePlanSelect}
+                />
               ))}
             </div>
           </div>
         </div>
       </main>
+
       {selectedPlan && (
         <MemberModal
           isOpen={isModalOpen}
