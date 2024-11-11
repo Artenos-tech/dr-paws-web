@@ -36,7 +36,7 @@ export default function AddPetModal({
 
   const handleFormSubmit = (data: PetFormData) => {
     onSubmit(data);
-    toast.success("Pet added successfully!", {
+    toast.success("Added pet successfully", {
       position: "top-center",
       autoClose: 1000,
       hideProgressBar: false,
@@ -89,12 +89,12 @@ export default function AddPetModal({
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="">Type of Pet</option>
-                <option value="dog">Dog</option>
-                <option value="cat">Cat</option>
-                <option value="bird">Bird</option>
-                <option value="rabbit">Rabbit</option>
-                <option value="hamster">Hamster</option>
-                <option value="other">Other</option>
+                <option value="Dog">Dog</option>
+                <option value="Cat">Cat</option>
+                <option value="Bird">Bird</option>
+                <option value="Rabbit">Rabbit</option>
+                <option value="Hamster">Hamster</option>
+                <option value="Other">Other</option>
               </select>
               {errors.type && (
                 <p className="text-red-500 text-sm mt-1">

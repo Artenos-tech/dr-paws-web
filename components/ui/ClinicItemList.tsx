@@ -21,7 +21,7 @@ const ClinicItemList = ({ showStaticCard, enlargedView }: ClinicItemProps) => {
       ))}
       {showStaticCard && (
         <div className="bg-primary-3 shadow-md rounded-md p-8 flex flex-col items-center justify-center text-center w-full">
-          <div className="text-4xl mb-4">
+          <div className="text-4xl mb-10">
             <Image
               src={ClinicThumbnail}
               alt="Clinic Thumbnail"
@@ -29,7 +29,7 @@ const ClinicItemList = ({ showStaticCard, enlargedView }: ClinicItemProps) => {
               height={40}
             />
           </div>
-          <p className="font-bold text-xl mb-2">
+          <p className="font-bold text-xl text-primary-1 mb-2">
             Where Should The Next Dr. Paws Clinic Be?
           </p>
         </div>
