@@ -49,7 +49,7 @@ const PaymentPage = () => {
   return (
     <div className="min-h-screen bg-[#F7F1DE]/[.4]">
       <main className="flex flex-col row-start-2 items-center w-full ">
-        <div className="flex flex-col lg:flex-row gap-8 lg:gap-28 px-8 md:px-32 lg:px-40">
+        <div className="flex flex-col lg:flex-row gap-4 lg:gap-28 px-8 md:px-32 lg:px-40">
           {/* Payment Form */}
           <div className="lg:w-3/5">
             <Link
@@ -68,7 +68,11 @@ const PaymentPage = () => {
               <div>unicorn2023@gmail.com</div>
             </div>
 
-            <form id="payment-form" onSubmit={handleSubmit(onSubmit)} className="">
+            <form
+              id="payment-form"
+              onSubmit={handleSubmit(onSubmit)}
+              className=""
+            >
               <div className="flex flex-col gap-4">
                 <h2 className="text-lg font-medium text-primary-1 ">
                   Your payment details
@@ -243,7 +247,7 @@ const PaymentPage = () => {
                 </div>
               </div>
               <div className="">
-                <h4 className="font-medium text-primary-1 mb-3">
+                <h4 className="font-medium text-primary-1 mt-4 mb-1">
                   Renewal Terms
                 </h4>
                 <ul className="text-sm text-gray-600 space-y-2">
@@ -257,7 +261,7 @@ const PaymentPage = () => {
               </div>
             </div>
           </div>
-          <div className="block lg:hidden mb-5 text-center">
+          <div className="block lg:hidden mb-5 text-end">
             <button
               type="submit"
               form="payment-form"

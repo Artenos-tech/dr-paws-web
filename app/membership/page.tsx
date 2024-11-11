@@ -55,10 +55,10 @@ const Membership = () => {
           <h1 className="pt-12 pb-8 lg:pb-16">Become A Member</h1>
 
           <div className="block xl:hidden w-[85%] mx-auto relative h-[600px]">
-            <button className="custom-swiper-button-prev absolute -left-[48px] top-1/2 -translate-y-1/2 z-10 rounded-full p-2 transition-colors">
+            <button className="custom-swiper-button-prev absolute -left-[42px] sm:-left-[48px] top-1/2 -translate-y-1/2 z-10 rounded-full p-2 transition-colors">
               <ChevronLeft size={42} className="text-[#5281A2]" />
             </button>
-            <button className="custom-swiper-button-next absolute -right-[48px] top-1/2 -translate-y-1/2 z-10 rounded-full p-2 transition-colors">
+            <button className="custom-swiper-button-next absolute -right-[42px] sm:-right-[48px] top-1/2 -translate-y-1/2 z-10 rounded-full p-2 transition-colors">
               <ChevronRight size={42} className="text-[#5281A2]" />
             </button>
 
