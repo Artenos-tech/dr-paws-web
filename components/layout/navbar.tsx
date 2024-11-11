@@ -77,8 +77,10 @@ export default function NavBar() {
                   align="start"
                   sideOffset={5}
                 >
-                  <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none">
-                    Profile
+                  <DropdownMenu.Item asChild className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none">
+                    <Link href="/user/profile" className="">
+                      Profile
+                    </Link>
                   </DropdownMenu.Item>
                   <DropdownMenu.Item
                     asChild
@@ -171,12 +173,17 @@ export default function NavBar() {
                 </DropdownMenu.Trigger>
                 <DropdownMenu.Portal>
                   <DropdownMenu.Content
-                    className="bg-[#f7f1de] shadow-lg rounded-lg w-[100vh] lg:hidden p-4 flex flex-col gap-1 pl-10"
+                    className="bg-[#f7f1de] shadow-lg rounded-lg w-[100vh] lg:hidden p-4 md:pl-[136px]  space-y-2 pl-10"
                     align="center"
                     sideOffset={0}
                   >
-                    <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer">
-                      Profile
+                    <DropdownMenu.Item
+                      onClick={() => setIsOpen(false)}
+                      className="text-primary-1 hover:text-secondary-1 cursor-pointer"
+                    >
+                      <Link href="/user/profile" className="">
+                        Profile
+                      </Link>
                     </DropdownMenu.Item>
                     <DropdownMenu.Item
                       onClick={() => setIsOpen(false)}

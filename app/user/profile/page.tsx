@@ -1,22 +1,15 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import ProfileCard from "@/components/ui/ProfileCard";
-import ProfileImage from "@/public/assets/images/Profile/Profile.png";
+import ProfileCard, { ProfileData } from "@/components/ui/ProfileCard";
+import defaultProfileImage from "@/public/assets/images/Profile/Profile.png";
 import AddPetModal from "@/components/ui/AddPetModal";
 import PetCard from "@/components/ui/PetCard";
 import "react-toastify/dist/ReactToastify.css";
 import { StaticImageData } from "next/image";
 import OutlineButton from "@/components/ui/OutlineButton";
 import toast, { Toaster } from "react-hot-toast";
-
-const ProfileData = {
-  name: "John Doe",
-  contact: "0937948568",
-  image: ProfileImage,
-  email: "jondoe@gmail.com",
-  address: "Andheri West, Mumbai",
-};
+import EditProfileModal from "@/components/ui/EditProfileModal";
 
 // Define the Pet type
 interface Pet {
@@ -28,7 +21,9 @@ interface Pet {
 
 const Profile: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [pets, setPets] = useState<Pet[]>([]);
+  const [profileData, setProfileData] = useState<ProfileData | null>(null);
 
   // Initialize petIdCounter as a string
   const [petIdCounter, setPetIdCounter] = useState<string>("1");
@@ -65,11 +60,48 @@ const Profile: React.FC = () => {
     setPetIdCounter((parseInt(petIdCounter) + 1).toString());
   };
 
+  const fetchProfileData = () => {
+    let storedProfileData = localStorage.getItem("userProfile");
+
+    if (!storedProfileData) {
+      const defaultProfileData: ProfileData = {
+        name: "John Doe",
+        contact: "0937948568",
+        image: defaultProfileImage.src,
+        email: "jondoe@gmail.com",
+        address: "Andheri West, Mumbai",
+      };
+      localStorage.setItem("userProfile", JSON.stringify(defaultProfileData));
+      storedProfileData = JSON.stringify(defaultProfileData);
+    }
+
+    if (storedProfileData) {
+      const parsedData = JSON.parse(storedProfileData);
+      setProfileData({
+        ...parsedData,
+        image: parsedData.image || defaultProfileImage.src,
+      });
+    }
+  };
+
+  useEffect(() => {
+    fetchProfileData();
+  }, []);
+
+  const handleProfileUpdate = (updatedProfile: ProfileData) => {
+    setProfileData(updatedProfile);
+    localStorage.setItem("userProfile", JSON.stringify(updatedProfile));
+  };
+
   return (
     <div className="flex flex-col w-full h-screen items-center font-roca pb-20 flex-grow ">
       <main className="flex flex-col w-full gap-8 md:gap-16 items-center px-8 md:px-32 lg:px-40">
-        <ProfileCard profile={ProfileData} />
-
+        {profileData && (
+          <ProfileCard
+            profile={profileData}
+            onEdit={() => setIsEditModalOpen(true)}
+          />
+        )}
         <hr className="w-full" />
 
         <div className="flex flex-col w-full min-h-[350px] gap-2">
@@ -113,6 +145,15 @@ const Profile: React.FC = () => {
           }}
         />
       </main>
+
+      {profileData && (
+        <EditProfileModal
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          onSave={handleProfileUpdate}
+          profileData={profileData}
+        />
+      )}
       <Toaster position="bottom-right" />
       {/* <ToastContainer
         position="bottom-right"

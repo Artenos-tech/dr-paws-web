@@ -8,6 +8,7 @@ import React from "react";
 import { clinicItems } from "@/model/mockData";
 import { Clinic } from "@/model/typeDefinitions";
 
+
 export async function generateStaticParams() {
   // Return paths in the format expected by Next.js
   return clinicItems.map((clinic: Clinic) => ({

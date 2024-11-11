@@ -1,180 +1,92 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import Image from "next/image";
+import ProfileForm from "./ProfileForm";
+import BillingForm from "./BillingForm";
+import { ProfileData } from "./ProfileCard";
+import {BillingFormData} from './BillingForm'
 
 interface EditProfileModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onSave: (updatedProfile: ProfileData) => void;
+  profileData: ProfileData;
 }
 
-const profileSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  contact: z.string().min(1, "Contact is required"),
-  email: z.string().email("Invalid email address"),
-  address: z.string().min(1, "Address is required"),
-});
-
-const billingSchema = z.object({
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
-  cardNumber: z.string().length(16, "Card number must be 16 digits"),
-  expiry: z.string().regex(/^(0[1-9]|1[0-2])\/\d{2}$/, "Invalid expiration date (MM/YY)"),
-  cvv: z.string().length(3, "CVV must be 3 digits"),
-  cardName: z.string().min(1, "Name on card is required"),
-  billingAddress: z.string().min(1, "Billing address is required"),
-});
-
-type ProfileFormData = z.infer<typeof profileSchema>;
-type BillingFormData = z.infer<typeof billingSchema>;
-
-const EditProfileModal: React.FC<EditProfileModalProps> = ({ isOpen, onClose }) => {
+const EditProfileModal: React.FC<EditProfileModalProps> = ({
+  isOpen,
+  onClose,
+  onSave,
+  profileData,
+}) => {
   const [activeTab, setActiveTab] = useState<"profile" | "billing">("profile");
+  const [billingData, setBillingData] = useState<BillingFormData | null>(null);
 
-  const {
-    register: registerProfile,
-    handleSubmit: handleProfileSubmit,
-    formState: { errors: profileErrors },
-  } = useForm<ProfileFormData>({ resolver: zodResolver(profileSchema) });
-
-  const {
-    register: registerBilling,
-    handleSubmit: handleBillingSubmit,
-    formState: { errors: billingErrors },
-  } = useForm<BillingFormData>({ resolver: zodResolver(billingSchema) });
-
-  const onProfileSubmit = (data: ProfileFormData) => {
-    console.log("Profile Data:", data);
+  const handleProfileSave = (data: ProfileData) => {
+    onSave(data);
     onClose();
   };
 
-  const onBillingSubmit = (data: BillingFormData) => {
-    console.log("Billing Data:", data);
+  const handleBillingSave = (data: BillingFormData) => {
+    setBillingData(data);
+    localStorage.setItem("billingData", JSON.stringify(data));
+    console.log(billingData);
     onClose();
   };
+
+  useEffect(() => {
+    if (isOpen) {
+      setActiveTab("profile");
+    }
+  }, [isOpen]);
 
   return (
     <Modal
       isOpen={isOpen}
       onRequestClose={onClose}
       contentLabel="Edit Profile Modal"
-      className="w-full max-w-md mx-auto my-20 p-4 bg-[#F8F4EA] rounded-xl shadow-lg overflow-y-auto"
+      className="min-h-[600px] w-[400px] lg:w-[450px] max-w-md mx-auto my-5 p-4 bg-[#F8F4EA] rounded-xl shadow-lg overflow-y-auto"
       overlayClassName="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center"
-      style={{ content: { maxHeight: "80vh", padding: "1rem" } }}
+      style={{
+        content: { maxHeight: "70vh", padding: "1rem", marginTop: "90px" },
+      }}
     >
-      <div className="flex justify-around w-full border-b pb-3 text-gray-700 mb-4">
+      <div className="relative flex justify-around w-[85%] mx-auto border-b-2 border-gray-300 mb-4 text-gray-700">
         <button
           onClick={() => setActiveTab("profile")}
-          className={`px-6 py-2 ${activeTab === "profile" ? "border-b-2 border-blue-500 font-semibold" : ""}`}
+          className={`relative py-2 transition-colors w-1/2 ${
+            activeTab === "profile" ? " font-semibold" : "text-gray-500"
+          }`}
         >
           Profile
+          {activeTab === "profile" && (
+            <span className="absolute bottom-[-2.5px] left-0 right-0 mx-auto w-full h-[3px] bg-secondary-1 rounded-full"></span>
+          )}
         </button>
+
         <button
           onClick={() => setActiveTab("billing")}
-          className={`px-6 py-2 ${activeTab === "billing" ? "border-b-2 border-blue-500 font-semibold" : ""}`}
+          className={`relative py-2 transition-colors w-1/2 ${
+            activeTab === "billing" ? " font-semibold" : "text-gray-500"
+          }`}
         >
           Billing Information
+          {activeTab === "billing" && (
+            <span className="absolute bottom-[-2.5px] left-0 right-0 mx-auto w-full h-[3px] bg-secondary-1 rounded-full"></span>
+          )}
         </button>
       </div>
 
       {activeTab === "profile" ? (
-        <form onSubmit={handleProfileSubmit(onProfileSubmit)} className="space-y-4">
-          <div className="flex flex-col items-center mb-4">
-            <div className="relative">
-              <Image
-                src="/path/to/profile-pic.png"
-                alt="Profile"
-                width={64}
-                height={64}
-                className="rounded-full"
-              />
-              <button className="absolute bottom-0 right-0 bg-gray-300 rounded-full p-1">
-                ✎
-              </button>
-            </div>
-          </div>
-
-          <div>
-            <label>Name</label>
-            <input {...registerProfile("name")} className="input rounded-md p-2 border w-full" />
-            {profileErrors.name && <span className="text-red-500 text-sm">{profileErrors.name.message}</span>}
-          </div>
-          <div>
-            <label>Contact No</label>
-            <input {...registerProfile("contact")} className="input rounded-md p-2 border w-full" />
-            {profileErrors.contact && <span className="text-red-500 text-sm">{profileErrors.contact.message}</span>}
-          </div>
-          <div>
-            <label>Email</label>
-            <input {...registerProfile("email")} className="input rounded-md p-2 border w-full" />
-            {profileErrors.email && <span className="text-red-500 text-sm">{profileErrors.email.message}</span>}
-          </div>
-          <div>
-            <label>Address</label>
-            <input {...registerProfile("address")} className="input rounded-md p-2 border w-full" />
-            {profileErrors.address && <span className="text-red-500 text-sm">{profileErrors.address.message}</span>}
-          </div>
-          <div className="flex justify-between mt-6">
-            <button onClick={onClose} type="button" className="text-gray-500 border border-gray-400 rounded-lg px-4 py-2">
-              Cancel
-            </button>
-            <button type="submit" className="bg-blue-500 text-white rounded-lg px-4 py-2">
-              Save
-            </button>
-          </div>
-        </form>
+        <ProfileForm
+          profileData={profileData}
+          onSubmit={handleProfileSave}
+          onCancel={onClose}
+        />
       ) : (
-        <form onSubmit={handleBillingSubmit(onBillingSubmit)} className="space-y-4">
-          <div className="flex gap-4">
-            <div>
-              <label>First Name</label>
-              <input {...registerBilling("firstName")} className="input rounded-md p-2 border w-full" />
-              {billingErrors.firstName && <span className="text-red-500 text-sm">{billingErrors.firstName.message}</span>}
-            </div>
-            <div>
-              <label>Last Name</label>
-              <input {...registerBilling("lastName")} className="input rounded-md p-2 border w-full" />
-              {billingErrors.lastName && <span className="text-red-500 text-sm">{billingErrors.lastName.message}</span>}
-            </div>
-          </div>
-          <div>
-            <label>Card Number</label>
-            <input {...registerBilling("cardNumber")} className="input rounded-md p-2 border w-full" />
-            {billingErrors.cardNumber && <span className="text-red-500 text-sm">{billingErrors.cardNumber.message}</span>}
-          </div>
-          <div className="flex gap-4">
-            <div>
-              <label>Expiration Date</label>
-              <input {...registerBilling("expiry")} className="input rounded-md p-2 border w-full" />
-              {billingErrors.expiry && <span className="text-red-500 text-sm">{billingErrors.expiry.message}</span>}
-            </div>
-            <div>
-              <label>CVV</label>
-              <input {...registerBilling("cvv")} className="input rounded-md p-2 border w-full" />
-              {billingErrors.cvv && <span className="text-red-500 text-sm">{billingErrors.cvv.message}</span>}
-            </div>
-          </div>
-          <div>
-            <label>Name on Card</label>
-            <input {...registerBilling("cardName")} className="input rounded-md p-2 border w-full" />
-            {billingErrors.cardName && <span className="text-red-500 text-sm">{billingErrors.cardName.message}</span>}
-          </div>
-          <div>
-            <label>Billing Address</label>
-            <input {...registerBilling("billingAddress")} className="input rounded-md p-2 border w-full" />
-            {billingErrors.billingAddress && <span className="text-red-500 text-sm">{billingErrors.billingAddress.message}</span>}
-          </div>
-          <div className="flex justify-between mt-6">
-            <button onClick={onClose} type="button" className="text-gray-500 border border-gray-400 rounded-lg px-4 py-2">
-              Cancel
-            </button>
-            <button type="submit" className="bg-blue-500 text-white rounded-lg px-4 py-2">
-              Save
-            </button>
-          </div>
-        </form>
+        <BillingForm
+          onSubmit={handleBillingSave}
+          onCancel={onClose}
+        />
       )}
     </Modal>
   );
