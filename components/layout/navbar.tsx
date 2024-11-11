@@ -159,7 +159,7 @@ export default function NavBar() {
               Membership
             </a>
           </div>
-          <div className="pt-4 pb-3 border-t border-primary-2">
+          <div className="pt-4 pb-3 border-t border-primary-2 ">
             <div className="flex items-center px-8 md:px-32 space-x-4">
               <DropdownMenu.Root>
                 <DropdownMenu.Trigger>
@@ -173,7 +173,7 @@ export default function NavBar() {
                 </DropdownMenu.Trigger>
                 <DropdownMenu.Portal>
                   <DropdownMenu.Content
-                    className="bg-[#f7f1de] shadow-lg rounded-lg w-[100vh] lg:hidden p-4 md:pl-[136px]  space-y-2 pl-10"
+                    className="bg-[#f7f1de] shadow-lg rounded-lg w-[100vh] lg:hidden p-4 md:pl-[136px]  flex flex-col gap-1 pl-10"
                     align="center"
                     sideOffset={0}
                   >
@@ -219,7 +219,7 @@ export default function NavBar() {
                 </DropdownMenu.Portal>
               </DropdownMenu.Root>
               <Button
-                buttonText="Book a visiting"
+                buttonText="Book a visit"
                 buttonBackground="bg-secondary-1"
               />
             </div>
