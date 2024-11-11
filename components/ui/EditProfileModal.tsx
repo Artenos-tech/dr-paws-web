@@ -2,24 +2,14 @@ import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import ProfileForm from "./ProfileForm";
 import BillingForm from "./BillingForm";
+import { ProfileData } from "./ProfileCard";
+import {BillingFormData} from './BillingForm'
 
 interface EditProfileModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (updatedProfile: {
-    name: string;
-    contact: string;
-    image: string;
-    email: string;
-    address: string;
-  }) => void;
-  profileData: {
-    name: string;
-    contact: string;
-    image: string;
-    email: string;
-    address: string;
-  };
+  onSave: (updatedProfile: ProfileData) => void;
+  profileData: ProfileData;
 }
 
 const EditProfileModal: React.FC<EditProfileModalProps> = ({
@@ -29,16 +19,17 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
   profileData,
 }) => {
   const [activeTab, setActiveTab] = useState<"profile" | "billing">("profile");
+  const [billingData, setBillingData] = useState<BillingFormData | null>(null);
 
-  const handleProfileSave = (data: {
-    name: string;
-    contact: string;
-    email: string;
-    address: string;
-    image: string;
-  }) => {
-    const updatedProfile = { ...data };
-    onSave(updatedProfile);
+  const handleProfileSave = (data: ProfileData) => {
+    onSave(data);
+    onClose();
+  };
+
+  const handleBillingSave = (data: BillingFormData) => {
+    setBillingData(data);
+    localStorage.setItem("billingData", JSON.stringify(data));
+    console.log(billingData);
     onClose();
   };
 
@@ -53,12 +44,13 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
       isOpen={isOpen}
       onRequestClose={onClose}
       contentLabel="Edit Profile Modal"
-      className="min-h-[570px] min-w-[350px] max-w-md mx-auto my-10 p-4 bg-[#F8F4EA] rounded-xl shadow-lg overflow-y-auto"
+      className="min-h-[600px] w-[400px] lg:w-[450px] max-w-md mx-auto my-5 p-4 bg-[#F8F4EA] rounded-xl shadow-lg overflow-y-auto"
       overlayClassName="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center"
-      style={{ content: { maxHeight: "80vh", padding: "1rem" } }}
+      style={{
+        content: { maxHeight: "70vh", padding: "1rem", marginTop: "90px" },
+      }}
     >
       <div className="relative flex justify-around w-[85%] mx-auto border-b-2 border-gray-300 mb-4 text-gray-700">
-        {/* Profile Tab */}
         <button
           onClick={() => setActiveTab("profile")}
           className={`relative py-2 transition-colors w-1/2 ${
@@ -71,7 +63,6 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
           )}
         </button>
 
-        {/* Billing Information Tab */}
         <button
           onClick={() => setActiveTab("billing")}
           className={`relative py-2 transition-colors w-1/2 ${
@@ -93,7 +84,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
         />
       ) : (
         <BillingForm
-          onSubmit={(data) => console.log("Billing Data:", data)}
+          onSubmit={handleBillingSave}
           onCancel={onClose}
         />
       )}

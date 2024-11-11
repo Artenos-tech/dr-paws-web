@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import Button from "@/components/ui/Button";
+
 
 const paymentSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -195,9 +195,9 @@ const PaymentPage = () => {
                     className="mt-1 border-accent"
                   />
                   <label className="text-sm text-gray-600">
-                    By clicking on Subscribe you accept Dr. Paw's Terms &
+                    By clicking on Subscribe you accept Dr. Paw&apos;s Terms &
                     Conditions. We will process your personal data in accordance
-                    with Design anything's Privacy Notice.
+                    with Design anything&apos;s Privacy Notice.
                   </label>
                 </div>
                 <button

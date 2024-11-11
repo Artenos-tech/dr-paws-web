@@ -15,7 +15,7 @@ const billingSchema = z.object({
   billingAddress: z.string().min(1, "Billing address is required"),
 });
 
-type BillingFormData = z.infer<typeof billingSchema>;
+export type BillingFormData = z.infer<typeof billingSchema>;
 
 interface BillingFormProps {
   onSubmit: (data: BillingFormData) => void;
@@ -56,7 +56,7 @@ const BillingForm: React.FC<BillingFormProps> = ({ onSubmit, onCancel }) => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="space-y-3 w-[85%] mx-auto"
+      className="space-y-4 w-[85%] mx-auto mt-[42px]"
     >
       <div className="flex gap-4">
         <div className="flex flex-col gap-2 w-1/2">
@@ -156,7 +156,7 @@ const BillingForm: React.FC<BillingFormProps> = ({ onSubmit, onCancel }) => {
           </span>
         )}
       </div>
-      <div className="flex gap-4 pt-4">
+      <div className="flex gap-2 pt-2">
         <button
           onClick={onCancel}
           type="button"
@@ -168,7 +168,7 @@ const BillingForm: React.FC<BillingFormProps> = ({ onSubmit, onCancel }) => {
           type="submit"
           className="bg-secondary-1 text-white rounded-full px-4 py-2 flex-1"
         >
-          Save Billing Info
+          Save
         </button>
       </div>
     </form>

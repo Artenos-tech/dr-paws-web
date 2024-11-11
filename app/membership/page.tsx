@@ -45,7 +45,7 @@ const Membership = () => {
               <p className="text-sm lg:text-[14px] text-gray-700 px-1 xl:text-xl">
                 Our memberships are designed to provide the convenience,
                 security, and value pet-parents of today expect. Explore our
-                plans to discover the one that fits your pet's needs.
+                plans to discover the one that fits your pet&apos;s needs.
               </p>
             </div>
           </div>

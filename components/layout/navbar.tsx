@@ -1,18 +1,20 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Profile from "@/public/assets/images/profileThumnail.svg";
 import { Menu } from "lucide-react";
 import Button from "../ui/Button";
-import { useState } from "react";
 import Link from "next/link";
-import ProfileDropdown from "../ui/DropDownMenu";
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+import { MdChevronRight } from "react-icons/md";
+
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="fixed left-0 toop-0 z-50 bg-primary-3 w-full">
+    <div className="fixed left-0 top-0 z-50 bg-primary-3 w-full">
       <div className="mx-auto px-8 md:px-32 lg:px-40">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
@@ -34,26 +36,6 @@ export default function NavBar() {
                 <button className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
                   Locations
                 </button>
-                {/* <div className="hidden absolute z-10 -ml-4 mt-3 transform w-44 px-2 py-2 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 group-hover:block">
-                  <a
-                    href="/locations"
-                    className="text-primary-1 hover:bg-primary-2 hover:text-white block px-3 py-2 rounded-md text-sm font-medium"
-                  >
-                    Location 1
-                  </a>
-                  <a
-                    href="/locations"
-                    className="text-primary-1 hover:bg-primary-2 hover:text-white block px-3 py-2 rounded-md text-sm font-medium"
-                  >
-                    Location 2
-                  </a>
-                  <a
-                    href="/locations"
-                    className="text-primary-1 hover:bg-primary-2 hover:text-white block px-3 py-2 rounded-md text-sm font-medium"
-                  >
-                    Location 3
-                  </a>
-                </div> */}
               </div>
               <Link
                 href="/services"
@@ -80,8 +62,54 @@ export default function NavBar() {
               buttonText="Book a visit"
               buttonBackground="bg-secondary-1"
             />
-
-            <ProfileDropdown />
+            <DropdownMenu.Root>
+              <DropdownMenu.Trigger>
+                <Image
+                  src={Profile}
+                  alt="User logo"
+                  width={40}
+                  height={40}
+                  className="cursor-pointer"
+                />
+              </DropdownMenu.Trigger>
+              <DropdownMenu.Portal>
+                <DropdownMenu.Content
+                  className="bg-[#f7f1de] shadow-lg rounded-lg w-48 p-4 space-y-2"
+                  align="start"
+                  sideOffset={5}
+                >
+                  <DropdownMenu.Item asChild className="text-primary-1 hover:text-secondary-1 cursor-pointer">
+                    <Link href="/user/profile" className="">
+                      Profile
+                    </Link>
+                  </DropdownMenu.Item>
+                  <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer">
+                    My Pets
+                  </DropdownMenu.Item>
+                  <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer">
+                    Medical History
+                  </DropdownMenu.Item>
+                  <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer">
+                    My Appointments
+                  </DropdownMenu.Item>
+                  <div className="border-t border-gray-300 my-2" />
+                  <DropdownMenu.Item className="text-secondary-1 flex justify-between items-center hover:text-primary-1 cursor-pointer">
+                    Become a Member <MdChevronRight />
+                  </DropdownMenu.Item>
+                  <div className="border-t border-gray-300 my-2" />
+                  <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer">
+                    Billing Information
+                  </DropdownMenu.Item>
+                  <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer">
+                    Account Settings
+                  </DropdownMenu.Item>
+                  <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer">
+                    Log Out
+                  </DropdownMenu.Item>
+                  <DropdownMenu.Arrow className="fill-current text-[#f7f1de]" />
+                </DropdownMenu.Content>
+              </DropdownMenu.Portal>
+            </DropdownMenu.Root>
           </div>
           <div className="-mr-2 flex lg:hidden">
             <button
@@ -128,8 +156,57 @@ export default function NavBar() {
           </div>
           <div className="pt-4 pb-3 border-t border-primary-2">
             <div className="flex items-center px-8 md:px-32 space-x-4">
-              <Image src={Profile} alt="User logo" width={40} height={40} />
-
+              <DropdownMenu.Root>
+                <DropdownMenu.Trigger>
+                  <Image
+                    src={Profile}
+                    alt="User logo"
+                    width={40}
+                    height={40}
+                    className="cursor-pointer"
+                  />
+                </DropdownMenu.Trigger>
+                <DropdownMenu.Portal>
+                  <DropdownMenu.Content
+                    className="bg-[#f7f1de] shadow-lg rounded-lg w-[100vh] lg:hidden p-4 md:pl-[136px]  space-y-2 pl-10"
+                    align="center"
+                    sideOffset={0}
+                  >
+                    <DropdownMenu.Item
+                      onClick={() => setIsOpen(false)}
+                      className="text-primary-1 hover:text-secondary-1 cursor-pointer"
+                    >
+                      <Link href="/user/profile" className="">
+                        Profile
+                      </Link>
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer">
+                      My Pets
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer">
+                      Medical History
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer">
+                      My Appointments
+                    </DropdownMenu.Item>
+                    <div className="border-t border-gray-300 my-2" />
+                    <DropdownMenu.Item className="text-secondary-1 flex justify-between items-center hover:text-primary-1 cursor-pointer">
+                      Become a Member <MdChevronRight />
+                    </DropdownMenu.Item>
+                    <div className="border-t border-gray-300 my-2" />
+                    <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer">
+                      Billing Information
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer">
+                      Account Settings
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer">
+                      Log Out
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Arrow className="fill-current text-[#f7f1de]" />
+                  </DropdownMenu.Content>
+                </DropdownMenu.Portal>
+              </DropdownMenu.Root>
               <Button
                 buttonText="Book a visit"
                 buttonBackground="secondary-1"
