@@ -8,7 +8,6 @@ import React from "react";
 import { clinicItems } from "@/model/mockData";
 import { Clinic } from "@/model/typeDefinitions";
 
-
 export async function generateStaticParams() {
   // Return paths in the format expected by Next.js
   return clinicItems.map((clinic: Clinic) => ({
@@ -39,7 +38,6 @@ const tabs = [
 
 const ClinicDetails: React.FC<ClinicDetailsProps> = ({ params }) => {
   const { clinicId } = params;
-  console.log(clinicId);
   const clinic = clinicItems.find((item) => item.id === clinicId);
 
   if (!clinic) {

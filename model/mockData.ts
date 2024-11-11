@@ -12,7 +12,7 @@ import description5 from "../public/assets/images/description5.png";
 import description6 from "../public/assets/images/description6.png";
 import dogImg from "../public/assets/images/dogimg.png";
 import catImg from "../public/assets/images/catimg.png";
-import birdImg from "../public/assets/images/birdimg.png";
+import rabbitImg from "../public/assets/images/rabbitimg.png";
 import doctorImage from "../public/assets/images/clinic/doctor.png";
 import ClinicDog from "../public/assets/images/clinic/maggidog.png";
 import { ServiceCategory, Service, Clinic } from "@/model/typeDefinitions";
@@ -472,8 +472,8 @@ export const bannerItems = [
     bannerText: "Cat",
   },
   {
-    bannerImage: birdImg,
-    bannerText: "Bird",
+    bannerImage: rabbitImg,
+    bannerText: "Small Animal",
   },
 ];
 

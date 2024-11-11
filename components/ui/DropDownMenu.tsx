@@ -1,4 +1,5 @@
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+import Link from "next/link";
 import { MdChevronRight } from "react-icons/md";
 
 export default function ProfileDropdown() {
@@ -14,15 +15,20 @@ export default function ProfileDropdown() {
 
       <DropdownMenu.Portal>
         <DropdownMenu.Content
-          className="bg-[#f7f1de] shadow-lg rounded-lg w-48 p-4 space-y-2"
+          className="bg-[#f7f1de] shadow-lg rounded-lg w-48 p-4 flex flex-col gap-1"
           align="start"
           sideOffset={5}
         >
           <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer">
             Profile
           </DropdownMenu.Item>
-          <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer">
-            My Pets
+          <DropdownMenu.Item
+            asChild
+            className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none "
+          >
+            <Link href="/user/profile" className="">
+              My Pets
+            </Link>
           </DropdownMenu.Item>
           <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer">
             Medical History

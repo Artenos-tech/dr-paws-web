@@ -62,47 +62,53 @@ export default function NavBar() {
               buttonBackground="bg-secondary-1"
             />
             <DropdownMenu.Root>
-              <DropdownMenu.Trigger>
+              <DropdownMenu.Trigger className="outline-none">
                 <Image
                   src={Profile}
                   alt="User logo"
                   width={40}
                   height={40}
-                  className="cursor-pointer"
+                  className="cursor-pointer outline-none"
                 />
               </DropdownMenu.Trigger>
               <DropdownMenu.Portal>
                 <DropdownMenu.Content
-                  className="bg-[#f7f1de] shadow-lg rounded-lg w-48 p-4 space-y-2"
+                  className="bg-[#f7f1de] shadow-lg rounded-lg w-48 p-4 flex flex-col gap-1"
                   align="start"
                   sideOffset={5}
                 >
-                  <DropdownMenu.Item asChild className="text-primary-1 hover:text-secondary-1 cursor-pointer">
+                  <DropdownMenu.Item asChild className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none">
                     <Link href="/user/profile" className="">
                       Profile
                     </Link>
                   </DropdownMenu.Item>
-                  <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer">
-                    My Pets
+                  <DropdownMenu.Item
+                    asChild
+                    className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none "
+                  >
+                    <Link href="/user/profile" className="">
+                      My Pets
+                    </Link>
                   </DropdownMenu.Item>
-                  <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer">
+
+                  <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none">
                     Medical History
                   </DropdownMenu.Item>
-                  <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer">
+                  <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none">
                     My Appointments
                   </DropdownMenu.Item>
                   <div className="border-t border-gray-300 my-2" />
-                  <DropdownMenu.Item className="text-secondary-1 flex justify-between items-center hover:text-primary-1 cursor-pointer">
+                  <DropdownMenu.Item className="text-secondary-1 flex justify-between items-center hover:text-primary-1 cursor-pointer outline-none">
                     Become a Member <MdChevronRight />
                   </DropdownMenu.Item>
                   <div className="border-t border-gray-300 my-2" />
-                  <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer">
+                  <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none">
                     Billing Information
                   </DropdownMenu.Item>
-                  <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer">
+                  <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none">
                     Account Settings
                   </DropdownMenu.Item>
-                  <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer">
+                  <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none">
                     Log Out
                   </DropdownMenu.Item>
                   <DropdownMenu.Arrow className="fill-current text-[#f7f1de]" />
@@ -179,8 +185,14 @@ export default function NavBar() {
                         Profile
                       </Link>
                     </DropdownMenu.Item>
-                    <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer">
-                      My Pets
+                    <DropdownMenu.Item
+                      onClick={() => setIsOpen(false)}
+                      asChild
+                      className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none "
+                    >
+                      <Link href="/user/profile" className="">
+                        My Pets
+                      </Link>
                     </DropdownMenu.Item>
                     <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer">
                       Medical History

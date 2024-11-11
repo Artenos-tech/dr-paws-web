@@ -5,17 +5,18 @@ import ProfileCard, { ProfileData } from "@/components/ui/ProfileCard";
 import defaultProfileImage from "@/public/assets/images/Profile/Profile.png";
 import AddPetModal from "@/components/ui/AddPetModal";
 import PetCard from "@/components/ui/PetCard";
-import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { v4 as uuidv4 } from "uuid";
+import { StaticImageData } from "next/image";
+import OutlineButton from "@/components/ui/OutlineButton";
+import toast, { Toaster } from "react-hot-toast";
 import EditProfileModal from "@/components/ui/EditProfileModal";
-
 
 // Define the Pet type
 interface Pet {
   petId: string;
   name: string;
   type: string;
+  petImage: StaticImageData | string;
 }
 
 const Profile: React.FC = () => {
@@ -24,18 +25,39 @@ const Profile: React.FC = () => {
   const [pets, setPets] = useState<Pet[]>([]);
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
 
+  // Initialize petIdCounter as a string
+  const [petIdCounter, setPetIdCounter] = useState<string>("1");
+
   useEffect(() => {
     const savedPets = localStorage.getItem("pets");
-    setPets(savedPets ? JSON.parse(savedPets) : []);
+    const parsedPets = savedPets ? JSON.parse(savedPets) : [];
+    setPets(parsedPets);
+
+    // Set petIdCounter based on the last petId in the list, converting to a string
+    if (parsedPets.length > 0) {
+      const maxId = Math.max(
+        ...parsedPets.map((pet: Pet) => parseInt(pet.petId))
+      );
+      setPetIdCounter((maxId + 1).toString());
+    }
   }, []);
 
-  const addPet = (pet: Omit<Pet, "petId">): void => {
-    const newPet = { ...pet, petId: uuidv4() };
+  const addPet = (pet: Omit<Pet, "petId" | "petImage">): void => {
+    const newPet: Pet = { ...pet, petId: petIdCounter, petImage: "" };
     setPets((prevPets) => {
       const updatedPets = [...prevPets, newPet];
       localStorage.setItem("pets", JSON.stringify(updatedPets));
       return updatedPets;
     });
+    toast.success("Added pet successfully", {
+      duration: 3000,
+      style: {
+        backgroundColor: "#4CAF50",
+        color: "#fff",
+        fontWeight: 700,
+      },
+    });
+    setPetIdCounter((parseInt(petIdCounter) + 1).toString());
   };
 
   const fetchProfileData = () => {
@@ -73,27 +95,24 @@ const Profile: React.FC = () => {
   
 
   return (
-    <div className="flex flex-col w-full h-full items-center font-roca pb-20 flex-grow">
+    <div className="flex flex-col w-full h-full items-center font-roca pb-20 flex-grow ">
       <main className="flex flex-col w-full gap-8 md:gap-16 items-center px-8 md:px-32 lg:px-40">
-      {profileData && (
+        {profileData && (
           <ProfileCard
             profile={profileData}
             onEdit={() => setIsEditModalOpen(true)}
           />
         )}
-
         <hr className="w-full" />
 
         <div className="flex flex-col w-full min-h-[350px] gap-2">
           <div className="flex items-center justify-between">
             <h1 className="text-2xl text-secondary-1">Your Pets</h1>
             {pets.length > 0 && (
-              <button
-                onClick={() => setIsModalOpen(true)}
-                className="text-sm text-secondary-1 border px-5 py-2 rounded-full border-secondary-1 hover:bg-blue-50"
-              >
-                + Add Pet
-              </button>
+              <OutlineButton
+                outlineBtnText="Add Pet"
+                outlineBtnLink={() => setIsModalOpen(true)}
+              />
             )}
           </div>
 
@@ -110,7 +129,7 @@ const Profile: React.FC = () => {
               </button>
             </div>
           ) : (
-            <div className="flex flex-wrap gap-4 p-4">
+            <div className="flex justify-center items-center md:justify-start  flex-wrap gap-4 my-8 md:my-4">
               {pets.map((pet) => (
                 <PetCard key={pet.petId} pet={pet} />
               ))}
@@ -121,7 +140,7 @@ const Profile: React.FC = () => {
         <AddPetModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
-          onSubmit={(pet: Omit<Pet, "petId">) => {
+          onSubmit={(pet: Omit<Pet, "petId" | "petImage">) => {
             addPet(pet);
             setIsModalOpen(false);
           }}
@@ -136,11 +155,10 @@ const Profile: React.FC = () => {
           profileData={profileData}
         />
       )}
-
-      <ToastContainer
-        position="top-center"
-        autoClose={1000}
-        hideProgressBar={false}
+      <Toaster position="bottom-right" />
+      {/* <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
         newestOnTop={false}
         closeOnClick
         rtl={false}
@@ -148,7 +166,14 @@ const Profile: React.FC = () => {
         draggable
         pauseOnHover
         theme="light"
-      />
+        style={{
+          position: "fixed",
+          bottom: "0px",
+          right: "0px",
+          top: "auto",
+          left: "auto",
+        }}
+      /> */}
     </div>
   );
 };

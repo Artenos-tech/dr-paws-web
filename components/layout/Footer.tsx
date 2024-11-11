@@ -22,7 +22,9 @@ const Footer = () => {
             </a>
           </div>
           <div>
-            <h6 className="text-primary-1 font-semibold mb-2">Company</h6>
+            <h6 className="font-sans text-primary-1 font-semibold mb-2">
+              Company
+            </h6>
             <a
               href="/team"
               className="block mt-1 text-primary-1 hover:text-primary-2"
@@ -37,7 +39,9 @@ const Footer = () => {
             </a>
           </div>
           <div>
-            <h6 className="text-primary-1 font-semibold mb-2">Get Care</h6>
+            <h6 className="font-sans text-primary-1 font-semibold mb-2">
+              Get Care
+            </h6>
             <a
               href="/services"
               className="block mt-1 text-primary-1 hover:text-primary-2"
@@ -64,7 +68,9 @@ const Footer = () => {
             </a>
           </div>
           <div>
-            <h6 className="text-primary-1 font-semibold mb-2">Social</h6>
+            <h6 className="font-sans text-primary-1 font-semibold mb-2">
+              Social
+            </h6>
             <a
               href="#"
               className="block mt-1 text-primary-1 hover:text-primary-2"
