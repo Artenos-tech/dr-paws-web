@@ -23,16 +23,22 @@ const DoctorDetailsModal: React.FC<doctorDetailsProps> = ({
     <Modal
       isOpen={isOpen}
       onRequestClose={onClose}
-      className="w-4/5 max-w-[950px] mt-20  mx-auto  p-4 bg-white rounded-xl shadow-lg overflow-y-auto z-50"
+      className="w-4/5 max-w-[950px] mt-20  mx-auto  p-4 bg-white rounded-xl shadow-lg overflow-y-auto z-50 max-h-[80vh] md:max-h-none"
       overlayClassName="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center"
-      style={{ content: { maxHeight: "80vh", padding: "1rem" } }}
+      style={{ content: { padding: "1rem" } }}
     >
       <div className="flex flex-col lg:flex-row justify-between items-center p-5 text-primary-1 relative">
-        <button className="absolute top-0 right-0" onClick={onClose}>
+        <button
+          className="absolute top-0 right-0 text-gray-500 hover:text-gray-700 transition-colors"
+          aria-label="Close modal"
+          onClick={onClose}
+        >
           <IoClose />
         </button>
         <div className="space-y-4 md:space-y-8 lg:space-y-12 w-full lg:w-1/2  order-1 lg:order-none">
-          <h1 className="text-xl md:text-2xl text-center lg:text-left my-3 lg:my-0">{name}</h1>
+          <h1 className="text-xl md:text-2xl text-center lg:text-left my-3 lg:my-0">
+            {name}
+          </h1>
 
           <div className="flex flex-col md:items-center lg:items-start gap-3 md:gap-5 w-full text-center lg:text-left">
             <div className="flex gap-1">
