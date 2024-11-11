@@ -49,7 +49,7 @@ const Profile: React.FC = () => {
       localStorage.setItem("pets", JSON.stringify(updatedPets));
       return updatedPets;
     });
-    toast.success("Pet added successfully!", {
+    toast.success("Added pet successfully", {
       duration: 3000,
       style: {
         backgroundColor: "#4CAF50",

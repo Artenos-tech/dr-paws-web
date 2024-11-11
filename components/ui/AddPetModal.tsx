@@ -36,7 +36,7 @@ export default function AddPetModal({
 
   const handleFormSubmit = (data: PetFormData) => {
     onSubmit(data);
-    toast.success("Pet added successfully!", {
+    toast.success("Added pet successfully", {
       position: "top-center",
       autoClose: 1000,
       hideProgressBar: false,

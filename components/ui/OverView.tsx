@@ -1,6 +1,6 @@
 "use client";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Phone } from "lucide-react";
 import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
@@ -15,31 +15,37 @@ const Overview = () => {
       <div className="w-full flex flex-col lg:flex-row justify-between space-y-6 md:space-y-8">
         {/* Contact & Timings Section */}
         <div className="flex flex-col items-start pt-[50px]">
-          <div className="w-full mb-6">
-            <h2 className="text-2xl font-roca font-semibold mb-3">
-              Contact Number
-            </h2>
-            <p className="text-xl">
-              <span role="img" aria-label="phone" className="mr-2">
-                📞
+          <div className="flex flex-col w-full gap-2 md:gap-4 mb-6">
+            <h2 className="text-2xl font-roca mb-3">Contact Number</h2>
+            <div className="flex gap-4">
+              <span role="img" aria-label="phone">
+                <Phone />
               </span>
-              +91 987654321 / +91 987654321
-            </p>
+              <p className="text-sm md:text-xl">
+                +91 987654321 / +91 987654321
+              </p>
+            </div>
           </div>
-          <div className="w-full">
-            <h2 className="text-2xl font-roca font-semibold mb-3">Timings</h2>
-            <div className="text-lg">
-              <p className="flex  justify-between">
+          <div className="flex flex-col w-full gap-2 md:gap-4">
+            <h2 className="text-2xl font-roca mb-3">Timings</h2>
+            <div className="text-sm md:text-lg">
+              <p className="flex justify-between">
                 Monday to Friday{" "}
-                <span className="text-xl font-roca ml-4">09:00 - 19:00</span>
+                <span className="text-base md:text-xl font-roca ml-4">
+                  09:00 - 19:00
+                </span>
               </p>
-              <p className="flex  justify-between">
+              <p className="flex justify-between">
                 Saturday{" "}
-                <span className="text-xl font-roca ml-4">10:00 - 17:00</span>
+                <span className="text-base md:text-xl font-roca ml-4">
+                  10:00 - 17:00
+                </span>
               </p>
-              <p className="flex  justify-between">
+              <p className="flex justify-between">
                 Sunday{" "}
-                <span className="text-xl font-roca ml-4">10:00 - 15:00</span>
+                <span className="text-base md:text-xl font-roca ml-4">
+                  10:00 - 15:00
+                </span>
               </p>
             </div>
           </div>
