@@ -15,7 +15,7 @@ const Overview = () => {
       <div className="w-full flex flex-col lg:flex-row justify-between space-y-6 md:space-y-8">
         {/* Contact & Timings Section */}
         <div className="flex flex-col items-start pt-[50px]">
-          <div className="mb-6">
+          <div className="w-full mb-6">
             <h2 className="text-2xl font-roca font-semibold mb-3">
               Contact Number
             </h2>
@@ -26,19 +26,19 @@ const Overview = () => {
               +91 987654321 / +91 987654321
             </p>
           </div>
-          <div>
+          <div className="w-full">
             <h2 className="text-2xl font-roca font-semibold mb-3">Timings</h2>
             <div className="text-lg">
               <p className="flex  justify-between">
-                Monday to Friday:{" "}
+                Monday to Friday{" "}
                 <span className="text-xl font-roca ml-4">09:00 - 19:00</span>
               </p>
               <p className="flex  justify-between">
-                Saturday:{" "}
+                Saturday{" "}
                 <span className="text-xl font-roca ml-4">10:00 - 17:00</span>
               </p>
               <p className="flex  justify-between">
-                Sunday:{" "}
+                Sunday{" "}
                 <span className="text-xl font-roca ml-4">10:00 - 15:00</span>
               </p>
             </div>

@@ -3,7 +3,7 @@ import Modal from "react-modal";
 import ProfileForm from "./ProfileForm";
 import BillingForm from "./BillingForm";
 import { ProfileData } from "./ProfileCard";
-import {BillingFormData} from './BillingForm'
+import { BillingFormData } from "./BillingForm";
 
 interface EditProfileModalProps {
   isOpen: boolean;
@@ -83,10 +83,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
           onCancel={onClose}
         />
       ) : (
-        <BillingForm
-          onSubmit={handleBillingSave}
-          onCancel={onClose}
-        />
+        <BillingForm onSubmit={handleBillingSave} onCancel={onClose} />
       )}
     </Modal>
   );
