@@ -58,9 +58,9 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="flex flex-col items-center justify-center w-full mt-20 px-8 md:px-32 lg:scroll-px-40">
-            <div className="mx-auto text-center mb-10">
-              <h1 className="mx-auto text-xl md:text-4xl px-1 md:px-20">
+          <div className="flex flex-col items-center justify-center w-full mt-20 md:mt-32 px-8 md:px-32 lg:scroll-px-40">
+            <div className="mx-auto text-center mb-14">
+              <h1 className="mx-auto text-xl md:text-4xl px-1 md:px-20 mb-6">
                 Whatever your pet needs, we&apos;re there
               </h1>
               <p>
@@ -71,7 +71,7 @@ export default function Home() {
           </div>
           <Services />
 
-          <div className="w-full mt-20">
+          <div className="w-full mt-20 md:mt-32">
             <h1 className="text-xl md:text-4xl text-center text-primary-1">
               Reviews
             </h1>
@@ -187,7 +187,7 @@ export default function Home() {
           </div>
 
           <div className="mx-auto text-center my-20 flex flex-col px-8 md:px-32 lg:px-40">
-            <h1 className="text-xl md:text-4xl">Still have questions?</h1>
+            <h1 className="text-xl md:text-4xl mb-8">Still have questions?</h1>
             <p className=" md:text-xl">
               If your question is still not answered, please get in touch and
               we&apos;d be happy to help

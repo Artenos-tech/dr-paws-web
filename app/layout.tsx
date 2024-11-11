@@ -20,31 +20,6 @@ const roca = localFont({
       weight: "300",
       style: "normal",
     },
-    {
-      path: "./fonts/Roca-Font/Roca Bold.ttf",
-      weight: "300",
-      style: "normal",
-    },
-    {
-      path: "./fonts/Roca-Font/Roca Light.ttf",
-      weight: "300",
-      style: "normal",
-    },
-    {
-      path: "./fonts/Roca-Font/Roca Thin.ttf",
-      weight: "300",
-      style: "normal",
-    },
-    {
-      path: "./fonts/Roca-Font/Roca Heavy.ttf",
-      weight: "400",
-      style: "normal",
-    },
-    {
-      path: "./fonts/Roca-Font/Roca Italic.ttf",
-      weight: "300",
-      style: "normal",
-    },
   ],
   variable: "--font-roca",
   display: "swap",
@@ -65,10 +40,8 @@ export default function RootLayout({
       <body className={`w-full min-h-screen overflow-x-hidden`}>
         <div className="w-full overflow-x-hidden">
           <NavBar />
-          <div className="mt-16"> {/* Adjust margin here */}
-            {children}
-          </div>
-          
+          <div className="mt-16">{children}</div>
+
           <Footer />
         </div>
       </body>
