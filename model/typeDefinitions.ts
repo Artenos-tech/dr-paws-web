@@ -22,3 +22,14 @@ export interface Clinic {
   branch: string;
   description: string;
 }
+export interface Pet {
+  petId: string;
+  name: string;
+  type: string;
+  breed: string;
+  gender: string;
+  age: string;
+  birthday: string;
+  weight: string;
+  petImage: StaticImageData | string
+}
