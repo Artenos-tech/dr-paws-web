@@ -30,13 +30,13 @@ export default function ProfileDropdown() {
           <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer">
             My Appointments
           </DropdownMenu.Item>
-          
+
           <div className="border-t border-gray-300 my-2" />
-          
+
           <DropdownMenu.Item className="text-secondary-1 flex justify-between items-center hover:text-primary-1 cursor-pointer">
             Become a Member <MdChevronRight />
           </DropdownMenu.Item>
-          
+
           <div className="border-t border-gray-300 my-2" />
 
           <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer">
@@ -48,7 +48,7 @@ export default function ProfileDropdown() {
           <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer">
             Log Out
           </DropdownMenu.Item>
-          
+
           <DropdownMenu.Arrow className="fill-current text-[#f7f1de]" />
         </DropdownMenu.Content>
       </DropdownMenu.Portal>
