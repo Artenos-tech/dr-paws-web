@@ -9,7 +9,6 @@ import Link from "next/link";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { MdChevronRight } from "react-icons/md";
 
-
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -49,12 +48,12 @@ export default function NavBar() {
               >
                 Our Team
               </a>
-              <a
-                href="#"
+              <Link
+                href="/membership"
                 className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
               >
                 Membership
-              </a>
+              </Link>
             </div>
           </div>
           <div className="hidden lg:flex items-center space-x-4">
@@ -78,7 +77,10 @@ export default function NavBar() {
                   align="start"
                   sideOffset={5}
                 >
-                  <DropdownMenu.Item asChild className="text-primary-1 hover:text-secondary-1 cursor-pointer">
+                  <DropdownMenu.Item
+                    asChild
+                    className="text-primary-1 hover:text-secondary-1 cursor-pointer"
+                  >
                     <Link href="/user/profile" className="">
                       Profile
                     </Link>
@@ -209,7 +211,7 @@ export default function NavBar() {
               </DropdownMenu.Root>
               <Button
                 buttonText="Book a visit"
-                buttonBackground="secondary-1"
+                buttonBackground="bg-secondary-1"
               />
             </div>
           </div>

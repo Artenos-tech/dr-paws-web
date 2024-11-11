@@ -54,11 +54,15 @@ const Membership = () => {
         <div className="bg-primary-3 w-full text-center text-3xl my-16 pb-12">
           <h1 className="pt-12 pb-8 lg:pb-16">Become A Member</h1>
 
-          <div className="block xl:hidden w-[85%] mx-auto relative h-[600px]">
-            <button className="custom-swiper-button-prev absolute -left-[18px] top-1/2 -translate-y-1/2 z-10 rounded-full p-2 transition-colors">
+          {/* Wrapper for the Swiper and navigation buttons */}
+          <div className="relative w-[85%] mx-auto">
+            {/* Left Navigation Button */}
+            <button className="custom-swiper-button-prev absolute left-[-40px] top-1/2 transform -translate-y-1/2 z-10 rounded-full p-2 transition-colors">
               <ChevronLeft size={42} className="text-[#5281A2]" />
             </button>
-            <button className="custom-swiper-button-next absolute -right-[18px] top-1/2 -translate-y-1/2 z-10 rounded-full p-2 transition-colors">
+
+            {/* Right Navigation Button */}
+            <button className="custom-swiper-button-next absolute right-[-40px] top-1/2 transform -translate-y-1/2 z-10 rounded-full p-2 transition-colors">
               <ChevronRight size={42} className="text-[#5281A2]" />
             </button>
 
@@ -96,7 +100,6 @@ const Membership = () => {
           </div>
         </div>
       </main>
-
       {selectedPlan && (
         <MemberModal
           isOpen={isModalOpen}

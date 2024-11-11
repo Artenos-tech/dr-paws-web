@@ -7,7 +7,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
-
 const paymentSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
@@ -42,7 +41,6 @@ const PaymentPage = () => {
   const onSubmit = (data: PaymentFormData) => {
     try {
       console.log(data);
-
     } catch (error) {
       console.error("Submission error:", error);
     }
@@ -70,7 +68,7 @@ const PaymentPage = () => {
               <div>unicorn2023@gmail.com</div>
             </div>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="">
+            <form id="payment-form" onSubmit={handleSubmit(onSubmit)} className="">
               <div className="flex flex-col gap-4">
                 <h2 className="text-lg font-medium text-primary-1 ">
                   Your payment details
@@ -200,12 +198,14 @@ const PaymentPage = () => {
                     with Design anything&apos;s Privacy Notice.
                   </label>
                 </div>
-                <button
-                  type="submit"
-                  className="w-fit bg-[#74A7B3] text-white rounded-full px-14 py-2"
-                >
-                  Subscribe
-                </button>
+                <div className="hidden lg:block">
+                  <button
+                    type="submit"
+                    className="w-fit bg-[#74A7B3] text-white rounded-full px-14 py-2"
+                  >
+                    Subscribe
+                  </button>
+                </div>
               </div>
             </form>
           </div>
@@ -256,6 +256,15 @@ const PaymentPage = () => {
                 </ul>
               </div>
             </div>
+          </div>
+          <div className="block lg:hidden mb-5 text-center">
+            <button
+              type="submit"
+              form="payment-form"
+              className="w-fit bg-[#74A7B3] text-white rounded-full px-14 py-2"
+            >
+              Subscribe
+            </button>
           </div>
         </div>
       </main>
