@@ -43,7 +43,7 @@ export default function NavBar() {
                 Our Services
               </Link>
               <a
-                href="#"
+                href="/team"
                 className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
               >
                 Our Team
@@ -56,7 +56,7 @@ export default function NavBar() {
               </a>
             </div>
           </div>
-          <div className="hidden lg:flex items-center space-x-4">
+          <div className="hidden lg:flex items-center space-x-4 text-xs">
             <Button
               buttonText="Book a visit"
               buttonBackground="bg-secondary-1"
@@ -147,7 +147,7 @@ export default function NavBar() {
               Our Services
             </a>
             <a
-              href="#"
+              href="/team"
               className="text-primary-1 hover:bg-primary-2 hover:text-white block py-2 px-2 rounded-md text-base font-medium"
             >
               Our Team
@@ -159,7 +159,7 @@ export default function NavBar() {
               Membership
             </a>
           </div>
-          <div className="pt-4 pb-3 border-t border-primary-2">
+          <div className="pt-4 pb-3 border-t border-primary-2 ">
             <div className="flex items-center px-8 md:px-32 space-x-4">
               <DropdownMenu.Root>
                 <DropdownMenu.Trigger>
@@ -173,7 +173,7 @@ export default function NavBar() {
                 </DropdownMenu.Trigger>
                 <DropdownMenu.Portal>
                   <DropdownMenu.Content
-                    className="bg-[#f7f1de] shadow-lg rounded-lg w-[100vh] lg:hidden p-4 md:pl-[136px]  space-y-2 pl-10"
+                    className="bg-[#f7f1de] shadow-lg rounded-lg w-[100vh] lg:hidden p-4 md:pl-[136px]  flex flex-col gap-1 pl-10"
                     align="center"
                     sideOffset={0}
                   >

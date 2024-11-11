@@ -84,6 +84,7 @@ const Overview = () => {
               1280: { slidesPerView: 3 },
             }}
             className="w-full"
+            style={{ zIndex: 0 }}
           >
             {doctors.map((doctor, index) => (
               <SwiperSlide key={index}>

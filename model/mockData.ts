@@ -484,6 +484,10 @@ export const doctors = [
     experience: "10 Years of Experience",
     location: "Andheri West, Indiranagar",
     image: doctorImage,
+    specialization: "Veterinarian specialized in Dentistry",
+    aboutVet:
+      "Veterinarian with DVM from National Veterinary University. Associate Vet at City Animal Hospital, Emergency Vet at Emergency Veterinary Services, and currently Director & Senior Vet at Companion Care Vet Hospital. Active member of AVMA. Passionate about animal care.",
+    tag: "Passionate about animal care and active member of AVMA.",
   },
   {
     name: "Dr. Nampally Rohit",
@@ -491,6 +495,10 @@ export const doctors = [
     experience: "8 Years of Experience",
     location: "HSR, Bangalore",
     image: doctorImage,
+    specialization: "Veterinarian specialized in Dentistry",
+    aboutVet:
+      "Veterinarian with DVM from National Veterinary University. Associate Vet at City Animal Hospital, Emergency Vet at Emergency Veterinary Services, and currently Director & Senior Vet at Companion Care Vet Hospital. Active member of AVMA. Passionate about animal care.",
+    tag: "Passionate about animal care and active member of AVMA.",
   },
   {
     name: "Dr. Sarah Johnson",
@@ -498,6 +506,10 @@ export const doctors = [
     experience: "12 Years of Experience",
     location: "Jayanagar, Bangalore",
     image: doctorImage,
+    specialization: "Veterinarian specialized in Dentistry",
+    aboutVet:
+      "Veterinarian with DVM from National Veterinary University. Associate Vet at City Animal Hospital, Emergency Vet at Emergency Veterinary Services, and currently Director & Senior Vet at Companion Care Vet Hospital. Active member of AVMA. Passionate about animal care.",
+    tag: "Passionate about animal care and active member of AVMA.",
   },
   {
     name: "Dr. Rajesh Sharma",
@@ -505,6 +517,10 @@ export const doctors = [
     experience: "15 Years of Experience",
     location: "Whitefield, Bangalore",
     image: doctorImage,
+    specialization: "Veterinarian specialized in Dentistry",
+    aboutVet:
+      "Veterinarian with DVM from National Veterinary University. Associate Vet at City Animal Hospital, Emergency Vet at Emergency Veterinary Services, and currently Director & Senior Vet at Companion Care Vet Hospital. Active member of AVMA. Passionate about animal care.",
+    tag: "Passionate about animal care and active member of AVMA.",
   },
   {
     name: "Dr. Priya Menon",
@@ -512,6 +528,10 @@ export const doctors = [
     experience: "7 Years of Experience",
     location: "Vasant Kunj, Delhi",
     image: doctorImage,
+    specialization: "Veterinarian specialized in Dentistry",
+    aboutVet:
+      "Veterinarian with DVM from National Veterinary University. Associate Vet at City Animal Hospital, Emergency Vet at Emergency Veterinary Services, and currently Director & Senior Vet at Companion Care Vet Hospital. Active member of AVMA. Passionate about animal care.",
+    tag: "Passionate about animal care and active member of AVMA.",
   },
   {
     name: "Dr. John Doe",
@@ -519,6 +539,10 @@ export const doctors = [
     experience: "8 Years of Experience",
     location: "Koramangala, Bangalore",
     image: doctorImage,
+    specialization: "Veterinarian specialized in Dentistry",
+    aboutVet:
+      "Veterinarian with DVM from National Veterinary University. Associate Vet at City Animal Hospital, Emergency Vet at Emergency Veterinary Services, and currently Director & Senior Vet at Companion Care Vet Hospital. Active member of AVMA. Passionate about animal care.",
+    tag: "Passionate about animal care and active member of AVMA.",
   },
 ];
 

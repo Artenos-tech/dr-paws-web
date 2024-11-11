@@ -92,6 +92,7 @@ const Profile: React.FC = () => {
     setProfileData(updatedProfile);
     localStorage.setItem("userProfile", JSON.stringify(updatedProfile));
   };
+  
 
   return (
     <div className="flex flex-col w-full h-full items-center font-roca pb-20 flex-grow ">
