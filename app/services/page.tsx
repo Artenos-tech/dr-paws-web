@@ -3,6 +3,7 @@ import Image from "next/image";
 import DescritionImage from "@/public/assets/images/ServicesPage/DescriptionImage.png";
 import ServicePageTab from "@/components/ui/ServicePageTab";
 import { ServiceTabsData } from "@/model/mockData";
+import Button from "@/components/ui/Button";
 
 const Services = () => {
   return (
@@ -43,6 +44,14 @@ const Services = () => {
         </div>
         <div className="w-full">
           <ServicePageTab tabs={ServiceTabsData} />
+        </div>
+        <div className="w-[75%] flex flex-col items-center gap-4 md:gap-6">
+          <p className="text-center text-primary-1 text-sm font-sans italic font-semibold">
+            We’ve listed our most commonly requested services, but cater to many
+            other needs. If you don’t find what you need please get in touch and
+            we’d be happy to help or refer you to someone that can
+          </p>
+          <Button buttonText="Get in Touch" buttonBackground="bg-secondary-2" />
         </div>
       </main>
     </div>
