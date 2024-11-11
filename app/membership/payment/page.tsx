@@ -51,12 +51,12 @@ const PaymentPage = () => {
   return (
     <div className="min-h-screen bg-[#F7F1DE]/[.4]">
       <main className="flex flex-col row-start-2 items-center w-full ">
-        <div className="flex flex-col   lg:flex-row gap-8 lg:gap-28 px-8 md:px-32 lg:px-40">
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-28 px-8 md:px-32 lg:px-40">
           {/* Payment Form */}
           <div className="lg:w-3/5">
             <Link
               href="/membership"
-              className="inline-flex items-center text-primary-1 my-8"
+              className="flex items-center text-primary-1 my-8"
             >
               <ArrowLeft className="mr-2" size={20} />
               Back
@@ -70,20 +70,20 @@ const PaymentPage = () => {
               <div>unicorn2023@gmail.com</div>
             </div>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-              <div>
-                <h2 className="text-lg font-medium text-primary-1 mb-4">
+            <form onSubmit={handleSubmit(onSubmit)} className="">
+              <div className="flex flex-col gap-4">
+                <h2 className="text-lg font-medium text-primary-1 ">
                   Your payment details
                 </h2>
 
-                <div className="grid grid-cols-2 gap-4 mb-6">
+                <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm text-gray-600 mb-2">
                       First name
                     </label>
                     <input
                       {...register("firstName")}
-                      className="w-full p-3 border border-accent rounded-md focus:outline-none focus:ring-2"
+                      className="w-full p-2 border border-accent rounded-md focus:outline-none focus:ring-2"
                       placeholder="First name"
                     />
                     {errors.firstName && (
@@ -98,7 +98,7 @@ const PaymentPage = () => {
                     </label>
                     <input
                       {...register("lastName")}
-                      className="w-full p-3 border border-accent rounded-md focus:outline-none focus:ring-2 "
+                      className="w-full p-2 border border-accent rounded-md focus:outline-none focus:ring-2 "
                       placeholder="Last name"
                     />
                     {errors.lastName && (
@@ -109,14 +109,14 @@ const PaymentPage = () => {
                   </div>
                 </div>
 
-                <div className="mb-6">
+                <div className="">
                   <label className="block text-sm text-gray-600 mb-2">
                     Card details
                   </label>
                   <div className="relative">
                     <input
                       {...register("cardNumber")}
-                      className="w-full p-3 border border-accent rounded-md focus:outline-none focus:ring-2 "
+                      className="w-full p-2 border border-accent rounded-md focus:outline-none focus:ring-2 "
                       placeholder="1234 1234 1234 1234"
                     />
                   </div>
@@ -127,11 +127,11 @@ const PaymentPage = () => {
                   )}
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 mb-6">
+                <div className="grid grid-cols-2 gap-4">
                   <div>
                     <input
                       {...register("expiryDate")}
-                      className="w-full p-3 border border-accent rounded-md focus:outline-none focus:ring-2 "
+                      className="w-full p-2 border border-accent rounded-md focus:ring-2 focus:outline-none "
                       placeholder="MM/YY"
                     />
                     {errors.expiryDate && (
@@ -144,7 +144,7 @@ const PaymentPage = () => {
                     <input
                       {...register("cvv")}
                       type="password"
-                      className="w-full p-3 border border-accent rounded-md focus:outline-none focus:ring-2 "
+                      className="w-full p-2 border border-accent rounded-md focus:outline-none focus:ring-2 "
                       placeholder="CVV"
                     />
                     {errors.cvv && (
@@ -155,13 +155,13 @@ const PaymentPage = () => {
                   </div>
                 </div>
 
-                <div className="mb-6">
+                <div className="">
                   <label className="block text-sm text-gray-600 mb-2">
                     Name on card
                   </label>
                   <input
                     {...register("nameOnCard")}
-                    className="w-full p-3 border border-accent rounded-md focus:outline-none focus:ring-2 "
+                    className="w-full p-2 border border-accent rounded-md focus:outline-none focus:ring-2 "
                     placeholder="Name on card"
                   />
                   {errors.nameOnCard && (
@@ -177,7 +177,7 @@ const PaymentPage = () => {
                   </label>
                   <input
                     {...register("country")}
-                    className="w-full p-3 border border-accent rounded-md focus:outline-none focus:ring-2 "
+                    className="w-full p-2 border border-accent rounded-md focus:outline-none focus:ring-2 "
                     placeholder="India"
                   />
                   {errors.country && (
@@ -202,7 +202,7 @@ const PaymentPage = () => {
                 </div>
                 <button
                   type="submit"
-                  className="bg-[#74A7B3] text-white rounded-full px-14 py-2 flex-1"
+                  className="w-fit bg-[#74A7B3] text-white rounded-full px-14 py-2"
                 >
                   Subscribe
                 </button>

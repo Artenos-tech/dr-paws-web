@@ -27,7 +27,7 @@ const Membership = () => {
   return (
     <div className="w-full h-full items-center justify-items-center font-roca">
       <main className="flex flex-col row-start-2 items-center w-full ">
-        <div className="w-full flex flex-col px-8 md:px-32 md:gap-8 lg:px-40 lg:flex-row items-center justify-center space-y-8 lg:space-y-0 my-16 ">
+        <div className="w-full flex flex-col px-8 md:px-32 md:gap-8 lg:px-40 lg:flex-row items-center justify-center space-y-8 lg:space-y-0 mt-20">
           <div className="flex-shrink-0 w-full lg:w-auto xl:w-1/2 ">
             <Image
               src={MembershipDesc}
@@ -52,7 +52,7 @@ const Membership = () => {
         </div>
 
         <div className="bg-primary-3 w-full text-center text-3xl my-16 pb-12">
-          <h1 className="pt-12 pb-16">Become A Member</h1>
+          <h1 className="pt-12 pb-8 lg:pb-16">Become A Member</h1>
 
           <div className="block xl:hidden w-[85%] mx-auto relative h-[600px]">
             <button className="custom-swiper-button-prev absolute -left-[18px] top-1/2 -translate-y-1/2 z-10 rounded-full p-2 transition-colors">
@@ -87,7 +87,7 @@ const Membership = () => {
             </Swiper>
           </div>
 
-          <div className="hidden xl:block w-[85%] mx-auto">
+          <div className="hidden xl:block px-8 md:px-32 lg:px-40">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               {membershipData.map((plan, index) => (
                 <MemberCard key={index} plan={plan} onSelect={handlePlanSelect} />
