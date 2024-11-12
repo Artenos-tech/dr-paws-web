@@ -8,6 +8,7 @@ import Button from "../ui/Button";
 import Link from "next/link";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { MdChevronRight } from "react-icons/md";
+import logo from "@/public/assets/images/logo/logo.svg"
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,7 +21,7 @@ export default function NavBar() {
             <div className="flex-shrink-0">
               <Link href="/">
                 <Image
-                  src="/assets/images/logo/logo.svg"
+                  src={logo}
                   alt="Dr. Paws Logo"
                   width={100}
                   height={30}

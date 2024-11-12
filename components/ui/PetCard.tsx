@@ -9,6 +9,8 @@ import defaultCatImg from "@/public/assets/images/pets/cat.png";
 import defaultHamsterImg from "@/public/assets/images/pets/hamster.png";
 import defaultBirdImg from "@/public/assets/images/pets/bird.png";
 import defaultRabbitImg from "@/public/assets/images/pets/rabbit.png";
+import defaultOtherPetImage from "@/public/assets/images/pets/petImg.png";
+
 
 interface PetCardProps {
   pet: {
@@ -25,6 +27,7 @@ export const petImageByType: Record<string, StaticImageData> = {
   bird: defaultBirdImg,
   rabbit: defaultRabbitImg,
   hamster: defaultHamsterImg,
+  other: defaultOtherPetImage
 };
 
 const PetCard: React.FC<PetCardProps> = ({ pet }) => {
@@ -35,7 +38,7 @@ const PetCard: React.FC<PetCardProps> = ({ pet }) => {
     router.push(`/user/profile/pet-profile/${petId}`);
   };
 
-  const imageSrc = petImage || petImageByType[type.toLowerCase()] || defaultPetImg;
+  const defaultImageOrPetImage = petImage || petImageByType[type.toLowerCase()] || defaultPetImg;
 
   return (
     <div
@@ -44,11 +47,11 @@ const PetCard: React.FC<PetCardProps> = ({ pet }) => {
     >
       <div className="bg-primary-3 rounded-2xl p-4 space-y-3">
         <Image
-          src={imageSrc}
+          src={defaultImageOrPetImage}
           alt="pet logo"
           width={96}
           height={96}
-          className={`w-24 h-24 ${!petImage && "p-1"} mx-auto rounded-full bg-white object-contain`}
+          className={`w-24 h-24 mx-auto rounded-full bg-white object-contain`}
         />
         <h2 className="text-xl font-bold text-secondary-1">{name}</h2>
       </div>

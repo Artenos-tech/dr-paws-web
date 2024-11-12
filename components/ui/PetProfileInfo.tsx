@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import Image, { StaticImageData } from "next/image";
 import { useForm } from "react-hook-form";
 import { Pet } from "@/model/typeDefinitions";
-import defaultOtherPetImage from "@/public/assets/images/pets/petImg.png";
 import ImageEdit from "@/public/assets/images/Profile/ImageEdit.png";
 import OutlineButton from "./OutlineButton";
 import { FaTrash } from "react-icons/fa6";
@@ -18,7 +17,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
   const [pet, setPet] = useState<Pet | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [image, setImage] = useState<string | StaticImageData>("");
-  const [age, setAge] = useState({ years: 0, months: 0, days: 0 });
+  const [age, setAge] = useState({ years: 0, months: 0 });
 
   const {
     register,
@@ -31,12 +30,10 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
       type: "",
       breed: "",
       gender: "",
-      age: { years: 0, months: 0, days: 0 },
+      age: { years: 0, months: 0 },
       birthday: "",
       weight: "",
-      petImage: pet?.type
-        ? petImageByType[pet.type.toLowerCase()]?.src
-        : defaultOtherPetImage.src,
+      petImage: pet?.type && petImageByType[pet.type.toLowerCase()].src,
     },
   });
 
@@ -50,7 +47,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
 
       setPet(foundPet || null);
       setImage(foundPet?.petImage || "");
-      setAge(foundPet?.age || { years: 0, months: 0, days: 0 });
+      setAge(foundPet?.age || { years: 0, months: 0 });
 
       if (foundPet) {
         for (const key in foundPet) {
@@ -66,9 +63,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
         // Reseting to previous image or default image when user clicks on cancel button
         setImage(
           pet.petImage ||
-            (pet?.type
-              ? petImageByType[pet.type.toLowerCase()].src
-              : defaultOtherPetImage.src)
+            (pet?.type && petImageByType[pet.type.toLowerCase()].src)
         );
         setValue(key as keyof Pet, pet[key as keyof Pet]);
       }
@@ -138,21 +133,11 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
   //   return [yearStr, monthStr, dayStr].filter(Boolean).join(", ");
   // };
 
-  // Here According to the type of pet, the image is selected
-  let imageSrc =
-    image ||
-    (pet?.type
-      ? petImageByType[pet.type.toLowerCase()].src
-      : defaultOtherPetImage.src);
-
   const handleAgeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     const newValue = Math.max(
       0,
-      Math.min(
-        parseInt(value) || 0,
-        name === "months" ? 11 : name === "days" ? 30 : 40
-      )
+      Math.min(parseInt(value) || 0, name === "months" ? 12 : 40)
     );
 
     const updatedAge = { ...age, [name]: newValue };
@@ -160,12 +145,15 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
     setValue("age", updatedAge);
   };
 
-  const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handlePetTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedType = e.target.value.toLowerCase();
-    const newImage =
-      petImageByType[selectedType]?.src || defaultOtherPetImage.src;
+    const newImage = petImageByType[selectedType]?.src || "";
     setImage(newImage);
   };
+
+  // Here According to the type of pet, the image is selected
+  let defaultImageOrPetImage =
+    image || (pet?.type ? petImageByType[pet.type.toLowerCase()].src : "");
 
   return (
     <div className="bg-primary-3 rounded-lg p-3 md:p-6 lg:p-8 w-full">
@@ -176,7 +164,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
         <div className="flex flex-col items-center lg:flex-row lg:justify-between w-full lg:order-none order-1">
           <div className="relative flex flex-col lg:w-1/3 xl:w-1/6">
             <Image
-              src={imageSrc}
+              src={defaultImageOrPetImage}
               alt="Profile"
               width={130}
               height={130}
@@ -184,24 +172,22 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
             />
             {isEditing && (
               <>
-                {image !==
-                  (pet?.type
-                    ? petImageByType[pet.type.toLowerCase()].src
-                    : defaultOtherPetImage.src) && (
-                  <button
-                    type="button"
-                    className="absolute bottom-0 left-0 p-3 bg-red-500 rounded-full z-10"
-                    onClick={() =>
-                      setImage(
-                        pet?.type
-                          ? petImageByType[pet.type.toLowerCase()].src
-                          : defaultOtherPetImage.src
-                      )
-                    }
-                  >
-                    <FaTrash size={10} fill="white" />
-                  </button>
-                )}
+                {typeof image === "string" &&
+                  !image.includes("/_next/static/media/") && (
+                    <button
+                      type="button"
+                      className="absolute bottom-0 left-0 p-3 bg-red-500 rounded-full z-10"
+                      onClick={() =>
+                        setImage(
+                          (pet?.type &&
+                            petImageByType[pet.type.toLowerCase()].src) ||
+                            ""
+                        )
+                      }
+                    >
+                      <FaTrash size={10} fill="white" />
+                    </button>
+                  )}
 
                 <Image
                   src={ImageEdit}
@@ -240,10 +226,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
             )}
 
             <div
-              className={`grid grid-cols-2 grid-rows-3 md:grid-cols-3 md:grid-rows-2 ${
-                isEditing &&
-                "lg:grid-cols-2 lg:grid-rows-3 xl:grid-cols-3 xl:grid-rows-2"
-              } w-full gap-4 md:gap-12 lg:gap-3`}
+              className={`grid grid-cols-2 grid-rows-3 md:grid-cols-3 md:grid-rows-2  w-full gap-4 md:gap-12 lg:gap-3`}
             >
               <div className="">
                 <label
@@ -258,7 +241,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                       {...register("type", { required: "Type is required" })}
                       className="outline-none border w-full p-1 px-2 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
                       defaultValue={pet?.type}
-                      onChange={handleTypeChange}
+                      onChange={handlePetTypeChange}
                     >
                       <option value="" disabled>
                         Type of Pet
@@ -370,10 +353,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                 </label>
                 {isEditing ? (
                   <div className="flex gap-1">
-                    <div>
-                      <label className="text-secondary-1 text-xs md:text-sm">
-                        Years
-                      </label>
+                    <div className="w-full flex flex-col">
                       <input
                         type="number"
                         value={age.years}
@@ -382,24 +362,27 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                         max="40"
                         onChange={handleAgeChange}
                         name="years"
-                        className="outline-none border w-full p-1 px-2 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
+                        className="outline-none border w-full p-[5px] px-2 text-xs md:text-sm  mt-2 rounded bg-transparent border-secondary-1"
                       />
-                    </div>
-                    <div>
-                      <label className="text-secondary-1 text-xs md:text-sm">
-                        Months
+                      <label className="text-secondary-1 w-full text-left text-[10px]">
+                        Years
                       </label>
+                    </div>
+                    <div className="w-full flex flex-col">
                       <input
                         type="number"
                         value={age.months}
                         min="0"
-                        max="11"
+                        max="12"
                         onChange={handleAgeChange}
                         name="months"
-                        className="outline-none border w-full p-1 px-2 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
+                        className="outline-none border w-full p-[5px] px-2 text-xs md:text-sm mt-2 rounded bg-transparent border-secondary-1"
                       />
+                      <label className="text-secondary-1 w-full text-left text-[10px]">
+                        Months
+                      </label>
                     </div>
-                    <div>
+                    {/* <div>
                       <label className="text-secondary-1 text-xs md:text-sm">
                         Days
                       </label>
@@ -412,13 +395,12 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                         name="days"
                         className="outline-none border w-full p-1 px-2 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
                       />
-                    </div>
+                    </div> */}
                   </div>
                 ) : (
                   <p className="text-primary-1 font-medium text-xs md:text-base">
                     {pet?.age?.years ? `${pet.age.years} yrs ` : ""}
                     {pet?.age?.months ? `${pet.age.months} mths ` : ""}
-                    {pet?.age?.days ? `${pet.age.days} d` : ""}
                   </p>
                 )}
               </div>

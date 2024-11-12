@@ -29,7 +29,7 @@ export interface Pet {
   breed: string;
   gender: string;
   age: {
-    years: number, months: number, days: number
+    years: number, months: number
   };
   birthday: string;
   weight: string;
