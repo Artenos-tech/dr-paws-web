@@ -156,6 +156,7 @@ export default function NavBar() {
               Our Team
             </a>
             <Link
+            onClick={() => setIsOpen(false)}
               href="/membership"
               className="text-primary-1 hover:bg-primary-2 hover:text-white block py-2 px-2 rounded-md text-base font-medium"
             >

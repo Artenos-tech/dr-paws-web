@@ -19,26 +19,26 @@ interface MemberCardProps {
 
 export default function MemberCard({ plan, onSelect }: MemberCardProps) {
   return (
-    <div className={`relative bg-white rounded-2xl p-6 shadow-lg flex flex-col items-center h-full max-w-sm ${plan.isPopular ? 'border-2 border-sky-200' : ''}`}>
+    <div className={`relative bg-white rounded-2xl p-3 lg:p-6 shadow-lg flex flex-col items-center h-full max-w-sm ${plan.isPopular ? 'border-2 border-sky-200' : ''}`}>
       {plan.isPopular && (
         <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-          <div className="bg-sky-100 text-sky-800 px-4 py-1 rounded-full text-sm font-medium">
+          <div className="bg-sky-100 text-sky-800 px-4 py-1 rounded-full text-sm font-medium w-[130px]">
             Most Popular
           </div>
         </div>
       )}
 
-      <div className="w-20 h-20 mb-4 relative ">
+      <div className="w-20 h-20 mb-4 ">
         <Image
           src={plan.icon}
           alt={`${plan.title} icon`}
-          fill
+          
           className="object-contain"
         />
       </div>
       <h3 className="text-2xl text-primary-1 w-full text-left mb-2 ">{plan.title}</h3>
 
-      <p className="text-primary-1 text-sm text-left  mb-6">
+      <p className="text-primary-1 text-sm text-left mb-2 xl:mb-6">
         {plan.description}
       </p>
 
@@ -56,7 +56,7 @@ export default function MemberCard({ plan, onSelect }: MemberCardProps) {
         </ul>
       </div>
 
-      <div className="mt-auto text-base w-full">
+      <div className="mt-auto text-base w-full mb-2 md:mb-0">
         <div onClick={() => onSelect(plan)}>
           <Button buttonText="Select" buttonBackground="bg-accent" />
         </div>

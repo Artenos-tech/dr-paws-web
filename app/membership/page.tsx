@@ -73,13 +73,13 @@ const Membership = () => {
               breakpoints={{
                 640: { slidesPerView: 1 },
                 768: { slidesPerView: 2 },
-                1026: { slidesPerView: 3 },
+                1026: { slidesPerView: 2 },
               }}
               className="w-full h-full"
             >
               {membershipData.map((plan, index) => (
-                <SwiperSlide key={index}>
-                  <div className="flex justify-center h-full">
+                <SwiperSlide key={index} className="h-[100%] ">
+                  <div className="flex justify-center h-[98%] mt-2">
                     <MemberCard plan={plan} onSelect={handlePlanSelect} />
                   </div>
                 </SwiperSlide>
@@ -88,7 +88,7 @@ const Membership = () => {
           </div>
 
           <div className="hidden xl:block px-8 md:px-32 lg:px-40">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
               {membershipData.map((plan, index) => (
                 <MemberCard
                   key={index}
