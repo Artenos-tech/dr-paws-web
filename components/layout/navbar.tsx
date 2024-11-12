@@ -16,7 +16,7 @@ export default function NavBar() {
     <div className="fixed left-0 top-0 z-50 bg-primary-3 w-full">
       <div className="mx-auto px-8 md:px-32 lg:px-40">
         <div className="flex justify-between items-center h-16">
-          <div className="flex items-center">
+          <div className="flex items-center gap-10">
             <div className="flex-shrink-0">
               <Link href="/">
                 <Image
@@ -28,9 +28,8 @@ export default function NavBar() {
                 />
               </Link>
             </div>
-          </div>
           <div className="hidden lg:block">
-            <div className="flex items-baseline space-x-4">
+            <div className="flex items-center space-x-4 gap-3">
               <div className="relative group">
                 <button className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
                   Locations
@@ -38,29 +37,31 @@ export default function NavBar() {
               </div>
               <Link
                 href="/services"
-                className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                className="text-primary-1 hover:bg-primary-2 hover:text-white rounded-md text-sm font-medium"
               >
                 Our Services
               </Link>
               <a
                 href="#"
-                className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                className="text-primary-1 hover:bg-primary-2 hover:text-white rounded-md text-sm font-medium"
               >
                 Our Team
               </a>
               <a
                 href="#"
-                className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                className="text-primary-1 hover:bg-primary-2 hover:text-white rounded-md text-sm font-medium"
               >
                 Membership
               </a>
             </div>
           </div>
-          <div className="hidden lg:flex items-center space-x-4">
-            <Button
+          </div>
+          <div className="hidden lg:flex items-center space-x-4 ml-3">
+            {/* <Button
               buttonText="Book a visit"
               buttonBackground="bg-secondary-1"
-            />
+            /> */}
+            <button className="bg-secondary-1 border-none text-white text-xs xl:text-sm px-3 xl:px-7 font-semibold tracking-wider py-2 xl:py-3 rounded-full">Book a visit</button>
             <DropdownMenu.Root>
               <DropdownMenu.Trigger className="outline-none">
                 <Image

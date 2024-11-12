@@ -12,7 +12,7 @@ const PetProfile: React.FC<PetProfileProps> = ({ params }) => {
   const { petProfileId } = params;
 
   return (
-    <div className="flex flex-col w-full h-screen items-center font-roca pb-20 flex-grow">
+    <div className="flex flex-col w-full h-full items-center font-roca pb-20 flex-grow">
       <main className="flex flex-col w-full items-center px-8 md:px-32 lg:px-40">
         <BackButton />
         <PetProfileInfo petProfileId={petProfileId} />
@@ -31,6 +31,8 @@ export async function generateStaticParams() {
     { petId: "6" },
     { petId: "7" },
     { petId: "8" },
+    { petId: "9" },
+    { petId: "10" },
   ];
   return pets.map((pet) => ({
     petProfileId: pet.petId,

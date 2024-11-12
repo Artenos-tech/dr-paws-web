@@ -4,10 +4,11 @@ import React, { useEffect, useState } from "react";
 import Image, { StaticImageData } from "next/image";
 import { useForm } from "react-hook-form";
 import { Pet } from "@/model/typeDefinitions";
-import defaultImage from "@/public/assets/images/pets/petImg.png";
+import defaultOtherPetImage from "@/public/assets/images/pets/petImg.png";
 import ImageEdit from "@/public/assets/images/Profile/ImageEdit.png";
 import OutlineButton from "./OutlineButton";
 import { FaTrash } from "react-icons/fa6";
+import { petImageByType } from "./PetCard";
 
 interface PetProfileInfoProps {
   petProfileId: string;
@@ -17,6 +18,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
   const [pet, setPet] = useState<Pet | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [image, setImage] = useState<string | StaticImageData>("");
+  const [age, setAge] = useState({ years: 0, months: 0, days: 0 });
 
   const {
     register,
@@ -29,10 +31,12 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
       type: "",
       breed: "",
       gender: "",
-      age: "",
+      age: { years: 0, months: 0, days: 0 },
       birthday: "",
       weight: "",
-      petImage: defaultImage.src,
+      petImage: pet?.type
+        ? petImageByType[pet.type.toLowerCase()]?.src
+        : defaultOtherPetImage.src,
     },
   });
 
@@ -46,6 +50,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
 
       setPet(foundPet || null);
       setImage(foundPet?.petImage || "");
+      setAge(foundPet?.age || { years: 0, months: 0, days: 0 });
 
       if (foundPet) {
         for (const key in foundPet) {
@@ -59,7 +64,12 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
     if (pet) {
       for (const key in pet) {
         // Reseting to previous image or default image when user clicks on cancel button
-        setImage(pet.petImage || defaultImage.src);
+        setImage(
+          pet.petImage ||
+            (pet?.type
+              ? petImageByType[pet.type.toLowerCase()].src
+              : defaultOtherPetImage.src)
+        );
         setValue(key as keyof Pet, pet[key as keyof Pet]);
       }
     }
@@ -67,19 +77,22 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
   };
 
   const onSubmit = (data: Pet) => {
-    
-    const updateAgeByBirdthday = calculateAge(data.birthday);
+    const realPetImage =
+      typeof image === "string" && image.includes("/_next/static/media/")
+        ? ""
+        : image;
+
     const storedPets = localStorage.getItem("pets");
     const pets: Pet[] = storedPets ? JSON.parse(storedPets) : [];
 
     const updatedPets = pets.map((pet) =>
       Number(pet.petId) === Number(petProfileId)
-        ? { ...data, petImage: image, age: updateAgeByBirdthday }
+        ? { ...data, petImage: realPetImage }
         : pet
     );
 
     localStorage.setItem("pets", JSON.stringify(updatedPets));
-    setPet({ ...data, petImage: image });
+    setPet({ ...data, petImage: realPetImage });
     setIsEditing(false);
   };
 
@@ -96,36 +109,66 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
     }
   };
 
-  const calculateAge = (birthday: string): string => {
-    if (!birthday) return "";
-    if (birthday === "N/A") return "N/A";
+  // This function calculate age if birthday is provided
+  // const calculateAge = (birthday: string): string => {
+  //   if (!birthday) return "";
+  //   if (birthday === "N/A") return "N/A";
 
-    const birthDate = new Date(birthday);
-    const now = new Date();
+  //   const birthDate = new Date(birthday);
+  //   const now = new Date();
 
-    let years = now.getUTCFullYear() - birthDate.getUTCFullYear();
-    let months = now.getUTCMonth() - birthDate.getUTCMonth();
-    let days = now.getUTCDate() - birthDate.getUTCDate();
+  //   let years = now.getUTCFullYear() - birthDate.getUTCFullYear();
+  //   let months = now.getUTCMonth() - birthDate.getUTCMonth();
+  //   let days = now.getUTCDate() - birthDate.getUTCDate();
 
-    if (days < 0) {
-      months -= 1;
-      days += new Date(now.getUTCFullYear(), now.getUTCMonth(), 0).getDate();
-    }
+  //   if (days < 0) {
+  //     months -= 1;
+  //     days += new Date(now.getUTCFullYear(), now.getUTCMonth(), 0).getDate();
+  //   }
 
-    if (months < 0) {
-      years -= 1;
-      months += 12;
-    }
+  //   if (months < 0) {
+  //     years -= 1;
+  //     months += 12;
+  //   }
 
-    const yearStr = years > 0 ? `${years} yrs` : "";
-    const monthStr = months > 0 ? `${months} mths` : "";
-    const dayStr = days > 0 ? `${days} d` : "";
+  //   const yearStr = years > 0 ? `${years} yrs` : "";
+  //   const monthStr = months > 0 ? `${months} mths` : "";
+  //   const dayStr = days > 0 ? `${days} d` : "";
 
-    return [yearStr, monthStr, dayStr].filter(Boolean).join(", ");
+  //   return [yearStr, monthStr, dayStr].filter(Boolean).join(", ");
+  // };
+
+  // Here According to the type of pet, the image is selected
+  let imageSrc =
+    image ||
+    (pet?.type
+      ? petImageByType[pet.type.toLowerCase()].src
+      : defaultOtherPetImage.src);
+
+  const handleAgeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    const newValue = Math.max(
+      0,
+      Math.min(
+        parseInt(value) || 0,
+        name === "months" ? 11 : name === "days" ? 30 : 40
+      )
+    );
+
+    const updatedAge = { ...age, [name]: newValue };
+    setAge(updatedAge);
+    setValue("age", updatedAge);
+  };
+
+  const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedType = e.target.value.toLowerCase();
+    const newImage =
+      petImageByType[selectedType]?.src || defaultOtherPetImage.src;
+    setImage(newImage);
   };
 
   return (
-    <div className="bg-primary-3 rounded-lg p-4 md:p-6 lg:p-8 w-full">
+    <div className="bg-primary-3 rounded-lg p-3 md:p-6 lg:p-8 w-full">
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col lg:flex-row lg:justify-between md:items-start w-full"
@@ -133,19 +176,28 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
         <div className="flex flex-col items-center lg:flex-row lg:justify-between w-full lg:order-none order-1">
           <div className="relative flex flex-col lg:w-1/3 xl:w-1/6">
             <Image
-              src={image || defaultImage}
+              src={imageSrc}
               alt="Profile"
               width={130}
               height={130}
-              className="rounded-full w-[130px] h-[130px] md:self-start"
+              className="rounded-full bg-white w-[130px] h-[130px] md:self-start"
             />
             {isEditing && (
               <>
-                {image !== defaultImage.src && (
+                {image !==
+                  (pet?.type
+                    ? petImageByType[pet.type.toLowerCase()].src
+                    : defaultOtherPetImage.src) && (
                   <button
                     type="button"
                     className="absolute bottom-0 left-0 p-3 bg-red-500 rounded-full z-10"
-                    onClick={() => setImage(defaultImage.src)}
+                    onClick={() =>
+                      setImage(
+                        pet?.type
+                          ? petImageByType[pet.type.toLowerCase()].src
+                          : defaultOtherPetImage.src
+                      )
+                    }
                   >
                     <FaTrash size={10} fill="white" />
                   </button>
@@ -187,7 +239,12 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
               </h1>
             )}
 
-            <div className="grid grid-cols-2 grid-rows-3 md:grid-cols-3 md:grid-rows-2 w-full gap-4 md:gap-12 lg:gap-3 ">
+            <div
+              className={`grid grid-cols-2 grid-rows-3 md:grid-cols-3 md:grid-rows-2 ${
+                isEditing &&
+                "lg:grid-cols-2 lg:grid-rows-3 xl:grid-cols-3 xl:grid-rows-2"
+              } w-full gap-4 md:gap-12 lg:gap-3`}
+            >
               <div className="">
                 <label
                   className="text-secondary-1 text-xs md:text-sm"
@@ -201,6 +258,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                       {...register("type", { required: "Type is required" })}
                       className="outline-none border w-full p-1 px-2 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
                       defaultValue={pet?.type}
+                      onChange={handleTypeChange}
                     >
                       <option value="" disabled>
                         Type of Pet
@@ -224,7 +282,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                   </p>
                 )}
               </div>
-              <div className="ml-4 md:ml-0">
+              <div className={`${!isEditing && "ml-4"} md:ml-0`}>
                 <label
                   className="text-secondary-1 text-xs md:text-sm"
                   htmlFor="breed"
@@ -235,7 +293,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                   <>
                     <input
                       type="text"
-                      {...register("breed", { required: "Breed is required" })}
+                      {...register("breed")}
                       className="outline-none border w-full px-2 p-1 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
                     />
                     {errors.breed && (
@@ -260,9 +318,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                 {isEditing ? (
                   <>
                     <select
-                      {...register("gender", {
-                        required: "Gender is required",
-                      })}
+                      {...register("gender")}
                       className="outline-none border w-full px-2 p-1 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
                       defaultValue={pet?.gender}
                     >
@@ -283,27 +339,90 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                 )}
               </div>
 
-              <div className="ml-4 md:ml-0">
+              {/* <div className="ml-4 md:ml-0">
                 <label
                   className="text-secondary-1 text-xs md:text-sm"
                   htmlFor="age"
                 >
                   Age
                 </label>
-                {/* {isEditing ? (
-                <></>
-                  <input
+                {isEditing ? (
+                <><input
                     type="text"
                     disabled
                     value={calculateAge(pet?.birthday || "")}
                     className="outline-none border w-full p-1 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
-                  />
-                ) : ( */}
+                  /></>
+                  
+                ) : (
                 <p className="text-primary-1 font-medium text-xs md:text-base">
                   {pet?.birthday ? calculateAge(pet?.birthday || "N/A") : ""}
                 </p>
-                {/* )} */}
+                 )} 
+              </div> */}
+
+              <div className={`${!isEditing && "ml-4"} md:ml-0`}>
+                <label
+                  className="text-secondary-1 text-xs md:text-sm"
+                  htmlFor="age"
+                >
+                  Age
+                </label>
+                {isEditing ? (
+                  <div className="flex gap-1">
+                    <div>
+                      <label className="text-secondary-1 text-xs md:text-sm">
+                        Years
+                      </label>
+                      <input
+                        type="number"
+                        value={age.years}
+                        placeholder="0 years"
+                        min="0"
+                        max="40"
+                        onChange={handleAgeChange}
+                        name="years"
+                        className="outline-none border w-full p-1 px-2 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-secondary-1 text-xs md:text-sm">
+                        Months
+                      </label>
+                      <input
+                        type="number"
+                        value={age.months}
+                        min="0"
+                        max="11"
+                        onChange={handleAgeChange}
+                        name="months"
+                        className="outline-none border w-full p-1 px-2 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-secondary-1 text-xs md:text-sm">
+                        Days
+                      </label>
+                      <input
+                        type="number"
+                        value={age.days}
+                        min="0"
+                        max="30"
+                        onChange={handleAgeChange}
+                        name="days"
+                        className="outline-none border w-full p-1 px-2 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-primary-1 font-medium text-xs md:text-base">
+                    {pet?.age?.years ? `${pet.age.years} yrs ` : ""}
+                    {pet?.age?.months ? `${pet.age.months} mths ` : ""}
+                    {pet?.age?.days ? `${pet.age.days} d` : ""}
+                  </p>
+                )}
               </div>
+
               <div className="">
                 <label
                   className="text-secondary-1 text-xs md:text-sm"
@@ -315,9 +434,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                   <>
                     <input
                       type="date"
-                      {...register("birthday", {
-                        required: "Birthday is required",
-                      })}
+                      {...register("birthday")}
                       className="outline-none border px-2 w-full p-1 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
                     />
                     {errors.birthday && (
@@ -341,7 +458,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                   </p>
                 )}
               </div>
-              <div className="ml-4 md:ml-0">
+              <div className={`${!isEditing && "ml-4"} md:ml-0`}>
                 <label
                   className="text-secondary-1 text-xs md:text-sm"
                   htmlFor="weight"
@@ -353,7 +470,6 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                     <input
                       type="text"
                       {...register("weight", {
-                        required: "Weight is required",
                         pattern: {
                           value: /^\d+(\.\d{1,2})?$/,
                           message: "Invalid weight format",
