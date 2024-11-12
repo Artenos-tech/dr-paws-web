@@ -8,9 +8,12 @@ import Button from "../ui/Button";
 import Link from "next/link";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { MdChevronRight } from "react-icons/md";
+import ContactInfoModal from "../ui/ContactInfoModal";
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
 
   return (
     <div className="fixed left-0 top-0 z-50 bg-primary-3 w-full">
@@ -218,14 +221,19 @@ export default function NavBar() {
                   </DropdownMenu.Content>
                 </DropdownMenu.Portal>
               </DropdownMenu.Root>
-              <Button
+              <div onClick={() => setIsOpen(false)}><Button
                 buttonText="Book a visit"
                 buttonBackground="bg-secondary-1"
-              />
+                buttonClickEvent={() => setIsModalOpen(true)}
+              /></div>
             </div>
           </div>
         </div>
       )}
+      <ContactInfoModal
+            isOpen={isModalOpen}
+            onRequestClose={() => setIsModalOpen(false)}
+          />
     </div>
   );
 }

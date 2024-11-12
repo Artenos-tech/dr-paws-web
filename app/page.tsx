@@ -39,7 +39,7 @@ export default function Home() {
               meet?
             </p>
             <div className="flex justify-center md:justify-start">
-              <BannerList />
+              <BannerList openContactModal ={() => setIsModalOpen(true)} />
             </div>
           </div>
         </div>
@@ -49,7 +49,7 @@ export default function Home() {
             <h1 className="mt-4 mb-16 text-center text-primary-1 text-xl md:text-4xl px-8">
               Veterinary care, redesigned to be better
             </h1>
-            <DescriptionCardList />
+            <DescriptionCardList openContactModal ={() => setIsModalOpen(true)} />
           </div>
           <div className="mx-auto mt-12 lg:mt-32">
             <h1 className="mx-auto text-center text-xl md:text-4xl">

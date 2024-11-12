@@ -411,9 +411,8 @@ export const descriptionItems = [
     desciption:
       "Our memberships provide great value care and provide all the services you’re likely to need. Even if you’re facing an emergency, our memberships cover you.",
     button: {
-      buttonText: "Book a Member",
+      buttonText: "Become a Member",
       buttonBackground: "bg-accent",
-      buttonLink: "",
     },
   },
   {
@@ -433,7 +432,7 @@ export const descriptionItems = [
     desciption:
       "Book appointments in a few taps, and always stay updated and informed on your pet’s health with our app",
     button: {
-      buttonText: "Book a Member",
+      buttonText: "Become a Member",
       buttonBackground: "bg-accent",
       buttonLink: "",
     },
