@@ -17,7 +17,7 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
   };
   return (
     <div
-      className={`bg-[#FFFCF3] ${!enlargedView && "w-full lg:w-[25%] min-h-[265px]"} flex flex-col justify-between h-full w-full shadow-md rounded-md`}
+      className={`bg-[#FFFCF3] ${!enlargedView && "w-full lg:w-[25%] min-h-[270px]"} flex flex-col justify-between h-full w-full shadow-md rounded-md`}
       onClick={handleBookVisit}
     >
       <div><img

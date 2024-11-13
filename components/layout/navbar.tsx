@@ -48,7 +48,7 @@ export default function NavBar() {
                     >
                       {clinicItems.map((clinic) => (
                         <DropdownMenu.Item
-                          asChild
+                          asChild key={clinic.id}
                           className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
                         >
                           <Link href={`/clinics/${clinic.id}`}>
