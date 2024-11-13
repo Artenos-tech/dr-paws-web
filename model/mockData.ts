@@ -363,7 +363,7 @@ export const descriptionItems = [
     button: {
       buttonText: "View Our Team",
       buttonBackground: "bg-accent",
-      buttonLink: "",
+      buttonLink: "/team",
     },
   },
   {

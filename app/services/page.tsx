@@ -29,7 +29,7 @@ const Services = () => {
               </h1> */}
             </div>
 
-            <p className="text-lg text-gray-700 text-center lg:text-left">
+            <p className="text-lg text-gray-700 text-center lg:text-left w-[70%] xl:w-full">
               From consults through to emergency surgeries, we have you covered.
               We also offer grooming, diagnostic tests, imaging, and retail.
             </p>

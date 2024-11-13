@@ -32,17 +32,17 @@ const ServiceTab = ({ tabs }: ServiceTabProps) => {
       case 2:
         return "grid grid-cols-1 sm:grid-cols-3 gap-6 md:gap-8 max-w-4xl mx-auto";
       case 3:
-        return "grid grid-cols-1 sm:grid-cols-3 gap-6 md:gap-8 max-w-4xl mx-auto";
+        return "grid grid-cols-2 sm:grid-cols-3 gap-2 lg:grid-cols-4 gap-6 md:gap-8 max-w-4xl mx-auto";
       case 4:
-        return "grid grid-cols-2 sm:grid-cols-4 gap-6 md:gap-8 max-w-5xl mx-auto";
+        return "grid grid-cols-2 sm:grid-cols-3 gap-2 lg:grid-cols-4 gap-6 md:gap-8 max-w-5xl mx-auto";
       case 5:
-        return "grid grid-cols-1 sm:grid-cols-6 gap-6 md:gap-8 max-w-5xl mx-auto";
+        return "grid grid-cols-2 sm:grid-cols-3 gap-2 lg:grid-cols-4 gap-6 md:gap-8 max-w-5xl mx-auto";
       case 6:
-        return "grid grid-cols-2 sm:grid-cols-3 gap-6 md:gap-8 max-w-4xl mx-auto";
+        return "grid grid-cols-2 sm:grid-cols-3 gap-2 lg:grid-cols-4 gap-6 md:gap-8 max-w-4xl mx-auto";
       case 8:
-        return "grid grid-cols-2 sm:grid-cols-4 gap-6 md:gap-8";
+        return "grid grid-cols-2 sm:grid-cols-3 gap-2 lg:grid-cols-4 gap-6 md:gap-8";
       default:
-        return "grid grid-cols-1 sm:grid-cols-4 gap-6 md:gap-8 max-w-4xl mx-auto";
+        return "grid grid-cols-2 sm:grid-cols-3 gap-2 lg:grid-cols-4 gap-6 md:gap-8 max-w-4xl mx-auto";
     }
   };
 
