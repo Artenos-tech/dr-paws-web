@@ -121,7 +121,7 @@ const ServiceTab = ({ tabs }: ServiceTabProps) => {
       {activeTabContent && (
         <div className="sm:space-y-12 md:space-y-20 px-4">
           {/* Description */}
-          <p className=" pb-10 text-center text-primary-1 max-w-3xl mx-auto text-lg">
+          <p className="text-center text-primary-1 max-w-3xl mx-auto text-lg">
             {activeTabContent.description}
           </p>
 
