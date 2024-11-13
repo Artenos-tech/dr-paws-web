@@ -4,8 +4,11 @@ import DescritionImage from "@/public/assets/images/ServicesPage/DescriptionImag
 import ServicePageTab from "@/components/ui/ServicePageTab";
 import { ServiceTabsData } from "@/model/mockData";
 import Button from "@/components/ui/Button";
+import { useState } from "react";
+import ContactInfoModal from "@/components/ui/ContactInfoModal";
 
 const Services = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   return (
     <div className="flex flex-col w-full h-full items-center justify-items-center font-roca pb-20">
       <main className="flex flex-col gap-[80px] row-start-2 items-center w-full px-8 md:px-32 lg:px-40">
@@ -34,11 +37,11 @@ const Services = () => {
               need to keep your animal happy and healthy.
             </p>
             <div className="w-fit">
-              <button
-                className={`font-open-sans btn rounded-full px-10 py-2 text-white tracking-wider bg-secondary-1`}
-              >
-                Book a visit
-              </button>
+              <Button
+                buttonText="Book a visit"
+                buttonBackground="bg-secondary-1"
+                buttonClickEvent={() => setIsModalOpen(true)}
+              />
             </div>
           </div>
         </div>
@@ -51,9 +54,17 @@ const Services = () => {
             other needs. If you don’t find what you need please get in touch and
             we’d be happy to help or refer you to someone that can
           </p>
-          <Button buttonText="Get in Touch" buttonBackground="bg-secondary-2" />
+          <Button
+            buttonText="Get in Touch"
+            buttonBackground="bg-secondary-2"
+            buttonClickEvent={() => setIsModalOpen(true)}
+          />
         </div>
       </main>
+      <ContactInfoModal
+        isOpen={isModalOpen}
+        onRequestClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 };

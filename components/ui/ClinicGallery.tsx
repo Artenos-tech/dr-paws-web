@@ -6,12 +6,14 @@ import ReactModal from "react-modal";
 import { IoIosArrowBack, IoIosArrowForward, IoMdClose } from "react-icons/io";
 import { Clinic } from "@/model/typeDefinitions";
 import Button from "./Button";
+import ContactInfoModal from "./ContactInfoModal";
 
 interface ClinicGalleryProps {
   clinic: Clinic;
 }
 
 function ClinicGallery({ clinic }: ClinicGalleryProps) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const limitedGalleryItems = photos.slice(0, 7);
@@ -80,7 +82,7 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
           <p className="text-primary-1">Grooming | OPD | Surgery</p>
         </div>
         <div>
-          <Button buttonText="Book a visit" buttonBackground="bg-secondary-1" />
+          <Button buttonText="Book a visit" buttonBackground="bg-secondary-1" buttonClickEvent={() => setIsModalOpen(true)}/>
         </div>
       </div>
       {/* Modal */}
@@ -141,6 +143,10 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
           </button>
         </div>
       </ReactModal>
+      <ContactInfoModal
+        isOpen={isModalOpen}
+        onRequestClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 }

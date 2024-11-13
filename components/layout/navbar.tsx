@@ -14,7 +14,6 @@ export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-
   return (
     <div className="fixed left-0 top-0 z-50 bg-primary-3 w-full">
       <div className="mx-auto px-8 md:px-32 lg:px-40">
@@ -63,6 +62,7 @@ export default function NavBar() {
             <Button
               buttonText="Book a visit"
               buttonBackground="bg-secondary-1"
+              buttonClickEvent={() => setIsModalOpen(true)}
             />
             <DropdownMenu.Root>
               <DropdownMenu.Trigger className="outline-none">
@@ -80,7 +80,10 @@ export default function NavBar() {
                   align="start"
                   sideOffset={5}
                 >
-                  <DropdownMenu.Item asChild className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none">
+                  <DropdownMenu.Item
+                    asChild
+                    className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
+                  >
                     <Link href="/user/profile" className="">
                       Profile
                     </Link>
@@ -221,19 +224,21 @@ export default function NavBar() {
                   </DropdownMenu.Content>
                 </DropdownMenu.Portal>
               </DropdownMenu.Root>
-              <div onClick={() => setIsOpen(false)}><Button
-                buttonText="Book a visit"
-                buttonBackground="bg-secondary-1"
-                buttonClickEvent={() => setIsModalOpen(true)}
-              /></div>
+              <div onClick={() => setIsOpen(false)}>
+                <Button
+                  buttonText="Book a visit"
+                  buttonBackground="bg-secondary-1"
+                  buttonClickEvent={() => setIsModalOpen(true)}
+                />
+              </div>
             </div>
           </div>
         </div>
       )}
       <ContactInfoModal
-            isOpen={isModalOpen}
-            onRequestClose={() => setIsModalOpen(false)}
-          />
+        isOpen={isModalOpen}
+        onRequestClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 }

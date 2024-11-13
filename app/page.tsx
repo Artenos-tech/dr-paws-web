@@ -200,13 +200,6 @@ export default function Home() {
           </div>
 
           <FaqList />
-
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
-          >
-            Open Contact Info
-          </button>
           <ContactInfoModal
             isOpen={isModalOpen}
             onRequestClose={() => setIsModalOpen(false)}

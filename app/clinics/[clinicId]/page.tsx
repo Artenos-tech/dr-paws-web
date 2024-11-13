@@ -3,7 +3,6 @@ import ClinicPhotos from "@/components/ui/ClinicPhotos";
 import ClinicReviews from "@/components/ui/ClinicReviews";
 import ClinicTabBar from "@/components/ui/ClinicTabBar";
 import Overview from "@/components/ui/OverView";
-import React from "react";
 
 import { clinicItems } from "@/model/mockData";
 import { Clinic } from "@/model/typeDefinitions";
