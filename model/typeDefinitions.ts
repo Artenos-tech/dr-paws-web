@@ -35,3 +35,14 @@ export interface Pet {
   weight: string;
   petImage: StaticImageData | string
 }
+
+export interface Doctor {
+  name: string;
+  description: string;
+  experience: string;
+  location: string;
+  image: StaticImageData;
+  specialization: string;
+  aboutVet: string;
+  tag: string;
+}

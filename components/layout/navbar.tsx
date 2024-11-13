@@ -8,7 +8,7 @@ import Button from "../ui/Button";
 import Link from "next/link";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { MdChevronRight } from "react-icons/md";
-import logo from "@/public/assets/images/logo/logo.svg"
+import logo from "@/public/assets/images/logo/logo.svg";
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -29,40 +29,39 @@ export default function NavBar() {
                 />
               </Link>
             </div>
-          <div className="hidden lg:block">
-            <div className="flex items-center space-x-4 gap-3">
-              <div className="relative group">
-                <button className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
-                  Locations
-                </button>
+            <div className="hidden lg:block">
+              <div className="flex items-center space-x-4 gap-3">
+                <div className="relative group">
+                  <button className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
+                    Locations
+                  </button>
+                </div>
+                <Link
+                  href="/services"
+                  className="text-primary-1 hover:bg-primary-2 hover:text-white rounded-md text-sm font-medium"
+                >
+                  Our Services
+                </Link>
+                <Link
+                  href="/team"
+                  className="text-primary-1 hover:bg-primary-2 hover:text-white rounded-md text-sm font-medium"
+                >
+                  Our Team
+                </Link>
+                <Link
+                  href="/membership"
+                  className="text-primary-1 hover:bg-primary-2 hover:text-white rounded-md text-sm font-medium"
+                >
+                  Membership
+                </Link>
               </div>
-              <Link
-                href="/services"
-                className="text-primary-1 hover:bg-primary-2 hover:text-white rounded-md text-sm font-medium"
-              >
-                Our Services
-              </Link>
-              <a
-                href="#"
-                className="text-primary-1 hover:bg-primary-2 hover:text-white rounded-md text-sm font-medium"
-              >
-                Our Team
-              </a>
-              <a
-                href="#"
-                className="text-primary-1 hover:bg-primary-2 hover:text-white rounded-md text-sm font-medium"
-              >
-                Membership
-              </a>
             </div>
           </div>
-          </div>
-          <div className="hidden lg:flex items-center space-x-4 ml-3">
-            {/* <Button
+          <div className="hidden lg:flex items-center space-x-4 text-xs">
+            <Button
               buttonText="Book a visit"
               buttonBackground="bg-secondary-1"
-            /> */}
-            <button className="bg-secondary-1 border-none text-white text-xs xl:text-sm px-3 xl:px-7 font-semibold tracking-wider py-2 xl:py-3 rounded-full">Book a visit</button>
+            />
             <DropdownMenu.Root>
               <DropdownMenu.Trigger className="outline-none">
                 <Image
@@ -79,7 +78,10 @@ export default function NavBar() {
                   align="start"
                   sideOffset={5}
                 >
-                  <DropdownMenu.Item asChild className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none">
+                  <DropdownMenu.Item
+                    asChild
+                    className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
+                  >
                     <Link href="/user/profile" className="">
                       Profile
                     </Link>
@@ -149,13 +151,13 @@ export default function NavBar() {
               Our Services
             </a>
             <a
-              href="#"
+              href="/team"
               className="text-primary-1 hover:bg-primary-2 hover:text-white block py-2 px-2 rounded-md text-base font-medium"
             >
               Our Team
             </a>
             <a
-              href="#"
+              href="/membership"
               className="text-primary-1 hover:bg-primary-2 hover:text-white block py-2 px-2 rounded-md text-base font-medium"
             >
               Membership

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import logo from "@/public/assets/images/logo/logo.svg";
+import Link from "next/link";
 
 const Footer = () => {
   return (
@@ -26,7 +27,7 @@ const Footer = () => {
               Company
             </h6>
             <a
-              href="#"
+              href="/team"
               className="block mt-1 text-primary-1 hover:text-primary-2"
             >
               Team
@@ -54,12 +55,12 @@ const Footer = () => {
             >
               Locations
             </a>
-            <a
-              href="#"
+            <Link
+              href="/membership"
               className="block mt-1 text-primary-1 hover:text-primary-2"
             >
               Membership
-            </a>
+            </Link>
             <a
               href="#"
               className="block mt-1 text-primary-1 hover:text-primary-2"
