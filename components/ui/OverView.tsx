@@ -101,28 +101,3 @@ const Overview = () => {
 };
 
 export default Overview;
-
-{
-  /* 
-<div className="w-full">
-<Swiper
-  modules={[Navigation]}
-  navigation
-  spaceBetween={30}
-  slidesPerView={1}
-  breakpoints={{
-    750: { slidesPerView: 1 },
-    1068: { slidesPerView: 2 },
-    1224: { slidesPerView: 3 },
-  }}
-  className="w-full"
->
-  {doctors.map((doctor, index) => (
-    <SwiperSlide key={index}>
-      <DoctorCard doctor={doctor} />
-    </SwiperSlide>
-  ))}
-</Swiper>
-</div> 
-*/
-}

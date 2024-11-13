@@ -3,6 +3,7 @@ import logo from "@/public/assets/images/logo/logo.svg";
 import instagram from "@/public/assets/images/Footer/instagram.svg";
 import LinkedIn from "@/public/assets/images/Footer/linkedin.svg";
 import X from "@/public/assets/images/Footer/twitterx.svg";
+import Link from "next/link";
 
 const Footer = () => {
   return (
@@ -65,12 +66,12 @@ const Footer = () => {
             >
               Locations
             </a>
-            <a
-              href="#"
+            <Link
+              href="/membership"
               className="block mt-1 text-primary-1 hover:text-primary-2"
             >
               Membership
-            </a>
+            </Link>
             <a
               href="#"
               className="block mt-1 text-primary-1 hover:text-primary-2"
