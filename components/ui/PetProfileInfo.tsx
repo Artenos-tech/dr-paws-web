@@ -152,7 +152,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
   };
 
   // Here According to the type of pet, the image is selected
-  let defaultImageOrPetImage =
+  const defaultImageOrPetImage =
     image || (pet?.type ? petImageByType[pet.type.toLowerCase()].src : "");
 
   return (
