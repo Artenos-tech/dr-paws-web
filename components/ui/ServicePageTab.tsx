@@ -29,6 +29,8 @@ const ServiceTab = ({ tabs }: ServiceTabProps) => {
 
   const getGridLayout = (imageCount: number) => {
     switch (imageCount) {
+      case 2:
+        return "grid grid-cols-1 sm:grid-cols-3 gap-6 md:gap-8 max-w-4xl mx-auto";
       case 3:
         return "grid grid-cols-1 sm:grid-cols-3 gap-6 md:gap-8 max-w-4xl mx-auto";
       case 4:
@@ -40,7 +42,7 @@ const ServiceTab = ({ tabs }: ServiceTabProps) => {
       case 8:
         return "grid grid-cols-2 sm:grid-cols-4 gap-6 md:gap-8";
       default:
-        return "grid grid-cols-1 sm:grid-cols-3 gap-6 md:gap-8 max-w-4xl mx-auto";
+        return "grid grid-cols-1 sm:grid-cols-4 gap-6 md:gap-8 max-w-4xl mx-auto";
     }
   };
 
@@ -59,7 +61,7 @@ const ServiceTab = ({ tabs }: ServiceTabProps) => {
   return (
     <div className="w-full mx-auto">
       {/* Tabs Navigation - Desktop */}
-      <div className="relative mb-16 hidden lg:block">
+      <div className="relative mb-16 hidden xl:block">
         <div className="absolute bottom-0 left-0 w-full h-1.5 bg-primary-3"></div>
         <div className="flex items-center justify-between space-x-[28px]">
           {tabs.map((tab) => (
@@ -82,7 +84,7 @@ const ServiceTab = ({ tabs }: ServiceTabProps) => {
       </div>
 
       {/* Dropdown - Mobile */}
-      <div className="lg:hidden relative mb-12">
+      <div className="xl:hidden relative mb-12">
         <button
           className="w-full px-4 py-3 bg-white border rounded-lg shadow-sm flex items-center justify-between text-primary-1"
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}

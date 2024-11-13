@@ -1,8 +1,8 @@
 import Image from "next/image";
 import logo from "@/public/assets/images/logo/logo.svg";
-import instagram from '@/public/assets/images/Footer/instagram.svg';
-import LinkedIn from '@/public/assets/images/Footer/linkedin.svg';
-import X from '@/public/assets/images/Footer/twitterx.svg';
+import instagram from "@/public/assets/images/Footer/instagram.svg";
+import LinkedIn from "@/public/assets/images/Footer/linkedin.svg";
+import X from "@/public/assets/images/Footer/twitterx.svg";
 
 const Footer = () => {
   return (
@@ -86,23 +86,25 @@ const Footer = () => {
               href="#"
               className="block mt-1 text-primary-1 hover:text-primary-2"
             >
-              <div className="flex flex-row gap-1"><Image src={instagram} alt="Instagam" width={15} height={15} />
-              <div>Instagram</div></div>
-              
+              <div className="flex flex-row gap-1">
+                <Image src={instagram} alt="Instagam" width={25} height={25} />
+              </div>
             </a>
             <a
               href="#"
               className="block mt-1 text-primary-1 hover:text-primary-2"
             >
-              <div className="flex flex-row gap-1"><Image src={LinkedIn} alt="LinkedIn" width={15} height={15} />
-              <div>LinkedIn</div></div>
+              <div className="flex flex-row gap-1">
+                <Image src={LinkedIn} alt="LinkedIn" width={25} height={25} />
+              </div>
             </a>
             <a
               href="#"
               className="block mt-1 text-primary-1 hover:text-primary-2"
             >
-              <div className="flex flex-row gap-1"><Image src={X} alt="" width={15} height={15} />
-              <div>X</div></div>
+              <div className="flex flex-row gap-1">
+                <Image src={X} alt="" width={25} height={25} />
+              </div>
             </a>
           </div>
         </div>

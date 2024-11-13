@@ -312,46 +312,8 @@ export const FaqData = [
 
     ],
   },
-  // {
-  //   heading: "At the clinic",
-  //   qaList: [
-  //     {
-  //       question: "What makes BearHug different?",
-  //       answer:
-  //         "BearHug provides personalized pet care with a focus on comfort and health.",
-  //     },
-  //     {
-  //       question: "How much do you charge for your services?",
-  //       answer:
-  //         "Our pricing varies based on the services provided. Contact us for a detailed quote.",
-  //     },
-  //     {
-  //       question: "What animals does BearHug treat?",
-  //       answer:
-  //         "Dr. Paws is a versatile veterinarian offering expert care to a variety of animals, including cats, dogs, hamsters, unicorns (just kidding, we wish!), and many more.",
-  //     },
-  //   ],
-  // },
-  // {
-  //   heading: "About BearHug",
-  //   qaList: [
-  //     {
-  //       question: "What makes BearHug different?",
-  //       answer:
-  //         "BearHug provides personalized pet care with a focus on comfort and health.",
-  //     },
-  //     {
-  //       question: "How much do you charge for your services?",
-  //       answer:
-  //         "Our pricing varies based on the services provided. Contact us for a detailed quote.",
-  //     },
-  //     {
-  //       question: "What animals does BearHug treat?",
-  //       answer:
-  //         "Dr. Paws is a versatile veterinarian offering expert care to a variety of animals, including cats, dogs, hamsters, unicorns (just kidding, we wish!), and many more.",
-  //     },
-  //   ],
-  // },
+
+ 
 ];
 
 export const reviewData = {
@@ -359,64 +321,21 @@ export const reviewData = {
   review:
     "Dr. Paws is Fantastic Execptional care, friendly staff, and a welcoming atmosphere, Highly recommend for pet owners!",
 };
-
+//
 export const clinicItems: Clinic[] = [
   {
     id: "1",
     image: clinic1,
-    clinicName: "Indiranagar Clinic",
-    branch: "OPD",
-    description: "Surgery",
+    clinicName: "Indiranagar",
+    services: "Consults | Grooming | Surgery | Dignostics | Retail"
   },
   {
     id: "2",
     image: clinic1,
-    clinicName: "Indiranagar Clinic",
-    branch: "OPD",
-    description: "Surgery",
+    clinicName: "RMV (Dollars Colondy)",
+    services: "Consults | Grooming | Surgry | Digonstics | Ultrasound"
   },
-  {
-    id: "3",
-    image: clinic1,
-    clinicName: "Indiranagar Clinic",
-    branch: "OPD",
-    description: "Surgery",
-  },
-  {
-    id: "4",
-    image: clinic1,
-    clinicName: "Indiranagar Clinic",
-    branch: "OPD",
-    description: "Surgery",
-  },
-  {
-    id: "5",
-    image: clinic1,
-    clinicName: "Indiranagar Clinic",
-    branch: "OPD",
-    description: "Surgery",
-  },
-  {
-    id: "6",
-    image: clinic1,
-    clinicName: "Indiranagar Clinic",
-    branch: "OPD",
-    description: "Surgery",
-  },
-  {
-    id: "7",
-    image: clinic1,
-    clinicName: "Indiranagar Clinic",
-    branch: "OPD",
-    description: "Surgery",
-  },
-  {
-    id: "8",
-    image: clinic1,
-    clinicName: "Indiranagar Clinic",
-    branch: "OPD",
-    description: "Surgery",
-  },
+  
 ];
 
 export const descriptionItems = [
@@ -424,51 +343,51 @@ export const descriptionItems = [
     image: description1,
     title: "A Clinic That Feels Like Home",
     desciption:
-      "Our modern clinics make you feel like you never left home, making visits stress-free for you and your pet",
+      "Our thoughtfully designed clinics are all about warmth & comfort, making each visit stress-free.",
     button: {
-      buttonText: "See Our Clinics",
+      buttonText: "Book a Visit",
       buttonBackground: "bg-secondary-1",
       buttonLink: "/clinics",
-    },
-  },
-  {
-    image: description2,
-    title: "Memberships That Work",
-    desciption:
-      "Our memberships provide great value care and provide all the services you’re likely to need. Even if you’re facing an emergency, our memberships cover you.",
-    button: {
-      buttonText: "Book a Member",
-      buttonBackground: "bg-accent",
-      buttonLink: "",
     },
   },
   {
     image: description3,
     title: "Doctors That Care",
     desciption:
-      "We’re in the business of looking after your best friend. We'll listen and answer all your questions and treat your pet like our own",
+      " We’re here to look after your best friend. It’s our duty to listen, answer all your questions, and explain what we’re seeing in a way that makes sense.",
     button: {
-      buttonText: "Book a Visit",
-      buttonBackground: "bg-secondary-1",
-      buttonLink: "",
-    },
-  },
-  {
-    image: description4,
-    title: "Everything In Your Control",
-    desciption:
-      "Book appointments in a few taps, and always stay updated and informed on your pet’s health with our app",
-    button: {
-      buttonText: "Book a Member",
+      buttonText: "View Our Team",
       buttonBackground: "bg-accent",
       buttonLink: "",
     },
   },
   {
-    image: description5,
-    title: "Only The Necessary Care",
+    image: description4,
+    title: "Everything Under One Roof",
     desciption:
-      "We're pet-lovers first and business-people second. No over-testing, prescribing unnecessary medicines, or pushing procedures that are not needed",
+      "From consults through to emergency surgeries, we have you covered. We also offer grooming, diagnostic tests, imaging, and retail.",
+    button: {
+      buttonText: "View Our Services",
+      buttonBackground: "bg-secondary-1",
+      buttonLink: "/services",
+    },
+  },
+  {
+    image: description5,
+    title: "Only the Necessary Treatment",
+    desciption:
+      "We’re here to earn your trust. We commit to never over-prescribing medicines, tests, and procedures.",
+    button: {
+      buttonText: "Book a Visit",
+      buttonBackground: "bg-accent",
+      buttonLink: "",
+    },
+  },
+  {
+    image: description6,
+    title: "A Space Just for Cats",
+    desciption:
+      "At Dr. Paws, cats are not an afterthought- with our dedicated cat waiting rooms, consult rooms, and grooming studios, our clinics are designed around the needs of cats.",
     button: {
       buttonText: "Book a Visit",
       buttonBackground: "bg-secondary-1",
@@ -476,14 +395,25 @@ export const descriptionItems = [
     },
   },
   {
-    image: description6,
-    title: "All The Services You Need, Under One Roof",
+    image: description2,
+    title: "Memberships That Count",
     desciption:
-      "Aside from our world-class veterinary care, our clinics offer grooming, boarding, sitting, nutritionist, and training services",
+      "Our membership packs are tailor-made to offer great value and cover all the essentials to keep your pet happy & healthy.",
     button: {
-      buttonText: "See Our Services",
+      buttonText: "Become a member",
       buttonBackground: "bg-secondary-2",
-      buttonLink: "/services",
+      buttonLink: "",
+    },
+  },
+  {
+    image: description4,
+    title: "Your Pet’s Health in a Tap",
+    desciption:
+      "Book appointments in a few taps, and always stay updated and informed on your pet’s health with our app",
+    button: {
+      buttonText: "Download App",
+      buttonBackground: "bg-secondary-2",
+      buttonLink: "",
     },
   },
 ];
@@ -588,7 +518,7 @@ export const serviceCategories= [
   "Sickness & Emergency",
   "Diagnostics",
   "Surgeries",
-  "Dental",
+  "Physiotherapy",
   "Grooming",
   "Pet Services",
 ];
@@ -603,47 +533,61 @@ export const servicesData = {
     { name: "Ear & Eye Check-ups"}
   ],
   "Sickness & Emergency": [
-    { name: "Emergency Treatment" },
+    { name: "Care Traume" },
     { name: "Pain Management" },
-    { name: "Injury and Wound Care" },
-    { name: "Fever and Infections" },
+    { name: "Fever and Infectious Disease Treatement" },
+    { name: "Injuries" },
+    { name: "Limping & Wound Care" },
+    { name: "Vommiting & Diarrhoea Care"},
+    { name: "Loss of Appetite & Lathergry Care"}
   ],
   Diagnostics: [
     { name: "Blood Tests" },
-    { name: "X-Rays" },
-    { name: "Ultrasound Imaging" },
-    { name: "Urinalysis" },
+    { name: "Biochemistry Tests" },
+    { name: "Kidney & Liver Function Tests" },
+    { name: "Urine Analysis" },
+    { name: "Stool Analysis" },
+    { name: "Hormone Analysis" },
+    { name: "Microscopy" },
+    { name: "Allergy Tests" },
+    { name: "Fever & Infection Tests" },
+    { name: "X-Ray" },
+    { name: "Ultrasound" },
   ],
-  "Surgeries": [
+  Surgeries: [
     { name: "Spaying & Neutering" },
-    { name: "Dental Surgery" },
-    { name: "Tumor Removal" },
-    { name: "Orthopedic Surgery" },
+    { name: "Dental Scaling" },
+    { name: "Tumour & Mass Removals" },
+    { name: "Foreign-Body Removals" },
+    { name: "Tooth Extractions" },
+    { name: "Orthopaedic Surgeries" },
+    { name: "Soft-Tissue Surgeries" },
   ],
-  Dental: [
-    { name: "Teeth Cleaning" },
-    { name: "Oral Examinations" },
-    { name: "Gum Disease Treatment" },
-    { name: "Tooth Extraction" },
+  Physiotherapy: [
+    { name: "Laser Therapy" },
+    { name: "Water Treadmill Therapy" },
   ],
   Grooming: [
-    { name: "Bathing" },
-    { name: "Hair Trimming" },
-    { name: "Nail Clipping" },
+    { name: "Spa Baths" },
+    { name: "Haircuts & Hair Shaping" },
     { name: "Ear Cleaning" },
+    { name: "Dental Cleaning" },
+    { name: "Oil Massages" },
+    { name: "Hair Colouring" },
+    { name: "Anal Gland Expression" },
   ],
   "Pet Services": [
-    { name: "Microchipping" },  
-    { name: "Pet Travel Certificates" },
-    { name: "Adoption Counseling" },
-    { name: "Pet Health Insurance Consultation" },
+    { name: "Microchipping" },
+    { name: "Travel Document Preparation" },
+    { name: "Nutritional Counselling" },
+    { name: "New-Pet Preparation & Counselling" },
   ],
 };
 
 export const ServiceTabsData = [
   {
-    id: "planned-checkups",
-    title: "Planned check-ups",
+    id: "planned-Visits",
+    title: "Planned Visits",
     description:
       "Regular check-ups and preventative measures are essential to keep your pet in the best health. Take care of any vaccinations, get any help you need, or simply visit us to ensure your pet is doing just fine!",
     imageDetails: [
@@ -653,19 +597,23 @@ export const ServiceTabsData = [
       },
       {
         img: Deworming,
-        imgText: "Deworming",
+        imgText: "Skin Infections",
       },
       {
         img: GeneralCheckUp,
-        imgText: "General Check-up",
+        imgText: "Master Check-up",
       },
       {
         img: BehaviorlCounceling,
-        imgText: "Behavioral Counseling",
+        imgText: "Deworming",
       },
       {
         img: NutritionalCounceling,
-        imgText: "Nutritional Counseling",
+        imgText: "Parasite Control",
+      },
+      {
+        img: EarInfections,
+        imgText: "Ear & Eye Check-ups",
       },
     ],
   },
@@ -677,35 +625,31 @@ export const ServiceTabsData = [
     imageDetails: [
       {
         img: DigestiveProblems,
-        imgText: "Digestive Problems",
+        imgText: "Trauma Care",
       },
       {
         img: AllergiesAndRashes,
-        imgText: "Allergies & Rashes",
+        imgText: "Pain Management",
       },
       {
         img: EarInfections,
-        imgText: "Ear Infections",
+        imgText: "Fever & Infectious Disease Treatment",
       },
       {
         img: Lethargy,
-        imgText: "Lethargy",
+        imgText: "Injuries",
       },
       {
         img: Limping,
-        imgText: "Limping",
+        imgText: "Limping & Wound Care",
       },
       {
         img: AnimalBites,
-        imgText: "Animal Bites",
+        imgText: "Vomiting & Diarrhoea Care",
       },
       {
         img: EyeIssues,
-        imgText: "Eye Issues",
-      },
-      {
-        img: Accident,
-        imgText: "Accident / Trauma",
+        imgText: "Loss of Appetite & Lethargy Care",
       },
     ],
   },
@@ -713,83 +657,103 @@ export const ServiceTabsData = [
     id: "Diagonstics",
     title: "Diagonstics",
     description:
-      "When your pet isn’t feeling their best, it’s important to get to the bottom if it as soon as possible. We offer a wide range of tests and scans, coupled with strong interpretation expertise to make sure the right treatment plan is offered right away.",
+      "Our pets don’t always communicate what’s wrong making diagnostic tests a crucial part of our care. With our wide range of tests and expert doctors, we’ll do our best to diagnose exactly what’s going as soon as possible.",
     imageDetails: [
       {
         img: Ultrasound,
-        imgText: "Ultrasound & ECG",
+        imgText: "Blood Tests",
       },
       {
         img: Microscopy,
-        imgText: "Microscopy",
+        imgText: "Biochemisty Tests",
       },
       {
         img: Parasite,
-        imgText: "Parasite Detection",
+        imgText: "Kidney & Liver Function Tests",
       },
       {
         img: Blood,
-        imgText: "Blood & Urine Tests",
+        imgText: "Urine Analysis",
       },
       {
         img: Xray,
-        imgText: "X-Ray (Body & Dental)",
-      },
-    ],
-  },
-  {
-    id: "Planned Surgeries",
-    title: "Planned Surgeries",
-    description:
-      "Occasionally it becomes essential to take a more serious course of action to help your animal. We offer a wide range of surgical procedures to ensure your animal gets back to health, as soon as possible. Wherever we can’t help we’ll refer you to a vet that can.",
-    imageDetails: [
-      {
-        img: Sprays,
-        imgText: "Spays & Neuters",
+        imgText: "Stool Analysis",
       },
       {
-        img: Tumors,
-        imgText: "Tumour / Mass Removal",
+        img: Xray,
+        imgText: "Hormone Analysis",
       },
       {
-        img: Blader,
-        imgText: "Bladder Stone Removal",
+        img: Xray,
+        imgText: "Microscopy",
       },
       {
-        img: Foreign,
-        imgText: "Foreign Body Removal",
+        img: AllergiesAndRashes,
+        imgText: "Allergy Tests",
       },
       {
-        img: Ortho,
-        imgText: "Orthopedic Surgeries",
-      },
-    ],
-  },
-  {
-    id: "Dental",
-    title: "Dental",
-    description:
-      "Just like in us humans, oral health is an essential part of making sure your animal maintains great health internally and externally. We offer a range of dental treatments to keep your animal pain-free with great hygiene",
-    imageDetails: [
-      {
-        img: ToothEx,
-        imgText: "Tooth Extraction",
+        img: Lethargy,
+        imgText: "Fever & Infection Tests",
       },
       {
-        img: ToothRes,
-        imgText: "Tooth Restoration",
-      },
-      {
-        img: Xray1,
+        img: Xray,
         imgText: "X-Ray",
       },
       {
-        img: Gum,
-        imgText: "Gum Treatment",
+        img: Ultrasound,
+        imgText: "Ultrasound",
+      },
+    ],
+  },
+  {
+    id: "Surgeries",
+    title: "Surgeries",
+    description:
+      "Our wide range of surgeries and deep doctor expertise, allow us to help get your pet back to their healthy self, should intervention be required. If we can’t help, we’ll refer you to a place that can.",
+    imageDetails: [
+      {
+        img: Sprays,
+        imgText: "Spaying & Neutering",
       },
       {
-        img: Dental,
-        imgText: "Dental Cleaning / Polishing",
+        img: Tumors,
+        imgText: "Dental Scaling",
+      },
+      {
+        img: Tumors,
+        imgText: "Tumor and Mass Removals",
+      },
+      {
+        img: Foreign,
+        imgText: "Foreign Body Removals",
+      },
+      {
+        img: ToothEx,
+        imgText: "Tooth Extractions",
+      },
+      {
+        img: Ortho,
+        imgText: "Orthopaedic Surgeries",
+      },
+      {
+        img: Ortho,
+        imgText: "Soft-Tissue Surgeries",
+      },
+    ],
+  },
+  {
+    id: "Physiotherapy",
+    title: "Physiotherapy",
+    description:
+      "We offer a range of specialised therapies with cutting-edge equipment to help pets deal with chronic mobility conditions, or prevent them in the first-place.",
+    imageDetails: [
+      {
+        img: ToothEx,
+        imgText: "Laser Therapy",
+      },
+      {
+        img: ToothRes,
+        imgText: "Water Treadmill Therapy",
       },
     ],
   },
@@ -797,27 +761,35 @@ export const ServiceTabsData = [
     id: "Grooming",
     title: "Grooming",
     description:
-      "Who doesn’t like to see their best friend looking and feeling their best? Dr. Paws specially designed grooming studios help you to take care of your animal so they turn heads and feel amazing at all times",
+      "Our state-of-the-art grooming studios help to keep you pet looking and feeling great.",
     imageDetails: [
       {
-        img: HairCut,
-        imgText: "Hair Cuts",
+        img: Bath,
+        imgText: "Spa Baths",
       },
       {
-        img: NailCut,
-        imgText: "Nail Clipping",
+        img: HairCut,
+        imgText: "Haircuts & Hair Shaping",
       },
       {
         img: EarClean,
         imgText: "Ear Cleaning",
       },
       {
-        img: Bath,
-        imgText: "Bathing",
+        img: ToothRes,
+        imgText: "Dental Cleaning",
+      },
+      {
+        img: NailCut,
+        imgText: "Oil Massages",
       },
       {
         img: HairStyle,
-        imgText: "Hair Styling & Brushing",
+        imgText: "Hair Colouring",
+      },
+      {
+        img: HairStyle,
+        imgText: "Anal Gland Expression",
       },
     ],
   },
@@ -825,19 +797,23 @@ export const ServiceTabsData = [
     id: "Pet Services",
     title: "Pet Services",
     description:
-      "Occasionally it becomes essential to take a more serious course of action to help your animal. We offer a wide range of surgical procedures to ensure your animal gets back to health, as soon as possible. Wherever we can’t help we’ll refer you to a vet that can.",
+      "We offer a range of services to help make pet-ownership easier and stress-free",
     imageDetails: [
       {
         img: Boarding,
-        imgText: "Dog & Cat Boarding",
+        imgText: "Microchipping",
       },
       {
         img: Sitting,
-        imgText: "Dog & Cat Sitting",
+        imgText: "Travel Document Preparation",
       },
       {
-        img: Training,
-        imgText: "Dog Training",
+        img: NutritionalCounceling,
+        imgText: "Nutritional Counselling",
+      },
+      {
+        img: Boarding,
+        imgText: "New-Pet Preparation Counselling",
       },
     ],
   },

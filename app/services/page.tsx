@@ -9,7 +9,7 @@ const Services = () => {
   return (
     <div className="flex flex-col w-full h-full items-center justify-items-center font-roca pb-20">
       <main className="flex flex-col gap-[80px] row-start-2 items-center w-full px-8 md:px-32 lg:px-40">
-        <div className="w-full flex flex-col lg:flex-row items-center justify-between lg:space-x-14 space-y-8 lg:space-y-0 mt-[80px]">
+        <div className="w-full flex flex-col xl:flex-row items-center justify-between xl:space-x-14 xl:items-center space-y-8 xl:space-y-0 mt-[80px]">
           <div className="flex-shrink-0">
             <Image
               src={DescritionImage}
@@ -19,19 +19,19 @@ const Services = () => {
               className="rounded-lg"
             />
           </div>
-          <div className="flex flex-col items-center lg:items-start lg:text-left w-full h-auto gap-4">
-            <div className="pr-0 lg:pr-32">
-              <h1 className="text-4xl lg:text-5xl text-center lg:text-left">
-                We&apos;re Here,
+          <div className="flex flex-col items-center xl:items-start xl:text-left w-full h-auto gap-4">
+            <div className="pr-0 xl:pr-32">
+              <h1 className="text-4xl xl:text-5xl text-center xl:text-left">
+                Everything Under One Roof
               </h1>
-              <h1 className="text-4xl lg:text-5xl text-center lg:text-left">
+              {/* <h1 className="text-4xl lg:text-5xl text-center lg:text-left">
                 Whatever Your Friend Needs
-              </h1>
+              </h1> */}
             </div>
 
             <p className="text-lg text-gray-700 text-center lg:text-left">
-              Our modern friendly clinics offer all the services you&apos;ll
-              need to keep your animal happy and healthy.
+              From consults through to emergency surgeries, we have you covered.
+              We also offer grooming, diagnostic tests, imaging, and retail.
             </p>
             <div className="w-fit">
               <button
