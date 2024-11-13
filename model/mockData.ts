@@ -15,7 +15,8 @@ import catImg from "../public/assets/images/catimg.png";
 import rabbitImg from "../public/assets/images/rabbitimg.png";
 import doctorImage from "../public/assets/images/clinic/doctor.png";
 import ClinicDog from "../public/assets/images/clinic/maggidog.png";
-import { ServiceCategory, Service, Clinic } from "@/model/typeDefinitions";
+// import { ServiceCategory } from "@/model/typeDefinitions";
+import { Service, Clinic } from "@/model/typeDefinitions";
 import Vaccination from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/Vaccinations.png";
 import Deworming from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/Deworming.png";
 import GeneralCheckUp from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/General check up.png";
@@ -267,65 +268,90 @@ export const membershipDataList = [
 
 export const FaqData = [
   {
-    heading: "About BearHug",
+    heading: "About Dr. Paws",
     qaList: [
       {
-        question: "What makes BearHug different?",
+        question: "How do I book an appointment?",
         answer:
-          "BearHug provides personalized pet care with a focus on comfort and health.",
+          "The easiest way to book is through our app or website. If you prefer calling or sending a WhatsApp to your local clinic to book, please feel free to do this.",
       },
       {
-        question: "How much do you charge for your services?",
+        question: "Which animals do you treat?",
         answer:
-          "Our pricing varies based on the services provided. Contact us for a detailed quote.",
+          "We treat all small domestic animals including dogs, cats, rabbits, hamsters, guinea pigs, birds, and reptiles. Our ability to treat complex cases in exotic / rare species will vary by doctor.",
       },
       {
-        question: "What animals does BearHug treat?",
+        question: "What are your timings?",
         answer:
-          "Dr. Paws is a versatile veterinarian offering expert care to a variety of animals, including cats, dogs, hamsters, unicorns (just kidding, we wish!), and many more.",
+          "Most of our clinics run from 9am to 8pm, with some offering 24x7 care. Please check information for your local clinic in ‘Our Locations’ or via Google.",
       },
+      {
+        question: "How do I buy a membership?",
+        answer: "You can buy a membership through our app or website. Alternatively, you can buy one in-person at our clinics."
+      },
+      {
+        question: "Is Dr. Paws membership only?",
+        answer: "No, we welcome all customers regardless of whether they have bought a membership or not. Our memberships, simply offer greater value for money."
+      },
+      {
+        question: "Is everything done in-house?",
+        answer: "All our surgical and medical procedures are performed in-house. For certain specific diagnostic tests, we tie-up with external partners, but there is no difference in the process for our customers."
+      },
+      {
+        question: "What products do you sell in your retail section?",
+        answer: "We have a comprehensive range of products across medicines, supplements, packaged food, treats, toys & accessories. If there’s anything specific you require, please let us know."
+      },
+      {
+        question: "Do you have waiting areas in your clinics?",
+        answer: "Yes, all our clinics have two comfortable and spacious waiting areas. One is a general area for all animals, whilst the other is specially reserved for cats and their parents only."
+      },
+      {
+        question: "Is there parking available?",
+        answer: "Yes, all our clinics have ample parking or a valet-service to make visiting easy and hassle-free."
+      },
+
     ],
   },
-  {
-    heading: "At the clinic",
-    qaList: [
-      {
-        question: "What makes BearHug different?",
-        answer:
-          "BearHug provides personalized pet care with a focus on comfort and health.",
-      },
-      {
-        question: "How much do you charge for your services?",
-        answer:
-          "Our pricing varies based on the services provided. Contact us for a detailed quote.",
-      },
-      {
-        question: "What animals does BearHug treat?",
-        answer:
-          "Dr. Paws is a versatile veterinarian offering expert care to a variety of animals, including cats, dogs, hamsters, unicorns (just kidding, we wish!), and many more.",
-      },
-    ],
-  },
-  {
-    heading: "About BearHug",
-    qaList: [
-      {
-        question: "What makes BearHug different?",
-        answer:
-          "BearHug provides personalized pet care with a focus on comfort and health.",
-      },
-      {
-        question: "How much do you charge for your services?",
-        answer:
-          "Our pricing varies based on the services provided. Contact us for a detailed quote.",
-      },
-      {
-        question: "What animals does BearHug treat?",
-        answer:
-          "Dr. Paws is a versatile veterinarian offering expert care to a variety of animals, including cats, dogs, hamsters, unicorns (just kidding, we wish!), and many more.",
-      },
-    ],
-  },
+  // {
+  //   heading: "At the clinic",
+  //   qaList: [
+  //     {
+  //       question: "What makes BearHug different?",
+  //       answer:
+  //         "BearHug provides personalized pet care with a focus on comfort and health.",
+  //     },
+  //     {
+  //       question: "How much do you charge for your services?",
+  //       answer:
+  //         "Our pricing varies based on the services provided. Contact us for a detailed quote.",
+  //     },
+  //     {
+  //       question: "What animals does BearHug treat?",
+  //       answer:
+  //         "Dr. Paws is a versatile veterinarian offering expert care to a variety of animals, including cats, dogs, hamsters, unicorns (just kidding, we wish!), and many more.",
+  //     },
+  //   ],
+  // },
+  // {
+  //   heading: "About BearHug",
+  //   qaList: [
+  //     {
+  //       question: "What makes BearHug different?",
+  //       answer:
+  //         "BearHug provides personalized pet care with a focus on comfort and health.",
+  //     },
+  //     {
+  //       question: "How much do you charge for your services?",
+  //       answer:
+  //         "Our pricing varies based on the services provided. Contact us for a detailed quote.",
+  //     },
+  //     {
+  //       question: "What animals does BearHug treat?",
+  //       answer:
+  //         "Dr. Paws is a versatile veterinarian offering expert care to a variety of animals, including cats, dogs, hamsters, unicorns (just kidding, we wish!), and many more.",
+  //     },
+  //   ],
+  // },
 ];
 
 export const reviewData = {
@@ -557,22 +583,24 @@ export const photos = [
   ClinicOT,
 ];
 
-export const serviceCategories: ServiceCategory[] = [
-  "Planned Check-Ups",
+export const serviceCategories= [
+  "Planned Visits",
   "Sickness & Emergency",
   "Diagnostics",
-  "Planned Surgeries",
+  "Surgeries",
   "Dental",
   "Grooming",
   "Pet Services",
 ];
 
-export const servicesData: Record<ServiceCategory, Service[]> = {
-  "Planned Check-Ups": [
+export const servicesData = {
+  "Planned Visits": [
     { name: "Vaccinations" },
+    { name: "Skin infections" },
+    { name: "Master Health Check-ups" },
     { name: "Deworming" },
-    { name: "Nutritional Counselling" },
-    { name: "Behavioural Counselling" },
+    { name: "Parasite Control"},
+    { name: "Ear & Eye Check-ups"}
   ],
   "Sickness & Emergency": [
     { name: "Emergency Treatment" },
@@ -586,7 +614,7 @@ export const servicesData: Record<ServiceCategory, Service[]> = {
     { name: "Ultrasound Imaging" },
     { name: "Urinalysis" },
   ],
-  "Planned Surgeries": [
+  "Surgeries": [
     { name: "Spaying & Neutering" },
     { name: "Dental Surgery" },
     { name: "Tumor Removal" },
@@ -605,7 +633,7 @@ export const servicesData: Record<ServiceCategory, Service[]> = {
     { name: "Ear Cleaning" },
   ],
   "Pet Services": [
-    { name: "Microchipping" },
+    { name: "Microchipping" },  
     { name: "Pet Travel Certificates" },
     { name: "Adoption Counseling" },
     { name: "Pet Health Insurance Consultation" },

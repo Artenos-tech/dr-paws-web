@@ -31,7 +31,7 @@ const FaqItem: React.FC<FaqProps> = ({ items = [], heading }) => {
           <div key={index} className="border-b pl-10">
             <button
               onClick={() => toggleCollapse(index)}
-              className="flex justify-between w-full py-3 text-left text-base sm:text-lg lg:text-xl font-medium text-gray-700"
+              className="flex justify-between w-full py-3 text-left text-base sm:text-lg lg:text-xl font-semibold text-gray-700"
             >
               {item.question}
               <span>
