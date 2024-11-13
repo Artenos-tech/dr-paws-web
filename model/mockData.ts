@@ -57,11 +57,10 @@ import Customer1 from "../public/assets/images/clinic/customer1.png";
 import Customer2 from "../public/assets/images/clinic/customer2.png";
 import Customer3 from "../public/assets/images/clinic/customer3.png";
 import ClinicOT from "../public/assets/images/clinic/clinicopertn.png";
-import CareJunior from '@/public/assets/images/Membership/Care Junior.png'
-import CareSenior from '@/public/assets/images/Membership/Care Senior.png'
-import Grooming from '@/public/assets/images/Membership/Grooming.png'
-import StarCare from '@/public/assets/images/Membership/Star Care and Grooming.png'
-
+import CareJunior from "@/public/assets/images/Membership/Care Junior.png";
+import CareSenior from "@/public/assets/images/Membership/Care Senior.png";
+import Grooming from "@/public/assets/images/Membership/Grooming.png";
+import StarCare from "@/public/assets/images/Membership/Star Care and Grooming.png";
 
 export const circleImageList = [
   {
@@ -343,58 +342,20 @@ export const clinicItems: Clinic[] = [
   {
     id: "1",
     image: clinic1,
-    clinicName: "Indiranagar Clinic",
-    branch: "OPD",
-    description: "Surgery",
+    clinicName: "Indiranagar",
+    services: "Consults | Grooming | Surgery | Dignostics | Retail",
   },
   {
     id: "2",
     image: clinic1,
-    clinicName: "Indiranagar Clinic",
-    branch: "OPD",
-    description: "Surgery",
+    clinicName: "RMV (Dollars Colony)",
+    services: "Consults | Grooming | Surgery | Dignostics | Ultrasound",
   },
   {
     id: "3",
     image: clinic1,
-    clinicName: "Indiranagar Clinic",
-    branch: "OPD",
-    description: "Surgery",
-  },
-  {
-    id: "4",
-    image: clinic1,
-    clinicName: "Indiranagar Clinic",
-    branch: "OPD",
-    description: "Surgery",
-  },
-  {
-    id: "5",
-    image: clinic1,
-    clinicName: "Indiranagar Clinic",
-    branch: "OPD",
-    description: "Surgery",
-  },
-  {
-    id: "6",
-    image: clinic1,
-    clinicName: "Indiranagar Clinic",
-    branch: "OPD",
-    description: "Surgery",
-  },
-  {
-    id: "7",
-    image: clinic1,
-    clinicName: "Indiranagar Clinic",
-    branch: "OPD",
-    description: "Surgery",
-  },
-  {
-    id: "8",
-    image: clinic1,
-    clinicName: "Indiranagar Clinic",
-    branch: "OPD",
-    description: "Surgery",
+    clinicName: "HSR layout",
+    services: "Consults | Grooming | Surgery | Dignostics | Retail",
   },
 ];
 
@@ -845,7 +806,8 @@ export const membershipData = [
   {
     title: "Care Junior",
     icon: CareJunior,
-    description: "Our plan that helps prepare you and your puppy or kitten for a lifetime together",
+    description:
+      "Our plan that helps prepare you and your puppy or kitten for a lifetime together",
     benefits: [
       { text: "6 free-of-cost consultations every year" },
       { text: "50% discount on additional consultations" },
@@ -854,8 +816,8 @@ export const membershipData = [
       { text: "10 free training sessions" },
       { text: "10% discount on diagnostic tests and scans" },
       { text: "10% off retail products & medicines" },
-      { text: "10% off any grooming service" }
-    ]
+      { text: "10% off any grooming service" },
+    ],
   },
   {
     title: "Care Senior",
@@ -869,8 +831,8 @@ export const membershipData = [
       { text: "20% discount on diagnostic tests and scans" },
       { text: "20% discount on planned surgeries and procedures" },
       { text: "10% off retail products & medicines" },
-      { text: "10% off any grooming service" }
-    ]
+      { text: "10% off any grooming service" },
+    ],
   },
   {
     title: "Grooming",
@@ -884,13 +846,14 @@ export const membershipData = [
       { text: "10% off vaccinations" },
       { text: "Annual deworming" },
       { text: "10% off diagnostic test and scans" },
-      { text: "10% discount on planned surgeries and procedures" }
-    ]
+      { text: "10% discount on planned surgeries and procedures" },
+    ],
   },
   {
     title: "Star Care Grooming",
     icon: StarCare,
-    description: "Our best value plan that keeps your pet healthy and looking great",
+    description:
+      "Our best value plan that keeps your pet healthy and looking great",
     benefits: [
       { text: "Unlimited vet consultations" },
       { text: "12 free spa sessions per year" },
@@ -900,8 +863,8 @@ export const membershipData = [
       { text: "Annual deworming consultation" },
       { text: "25% discount on diagnostic tests and scans" },
       { text: "25% discount on planned surgeries and procedures" },
-      { text: "15% off retail products & medicines" }
+      { text: "15% off retail products & medicines" },
     ],
-    isPopular: true
-  }
+    isPopular: true,
+  },
 ];

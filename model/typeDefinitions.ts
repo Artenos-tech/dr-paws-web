@@ -19,8 +19,7 @@ export interface Clinic {
   id: string;
   clinicName: string;
   image: StaticImageData;
-  branch: string;
-  description: string;
+  services: string
 }
 export interface Pet {
   petId: string;
