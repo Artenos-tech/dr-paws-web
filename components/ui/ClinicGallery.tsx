@@ -47,7 +47,7 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
   }
 
   return (
-    <div>
+    <div className="w-full">
       <div className="gallery-container grid grid-cols-3 gap-4">
         {limitedGalleryItems.map((image, index) => (
           <div
