@@ -19,9 +19,9 @@ export default function Home() {
           <div className="flex flex-col items-center md:items-start gap-0 w-full md:w-full  lg:w-1/2 mx-auto mt-6 md:ml-32 md:mt-10 lg:gap-4 lg:mt-12 lg:ml-40 text-center md:text-left">
             <div>
               <h1 className="text-[32px] md:text-[40px] lg:text-[56px]  leading-tight md:leading-snug lg:leading-none text-white">
-              India&apos;s Friendliest Vet Clinics
+                India&apos;s Friendliest Vet Clinics
               </h1>
-              <h1 className="w-[70%] lg:w-full text-[28px] md:text-[34px] lg:text-[48px] text-primary-3 leading-tight md:leading-snug lg:leading-none text-white">
+              <h1 className="lg:w-full text-[28px] md:w-[80%] md:text-[34px] lg:text-[48px] text-primary-3 leading-tight md:leading-snug lg:leading-none">
                 Because your best friend deserves the very best
               </h1>
               {/* <h1 className="text-primary-3 text-[32px] md:text-[40px] lg:text-[56px] leading-tight md:leading-snug lg:leading-none">
@@ -178,8 +178,8 @@ export default function Home() {
                   </div>
                   <p className=" text-[14px] ml-[58px]">
                     We focus on bedside manner, pet psychology and handling in
-                    every team member&apos;s training. Your pet will feel at ease
-                    with us
+                    every team member&apos;s training. Your pet will feel at
+                    ease with us
                   </p>
                 </div>
               </div>
