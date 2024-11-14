@@ -55,7 +55,7 @@ const MembershipPayment = () => {
   return (
     <div className="min-h-screen bg-[#F7F1DE]/[.4]">
       <main className="flex flex-col row-start-2 items-center w-full ">
-        <div className="flex flex-col lg:flex-row gap-4 lg:gap-28 px-8 md:px-32 lg:px-28 xl:px-40 lg:mb-4">
+        <div className="flex flex-col lg:flex-row gap-4 lg:gap-28 px-8 md:px-32 lg:px-20 xl:px-40 lg:mb-4">
           {/* Payment Form */}
           <div className="lg:w-3/5">
             <Link

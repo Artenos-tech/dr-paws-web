@@ -15,7 +15,7 @@ const Services: React.FC = () => {
     useState<ServiceCategory>("Planned Visits");
 
   return (
-    <div className="flex px-8 md:px-32 lg:px-28 xl:px-40">
+    <div className="flex px-8 md:px-32 lg:px-20 xl:px-40">
       {/* Sidebar */}
       <div className="w-[50%] lg:w-[30%] min-h-[400px] flex-shrink-0 border bg-gray-100">
         {serviceCategories.map((category) => (

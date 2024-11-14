@@ -8,7 +8,7 @@ import Link from "next/link";
 const Footer = () => {
   return (
     <footer className="bg-primary-3 py-10">
-      <div className="mx-auto px-8 md:px-32 lg:px-28 xl:px-40">
+      <div className="mx-auto px-8 md:px-32 lg:px-20 xl:px-40">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div>
             <Image src={logo} alt="Dr. Paws Logo" width={100} height={30} />

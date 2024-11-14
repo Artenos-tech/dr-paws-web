@@ -87,7 +87,7 @@ const Membership = () => {
             </Swiper>
           </div>
 
-          <div className="hidden xl:block px-8 md:px-32 lg:px-28 xl:px-40">
+          <div className="hidden xl:block px-8 md:px-32 lg:px-20 xl:px-40">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
               {membershipData.map((plan, index) => (
                 <MemberCard
