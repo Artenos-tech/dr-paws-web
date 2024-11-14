@@ -19,9 +19,9 @@ export default function NavBar() {
 
   return (
     <div className="fixed left-0 top-0 z-30 bg-primary-3 w-full">
-      <div className="mx-auto px-8 md:px-32 lg:px-40">
+      <div className="mx-auto px-8 md:px-32 lg:px-20 xl:px-40">
         <div className="flex justify-between items-center h-16">
-          <div className="flex items-center gap-10">
+          <div className="flex items-center gap-9">
             <div className="flex-shrink-0">
               <Link href="/">
                 <Image

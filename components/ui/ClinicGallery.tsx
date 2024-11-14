@@ -22,14 +22,12 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
   // Ensure setAppElement is called only on the client side after the DOM is ready
   useEffect(() => {
     setIsMounted(true);
-    // if (typeof window !== "undefined") {
     const appElement = document.getElementById("__next");
     if (appElement) {
       ReactModal.setAppElement(appElement);
     } else {
       console.warn("ReactModal: App element with id '__next' not found.");
     }
-    // }
   }, []);
 
   useEffect(() => {});
@@ -80,13 +78,13 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
       <div className="w-full flex justify-between mt-8">
         <div className="flex flex-col gap-4">
           <h1 className="text-xl md:text-4xl">{clinic.clinicName}</h1>
-          <p className="text-primary-1">
-            {clinic.services}
-          </p>
         </div>
         <div>
           <Button buttonText="Book a visit" buttonBackground="bg-secondary-1" buttonClickEvent={() => setIsModalOpen(true)}/>
         </div>
+      </div>
+      <div className="mt-4">
+        <p className="text-primary-1">{clinic.services}</p>
       </div>
       {/* Modal */}
       <ReactModal

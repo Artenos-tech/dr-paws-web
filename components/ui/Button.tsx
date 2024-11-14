@@ -14,7 +14,7 @@ const Button: React.FC<ButtonProps> = ({
   buttonText,
   buttonBackground,
   buttonLink,
-  buttonClickEvent
+  buttonClickEvent,
 }) => {
   const router = useRouter();
 

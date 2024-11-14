@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import DescritionImage from "@/public/assets/images/ServicesPage/DescriptionImage.png";
 import ServicePageTab from "@/components/ui/ServicePageTab";
 import { ServiceTabsData } from "@/model/mockData";
@@ -10,11 +11,11 @@ const Services = () => {
   const [isContactModalOpen, setContactIsModalOpen] = useState(false);
   return (
     <div className="flex flex-col w-full h-full items-center justify-items-center font-roca pb-20">
-      <main className="flex flex-col gap-[80px] row-start-2 items-center w-full px-8 md:px-32 lg:px-40">
-        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center w-full gap-2 md:gap-8 lg:gap-14 my-4 lg:my-10">
-          <div className="w-full ">
-            <img
-              src={DescritionImage.src}
+      <main className="flex flex-col gap-[80px] row-start-2 items-center w-full px-8 md:px-32 lg:px-20 xl:px-40">
+        <div className="w-full flex flex-col xl:flex-row items-center justify-between xl:space-x-14 xl:items-center space-y-8 xl:space-y-0 mt-[80px]">
+          <div className="flex-shrink-0">
+            <Image
+              src={DescritionImage}
               alt="Clinic image with a dog"
               className="w-full rounded-md"
             />
