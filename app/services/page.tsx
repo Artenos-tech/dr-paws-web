@@ -12,39 +12,32 @@ const Services = () => {
   return (
     <div className="flex flex-col w-full h-full items-center justify-items-center font-roca pb-20">
       <main className="flex flex-col gap-[80px] row-start-2 items-center w-full px-8 md:px-32 lg:px-40">
-        <div className="w-full flex flex-col xl:flex-row items-center justify-between xl:space-x-14 xl:items-center space-y-8 xl:space-y-0 mt-4 md:mt-12 lg:mt-[80px]">
-          <div className="flex-shrink-0">
-            <Image
-              src={DescritionImage}
+        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center w-full gap-2 md:gap-8 lg:gap-14 my-4 lg:my-10">
+          <div className="w-full ">
+            <img
+              src={DescritionImage.src}
               alt="Clinic image with a dog"
-              width={510}
-              height={340}
-              className="rounded-lg"
+              className="w-full rounded-md"
             />
           </div>
-          <div className="flex flex-col items-center xl:items-start xl:text-left w-full h-auto gap-4">
-            <div className="pr-0 xl:pr-32">
-              <h1 className="text-4xl xl:text-5xl text-center xl:text-left">
-                Everything Under One Roof
-              </h1>
-              {/* <h1 className="text-4xl lg:text-5xl text-center lg:text-left">
-                Whatever Your Friend Needs
-              </h1> */}
-            </div>
-
-            <p className="text-lg text-gray-700 text-center lg:text-left w-[70%] xl:w-full">
+          <div className="w-full  text-center lg:text-left text-primary-1 md:my-4 lg:my-0 mt-4">
+            <h1 className={`text-xl md:text-2xl lg:text-3xl xl:text-5xl`}>
+              Everything Under One Roof
+            </h1>
+            <p className="text-xs md:text-sm xl:text-base xl:w-3/4 my-3 md:my-5">
               From consults through to emergency surgeries, we have you covered.
               We also offer grooming, diagnostic tests, imaging, and retail.
             </p>
-            <div className="w-fit">
+
               <Button
                 buttonText="Book a visit"
                 buttonBackground="bg-secondary-1"
                 buttonClickEvent={() => setContactIsModalOpen(true)}
               />
-            </div>
+
           </div>
         </div>
+
         <div className="w-full">
           <ServicePageTab tabs={ServiceTabsData} />
         </div>
