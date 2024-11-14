@@ -38,7 +38,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div>
+        <div className="w-full px-8 md:px-32 lg:px-20 xl:px-40">
           <div className="flex flex-col items-center justify-center">
             <h1 className="mt-4 mb-16 text-center text-primary-1 text-xl md:text-4xl px-8">
               Veterinary care, redesigned to be better
@@ -52,12 +52,12 @@ export default function Home() {
             <h1 className="mx-auto text-center text-xl md:text-4xl">
               we call home
             </h1>
-            <div className="mx-auto pt-5 px-8 w-full md:px-32 lg:px-20 xl:px-40">
+            <div className="mx-auto pt-5 w-full">
               <ClinicItemList showStaticCard={false} enlargedView={false} />
             </div>
           </div>
 
-          <div className="flex flex-col items-center justify-center w-full mt-20 md:mt-32 px-8 md:px-32 lg:scroll-px-40">
+          <div className="flex flex-col items-center justify-center w-full mt-20 md:mt-32 lg:scroll-px-40">
             <div className="mx-auto text-center mb-14">
               <h1 className="mx-auto text-xl md:text-4xl px-1 md:px-20 mb-6">
                 Whatever your pet needs, we&apos;re there
@@ -186,7 +186,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="mx-auto text-center my-20 flex flex-col px-8 md:px-32 lg:px-20 xl:px-40">
+          <div className="mx-auto text-center my-20 flex flex-col">
             <h1 className="text-xl md:text-4xl mb-8">Still have questions?</h1>
             <p className=" md:text-xl">
               If your question is still not answered, please get in touch and
