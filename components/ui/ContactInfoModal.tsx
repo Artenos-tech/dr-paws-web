@@ -30,7 +30,7 @@ const ContactInfoModal: React.FC<ContactInfoModalProps> = ({
           backgroundColor: "rgba(0, 0, 0, 0.5)",
         },
         content: {
-          top: "50%",
+          top: "47%",
           left: "50%",
           right: "auto",
           bottom: "auto",
@@ -95,7 +95,7 @@ const ContactInfoModal: React.FC<ContactInfoModalProps> = ({
           </p>
           <div className="flex flex-col md:flex-row items-start lg:items-center gap-2 mt-1">
             <Link href="tel:+7204996899" className="text-blue-600">
-            <div className="flex flex-row items-center justify-center gap-1">
+              <div className="flex flex-row items-center justify-center gap-1">
                 <Image src={Call} alt="whats app" width={16} height={16} />
                 <span>7204996899</span>
               </div>
@@ -119,6 +119,9 @@ const ContactInfoModal: React.FC<ContactInfoModalProps> = ({
               </div>
             </Link>
           </div>
+          <p className="italic font-semibold my-2 text-gray-600">
+            Mobile app coming soon
+          </p>
         </div>
       </div>
 
