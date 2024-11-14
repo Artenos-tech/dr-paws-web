@@ -6,7 +6,7 @@ import ClinicItemList from "@/components/ui/ClinicItemList";
 export default function Clinics() {
   return (
     <div className="flex flex-col w-full h-full 3xl:h-screen items-center justify-items-center font-roca pb-20 flex-grow">
-      <main className="flex flex-col gap-8 md:gap-20 row-start-2 items-center px-8 md:px-32 lg:px-40">
+      <main className="flex flex-col gap-8 md:gap-20 row-start-2 items-center px-8 md:px-32 lg:px-28 xl:px-40">
         {/* cover */}
         <div className="w-full flex flex-col lg:flex-row items-center justify-center space-y-8 lg:space-y-0 mt-16">
           <div className="flex-shrink-0 w-full lg:w-auto">

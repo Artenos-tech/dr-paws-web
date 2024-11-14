@@ -7,7 +7,7 @@ import { Doctor } from "@/model/typeDefinitions";
 const TeamPage = () => {
   return (
     <div className="flex flex-col w-full h-full items-center justify-items-center font-roca pb-20">
-      <main className="flex flex-col gap-[50px] row-start-2 items-center w-full px-8 md:px-32 lg:px-40">
+      <main className="flex flex-col gap-[50px] row-start-2 items-center w-full px-8 md:px-32 lg:px-28 xl:px-40">
         <div className="lg:my-10">
           <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center w-full gap-2 md:gap-8 lg:gap-14">
             <div className="w-full ">
@@ -33,7 +33,9 @@ const TeamPage = () => {
         </div>
 
         <div>
-          <h1 className="text-xl md:text-4xl font-normal text-center">Our Team</h1>
+          <h1 className="text-xl md:text-4xl font-normal text-center">
+            Our Team
+          </h1>
 
           <div className="flex justify-center items-center flex-wrap gap-8 lg:gap-14 my-10">
             {doctors.map((doctor: Doctor, index: number) => (

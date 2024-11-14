@@ -22,7 +22,7 @@ const DescriptionCard: React.FC<descriptionCardProps> = ({
 }) => {
   const { image, title, button } = description;
   return (
-    <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center px-8 md:px-32 lg:px-40 lg:gap-20">
+    <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center px-8 md:px-32 lg:px-28 xl:px-40 lg:gap-20">
       <div className={`w-full ${index % 2 !== 0 ? "lg:order-2" : ""}`}>
         <img
           src={image.src}
