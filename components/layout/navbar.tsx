@@ -10,10 +10,12 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { MdChevronRight } from "react-icons/md";
 import logo from "@/public/assets/images/logo/logo.svg";
 import { clinicItems } from "@/model/mockData";
+import UserAuthenticationModal from "../ui/UserAuthenticationModal";
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isLocationOpen, setIsLocationOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   return (
     <div className="fixed left-0 top-0 z-30 bg-primary-3 w-full">
@@ -88,6 +90,7 @@ export default function NavBar() {
               buttonText="Book a visit"
               buttonBackground="bg-secondary-1"
             />
+            <button onClick={() => setModalOpen(true)}>login</button>
             <DropdownMenu.Root>
               <DropdownMenu.Trigger className="outline-none">
                 <Image
@@ -275,10 +278,17 @@ export default function NavBar() {
                 buttonText="Book a visit"
                 buttonBackground="bg-secondary-1"
               />
+              <button onClick={() => setModalOpen(true)}>login</button>
             </div>
           </div>
         </div>
       )}
+
+      <UserAuthenticationModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        initialMobileNumber="9440705361"
+      />
     </div>
   );
 }

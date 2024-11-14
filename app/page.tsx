@@ -38,6 +38,8 @@ export default function Home() {
           </div>
         </div>
 
+        
+
         <div>
           <div className="flex flex-col items-center justify-center">
             <h1 className="mt-4 mb-16 text-center text-primary-1 text-xl md:text-4xl px-8">
