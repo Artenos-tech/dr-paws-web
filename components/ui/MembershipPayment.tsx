@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useEffect, useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
 
 const paymentSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -39,6 +40,7 @@ const MembershipPayment = () => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<PaymentFormData>({
     resolver: zodResolver(paymentSchema),
@@ -47,6 +49,12 @@ const MembershipPayment = () => {
   const onSubmit = (data: PaymentFormData) => {
     try {
       console.log(data);
+      
+      toast.success("Payment successfull", {
+        duration: 3000,
+        position: "bottom-right",
+      });
+      reset();
     } catch (error) {
       console.error("Submission error:", error);
     }
@@ -186,7 +194,7 @@ const MembershipPayment = () => {
                   <input
                     {...register("country")}
                     className="w-full p-2 border border-accent rounded-md focus:outline-none focus:ring-2 "
-                    placeholder="India"
+                    
                   />
                   {errors.country && (
                     <p className="mt-1 text-sm text-red-600">
@@ -194,7 +202,11 @@ const MembershipPayment = () => {
                     </p>
                   )}
                 </div>
-
+                {errors.acceptTerms && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.acceptTerms.message}
+                  </p>
+                )}
                 <div className="flex items-start gap-3 mb-6">
                   <input
                     type="checkbox"
@@ -202,12 +214,14 @@ const MembershipPayment = () => {
                     value="on"
                     className="mt-1 border-accent"
                   />
+
                   <label className="text-sm text-gray-600">
                     By clicking on Subscribe you accept Dr. Paw&apos;s Terms &
                     Conditions. We will process your personal data in accordance
                     with Design anything&apos;s Privacy Notice.
                   </label>
                 </div>
+
                 <div className="hidden lg:block">
                   <button
                     type="submit"
@@ -278,6 +292,7 @@ const MembershipPayment = () => {
           </div>
         </div>
       </main>
+      <Toaster />
     </div>
   );
 };

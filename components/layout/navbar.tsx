@@ -15,7 +15,7 @@ import ContactInfoModal from "../ui/ContactInfoModal";
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isLocationOpen, setIsLocationOpen] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isContactModalOpen, setContactIsModalOpen] = useState(false);
 
   return (
     <div className="fixed left-0 top-0 z-30 bg-primary-3 w-full">
@@ -64,7 +64,7 @@ export default function NavBar() {
                     </DropdownMenu.Portal>
                   </DropdownMenu.Root>
                 </div>
-                <Link
+                <Link 
                   href="/services"
                   className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                 >
@@ -89,7 +89,7 @@ export default function NavBar() {
             <Button
               buttonText="Book a visit"
               buttonBackground="bg-secondary-1"
-              buttonClickEvent={() => setIsModalOpen(true)}
+              buttonClickEvent={() => setContactIsModalOpen(true)}
             />
             <DropdownMenu.Root>
               <DropdownMenu.Trigger className="outline-none">
@@ -109,7 +109,7 @@ export default function NavBar() {
                 >
                   <DropdownMenu.Item asChild>
                     <div
-                      onClick={() => setIsModalOpen(true)}
+                      onClick={() => setContactIsModalOpen(true)}
                       className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
                     >
                       Profile
@@ -117,7 +117,7 @@ export default function NavBar() {
                   </DropdownMenu.Item>
                   <DropdownMenu.Item asChild>
                     <div
-                      onClick={() => setIsModalOpen(true)}
+                      onClick={() => setContactIsModalOpen(true)}
                       className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
                     >
                       My Pets
@@ -126,7 +126,7 @@ export default function NavBar() {
 
                   <DropdownMenu.Item asChild>
                     <div
-                      onClick={() => setIsModalOpen(true)}
+                      onClick={() => setContactIsModalOpen(true)}
                       className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
                     >
                       Medical History
@@ -134,7 +134,7 @@ export default function NavBar() {
                   </DropdownMenu.Item>
                   <DropdownMenu.Item asChild>
                     <div
-                      onClick={() => setIsModalOpen(true)}
+                      onClick={() => setContactIsModalOpen(true)}
                       className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
                     >
                       My Appointments
@@ -143,7 +143,7 @@ export default function NavBar() {
                   <div className="border-t border-gray-300 my-2" />
                   <DropdownMenu.Item asChild>
                     <div
-                      onClick={() => setIsModalOpen(true)}
+                      onClick={() => setContactIsModalOpen(true)}
                       className="text-secondary-1 flex justify-between items-center hover:text-primary-1 cursor-pointer outline-none"
                     >
                       Become a Member <MdChevronRight />
@@ -153,7 +153,7 @@ export default function NavBar() {
                   <DropdownMenu.Item
                     asChild>
                     <div
-                      onClick={() => setIsModalOpen(true)}
+                      onClick={() => setContactIsModalOpen(true)}
                       className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
                     >
                       Billing Information
@@ -162,7 +162,7 @@ export default function NavBar() {
                   <DropdownMenu.Item
                     asChild>
                     <div
-                      onClick={() => setIsModalOpen(true)}
+                      onClick={() => setContactIsModalOpen(true)}
                       className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
                     >
                       Account Settings
@@ -171,7 +171,7 @@ export default function NavBar() {
                   <DropdownMenu.Item
                     asChild>
                     <div
-                      onClick={() => setIsModalOpen(true)}
+                      onClick={() => setContactIsModalOpen(true)}
                       className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
                     >
                       Loggout
@@ -229,12 +229,14 @@ export default function NavBar() {
             </div>
 
             <Link
+              onClick={() => setIsOpen(false)}
               href="/services"
               className="text-primary-1 hover:bg-primary-2 hover:text-white block py-2 px-2 rounded-md text-base font-medium"
             >
               Our Services
             </Link>
             <Link
+            onClick={() => setIsOpen(false)}
               href="/team"
               className="text-primary-1 hover:bg-primary-2 hover:text-white block py-2 px-2 rounded-md text-base font-medium"
             >
@@ -269,7 +271,7 @@ export default function NavBar() {
                     <DropdownMenu.Item
                       onClick={() => {
                         setIsOpen(false);
-                        setIsModalOpen(true);
+                        setContactIsModalOpen(true);
                       }}
                       className="text-primary-1 hover:text-secondary-1 cursor-pointer"
                     >
@@ -278,7 +280,7 @@ export default function NavBar() {
                     <DropdownMenu.Item
                       onClick={() => {
                         setIsOpen(false);
-                        setIsModalOpen(true);
+                        setContactIsModalOpen(true);
                       }}
                       asChild
                       className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none "
@@ -288,7 +290,7 @@ export default function NavBar() {
                     <DropdownMenu.Item
                       onClick={() => {
                         setIsOpen(false);
-                        setIsModalOpen(true);
+                        setContactIsModalOpen(true);
                       }}
                       className="text-primary-1 hover:text-secondary-1 cursor-pointer"
                     >
@@ -297,7 +299,7 @@ export default function NavBar() {
                     <DropdownMenu.Item
                       onClick={() => {
                         setIsOpen(false);
-                        setIsModalOpen(true);
+                        setContactIsModalOpen(true);
                       }}
                       className="text-primary-1 hover:text-secondary-1 cursor-pointer"
                     >
@@ -307,7 +309,7 @@ export default function NavBar() {
                     <DropdownMenu.Item
                       onClick={() => {
                         setIsOpen(false);
-                        setIsModalOpen(true);
+                        setContactIsModalOpen(true);
                       }}
                       className="text-secondary-1 flex justify-between items-center hover:text-primary-1 cursor-pointer"
                     >
@@ -317,7 +319,7 @@ export default function NavBar() {
                     <DropdownMenu.Item
                       onClick={() => {
                         setIsOpen(false);
-                        setIsModalOpen(true);
+                        setContactIsModalOpen(true);
                       }}
                       className="text-primary-1 hover:text-secondary-1 cursor-pointer"
                     >
@@ -326,7 +328,7 @@ export default function NavBar() {
                     <DropdownMenu.Item
                       onClick={() => {
                         setIsOpen(false);
-                        setIsModalOpen(true);
+                        setContactIsModalOpen(true);
                       }}
                       className="text-primary-1 hover:text-secondary-1 cursor-pointer"
                     >
@@ -335,7 +337,7 @@ export default function NavBar() {
                     <DropdownMenu.Item
                       onClick={() => {
                         setIsOpen(false);
-                        setIsModalOpen(true);
+                        setContactIsModalOpen(true);
                       }}
                       className="text-primary-1 hover:text-secondary-1 cursor-pointer"
                     >
@@ -349,7 +351,7 @@ export default function NavBar() {
                 <Button
                   buttonText="Book a visit"
                   buttonBackground="bg-secondary-1"
-                  buttonClickEvent={() => setIsModalOpen(true)}
+                  buttonClickEvent={() => setContactIsModalOpen(true)}
                 />
               </div>
             </div>
@@ -357,8 +359,8 @@ export default function NavBar() {
         </div>
       )}
       <ContactInfoModal
-        isOpen={isModalOpen}
-        onRequestClose={() => setIsModalOpen(false)}
+        isOpen={isContactModalOpen}
+        onRequestClose={() => setContactIsModalOpen(false)}
       />
     </div>
   );

@@ -23,7 +23,7 @@ const ContactInfoModal: React.FC<ContactInfoModalProps> = ({
     <Modal
       isOpen={isOpen}
       onRequestClose={onRequestClose}
-      className="fixed mx-auto w-[95%] sm:w-fit inset-0 bg-primary-3 p-5 lg:p-6 my-12 rounded-lg shadow-lg  outline-none border-2"
+      className="fixed mx-auto w-[93%] h-fit sm:h-fit sm:w-fit inset-0 bg-primary-3 p-5 lg:p-6 my-12 rounded-lg shadow-lg  outline-none border-2"
       overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
       style={{
         overlay: {
@@ -43,7 +43,7 @@ const ContactInfoModal: React.FC<ContactInfoModalProps> = ({
         <Image
           src="/assets/images/dog-cat.png"
           alt="Pets"
-          className="h-24"
+          className="hidden sm:block h-24"
           width={100}
           height={100}
         />

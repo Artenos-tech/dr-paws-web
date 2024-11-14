@@ -14,7 +14,12 @@ const formSchema = z.object({
     .string()
     .regex(/^\d{10}$/, "Please enter a valid 10-digit phone number"),
   pincode: z.string().regex(/^\d{5,6}$/, "Please enter a valid pincode"),
-  whatsappConsent: z.boolean(),
+  whatsappConsent: z
+    .preprocess((val) => val === "on" || val === true, z.boolean())
+    .refine(
+      (val) => val === true,
+      "Ticking this box means we have your consent to chat on WhatsApp"
+    ),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -125,7 +130,11 @@ export default function ClinicLocationForm() {
             )}
           </div>
         </div>
-
+        {errors.whatsappConsent && (
+          <p className="mt-1 text-sm text-red-500">
+            {errors.whatsappConsent.message}
+          </p>
+        )}
         <div className="flex flex-row items-center space-x-3">
           <input
             type="checkbox"
@@ -139,6 +148,7 @@ export default function ClinicLocationForm() {
 
         <button
           type="submit"
+          value="on"
           disabled={isSubmitting}
           className="w-[210px] h-[50px] px-[9px] py-[6px]  bg-[#9fa983] hover:bg-[#7c8c6a] text-white rounded-[25px] transition-colors duration-200 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >
@@ -152,18 +162,6 @@ export default function ClinicLocationForm() {
         </button>
       </form>
       <Toaster position="bottom-right" />
-      {/* <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="colored"
-      /> */}
     </div>
   );
 }

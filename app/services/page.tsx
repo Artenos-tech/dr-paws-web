@@ -8,11 +8,11 @@ import { useState } from "react";
 import ContactInfoModal from "@/components/ui/ContactInfoModal";
 
 const Services = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isContactModalOpen, setContactIsModalOpen] = useState(false);
   return (
     <div className="flex flex-col w-full h-full items-center justify-items-center font-roca pb-20">
       <main className="flex flex-col gap-[80px] row-start-2 items-center w-full px-8 md:px-32 lg:px-40">
-        <div className="w-full flex flex-col xl:flex-row items-center justify-between xl:space-x-14 xl:items-center space-y-8 xl:space-y-0 mt-[80px]">
+        <div className="w-full flex flex-col xl:flex-row items-center justify-between xl:space-x-14 xl:items-center space-y-8 xl:space-y-0 mt-4 md:mt-12 lg:mt-[80px]">
           <div className="flex-shrink-0">
             <Image
               src={DescritionImage}
@@ -40,7 +40,7 @@ const Services = () => {
               <Button
                 buttonText="Book a visit"
                 buttonBackground="bg-secondary-1"
-                buttonClickEvent={() => setIsModalOpen(true)}
+                buttonClickEvent={() => setContactIsModalOpen(true)}
               />
             </div>
           </div>
@@ -58,13 +58,13 @@ const Services = () => {
           <Button
             buttonText="Get in Touch"
             buttonBackground="bg-secondary-2"
-            buttonClickEvent={() => setIsModalOpen(true)}
+            buttonClickEvent={() => setContactIsModalOpen(true)}
           />
         </div>
       </main>
       <ContactInfoModal
-        isOpen={isModalOpen}
-        onRequestClose={() => setIsModalOpen(false)}
+        isOpen={isContactModalOpen}
+        onRequestClose={() => setContactIsModalOpen(false)}
       />
     </div>
   );
