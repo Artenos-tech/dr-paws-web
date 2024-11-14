@@ -2,6 +2,7 @@
 
 import { photos } from "@/model/mockData"; // photos is an array of images
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import ReactModal from "react-modal";
 import { IoIosArrowBack, IoIosArrowForward, IoMdClose } from "react-icons/io";
 import { Clinic } from "@/model/typeDefinitions";
@@ -60,10 +61,12 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
                 : undefined
             }
           >
-            <img
+            <Image
               src={image.src}
               alt="gallery image"
-              className={`w-full h-full object-cover ${
+              layout="fill"
+              objectFit="cover"
+              className={`${
                 index === limitedGalleryItems.length - 1 ? "opacity-60" : ""
               }`}
             />
@@ -80,7 +83,11 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
           <h1 className="text-xl md:text-4xl">{clinic.clinicName}</h1>
         </div>
         <div>
-          <Button buttonText="Book a visit" buttonBackground="bg-secondary-1" buttonClickEvent={() => setIsModalOpen(true)}/>
+          <Button
+            buttonText="Book a visit"
+            buttonBackground="bg-secondary-1"
+            buttonClickEvent={() => setIsModalOpen(true)}
+          />
         </div>
       </div>
       <div className="mt-4">
@@ -123,7 +130,7 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
 
           {/* Current Image */}
           <div className="w-full">
-            <img
+            <Image
               src={photos[currentIndex].src}
               alt="gallery image"
               className="overflow-hidden w-full h-[80vh] object-contain"

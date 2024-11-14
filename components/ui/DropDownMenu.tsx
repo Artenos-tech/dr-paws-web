@@ -1,4 +1,5 @@
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+import Image from "next/image";
 import Link from "next/link";
 import { MdChevronRight } from "react-icons/md";
 
@@ -6,10 +7,12 @@ export default function ProfileDropdown() {
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger className="flex items-center">
-        <img
+        <Image
           src="/assets/images/profileThumnail.svg"
           alt="User logo"
-          className="w-10 h-10 rounded-full cursor-pointer"
+          width={40}
+          height={40}
+          className="rounded-full cursor-pointer"
         />
       </DropdownMenu.Trigger>
 

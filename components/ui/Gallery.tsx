@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import gridImg1 from "@/public/assets/images/gridImages/gridImg1.png";
 import gridImg2 from "@/public/assets/images/gridImages/gridImg2.png";
 import gridImg3 from "@/public/assets/images/gridImages/gridImg3.jpg";
@@ -36,24 +37,24 @@ const Gallery = () => {
   };
 
   return (
-    <div>
+    <div className="w-full">
       {/* Gallery grid */}
       <div className="flex items-center justify-center w-full h-full gap-1">
         <div className="flex flex-col justify-center w-1/2 gap-1">
-          <img
+          <Image
             src={images[0].src}
             alt={images[0].alt}
             className="w-full cursor-pointer"
             onClick={() => openModal(0)}
           />
           <div className="flex w-1/2 gap-1">
-            <img
+            <Image
               src={images[3].src}
               alt={images[3].alt}
               className="w-full cursor-pointer"
               onClick={() => openModal(3)}
             />
-            <img
+            <Image
               src={images[4].src}
               alt={images[4].alt}
               className="w-[98%] mt-[1px] cursor-pointer"
@@ -64,13 +65,13 @@ const Gallery = () => {
 
         <div className="flex flex-col justify-center items-center w-1/2 h-full gap-1">
           <div className="flex items-start justify-start w-full h-2/5 gap-1">
-            <img
+            <Image
               src={images[1].src}
               alt={images[1].alt}
               className="w-2/5 h-full cursor-pointer"
               onClick={() => openModal(1)}
             />
-            <img
+            <Image
               src={images[2].src}
               alt={images[2].alt}
               className="w-3/5 h-full cursor-pointer"
@@ -79,13 +80,13 @@ const Gallery = () => {
           </div>
 
           <div className="flex items-center justify-center w-full h-2/5 gap-1 ml-1">
-            <img
+            <Image
               src={images[5].src}
               alt={images[5].alt}
               className=" w-3/5 h-full cursor-pointer"
               onClick={() => openModal(5)}
             />
-            <img
+            <Image
               src={images[6].src}
               alt={images[6].alt}
               className="w-2/5 object-cover h-full cursor-pointer"
@@ -125,9 +126,12 @@ const Gallery = () => {
                       currentIndex === index ? "block" : "hidden"
                     }`}
                   >
-                    <img
+                    <Image
                       src={img.src}
                       alt={img.alt}
+                      layout="responsive"
+                      width={700}
+                      height={475}
                       className="overflow-hidden w-full h-[80%]"
                     />
                   </div>

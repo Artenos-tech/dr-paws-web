@@ -1,4 +1,4 @@
-import { StaticImageData } from "next/image";
+import Image, { StaticImageData } from "next/image";
 import { FaPlus } from "react-icons/fa6";
 import React from "react";
 import RenewBtn from "./RenewBtn";
@@ -17,21 +17,31 @@ type membershipDataProps = {
       nextPaymentOn: string;
     };
   };
-  index: number
+  index: number;
 };
 
-const MembershipCard: React.FC<membershipDataProps> = ({ membershipData, index }) => {
+const MembershipCard: React.FC<membershipDataProps> = ({
+  membershipData,
+  index,
+}) => {
   const { planName, planLogo, planInfo, pet, benefits } = membershipData;
 
-  const bgClasses = ["bg-primary-1", "bg-secondary-1", "bg-secondary-2", "bg-accent"];
+  const bgClasses = [
+    "bg-primary-1",
+    "bg-secondary-1",
+    "bg-secondary-2",
+    "bg-accent",
+  ];
 
   // Determine which background class to apply based on the index
   const backgroundClass = bgClasses[index % bgClasses.length]; // Cycle through classes
   return (
     <div className="w-full text-sm my-5">
-      <div className={` ${backgroundClass} text-white flex items-center justify-between px-4 py-3 rounded-t-lg`}>
+      <div
+        className={` ${backgroundClass} text-white flex items-center justify-between px-4 py-3 rounded-t-lg`}
+      >
         <div className="flex gap-2 items-center w-full">
-          <img src={planLogo.src} alt={planName} />
+          <Image src={planLogo} alt={planName} />
           <p className="font-roca text-lg">{planName}</p>
           <span>
             <FaPlus className="text-primary-2" />
@@ -42,9 +52,9 @@ const MembershipCard: React.FC<membershipDataProps> = ({ membershipData, index }
 
       <div className="bg-primary-3 text-primary-1 flex justify-between p-5 rounded-b-lg">
         <div className="flex flex-col items-center gap-3">
-          <img
-            src={pet.image.src}
-            alt={pet.name + "image"}
+          <Image
+            src={pet.image}
+            alt={pet.name}
             className="rounded-full w-32 h-32 object-cover object-top"
           />
           <h1 className="text-secondary-1 font-semibold text-lg">{pet.name}</h1>
