@@ -7,7 +7,7 @@ import Button from "@/components/ui/Button";
 
 const Services = () => {
   return (
-    <div className="flex flex-col w-full h-full items-center justify-items-center font-roca pb-20">
+    <div className="flex flex-col w-full h-full 2xl:h-screen items-center justify-items-center font-roca pb-20">
       <main className="flex flex-col gap-[80px] row-start-2 items-center w-full px-8 md:px-32 lg:px-40">
         <div className="w-full flex flex-col lg:flex-row items-center justify-between lg:space-x-14 space-y-8 lg:space-y-0 mt-[80px]">
           <div className="flex-shrink-0">

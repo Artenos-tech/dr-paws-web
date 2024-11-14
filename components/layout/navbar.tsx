@@ -8,6 +8,7 @@ import Button from "../ui/Button";
 import Link from "next/link";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { MdChevronRight } from "react-icons/md";
+import logo from "@/public/assets/images/logo/logo.svg";
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -16,11 +17,11 @@ export default function NavBar() {
     <div className="fixed left-0 top-0 z-50 bg-primary-3 w-full">
       <div className="mx-auto px-8 md:px-32 lg:px-40">
         <div className="flex justify-between items-center h-16">
-          <div className="flex items-center">
+          <div className="flex items-center gap-10">
             <div className="flex-shrink-0">
               <Link href="/">
                 <Image
-                  src="/assets/images/logo/logo.svg"
+                  src={logo}
                   alt="Dr. Paws Logo"
                   width={100}
                   height={30}
@@ -28,32 +29,32 @@ export default function NavBar() {
                 />
               </Link>
             </div>
-          </div>
-          <div className="hidden lg:block">
-            <div className="flex items-baseline space-x-4">
-              <div className="relative group">
-                <button className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
-                  Locations
-                </button>
+            <div className="hidden lg:block">
+              <div className="flex items-center space-x-4 gap-3">
+                <div className="relative group">
+                  <button className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
+                    Locations
+                  </button>
+                </div>
+                <Link
+                  href="/services"
+                  className="text-primary-1 hover:bg-primary-2 hover:text-white rounded-md text-sm font-medium"
+                >
+                  Our Services
+                </Link>
+                <Link
+                  href="/team"
+                  className="text-primary-1 hover:bg-primary-2 hover:text-white rounded-md text-sm font-medium"
+                >
+                  Our Team
+                </Link>
+                <Link
+                  href="/membership"
+                  className="text-primary-1 hover:bg-primary-2 hover:text-white rounded-md text-sm font-medium"
+                >
+                  Membership
+                </Link>
               </div>
-              <Link
-                href="/services"
-                className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-              >
-                Our Services
-              </Link>
-              <a
-                href="/team"
-                className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-              >
-                Our Team
-              </a>
-              <Link
-                href="/membership"
-                className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-              >
-                Membership
-              </Link>
             </div>
           </div>
           <div className="hidden lg:flex items-center space-x-4 text-xs">
@@ -79,7 +80,7 @@ export default function NavBar() {
                 >
                   <DropdownMenu.Item
                     asChild
-                    className="text-primary-1 hover:text-secondary-1 cursor-pointer"
+                    className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
                   >
                     <Link href="/user/profile" className="">
                       Profile
@@ -155,15 +156,14 @@ export default function NavBar() {
             >
               Our Team
             </a>
-            <Link
-            onClick={() => setIsOpen(false)}
+            <a
               href="/membership"
               className="text-primary-1 hover:bg-primary-2 hover:text-white block py-2 px-2 rounded-md text-base font-medium"
             >
               Membership
-            </Link>
+            </a>
           </div>
-          <div className="pt-4 pb-3 border-t border-primary-2 ">
+          <div className="pt-4 pb-3 border-t border-primary-2">
             <div className="flex items-center px-8 md:px-32 space-x-4">
               <DropdownMenu.Root>
                 <DropdownMenu.Trigger>
@@ -177,7 +177,7 @@ export default function NavBar() {
                 </DropdownMenu.Trigger>
                 <DropdownMenu.Portal>
                   <DropdownMenu.Content
-                    className="bg-[#f7f1de] shadow-lg rounded-lg w-[100vh] lg:hidden p-4 md:pl-[136px]  flex flex-col gap-1 pl-10"
+                    className="bg-[#f7f1de] shadow-lg rounded-lg w-[100vh] lg:hidden p-4 md:pl-[136px]  space-y-2 pl-10"
                     align="center"
                     sideOffset={0}
                   >
