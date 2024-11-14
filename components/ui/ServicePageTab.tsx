@@ -27,37 +27,6 @@ const ServiceTab = ({ tabs }: ServiceTabProps) => {
   const activeTabContent = tabs.find((tab) => tab.id === activeTab);
   const activeTabTitle = tabs.find((tab) => tab.id === activeTab)?.title;
 
-  const getGridLayout = (imageCount: number) => {
-    switch (imageCount) {
-      case 2:
-        return "grid grid-cols-1 sm:grid-cols-3 gap-2 md:gap-8 max-w-4xl mx-auto";
-      case 3:
-        return "grid grid-cols-2 sm:grid-cols-3 gap-2 xl:grid-cols-4 md:gap-6 max-w-4xl mx-auto";
-      case 4:
-        return "grid grid-cols-2 sm:grid-cols-3 gap-2 xl:grid-cols-4 md:gap-6 max-w-5xl mx-auto";
-      case 5:
-        return "grid grid-cols-2 sm:grid-cols-3 gap-2 xl:grid-cols-4 md:gap-6 max-w-5xl mx-auto";
-      case 6:
-        return "grid grid-cols-2 sm:grid-cols-3 gap-2 xl:grid-cols-4 md:gap-6 max-w-4xl mx-auto";
-      case 8:
-        return "grid grid-cols-2 sm:grid-cols-3 gap-2 xl:grid-cols-4 md:gap-6";
-      default:
-        return "grid grid-cols-2 sm:grid-cols-3 gap-2 xl:grid-cols-4  md:gap-6 max-w-4xl mx-auto";
-    }
-  };
-
-  const getItemLayout = (imageCount: number, index: number) => {
-    if (imageCount === 5) {
-      // First row: 3 images spread out
-      if (index < 3) {
-        return `sm:col-span-2`;
-      }
-      // Second row: 2 images centered in the gaps
-      return `sm:col-start-${2 + (index - 3) * 2} sm:col-span-2`;
-    }
-    return "";
-  };
-
   return (
     <div className="w-full mx-auto">
       {/* Tabs Navigation - Desktop */}
@@ -120,22 +89,18 @@ const ServiceTab = ({ tabs }: ServiceTabProps) => {
       {/* Tab Content */}
       {activeTabContent && (
         <div className="sm:space-y-12  px-4">
-          {/* Description */}
           <p className="text-center text-primary-1 max-w-3xl mx-auto text-lg">
             {activeTabContent.description}
           </p>
 
           {/* Image Grid */}
-          <div className={getGridLayout(activeTabContent.imageDetails.length)}>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 xl:grid-cols-4 2xl:grid-cols-5 justify-between  md:gap-6 w-full mx-auto">
             {activeTabContent.imageDetails.map((detail, index) => (
               <div
                 key={index}
-                className={`flex flex-col items-center space-y-4 ${getItemLayout(
-                  activeTabContent.imageDetails.length,
-                  index
-                )}`}
+                className={`flex flex-col items-center space-y-4 `}
               >
-                <div className="mt-6 md:mt-0 rounded-full overflow-hidden w-[120px] h-[120px] sm:w-[165px] sm:h-[165px] flex-shrink-0">
+                <div className="mt-6 md:mt-0 rounded-full overflow-hidden max-w-[120px] max-h-[120px] md:max-w-[150px] md:max-h-[150px] lg:max-w-[165px] lg:max-h-[165px] flex-shrink-0">
                   <Image
                     src={detail.img}
                     alt={detail.imgText}
