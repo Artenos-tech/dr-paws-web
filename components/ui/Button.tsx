@@ -3,32 +3,33 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 
-type buttonProps = {
+type ButtonProps = {
   buttonText: string;
   buttonBackground: string;
   buttonLink?: string;
-  buttonClickHandler?: () => void;
+  buttonClickEvent?: () => void;
 };
 
-const Button: React.FC<buttonProps> = ({
+const Button: React.FC<ButtonProps> = ({
   buttonText,
   buttonBackground,
   buttonLink,
-  buttonClickHandler,
+  buttonClickEvent,
 }) => {
   const router = useRouter();
+
+  const handleClick = () => {
+    if (buttonLink) {
+      router.push(buttonLink);
+    } else if (buttonClickEvent) {
+      buttonClickEvent();
+    }
+  };
+
   return (
     <button
-      onClick={() => {
-        if (buttonLink) {
-          router.push(buttonLink);
-        } else if (buttonClickHandler) {
-          buttonClickHandler();
-        } else {
-          return;
-        }
-      }}
-      className={`font-open-sans btn rounded-full text-white px-4 md:px-10 py-2 tracking-wider text-xs md:text-base ${buttonBackground} `}
+      onClick={handleClick}
+      className={`font-open-sans btn rounded-full text-white px-4 md:px-10 py-2 tracking-wider text-xs md:text-base ${buttonBackground}`}
     >
       {buttonText}
     </button>

@@ -12,13 +12,16 @@ interface descriptionCardProps {
       buttonText: string;
       buttonBackground: string;
       buttonLink?: string;
+      buttonClickEvent?: () => void
     };
   };
+  openContactModal?: () => void;
 }
 
 const DescriptionCard: React.FC<descriptionCardProps> = ({
   index,
   description,
+  openContactModal,
 }) => {
   const { image, title, button } = description;
   return (
@@ -35,7 +38,7 @@ const DescriptionCard: React.FC<descriptionCardProps> = ({
         <p className="text-sm md:text-base my-3 md:my-5">
           {description.desciption}
         </p>
-        <Button {...button} />
+        <Button {...button } buttonClickEvent={openContactModal} />
       </div>
     </div>
   );
