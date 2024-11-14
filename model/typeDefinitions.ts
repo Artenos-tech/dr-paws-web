@@ -27,7 +27,9 @@ export interface Pet {
   type: string;
   breed: string;
   gender: string;
-  age: string;
+  age: {
+    years: number, months: number
+  };
   birthday: string;
   weight: string;
   petImage: StaticImageData | string
