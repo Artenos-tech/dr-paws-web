@@ -17,7 +17,6 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
   const limitedGalleryItems = photos.slice(0, 7);
   const [isMounted, setIsMounted] = useState(false);
 
-  console.log(clinic);
   // Ensure setAppElement is called only on the client side after the DOM is ready
   useEffect(() => {
     setIsMounted(true);
@@ -30,6 +29,8 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
     }
     // }
   }, []);
+
+  useEffect(() => {});
 
   const openModal = (index: number) => {
     setCurrentIndex(index);
@@ -76,8 +77,10 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
       </div>
       <div className="w-full flex justify-between mt-8">
         <div className="flex flex-col gap-4">
-          <h1 className="text-xl md:text-4xl">Andheri West Clinic</h1>
-          <p className="text-primary-1">Grooming | OPD | Surgery</p>
+          <h1 className="text-xl md:text-4xl">{clinic.clinicName}</h1>
+          <p className="text-primary-1">
+            {clinic.services}
+          </p>
         </div>
         <div>
           <Button buttonText="Book a visit" buttonBackground="bg-secondary-1" />

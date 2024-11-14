@@ -20,6 +20,7 @@ export interface Clinic {
   clinicName: string;
   image: StaticImageData;
   services: string
+  contact: string
 }
 export interface Pet {
   petId: string;

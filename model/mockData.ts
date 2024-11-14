@@ -343,19 +343,25 @@ export const clinicItems: Clinic[] = [
     id: "1",
     image: clinic1,
     clinicName: "Indiranagar",
-    services: "Consults | Grooming | Surgery | Dignostics | Retail",
+    services:
+      "Consults | Grooming | Surgery | Dignostics | Ultrasound | Retail",
+    contact: "+91 9606994627",
   },
   {
     id: "2",
     image: clinic1,
     clinicName: "RMV (Dollars Colony)",
-    services: "Consults | Grooming | Surgery | Dignostics | Ultrasound",
+    services:
+      "Consults | Grooming | Surgery | Dignostics | Ultrasound | Retail",
+    contact: "+91 7204996899",
   },
   {
     id: "3",
     image: clinic1,
     clinicName: "HSR layout",
-    services: "Consults | Grooming | Surgery | Dignostics | Retail",
+    services:
+      "Consults | Grooming | Surgery | Dignostics | Ultrasound | Retail",
+    contact: "+91 7204996899",
   },
 ];
 

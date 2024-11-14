@@ -190,18 +190,18 @@ export default function NavBar() {
               )}
             </div>
 
-            <a
+            <Link
               href="/services"
               className="text-primary-1 hover:bg-primary-2 hover:text-white block py-2 px-2 rounded-md text-base font-medium"
             >
               Our Services
-            </a>
-            <a
+            </Link>
+            <Link
               href="/team"
               className="text-primary-1 hover:bg-primary-2 hover:text-white block py-2 px-2 rounded-md text-base font-medium"
             >
               Our Team
-            </a>
+            </Link>
             <Link
               onClick={() => setIsOpen(false)}
               href="/membership"
