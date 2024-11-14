@@ -2,14 +2,14 @@
 
 import { StaticImageData } from "next/image";
 
-export type ServiceCategory =
-  | "Planned Check-Ups"
-  | "Sickness & Emergency"
-  | "Diagnostics"
-  | "Planned Surgeries"
-  | "Dental"
-  | "Grooming"
-  | "Pet Services";
+// export type ServiceCategory =
+//   | "Planned Check-Ups"
+//   | "Sickness & Emergency"
+//   | "Diagnostics"
+//   | "Planned Surgeries"
+//   | "Dental"
+//   | "Grooming"
+//   | "Pet Services";
 
 export interface Service {
   name: string;

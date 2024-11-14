@@ -1,5 +1,8 @@
 import Image from "next/image";
 import logo from "@/public/assets/images/logo/logo.svg";
+import instagram from "@/public/assets/images/Footer/instagram.svg";
+import LinkedIn from "@/public/assets/images/Footer/linkedin.svg";
+import X from "@/public/assets/images/Footer/twitterx.svg";
 import Link from "next/link";
 
 const Footer = () => {
@@ -10,16 +13,24 @@ const Footer = () => {
           <div>
             <Image src={logo} alt="Dr. Paws Logo" width={100} height={30} />
             <a
-              href="mailto:hello@bearhug.co"
+              href="mailto:hello@drpaws.care"
               className="block mt-2 text-primary-1 hover:text-primary-2"
             >
-              hello@bearhug.co
+              hello@drpaws.care
             </a>
             <a
-              href="tel:+919307491737"
+              href="tel+919606994627"
               className="block mt-1 text-primary-1 hover:text-primary-2"
             >
-              +91 9307491737
+              <div>Indiranagar Clinic</div>
+              <div>+91 9606994627</div>
+            </a>
+            <a
+              href="tel:+917204996899"
+              className="block mt-1 text-primary-1 hover:text-primary-2"
+            >
+              <div>RMV Clinic</div>
+              <div>+91 7204996899</div>
             </a>
           </div>
           <div>
@@ -76,19 +87,25 @@ const Footer = () => {
               href="#"
               className="block mt-1 text-primary-1 hover:text-primary-2"
             >
-              Instagram
+              <div className="flex flex-row gap-1">
+                <Image src={instagram} alt="Instagam" width={25} height={25} />
+              </div>
             </a>
             <a
               href="#"
               className="block mt-1 text-primary-1 hover:text-primary-2"
             >
-              LinkedIn
+              <div className="flex flex-row gap-1">
+                <Image src={LinkedIn} alt="LinkedIn" width={25} height={25} />
+              </div>
             </a>
             <a
               href="#"
               className="block mt-1 text-primary-1 hover:text-primary-2"
             >
-              Twitter
+              <div className="flex flex-row gap-1">
+                <Image src={X} alt="" width={25} height={25} />
+              </div>
             </a>
           </div>
         </div>

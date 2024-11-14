@@ -1,6 +1,7 @@
 import { clinicItems } from "@/model/mockData";
 import React from "react";
 
+
 const ClinicItemCarousel = () => {
   return (
     <div className="md:hidden flex justify-center">
