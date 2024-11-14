@@ -81,42 +81,75 @@ export default function NavBar() {
                   align="start"
                   sideOffset={5}
                 >
-                  <DropdownMenu.Item
-                    asChild
-                    className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
-                  >
-                    <Link href="/user/profile" className="">
+                  <DropdownMenu.Item asChild>
+                    <div
+                      onClick={() => setIsModalOpen(true)}
+                      className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
+                    >
                       Profile
-                    </Link>
+                    </div>
                   </DropdownMenu.Item>
-                  <DropdownMenu.Item
-                    asChild
-                    className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none "
-                  >
-                    <Link href="/user/profile" className="">
+                  <DropdownMenu.Item asChild>
+                    <div
+                      onClick={() => setIsModalOpen(true)}
+                      className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
+                    >
                       My Pets
-                    </Link>
+                    </div>
                   </DropdownMenu.Item>
 
-                  <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none">
-                    Medical History
+                  <DropdownMenu.Item asChild>
+                    <div
+                      onClick={() => setIsModalOpen(true)}
+                      className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
+                    >
+                      Medical History
+                    </div>
                   </DropdownMenu.Item>
-                  <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none">
-                    My Appointments
+                  <DropdownMenu.Item asChild>
+                    <div
+                      onClick={() => setIsModalOpen(true)}
+                      className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
+                    >
+                      My Appointments
+                    </div>
                   </DropdownMenu.Item>
                   <div className="border-t border-gray-300 my-2" />
-                  <DropdownMenu.Item className="text-secondary-1 flex justify-between items-center hover:text-primary-1 cursor-pointer outline-none">
-                    Become a Member <MdChevronRight />
+                  <DropdownMenu.Item asChild>
+                    <div
+                      onClick={() => setIsModalOpen(true)}
+                      className="text-secondary-1 flex justify-between items-center hover:text-primary-1 cursor-pointer outline-none"
+                    >
+                      Become a Member <MdChevronRight />
+                    </div>
                   </DropdownMenu.Item>
                   <div className="border-t border-gray-300 my-2" />
-                  <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none">
-                    Billing Information
+                  <DropdownMenu.Item
+                    asChild>
+                    <div
+                      onClick={() => setIsModalOpen(true)}
+                      className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
+                    >
+                      Billing Information
+                    </div>
                   </DropdownMenu.Item>
-                  <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none">
-                    Account Settings
+                  <DropdownMenu.Item
+                    asChild>
+                    <div
+                      onClick={() => setIsModalOpen(true)}
+                      className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
+                    >
+                      Account Settings
+                    </div>
                   </DropdownMenu.Item>
-                  <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none">
-                    Log Out
+                  <DropdownMenu.Item
+                    asChild>
+                    <div
+                      onClick={() => setIsModalOpen(true)}
+                      className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
+                    >
+                      Loggout
+                    </div>
                   </DropdownMenu.Item>
                   <DropdownMenu.Arrow className="fill-current text-[#f7f1de]" />
                 </DropdownMenu.Content>
@@ -185,40 +218,78 @@ export default function NavBar() {
                     sideOffset={0}
                   >
                     <DropdownMenu.Item
-                      onClick={() => setIsOpen(false)}
+                      onClick={() => {
+                        setIsOpen(false);
+                        setIsModalOpen(true);
+                      }}
                       className="text-primary-1 hover:text-secondary-1 cursor-pointer"
                     >
-                      <Link href="/user/profile" className="">
-                        Profile
-                      </Link>
+                      Profile
                     </DropdownMenu.Item>
                     <DropdownMenu.Item
-                      onClick={() => setIsOpen(false)}
+                      onClick={() => {
+                        setIsOpen(false);
+                        setIsModalOpen(true);
+                      }}
                       asChild
                       className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none "
                     >
-                      <Link href="/user/profile" className="">
-                        My Pets
-                      </Link>
+                      My Pets
                     </DropdownMenu.Item>
-                    <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer">
+                    <DropdownMenu.Item
+                      onClick={() => {
+                        setIsOpen(false);
+                        setIsModalOpen(true);
+                      }}
+                      className="text-primary-1 hover:text-secondary-1 cursor-pointer"
+                    >
                       Medical History
                     </DropdownMenu.Item>
-                    <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer">
+                    <DropdownMenu.Item
+                      onClick={() => {
+                        setIsOpen(false);
+                        setIsModalOpen(true);
+                      }}
+                      className="text-primary-1 hover:text-secondary-1 cursor-pointer"
+                    >
                       My Appointments
                     </DropdownMenu.Item>
                     <div className="border-t border-gray-300 my-2" />
-                    <DropdownMenu.Item className="text-secondary-1 flex justify-between items-center hover:text-primary-1 cursor-pointer">
+                    <DropdownMenu.Item
+                      onClick={() => {
+                        setIsOpen(false);
+                        setIsModalOpen(true);
+                      }}
+                      className="text-secondary-1 flex justify-between items-center hover:text-primary-1 cursor-pointer"
+                    >
                       Become a Member <MdChevronRight />
                     </DropdownMenu.Item>
                     <div className="border-t border-gray-300 my-2" />
-                    <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer">
+                    <DropdownMenu.Item
+                      onClick={() => {
+                        setIsOpen(false);
+                        setIsModalOpen(true);
+                      }}
+                      className="text-primary-1 hover:text-secondary-1 cursor-pointer"
+                    >
                       Billing Information
                     </DropdownMenu.Item>
-                    <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer">
+                    <DropdownMenu.Item
+                      onClick={() => {
+                        setIsOpen(false);
+                        setIsModalOpen(true);
+                      }}
+                      className="text-primary-1 hover:text-secondary-1 cursor-pointer"
+                    >
                       Account Settings
                     </DropdownMenu.Item>
-                    <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer">
+                    <DropdownMenu.Item
+                      onClick={() => {
+                        setIsOpen(false);
+                        setIsModalOpen(true);
+                      }}
+                      className="text-primary-1 hover:text-secondary-1 cursor-pointer"
+                    >
                       Log Out
                     </DropdownMenu.Item>
                     <DropdownMenu.Arrow className="fill-current text-[#f7f1de]" />
