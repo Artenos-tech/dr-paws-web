@@ -16,14 +16,18 @@ interface ClinicItemProps {
 const ClinicItemList = ({ showStaticCard, enlargedView }: ClinicItemProps) => {
   return (
     <div
-      className={`gap-4 ${
+      className={`${clinicItems.length >= 4 ? "gap-4" : "gap-12"} ${
         enlargedView
           ? "grid grid-cols-1 lg:grid-cols-4 "
-          : "flex flex-col lg:flex-row lg:flex-wrap lg:items-center lg:justify-center"
+          : "flex flex-col lg:flex-row lg:flex-wrap lg:items-center lg:justify-between"
       }`}
     >
       {clinicItems.map((clinic) => (
-        <ClinicItem key={clinic.id} clinic={clinic} enlargedView={enlargedView} />
+        <ClinicItem
+          key={clinic.id}
+          clinic={clinic}
+          enlargedView={enlargedView}
+        />
       ))}
       {showStaticCard && (
         <div className="bg-primary-3 shadow-md rounded-md p-8 flex flex-col items-center justify-center text-center w-full">
