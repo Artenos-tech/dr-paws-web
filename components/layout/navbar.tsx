@@ -37,9 +37,9 @@ export default function NavBar() {
               <div className="relative group">
                 <DropdownMenu.Root>
                   <DropdownMenu.Trigger className="outline-none">
-                    <button className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
+                    <p className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
                       Locations
-                    </button>
+                    </p>
                   </DropdownMenu.Trigger>
                   <DropdownMenu.Portal>
                     <DropdownMenu.Content
