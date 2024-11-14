@@ -52,7 +52,7 @@ const Services: React.FC = () => {
         </div>
 
         <div className="flex justify-center items-center mt-auto  sm:mb-4 ">
-          <Button
+           <Button
             buttonText="View Services"
             buttonBackground="bg-secondary-2"
             buttonLink="/services"

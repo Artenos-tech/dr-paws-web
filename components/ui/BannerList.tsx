@@ -1,11 +1,15 @@
 import { bannerItems } from "@/model/mockData";
 import BannerCard from "./BannerCard";
 
-const BannerList = () => {
+interface BannerListProps{
+  openContactModal: () => void;
+}
+
+const BannerList: React.FC<BannerListProps> = ({openContactModal}) => {
   return (
     <div className="gap-3 md:gap-5 flex my-4">
       {bannerItems.map((banItem, banIndex) => (
-        <BannerCard key={banIndex} banItem={banItem} />
+        <BannerCard key={banIndex} banItem={banItem} openContactModal={openContactModal}/>
       ))}
     </div>
   );
