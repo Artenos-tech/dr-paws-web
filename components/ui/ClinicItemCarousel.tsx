@@ -1,6 +1,7 @@
 import { clinicItems } from "@/model/mockData";
 import React from "react";
 
+
 const ClinicItemCarousel = () => {
   return (
     <div className="md:hidden flex justify-center">
@@ -21,7 +22,9 @@ const ClinicItemCarousel = () => {
                   {clinic.clinicName}
                 </h1>
                 <div className="flex gap-2 text-primary-1 text-xs mt-2 ">
-                  <p>{clinic.branch}</p> |<p>{clinic.description}</p>
+                  <p>
+                    {clinic.services}
+                  </p>
                 </div>
               </div>
               <button className="btn bg-secondary-1 rounded-none border-none text-white w-full rounded-b-md">

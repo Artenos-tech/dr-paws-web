@@ -12,7 +12,7 @@ const ClinicItemList = ({ showStaticCard, enlargedView }: ClinicItemProps) => {
     <div
       className={`grid grid-cols-1 ${
         enlargedView
-          ? "lg:grid-cols-3 lg:grid-rows-3"
+          ? "lg:grid-cols-3 lg:grid-rows-3 "
           : "lg:grid-cols-4 lg:grid-rows-2"
       } gap-4`}
     >
