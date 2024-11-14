@@ -350,7 +350,7 @@ export const descriptionItems = [
     desciption:
       "Our thoughtfully designed clinics are all about warmth & comfort, making each visit stress-free.",
     button: {
-      buttonText: "Book a Visit",
+      buttonText: "See Our Clinics",
       buttonBackground: "bg-secondary-1",
       buttonLink: "/clinics",
     },

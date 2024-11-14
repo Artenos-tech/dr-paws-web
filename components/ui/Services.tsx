@@ -8,14 +8,9 @@ import Image from "next/image";
 import { serviceCategories, servicesData } from "@/model/mockData";
 import Button from "./Button";
 
-type Service = { name: string };
 
-// Define the type for category names based on the keys of servicesData
 type ServiceCategory = keyof typeof servicesData;
 
-type ServicesData = {
-  [category in ServiceCategory]: Service[];
-};
 
 const Services: React.FC = () => {
   const [selectedCategory, setSelectedCategory] =
