@@ -9,7 +9,11 @@ import { LocationCard } from "./LocationCard";
 import DoctorCard from "./DoctorCard";
 import { doctors } from "@/model/mockData";
 
-const Overview = () => {
+interface overviewProps {
+  clinicContact: string
+}
+
+const Overview:React.FC<overviewProps> = ({clinicContact}) => {
   return (
     <div className="w-full flex flex-col gap-[80px]">
       <div className="w-full flex flex-col lg:flex-row justify-between space-y-6 md:space-y-8">
@@ -22,7 +26,7 @@ const Overview = () => {
                 <Phone />
               </span>
               <p className="text-sm md:text-xl">
-                +91 987654321 / +91 987654321
+                {clinicContact}
               </p>
             </div>
           </div>

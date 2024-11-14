@@ -21,21 +21,6 @@ interface ClinicDetailsProps {
   };
 }
 
-const tabs = [
-  {
-    title: "Overview",
-    component: <Overview />,
-  },
-  {
-    title: "Photos",
-    component: <ClinicPhotos />,
-  },
-  {
-    title: "Reviews",
-    component: <ClinicReviews />,
-  },
-];
-
 const ClinicDetails: React.FC<ClinicDetailsProps> = ({ params }) => {
   const { clinicId } = params;
   const clinic = clinicItems.find((item) => item.id === clinicId);
@@ -43,6 +28,21 @@ const ClinicDetails: React.FC<ClinicDetailsProps> = ({ params }) => {
   if (!clinic) {
     return <div>Clinic not found</div>;
   }
+
+  const tabs = [
+    {
+      title: "Overview",
+      component: <Overview clinicContact={clinic.contact} />,
+    },
+    {
+      title: "Photos",
+      component: <ClinicPhotos />,
+    },
+    {
+      title: "Reviews",
+      component: <ClinicReviews />,
+    },
+  ];
 
   return (
     <div className="flex flex-col w-full h-full items-center justify-items-center font-roca pb-20 flex-grow">

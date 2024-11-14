@@ -7,17 +7,27 @@ interface ClinicItemProps {
   showStaticCard: boolean;
   enlargedView: boolean;
 }
+
+// ${
+//   enlargedView
+//   ? "lg:grid-cols-3 lg:grid-rows-3"
+//   : ""
+// }
 const ClinicItemList = ({ showStaticCard, enlargedView }: ClinicItemProps) => {
   return (
     <div
-      className={`grid grid-cols-1 ${
+      className={`${clinicItems.length >= 4 ? "gap-4" : "gap-12"} ${
         enlargedView
-          ? "lg:grid-cols-3 lg:grid-rows-3 "
-          : "lg:grid-cols-4 lg:grid-rows-2"
-      } gap-4`}
+          ? "grid grid-cols-1 lg:grid-cols-4 "
+          : "flex flex-col lg:flex-row lg:flex-wrap lg:items-center lg:justify-between"
+      }`}
     >
       {clinicItems.map((clinic) => (
-        <ClinicItem key={clinic.id} clinic={clinic} />
+        <ClinicItem
+          key={clinic.id}
+          clinic={clinic}
+          enlargedView={enlargedView}
+        />
       ))}
       {showStaticCard && (
         <div className="bg-primary-3 shadow-md rounded-md p-8 flex flex-col items-center justify-center text-center w-full">
@@ -29,7 +39,7 @@ const ClinicItemList = ({ showStaticCard, enlargedView }: ClinicItemProps) => {
               height={40}
             />
           </div>
-          <p className="font-bold text-xl text-primary-1 mb-2">
+          <p className="font-bold text-sm text-primary-1 mb-2">
             Where Should The Next Dr. Paws Clinic Be?
           </p>
         </div>

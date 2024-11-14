@@ -52,7 +52,7 @@ export default function Home() {
             <h1 className="mx-auto text-center text-xl md:text-4xl">
               we call home
             </h1>
-            <div className="mx-auto pt-5 px-8 md:px-32 lg:px-40">
+            <div className="mx-auto pt-5 px-8 md:px-32 lg:px-40 w-full ">
               <ClinicItemList showStaticCard={false} enlargedView={false} />
             </div>
           </div>

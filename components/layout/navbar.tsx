@@ -9,12 +9,14 @@ import Link from "next/link";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { MdChevronRight } from "react-icons/md";
 import logo from "@/public/assets/images/logo/logo.svg";
+import { clinicItems } from "@/model/mockData";
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isLocationOpen, setIsLocationOpen] = useState(false);
 
   return (
-    <div className="fixed left-0 top-0 z-50 bg-primary-3 w-full">
+    <div className="fixed left-0 top-0 z-30 bg-primary-3 w-full">
       <div className="mx-auto px-8 md:px-32 lg:px-40">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center gap-10">
@@ -32,25 +34,49 @@ export default function NavBar() {
             <div className="hidden lg:block">
               <div className="flex items-center space-x-4 gap-3">
                 <div className="relative group">
-                  <button className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
-                    Locations
-                  </button>
+                  <DropdownMenu.Root>
+                    <DropdownMenu.Trigger className="outline-none">
+                      <p className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
+                        Locations
+                      </p>
+                    </DropdownMenu.Trigger>
+                    <DropdownMenu.Portal>
+                      <DropdownMenu.Content
+                        className="bg-[#f7f1de] shadow-lg rounded-lg w-48 p-4 flex flex-col gap-2"
+                        align="start"
+                        sideOffset={5}
+                      >
+                        {clinicItems.map((clinic) => (
+                          <DropdownMenu.Item
+                            asChild
+                            key={clinic.id}
+                            className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
+                          >
+                            <Link href={`/clinics/${clinic.id}`}>
+                              {clinic.clinicName}
+                            </Link>
+                          </DropdownMenu.Item>
+                        ))}
+                        <DropdownMenu.Arrow className="fill-current text-[#f7f1de]" />
+                      </DropdownMenu.Content>
+                    </DropdownMenu.Portal>
+                  </DropdownMenu.Root>
                 </div>
                 <Link
                   href="/services"
-                  className="text-primary-1 hover:bg-primary-2 hover:text-white rounded-md text-sm font-medium"
+                  className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                 >
                   Our Services
                 </Link>
                 <Link
                   href="/team"
-                  className="text-primary-1 hover:bg-primary-2 hover:text-white rounded-md text-sm font-medium"
+                  className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                 >
                   Our Team
                 </Link>
                 <Link
                   href="/membership"
-                  className="text-primary-1 hover:bg-primary-2 hover:text-white rounded-md text-sm font-medium"
+                  className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                 >
                   Membership
                 </Link>
@@ -138,30 +164,53 @@ export default function NavBar() {
       {isOpen && (
         <div className="lg:hidden" id="mobile-menu">
           <div className="px-8 pt-2 pb-3 space-y-1 md:px-32 flex flex-col justify-end">
-            <a
-              href="#"
-              className="text-primary-1 hover:bg-primary-2 hover:text-white block py-2 px-2 rounded-md text-base font-medium"
+            <button
+              onClick={() => setIsLocationOpen(!isLocationOpen)}
+              className="text-primary-1 hover:bg-primary-2 hover:text-white block text-left py-1 px-2 rounded-md text-base font-medium"
             >
               Locations
-            </a>
-            <a
+            </button>
+            <div className="pl-8 flex flex-col text-primary-1">
+              {isLocationOpen && (
+                <div>
+                  {clinicItems.map((clinic) => (
+                    <div
+                      key={clinic.id}
+                      className="my-3 text-sm"
+                      onClick={() => {
+                        setIsOpen(false);
+                        setIsLocationOpen(false);
+                      }}
+                    >
+                      <Link href={`/clinics/${clinic.id}`}>
+                        {clinic.clinicName}
+                      </Link>
+                      <div className="border-t border-primary-2 my-2 w-full" />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <Link
               href="/services"
               className="text-primary-1 hover:bg-primary-2 hover:text-white block py-2 px-2 rounded-md text-base font-medium"
             >
               Our Services
-            </a>
-            <a
+            </Link>
+            <Link
               href="/team"
               className="text-primary-1 hover:bg-primary-2 hover:text-white block py-2 px-2 rounded-md text-base font-medium"
             >
               Our Team
-            </a>
-            <a
+            </Link>
+            <Link
+              onClick={() => setIsOpen(false)}
               href="/membership"
               className="text-primary-1 hover:bg-primary-2 hover:text-white block py-2 px-2 rounded-md text-base font-medium"
             >
               Membership
-            </a>
+            </Link>
           </div>
           <div className="pt-4 pb-3 border-t border-primary-2">
             <div className="flex items-center px-8 md:px-32 space-x-4">
