@@ -64,7 +64,7 @@ export default function NavBar() {
                     </DropdownMenu.Portal>
                   </DropdownMenu.Root>
                 </div>
-                <Link 
+                <Link
                   href="/services"
                   className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                 >
@@ -150,8 +150,7 @@ export default function NavBar() {
                     </div>
                   </DropdownMenu.Item>
                   <div className="border-t border-gray-300 my-2" />
-                  <DropdownMenu.Item
-                    asChild>
+                  <DropdownMenu.Item asChild>
                     <div
                       onClick={() => setContactIsModalOpen(true)}
                       className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
@@ -159,8 +158,7 @@ export default function NavBar() {
                       Billing Information
                     </div>
                   </DropdownMenu.Item>
-                  <DropdownMenu.Item
-                    asChild>
+                  <DropdownMenu.Item asChild>
                     <div
                       onClick={() => setContactIsModalOpen(true)}
                       className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
@@ -168,13 +166,12 @@ export default function NavBar() {
                       Account Settings
                     </div>
                   </DropdownMenu.Item>
-                  <DropdownMenu.Item
-                    asChild>
+                  <DropdownMenu.Item asChild>
                     <div
                       onClick={() => setContactIsModalOpen(true)}
                       className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
                     >
-                      Loggout
+                      Logout
                     </div>
                   </DropdownMenu.Item>
                   <DropdownMenu.Arrow className="fill-current text-[#f7f1de]" />
@@ -236,7 +233,7 @@ export default function NavBar() {
               Our Services
             </Link>
             <Link
-            onClick={() => setIsOpen(false)}
+              onClick={() => setIsOpen(false)}
               href="/team"
               className="text-primary-1 hover:bg-primary-2 hover:text-white block py-2 px-2 rounded-md text-base font-medium"
             >

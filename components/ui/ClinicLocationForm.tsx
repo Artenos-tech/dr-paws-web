@@ -18,7 +18,7 @@ const formSchema = z.object({
     .preprocess((val) => val === "on" || val === true, z.boolean())
     .refine(
       (val) => val === true,
-      "Ticking this box means we have your consent to chat on WhatsApp"
+      "Please tick the box to give consent for WhatsApp chat"
     ),
 });
 
@@ -130,20 +130,22 @@ export default function ClinicLocationForm() {
             )}
           </div>
         </div>
-        {errors.whatsappConsent && (
-          <p className="mt-1 text-sm text-red-500">
-            {errors.whatsappConsent.message}
-          </p>
-        )}
-        <div className="flex flex-row items-center space-x-3">
-          <input
-            type="checkbox"
-            {...register("whatsappConsent")}
-            className="mt-1 h-4 w-4 rounded border-neutral-300 text-[#95a781] focus:ring-[#95a781]"
-          />
-          <label className="text-sm text-neutral-700">
-            Ticking this box means we have your consent to chat on WhatsApp
-          </label>
+        <div>
+          <div className="flex flex-row items-center space-x-3">
+            <input
+              type="checkbox"
+              {...register("whatsappConsent")}
+              className="mt-1 h-4 w-4 rounded border-neutral-300 text-[#95a781] focus:ring-[#95a781]"
+            />
+            <label className="text-sm text-neutral-700">
+              Ticking this box means we have your consent to chat on WhatsApp
+            </label>
+          </div>
+          {errors.whatsappConsent && (
+            <p className="mt-1 text-sm text-red-500">
+              {errors.whatsappConsent.message}
+            </p>
+          )}
         </div>
 
         <button

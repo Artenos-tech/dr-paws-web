@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image";
 import DescritionImage from "@/public/assets/images/ServicesPage/DescriptionImage.png";
 import ServicePageTab from "@/components/ui/ServicePageTab";
 import { ServiceTabsData } from "@/model/mockData";
@@ -29,12 +28,11 @@ const Services = () => {
               We also offer grooming, diagnostic tests, imaging, and retail.
             </p>
 
-              <Button
-                buttonText="Book a visit"
-                buttonBackground="bg-secondary-1"
-                buttonClickEvent={() => setContactIsModalOpen(true)}
-              />
-
+            <Button
+              buttonText="Book a visit"
+              buttonBackground="bg-secondary-1"
+              buttonClickEvent={() => setContactIsModalOpen(true)}
+            />
           </div>
         </div>
 

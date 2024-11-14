@@ -49,8 +49,8 @@ const MembershipPayment = () => {
   const onSubmit = (data: PaymentFormData) => {
     try {
       console.log(data);
-      
-      toast.success("Payment successfull", {
+
+      toast.success("Subscription created", {
         duration: 3000,
         position: "bottom-right",
       });
@@ -194,7 +194,6 @@ const MembershipPayment = () => {
                   <input
                     {...register("country")}
                     className="w-full p-2 border border-accent rounded-md focus:outline-none focus:ring-2 "
-                    
                   />
                   {errors.country && (
                     <p className="mt-1 text-sm text-red-600">
@@ -202,24 +201,26 @@ const MembershipPayment = () => {
                     </p>
                   )}
                 </div>
-                {errors.acceptTerms && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {errors.acceptTerms.message}
-                  </p>
-                )}
-                <div className="flex items-start gap-3 mb-6">
-                  <input
-                    type="checkbox"
-                    {...register("acceptTerms")}
-                    value="on"
-                    className="mt-1 border-accent"
-                  />
+                <div className="flex flex-col mb-6">
+                  <div className="flex items-start gap-3">
+                    <input
+                      type="checkbox"
+                      {...register("acceptTerms")}
+                      value="on"
+                      className="mt-1 border-accent"
+                    />
 
-                  <label className="text-sm text-gray-600">
-                    By clicking on Subscribe you accept Dr. Paw&apos;s Terms &
-                    Conditions. We will process your personal data in accordance
-                    with Design anything&apos;s Privacy Notice.
-                  </label>
+                    <label className="text-sm text-gray-600">
+                      By clicking on Subscribe you accept Dr. Paw&apos;s Terms &
+                      Conditions. We will process your personal data in
+                      accordance with Design anything&apos;s Privacy Notice.
+                    </label>
+                  </div>
+                  {errors.acceptTerms && (
+                    <p className="mt-1 text-sm text-red-600">
+                      {errors.acceptTerms.message}
+                    </p>
+                  )}
                 </div>
 
                 <div className="hidden lg:block">

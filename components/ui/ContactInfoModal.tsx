@@ -6,6 +6,7 @@ import Modal from "react-modal";
 import whatsapp from "@/public/assets/images/ContactInfo/whatsappIcon.svg";
 import Call from "@/public/assets/images/ContactInfo/telephone-icon.svg";
 import Map from "@/public/assets/images/ContactInfo/location-icon.svg";
+import { Construction } from "lucide-react";
 
 // Define styles for react-modal
 // Modal.setAppElement('#__next'); // Required for accessibility in Next.js
@@ -119,9 +120,12 @@ const ContactInfoModal: React.FC<ContactInfoModalProps> = ({
               </div>
             </Link>
           </div>
-          <p className="italic font-semibold my-2 text-gray-600">
-            Mobile app coming soon
-          </p>
+          <div className="flex items-center gap-2">
+            <Construction />
+            <p className="italic font-semibold my-2 text-gray-600">
+              Mobile app coming soon
+            </p>
+          </div>
         </div>
       </div>
 
