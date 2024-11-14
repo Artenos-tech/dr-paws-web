@@ -19,15 +19,14 @@ export default function Home() {
           <div className="flex flex-col items-center md:items-start gap-0 w-full md:w-full  lg:w-1/2 mx-auto mt-6 md:ml-32 md:mt-10 lg:gap-4 lg:mt-12 lg:ml-40 text-center md:text-left">
             <div>
               <h1 className="text-[32px] md:text-[40px] lg:text-[56px]  leading-tight md:leading-snug lg:leading-none text-white">
-                Veterinary Care
+                India&apos;s Friendliest Vet Clinics
               </h1>
-              <h1 className="text-[32px] md:text-[40px] lg:text-[56px] leading-tight md:leading-snug lg:leading-none text-white">
-                {" "}
-                re-imagined
+              <h1 className="lg:w-full text-[28px] md:w-[80%] md:text-[34px] lg:text-[48px] text-primary-3 leading-tight md:leading-snug lg:leading-none">
+                Because your best friend deserves the very best
               </h1>
-              <h1 className="text-primary-3 text-[32px] md:text-[40px] lg:text-[56px] leading-tight md:leading-snug lg:leading-none">
+              {/* <h1 className="text-primary-3 text-[32px] md:text-[40px] lg:text-[56px] leading-tight md:leading-snug lg:leading-none">
                 by pet lovers
-              </h1>
+              </h1> */}
             </div>
             <p className="text-white w-full md:w-[80%] lg:w-[70%] text-[14px] md:text-[16px] lg:text-[18px] px-10 md:px-0">
               Book a visit to one of our clinics right now. Which friend will we
@@ -73,7 +72,7 @@ export default function Home() {
 
           <div className="w-full mt-20 md:mt-32">
             <h1 className="text-xl md:text-4xl text-center text-primary-1">
-              Reviews
+              See What Our Customers Are Saying About Us
             </h1>
             <div className="flex justify-center items-center mt-10 md:mt-20">
               <div className="relative flex flex-col items-center justify-center custom:flex-row border-yellow-500">
@@ -124,7 +123,7 @@ export default function Home() {
 
           <div className="w-[75%] mx-auto mt-20 md:mt-40 flex flex-col gap-8">
             <h1 className="text-xl md:text-4xl text-center">
-              Our vets bring the magic to Dr. Paws
+              Our Medical Teams Bring The Magic to Dr. Paws
             </h1>
             <div className="flex flex-col lg:flex-row gap-2">
               <div className="w-full lg:w-1/2 flex justify-center lg:justify-end">
@@ -139,11 +138,11 @@ export default function Home() {
                       alt="tick mark"
                     />
                     <h1 className="text-[15px] sm:text-[20px]">
-                      Animals first. Always.
+                      Doing What&apos;s Right. Always
                     </h1>
                   </div>
                   <p className=" text-[14px] ml-[58px]">
-                    Unlike other clinics, we evaluate our vets based on customer
+                    Unlike other clinics, our teams are evaluated on customer
                     satisfaction over revenue. This ensures we never
                     over-medicate or suggest unnecessary treatments.
                   </p>
@@ -156,13 +155,14 @@ export default function Home() {
                       alt="tick mark"
                     />
                     <h1 className="text-[15px] sm:text-[20px]">
-                      Highly qualified, trained on the latest methods
+                      Highly Qualified & Up-to-Date
                     </h1>
                   </div>
                   <p className=" text-[14px] ml-[58px]">
-                    We only hire vets from the best veterinary schools, and make
-                    sure they are supported to attend courses and learn new
-                    techniques across the world
+                    We have a highly selective hiring process, with vets &
+                    technicians coming from the best schools & practices. Once
+                    on the team, we ensure they attend conferences and courses
+                    to learn new skills, and stay up-to-date
                   </p>
                 </div>
                 <div className="">
@@ -173,13 +173,13 @@ export default function Home() {
                       alt="tick mark"
                     />
                     <h1 className="text-[15px] sm:text-[20px]">
-                      Your best friend is our best friend
+                      Treating Animals, Like They&apos;re Our Own
                     </h1>
                   </div>
                   <p className=" text-[14px] ml-[58px]">
-                    All our vets are passionate about animals, and love being
-                    around them. Rest assured your animal will feel comfortable
-                    and at home with us
+                    We focus on bedside manner, pet psychology and handling in
+                    every team member&apos;s training. Your pet will feel at
+                    ease with us
                   </p>
                 </div>
               </div>

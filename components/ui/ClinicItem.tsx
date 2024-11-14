@@ -8,7 +8,7 @@ interface ClinicItemProps {
 }
 
 const ClinicItem: React.FC<ClinicItemProps> = ({ clinic }) => {
-  const { image, clinicName, branch, description, id } = clinic;
+  const { image, clinicName, services, id } = clinic;
   const router = useRouter();
 
   const handleBookVisit = () => {
@@ -17,7 +17,7 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic }) => {
   return (
     <>
       <div
-        className={`bg-[#FFFCF3] w-54 shadow-md rounded-md `}
+        className={`bg-[#FFFCF3] shadow-md rounded-md `}
         onClick={handleBookVisit}
       >
         <img
@@ -28,7 +28,8 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic }) => {
         <div className="p-2">
           <h1 className="text-primary-1 text-base">{clinicName}</h1>
           <div className="flex gap-2 text-primary-1 text-xs mt-2 ">
-            <p>{branch}</p> |<p>{description}</p>
+            {/* TODO: Need to Map it later */}
+            <p>{services}</p>
           </div>
         </div>
         <button
