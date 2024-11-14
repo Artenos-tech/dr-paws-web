@@ -8,6 +8,7 @@ import Button from "../ui/Button";
 import Link from "next/link";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { MdChevronRight } from "react-icons/md";
+import logo from "@/public/assets/images/logo/logo.svg";
 import { clinicItems } from "@/model/mockData";
 
 export default function NavBar() {
@@ -18,11 +19,11 @@ export default function NavBar() {
     <div className="fixed left-0 top-0 z-30 bg-primary-3 w-full">
       <div className="mx-auto px-8 md:px-32 lg:px-40">
         <div className="flex justify-between items-center h-16">
-          <div className="flex items-center">
+          <div className="flex items-center gap-10">
             <div className="flex-shrink-0">
               <Link href="/">
                 <Image
-                  src="/assets/images/logo/logo.svg"
+                  src={logo}
                   alt="Dr. Paws Logo"
                   width={100}
                   height={30}
@@ -32,7 +33,7 @@ export default function NavBar() {
             </div>
           </div>
           <div className="hidden lg:block">
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-4 gap-3">
               <div className="relative group">
                 <DropdownMenu.Root>
                   <DropdownMenu.Trigger className="outline-none">
@@ -210,7 +211,7 @@ export default function NavBar() {
               Membership
             </Link>
           </div>
-          <div className="pt-4 pb-3 border-t border-primary-2 ">
+          <div className="pt-4 pb-3 border-t border-primary-2">
             <div className="flex items-center px-8 md:px-32 space-x-4">
               <DropdownMenu.Root>
                 <DropdownMenu.Trigger>
@@ -224,7 +225,7 @@ export default function NavBar() {
                 </DropdownMenu.Trigger>
                 <DropdownMenu.Portal>
                   <DropdownMenu.Content
-                    className="bg-[#f7f1de] shadow-lg rounded-lg w-[100vh] lg:hidden p-4 md:pl-[136px]  flex flex-col gap-1 pl-10"
+                    className="bg-[#f7f1de] shadow-lg rounded-lg w-[100vh] lg:hidden p-4 md:pl-[136px]  space-y-2 pl-10"
                     align="center"
                     sideOffset={0}
                   >
