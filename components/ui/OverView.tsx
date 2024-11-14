@@ -10,10 +10,10 @@ import DoctorCard from "./DoctorCard";
 import { doctors } from "@/model/mockData";
 
 interface overviewProps {
-  clinicContact: string
+  clinicContact: string;
 }
 
-const Overview:React.FC<overviewProps> = ({clinicContact}) => {
+const Overview: React.FC<overviewProps> = ({ clinicContact }) => {
   return (
     <div className="w-full flex flex-col gap-[80px]">
       <div className="w-full flex flex-col lg:flex-row justify-between space-y-6 md:space-y-8">
@@ -25,9 +25,7 @@ const Overview:React.FC<overviewProps> = ({clinicContact}) => {
               <span role="img" aria-label="phone">
                 <Phone />
               </span>
-              <p className="text-sm md:text-xl">
-                {clinicContact}
-              </p>
+              <p className="text-sm md:text-xl">{clinicContact}</p>
             </div>
           </div>
           <div className="flex flex-col w-full gap-2 md:gap-4">
@@ -67,10 +65,10 @@ const Overview:React.FC<overviewProps> = ({clinicContact}) => {
         </h1>
 
         <div className="relative px-8 max-w-screen-xl w-full mx-auto">
-          <button className="custom-swiper-button-prev absolute -left-[18px] top-1/2 -translate-y-1/2 z-10 rounded-full p-2 transition-colors">
+          <button className="custom-swiper-button-prev absolute -left-[18px] top-1/2 -translate-y-1/2 rounded-full p-2 transition-colors">
             <ChevronLeft size={42} className="text-[#5281A2]" />
           </button>
-          <button className="custom-swiper-button-next absolute -right-[18px] top-1/2 -translate-y-1/2 z-10 rounded-full p-2  transition-colors">
+          <button className="custom-swiper-button-next absolute -right-[18px] top-1/2 -translate-y-1/2 rounded-full p-2  transition-colors">
             <ChevronRight size={42} className="text-[#5281A2]" />
           </button>
 

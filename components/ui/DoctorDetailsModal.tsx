@@ -23,7 +23,7 @@ const DoctorDetailsModal: React.FC<doctorDetailsProps> = ({
     <Modal
       isOpen={isOpen}
       onRequestClose={onClose}
-      className="w-4/5 max-w-[950px] mt-20  mx-auto  p-4 bg-white rounded-xl shadow-lg overflow-y-auto z-50 max-h-[80vh] md:max-h-none"
+      className="w-4/5 max-w-[950px] mt-20 mb-5 mx-auto  p-4 bg-white rounded-xl shadow-lg overflow-y-auto z-50 max-h-[80vh] md:max-h-none"
       overlayClassName="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center"
       style={{ content: { padding: "1rem" } }}
     >
