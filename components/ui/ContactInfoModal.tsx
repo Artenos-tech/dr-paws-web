@@ -8,9 +8,6 @@ import Call from "@/public/assets/images/ContactInfo/telephone-icon.svg";
 import Map from "@/public/assets/images/ContactInfo/location-icon.svg";
 import { Construction } from "lucide-react";
 
-// Define styles for react-modal
-// Modal.setAppElement('#__next'); // Required for accessibility in Next.js
-
 interface ContactInfoModalProps {
   isOpen: boolean;
   onRequestClose: () => void;

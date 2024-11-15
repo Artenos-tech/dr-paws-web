@@ -29,9 +29,6 @@ export default function Home() {
               <h1 className="lg:w-full text-[28px] md:w-[80%] md:text-[34px] lg:text-[48px] text-primary-3 leading-tight md:leading-snug lg:leading-none">
                 Because your best friend deserves the very best
               </h1>
-              {/* <h1 className="text-primary-3 text-[32px] md:text-[40px] lg:text-[56px] leading-tight md:leading-snug lg:leading-none">
-                by pet lovers
-              </h1> */}
             </div>
             <p className="text-white w-full md:w-[80%] lg:w-[70%] text-[14px] md:text-[16px] lg:text-[18px] px-10 md:px-0">
               Book a visit to one of our clinics right now. Which friend will we

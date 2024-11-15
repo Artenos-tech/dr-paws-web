@@ -81,7 +81,6 @@ const DoctorDetailsModal: React.FC<doctorDetailsProps> = ({
                   />
                   Specialization
                 </p>
-                {/*  w-full md:w-11/12 lg:w-3/4  */}
                 <p className="font-semibold text-sm md:text-base">
                   {specialization}
                 </p>

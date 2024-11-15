@@ -8,11 +8,6 @@ interface ClinicItemProps {
   enlargedView: boolean;
 }
 
-// ${
-//   enlargedView
-//   ? "lg:grid-cols-3 lg:grid-rows-3"
-//   : ""
-// }
 const ClinicItemList = ({ showStaticCard, enlargedView }: ClinicItemProps) => {
   return (
     <div

@@ -1,8 +1,3 @@
-import circleImg1 from "@/public/assets/images/circleImg1.jpg";
-import circleImg2 from "@/public/assets/images/circleImg2.png";
-import circleImg3 from "@/public/assets/images/circleImg3.png";
-import membershipImg1 from "@/public/assets/images/membershipImg1.png";
-import planLogo1 from "@/public/assets/images/planLogo1.png";
 import clinic1 from "../public/assets/images/clinic-1.png";
 import description1 from "../public/assets/images/description1.png";
 import description2 from "../public/assets/images/description2.png";
@@ -15,8 +10,7 @@ import catImg from "../public/assets/images/catimg.png";
 import rabbitImg from "../public/assets/images/rabbitimg.png";
 import doctorImage from "../public/assets/images/clinic/doctor.png";
 import ClinicDog from "../public/assets/images/clinic/maggidog.png";
-// import { ServiceCategory } from "@/model/typeDefinitions";
-import { Service, Clinic } from "@/model/typeDefinitions";
+import { Clinic } from "@/model/typeDefinitions";
 import Vaccination from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/Vaccinations.png";
 import Deworming from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/Deworming.png";
 import GeneralCheckUp from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/General check up.png";
@@ -29,7 +23,6 @@ import Lethargy from "@/public/assets/images/ServicesPage/Sickness and Emergency
 import Limping from "@/public/assets/images/ServicesPage/Sickness and Emergency/Limping.png";
 import AnimalBites from "@/public/assets/images/ServicesPage/Sickness and Emergency/Animal Bites.png";
 import EyeIssues from "@/public/assets/images/ServicesPage/Sickness and Emergency/EyeIssues.png";
-import Accident from "@/public/assets/images/ServicesPage/Sickness and Emergency/Accident and trauma.png";
 import Ultrasound from "@/public/assets/images/ServicesPage/Dignostics/Ultrsound.png";
 import Microscopy from "@/public/assets/images/ServicesPage/Dignostics/Microscopy.png";
 import Parasite from "@/public/assets/images/ServicesPage/Dignostics/Parasite.png";
@@ -37,14 +30,10 @@ import Blood from "@/public/assets/images/ServicesPage/Dignostics/Blood.png";
 import Xray from "@/public/assets/images/ServicesPage/Dignostics/XRay.png";
 import Sprays from "@/public/assets/images/ServicesPage/Planned Surgeries/Sprays.png";
 import Tumors from "@/public/assets/images/ServicesPage/Planned Surgeries/Tumor.png";
-import Blader from "@/public/assets/images/ServicesPage/Planned Surgeries/Blader.png";
 import Foreign from "@/public/assets/images/ServicesPage/Planned Surgeries/Foreign.png";
 import Ortho from "@/public/assets/images/ServicesPage/Planned Surgeries/Orthopedic.png";
 import ToothEx from "@/public/assets/images/ServicesPage/Dental/ToothExt.png";
 import ToothRes from "@/public/assets/images/ServicesPage/Dental/ToothRes.png";
-import Gum from "@/public/assets/images/ServicesPage/Dental/Gum.png";
-import Xray1 from "@/public/assets/images/ServicesPage/Dental/Xray-1.png";
-import Dental from "@/public/assets/images/ServicesPage/Dental/Dental.png";
 import HairCut from "@/public/assets/images/ServicesPage/Grooming/HairCut.png";
 import NailCut from "@/public/assets/images/ServicesPage/Grooming/NailCut.png";
 import EarClean from "@/public/assets/images/ServicesPage/Grooming/EarClean.png";
@@ -52,7 +41,6 @@ import Bath from "@/public/assets/images/ServicesPage/Grooming/Bath.png";
 import HairStyle from "@/public/assets/images/ServicesPage/Grooming/HairStyle.png";
 import Boarding from "@/public/assets/images/ServicesPage/Pet Services/Boarding.png";
 import Sitting from "@/public/assets/images/ServicesPage/Pet Services/Sitting.png";
-import Training from "@/public/assets/images/ServicesPage/Pet Services/Training.png";
 
 import Customer1 from "../public/assets/images/clinic/customer1.png";
 import Customer2 from "../public/assets/images/clinic/customer2.png";
@@ -62,213 +50,6 @@ import CareJunior from "@/public/assets/images/Membership/Care Junior.png";
 import CareSenior from "@/public/assets/images/Membership/Care Senior.png";
 import Grooming from "@/public/assets/images/Membership/Grooming.png";
 import StarCare from "@/public/assets/images/Membership/Star Care and Grooming.png";
-
-export const circleImageList = [
-  {
-    image: circleImg1,
-    circleText: "Dog & Cat Boarding",
-  },
-  {
-    image: circleImg2,
-    circleText: "Deworming",
-  },
-  {
-    image: circleImg3,
-    circleText: "Dog Training",
-  },
-];
-
-export const membershipDataList = [
-  {
-    planName: "Star Care & Grooming",
-    planLogo: planLogo1,
-    pet: {
-      name: "Moca",
-      image: membershipImg1,
-    },
-    benefits: [
-      "6 free-of-cost consultations every year",
-      "50% discount on additional consultations",
-      "Annual deworming",
-      "20% discount on diagnostic tests and scans",
-      "20% discount on planned surgeries and procedures",
-      "10% off retail products & medicines",
-      "10% off any grooming service",
-    ],
-    planInfo: {
-      expiresOn: "March 31, 2024",
-      nextPaymentOn: "Feb 5, 2024",
-    },
-  },
-  {
-    planName: "Star Care & Grooming",
-    planLogo: planLogo1,
-    pet: {
-      name: "Moca",
-      image: membershipImg1,
-    },
-    benefits: [
-      "6 free-of-cost consultations every year",
-      "50% discount on additional consultations",
-      "Annual deworming",
-      "20% discount on diagnostic tests and scans",
-      "20% discount on planned surgeries and procedures",
-      "10% off retail products & medicines",
-      "10% off any grooming service",
-    ],
-    planInfo: {
-      expiresOn: "March 31, 2024",
-      nextPaymentOn: "Feb 5, 2024",
-    },
-  },
-  {
-    planName: "Star Care & Grooming",
-    planLogo: planLogo1,
-    pet: {
-      name: "Moca",
-      image: membershipImg1,
-    },
-    benefits: [
-      "6 free-of-cost consultations every year",
-      "50% discount on additional consultations",
-      "Annual deworming",
-      "20% discount on diagnostic tests and scans",
-      "20% discount on planned surgeries and procedures",
-      "10% off retail products & medicines",
-      "10% off any grooming service",
-    ],
-    planInfo: {
-      expiresOn: "March 31, 2024",
-      nextPaymentOn: "Feb 5, 2024",
-    },
-  },
-  {
-    planName: "Star Care & Grooming",
-    planLogo: planLogo1,
-    pet: {
-      name: "Moca",
-      image: membershipImg1,
-    },
-    benefits: [
-      "6 free-of-cost consultations every year",
-      "50% discount on additional consultations",
-      "Annual deworming",
-      "20% discount on diagnostic tests and scans",
-      "20% discount on planned surgeries and procedures",
-      "10% off retail products & medicines",
-      "10% off any grooming service",
-    ],
-    planInfo: {
-      expiresOn: "March 31, 2024",
-      nextPaymentOn: "Feb 5, 2024",
-    },
-  },
-  {
-    planName: "Star Care & Grooming",
-    planLogo: planLogo1,
-    pet: {
-      name: "Moca",
-      image: membershipImg1,
-    },
-    benefits: [
-      "6 free-of-cost consultations every year",
-      "50% discount on additional consultations",
-      "Annual deworming",
-      "20% discount on diagnostic tests and scans",
-      "20% discount on planned surgeries and procedures",
-      "10% off retail products & medicines",
-      "10% off any grooming service",
-    ],
-    planInfo: {
-      expiresOn: "March 31, 2024",
-      nextPaymentOn: "Feb 5, 2024",
-    },
-  },
-  {
-    planName: "Star Care & Grooming",
-    planLogo: planLogo1,
-    pet: {
-      name: "Moca",
-      image: membershipImg1,
-    },
-    benefits: [
-      "6 free-of-cost consultations every year",
-      "50% discount on additional consultations",
-      "Annual deworming",
-      "20% discount on diagnostic tests and scans",
-      "20% discount on planned surgeries and procedures",
-      "10% off retail products & medicines",
-      "10% off any grooming service",
-    ],
-    planInfo: {
-      expiresOn: "March 31, 2024",
-      nextPaymentOn: "Feb 5, 2024",
-    },
-  },
-  {
-    planName: "Star Care & Grooming",
-    planLogo: planLogo1,
-    pet: {
-      name: "Moca",
-      image: membershipImg1,
-    },
-    benefits: [
-      "6 free-of-cost consultations every year",
-      "50% discount on additional consultations",
-      "Annual deworming",
-      "20% discount on diagnostic tests and scans",
-      "20% discount on planned surgeries and procedures",
-      "10% off retail products & medicines",
-      "10% off any grooming service",
-    ],
-    planInfo: {
-      expiresOn: "March 31, 2024",
-      nextPaymentOn: "Feb 5, 2024",
-    },
-  },
-  {
-    planName: "Star Care & Grooming",
-    planLogo: planLogo1,
-    pet: {
-      name: "Moca",
-      image: membershipImg1,
-    },
-    benefits: [
-      "6 free-of-cost consultations every year",
-      "50% discount on additional consultations",
-      "Annual deworming",
-      "20% discount on diagnostic tests and scans",
-      "20% discount on planned surgeries and procedures",
-      "10% off retail products & medicines",
-      "10% off any grooming service",
-    ],
-    planInfo: {
-      expiresOn: "March 31, 2024",
-      nextPaymentOn: "Feb 5, 2024",
-    },
-  },
-  {
-    planName: "Star Care & Grooming",
-    planLogo: planLogo1,
-    pet: {
-      name: "Moca",
-      image: membershipImg1,
-    },
-    benefits: [
-      "6 free-of-cost consultations every year",
-      "50% discount on additional consultations",
-      "Annual deworming",
-      "20% discount on diagnostic tests and scans",
-      "20% discount on planned surgeries and procedures",
-      "10% off retail products & medicines",
-      "10% off any grooming service",
-    ],
-    planInfo: {
-      expiresOn: "March 31, 2024",
-      nextPaymentOn: "Feb 5, 2024",
-    },
-  },
-];
 
 export const FaqData = [
   {
@@ -291,33 +72,36 @@ export const FaqData = [
       },
       {
         question: "How do I buy a membership?",
-        answer: "You can buy a membership through our app or website. Alternatively, you can buy one in-person at our clinics."
+        answer:
+          "You can buy a membership through our app or website. Alternatively, you can buy one in-person at our clinics.",
       },
       {
         question: "Is Dr. Paws membership only?",
-        answer: "No, we welcome all customers regardless of whether they have bought a membership or not. Our memberships, simply offer greater value for money."
+        answer:
+          "No, we welcome all customers regardless of whether they have bought a membership or not. Our memberships, simply offer greater value for money.",
       },
       {
         question: "Is everything done in-house?",
-        answer: "All our surgical and medical procedures are performed in-house. For certain specific diagnostic tests, we tie-up with external partners, but there is no difference in the process for our customers."
+        answer:
+          "All our surgical and medical procedures are performed in-house. For certain specific diagnostic tests, we tie-up with external partners, but there is no difference in the process for our customers.",
       },
       {
         question: "What products do you sell in your retail section?",
-        answer: "We have a comprehensive range of products across medicines, supplements, packaged food, treats, toys & accessories. If there’s anything specific you require, please let us know."
+        answer:
+          "We have a comprehensive range of products across medicines, supplements, packaged food, treats, toys & accessories. If there’s anything specific you require, please let us know.",
       },
       {
         question: "Do you have waiting areas in your clinics?",
-        answer: "Yes, all our clinics have two comfortable and spacious waiting areas. One is a general area for all animals, whilst the other is specially reserved for cats and their parents only."
+        answer:
+          "Yes, all our clinics have two comfortable and spacious waiting areas. One is a general area for all animals, whilst the other is specially reserved for cats and their parents only.",
       },
       {
         question: "Is there parking available?",
-        answer: "Yes, all our clinics have ample parking or a valet-service to make visiting easy and hassle-free."
+        answer:
+          "Yes, all our clinics have ample parking or a valet-service to make visiting easy and hassle-free.",
       },
-
     ],
   },
-
- 
 ];
 
 export const reviewData = {
@@ -325,7 +109,7 @@ export const reviewData = {
   review:
     "Dr. Paws is Fantastic Execptional care, friendly staff, and a welcoming atmosphere, Highly recommend for pet owners!",
 };
-//
+
 export const clinicItems: Clinic[] = [
   {
     id: "1",
@@ -528,7 +312,7 @@ export const photos = [
   ClinicOT,
 ];
 
-export const serviceCategories= [
+export const serviceCategories = [
   "Planned Visits",
   "Sickness & Emergency",
   "Diagnostics",
@@ -544,8 +328,8 @@ export const servicesData = {
     { name: "Skin infections" },
     { name: "Master Health Check-ups" },
     { name: "Deworming" },
-    { name: "Parasite Control"},
-    { name: "Ear & Eye Check-ups"}
+    { name: "Parasite Control" },
+    { name: "Ear & Eye Check-ups" },
   ],
   "Sickness & Emergency": [
     { name: "Care Traume" },
@@ -553,8 +337,8 @@ export const servicesData = {
     { name: "Fever and Infectious Disease Treatement" },
     { name: "Injuries" },
     { name: "Limping & Wound Care" },
-    { name: "Vommiting & Diarrhoea Care"},
-    { name: "Loss of Appetite & Lathergry Care"}
+    { name: "Vommiting & Diarrhoea Care" },
+    { name: "Loss of Appetite & Lathergry Care" },
   ],
   Diagnostics: [
     { name: "Blood Tests" },

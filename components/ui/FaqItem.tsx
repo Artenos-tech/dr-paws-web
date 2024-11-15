@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { AiOutlineDown, AiOutlineRight } from "react-icons/ai"; // Import icons
+import { AiOutlineDown, AiOutlineRight } from "react-icons/ai";
 
 interface FaqItem {
   question: string;
@@ -22,7 +22,6 @@ const FaqItem: React.FC<FaqProps> = ({ items = [], heading }) => {
 
   return (
     <div className="mx-auto mt-8">
-      {/* Ensuring proper padding on different screen sizes */}
       <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-4">
         {heading}
       </h2>
