@@ -24,7 +24,7 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
         !enlargedView && "w-full lg:w-[25%] min-h-[270px]"
       } flex flex-col justify-between h-full w-full shadow-md rounded-md`}
     >
-      <div onClick={handleBookVisit}>
+      <div onClick={handleBookVisit} className="cursor-pointer">
         <Image
           src={image.src}
           alt={clinicName + " image"}

@@ -1,8 +1,7 @@
 "use client";
 
-import { photos } from "@/model/mockData"; // photos is an array of images
+import { photos } from "@/model/mockData";
 import React, { useState, useEffect } from "react";
-import Image from "next/image";
 import ReactModal from "react-modal";
 import { IoIosArrowBack, IoIosArrowForward, IoMdClose } from "react-icons/io";
 import { Clinic } from "@/model/typeDefinitions";
@@ -20,7 +19,6 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
   const limitedGalleryItems = photos.slice(0, 7);
   const [isMounted, setIsMounted] = useState(false);
 
-  // Ensure setAppElement is called only on the client side after the DOM is ready
   useEffect(() => {
     setIsMounted(true);
     const appElement = document.getElementById("__next");
@@ -30,8 +28,6 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
       console.warn("ReactModal: App element with id '__next' not found.");
     }
   }, []);
-
-  useEffect(() => {});
 
   const openModal = (index: number) => {
     setCurrentIndex(index);
@@ -52,21 +48,17 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
         {limitedGalleryItems.map((image, index) => (
           <div
             key={index}
-            className={`relative bg-black ${
-              index === limitedGalleryItems.length - 1 ? "cursor-pointer" : ""
-            }`}
+            className="relative cursor-pointer"
             onClick={
               index === limitedGalleryItems.length - 1
                 ? () => openModal(0)
-                : undefined
+                : () => openModal(index)
             }
           >
-            <Image
+            <img
               src={image.src}
               alt="gallery image"
-              layout="fill"
-              objectFit="cover"
-              className={`${
+              className={`w-full h-full object-cover ${
                 index === limitedGalleryItems.length - 1 ? "opacity-60" : ""
               }`}
             />
@@ -130,7 +122,7 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
 
           {/* Current Image */}
           <div className="w-full">
-            <Image
+            <img
               src={photos[currentIndex].src}
               alt="gallery image"
               className="overflow-hidden w-full h-[80vh] object-contain"

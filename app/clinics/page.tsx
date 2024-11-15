@@ -37,9 +37,7 @@ export default function Clinics() {
           <h1 className="text-[28px] font-roca text-center mb-8">
             Our Clinics
           </h1>
-          <div>
-            <ClinicItemList showStaticCard={true} enlargedView={true} />
-          </div>
+          <ClinicItemList showStaticCard={true} enlargedView={true} />
         </div>
 
         {/*clinic location form*/}
