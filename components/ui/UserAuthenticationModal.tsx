@@ -28,11 +28,34 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
   const [userMobileNumber, setUserMobileNumber] = useState<string | undefined>(
     initialMobileNumber
   );
+  const [userName, setUserName] = useState<string>("");
+  const [profilePicture, setProfilePicture] = useState<string | undefined>(
+    undefined
+  );
 
   const handleIncorrectNumber = () => {
     setUserMobileNumber(undefined);
     setIsLogin(true);
   };
+
+  const handleLoginSubmit = (mobileNumber: string) => {
+    setUserMobileNumber(mobileNumber);
+  };
+
+  const handleSignupSubmit = (data: {
+    userName: string;
+    mobileNumber: string;
+    profilePicture?: string;
+  }) => {
+    setUserMobileNumber(data.mobileNumber);
+    setProfilePicture(data.profilePicture);
+    setUserName(data.userName);
+  };
+
+  console.log(userMobileNumber)
+
+
+
   return (
     <Modal
       isOpen={isOpen}
@@ -40,13 +63,13 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
       className="mt-16 mx-3 px-10 py-5 bg-white relative rounded-xl shadow-lg overflow-y-auto z-50"
       overlayClassName="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center"
     >
-        <button
-          className="text-gray-500 absolute right-2 top-2 hover:text-gray-700 transition-colors"
-          aria-label="Close modal"
-          onClick={onClose}
-        >
-          <IoClose size={20} />
-        </button>
+      <button
+        className="text-gray-500 absolute right-2 top-2 hover:text-gray-700 transition-colors"
+        aria-label="Close modal"
+        onClick={onClose}
+      >
+        <IoClose size={20} />
+      </button>
       <div className="flex flex-col justify-center items-center text-primary-1">
         {userMobileNumber ? (
           <OTPForm
@@ -54,9 +77,9 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
             loginForm={handleIncorrectNumber}
           />
         ) : isLogin ? (
-          <LoginForm />
+          <LoginForm onSubmit={handleLoginSubmit} />
         ) : (
-          <SignupForm />
+          <SignupForm onSubmit={handleSignupSubmit}/>
         )}
 
         {userMobileNumber ? (
@@ -91,30 +114,6 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
             )}
           </div>
         )}
-
-        {/* <div className="mt-12">
-          {isLogin ? (
-            <p>
-              Don&apos;t have an Account?{" "}
-              <span
-                onClick={() => setIsLogin(false)}
-                className="font-semibold cursor-pointer"
-              >
-                Sign Up
-              </span>
-            </p>
-          ) : (
-            <p>
-              Already have an Account?{" "}
-              <span
-                onClick={() => setIsLogin(true)}
-                className="font-semibold cursor-pointer"
-              >
-                Log In
-              </span>
-            </p>
-          )}
-        </div> */}
       </div>
     </Modal>
   );

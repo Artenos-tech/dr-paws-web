@@ -1,13 +1,45 @@
-"use client";
-
 import React, { useState } from "react";
 import defaultUserProfile from "@/public/assets/images/defaultUserProfile.png";
 import editIcon from "@/public/assets/images/Profile/ImageEdit.png";
 import Image, { StaticImageData } from "next/image";
 import { FaTrash } from "react-icons/fa6";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-const SignupForm = () => {
-  const [userProfile, setUserPofile] = useState<string>(defaultUserProfile.src);
+const signUpSchema = z.object({
+  userName: z.string().trim().min(1, "Provide name."),
+  mobileNumber: z
+    .string()
+    .length(10, "Mobile number must be 10 digits")
+    .regex(/^\d+$/, "Mobile number must contain only numbers"),
+  profilePicture: z.string().optional(),
+});
+
+type SignUpFormData = z.infer<typeof signUpSchema>;
+
+interface SignUpFormProps {
+  onSubmit: (data: {
+    userName: string;
+    mobileNumber: string;
+    profilePicture?: string;
+  }) => void;
+}
+
+const SignupForm: React.FC<SignUpFormProps> = ({ onSubmit }) => {
+  const [userProfileImage, setUserPofileImage] = useState<string>(
+    defaultUserProfile.src
+  );
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+  } = useForm<SignUpFormData>({
+    resolver: zodResolver(signUpSchema),
+    defaultValues: { userName: "", mobileNumber: "", profilePicture: "" },
+  });
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -15,10 +47,17 @@ const SignupForm = () => {
       const reader = new FileReader();
       reader.onload = () => {
         const result = reader.result as string;
-        setUserPofile(result);
+        setUserPofileImage(result);
+        setValue("profilePicture", result);
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const signUpSubmitHandler = (data: SignUpFormData) => {
+    console.log("inside method");
+    console.log(data);
+    onSubmit(data);
   };
 
   return (
@@ -27,25 +66,25 @@ const SignupForm = () => {
         Let's get started by creating <br /> your account.
       </h1>
       <p className="text-xs md:text-sm lg:text-base text-primary-1">
-        Add your phone number. We'll send  you a <br /> verification code.
+        Add your phone number. We'll send you a <br /> verification code.
       </p>
 
-      <form className="my-6">
+      <form onSubmit={handleSubmit(signUpSubmitHandler)} className="my-6">
         <div className="relative flex flex-col w-[40%] sm:w-[35%] md:w-[35%] mb-6 mx-auto">
-          <div className="">
+          <div>
             <Image
-              src={userProfile || defaultUserProfile.src}
+              src={userProfileImage || defaultUserProfile.src}
               alt="user-profile"
               width={150}
               height={150}
               className="rounded-full w-[150px] bg-white border-1 "
             />
-            {typeof userProfile === "string" &&
-              !userProfile.includes("/_next/static/media/") && (
+            {typeof userProfileImage === "string" &&
+              !userProfileImage.includes("/_next/static/media/") && (
                 <button
                   type="button"
                   className="absolute bottom-0 left-0 p-2.5 bg-red-500 rounded-full z-10"
-                  onClick={() => setUserPofile(defaultUserProfile.src)}
+                  onClick={() => setUserPofileImage(defaultUserProfile.src)}
                 >
                   <FaTrash size={8} fill="white" />
                 </button>
@@ -62,6 +101,7 @@ const SignupForm = () => {
             <input
               type="file"
               accept="image/*"
+              {...register("profilePicture")}
               onChange={handleImageChange}
               className="absolute bottom-0 right-0 opacity-0 w-full h-full cursor-pointer px-5"
               aria-label="Upload pet profile image"
@@ -69,16 +109,38 @@ const SignupForm = () => {
           </div>
         </div>
 
-        {/* Don't add any styles to input and label, check css in global.css */}
         <div className="inputGroup">
-          <input type="text" required autoComplete="off" />
+          <input
+            type="text"
+            {...register("userName")}
+            required
+            autoComplete="off"
+          />
           <label htmlFor="name">Name</label>
+          {errors.userName && (
+            <p className="text-red-500 text-left text-xs mt-1">
+              {errors.userName.message}
+            </p>
+          )}
         </div>
         <div className="inputGroup">
-          <input type="text" required autoComplete="off" />
+          <input
+            type="text"
+            {...register("mobileNumber")}
+            required
+            autoComplete="off"
+          />
           <label htmlFor="mobileNumber">Mobile Number</label>
+          {errors.mobileNumber && (
+            <p className="text-red-500 text-left text-xs mt-1">
+              {errors.mobileNumber.message}
+            </p>
+          )}
         </div>
-        <button className="w-full bg-secondary-1 text-white rounded-full py-3 text-xs md:text-sm my-2">
+        <button
+          type="submit"
+          className="w-full bg-secondary-1 text-white rounded-full py-3 text-xs md:text-sm my-2"
+        >
           Send OTP
         </button>
       </form>
