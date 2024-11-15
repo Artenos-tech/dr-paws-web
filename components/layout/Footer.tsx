@@ -91,7 +91,7 @@ const Footer = () => {
             </h6>
             <div className="flex gap-2 md:flex-col md:gap-0 items-center md:items-start">
               <a
-                href="#"
+                href="https://www.instagram.com/drpawsvet"
                 className="block mt-1 text-primary-1 hover:text-primary-2"
               >
                 <div className="flex flex-row gap-1">
@@ -104,7 +104,7 @@ const Footer = () => {
                 </div>
               </a>
               <a
-                href="#"
+                href="https://www.linkedin.com/company/dr-paws-veterinary/"
                 className="block mt-1 text-primary-1 hover:text-primary-2"
               >
                 <div className="flex flex-row gap-1">

@@ -31,13 +31,14 @@ export default function MemberCard({ plan, onSelect }: MemberCardProps) {
           </div>
         </div>
       )}
-
-      <div className="flex flex-col h-[210px] xl:h-[240px]">
+      <div className="flex flex-col h-[240px]">
         <div className="w-20 h-20 mb-4 self-center">
           <Image
             src={plan.icon}
             alt={`${plan.title} icon`}
             className="object-contain"
+            width={80}
+            height={80}
           />
         </div>
         <h3 className="text-2xl text-primary-1 w-full text-left mb-2 ">
