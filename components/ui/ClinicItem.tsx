@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Clinic } from "@/model/typeDefinitions";
 import ContactInfoModal from "./ContactInfoModal";
@@ -22,13 +23,15 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
       className={`bg-[#FFFCF3] ${
         !enlargedView && "w-full lg:w-[25%] min-h-[270px]"
       } flex flex-col justify-between h-full w-full shadow-md rounded-md`}
-      
     >
-      <div onClick={handleBookVisit}>
-        <img
+      <div onClick={handleBookVisit} className="cursor-pointer">
+        <Image
           src={image.src}
-          alt={clinicName + "image"}
+          alt={clinicName + " image"}
           className="rounded-t-md"
+          layout="responsive"
+          width={500}
+          height={300}
         />
         <div className="p-2">
           <h1 className="text-primary-1 text-base">{clinicName}</h1>

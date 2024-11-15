@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 import teamImg from "@/public/assets/images/team/teamImg.png";
 import { doctors } from "@/model/mockData";
 import DoctorCard from "@/components/ui/DoctorCard";
@@ -11,11 +12,7 @@ const TeamPage = () => {
         <div className="w-full lg:my-10">
           <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center w-full gap-2 md:gap-8 lg:gap-14">
             <div className="w-full ">
-              <img
-                src={teamImg.src}
-                alt="Clinic image with a dog"
-                className="w-full rounded-md"
-              />
+              <Image src={teamImg} alt="Clinic image with a dog" />
             </div>
             <div className="w-full  text-center lg:text-left text-primary-1 md:my-4 lg:my-0 mt-4">
               <h1 className={`text-xl md:text-2xl lg:text-3xl xl:text-5xl`}>

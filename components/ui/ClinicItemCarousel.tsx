@@ -1,6 +1,6 @@
 import { clinicItems } from "@/model/mockData";
 import React from "react";
-
+import Image from "next/image";
 
 const ClinicItemCarousel = () => {
   return (
@@ -12,10 +12,12 @@ const ClinicItemCarousel = () => {
               key={clinicIndex}
               className="carousel-item w-56 flex flex-col mr-5"
             >
-              <img
+              <Image
                 src={clinic.image.src}
                 alt={`${clinic.clinicName}`}
                 className="rounded-t-md object-cover w-full h-56"
+                width={224}
+                height={224}
               />
               <div className="p-2">
                 <h1 className="text-primary-1 text-base font-semibold">
