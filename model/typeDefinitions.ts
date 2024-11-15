@@ -46,3 +46,10 @@ export interface Doctor {
   aboutVet: string;
   tag: string;
 }
+
+export interface BookingCategory {
+  id: string;
+  title: string;
+  description: string;
+
+}

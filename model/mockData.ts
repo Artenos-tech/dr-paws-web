@@ -16,7 +16,7 @@ import rabbitImg from "../public/assets/images/rabbitimg.png";
 import doctorImage from "../public/assets/images/clinic/doctor.png";
 import ClinicDog from "../public/assets/images/clinic/maggidog.png";
 // import { ServiceCategory } from "@/model/typeDefinitions";
-import { Service, Clinic } from "@/model/typeDefinitions";
+import { Service, Clinic, BookingCategory } from "@/model/typeDefinitions";
 import Vaccination from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/Vaccinations.png";
 import Deworming from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/Deworming.png";
 import GeneralCheckUp from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/General check up.png";
@@ -920,4 +920,42 @@ export const membershipData = [
     ],
     isPopular: true,
   },
+];
+
+export const bookingCategories: BookingCategory[] = [
+  {
+    id: '1',
+    title: 'Planned check-ups',
+    description: 'vaccination, health checkup...',
+  },
+  {
+    id: '2',
+    title: 'Sickness & Emergency',
+    description: 'lethargy, vomiting, limping...',
+  },
+  {
+    id: '3',
+    title: 'Diagnostics',
+    description: 'blood test, tick fever test...',
+  },
+  {
+    id: '4',
+    title: 'Planned Surgeries',
+    description: 'vaccination, health checkup...',
+  },
+  {
+    id: '5',
+    title: 'Dental',
+    description: 'lethargy, vomiting, limping...',
+  },
+  {
+    id: '6',
+    title: 'Grooming',
+    description: 'haircut, spa...',
+  },
+  {
+    id: '7',
+    title: 'Pet Services',
+    description: 'training, boarding...',
+  }
 ];
