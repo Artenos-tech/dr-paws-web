@@ -37,17 +37,17 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
     <Modal
       isOpen={isOpen}
       onRequestClose={onClose}
-      className="mt-20 mx-3 px-10 py-5 lg:py-8 bg-white rounded-xl shadow-lg overflow-y-auto z-50"
+      className="mt-16 mx-3 px-10 py-5 bg-white relative rounded-xl shadow-lg overflow-y-auto z-50"
       overlayClassName="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center"
     >
-      <div className="flex flex-col justify-center items-center text-primary-1">
         <button
-          className="self-end text-gray-500 hover:text-gray-700 transition-colors"
+          className="text-gray-500 absolute right-2 top-2 hover:text-gray-700 transition-colors"
           aria-label="Close modal"
           onClick={onClose}
         >
           <IoClose size={20} />
         </button>
+      <div className="flex flex-col justify-center items-center text-primary-1">
         {userMobileNumber ? (
           <OTPForm
             userMobileNumber={userMobileNumber}
@@ -60,16 +60,16 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
         )}
 
         {userMobileNumber ? (
-          <div className="mt-12">
-            <p>
+          <div>
+            <p className="text-sm md:text-base">
               Didn&apos;t receive your code?{" "}
               <span className="font-semibold cursor-pointer">Resend Code</span>
             </p>
           </div>
         ) : (
-          <div className="mt-12">
+          <div className="mt-4">
             {isLogin ? (
-              <p>
+              <p className="text-sm md:text-base">
                 Don&apos;t have an Account?{" "}
                 <span
                   onClick={() => setIsLogin(false)}
@@ -79,11 +79,11 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
                 </span>
               </p>
             ) : (
-              <p>
+              <p className="text-sm md:text-base">
                 Already have an Account?{" "}
                 <span
                   onClick={() => setIsLogin(true)}
-                  className="font-semibold cursor-pointer"
+                  className="font-semibold cursor-pointer text-sm md:text-base"
                 >
                   Log In
                 </span>

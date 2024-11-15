@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 import teamImg from "@/public/assets/images/team/teamImg.png";
 import { doctors } from "@/model/mockData";
 import DoctorCard from "@/components/ui/DoctorCard";
@@ -7,15 +8,11 @@ import { Doctor } from "@/model/typeDefinitions";
 const TeamPage = () => {
   return (
     <div className="flex flex-col w-full h-full items-center justify-items-center font-roca pb-20">
-      <main className="flex flex-col gap-[50px] row-start-2 items-center w-full px-8 md:px-32 lg:px-40">
-        <div className="lg:my-10">
+      <main className="flex flex-col gap-[50px] row-start-2 items-center w-full px-8 md:px-32 lg:px-20 xl:px-40">
+        <div className="w-full lg:my-10">
           <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center w-full gap-2 md:gap-8 lg:gap-14">
             <div className="w-full ">
-              <img
-                src={teamImg.src}
-                alt="Clinic image with a dog"
-                className="w-full rounded-md"
-              />
+              <Image src={teamImg} alt="Clinic image with a dog" />
             </div>
             <div className="w-full  text-center lg:text-left text-primary-1 md:my-4 lg:my-0 mt-4">
               <h1 className={`text-xl md:text-2xl lg:text-3xl xl:text-5xl`}>
@@ -32,8 +29,10 @@ const TeamPage = () => {
           </div>
         </div>
 
-        <div>
-          <h1 className="text-xl md:text-4xl font-normal text-center">Our Team</h1>
+        <div className="w-full">
+          <h1 className="text-xl md:text-4xl font-normal text-center">
+            Our Team
+          </h1>
 
           <div className="flex justify-center items-center flex-wrap gap-8 lg:gap-14 my-10">
             {doctors.map((doctor: Doctor, index: number) => (

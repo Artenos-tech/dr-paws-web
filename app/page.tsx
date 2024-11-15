@@ -1,3 +1,5 @@
+"use client";
+
 import FaqList from "@/components/ui/FaqList";
 import ReviewCard from "@/components/ui/ReviewCard";
 import { reviewData } from "@/model/mockData";
@@ -10,8 +12,11 @@ import GreenBackground from "@/public/assets/images/reviewImages/greenBackground
 import Lady from "@/public/assets/images/reviewImages/Girl.png";
 import YellowAndDocWithDog from "@/public/assets/images/petValues/YellowAndDocWithDog.svg";
 import TickMark from "@/public/assets/images/petValues/TickMark.svg";
+import ContactInfoModal from "@/components/ui/ContactInfoModal";
+import { useState } from "react";
 
 export default function Home() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   return (
     <div className="w-full h-full items-center justify-items-center font-roca">
       <main className="w-full flex flex-col gap-8 row-start-2 items-center sm:items-start">
@@ -33,19 +38,17 @@ export default function Home() {
               meet?
             </p>
             <div className="flex justify-center md:justify-start">
-              <BannerList />
+              <BannerList openContactModal ={() => setIsModalOpen(true)} />
             </div>
           </div>
         </div>
 
-        
-
-        <div>
+        <div className="w-full px-8 md:px-32 lg:px-20 xl:px-40">
           <div className="flex flex-col items-center justify-center">
             <h1 className="mt-4 mb-16 text-center text-primary-1 text-xl md:text-4xl px-8">
               Veterinary care, redesigned to be better
             </h1>
-            <DescriptionCardList />
+            <DescriptionCardList openContactModal ={() => setIsModalOpen(true)} />
           </div>
           <div className="mx-auto mt-12 lg:mt-32">
             <h1 className="mx-auto text-center text-xl md:text-4xl">
@@ -54,12 +57,12 @@ export default function Home() {
             <h1 className="mx-auto text-center text-xl md:text-4xl">
               we call home
             </h1>
-            <div className="mx-auto pt-5 px-8 md:px-32 lg:px-40 w-full ">
+            <div className="mx-auto pt-5 w-full">
               <ClinicItemList showStaticCard={false} enlargedView={false} />
             </div>
           </div>
 
-          <div className="flex flex-col items-center justify-center w-full mt-20 md:mt-32 px-8 md:px-32 lg:scroll-px-40">
+          <div className="flex flex-col items-center justify-center w-full mt-20 md:mt-32 lg:scroll-px-40">
             <div className="mx-auto text-center mb-14">
               <h1 className="mx-auto text-xl md:text-4xl px-1 md:px-20 mb-6">
                 Whatever your pet needs, we&apos;re there
@@ -188,7 +191,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="mx-auto text-center my-20 flex flex-col px-8 md:px-32 lg:px-40">
+          <div className="mx-auto text-center my-20 flex flex-col">
             <h1 className="text-xl md:text-4xl mb-8">Still have questions?</h1>
             <p className=" md:text-xl">
               If your question is still not answered, please get in touch and
@@ -197,6 +200,11 @@ export default function Home() {
           </div>
 
           <FaqList />
+          <ContactInfoModal
+            isOpen={isModalOpen}
+            onRequestClose={() => setIsModalOpen(false)}
+          />
+
         </div>
       </main>
     </div>

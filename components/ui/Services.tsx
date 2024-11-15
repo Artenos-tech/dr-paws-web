@@ -8,16 +8,14 @@ import Image from "next/image";
 import { serviceCategories, servicesData } from "@/model/mockData";
 import Button from "./Button";
 
-
 type ServiceCategory = keyof typeof servicesData;
-
 
 const Services: React.FC = () => {
   const [selectedCategory, setSelectedCategory] =
     useState<ServiceCategory>("Planned Visits");
 
   return (
-    <div className="flex px-8 md:px-32 lg:px-40">
+    <div className="flex">
       {/* Sidebar */}
       <div className="w-[50%] lg:w-[30%] min-h-[400px] flex-shrink-0 border bg-gray-100">
         {serviceCategories.map((category) => (
@@ -52,7 +50,7 @@ const Services: React.FC = () => {
         </div>
 
         <div className="flex justify-center items-center mt-auto  sm:mb-4 ">
-          <Button
+           <Button
             buttonText="View Services"
             buttonBackground="bg-secondary-2"
             buttonLink="/services"

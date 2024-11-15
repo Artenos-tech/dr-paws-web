@@ -92,11 +92,10 @@ const Profile: React.FC = () => {
     setProfileData(updatedProfile);
     localStorage.setItem("userProfile", JSON.stringify(updatedProfile));
   };
-  
 
   return (
     <div className="flex flex-col w-full h-full lg:h-screen items-center font-roca pb-20 flex-grow ">
-      <main className="flex flex-col w-full gap-8 md:gap-16 items-center px-8 md:px-32 lg:px-40">
+      <main className="flex flex-col w-full gap-8 md:gap-16 items-center px-8 md:px-32 lg:px-20 xl:px-40">
         {profileData && (
           <ProfileCard
             profile={profileData}

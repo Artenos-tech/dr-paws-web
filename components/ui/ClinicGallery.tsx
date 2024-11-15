@@ -1,36 +1,33 @@
 "use client";
 
-import { photos } from "@/model/mockData"; // photos is an array of images
+import { photos } from "@/model/mockData";
 import React, { useState, useEffect } from "react";
 import ReactModal from "react-modal";
 import { IoIosArrowBack, IoIosArrowForward, IoMdClose } from "react-icons/io";
 import { Clinic } from "@/model/typeDefinitions";
 import Button from "./Button";
+import ContactInfoModal from "./ContactInfoModal";
 
 interface ClinicGalleryProps {
   clinic: Clinic;
 }
 
 function ClinicGallery({ clinic }: ClinicGalleryProps) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const limitedGalleryItems = photos.slice(0, 7);
   const [isMounted, setIsMounted] = useState(false);
 
-  // Ensure setAppElement is called only on the client side after the DOM is ready
   useEffect(() => {
     setIsMounted(true);
-    // if (typeof window !== "undefined") {
     const appElement = document.getElementById("__next");
     if (appElement) {
       ReactModal.setAppElement(appElement);
     } else {
       console.warn("ReactModal: App element with id '__next' not found.");
     }
-    // }
   }, []);
-
-  useEffect(() => {});
 
   const openModal = (index: number) => {
     setCurrentIndex(index);
@@ -46,18 +43,16 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
   }
 
   return (
-    <div>
+    <div className="w-full">
       <div className="gallery-container grid grid-cols-3 gap-4">
         {limitedGalleryItems.map((image, index) => (
           <div
             key={index}
-            className={`relative bg-black ${
-              index === limitedGalleryItems.length - 1 ? "cursor-pointer" : ""
-            }`}
+            className="relative cursor-pointer"
             onClick={
               index === limitedGalleryItems.length - 1
                 ? () => openModal(0)
-                : undefined
+                : () => openModal(index)
             }
           >
             <img
@@ -78,13 +73,17 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
       <div className="w-full flex justify-between mt-8">
         <div className="flex flex-col gap-4">
           <h1 className="text-xl md:text-4xl">{clinic.clinicName}</h1>
-          <p className="text-primary-1">
-            {clinic.services}
-          </p>
         </div>
         <div>
-          <Button buttonText="Book a visit" buttonBackground="bg-secondary-1" />
+          <Button
+            buttonText="Book a visit"
+            buttonBackground="bg-secondary-1"
+            buttonClickEvent={() => setIsModalOpen(true)}
+          />
         </div>
+      </div>
+      <div className="mt-4">
+        <p className="text-primary-1">{clinic.services}</p>
       </div>
       {/* Modal */}
       <ReactModal
@@ -144,6 +143,10 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
           </button>
         </div>
       </ReactModal>
+      <ContactInfoModal
+        isOpen={isModalOpen}
+        onRequestClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 }
