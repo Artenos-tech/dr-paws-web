@@ -32,20 +32,21 @@ export default function MemberCard({ plan, onSelect }: MemberCardProps) {
         </div>
       )}
 
-      <div className="w-20 h-20 mb-4 ">
-        <Image
-          src={plan.icon}
-          alt={`${plan.title} icon`}
-          className="object-contain"
-        />
+      <div className="flex flex-col h-[210px] xl:h-[240px]">
+        <div className="w-20 h-20 mb-4 self-center">
+          <Image
+            src={plan.icon}
+            alt={`${plan.title} icon`}
+            className="object-contain"
+          />
+        </div>
+        <h3 className="text-2xl text-primary-1 w-full text-left mb-2 ">
+          {plan.title}
+        </h3>
+        <p className="text-primary-1 text-sm text-left mb-2 xl:mb-6">
+          {plan.description}
+        </p>
       </div>
-      <h3 className="text-2xl text-primary-1 w-full text-left mb-2 ">
-        {plan.title}
-      </h3>
-
-      <p className="text-primary-1 text-sm text-left mb-2 xl:mb-6">
-        {plan.description}
-      </p>
 
       <div className="w-full mb-4">
         <p className="text-primary-1 text-base font-bold text-start mb-2">

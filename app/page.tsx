@@ -38,7 +38,7 @@ export default function Home() {
               meet?
             </p>
             <div className="flex justify-center md:justify-start">
-              <BannerList openContactModal ={() => setIsModalOpen(true)} />
+              <BannerList openContactModal={() => setIsModalOpen(true)} />
             </div>
           </div>
         </div>
@@ -48,7 +48,9 @@ export default function Home() {
             <h1 className="mt-4 mb-16 text-center text-primary-1 text-xl md:text-4xl px-8">
               Veterinary care, redesigned to be better
             </h1>
-            <DescriptionCardList openContactModal ={() => setIsModalOpen(true)} />
+            <DescriptionCardList
+              openContactModal={() => setIsModalOpen(true)}
+            />
           </div>
           <div className="mx-auto mt-12 lg:mt-32">
             <h1 className="mx-auto text-center text-xl md:text-4xl">
@@ -126,7 +128,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="w-[75%] mx-auto mt-20 md:mt-40 flex flex-col gap-8">
+          <div className="mx-auto mt-20 md:mt-40 flex flex-col gap-8">
             <h1 className="text-xl md:text-4xl text-center">
               Our Medical Teams Bring The Magic to Dr. Paws
             </h1>
@@ -134,8 +136,8 @@ export default function Home() {
               <div className="w-full lg:w-1/2 flex justify-center lg:justify-end">
                 <Image src={YellowAndDocWithDog} alt="Yellow" />
               </div>
-              <div className="p-10 flex flex-col gap-6 w-full lg:w-1/2">
-                <div className="">
+              <div className="p-5 lg:p-10 flex flex-col gap-6 w-full lg:w-1/2">
+                <div className="flex flex-col gap-2">
                   <div className="flex w-full gap-[18px]">
                     <Image
                       src={TickMark}
@@ -146,13 +148,13 @@ export default function Home() {
                       Doing What&apos;s Right. Always
                     </h1>
                   </div>
-                  <p className=" text-[14px] ml-[58px]">
+                  <p className=" text-[14px] ml-0 lg:ml-[58px] text-start">
                     Unlike other clinics, our teams are evaluated on customer
                     satisfaction over revenue. This ensures we never
                     over-medicate or suggest unnecessary treatments.
                   </p>
                 </div>
-                <div className="">
+                <div className="flex flex-col gap-2">
                   <div className="flex w-full gap-[18px]">
                     <Image
                       src={TickMark}
@@ -163,14 +165,14 @@ export default function Home() {
                       Highly Qualified & Up-to-Date
                     </h1>
                   </div>
-                  <p className=" text-[14px] ml-[58px]">
+                  <p className=" text-[14px] ml-0 lg:ml-[58px] text-start">
                     We have a highly selective hiring process, with vets &
                     technicians coming from the best schools & practices. Once
                     on the team, we ensure they attend conferences and courses
                     to learn new skills, and stay up-to-date
                   </p>
                 </div>
-                <div className="">
+                <div className="flex flex-col gap-2">
                   <div className="flex w-full gap-[18px]">
                     <Image
                       src={TickMark}
@@ -181,7 +183,7 @@ export default function Home() {
                       Treating Animals, Like They&apos;re Our Own
                     </h1>
                   </div>
-                  <p className=" text-[14px] ml-[58px]">
+                  <p className=" text-[14px] ml-0 lg:ml-[58px] text-start">
                     We focus on bedside manner, pet psychology and handling in
                     every team member&apos;s training. Your pet will feel at
                     ease with us
@@ -204,7 +206,6 @@ export default function Home() {
             isOpen={isModalOpen}
             onRequestClose={() => setIsModalOpen(false)}
           />
-
         </div>
       </main>
     </div>
