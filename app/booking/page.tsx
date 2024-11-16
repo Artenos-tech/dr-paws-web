@@ -3,8 +3,6 @@
 import BookingCard from "@/components/ui/BookingCard";
 import React, { useState, useEffect } from "react";
 
-
-
 export interface Pet {
   petId: string;
   name: string;
@@ -17,7 +15,7 @@ export interface BookingCategory {
   description: string;
 }
 
- const bookingCategories: BookingCategory[] = [
+const bookingCategories: BookingCategory[] = [
   { id: "1", title: "Planned check-ups", description: "vaccination, health checkup..." },
   { id: "2", title: "Sickness & Emergency", description: "lethargy, vomiting, limping..." },
   { id: "3", title: "Diagnostics", description: "blood test, tick fever test..." },
@@ -30,7 +28,9 @@ export interface BookingCategory {
 const BookingPage: React.FC = () => {
   const [pets, setPets] = useState<Pet[]>([]);
   const [selectedData, setSelectedData] = useState<Record<string, Pet[]>>({});
+  const [openCard, setOpenCard] = useState<string | null>(null);
 
+  // Load pets from localStorage
   useEffect(() => {
     const savedPets = localStorage.getItem("pets");
     const parsedPets = savedPets ? JSON.parse(savedPets) : [];
@@ -44,12 +44,20 @@ const BookingPage: React.FC = () => {
     }));
   };
 
+  const toggleCard = (cardId: string) => {
+    setOpenCard((prev) => (prev === cardId ? null : cardId)); // Toggle only the clicked card
+  };
+
+  const handleNextButtonClick = () => {
+    console.log("Selected Cards and Pets:", selectedData);
+  };
+
   return (
     <div className="p-8">
       <h1 className="text-2xl font-bold mb-4">Select Services</h1>
       <p className="text-gray-600 mb-6">Choose from our services:</p>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-start">
         {bookingCategories.map((category) => (
           <BookingCard
             key={category.id}
@@ -58,13 +66,20 @@ const BookingPage: React.FC = () => {
             description={category.description}
             pets={pets}
             onCardSelection={handleCardSelection}
+            isOpen={openCard === category.id} // Open only the selected card
+            toggleCard={toggleCard} // Pass toggle function directly
           />
         ))}
       </div>
 
+      {/* Next Button */}
       <div className="mt-8">
-        <h2 className="text-xl font-medium mb-4">Selected Data:</h2>
-        <pre>{JSON.stringify(selectedData, null, 2)}</pre>
+        <button
+          onClick={handleNextButtonClick}
+          className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition"
+        >
+          Next
+        </button>
       </div>
     </div>
   );
