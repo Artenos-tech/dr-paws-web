@@ -2,6 +2,13 @@
 
 import BookingCard from "@/components/ui/BookingCard";
 import React, { useState, useEffect } from "react";
+import birdDefault from '@/public/assets/images/pets/bird.png';
+import catDefault from '@/public/assets/images/pets/cat.png';
+import dogDefault from '@/public/assets/images/pets/dog.png';
+import hamsterDefault from '@/public/assets/images/pets/hamster.png';
+import rabbitDefault from '@/public/assets/images/pets/rabbit.png';
+
+
 
 export interface Pet {
   petId: string;
@@ -28,7 +35,7 @@ const bookingCategories: BookingCategory[] = [
 const BookingPage: React.FC = () => {
   const [pets, setPets] = useState<Pet[]>([]);
   const [selectedData, setSelectedData] = useState<Record<string, Pet[]>>({});
-  const [openCard, setOpenCard] = useState<string | null>(null);
+  const [openCard, setOpenCard] = useState<string[]>([]); // Track all open cards
 
   // Load pets from localStorage
   useEffect(() => {
@@ -45,7 +52,15 @@ const BookingPage: React.FC = () => {
   };
 
   const toggleCard = (cardId: string) => {
-    setOpenCard((prev) => (prev === cardId ? null : cardId)); // Toggle only the clicked card
+    setOpenCard((prevOpenCards) => {
+      if (prevOpenCards?.includes(cardId)) {
+        // If the card is already open, close it
+        return prevOpenCards.filter((id) => id !== cardId);
+      } else {
+        // Otherwise, open the card
+        return [...prevOpenCards, cardId];
+      }
+    });
   };
 
   const handleNextButtonClick = () => {
@@ -66,7 +81,7 @@ const BookingPage: React.FC = () => {
             description={category.description}
             pets={pets}
             onCardSelection={handleCardSelection}
-            isOpen={openCard === category.id} // Open only the selected card
+            isOpen={openCard?.includes(category.id)} // Check if the card is open
             toggleCard={toggleCard} // Pass toggle function directly
           />
         ))}
