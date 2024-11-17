@@ -2,6 +2,15 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
+import AddPetModal from "./AddPetModal";
+
+import defaultPetImg from "@/public/assets/images/pets/petImg.png";
+import defaultdogImg from "@/public/assets/images/pets/dog.png";
+import defaultCatImg from "@/public/assets/images/pets/cat.png";
+import defaultHamsterImg from "@/public/assets/images/pets/hamster.png";
+import defaultBirdImg from "@/public/assets/images/pets/bird.png";
+import defaultRabbitImg from "@/public/assets/images/pets/rabbit.png";
+import defaultOtherPetImage from "@/public/assets/images/pets/petImg.png";
 
 interface Pet {
   petId: string;
@@ -29,6 +38,18 @@ const BookingCard: React.FC<BookingCardProps> = ({
   toggleCard,
 }) => {
   const [selectedPets, setSelectedPets] = useState<Pet[]>([]);
+  const [isAddPetModalOpen, setIsAddPetModalOpen] = useState(false);
+
+  // Mapping for default pet images
+  const defaultImages: Record<string, string> = {
+    dog: defaultdogImg.src,
+    cat: defaultCatImg.src,
+    bird: defaultBirdImg.src,
+    rabbit: defaultRabbitImg.src,
+    hamster: defaultHamsterImg.src,
+    other: defaultOtherPetImage.src,
+
+  };
 
   const handlePetClick = (pet: Pet) => {
     let updatedPets: Pet[];
@@ -40,6 +61,31 @@ const BookingCard: React.FC<BookingCardProps> = ({
 
     setSelectedPets(updatedPets);
     onCardSelection(cardId, updatedPets);
+  };
+
+  const handleAddPetClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent card toggle when clicking on Add Pet
+    setIsAddPetModalOpen(true);
+  };
+
+  const handleAddPetModalClose = () => {
+    setIsAddPetModalOpen(false);
+  };
+
+
+
+  const handleNewPetSubmit = (newPet: { name: string; type: string }) => {
+    const petType = newPet.type.toLowerCase();
+    const newPetObject: Pet = {
+      petId: Date.now().toString(), // Unique ID for the pet
+      name: newPet.name,
+      petImage: defaultImages[petType] || defaultImages.ohter, // Use appropriate default image
+    };
+
+    const updatedPets = [...pets, newPetObject];
+    setSelectedPets(updatedPets);
+    onCardSelection(cardId, updatedPets);
+    handleAddPetModalClose();
   };
 
   const handleCardClick = (e: React.MouseEvent) => {
@@ -59,9 +105,9 @@ const BookingCard: React.FC<BookingCardProps> = ({
         <input
           type="checkbox"
           checked={isOpen}
-          readOnly // Prevent direct state manipulation
+          readOnly
           className="w-6 h-6 cursor-pointer"
-          onClick={handleCardClick} // Ensure this triggers only for the current card
+          onClick={handleCardClick}
         />
       </div>
       <p className="text-gray-500 mb-4">{description}</p>
@@ -75,12 +121,12 @@ const BookingCard: React.FC<BookingCardProps> = ({
                 key={pet.petId}
                 className="relative cursor-pointer"
                 onClick={(e) => {
-                  e.stopPropagation(); // Prevent triggering card toggle when selecting pets
+                  e.stopPropagation();
                   handlePetClick(pet);
                 }}
               >
                 <Image
-                  src={pet.petImage}
+                  src={pet.petImage || defaultImages.default} // Use default image if no image is set
                   alt={pet.name}
                   width={70}
                   height={70}
@@ -98,9 +144,23 @@ const BookingCard: React.FC<BookingCardProps> = ({
                 <p className="text-center mt-2">{pet.name}</p>
               </div>
             ))}
+
+            <div
+              className="flex flex-col items-center justify-center cursor-pointer border border-dashed border-gray-400 rounded-md w-[70px] h-[70px] text-gray-500"
+              onClick={handleAddPetClick}
+            >
+              <span className="text-2xl font-bold">+</span>
+              <span className="text-sm">Add Pet</span>
+            </div>
           </div>
         </div>
       )}
+
+      <AddPetModal
+        isOpen={isAddPetModalOpen}
+        onClose={handleAddPetModalClose}
+        onSubmit={handleNewPetSubmit}
+      />
     </div>
   );
 };

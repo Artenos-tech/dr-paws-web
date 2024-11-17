@@ -2,11 +2,7 @@
 
 import BookingCard from "@/components/ui/BookingCard";
 import React, { useState, useEffect } from "react";
-import birdDefault from '@/public/assets/images/pets/bird.png';
-import catDefault from '@/public/assets/images/pets/cat.png';
-import dogDefault from '@/public/assets/images/pets/dog.png';
-import hamsterDefault from '@/public/assets/images/pets/hamster.png';
-import rabbitDefault from '@/public/assets/images/pets/rabbit.png';
+
 
 
 
