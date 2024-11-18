@@ -33,33 +33,15 @@ export default function BookingModal({
             />
           </div>
 
+          <div className="w-full md:w-2/3 p-6 flex flex-col items-center justify-center gap-12">
+            <p>
+              Our doctors must examine your animal before a surgery. This
+              booking will be for a vet consultation, post which a{" "}
+              <span className="font-semibold">surgery</span> may be booked in
+              the clinic
+            </p>
 
-          <div className="w-full md:w-2/3 p-6">
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold mb-4">
-                Our doctors must examine your animal before a surgery
-              </h2>
-              <p className="text-gray-600">
-                This booking will be for a vet consultation, post which a{" "}
-                <span className="font-bold">surgery</span>. may be booked in the
-                clinic
-              </p>
-            </div>
-
-
-            <div className="mb-8">
-              <h3 className="font-semibold mb-2">Selected Services:</h3>
-              <div className="space-y-2">
-                {selectedItems.map((item) => (
-                  <div key={item.id} className="text-sm text-gray-600">
-                    • {item.title}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-
-            <div className="flex justify-end">
+            <div className="flex justify-end ">
               <Button buttonBackground="bg-secondary-1" buttonText="Next" />
             </div>
           </div>

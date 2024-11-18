@@ -4,18 +4,14 @@ import React, { useState } from "react";
 import Image from "next/image";
 import AddPetModal from "./AddPetModal";
 
-import defaultPetImg from "@/public/assets/images/pets/petImg.png";
-import defaultdogImg from "@/public/assets/images/pets/dog.png";
-import defaultCatImg from "@/public/assets/images/pets/cat.png";
-import defaultHamsterImg from "@/public/assets/images/pets/hamster.png";
-import defaultBirdImg from "@/public/assets/images/pets/bird.png";
-import defaultRabbitImg from "@/public/assets/images/pets/rabbit.png";
-import defaultOtherPetImage from "@/public/assets/images/pets/petImg.png";
+import { petImageByType } from "./PetCard"; // Import the default image mapping
+import tickMark from "@/public/assets/images/Booking/tick-svgrepo-com.svg";
 
 interface Pet {
   petId: string;
   name: string;
-  petImage: string;
+  type: string; // Add type to match PetCard's structure
+  petImage?: string; // Pet image can be undefined
 }
 
 interface BookingCardProps {
@@ -40,17 +36,6 @@ const BookingCard: React.FC<BookingCardProps> = ({
   const [selectedPets, setSelectedPets] = useState<Pet[]>([]);
   const [isAddPetModalOpen, setIsAddPetModalOpen] = useState(false);
 
-  // Mapping for default pet images
-  const defaultImages: Record<string, string> = {
-    dog: defaultdogImg.src,
-    cat: defaultCatImg.src,
-    bird: defaultBirdImg.src,
-    rabbit: defaultRabbitImg.src,
-    hamster: defaultHamsterImg.src,
-    other: defaultOtherPetImage.src,
-
-  };
-
   const handlePetClick = (pet: Pet) => {
     let updatedPets: Pet[];
     if (selectedPets.some((p) => p.petId === pet.petId)) {
@@ -72,14 +57,13 @@ const BookingCard: React.FC<BookingCardProps> = ({
     setIsAddPetModalOpen(false);
   };
 
-
-
   const handleNewPetSubmit = (newPet: { name: string; type: string }) => {
     const petType = newPet.type.toLowerCase();
     const newPetObject: Pet = {
       petId: Date.now().toString(), // Unique ID for the pet
       name: newPet.name,
-      petImage: defaultImages[petType] || defaultImages.ohter, // Use appropriate default image
+      type: petType,
+      petImage: petImageByType[petType]?.src, // Use the default image for the type
     };
 
     const updatedPets = [...pets, newPetObject];
@@ -95,7 +79,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
 
   return (
     <div
-      className={`border rounded-lg p-4 shadow-sm cursor-pointer ${
+      className={`border rounded-lg p-4 shadow-sm cursor-pointer font-sans ${
         isOpen ? "border-blue-500 bg-blue-50" : "border-gray-300"
       }`}
       onClick={handleCardClick}
@@ -116,41 +100,54 @@ const BookingCard: React.FC<BookingCardProps> = ({
         <div>
           <h3 className="text-lg font-medium mb-2">Select your Pet/Pets:</h3>
           <div className="flex gap-4 flex-wrap">
-            {pets.map((pet) => (
-              <div
-                key={pet.petId}
-                className="relative cursor-pointer"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handlePetClick(pet);
-                }}
-              >
-                <Image
-                  src={pet.petImage || defaultImages.default} // Use default image if no image is set
-                  alt={pet.name}
-                  width={70}
-                  height={70}
-                  className={`rounded-md min-w-[70px] min-h-[70px] ${
-                    selectedPets.some((p) => p.petId === pet.petId)
-                      ? "opacity-60 blur-sm"
-                      : "opacity-100"
-                  }`}
-                />
-                {selectedPets.some((p) => p.petId === pet.petId) && (
-                  <div className="absolute inset-0 flex items-center justify-center text-white font-bold">
-                    ✓
-                  </div>
-                )}
-                <p className="text-center mt-2">{pet.name}</p>
-              </div>
-            ))}
+            {pets.map((pet) => {
+              const petImage =
+                pet.petImage ||
+                petImageByType[pet.type.toLowerCase()]?.src || // Fallback to type-based default image
+                petImageByType["other"].src; // Fallback to "other" type
 
-            <div
-              className="flex flex-col items-center justify-center cursor-pointer border border-dashed border-gray-400 rounded-md w-[70px] h-[70px] text-gray-500"
-              onClick={handleAddPetClick}
-            >
-              <span className="text-2xl font-bold">+</span>
-              <span className="text-sm">Add Pet</span>
+              return (
+                <div
+                  key={pet.petId}
+                  className="relative cursor-pointer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handlePetClick(pet);
+                  }}
+                >
+                  <Image
+                    src={petImage}
+                    alt={pet.name}
+                    width={70}
+                    height={70}
+                    className={`rounded-full border-2 min-w-[70px] min-h-[70px] ${
+                      selectedPets.some((p) => p.petId === pet.petId)
+                        ? "opacity-50 "
+                        : "opacity-100"
+                    }`}
+                  />
+                  {selectedPets.some((p) => p.petId === pet.petId) && (
+                    <div className="absolute inset-0 -top-7 flex items-center justify-center text-white font-bold">
+                      <Image
+                        src={tickMark.src}
+                        alt="tick mark"
+                        width={50}
+                        height={50}
+                      />
+                    </div>
+                  )}
+                  <p className="text-center mt-2">{pet.name}</p>
+                </div>
+              );
+            })}
+            <div className="flex flex-col items-center justify-center gap-3">
+              <div
+                className="flex flex-col items-center rounded-full justify-center cursor-pointer border border-dashed border-gray-400 w-[70px] h-[70px] text-gray-500"
+                onClick={handleAddPetClick}
+              >
+                <span className="text-2xl font-bold">+</span>
+              </div>
+              <div className="text-sm">Add Pet</div>
             </div>
           </div>
         </div>

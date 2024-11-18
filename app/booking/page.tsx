@@ -1,15 +1,15 @@
 "use client";
 
 import BookingCard from "@/components/ui/BookingCard";
+import BookingModal from "@/components/ui/BookingModal";
+import Button from "@/components/ui/Button";
 import React, { useState, useEffect } from "react";
-
-
-
 
 export interface Pet {
   petId: string;
   name: string;
-  petImage: string;
+  type: string; // Added type to match the updated BookingCard
+  petImage?: string; // petImage is optional, as default images may be used
 }
 
 export interface BookingCategory {
@@ -19,24 +19,58 @@ export interface BookingCategory {
 }
 
 const bookingCategories: BookingCategory[] = [
-  { id: "1", title: "Planned check-ups", description: "vaccination, health checkup..." },
-  { id: "2", title: "Sickness & Emergency", description: "lethargy, vomiting, limping..." },
-  { id: "3", title: "Diagnostics", description: "blood test, tick fever test..." },
-  { id: "4", title: "Planned Surgeries", description: "vaccination, health checkup..." },
-  { id: "5", title: "Dental", description: "lethargy, vomiting, limping..." },
-  { id: "6", title: "Grooming", description: "haircut, spa..." },
-  { id: "7", title: "Pet Services", description: "training, boarding..." },
+  {
+    id: "Planned Visits",
+    title: "Planned Visits",
+    description: "vaccination, health checkup...",
+  },
+  {
+    id: "Sickness & Emergency",
+    title: "Sickness & Emergency",
+    description: "lethargy, vomiting, limping...",
+  },
+  {
+    id: "Diagnostics",
+    title: "Diagnostics",
+    description: "blood test, tick fever test...",
+  },
+  {
+    id: "Surgeries",
+    title: "Surgeries",
+    description: "vaccination, health checkup...",
+  },
+  {
+    id: "Physiotherapy",
+    title: "Physiotherapy",
+    description: "lethargy, vomiting, limping...",
+  },
+  { 
+    id: "Grooming", 
+    title: "Grooming", 
+    description: "haircut, spa..." },
+  {
+    id: "Pet Services",
+    title: "Pet Services",
+    description: "training, boarding...",
+  },
 ];
 
 const BookingPage: React.FC = () => {
   const [pets, setPets] = useState<Pet[]>([]);
   const [selectedData, setSelectedData] = useState<Record<string, Pet[]>>({});
-  const [openCard, setOpenCard] = useState<string[]>([]); // Track all open cards
+  const [openCard, setOpenCard] = useState<string[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Load pets from localStorage
   useEffect(() => {
     const savedPets = localStorage.getItem("pets");
-    const parsedPets = savedPets ? JSON.parse(savedPets) : [];
+    const parsedPets: Pet[] = savedPets
+      ? JSON.parse(savedPets).map((pet: any) => ({
+          ...pet,
+          type: pet.type || "other", // Ensure all pets have a type
+          petImage: pet.petImage || undefined, // Optional petImage field
+        }))
+      : [];
     setPets(parsedPets);
   }, []);
 
@@ -49,7 +83,7 @@ const BookingPage: React.FC = () => {
 
   const toggleCard = (cardId: string) => {
     setOpenCard((prevOpenCards) => {
-      if (prevOpenCards?.includes(cardId)) {
+      if (prevOpenCards.includes(cardId)) {
         // If the card is already open, close it
         return prevOpenCards.filter((id) => id !== cardId);
       } else {
@@ -62,6 +96,8 @@ const BookingPage: React.FC = () => {
   const handleNextButtonClick = () => {
     console.log("Selected Cards and Pets:", selectedData);
   };
+
+  const isButtonDisabled = Object.keys(openCard).length === 0;
 
   return (
     <div className="p-8">
@@ -77,21 +113,29 @@ const BookingPage: React.FC = () => {
             description={category.description}
             pets={pets}
             onCardSelection={handleCardSelection}
-            isOpen={openCard?.includes(category.id)} // Check if the card is open
+            isOpen={openCard.includes(category.id)} // Check if the card is open
             toggleCard={toggleCard} // Pass toggle function directly
           />
         ))}
       </div>
 
-      {/* Next Button */}
-      <div className="mt-8">
-        <button
-          onClick={handleNextButtonClick}
-          className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition"
-        >
-          Next
-        </button>
+      <div className="mt-8 w-full flex item-center justify-center p-4">
+        <Button
+          buttonText="Next"
+          buttonBackground="bg-secondary-1"
+          buttonClickEvent={handleNextButtonClick}
+          disabled={isButtonDisabled} // Disable button if no cards are selected
+        />
       </div>
+      <button onClick={() => setIsModalOpen(true)}>open modal</button>
+      <BookingModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)} // Close modal
+        selectedItems={bookingCategories.filter((category) =>
+          openCard.includes(category.id)
+        )}
+        onNext={() => console.log("Proceeding to next step")}
+      />
     </div>
   );
 };
