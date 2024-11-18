@@ -12,12 +12,28 @@ import logo from "@/public/assets/images/logo/logo.svg";
 import { clinicItems } from "@/model/mockData";
 import ContactInfoModal from "../ui/ContactInfoModal";
 import UserAuthenticationModal from "../ui/UserAuthenticationModal";
+import { useRouter } from "next/navigation";
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isLocationOpen, setIsLocationOpen] = useState(false);
   const [isContactModalOpen, setContactIsModalOpen] = useState(false);
-  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [loginModalOpen, setLoginModalOpen] = useState<boolean>(false);
+  const navigate = useRouter();
+
+  const [buttonText, setButtonText] = useState<string>("");
+
+  const handleLoginModalOpen = (text: string) => {
+    setLoginModalOpen(true);
+    setButtonText(text);
+  };
+
+  const onSuccess = () => {
+    if (buttonText === "View Profile" || buttonText === "View Pets") {
+      navigate.push("/user/profile");
+    }
+    setLoginModalOpen(false);
+  };
 
   return (
     <div className="fixed left-0 top-0 z-30 bg-primary-3 w-full">
@@ -91,9 +107,9 @@ export default function NavBar() {
             <Button
               buttonText="Book a visit"
               buttonBackground="bg-secondary-1"
-              buttonClickEvent={() => setModalOpen(true)}
+              buttonClickEvent={() => handleLoginModalOpen("Book a Visit")}
             />
-            {/* <button onClick={() => setModalOpen(true)}>login</button> */}
+            {/* <button onClick={() => setLoginModalOpen(true)}>login</button> */}
             <DropdownMenu.Root>
               <DropdownMenu.Trigger className="outline-none">
                 <Image
@@ -112,7 +128,7 @@ export default function NavBar() {
                 >
                   <DropdownMenu.Item asChild>
                     <div
-                      onClick={() => setContactIsModalOpen(true)}
+                      onClick={() => handleLoginModalOpen("View Profile")}
                       className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
                     >
                       Profile
@@ -120,7 +136,7 @@ export default function NavBar() {
                   </DropdownMenu.Item>
                   <DropdownMenu.Item asChild>
                     <div
-                      onClick={() => setContactIsModalOpen(true)}
+                      onClick={() => handleLoginModalOpen("View Pets")}
                       className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
                     >
                       My Pets
@@ -146,7 +162,7 @@ export default function NavBar() {
                   <div className="border-t border-gray-300 my-2" />
                   <DropdownMenu.Item asChild>
                     <div
-                      onClick={() => setContactIsModalOpen(true)}
+                      onClick={() => navigate.push("/membership")}
                       className="text-secondary-1 flex justify-between items-center hover:text-primary-1 cursor-pointer outline-none"
                     >
                       Become a Member <MdChevronRight />
@@ -271,7 +287,7 @@ export default function NavBar() {
                     <DropdownMenu.Item
                       onClick={() => {
                         setIsOpen(false);
-                        setContactIsModalOpen(true);
+                        handleLoginModalOpen("View Profile");
                       }}
                       className="text-primary-1 hover:text-secondary-1 cursor-pointer"
                     >
@@ -280,9 +296,8 @@ export default function NavBar() {
                     <DropdownMenu.Item
                       onClick={() => {
                         setIsOpen(false);
-                        setContactIsModalOpen(true);
+                        handleLoginModalOpen("View Pets");
                       }}
-                      asChild
                       className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none "
                     >
                       My Pets
@@ -309,7 +324,7 @@ export default function NavBar() {
                     <DropdownMenu.Item
                       onClick={() => {
                         setIsOpen(false);
-                        setContactIsModalOpen(true);
+                        navigate.push("/membership");
                       }}
                       className="text-secondary-1 flex justify-between items-center hover:text-primary-1 cursor-pointer"
                     >
@@ -351,7 +366,7 @@ export default function NavBar() {
                 <Button
                   buttonText="Book a visit"
                   buttonBackground="bg-secondary-1"
-                  buttonClickEvent={() => setModalOpen(true)}
+                  buttonClickEvent={() => handleLoginModalOpen("Book a Visit")}
                 />
               </div>
             </div>
@@ -364,9 +379,11 @@ export default function NavBar() {
       />
 
       <UserAuthenticationModal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
+        isOpen={loginModalOpen}
+        onClose={() => setLoginModalOpen(false)}
         // initialMobileNumber="9440705361"
+        buttonText={buttonText}
+        onSuccess={onSuccess}
       />
     </div>
   );

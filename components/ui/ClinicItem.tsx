@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Clinic } from "@/model/typeDefinitions";
-import ContactInfoModal from "./ContactInfoModal";
+import UserAuthenticationModal from "./UserAuthenticationModal";
 
 interface ClinicItemProps {
   clinic: Clinic;
@@ -12,8 +12,19 @@ interface ClinicItemProps {
 
 const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
   const { image, clinicName, services, id } = clinic;
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loginModalOpen, setLoginModalOpen] = useState<boolean>(false);
   const router = useRouter();
+
+  const [buttonText, setButtonText] = useState<string>("");
+
+  const handleLoginModalOpen = (val: string) => {
+    setLoginModalOpen(true);
+    setButtonText(val);
+  };
+
+  const onSuccess = () => {
+    setLoginModalOpen(false)
+  };
 
   const handleBookVisit = () => {
     router.push(`/clinics/${id}`);
@@ -41,14 +52,18 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
         </div>
       </div>
       <button
-        onClick={() => setIsModalOpen(true)}
+        onClick={() => handleLoginModalOpen("Book a Visit")}
         className={`btn bg-secondary-1 rounded-none border-none z text-white w-full rounded-b-md py-3`}
       >
         Book a Visit
       </button>
-      <ContactInfoModal
-        isOpen={isModalOpen}
-        onRequestClose={() => setIsModalOpen(false)}
+
+      <UserAuthenticationModal
+        isOpen={loginModalOpen}
+        onClose={() => setLoginModalOpen(false)}
+        // initialMobileNumber="9440705361"
+        buttonText={buttonText}
+        onSuccess={onSuccess}
       />
     </div>
   );

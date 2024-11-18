@@ -7,17 +7,29 @@ import { IoIosArrowBack, IoIosArrowForward, IoMdClose } from "react-icons/io";
 import { Clinic } from "@/model/typeDefinitions";
 import Button from "./Button";
 import ContactInfoModal from "./ContactInfoModal";
+import UserAuthenticationModal from "./UserAuthenticationModal";
 
 interface ClinicGalleryProps {
   clinic: Clinic;
 }
 
 function ClinicGallery({ clinic }: ClinicGalleryProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loginModalOpen, setLoginModalOpen] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const limitedGalleryItems = photos.slice(0, 7);
   const [isMounted, setIsMounted] = useState(false);
+
+  const [buttonText, setButtonText] = useState<string>("");
+
+  const handleLoginModalOpen = (val: string) => {
+    setLoginModalOpen(true);
+    setButtonText(val);
+  };
+
+  const onSuccess = () => {
+    setLoginModalOpen(false);
+  };
 
   useEffect(() => {
     setIsMounted(true);
@@ -78,7 +90,7 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
           <Button
             buttonText="Book a visit"
             buttonBackground="bg-secondary-1"
-            buttonClickEvent={() => setIsModalOpen(true)}
+            buttonClickEvent={() => handleLoginModalOpen("Book a Visit")}
           />
         </div>
       </div>
@@ -143,9 +155,13 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
           </button>
         </div>
       </ReactModal>
-      <ContactInfoModal
-        isOpen={isModalOpen}
-        onRequestClose={() => setIsModalOpen(false)}
+
+      <UserAuthenticationModal
+        isOpen={loginModalOpen}
+        onClose={() => setLoginModalOpen(false)}
+        // initialMobileNumber="9440705361"
+        buttonText={buttonText}
+        onSuccess={onSuccess}
       />
     </div>
   );

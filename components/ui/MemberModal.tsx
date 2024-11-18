@@ -4,6 +4,7 @@ import Image from "next/image";
 import Button from "./Button";
 import { MembershipPlan } from "./MemberCard";
 import { useRouter } from "next/navigation";
+import UserAuthenticationModal from "./UserAuthenticationModal";
 
 interface ModalProps {
   isOpen: boolean;
@@ -17,6 +18,15 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
     duration: "2 Year",
     price: "6,999",
   });
+  const [loginModalOpen, setLoginModalOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // Track authentication state
+
+  const [buttonText, setButtonText] = useState<string>("");
+
+  const handleLoginModalOpen = (val: string) => {
+    setLoginModalOpen(true);
+    setButtonText(val);
+  };
 
   if (!isOpen) return null;
 
@@ -36,6 +46,11 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
   ];
 
   const handleContinue = () => {
+    if (!isAuthenticated) {
+      handleLoginModalOpen("Become a Member");
+      return;
+    }
+    // Proceed with the payment route
     const params = new URLSearchParams({
       title: plan.title,
       duration: selectedPlan.duration,
@@ -44,13 +59,18 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
     router.push(`/membership/payment?${params.toString()}`);
   };
 
+  const handleLoginSuccess = () => {
+    setIsAuthenticated(true);
+    setLoginModalOpen(false);
+    handleContinue();
+  };
+
   const handlePaymentPlan = (yearPlan: { duration: string; price: string }) => {
-    console.log(selectedPlan);
     setSelectedPlan(yearPlan);
   };
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center">
+    <div className="fixed inset-0 flex items-center justify-center">
       <div className="fixed inset-0 bg-black/50" onClick={onClose} />
       <div className="relative bg-white rounded-2xl w-[90%] md:w-[800px] max-h-[90vh] overflow-y-auto">
         <button
@@ -146,6 +166,14 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
           </div>
         </div>
       </div>
+
+      {/* Login Modal */}
+      <UserAuthenticationModal
+        isOpen={loginModalOpen}
+        onClose={() => setLoginModalOpen(false)}
+        onSuccess={handleLoginSuccess} // Handle login success
+        buttonText={buttonText}
+      />
     </div>
   );
 };

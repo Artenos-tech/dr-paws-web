@@ -16,14 +16,33 @@ interface descriptionCardProps {
     };
   };
   openContactModal?: () => void;
+  openLoginModal?: ((val: string) => void) | undefined;
 }
 
 const DescriptionCard: React.FC<descriptionCardProps> = ({
   index,
   description,
   openContactModal,
+  openLoginModal,
 }) => {
   const { image, title, button } = description;
+
+  const handleModalByButtonText = () => {
+    if (button.buttonText.includes("Download")) {
+      return <Button {...button} buttonClickEvent={openContactModal} />;
+    }
+    return (
+      <Button
+        {...button}
+        buttonClickEvent={() => {
+          if (openLoginModal) {
+            openLoginModal(button.buttonText);
+          }
+        }}
+      />
+    );
+  };
+
   return (
     <div className="w-full flex flex-col lg:flex-row lg:justify-between lg:items-center lg:gap-20">
       <div className={`w-full ${index % 2 !== 0 ? "lg:order-2" : ""}`}>
@@ -38,7 +57,7 @@ const DescriptionCard: React.FC<descriptionCardProps> = ({
         <p className="text-sm md:text-base my-3 md:my-5">
           {description.desciption}
         </p>
-        <Button {...button} buttonClickEvent={openContactModal} />
+        {handleModalByButtonText()}
       </div>
     </div>
   );

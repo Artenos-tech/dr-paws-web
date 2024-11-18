@@ -17,12 +17,16 @@ interface authenticationProps {
    * We’ll first check if the user is logged in before requiring this prop.
    */
   initialMobileNumber?: string;
+  onSuccess?: () => void;
+  buttonText?: string;
 }
 
 const UserAuthenticationModal: React.FC<authenticationProps> = ({
   isOpen,
   onClose,
   initialMobileNumber,
+  onSuccess,
+  buttonText,
 }) => {
   const [isLogin, setIsLogin] = useState<boolean>(true);
   const [userMobileNumber, setUserMobileNumber] = useState<string | undefined>(
@@ -52,15 +56,11 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
     setUserName(data.userName);
   };
 
-  console.log(userMobileNumber)
-
-
-
   return (
     <Modal
       isOpen={isOpen}
       onRequestClose={onClose}
-      className="mt-16 mx-3 px-10 py-5 bg-white relative rounded-xl shadow-lg overflow-y-auto z-50"
+      className="mt-16 mx-3 px-10 py-5 bg-white relative rounded-xl shadow-lg overflow-y-auto z-[50]"
       overlayClassName="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center"
     >
       <button
@@ -75,11 +75,12 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
           <OTPForm
             userMobileNumber={userMobileNumber}
             loginForm={handleIncorrectNumber}
+            onSuccess={onSuccess}
           />
         ) : isLogin ? (
-          <LoginForm onSubmit={handleLoginSubmit} />
+          <LoginForm onSubmit={handleLoginSubmit} buttonText={buttonText} />
         ) : (
-          <SignupForm onSubmit={handleSignupSubmit}/>
+          <SignupForm onSubmit={handleSignupSubmit} />
         )}
 
         {userMobileNumber ? (

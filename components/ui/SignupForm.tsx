@@ -55,8 +55,6 @@ const SignupForm: React.FC<SignUpFormProps> = ({ onSubmit }) => {
   };
 
   const signUpSubmitHandler = (data: SignUpFormData) => {
-    console.log("inside method");
-    console.log(data);
     onSubmit(data);
   };
 

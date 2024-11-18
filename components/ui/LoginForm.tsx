@@ -14,9 +14,10 @@ type LoginFormData = z.infer<typeof loginSchema>;
 
 interface LoginFormProps {
   onSubmit: (mobileNumber: string) => void;
+  buttonText?: string;
 }
 
-const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
+const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, buttonText }) => {
   const {
     register,
     handleSubmit,
@@ -27,13 +28,14 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
   });
 
   const loginSubmitHandler = (data: LoginFormData) => {
-    console.log(data);
     onSubmit(data.mobileNumber);
   };
 
   return (
     <div className="text-center">
-      <h1 className="text-lg md:text-2xl my-3">Log in to book a visit</h1>
+      <h1 className="text-lg md:text-2xl my-3">
+        Log in {buttonText ? "to " + buttonText : ""}
+      </h1>
       <p className="text-xs md:text-base text-primary-1">
         Add your phone number. We'll send you a <br /> verification code.
       </p>

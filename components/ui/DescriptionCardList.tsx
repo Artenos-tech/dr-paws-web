@@ -1,18 +1,37 @@
+"use client";
 import { descriptionItems } from "@/model/mockData";
-import React from "react";
+import React, { useState } from "react";
 import DescriptionCard from "./DescriptionCard";
+import UserAuthenticationModal from "./UserAuthenticationModal";
+import ContactInfoModal from "./ContactInfoModal";
 
 interface DescriptionCardListProps {
-  openContactModal?: () => void;
+  openLoginModal?: ((val: string) => void) | undefined
 }
 
-const DescriptionCardList:React.FC<DescriptionCardListProps> = ({openContactModal}) => {
+const DescriptionCardList: React.FC<DescriptionCardListProps> = ({
+  openLoginModal,
+}) => {
+  const [contactModalOpen, setContactModalOpen] = useState<boolean>(false);
   return (
-    <div className="w-full flex flex-col justify-center items-center gap-8 md:gap-14">
-      {descriptionItems.map((description, index) => (
-        <DescriptionCard key={index} index={index} description={description} openContactModal={openContactModal} />
-      ))}
-    </div>
+    <>
+      <div className="w-full flex flex-col justify-center items-center gap-8 md:gap-14">
+        {descriptionItems.map((description, index) => (
+          <DescriptionCard
+            key={index}
+            index={index}
+            description={description}
+            openLoginModal={openLoginModal}
+            openContactModal={() => setContactModalOpen(true)}
+          />
+        ))}
+      </div>
+
+      <ContactInfoModal
+        isOpen={contactModalOpen}
+        onRequestClose={() => setContactModalOpen(false)}
+      />
+    </>
   );
 };
 
