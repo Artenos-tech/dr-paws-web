@@ -60,7 +60,7 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
     <Modal
       isOpen={isOpen}
       onRequestClose={onClose}
-      className="mt-16 mx-3 px-10 py-5 bg-white relative rounded-xl shadow-lg overflow-y-auto z-[50]"
+      className="mt-16 mx-3 px-10 py-5 bg-white relative rounded-xl shadow-lg overflow-y-auto z-50"
       overlayClassName="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center"
     >
       <button

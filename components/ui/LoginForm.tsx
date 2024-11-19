@@ -34,7 +34,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, buttonText }) => {
   return (
     <div className="text-center">
       <h1 className="text-lg md:text-2xl my-3">
-        Log in {buttonText ? "to " + buttonText : ""}
+        Log in {buttonText ? "to " + buttonText.toLowerCase() : ""}
       </h1>
       <p className="text-xs md:text-base text-primary-1">
         Add your phone number. We'll send you a <br /> verification code.
