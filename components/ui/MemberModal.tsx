@@ -5,6 +5,7 @@ import Button from "./Button";
 import { MembershipPlan } from "./MemberCard";
 import { useRouter } from "next/navigation";
 import UserAuthenticationModal from "./UserAuthenticationModal";
+import Modal from "react-modal";
 
 interface ModalProps {
   isOpen: boolean;
@@ -70,8 +71,12 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center">
-      <div className="fixed inset-0 bg-black/50" onClick={onClose} />
+    <Modal
+      isOpen={isOpen}
+      onRequestClose={onClose}
+      className="flex relative z-[999] items-center justify-center"
+      overlayClassName="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-[899]"
+    >
       <div className="relative bg-white rounded-2xl w-[90%] md:w-[800px] max-h-[90vh] overflow-y-auto">
         <button
           onClick={onClose}
@@ -174,7 +179,7 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
         onSuccess={handleLoginSuccess} // Handle login success
         buttonText={buttonText}
       />
-    </div>
+    </Modal>
   );
 };
 
