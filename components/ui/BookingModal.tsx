@@ -10,15 +10,14 @@ import Button from "./Button";
 interface BookingModalProps {
   isOpen: boolean;
   onClose: () => void;
-  selectedItems: BookingCategory[];
+
   onNext?: () => void;
 }
 
 export default function BookingModal({
   isOpen,
   onClose,
-  selectedItems,
-  onNext,
+
 }: BookingModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -42,7 +41,7 @@ export default function BookingModal({
             </p>
 
             <div className="flex justify-end ">
-              <Button buttonBackground="bg-secondary-1" buttonText="Next" />
+              <Button buttonBackground="bg-secondary-1" buttonText="Next" buttonClickEvent={onClose} />
             </div>
           </div>
         </div>

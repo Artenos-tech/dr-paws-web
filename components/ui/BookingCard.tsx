@@ -19,7 +19,7 @@ interface BookingCardProps {
   title: string;
   description: string;
   pets: Pet[];
-  onCardSelection: (cardId: string, selectedPets: Pet[]) => void;
+  onCardSelection: (cardId: string, selectedPet: Pet | null) => void; // Changed to handle single pet selection
   isOpen: boolean;
   toggleCard: (cardId: string) => void; 
   setPets: React.Dispatch<React.SetStateAction<Pet[]>>;
@@ -35,19 +35,13 @@ const BookingCard: React.FC<BookingCardProps> = ({
   toggleCard,
   setPets,
 }) => {
-  const [selectedPets, setSelectedPets] = useState<Pet[]>([]);
+  const [selectedPet, setSelectedPet] = useState<Pet | null>(null); // Only one pet can be selected
   const [isAddPetModalOpen, setIsAddPetModalOpen] = useState(false);
 
   const handlePetClick = (pet: Pet) => {
-    let updatedPets: Pet[];
-    if (selectedPets.some((p) => p.petId === pet.petId)) {
-      updatedPets = selectedPets.filter((p) => p.petId !== pet.petId);
-    } else {
-      updatedPets = [...selectedPets, pet];
-    }
-
-    setSelectedPets(updatedPets);
-    onCardSelection(cardId, updatedPets);
+    const newSelectedPet = selectedPet?.petId === pet.petId ? null : pet; // Toggle selection
+    setSelectedPet(newSelectedPet);
+    onCardSelection(cardId, newSelectedPet);
   };
 
   const handleAddPetClick = (e: React.MouseEvent) => {
@@ -104,7 +98,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
 
       {isOpen && (
         <div>
-          <h3 className="text-lg font-medium mb-2">Select your Pet/Pets:</h3>
+          <h3 className="text-lg font-medium mb-2">Select your Pet:</h3>
           <div className="flex gap-4 flex-wrap">
             {pets.map((pet) => {
               const petImage =
@@ -127,12 +121,12 @@ const BookingCard: React.FC<BookingCardProps> = ({
                     width={70}
                     height={70}
                     className={`rounded-full border-2 min-w-[70px] min-h-[70px] ${
-                      selectedPets.some((p) => p.petId === pet.petId)
+                      selectedPet?.petId === pet.petId
                         ? "opacity-50 "
                         : "opacity-100"
                     }`}
                   />
-                  {selectedPets.some((p) => p.petId === pet.petId) && (
+                  {selectedPet?.petId === pet.petId && (
                     <div className="absolute inset-0 -top-7 flex items-center justify-center text-white font-bold">
                       <Image
                         src={tickMark.src}

@@ -1,109 +1,49 @@
 "use client";
 
-import BookingCard from "@/components/ui/BookingCard";
-import BookingModal from "@/components/ui/BookingModal";
-import Button from "@/components/ui/Button";
 import React, { useState, useEffect } from "react";
-import { bookingCategories } from "@/model/mockData";
+import SelectService, { Pet } from "@/components/ui/SelectService";
+import Button from "@/components/ui/Button";
+import SelectClinic from "@/components/ui/SelectClinic";
 
-export interface Pet {
-  petId: string;
-  name: string;
-  type: string; // Added type to match the updated BookingCard
-  petImage?: string; // petImage is optional, as default images may be used
-}
-
-export interface BookingCategory {
-  id: string;
-  title: string;
-  description: string;
-}
-
-const BookingPage: React.FC = () => {
+const Booking: React.FC = () => {
   const [pets, setPets] = useState<Pet[]>([]);
-  const [selectedData, setSelectedData] = useState<Record<string, Pet[]>>({});
-  const [openCard, setOpenCard] = useState<string[]>([]);
+  const [selectedData, setSelectedData] = useState<Record<string, Pet | null>>(
+    {}
+  );
+  const [openCard, setOpenCard] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Load pets from localStorage
   useEffect(() => {
     const savedPets = localStorage.getItem("pets");
     const parsedPets: Pet[] = savedPets
       ? JSON.parse(savedPets).map((pet: any) => ({
           ...pet,
-          type: pet.type || "other", // Ensure all pets have a type
-          petImage: pet.petImage || undefined, // Optional petImage field
+          type: pet.type || "other",
+          petImage: pet.petImage || undefined,
         }))
       : [];
     setPets(parsedPets);
   }, []);
 
-  const handleCardSelection = (cardId: string, selectedPets: Pet[]) => {
-    setSelectedData((prevState) => ({
-      ...prevState,
-      [cardId]: selectedPets,
-    }));
-  };
-
-  const toggleCard = (cardId: string) => {
-    setOpenCard((prevOpenCards) => {
-      if (prevOpenCards.includes(cardId)) {
-        // If the card is already open, close it
-        return prevOpenCards.filter((id) => id !== cardId);
-      } else {
-        // Otherwise, open the card
-        return [...prevOpenCards, cardId];
-      }
-    });
-  };
-
-  const handleNextButtonClick = () => {
-    console.log("Selected Cards and Pets:", selectedData);
-  };
-
-  const isButtonDisabled = Object.keys(openCard).length === 0;
-
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold mb-4">Select Services</h1>
-      <p className="text-gray-600 mb-6">Choose from our services:</p>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-start">
-        {bookingCategories.map((category) => (
-          <BookingCard
-            key={category.id}
-            cardId={category.id}
-            title={category.title}
-            description={category.description}
-            pets={pets}
-            onCardSelection={handleCardSelection}
-            isOpen={openCard.includes(category.id)} 
-            toggleCard={toggleCard} 
-            setPets={setPets}
-          />
-        ))}
-      </div>
-
-      <div className="mt-8 w-full flex item-center justify-center p-4">
-        <Button
-          buttonText="Next"
-          buttonBackground="bg-secondary-1"
-          buttonClickEvent={handleNextButtonClick}
-          disabled={isButtonDisabled}
-        />
-      </div>
-      <button onClick={() => setIsModalOpen(true)}>open modal</button>
-      <BookingModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)} // Close modal
-        selectedItems={bookingCategories.filter((category) =>
-          openCard.includes(category.id)
-        )}
-        onNext={() => console.log("Proceeding to next step")}
+    <div className="font-roca pb-20">
+      <main className="flex flex-col gap-[80px] row-start-2 items-center w-full mt-4 lg:mt-24 px-8 md:px-32 lg:px-20 xl:px-40">
+        <div>
+          <SelectService
+        pets={pets}
+        setPets={setPets}
+        selectedData={selectedData}
+        setSelectedData={setSelectedData}
+        openCard={openCard}
+        setOpenCard={setOpenCard}
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
       />
+          {/* <SelectClinic /> */}
+        </div>
+      </main>
     </div>
   );
 };
 
-export default BookingPage;
-
+export default Booking;

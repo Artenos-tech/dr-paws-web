@@ -107,13 +107,13 @@ export default function AddPetModal({
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-full focus:outline-none  focus:ring-offset-2"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="flex-1 px-4 py-2 bg-secondary-1 text-white rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                className="flex-1 px-4 py-2 bg-secondary-1 text-white rounded-full  focus:outline-none  focus:ring-offset-2"
               >
                 Save
               </button>
