@@ -4,6 +4,7 @@ import BookingCard from "@/components/ui/BookingCard";
 import BookingModal from "@/components/ui/BookingModal";
 import Button from "@/components/ui/Button";
 import React, { useState, useEffect } from "react";
+import { bookingCategories } from "@/model/mockData";
 
 export interface Pet {
   petId: string;
@@ -17,43 +18,6 @@ export interface BookingCategory {
   title: string;
   description: string;
 }
-
-const bookingCategories: BookingCategory[] = [
-  {
-    id: "Planned Visits",
-    title: "Planned Visits",
-    description: "vaccination, health checkup...",
-  },
-  {
-    id: "Sickness & Emergency",
-    title: "Sickness & Emergency",
-    description: "lethargy, vomiting, limping...",
-  },
-  {
-    id: "Diagnostics",
-    title: "Diagnostics",
-    description: "blood test, tick fever test...",
-  },
-  {
-    id: "Surgeries",
-    title: "Surgeries",
-    description: "vaccination, health checkup...",
-  },
-  {
-    id: "Physiotherapy",
-    title: "Physiotherapy",
-    description: "lethargy, vomiting, limping...",
-  },
-  { 
-    id: "Grooming", 
-    title: "Grooming", 
-    description: "haircut, spa..." },
-  {
-    id: "Pet Services",
-    title: "Pet Services",
-    description: "training, boarding...",
-  },
-];
 
 const BookingPage: React.FC = () => {
   const [pets, setPets] = useState<Pet[]>([]);
@@ -113,8 +77,9 @@ const BookingPage: React.FC = () => {
             description={category.description}
             pets={pets}
             onCardSelection={handleCardSelection}
-            isOpen={openCard.includes(category.id)} // Check if the card is open
-            toggleCard={toggleCard} // Pass toggle function directly
+            isOpen={openCard.includes(category.id)} 
+            toggleCard={toggleCard} 
+            setPets={setPets}
           />
         ))}
       </div>
@@ -124,7 +89,7 @@ const BookingPage: React.FC = () => {
           buttonText="Next"
           buttonBackground="bg-secondary-1"
           buttonClickEvent={handleNextButtonClick}
-          disabled={isButtonDisabled} // Disable button if no cards are selected
+          disabled={isButtonDisabled}
         />
       </div>
       <button onClick={() => setIsModalOpen(true)}>open modal</button>
@@ -141,3 +106,4 @@ const BookingPage: React.FC = () => {
 };
 
 export default BookingPage;
+

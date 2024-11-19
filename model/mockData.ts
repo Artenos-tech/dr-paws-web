@@ -922,40 +922,40 @@ export const membershipData = [
   },
 ];
 
+
 export const bookingCategories: BookingCategory[] = [
   {
-    id: '1',
-    title: 'Planned check-ups',
-    description: 'vaccination, health checkup...',
+    id: "Planned Visits",
+    title: "Planned Visits",
+    description: "vaccination, health checkup...",
   },
   {
-    id: '2',
-    title: 'Sickness & Emergency',
-    description: 'lethargy, vomiting, limping...',
+    id: "Sickness & Emergency",
+    title: "Sickness & Emergency",
+    description: "lethargy, vomiting, limping...",
   },
   {
-    id: '3',
-    title: 'Diagnostics',
-    description: 'blood test, tick fever test...',
+    id: "Diagnostics",
+    title: "Diagnostics",
+    description: "blood test, tick fever test...",
   },
   {
-    id: '4',
-    title: 'Planned Surgeries',
-    description: 'vaccination, health checkup...',
+    id: "Surgeries",
+    title: "Surgeries",
+    description: "vaccination, health checkup...",
   },
   {
-    id: '5',
-    title: 'Dental',
-    description: 'lethargy, vomiting, limping...',
+    id: "Physiotherapy",
+    title: "Physiotherapy",
+    description: "lethargy, vomiting, limping...",
   },
+  { 
+    id: "Grooming", 
+    title: "Grooming", 
+    description: "haircut, spa..." },
   {
-    id: '6',
-    title: 'Grooming',
-    description: 'haircut, spa...',
+    id: "Pet Services",
+    title: "Pet Services",
+    description: "training, boarding...",
   },
-  {
-    id: '7',
-    title: 'Pet Services',
-    description: 'training, boarding...',
-  }
 ];

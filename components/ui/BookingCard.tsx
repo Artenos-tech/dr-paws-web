@@ -4,14 +4,14 @@ import React, { useState } from "react";
 import Image from "next/image";
 import AddPetModal from "./AddPetModal";
 
-import { petImageByType } from "./PetCard"; // Import the default image mapping
+import { petImageByType } from "./PetCard"; 
 import tickMark from "@/public/assets/images/Booking/tick-svgrepo-com.svg";
 
 interface Pet {
   petId: string;
   name: string;
-  type: string; // Add type to match PetCard's structure
-  petImage?: string; // Pet image can be undefined
+  type: string; 
+  petImage?: string; 
 }
 
 interface BookingCardProps {
@@ -21,7 +21,8 @@ interface BookingCardProps {
   pets: Pet[];
   onCardSelection: (cardId: string, selectedPets: Pet[]) => void;
   isOpen: boolean;
-  toggleCard: (cardId: string) => void; // Pass cardId to the toggle function
+  toggleCard: (cardId: string) => void; 
+  setPets: React.Dispatch<React.SetStateAction<Pet[]>>;
 }
 
 const BookingCard: React.FC<BookingCardProps> = ({
@@ -32,6 +33,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
   onCardSelection,
   isOpen,
   toggleCard,
+  setPets,
 }) => {
   const [selectedPets, setSelectedPets] = useState<Pet[]>([]);
   const [isAddPetModalOpen, setIsAddPetModalOpen] = useState(false);
@@ -60,15 +62,19 @@ const BookingCard: React.FC<BookingCardProps> = ({
   const handleNewPetSubmit = (newPet: { name: string; type: string }) => {
     const petType = newPet.type.toLowerCase();
     const newPetObject: Pet = {
-      petId: Date.now().toString(), // Unique ID for the pet
+      petId: Date.now().toString(),
       name: newPet.name,
       type: petType,
-      petImage: petImageByType[petType]?.src, // Use the default image for the type
+      petImage: petImageByType[petType]?.src,
     };
 
-    const updatedPets = [...pets, newPetObject];
-    setSelectedPets(updatedPets);
-    onCardSelection(cardId, updatedPets);
+    // Update pets in parent
+    setPets((prevPets) => {
+      const updatedPets = [...prevPets, newPetObject];
+      localStorage.setItem("pets", JSON.stringify(updatedPets)); 
+      return updatedPets;
+    });
+
     handleAddPetModalClose();
   };
 
@@ -79,8 +85,8 @@ const BookingCard: React.FC<BookingCardProps> = ({
 
   return (
     <div
-      className={`border rounded-lg p-4 shadow-sm cursor-pointer font-sans ${
-        isOpen ? "border-blue-500 bg-blue-50" : "border-gray-300"
+      className={`border rounded-sm p-4 shadow-sm cursor-pointer font-sans ${
+        isOpen ? "border-secondary-1 bg-blue-50" : "border-gray-300"
       }`}
       onClick={handleCardClick}
     >
