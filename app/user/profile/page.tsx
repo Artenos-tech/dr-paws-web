@@ -10,13 +10,14 @@ import { StaticImageData } from "next/image";
 import OutlineButton from "@/components/ui/OutlineButton";
 import toast, { Toaster } from "react-hot-toast";
 import EditProfileModal from "@/components/ui/EditProfileModal";
+import { useUserContext } from "@/context/UserContext";
 
 // Define the Pet type
 interface Pet {
   petId: string;
   name: string;
   type: string;
-  petImage: StaticImageData | string;
+  petImage: string;
 }
 
 const Profile: React.FC = () => {
@@ -25,14 +26,24 @@ const Profile: React.FC = () => {
   const [pets, setPets] = useState<Pet[]>([]);
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
 
+  const { updateUserDetailsHandler, updateUserPetsHandler, userPets } =
+    useUserContext();
+
   // Initialize petIdCounter as a string
   const [petIdCounter, setPetIdCounter] = useState<string>("1");
 
   useEffect(() => {
     const savedPets = localStorage.getItem("pets");
-    const parsedPets = savedPets ? JSON.parse(savedPets) : [];
+    const parsedPets: Pet[] = savedPets ? JSON.parse(savedPets) : [];
     setPets(parsedPets);
+    const partialPetsDetails: Partial<Pet>[] = parsedPets.map((pet) => ({
+      id: pet.petId,
+      name: pet.name,
+      type: pet.type,
+      petImage: pet.petImage,
+    }));
 
+    updateUserPetsHandler(partialPetsDetails);
     // Set petIdCounter based on the last petId in the list, converting to a string
     if (parsedPets.length > 0) {
       const maxId = Math.max(
@@ -46,6 +57,16 @@ const Profile: React.FC = () => {
     const newPet: Pet = { ...pet, petId: petIdCounter, petImage: "" };
     setPets((prevPets) => {
       const updatedPets = [...prevPets, newPet];
+
+      updateUserPetsHandler([
+        ...prevPets,
+        {
+          id: newPet.petId,
+          name: newPet.name,
+          type: newPet.type,
+          petImage: newPet.petImage,
+        },
+      ]);
       localStorage.setItem("pets", JSON.stringify(updatedPets));
       return updatedPets;
     });
@@ -77,6 +98,14 @@ const Profile: React.FC = () => {
 
     if (storedProfileData) {
       const parsedData = JSON.parse(storedProfileData);
+      // storing in context
+      updateUserDetailsHandler({
+        name: parsedData.name,
+        mobile: parsedData.contact,
+        profilePicture: parsedData.image || defaultProfileImage.src,
+        email: parsedData.email,
+        currentAddress: parsedData.address,
+      });
       setProfileData({
         ...parsedData,
         image: parsedData.image || defaultProfileImage.src,
@@ -90,8 +119,17 @@ const Profile: React.FC = () => {
 
   const handleProfileUpdate = (updatedProfile: ProfileData) => {
     setProfileData(updatedProfile);
+    updateUserDetailsHandler({
+      name: updatedProfile.name,
+      mobile: updatedProfile.contact,
+      profilePicture: updatedProfile.image,
+      email: updatedProfile.email,
+      currentAddress: updatedProfile.address,
+    });
     localStorage.setItem("userProfile", JSON.stringify(updatedProfile));
   };
+
+  console.log(userPets);
 
   return (
     <div className="flex flex-col w-full h-full lg:h-screen items-center font-roca pb-20 flex-grow ">
@@ -155,24 +193,6 @@ const Profile: React.FC = () => {
         />
       )}
       <Toaster position="bottom-right" />
-      {/* <ToastContainer
-        position="bottom-right"
-        autoClose={3000}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-        style={{
-          position: "fixed",
-          bottom: "0px",
-          right: "0px",
-          top: "auto",
-          left: "auto",
-        }}
-      /> */}
     </div>
   );
 };
