@@ -1,8 +1,12 @@
 "use client";
 
+import { Review } from "@/model/typeDefinitions";
 import ReviewImageCardList from "./ReviewImageCardList";
-import { reviews } from "@/model/mockData";
-function ClinicReviews() {
+
+interface ClinicReviewsProps {
+  reviews: Review[];
+}
+function ClinicReviews({ reviews }: ClinicReviewsProps) {
   return (
     <div className="w-full">
       <ReviewImageCardList reviews={reviews} />

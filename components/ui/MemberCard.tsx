@@ -1,6 +1,9 @@
 import Image from "next/image";
 import { StaticImageData } from "next/image";
 import Button from "./Button";
+import { useMarketingFeature } from "@/hooks/useMarketingFeature";
+import { useState } from "react";
+import ContactInfoModal from "./ContactInfoModal";
 
 export interface Benefit {
   text: string;
@@ -11,6 +14,9 @@ export interface MembershipPlan {
   description: string;
   benefits: Benefit[];
   isPopular?: boolean;
+  price: string;
+  duration: string;
+  petType: "Dog" | "Cat";
 }
 interface MemberCardProps {
   plan: MembershipPlan;
@@ -18,9 +24,11 @@ interface MemberCardProps {
 }
 
 export default function MemberCard({ plan, onSelect }: MemberCardProps) {
+  const isMarketingFeatureEnabled = useMarketingFeature();
+  const [isModalOpen, setIsModalOpen] = useState(false);
   return (
     <div
-      className={`relative bg-white rounded-2xl p-3 lg:p-6 shadow-lg flex flex-col items-center h-full max-w-sm lg:max-w-lg xl:max-w-xl 2xl:max-w-2xl ${
+      className={`relative bg-white rounded-2xl p-3 lg:p-6 shadow-lg flex flex-col items-center h-full w-full max-w-sm lg:max-w-lg xl:max-w-xl 2xl:max-w-2xl ${
         plan.isPopular ? "border-2 border-sky-200" : ""
       }`}
     >
@@ -64,10 +72,21 @@ export default function MemberCard({ plan, onSelect }: MemberCardProps) {
       </div>
 
       <div className="mt-auto text-base w-full mb-2 md:mb-0">
-        <div onClick={() => onSelect(plan)}>
+        <div className="mt-2 text-lg font-bold w-full mb-8 md:mb-0 flex justify-center">
+          <span className="text-primary-1">{plan.price}</span>
+        </div>
+        <div
+          onClick={() =>
+            !isMarketingFeatureEnabled ? onSelect(plan) : setIsModalOpen(true)
+          }
+        >
           <Button buttonText="Select" buttonBackground="bg-accent" />
         </div>
       </div>
+      <ContactInfoModal
+        isOpen={isModalOpen}
+        onRequestClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 }

@@ -10,7 +10,9 @@ export interface Clinic {
   image: StaticImageData;
   services: string;
   contact: string;
+  location: string;
 }
+
 export interface Pet {
   petId: string;
   name: string;
@@ -28,11 +30,19 @@ export interface Pet {
 
 export interface Doctor {
   name: string;
-  description: string;
-  experience: string;
+  description?: string;
+  experience?: string;
   location: string;
   image: StaticImageData;
-  specialization: string;
-  aboutVet: string;
-  tag: string;
+  specialization?: string;
+  aboutVet?: string;
+  tag?: string;
+  clinicIds: string[];
+}
+
+export interface Review {
+  clinicId: string;
+  image: StaticImageData;
+  name: string;
+  review: string;
 }

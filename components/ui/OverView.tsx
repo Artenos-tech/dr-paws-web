@@ -7,13 +7,19 @@ import "swiper/css/navigation";
 
 import { LocationCard } from "./LocationCard";
 import DoctorCard from "./DoctorCard";
-import { doctors } from "@/model/mockData";
+import { Doctor } from "@/model/typeDefinitions";
 
-interface overviewProps {
+interface OverviewProps {
   clinicContact: string;
+  clinicLocation: string;
+  clinicDoctors: Doctor[];
 }
 
-const Overview: React.FC<overviewProps> = ({ clinicContact }) => {
+const Overview: React.FC<OverviewProps> = ({
+  clinicContact,
+  clinicLocation,
+  clinicDoctors,
+}) => {
   return (
     <div className="w-full flex flex-col gap-[80px]">
       <div className="w-full flex flex-col lg:flex-row justify-between space-y-6 md:space-y-8">
@@ -34,19 +40,19 @@ const Overview: React.FC<overviewProps> = ({ clinicContact }) => {
               <p className="flex justify-between">
                 Monday to Friday{" "}
                 <span className="text-base md:text-xl font-roca ml-4">
-                  09:00 - 19:00
+                  09:00 - 20:00
                 </span>
               </p>
               <p className="flex justify-between">
                 Saturday{" "}
                 <span className="text-base md:text-xl font-roca ml-4">
-                  10:00 - 17:00
+                  09:00 - 20:00
                 </span>
               </p>
               <p className="flex justify-between">
                 Sunday{" "}
                 <span className="text-base md:text-xl font-roca ml-4">
-                  10:00 - 15:00
+                  09:00 - 20:00
                 </span>
               </p>
             </div>
@@ -55,7 +61,7 @@ const Overview: React.FC<overviewProps> = ({ clinicContact }) => {
 
         {/* Location Section */}
         <div className="">
-          <LocationCard />
+          <LocationCard locationString={clinicLocation} />
         </div>
       </div>
 
@@ -88,7 +94,7 @@ const Overview: React.FC<overviewProps> = ({ clinicContact }) => {
             className="w-full"
             style={{ zIndex: 0 }}
           >
-            {doctors.map((doctor, index) => (
+            {clinicDoctors.map((doctor, index) => (
               <SwiperSlide key={index}>
                 <div className="flex justify-center">
                   <DoctorCard doctor={doctor} />

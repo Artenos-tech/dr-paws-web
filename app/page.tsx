@@ -53,7 +53,7 @@ export default function Home() {
             <h1 className="mx-auto text-center text-xl md:text-4xl">
               Check out the places
             </h1>
-            <h1 className="mx-auto text-center text-xl md:text-4xl">
+            <h1 className="mx-auto text-center text-xl md:text-4xl mb-4 md:mb-10">
               we call home
             </h1>
             <div className="mx-auto pt-5 w-full">
@@ -104,21 +104,21 @@ export default function Home() {
                 <div className="flex flex-col mt-4 custom:mt-0 custom:flex-none">
                   {/* ReviewCard 1 */}
                   <ReviewCard
-                    name={reviewData.name}
-                    review={reviewData.review}
+                    name={reviewData[0].name}
+                    review={reviewData[0].review}
                     className="w-[290px] md:w-[330px] custom:min-w-[410px] custom:absolute custom:-top-14 custom:-right-[92%]"
                   />
                   {/* ReviewCard 2 */}
                   <ReviewCard
-                    name={reviewData.name}
-                    review={reviewData.review}
-                    className="w-[290px] md:w-[330px] custom:min-w-[405px] custom:absolute custom:-bottom-14 custom:-right-[80%]"
+                    name={reviewData[1].name}
+                    review={reviewData[1].review}
+                    className="w-[290px] md:w-[330px] custom:min-w-[410px] custom:absolute custom:-bottom-18 custom:-right-[85%]"
                   />
                   {/* ReviewCard 3 */}
                   <ReviewCard
-                    name={reviewData.name}
-                    review={reviewData.review}
-                    className="w-[290px] md:w-[330px] custom:min-w-[365px] custom:absolute custom:top-[15%] custom:-left-[90%]"
+                    name={reviewData[2].name}
+                    review={reviewData[2].review}
+                    className="w-[290px] md:w-[330px] custom:min-w-[410px] custom:absolute custom:top-[5%] custom:-left-[90%]"
                   />
                 </div>
               </div>

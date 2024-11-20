@@ -8,39 +8,54 @@ import description6 from "../public/assets/images/description6.png";
 import dogImg from "../public/assets/images/dogimg.png";
 import catImg from "../public/assets/images/catimg.png";
 import rabbitImg from "../public/assets/images/rabbitimg.png";
-import doctorImage from "../public/assets/images/clinic/doctor.png";
+import doctorFemale from "../public/assets/images/clinic/doctorFemale.webp";
+import doctorMale from "../public/assets/images/clinic/doctorMale.webp";
 import ClinicDog from "../public/assets/images/clinic/maggidog.png";
-import { Clinic } from "@/model/typeDefinitions";
+import { Clinic, Review } from "@/model/typeDefinitions";
+import ParasiteControl from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/ParasiteControl.webp";
+import SkinInfections from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/SkinInfections.jpeg";
 import Vaccination from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/Vaccinations.png";
 import Deworming from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/Deworming.png";
 import GeneralCheckUp from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/General check up.png";
-import BehaviorlCounceling from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/Behavioral Counseling.png";
 import NutritionalCounceling from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/NutritionalCounceling.png";
-import DigestiveProblems from "@/public/assets/images/ServicesPage/Sickness and Emergency/Digestive Problems.png";
+import TraumaCare from "@/public/assets/images/ServicesPage/Sickness and Emergency/TraumaCare.webp";
+import PainManagement from "@/public/assets/images/ServicesPage/Sickness and Emergency/PainManagement.webp";
 import AllergiesAndRashes from "@/public/assets/images/ServicesPage/Sickness and Emergency/Allergies and rashes.png";
 import EarInfections from "@/public/assets/images/ServicesPage/Sickness and Emergency/EarInfections.png";
 import Lethargy from "@/public/assets/images/ServicesPage/Sickness and Emergency/Lethargy.png";
 import Limping from "@/public/assets/images/ServicesPage/Sickness and Emergency/Limping.png";
 import AnimalBites from "@/public/assets/images/ServicesPage/Sickness and Emergency/Animal Bites.png";
-import EyeIssues from "@/public/assets/images/ServicesPage/Sickness and Emergency/EyeIssues.png";
+import FeverInfection from "@/public/assets/images/ServicesPage/Sickness and Emergency/FeverInfection.png";
+import VomittingDiarrhoea from "@/public/assets/images/ServicesPage/Sickness and Emergency/VomittingDiarrhoea.webp";
+import AppetiteLoss from "@/public/assets/images/ServicesPage/Sickness and Emergency/AppetiteLoss.jpg";
+import BloodTests from "@/public/assets/images/ServicesPage/Dignostics/BloodTests.jpeg";
 import Ultrasound from "@/public/assets/images/ServicesPage/Dignostics/Ultrsound.png";
 import Microscopy from "@/public/assets/images/ServicesPage/Dignostics/Microscopy.png";
-import Parasite from "@/public/assets/images/ServicesPage/Dignostics/Parasite.png";
-import Blood from "@/public/assets/images/ServicesPage/Dignostics/Blood.png";
+import UrineAnalysis from "@/public/assets/images/ServicesPage/Dignostics/UrineAnalysis.jpg";
+import Biochemistry from "@/public/assets/images/ServicesPage/Dignostics/Biochemistry.jpg";
+import KidneyLiverFunction from "@/public/assets/images/ServicesPage/Dignostics/KidneyLiverFunction.jpg";
+import StoolAnalysis from "@/public/assets/images/ServicesPage/Dignostics/StoolAnalysis.png";
+import HormoneAnalysis from "@/public/assets/images/ServicesPage/Dignostics/HormoneAnalysis.avif";
 import Xray from "@/public/assets/images/ServicesPage/Dignostics/XRay.png";
 import Sprays from "@/public/assets/images/ServicesPage/Planned Surgeries/Sprays.png";
+import DentalScaling from "@/public/assets/images/ServicesPage/Planned Surgeries/DentalScaling.jpeg";
 import Tumors from "@/public/assets/images/ServicesPage/Planned Surgeries/Tumor.png";
 import Foreign from "@/public/assets/images/ServicesPage/Planned Surgeries/Foreign.png";
 import Ortho from "@/public/assets/images/ServicesPage/Planned Surgeries/Orthopedic.png";
+import SoftTissue from "@/public/assets/images/ServicesPage/Planned Surgeries/SoftTissue.png";
 import ToothEx from "@/public/assets/images/ServicesPage/Dental/ToothExt.png";
 import ToothRes from "@/public/assets/images/ServicesPage/Dental/ToothRes.png";
+import LaserTherapy from "@/public/assets/images/ServicesPage/Physiotherapy/LaserTherapy.png";
+import WaterThreadmill from "@/public/assets/images/ServicesPage/Physiotherapy/WaterThreadmill.jpg";
 import HairCut from "@/public/assets/images/ServicesPage/Grooming/HairCut.png";
-import NailCut from "@/public/assets/images/ServicesPage/Grooming/NailCut.png";
 import EarClean from "@/public/assets/images/ServicesPage/Grooming/EarClean.png";
 import Bath from "@/public/assets/images/ServicesPage/Grooming/Bath.png";
-import HairStyle from "@/public/assets/images/ServicesPage/Grooming/HairStyle.png";
+import OilMassages from "@/public/assets/images/ServicesPage/Grooming/OilMassages.jpg";
+import HairColoring from "@/public/assets/images/ServicesPage/Grooming/HairColoring.jpg";
+import AnalGlandExpression from "@/public/assets/images/ServicesPage/Grooming/AnalGlandExpression.jpeg";
 import Boarding from "@/public/assets/images/ServicesPage/Pet Services/Boarding.png";
 import Sitting from "@/public/assets/images/ServicesPage/Pet Services/Sitting.png";
+import Microchipping from "@/public/assets/images/ServicesPage/Pet Services/Microchipping.jpg";
 
 import Customer1 from "../public/assets/images/clinic/customer1.png";
 import Customer2 from "../public/assets/images/clinic/customer2.png";
@@ -50,6 +65,7 @@ import CareJunior from "@/public/assets/images/Membership/Care Junior.png";
 import CareSenior from "@/public/assets/images/Membership/Care Senior.png";
 import Grooming from "@/public/assets/images/Membership/Grooming.png";
 import StarCare from "@/public/assets/images/Membership/Star Care and Grooming.png";
+import { MembershipPlan } from "@/components/ui/MemberCard";
 
 export const FaqData = [
   {
@@ -104,11 +120,23 @@ export const FaqData = [
   },
 ];
 
-export const reviewData = {
-  name: "Rahul Shah",
-  review:
-    "Dr. Paws is Fantastic Execptional care, friendly staff, and a welcoming atmosphere, Highly recommend for pet owners!",
-};
+export const reviewData = [
+  {
+    name: "Sonia Vora",
+    review:
+      "Dr paws is an amazing place built to make pets and their owners feel at home! The team has a warm personal touch and the space is fabulous. If you have a pet - Dr Paws should be your first call!",
+  },
+  {
+    name: "Menorah Bridal",
+    review:
+      "I’ve finally found my Neighbourhood Vet clinic, I brought in my community dog for a quick check-up today. Beautiful space in the heart of indranagar, feels like home and wonderful team at Dr.Paws.",
+  },
+  {
+    name: "Bharath Shamasundar",
+    review:
+      "The best place to be if you are looking for your pet to be treated as family !! The staff truly treats your pets like family. Their compassionate care and attention to detail create a welcoming environment. From thorough examinations to personalised follow-up, they prioritise your pet's well-being, making every visit a positive experience.",
+  },
+];
 
 export const clinicItems: Clinic[] = [
   {
@@ -118,6 +146,8 @@ export const clinicItems: Clinic[] = [
     services:
       "Consults | Grooming | Surgery | Dignostics | Ultrasound | Retail",
     contact: "+91 9606994627",
+    location:
+      "https://www.google.com/maps/place/Dr.+Paws+-+Veterinarian+in+Indiranagar,+Bengaluru+%7C+Vet+Consultation,+Pet+Vaccination,+Pet+Grooming,+Pet+Surgery+%7C+Pet+Clinic/@12.9655253,77.6385461,17z/data=!3m1!4b1!4m6!3m5!1s0x3bae150fe803f393:0x5820ed9ef42478d3!8m2!3d12.9655253!4d77.6385461!16s%2Fg%2F11vxxyv2zc?entry=ttu&g_ep=EgoyMDI0MTExNy4wIKXMDSoASAFQAw%3D%3D",
   },
   {
     id: "2",
@@ -126,15 +156,18 @@ export const clinicItems: Clinic[] = [
     services:
       "Consults | Grooming | Surgery | Dignostics | Ultrasound | Retail",
     contact: "+91 7204996899",
+    location:
+      "https://www.google.com/maps/place/Dr.+Paws+-+Veterinarian+in+RMV+(Dollars+Colony)+%7C+Vet+Consultation,+Pet+Vaccination,+Pet+Grooming,+Pet+Surgery+%7C+Pet+Clinic/@13.0434066,77.5680191,17z/data=!3m1!4b1!4m6!3m5!1s0x3bae174f82ebbe2f:0xc9a13342ab7933ac!8m2!3d13.0434014!4d77.570594!16s%2Fg%2F11w8ffwb9b?entry=tts&g_ep=EgoyMDI0MTExMi4wIPu8ASoASAFQAw%3D%3D",
   },
-  {
-    id: "3",
-    image: clinic1,
-    clinicName: "HSR layout",
-    services:
-      "Consults | Grooming | Surgery | Dignostics | Ultrasound | Retail",
-    contact: "+91 7204996899",
-  },
+  // {
+  //   id: "3",
+  //   image: clinic1,
+  //   clinicName: "HSR layout",
+  //   services:
+  //     "Consults | Grooming | Surgery | Dignostics | Ultrasound | Retail",
+  //   contact: "Coming soon!",
+  //   location: "",
+  // },
 ];
 
 export const descriptionItems = [
@@ -234,70 +267,148 @@ export const bannerItems = [
 
 export const doctors = [
   {
-    name: "Dr. Emily Thompson",
-    description: "DMV - Animal Welfare",
-    experience: "10 Years of Experience",
-    location: "Andheri West, Indiranagar",
-    image: doctorImage,
-    specialization: "Veterinarian specialized in Dentistry",
-    aboutVet:
-      "Veterinarian with DVM from National Veterinary University. Associate Vet at City Animal Hospital, Emergency Vet at Emergency Veterinary Services, and currently Director & Senior Vet at Companion Care Vet Hospital. Active member of AVMA. Passionate about animal care.",
-    tag: "Passionate about animal care and active member of AVMA.",
+    name: "Dr. Girish Kumar V.K.",
+    // description: "DMV - Animal Welfare",
+    // experience: "10 Years of Experience",
+    clinicIds: ["1", "2"],
+    location: "Indiranagar, Bangalore",
+    image: doctorMale,
+    // specialization: "Veterinarian specialized in Dentistry",
+    // aboutVet:
+    //   "Veterinarian with DVM from National Veterinary University. Associate Vet at City Animal Hospital, Emergency Vet at Emergency Veterinary Services, and currently Director & Senior Vet at Companion Care Vet Hospital. Active member of AVMA. Passionate about animal care.",
+    // tag: "Passionate about animal care and active member of AVMA.",
   },
   {
-    name: "Dr. Nampally Rohit",
-    description: "DMV - Veterinary Medicine",
-    experience: "8 Years of Experience",
-    location: "HSR, Bangalore",
-    image: doctorImage,
-    specialization: "Veterinarian specialized in Dentistry",
-    aboutVet:
-      "Veterinarian with DVM from National Veterinary University. Associate Vet at City Animal Hospital, Emergency Vet at Emergency Veterinary Services, and currently Director & Senior Vet at Companion Care Vet Hospital. Active member of AVMA. Passionate about animal care.",
-    tag: "Passionate about animal care and active member of AVMA.",
+    name: "Dr. Archana G.",
+    // description: "DMV - Veterinary Medicine",
+    // experience: "8 Years of Experience",
+    clinicIds: ["1"],
+    location: "Indiranagar, Bangalore",
+    image: doctorFemale,
+    // specialization: "Veterinarian specialized in Dentistry",
+    // aboutVet:
+    //   "Veterinarian with DVM from National Veterinary University. Associate Vet at City Animal Hospital, Emergency Vet at Emergency Veterinary Services, and currently Director & Senior Vet at Companion Care Vet Hospital. Active member of AVMA. Passionate about animal care.",
+    // tag: "Passionate about animal care and active member of AVMA.",
   },
   {
-    name: "Dr. Sarah Johnson",
-    description: "DMV - Small Animal Surgery",
-    experience: "12 Years of Experience",
-    location: "Jayanagar, Bangalore",
-    image: doctorImage,
-    specialization: "Veterinarian specialized in Dentistry",
-    aboutVet:
-      "Veterinarian with DVM from National Veterinary University. Associate Vet at City Animal Hospital, Emergency Vet at Emergency Veterinary Services, and currently Director & Senior Vet at Companion Care Vet Hospital. Active member of AVMA. Passionate about animal care.",
-    tag: "Passionate about animal care and active member of AVMA.",
+    name: "Dr. Hitesh Bhardwaj",
+    // description: "DMV - Small Animal Surgery",
+    // experience: "12 Years of Experience",
+    clinicIds: ["2"],
+    location: "RMV (Dollars Colony), Bangalore",
+    image: doctorMale,
+    // specialization: "Veterinarian specialized in Dentistry",
+    // aboutVet:
+    //   "Veterinarian with DVM from National Veterinary University. Associate Vet at City Animal Hospital, Emergency Vet at Emergency Veterinary Services, and currently Director & Senior Vet at Companion Care Vet Hospital. Active member of AVMA. Passionate about animal care.",
+    // tag: "Passionate about animal care and active member of AVMA.",
   },
   {
-    name: "Dr. Rajesh Sharma",
-    description: "DMV - Exotic Animals",
-    experience: "15 Years of Experience",
-    location: "Whitefield, Bangalore",
-    image: doctorImage,
-    specialization: "Veterinarian specialized in Dentistry",
-    aboutVet:
-      "Veterinarian with DVM from National Veterinary University. Associate Vet at City Animal Hospital, Emergency Vet at Emergency Veterinary Services, and currently Director & Senior Vet at Companion Care Vet Hospital. Active member of AVMA. Passionate about animal care.",
-    tag: "Passionate about animal care and active member of AVMA.",
+    name: "Dr. Shrayva B.L.",
+    // description: "DMV - Exotic Animals",
+    // experience: "15 Years of Experience",
+    clinicIds: ["1"],
+    location: "Indiranagar, Bangalore",
+    image: doctorFemale,
+    // specialization: "Veterinarian specialized in Dentistry",
+    // aboutVet:
+    //   "Veterinarian with DVM from National Veterinary University. Associate Vet at City Animal Hospital, Emergency Vet at Emergency Veterinary Services, and currently Director & Senior Vet at Companion Care Vet Hospital. Active member of AVMA. Passionate about animal care.",
+    // tag: "Passionate about animal care and active member of AVMA.",
   },
   {
-    name: "Dr. Priya Menon",
-    description: "DMV - Animal Dermatology",
-    experience: "7 Years of Experience",
-    location: "Vasant Kunj, Delhi",
-    image: doctorImage,
-    specialization: "Veterinarian specialized in Dentistry",
-    aboutVet:
-      "Veterinarian with DVM from National Veterinary University. Associate Vet at City Animal Hospital, Emergency Vet at Emergency Veterinary Services, and currently Director & Senior Vet at Companion Care Vet Hospital. Active member of AVMA. Passionate about animal care.",
-    tag: "Passionate about animal care and active member of AVMA.",
+    name: "Dr. Prerana S.J.",
+    // description: "DMV - Animal Dermatology",
+    // experience: "7 Years of Experience",
+    clinicIds: ["1"],
+    location: "Indiranagar, Bangalore",
+    image: doctorFemale,
+    // specialization: "Veterinarian specialized in Dentistry",
+    // aboutVet:
+    //   "Veterinarian with DVM from National Veterinary University. Associate Vet at City Animal Hospital, Emergency Vet at Emergency Veterinary Services, and currently Director & Senior Vet at Companion Care Vet Hospital. Active member of AVMA. Passionate about animal care.",
+    // tag: "Passionate about animal care and active member of AVMA.",
   },
   {
-    name: "Dr. John Doe",
-    description: "DMV - Veterinary Medicine",
-    experience: "8 Years of Experience",
-    location: "Koramangala, Bangalore",
-    image: doctorImage,
-    specialization: "Veterinarian specialized in Dentistry",
-    aboutVet:
-      "Veterinarian with DVM from National Veterinary University. Associate Vet at City Animal Hospital, Emergency Vet at Emergency Veterinary Services, and currently Director & Senior Vet at Companion Care Vet Hospital. Active member of AVMA. Passionate about animal care.",
-    tag: "Passionate about animal care and active member of AVMA.",
+    name: "Dr. Kiran K.S.",
+    // description: "DMV - Veterinary Medicine",
+    // experience: "8 Years of Experience",
+    clinicIds: ["2"],
+    location: "RMV (Dollars Colony), Bangalore",
+    image: doctorMale,
+    // specialization: "Veterinarian specialized in Dentistry",
+    // aboutVet:
+    //   "Veterinarian with DVM from National Veterinary University. Associate Vet at City Animal Hospital, Emergency Vet at Emergency Veterinary Services, and currently Director & Senior Vet at Companion Care Vet Hospital. Active member of AVMA. Passionate about animal care.",
+    // tag: "Passionate about animal care and active member of AVMA.",
+  },
+  {
+    name: "Dr Aarti Goswami",
+    // description: "DMV - Veterinary Medicine",
+    // experience: "8 Years of Experience",
+    clinicIds: ["2"],
+    location: "RMV (Dollars Colony), Bangalore",
+    image: doctorFemale,
+    // specialization: "Veterinarian specialized in Dentistry",
+    // aboutVet:
+    //   "Veterinarian with DVM from National Veterinary University. Associate Vet at City Animal Hospital, Emergency Vet at Emergency Veterinary Services, and currently Director & Senior Vet at Companion Care Vet Hospital. Active member of AVMA. Passionate about animal care.",
+    // tag: "Passionate about animal care and active member of AVMA.",
+  },
+  {
+    name: "Dr. Neha Menon",
+    // description: "DMV - Animal Dermatology",
+    // experience: "7 Years of Experience",
+    clinicIds: ["1"],
+    location: "Indiranagar, Bangalore",
+    image: doctorFemale,
+    // specialization: "Veterinarian specialized in Dentistry",
+    // aboutVet:
+    //   "Veterinarian with DVM from National Veterinary University. Associate Vet at City Animal Hospital, Emergency Vet at Emergency Veterinary Services, and currently Director & Senior Vet at Companion Care Vet Hospital. Active member of AVMA. Passionate about animal care.",
+    // tag: "Passionate about animal care and active member of AVMA.",
+  },
+  {
+    name: "Dr. Gisha Nair",
+    // description: "DMV - Animal Dermatology",
+    // experience: "7 Years of Experience",
+    clinicIds: ["1"],
+    location: "Indiranagar, Bangalore",
+    image: doctorFemale,
+    // specialization: "Veterinarian specialized in Dentistry",
+    // aboutVet:
+    //   "Veterinarian with DVM from National Veterinary University. Associate Vet at City Animal Hospital, Emergency Vet at Emergency Veterinary Services, and currently Director & Senior Vet at Companion Care Vet Hospital. Active member of AVMA. Passionate about animal care.",
+    // tag: "Passionate about animal care and active member of AVMA.",
+  },
+  {
+    name: "Dr. Rajashri Bodepalli",
+    // description: "DMV - Animal Dermatology",
+    // experience: "7 Years of Experience",
+    clinicIds: ["1"],
+    location: "Indiranagar, Bangalore",
+    image: doctorFemale,
+    // specialization: "Veterinarian specialized in Dentistry",
+    // aboutVet:
+    //   "Veterinarian with DVM from National Veterinary University. Associate Vet at City Animal Hospital, Emergency Vet at Emergency Veterinary Services, and currently Director & Senior Vet at Companion Care Vet Hospital. Active member of AVMA. Passionate about animal care.",
+    // tag: "Passionate about animal care and active member of AVMA.",
+  },
+  {
+    name: "Dr. Charu Nino",
+    // description: "DMV - Veterinary Medicine",
+    // experience: "8 Years of Experience",
+    clinicIds: ["2"],
+    location: "RMV (Dollars Colony), Bangalore",
+    image: doctorFemale,
+    // specialization: "Veterinarian specialized in Dentistry",
+    // aboutVet:
+    //   "Veterinarian with DVM from National Veterinary University. Associate Vet at City Animal Hospital, Emergency Vet at Emergency Veterinary Services, and currently Director & Senior Vet at Companion Care Vet Hospital. Active member of AVMA. Passionate about animal care.",
+    // tag: "Passionate about animal care and active member of AVMA.",
+  },
+  {
+    name: "Dr. Deepak Dhindhwal",
+    // description: "DMV - Veterinary Medicine",
+    // experience: "8 Years of Experience",
+    clinicIds: ["2"],
+    location: "RMV (Dollars Colony), Bangalore",
+    image: doctorMale,
+    // specialization: "Veterinarian specialized in Dentistry",
+    // aboutVet:
+    //   "Veterinarian with DVM from National Veterinary University. Associate Vet at City Animal Hospital, Emergency Vet at Emergency Veterinary Services, and currently Director & Senior Vet at Companion Care Vet Hospital. Active member of AVMA. Passionate about animal care.",
+    // tag: "Passionate about animal care and active member of AVMA.",
   },
 ];
 
@@ -395,7 +506,7 @@ export const ServiceTabsData = [
         imgText: "Vaccinations",
       },
       {
-        img: Deworming,
+        img: SkinInfections,
         imgText: "Skin Infections",
       },
       {
@@ -403,11 +514,11 @@ export const ServiceTabsData = [
         imgText: "Master Check-up",
       },
       {
-        img: BehaviorlCounceling,
+        img: Deworming,
         imgText: "Deworming",
       },
       {
-        img: NutritionalCounceling,
+        img: ParasiteControl,
         imgText: "Parasite Control",
       },
       {
@@ -423,19 +534,19 @@ export const ServiceTabsData = [
       "When your pet falls ill or faces an emergency, we know it's a stressful time. We're here for you and will do our best to get your pet back to their usual happy & healthy self.",
     imageDetails: [
       {
-        img: DigestiveProblems,
+        img: TraumaCare,
         imgText: "Trauma Care",
       },
       {
-        img: AllergiesAndRashes,
+        img: PainManagement,
         imgText: "Pain Management",
       },
       {
-        img: EarInfections,
+        img: FeverInfection,
         imgText: "Fever & Infectious Disease Treatment",
       },
       {
-        img: Lethargy,
+        img: AnimalBites,
         imgText: "Injuries",
       },
       {
@@ -443,11 +554,11 @@ export const ServiceTabsData = [
         imgText: "Limping & Wound Care",
       },
       {
-        img: AnimalBites,
+        img: VomittingDiarrhoea,
         imgText: "Vomiting & Diarrhoea Care",
       },
       {
-        img: EyeIssues,
+        img: AppetiteLoss,
         imgText: "Loss of Appetite & Lethargy Care",
       },
     ],
@@ -459,31 +570,31 @@ export const ServiceTabsData = [
       "Our pets don’t always communicate what’s wrong making diagnostic tests a crucial part of our care. With our wide range of tests and expert doctors, we’ll do our best to diagnose exactly what’s going as soon as possible.",
     imageDetails: [
       {
-        img: Ultrasound,
+        img: BloodTests,
         imgText: "Blood Tests",
       },
       {
-        img: Microscopy,
-        imgText: "Biochemisty Tests",
+        img: Biochemistry,
+        imgText: "Biochemistry Tests",
       },
       {
-        img: Parasite,
+        img: KidneyLiverFunction,
         imgText: "Kidney & Liver Function Tests",
       },
       {
-        img: Blood,
+        img: UrineAnalysis,
         imgText: "Urine Analysis",
       },
       {
-        img: Xray,
+        img: StoolAnalysis,
         imgText: "Stool Analysis",
       },
       {
-        img: Xray,
+        img: HormoneAnalysis,
         imgText: "Hormone Analysis",
       },
       {
-        img: Xray,
+        img: Microscopy,
         imgText: "Microscopy",
       },
       {
@@ -515,7 +626,7 @@ export const ServiceTabsData = [
         imgText: "Spaying & Neutering",
       },
       {
-        img: Tumors,
+        img: DentalScaling,
         imgText: "Dental Scaling",
       },
       {
@@ -535,7 +646,7 @@ export const ServiceTabsData = [
         imgText: "Orthopaedic Surgeries",
       },
       {
-        img: Ortho,
+        img: SoftTissue,
         imgText: "Soft-Tissue Surgeries",
       },
     ],
@@ -547,11 +658,11 @@ export const ServiceTabsData = [
       "We offer a range of specialised therapies with cutting-edge equipment to help pets deal with chronic mobility conditions, or prevent them in the first-place.",
     imageDetails: [
       {
-        img: ToothEx,
+        img: LaserTherapy,
         imgText: "Laser Therapy",
       },
       {
-        img: ToothRes,
+        img: WaterThreadmill,
         imgText: "Water Treadmill Therapy",
       },
     ],
@@ -579,15 +690,15 @@ export const ServiceTabsData = [
         imgText: "Dental Cleaning",
       },
       {
-        img: NailCut,
+        img: OilMassages,
         imgText: "Oil Massages",
       },
       {
-        img: HairStyle,
+        img: HairColoring,
         imgText: "Hair Colouring",
       },
       {
-        img: HairStyle,
+        img: AnalGlandExpression,
         imgText: "Anal Gland Expression",
       },
     ],
@@ -599,7 +710,7 @@ export const ServiceTabsData = [
       "We offer a range of services to help make pet-ownership easier and stress-free",
     imageDetails: [
       {
-        img: Boarding,
+        img: Microchipping,
         imgText: "Microchipping",
       },
       {
@@ -618,90 +729,157 @@ export const ServiceTabsData = [
   },
 ];
 
-export const reviews = [
+export const reviews: Review[] = [
   {
     image: Customer1,
-    name: "Vishnu K",
+    name: "Nikita Rekhy",
     review:
-      "Dr. Paws is Fantastic Execptional care, friendly staff, and a welcoming atmosphere, Highly recommend for pet owners!",
+      "We went to de paws for a full groom. The clinic and grooming space is super clean. The staff is extremely friendly and kind. I had requested them to keep his age in mind as he is old and cannot stand for too long and they obliged us completely. Not once did my dog bark being uncomfortable. Would highly recommend",
+    clinicId: "1",
   },
   {
     image: Customer2,
-    name: "Rahul Shah",
+    name: "Nistha Barthakur",
     review:
-      "I’m very happy with the staff & Vets in the clinic, all are helpful & friendly.",
+      "They are undoubtedly one of the most welcoming and friendly vets in town, both for pets and pet parents. The space in itself got my pet open up and the doctor was very patient and understanding towards every single concern we had. No unnecessary medicines prescribed and they were also very patient with my pet and made sure she was comfortable before even starting the consultation. Highly recommended!",
+    clinicId: "1",
   },
   {
     image: Customer3,
-    name: "Bindu Naidu",
+    name: "Shashank N",
     review:
       "We've been taking our pet Milo to the clinic recently. The staff are very friendly and the vets knowledgeable.",
+    clinicId: "1",
+  },
+  {
+    image: Customer3,
+    name: "Karan Srinivas",
+    review:
+      "I recently visited Dr Paws with my pet and the experience was really great! The staff were friendly, compassionate, and professional. Dr. Girish was able to address all of my concerns and also teach us how to manage my pet’s health. The clinic's modern facilities, convenient location, and flexible scheduling impressed me. My pet received top-notch care. I highly recommend Dr Paws for all your pet care needs!",
+    clinicId: "2",
+  },
+  {
+    image: Customer1,
+    name: "Neha Toshnival",
+    review:
+      "What a friendly, bright place for our four-legged friends, my pet felt at home already! Thankful to have a place run and managed by equally friendly and warm people with all the facilities required. We have known Dr.Girish for some time now and he has always been helpful and reassuring. I know my pet is in safe hands here.",
+    clinicId: "2",
+  },
+  {
+    image: Customer2,
+    name: "Ridhima Nair",
+    review:
+      "Very thoughtfully put together keeping in mind the comfort of all pets owners, with separate floors for cats and dogs. Very spacious, spread across four floors accommodating all the required services like x-ray, ultrasound, path lab, grooming areas, OT for surgeries & IPD and a huge pet store on the ground floor. And most importantly, a wonderful team of doctors, ably led by Dr. Girish and brought together by the passionate founders.",
+    clinicId: "2",
   },
 ];
 
-export const membershipData = [
+export const membershipData: MembershipPlan[] = [
   {
-    title: "Care Junior",
+    title: "Puppy Membership",
     icon: CareJunior,
     description:
-      "Our plan that helps prepare you and your puppy or kitten for a lifetime together",
+      "Our plan that helps prepare you and your puppy for a lifetime together",
     benefits: [
-      { text: "6 free-of-cost consultations every year" },
-      { text: "50% discount on additional consultations" },
-      { text: "Comprehensive vaccination programme" },
-      { text: "Annual deworming" },
-      { text: "10 free training sessions" },
-      { text: "10% discount on diagnostic tests and scans" },
-      { text: "10% off retail products & medicines" },
-      { text: "10% off any grooming service" },
+      { text: "50% discount on Vet Consultations" },
+      { text: "20% discount on Grooming Sessions" },
+      {
+        text: "Full Puppy Vaccination Programme Included (DHPPi 9-in-1, Rabies, Kennel Cough) - Worth ₹6,860",
+      },
+      { text: "10% off on all Retail products" },
+      { text: "10% off on all Pharmacy products" },
+      { text: "15% off on in-house Diagnostic Tests" },
+      { text: "10% off on external Diagnostic Tests" },
+      { text: "10% off on Imaging (X-rays, Ultrasound)" },
+      { text: "10% off on Elective Surgeries" },
+      { text: "5% off on Non-Elective Surgeries" },
     ],
+    price: "₹9,499",
+    duration: "1 Year",
+    petType: "Dog",
   },
   {
-    title: "Care Senior",
+    title: "Adult Dog Membership",
+    icon: CareSenior,
+    description:
+      "Our plan that helps keep you and your dog healthy and happy for life",
+    benefits: [
+      { text: "50% discount on Vet Consultations" },
+      { text: "20% discount on Grooming Sessions" },
+      {
+        text: "Full Annual Vaccination Programme Included (DHPPi 9-in-1, Rabies, Kennel Cough) - Worth ₹2,540",
+      },
+      { text: "10% off on all Retail products" },
+      { text: "10% off on all Pharmacy products" },
+      { text: "15% off on in-house Diagnostic Tests" },
+      { text: "10% off on external Diagnostic Tests" },
+      { text: "10% off on Imaging (X-rays, Ultrasound)" },
+      { text: "10% off on Elective Surgeries" },
+      { text: "5% off on Non-Elective Surgeries" },
+    ],
+    price: "₹4,499",
+    duration: "1 Year",
+    petType: "Dog",
+  },
+  {
+    title: "Senior Dog Membership",
     icon: CareSenior,
     description: "Our plan to keep your pet healthy and happy for life",
     benefits: [
-      { text: "6 free-of-cost consultations every year" },
-      { text: "50% discount on additional consultations" },
-      { text: "Free annual vaccination boosters" },
-      { text: "Annual deworming" },
-      { text: "20% discount on diagnostic tests and scans" },
-      { text: "20% discount on planned surgeries and procedures" },
-      { text: "10% off retail products & medicines" },
-      { text: "10% off any grooming service" },
+      { text: "50% discount on Vet Consultations" },
+      { text: "20% discount on Grooming Sessions" },
+      {
+        text: "Full Annual Vaccination Programme Included (DHPPi 9-in-1, Rabies, Kennel Cough) - Worth ₹2,540",
+      },
+      { text: "10% off on all Retail products" },
+      { text: "15% off on all Pharmacy products" },
+      { text: "15% off on in-house Diagnostic Tests" },
+      { text: "10% off on external Diagnostic Tests" },
+      { text: "10% off on Imaging (X-rays, Ultrasound)" },
+      { text: "10% off on Elective Surgeries" },
+      { text: "5% off on Non-Elective Surgeries" },
     ],
+    price: "₹5,499",
+    duration: "1 Year",
+    petType: "Dog",
   },
   {
-    title: "Grooming",
+    title: "Grooming Membership",
     icon: Grooming,
     description: "Our plan to keep your furry friend looking and feeling fab!",
     benefits: [
-      { text: "6 free spa sessions per year" },
-      { text: "2 free haircuts every year" },
-      { text: "50% off any other grooming service" },
-      { text: "50% off veterinary consultations" },
-      { text: "10% off vaccinations" },
-      { text: "Annual deworming" },
-      { text: "10% off diagnostic test and scans" },
-      { text: "10% discount on planned surgeries and procedures" },
+      { text: "6 free Spa Sessions included (Worth ₹7200)" },
+      { text: "30% off any other Grooming Services" },
+      { text: "10% off on all Retail products" },
+      { text: "10% off on all Pharmacy products" },
     ],
+    price: "₹5,999",
+    duration: "1 Year",
+    petType: "Dog",
   },
   {
-    title: "Star Care Grooming",
+    title: "Comprehensive Membership",
     icon: StarCare,
     description:
       "Our best value plan that keeps your pet healthy and looking great",
     benefits: [
-      { text: "Unlimited vet consultations" },
-      { text: "12 free spa sessions per year" },
-      { text: "2 free haircuts every year" },
-      { text: "50% off any other grooming service" },
-      { text: "Free annual vaccination boosters" },
-      { text: "Annual deworming consultation" },
-      { text: "25% discount on diagnostic tests and scans" },
-      { text: "25% discount on planned surgeries and procedures" },
-      { text: "15% off retail products & medicines" },
+      { text: "50% discount on Vet Consultations" },
+      { text: "6 Spa Sessions included (Worth ₹7200)" },
+      { text: "50% off on any other Grooming Services" },
+      {
+        text: "Full Annual Vaccination Programme Included (DHPPi 9-in-1, Rabies, Kennel Cough) - Worth ₹2,540",
+      },
+      { text: "15% off on all Retail products" },
+      { text: "15% off on all Pharmacy products" },
+      { text: "20% off on in-house Diagnostic Tests" },
+      { text: "15% off on external Diagnostic Tests" },
+      { text: "15% off on Imaging (X-rays, Ultrasound)" },
+      { text: "15% off on Elective Surgeries" },
+      { text: "10% off on Non-Elective Surgeries" },
     ],
+    price: "₹9,999",
     isPopular: true,
+    duration: "1 Year",
+    petType: "Dog",
   },
 ];

@@ -4,12 +4,14 @@ import Image from "next/image";
 import logo from "@/public/assets/images/logo/logo.svg";
 import instagram from "@/public/assets/images/Footer/instagram.svg";
 import LinkedIn from "@/public/assets/images/Footer/linkedin.svg";
-import X from "@/public/assets/images/Footer/twitterx.svg";
+// import X from "@/public/assets/images/Footer/twitterx.svg";
 import Link from "next/link";
 import ContactInfoModal from "../ui/ContactInfoModal";
 import { useState } from "react";
+import { useMarketingFeature } from "@/hooks/useMarketingFeature";
 
 const Footer = () => {
+  const isMarketingFeatureEnabled = useMarketingFeature();
   const [isContactModalOpen, setContactIsModalOpen] = useState(false);
   return (
     <footer className="bg-primary-3 py-10">
@@ -48,12 +50,14 @@ const Footer = () => {
             >
               Team
             </a>
-            <a
-              href="#"
-              className="block mt-1 text-primary-1 hover:text-primary-2"
-            >
-              Careers
-            </a>
+            {!isMarketingFeatureEnabled ? (
+              <a
+                href="#"
+                className="block mt-1 text-primary-1 hover:text-primary-2"
+              >
+                Careers
+              </a>
+            ) : null}
           </div>
           <div>
             <h6 className="font-sans text-primary-1 font-semibold mb-2">
@@ -65,12 +69,14 @@ const Footer = () => {
             >
               Services
             </a>
-            <a
-              href="#"
-              className="block mt-1 text-primary-1 hover:text-primary-2"
-            >
-              Locations
-            </a>
+            {!isMarketingFeatureEnabled ? (
+              <a
+                href="#"
+                className="block mt-1 text-primary-1 hover:text-primary-2"
+              >
+                Locations
+              </a>
+            ) : null}
             <Link
               href="/membership"
               className="block mt-1 text-primary-1 hover:text-primary-2"
@@ -111,14 +117,14 @@ const Footer = () => {
                   <Image src={LinkedIn} alt="LinkedIn" width={25} height={25} />
                 </div>
               </a>
-              <a
+              {/* <a
                 href="#"
                 className="block mt-1 text-primary-1 hover:text-primary-2"
               >
                 <div className="flex flex-row gap-1">
                   <Image src={X} alt="" width={25} height={25} />
                 </div>
-              </a>
+              </a> */}
             </div>
           </div>
         </div>
