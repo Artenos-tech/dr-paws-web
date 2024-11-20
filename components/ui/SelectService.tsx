@@ -30,6 +30,7 @@ interface SelectServiceProps {
   setOpenCard: React.Dispatch<React.SetStateAction<string | null>>;
   isModalOpen: boolean;
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  onNext: () => void;
 }
 
 const SelectService: React.FC<SelectServiceProps> = ({
@@ -41,6 +42,7 @@ const SelectService: React.FC<SelectServiceProps> = ({
   setOpenCard,
   isModalOpen,
   setIsModalOpen,
+  onNext,
 }) => {
   const handleCardSelection = (cardId: string, selectedPet: Pet | null) => {
     setSelectedData({ [cardId]: selectedPet });
@@ -69,10 +71,11 @@ const SelectService: React.FC<SelectServiceProps> = ({
 
   const handleNext = () => {
     console.log("Proceeding to next step with:", selectedData);
+    onNext();
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full h-full">
       <h1 className="text-2xl font-bold mb-4">Select Services</h1>
       <p className="text-gray-600 mb-6">Choose from our services:</p>
 
@@ -91,7 +94,7 @@ const SelectService: React.FC<SelectServiceProps> = ({
           />
         ))}
       </div>
-      <div className="mt-8 w-full flex item-center justify-center p-4">
+      <div className="my-16 w-full flex item-center justify-center m-8">
       <Button
         buttonText="Next"
         buttonBackground="bg-secondary-1"

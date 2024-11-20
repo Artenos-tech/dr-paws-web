@@ -5,7 +5,12 @@ import { clinicItems } from "@/model/mockData";
 import SelectClinicCard from "./SelectClinicCard";
 import Button from "./Button";
 
-const SelectClinic: React.FC = () => {
+interface SelectClinicProps {
+    onNext: () => void; // Prop for navigation
+  }
+  
+
+const SelectClinic: React.FC<SelectClinicProps> = ({onNext}) => {
   const [selectedClinic, setSelectedClinic] = useState<string | null>(null);
 
   const handleClinicSelection = (clinicName: string) => {
@@ -14,6 +19,7 @@ const SelectClinic: React.FC = () => {
       prevSelected === clinicName ? null : clinicName
     );
   };
+
 
   return (
     <div>
@@ -29,15 +35,13 @@ const SelectClinic: React.FC = () => {
           />
         ))}
       </div>
-      <div className="mt-6 flex justify-center">
+      <div className="my-16 flex justify-center">
        
         <Button
           buttonText="Next"
           buttonBackground="bg-secondary-1"
           disabled={!selectedClinic}
-          buttonClickEvent={() =>
-            console.log(`Selected clinic: ${selectedClinic}`)
-          }
+          buttonClickEvent={onNext}
         />
       </div>
     </div>
