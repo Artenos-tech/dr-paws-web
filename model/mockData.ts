@@ -35,7 +35,7 @@ import UrineAnalysis from "@/public/assets/images/ServicesPage/Dignostics/UrineA
 import Biochemistry from "@/public/assets/images/ServicesPage/Dignostics/Biochemistry.jpg";
 import KidneyLiverFunction from "@/public/assets/images/ServicesPage/Dignostics/KidneyLiverFunction.jpg";
 import StoolAnalysis from "@/public/assets/images/ServicesPage/Dignostics/StoolAnalysis.png";
-import HormoneAnalysis from "@/public/assets/images/ServicesPage/Dignostics/HormoneAnalysis.avif";
+import HormoneAnalysis from "@/public/assets/images/ServicesPage/Dignostics/HormoneAnalysis.jpg";
 import Xray from "@/public/assets/images/ServicesPage/Dignostics/XRay.png";
 import Sprays from "@/public/assets/images/ServicesPage/Planned Surgeries/Sprays.png";
 import DentalScaling from "@/public/assets/images/ServicesPage/Planned Surgeries/DentalScaling.jpeg";
