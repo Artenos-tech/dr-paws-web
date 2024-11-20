@@ -25,20 +25,14 @@ const Footer = () => {
             >
               hello@drpaws.care
             </a>
-            <a
-              href="tel+919606994627"
-              className="block mt-1 text-primary-1 hover:text-primary-2"
-            >
+            <div className="block mt-1 text-primary-1">
               <div>Indiranagar Clinic</div>
               <div>+91 9606994627</div>
-            </a>
-            <a
-              href="tel:+917204996899"
-              className="block mt-1 text-primary-1 hover:text-primary-2"
-            >
+            </div>
+            <div className="block mt-1 text-primary-1">
               <div>RMV Clinic</div>
               <div>+91 7204996899</div>
-            </a>
+            </div>
           </div>
           <div>
             <h6 className="font-sans text-primary-1 font-semibold mb-2">
@@ -77,12 +71,14 @@ const Footer = () => {
                 Locations
               </a>
             ) : null}
-            <Link
-              href="/membership"
-              className="block mt-1 text-primary-1 hover:text-primary-2"
-            >
-              Membership
-            </Link>
+            {!isMarketingFeatureEnabled ? (
+              <Link
+                href="/membership"
+                className="block mt-1 text-primary-1 hover:text-primary-2"
+              >
+                Membership
+              </Link>
+            ) : null}
             <a
               href="#"
               onClick={() => setContactIsModalOpen(true)}
