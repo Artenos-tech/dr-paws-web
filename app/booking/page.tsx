@@ -13,7 +13,7 @@ const Booking: React.FC = () => {
     {}
   );
   const [openCard, setOpenCard] = useState<string | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDisclaimerModalOpen, setIsDisclaimerModalOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState<number>(1); 
 
   useEffect(() => {
@@ -55,8 +55,8 @@ const Booking: React.FC = () => {
             setSelectedData={setSelectedData}
             openCard={openCard}
             setOpenCard={setOpenCard}
-            isModalOpen={isModalOpen}
-            setIsModalOpen={setIsModalOpen}
+            isModalOpen={isDisclaimerModalOpen}
+            setIsModalOpen={setIsDisclaimerModalOpen}
             onNext={goToNextStep} 
           />
         )}

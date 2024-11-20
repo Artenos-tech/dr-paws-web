@@ -4,14 +4,14 @@ import React, { useState } from "react";
 import Image from "next/image";
 import AddPetModal from "./AddPetModal";
 
-import { petImageByType } from "./PetCard"; 
+import { petImageByType } from "./PetCard";
 import tickMark from "@/public/assets/images/Booking/tick-svgrepo-com.svg";
 
 interface Pet {
   petId: string;
   name: string;
-  type: string; 
-  petImage?: string; 
+  type: string;
+  petImage?: string;
 }
 
 interface BookingCardProps {
@@ -21,7 +21,7 @@ interface BookingCardProps {
   pets: Pet[];
   onCardSelection: (cardId: string, selectedPet: Pet | null) => void; // Changed to handle single pet selection
   isOpen: boolean;
-  toggleCard: (cardId: string) => void; 
+  toggleCard: (cardId: string) => void;
   setPets: React.Dispatch<React.SetStateAction<Pet[]>>;
 }
 
@@ -65,7 +65,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
     // Update pets in parent
     setPets((prevPets) => {
       const updatedPets = [...prevPets, newPetObject];
-      localStorage.setItem("pets", JSON.stringify(updatedPets)); 
+      localStorage.setItem("pets", JSON.stringify(updatedPets));
       return updatedPets;
     });
 
@@ -79,27 +79,29 @@ const BookingCard: React.FC<BookingCardProps> = ({
 
   return (
     <div
-      className={`border rounded-sm p-4 shadow-sm cursor-pointer font-sans ${
-        isOpen ? "border-secondary-1 bg-blue-50" : "border-gray-300"
+      className={`rounded-sm overflow-hidden shadow-sm cursor-pointer font-sans ${
+        isOpen ? "border-secondary-1 border-2" : "border-gray-300"
       }`}
       onClick={handleCardClick}
     >
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold">{title}</h2>
-        <input
-          type="checkbox"
-          checked={isOpen}
-          readOnly
-          className="w-6 h-6 cursor-pointer"
-          onClick={handleCardClick}
-        />
+      <div className="bg-primary-3 p-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl font-semibold">{title}</h2>
+          <input
+            type="checkbox"
+            checked={isOpen}
+            readOnly
+            className="w-6 h-6 cursor-pointer"
+            onClick={handleCardClick}
+          />
+        </div>
+        <p className="text-gray-500 mb-4">{description}</p>
       </div>
-      <p className="text-gray-500 mb-4">{description}</p>
 
       {isOpen && (
-        <div>
+        <div className="p-4 ">
           <h3 className="text-lg font-medium mb-2">Select your Pet:</h3>
-          <div className="flex gap-4 flex-wrap">
+          <div className="flex gap-3 flex-wrap justify-center items-center">
             {pets.map((pet) => {
               const petImage =
                 pet.petImage ||
