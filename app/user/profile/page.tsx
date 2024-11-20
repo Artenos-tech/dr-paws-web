@@ -6,15 +6,15 @@ import defaultProfileImage from "@/public/assets/images/Profile/Profile.png";
 import AddPetModal from "@/components/ui/AddPetModal";
 import PetCard from "@/components/ui/PetCard";
 import "react-toastify/dist/ReactToastify.css";
-import { StaticImageData } from "next/image";
 import OutlineButton from "@/components/ui/OutlineButton";
 import toast, { Toaster } from "react-hot-toast";
 import EditProfileModal from "@/components/ui/EditProfileModal";
 import { useUserContext } from "@/context/UserContext";
+import { useRouter } from "next/navigation";
 
 // Define the Pet type
 interface Pet {
-  petId: string;
+  id: string;
   name: string;
   type: string;
   petImage: string;
@@ -24,50 +24,54 @@ const Profile: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [pets, setPets] = useState<Pet[]>([]);
-  const [profileData, setProfileData] = useState<ProfileData | null>(null);
+  const [profileData, setProfileData] = useState<ProfileData>({
+    id: "", // Default empty string
+    profilePicture: defaultProfileImage.src,
+    name: "",
+    mobile: "",
+    email: "",
+    currentAddress: "",
+    // Add other properties with sensible defaults
+  });
 
-  const { updateUserDetailsHandler, updateUserPetsHandler, userPets } =
+  const {  updateUserPetsHandler, userPets, user } =
     useUserContext();
 
   // Initialize petIdCounter as a string
   const [petIdCounter, setPetIdCounter] = useState<string>("1");
 
+  const navigate = useRouter();
+
   useEffect(() => {
-    const savedPets = localStorage.getItem("pets");
-    const parsedPets: Pet[] = savedPets ? JSON.parse(savedPets) : [];
-    setPets(parsedPets);
-    const partialPetsDetails: Partial<Pet>[] = parsedPets.map((pet) => ({
-      id: pet.petId,
-      name: pet.name,
-      type: pet.type,
-      petImage: pet.petImage,
-    }));
+    fetchUserPets();
+  }, [userPets, navigate]);
 
-    updateUserPetsHandler(partialPetsDetails);
-    // Set petIdCounter based on the last petId in the list, converting to a string
-    if (parsedPets.length > 0) {
-      const maxId = Math.max(
-        ...parsedPets.map((pet: Pet) => parseInt(pet.petId))
-      );
-      setPetIdCounter((maxId + 1).toString());
+  const fetchUserPets = () => {
+    if (userPets) {
+      const partialPetsDetails: Pet[] = userPets.map((pet) => ({
+        id: pet.id || "",
+        name: pet.name || "",
+        type: pet.type || "",
+        petImage: pet.petImage || "",
+      }));
+      setPets(partialPetsDetails);
+
+      // Set petIdCounter based on the last petId in the list, converting to a string
+      if (partialPetsDetails.length > 0) {
+        const maxId = Math.max(
+          ...partialPetsDetails.map((pet: Pet) => parseInt(pet.id))
+        );
+        setPetIdCounter((maxId + 1).toString());
+      }
     }
-  }, []);
+  };
 
-  const addPet = (pet: Omit<Pet, "petId" | "petImage">): void => {
-    const newPet: Pet = { ...pet, petId: petIdCounter, petImage: "" };
+  const addPet = (pet: Omit<Pet, "id" | "petImage">): void => {
+    const newPet: Pet = { ...pet, id: petIdCounter, petImage: "" };
     setPets((prevPets) => {
       const updatedPets = [...prevPets, newPet];
 
-      updateUserPetsHandler([
-        ...prevPets,
-        {
-          id: newPet.petId,
-          name: newPet.name,
-          type: newPet.type,
-          petImage: newPet.petImage,
-        },
-      ]);
-      localStorage.setItem("pets", JSON.stringify(updatedPets));
+      updateUserPetsHandler([...prevPets, newPet]);
       return updatedPets;
     });
     toast.success("Added pet successfully", {
@@ -82,57 +86,27 @@ const Profile: React.FC = () => {
   };
 
   const fetchProfileData = () => {
-    let storedProfileData = localStorage.getItem("userProfile");
-
-    if (!storedProfileData) {
-      const defaultProfileData: ProfileData = {
-        name: "John Doe",
-        contact: "0937948568",
-        image: defaultProfileImage.src,
-        email: "jondoe@gmail.com",
-        address: "Andheri West, Mumbai",
-      };
-      localStorage.setItem("userProfile", JSON.stringify(defaultProfileData));
-      storedProfileData = JSON.stringify(defaultProfileData);
-    }
-
-    if (storedProfileData) {
-      const parsedData = JSON.parse(storedProfileData);
-      // storing in context
-      updateUserDetailsHandler({
-        name: parsedData.name,
-        mobile: parsedData.contact,
-        profilePicture: parsedData.image || defaultProfileImage.src,
-        email: parsedData.email,
-        currentAddress: parsedData.address,
-      });
+    if (user) {
       setProfileData({
-        ...parsedData,
-        image: parsedData.image || defaultProfileImage.src,
+        id: user.id,
+        name: user.name,
+        email: user.email || "",
+        mobile: user.mobile,
+        currentAddress: user.currentAddress || "",
+        profilePicture: user.profilePicture || defaultProfileImage.src,
       });
     }
   };
 
   useEffect(() => {
+    if (!user) {
+      navigate.push("/");
+    }
     fetchProfileData();
-  }, []);
-
-  const handleProfileUpdate = (updatedProfile: ProfileData) => {
-    setProfileData(updatedProfile);
-    updateUserDetailsHandler({
-      name: updatedProfile.name,
-      mobile: updatedProfile.contact,
-      profilePicture: updatedProfile.image,
-      email: updatedProfile.email,
-      currentAddress: updatedProfile.address,
-    });
-    localStorage.setItem("userProfile", JSON.stringify(updatedProfile));
-  };
-
-  console.log(userPets);
+  }, [user, navigate]);
 
   return (
-    <div className="flex flex-col w-full h-full lg:h-screen items-center font-roca pb-20 flex-grow ">
+    <div className="flex flex-col w-full h-full 2xl:h-screen items-center font-roca pb-20 flex-grow ">
       <main className="flex flex-col w-full gap-8 md:gap-16 items-center px-8 md:px-32 lg:px-20 xl:px-40">
         {profileData && (
           <ProfileCard
@@ -168,7 +142,7 @@ const Profile: React.FC = () => {
           ) : (
             <div className="flex justify-center items-center md:justify-start  flex-wrap gap-4 my-8 md:my-4">
               {pets.map((pet) => (
-                <PetCard key={pet.petId} pet={pet} />
+                <PetCard key={pet.id} pet={pet} />
               ))}
             </div>
           )}
@@ -177,7 +151,7 @@ const Profile: React.FC = () => {
         <AddPetModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
-          onSubmit={(pet: Omit<Pet, "petId" | "petImage">) => {
+          onSubmit={(pet: Omit<Pet, "id" | "petImage">) => {
             addPet(pet);
             setIsModalOpen(false);
           }}
@@ -188,7 +162,6 @@ const Profile: React.FC = () => {
         <EditProfileModal
           isOpen={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}
-          onSave={handleProfileUpdate}
           profileData={profileData}
         />
       )}

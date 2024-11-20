@@ -2,7 +2,6 @@
 import { descriptionItems } from "@/model/mockData";
 import React, { useState } from "react";
 import DescriptionCard from "./DescriptionCard";
-import UserAuthenticationModal from "./UserAuthenticationModal";
 import ContactInfoModal from "./ContactInfoModal";
 
 interface DescriptionCardListProps {

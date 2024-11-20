@@ -4,28 +4,30 @@ import ProfileForm from "./ProfileForm";
 import BillingForm from "./BillingForm";
 import { ProfileData } from "./ProfileCard";
 import { BillingFormData } from "./BillingForm";
+import { User, useUserContext } from "@/context/UserContext";
 
 interface EditProfileModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (updatedProfile: ProfileData) => void;
+  // onSave: (updatedProfile: ProfileData) => void;
   profileData: ProfileData;
 }
 
 const EditProfileModal: React.FC<EditProfileModalProps> = ({
   isOpen,
   onClose,
-  onSave,
   profileData,
 }) => {
   const [activeTab, setActiveTab] = useState<"profile" | "billing">("profile");
   const [billingData, setBillingData] = useState<BillingFormData | null>(null);
 
-  const handleProfileSave = (data: ProfileData) => {
-    onSave(data);
+  const { updateUserDetailsHandler, user } = useUserContext();
+
+  const handleProfileUpdate = (updatedProfile: User) => {
+    updateUserDetailsHandler(updatedProfile);
+    localStorage.setItem("userProfile", JSON.stringify(updatedProfile));
     onClose();
   };
-
   const handleBillingSave = (data: BillingFormData) => {
     setBillingData(data);
     localStorage.setItem("billingData", JSON.stringify(data));
@@ -38,6 +40,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
       setActiveTab("profile");
     }
   }, [isOpen]);
+  console.log("user2:", user);
 
   return (
     <Modal
@@ -79,7 +82,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
       {activeTab === "profile" ? (
         <ProfileForm
           profileData={profileData}
-          onSubmit={handleProfileSave}
+          onSubmit={handleProfileUpdate}
           onCancel={onClose}
         />
       ) : (

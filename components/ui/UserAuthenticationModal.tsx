@@ -6,6 +6,10 @@ import Modal from "react-modal";
 import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
 import OTPForm from "./OTPForm";
+import { useAPICall } from "@/hooks/apicall";
+import api from "@/services/api";
+import toast, { Toaster } from "react-hot-toast";
+import { Pet, useUserContext } from "@/context/UserContext";
 
 interface authenticationProps {
   isOpen: boolean;
@@ -32,28 +36,147 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
   const [userMobileNumber, setUserMobileNumber] = useState<string | undefined>(
     initialMobileNumber
   );
-  const [userName, setUserName] = useState<string>("");
-  const [profilePicture, setProfilePicture] = useState<string | undefined>(
-    undefined
-  );
+
+  // context
+  const { updateUserDetailsHandler, updateUserPetsHandler } = useUserContext();
+
+  // API's
+  const { call: signupOTP } = useAPICall(api.signupOTP);
+  const { call: signupVerify } = useAPICall(api.signupVerify);
+  const { call: loginOTP } = useAPICall(api.loginOTP);
+  const { call: loginVerify } = useAPICall(api.loginVerify);
 
   const handleIncorrectNumber = () => {
     setUserMobileNumber(undefined);
     setIsLogin(true);
   };
 
-  const handleLoginSubmit = (mobileNumber: string) => {
-    setUserMobileNumber(mobileNumber);
+  const handleLoginSubmit = async (mobileNumber: string) => {
+    const response = await loginOTP({ mobile: mobileNumber, role: "USER" });
+
+    if (response.ok) {
+      setUserMobileNumber(mobileNumber);
+      toast.success("OTP sent to your mobile number", {
+        duration: 3000,
+        position: "bottom-right",
+      });
+    } else {
+      const errorMessage =
+        response?.error.apiClientErrorType === "ErrorResponseAPIError"
+          ? response.error.body.message
+          : (response?.error.message as string);
+
+      toast.error(errorMessage, {
+        duration: 3000,
+        position: "bottom-right",
+      });
+    }
   };
 
-  const handleSignupSubmit = (data: {
+  // Sign up OTP
+  const handleSignupSubmit = async (data: {
     userName: string;
     mobileNumber: string;
     profilePicture?: string;
   }) => {
-    setUserMobileNumber(data.mobileNumber);
-    setProfilePicture(data.profilePicture);
-    setUserName(data.userName);
+    // TO-DO: Add profilePicture to the API call after adding profilePicture in the backend API
+    const response = await signupOTP({
+      name: data.userName,
+      mobile: data.mobileNumber,
+      role: "USER",
+    });
+    if (response?.ok) {
+      setUserMobileNumber(data.mobileNumber);
+      toast.success("OTP sent to your mobile number", {
+        duration: 3000,
+        position: "bottom-right",
+      });
+    } else {
+      const errorMessage =
+        response?.error.apiClientErrorType === "ErrorResponseAPIError"
+          ? response.error.body.message
+          : (response?.error.message as string);
+
+      toast.error(errorMessage, {
+        duration: 3000,
+        position: "bottom-right",
+      });
+    }
+  };
+
+  const handleOTPVerification = async (otp: string) => {
+    if (isLogin) {
+      if (userMobileNumber) {
+        const response = await loginVerify({
+          mobile: userMobileNumber,
+          role: "USER",
+          otp,
+        });
+        if (response?.ok) {
+          onSuccess?.();
+          updateUserDetailsHandler(response.value.body.user);
+
+          const pets = response.value.body.user_pets?.map((pet) => ({
+            ...pet,
+            gender: pet.gender ?? undefined,
+          })) as Partial<Pet>[];
+
+          if (pets) {
+            updateUserPetsHandler(pets);
+          }
+          toast.success("Successfully logged in!", {
+            duration: 3000,
+            position: "bottom-right",
+          });
+        } else {
+          const errorMessage =
+            response?.error.apiClientErrorType === "ErrorResponseAPIError"
+              ? response.error.body.message
+              : (response?.error.message as string);
+
+          toast.error(errorMessage, {
+            duration: 3000,
+            position: "bottom-right",
+          });
+        }
+      }
+    } else {
+      if (userMobileNumber) {
+        const response = await signupVerify({
+          mobile: userMobileNumber,
+          role: "USER",
+          otp,
+        });
+        if (response?.ok) {
+          onSuccess?.();
+          updateUserDetailsHandler(response.value.body.user);
+
+          const pets = response.value.body.user_pets?.map((pet) => ({
+            ...pet,
+            gender: pet.gender ?? undefined,
+          })) as Partial<Pet>[];
+
+          if (pets) {
+            updateUserPetsHandler(pets);
+          }
+
+          toast.success("Successfully signed up!", {
+            duration: 3000,
+            position: "bottom-right",
+          });
+        } else {
+          const errorMessage =
+            response?.error.apiClientErrorType === "ErrorResponseAPIError"
+              ? response.error.body.message
+              : (response?.error.message as string);
+
+          toast.error(errorMessage, {
+            duration: 3000,
+            position: "bottom-right",
+          });
+        }
+      }
+    }
   };
 
   return (
@@ -74,8 +197,8 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
         {userMobileNumber ? (
           <OTPForm
             userMobileNumber={userMobileNumber}
-            loginForm={handleIncorrectNumber}
-            onSuccess={onSuccess}
+            viewLoginForm={handleIncorrectNumber}
+            handleOTPVerification={handleOTPVerification}
           />
         ) : isLogin ? (
           <LoginForm onSubmit={handleLoginSubmit} buttonText={buttonText} />
@@ -116,6 +239,7 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
           </div>
         )}
       </div>
+      <Toaster />
     </Modal>
   );
 };

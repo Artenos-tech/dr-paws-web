@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import defaultUserProfile from "@/public/assets/images/defaultUserProfile.png";
 import editIcon from "@/public/assets/images/Profile/ImageEdit.png";
-import Image, { StaticImageData } from "next/image";
+import Image from "next/image";
 import { FaTrash } from "react-icons/fa6";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -61,10 +61,10 @@ const SignupForm: React.FC<SignUpFormProps> = ({ onSubmit }) => {
   return (
     <div className="text-center">
       <h1 className="text-lg md:text-xl lg:text-2xl my-3">
-        Let's get started by creating <br /> your account.
+        Let&apos;s get started by creating <br /> your account.
       </h1>
       <p className="text-xs md:text-sm lg:text-base text-primary-1">
-        Add your phone number. We'll send you a <br /> verification code.
+        Add your phone number. We&apos;ll send you a <br /> verification code.
       </p>
 
       <form onSubmit={handleSubmit(signUpSubmitHandler)} className="my-6">

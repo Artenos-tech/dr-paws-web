@@ -6,6 +6,7 @@ import { MembershipPlan } from "./MemberCard";
 import { useRouter } from "next/navigation";
 import UserAuthenticationModal from "./UserAuthenticationModal";
 import Modal from "react-modal";
+import { useUserContext } from "@/context/UserContext";
 
 interface ModalProps {
   isOpen: boolean;
@@ -23,8 +24,22 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false); // Track authentication state
 
   const [buttonText, setButtonText] = useState<string>("");
+  const { user } = useUserContext();
+
+  // Proceed with the payment route
+  const params = new URLSearchParams({
+    title: plan.title,
+    duration: selectedPlan.duration,
+    price: selectedPlan.price,
+  });
 
   const handleLoginModalOpen = (val: string) => {
+    if (user?.id) {
+      if (val === "Become a Member") {
+        router.push(`/membership/payment?${params.toString()}`);
+        return;
+      }
+    }
     setLoginModalOpen(true);
     setButtonText(val);
   };
@@ -51,12 +66,7 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
       handleLoginModalOpen("Become a Member");
       return;
     }
-    // Proceed with the payment route
-    const params = new URLSearchParams({
-      title: plan.title,
-      duration: selectedPlan.duration,
-      price: selectedPlan.price,
-    });
+
     router.push(`/membership/payment?${params.toString()}`);
   };
 

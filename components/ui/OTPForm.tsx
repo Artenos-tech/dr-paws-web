@@ -4,22 +4,23 @@ import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
 
 interface otpFormProps {
   userMobileNumber?: string;
-  loginForm: () => void;
-  onSuccess?: () => void;
+  viewLoginForm: () => void;
+  handleOTPVerification: (otp: string) => void;
 }
 
 const OTPForm: React.FC<otpFormProps> = ({
   userMobileNumber,
-  loginForm,
-  onSuccess,
+  viewLoginForm,
+  handleOTPVerification,
 }) => {
   const [otp, setOtp] = useState("");
   const [err, setErr] = useState("");
 
   const handleVerify = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    if (otp.length === 4) {
-      onSuccess?.();
+    // TO-DO: Later OTP length should be 4
+    if (otp.length === 6) {
+      handleOTPVerification(otp);
     } else {
       setErr("Please enter a valid 4-digit OTP.");
     }
@@ -32,7 +33,7 @@ const OTPForm: React.FC<otpFormProps> = ({
       </p>
       <span
         className="cursor-pointer text-xs md:text-base border-b border-primary-1"
-        onClick={loginForm}
+        onClick={viewLoginForm}
       >
         Incorrect Number?
       </span>

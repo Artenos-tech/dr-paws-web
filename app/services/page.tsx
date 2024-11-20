@@ -7,13 +7,21 @@ import Button from "@/components/ui/Button";
 import { useState } from "react";
 import ContactInfoModal from "@/components/ui/ContactInfoModal";
 import UserAuthenticationModal from "@/components/ui/UserAuthenticationModal";
+import { useUserContext } from "@/context/UserContext";
+import { useRouter } from "next/navigation";
 
 const Services = () => {
   const [isContactModalOpen, setContactIsModalOpen] = useState(false);
   const [loginModalOpen, setLoginModalOpen] = useState<boolean>(false);
   const [buttonText, setButtonText] = useState<string>("");
+  const { user } = useUserContext();
+  const navigate = useRouter();
 
   const handleLoginModalOpen = (val: string) => {
+    if (user?.id) {
+      navigate.push("/");
+      return;
+    }
     setLoginModalOpen(true);
     setButtonText(val);
   };

@@ -22,7 +22,7 @@ export interface Pet {
   breed: string | null;
   weight: number | null;
   gender: Gender;
-  dob: Date | null;
+  dob: string | null;
   petImage: string | undefined; // pet image is optional
 }
 

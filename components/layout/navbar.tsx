@@ -13,6 +13,7 @@ import { clinicItems } from "@/model/mockData";
 import ContactInfoModal from "../ui/ContactInfoModal";
 import UserAuthenticationModal from "../ui/UserAuthenticationModal";
 import { useRouter } from "next/navigation";
+import { useUserContext } from "@/context/UserContext";
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -23,7 +24,17 @@ export default function NavBar() {
 
   const [buttonText, setButtonText] = useState<string>("");
 
+  const { user } = useUserContext();
+
   const handleLoginModalOpen = (text: string) => {
+    if (user?.id) {
+      if (text === "View Profile" || buttonText === "View Pets") {
+        navigate.push("/user/profile");
+        return
+      }
+      navigate.push("/");
+      return
+    }
     setLoginModalOpen(true);
     setButtonText(text);
   };

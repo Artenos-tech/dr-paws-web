@@ -12,18 +12,27 @@ import GreenBackground from "@/public/assets/images/reviewImages/greenBackground
 import Lady from "@/public/assets/images/reviewImages/Girl.png";
 import YellowAndDocWithDog from "@/public/assets/images/petValues/YellowAndDocWithDog.svg";
 import TickMark from "@/public/assets/images/petValues/TickMark.svg";
-import ContactInfoModal from "@/components/ui/ContactInfoModal";
 import { useState } from "react";
 import UserAuthenticationModal from "@/components/ui/UserAuthenticationModal";
 import { useRouter } from "next/navigation";
+import { useUserContext } from "@/context/UserContext";
 
 export default function Home() {
   const [loginModalOpen, setLoginModalOpen] = useState<boolean>(false);
   const [buttonText, setButtonText] = useState<string>("");
-  // const [redirectTo, setRedirectTo] = useState("");
   const navigate = useRouter();
 
+  const { user } = useUserContext();
+
   const handleLoginModalOpen = (text: string) => {
+    if (user?.id) {
+      if (text === "Become a member"){
+        navigate.push("/membership");
+        return
+      }
+      navigate.push("/");
+      return
+    }
     setLoginModalOpen(true);
     setButtonText(text);
   };
@@ -32,7 +41,7 @@ export default function Home() {
     if (buttonText === "Become a member") {
       navigate.push("/membership");
     }
-    setLoginModalOpen(false)
+    setLoginModalOpen(false);
   };
 
   return (

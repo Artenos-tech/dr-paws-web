@@ -4,11 +4,12 @@ import React from "react";
 import OutlineButton from "./OutlineButton";
 
 export interface ProfileData {
+  id: string
   name: string;
-  image: string;
-  contact: string;
+  profilePicture: string;
+  mobile: string;
   email: string;
-  address: string;
+  currentAddress: string;
 }
 
 interface ProfileCardProps {
@@ -17,12 +18,12 @@ interface ProfileCardProps {
 }
 
 const ProfileCard: React.FC<ProfileCardProps> = ({ profile, onEdit }) => {
-  const { name, image, contact, email, address } = profile;
+  const { name, profilePicture, mobile, email, currentAddress } = profile;
 
   return (
     <div className="w-full flex flex-col lg:flex-row items-start lg:items-center gap-6 md:gap-8 mt-16">
       <div className="relative w-20 h-20 md:w-32 md:h-32 rounded-full overflow-hidden bg-orange-400 flex-shrink-0">
-        <Image src={image} alt={name} fill className="object-cover" priority />
+        <Image src={profilePicture} alt={name} fill className="object-cover" priority />
       </div>
 
       <div className="flex-grow space-y-6">
@@ -38,7 +39,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ profile, onEdit }) => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="space-y-2">
             <h2 className="text-gray-500">Contact No</h2>
-            <p className="text-lg font-medium text-gray-700">{contact}</p>
+            <p className="text-lg font-medium text-gray-700">{mobile}</p>
           </div>
           <div className="space-y-2">
             <h2 className="text-gray-500">Email Id</h2>
@@ -46,7 +47,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ profile, onEdit }) => {
           </div>
           <div className="space-y-2">
             <h2 className="text-gray-500">Address</h2>
-            <p className="text-lg font-medium text-gray-700">{address}</p>
+            <p className="text-lg font-medium text-gray-700">{currentAddress}</p>
           </div>
         </div>
       </div>

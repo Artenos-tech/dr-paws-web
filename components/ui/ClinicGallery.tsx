@@ -6,8 +6,9 @@ import ReactModal from "react-modal";
 import { IoIosArrowBack, IoIosArrowForward, IoMdClose } from "react-icons/io";
 import { Clinic } from "@/model/typeDefinitions";
 import Button from "./Button";
-import ContactInfoModal from "./ContactInfoModal";
 import UserAuthenticationModal from "./UserAuthenticationModal";
+import { useUserContext } from "@/context/UserContext";
+import { useRouter } from "next/navigation";
 
 interface ClinicGalleryProps {
   clinic: Clinic;
@@ -21,8 +22,14 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
   const [isMounted, setIsMounted] = useState(false);
 
   const [buttonText, setButtonText] = useState<string>("");
+  const { user } = useUserContext();
+  const navigate = useRouter();
 
   const handleLoginModalOpen = (val: string) => {
+    if (user?.id) {
+      navigate.push("/");
+      return;
+    }
     setLoginModalOpen(true);
     setButtonText(val);
   };

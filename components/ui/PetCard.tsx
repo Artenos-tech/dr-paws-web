@@ -14,7 +14,7 @@ import defaultOtherPetImage from "@/public/assets/images/pets/petImg.png";
 
 interface PetCardProps {
   pet: {
-    petId: string;
+    id: string;
     name: string;
     type: string;
     petImage: StaticImageData | string;
@@ -31,11 +31,11 @@ export const petImageByType: Record<string, StaticImageData> = {
 };
 
 const PetCard: React.FC<PetCardProps> = ({ pet }) => {
-  const { name, petId, petImage, type } = pet;
+  const { name, id, petImage, type } = pet;
   const router = useRouter();
 
   const handlePetProfileView = () => {
-    router.push(`/user/profile/pet-profile/${petId}`);
+    router.push(`/user/profile/pet-profile/${id}`);
   };
 
   const defaultImageOrPetImage = petImage || petImageByType[type.toLowerCase()] || defaultPetImg;

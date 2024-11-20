@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Clinic } from "@/model/typeDefinitions";
 import UserAuthenticationModal from "./UserAuthenticationModal";
+import { useUserContext } from "@/context/UserContext";
 
 interface ClinicItemProps {
   clinic: Clinic;
@@ -16,14 +17,19 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
   const router = useRouter();
 
   const [buttonText, setButtonText] = useState<string>("");
+  const { user } = useUserContext();
 
   const handleLoginModalOpen = (val: string) => {
+    if (user?.id) {
+      router.push("/");
+      return;
+    }
     setLoginModalOpen(true);
     setButtonText(val);
   };
 
   const onSuccess = () => {
-    setLoginModalOpen(false)
+    setLoginModalOpen(false);
   };
 
   const handleBookVisit = () => {

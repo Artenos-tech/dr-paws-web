@@ -8,6 +8,7 @@ import ImageEdit from "@/public/assets/images/Profile/ImageEdit.png";
 import OutlineButton from "./OutlineButton";
 import { FaTrash } from "react-icons/fa6";
 import { petImageByType } from "./PetCard";
+import { useUserContext } from "@/context/UserContext";
 
 interface PetProfileInfoProps {
   petProfileId: string;
@@ -38,6 +39,10 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
   });
 
   useEffect(() => {
+    fetchPetDetails();
+  }, [petProfileId, setValue]);
+
+  const fetchPetDetails = () => {
     const storedPets = localStorage.getItem("pets");
     if (storedPets) {
       const pets: Pet[] = JSON.parse(storedPets);
@@ -55,7 +60,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
         }
       }
     }
-  }, [petProfileId, setValue]);
+  };
 
   const handleEditCancelClick = () => {
     if (pet) {
