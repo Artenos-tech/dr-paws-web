@@ -1,68 +1,77 @@
-import sharp from "sharp";
 import fs from "fs-extra";
 import path from "path";
+import { optimizeImage } from "../lib/image-optimization";
 
 const inputDir = "public/assets/images";
 const outputDir = "public/assets/optimized-images";
 
 async function optimizeImages(): Promise<void> {
-  // Ensure output directory exists
-  await fs.ensureDir(outputDir);
+  try {
+    // Ensure output directory exists
+    await fs.ensureDir(outputDir);
 
-  // Get all files from the input directory
-  const files = await fs.readdir(inputDir, { withFileTypes: true });
+    // Get all files from the input directory
+    const files = await fs.readdir(inputDir, { withFileTypes: true });
 
-  for (const file of files) {
-    if (file.isDirectory()) {
-      // Recursively process subdirectories
-      await processDirectory(
-        path.join(inputDir, file.name),
-        path.join(outputDir, file.name)
-      );
-    } else {
-      await optimizeImage(path.join(inputDir, file.name), outputDir);
+    for (const file of files) {
+      if (file.isDirectory()) {
+        // Recursively process subdirectories
+        await processDirectory(
+          path.join(inputDir, file.name),
+          path.join(outputDir, file.name)
+        );
+      } else {
+        await optimizeImage(
+          path.join(inputDir, file.name),
+          outputDir,
+          1920,
+          80
+        );
+      }
     }
-  }
 
-  console.log("Image optimization complete!");
+    console.log("Image optimization complete!");
+  } catch (error) {
+    console.error("Error during image optimization:", error);
+    if ((error as NodeJS.ErrnoException).code === "EPERM") {
+      console.error(
+        "Permission denied. Make sure you have write access to the output directory."
+      );
+    } else if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+      console.error(
+        "The input directory does not exist. Please check the path."
+      );
+    }
+    process.exit(1);
+  }
 }
 
 async function processDirectory(
   inputPath: string,
   outputPath: string
 ): Promise<void> {
-  await fs.ensureDir(outputPath);
-  const files = await fs.readdir(inputPath, { withFileTypes: true });
+  try {
+    await fs.ensureDir(outputPath);
+    const files = await fs.readdir(inputPath, { withFileTypes: true });
 
-  for (const file of files) {
-    if (file.isDirectory()) {
-      await processDirectory(
-        path.join(inputPath, file.name),
-        path.join(outputPath, file.name)
-      );
-    } else {
-      await optimizeImage(path.join(inputPath, file.name), outputPath);
+    for (const file of files) {
+      if (file.isDirectory()) {
+        await processDirectory(
+          path.join(inputPath, file.name),
+          path.join(outputPath, file.name)
+        );
+      } else {
+        await optimizeImage(
+          path.join(inputPath, file.name),
+          outputPath,
+          1920,
+          80
+        );
+      }
     }
-  }
-}
-
-async function optimizeImage(
-  inputPath: string,
-  outputDir: string
-): Promise<void> {
-  const { name, ext } = path.parse(inputPath);
-  const outputPath = path.join(outputDir, `${name}.webp`);
-
-  if (ext.toLowerCase() === ".svg") {
-    // For SVG files, just copy them without conversion
-    await fs.copyFile(inputPath, path.join(outputDir, `${name}${ext}`));
-    console.log(`Copied: ${inputPath}`);
-  } else {
-    await sharp(inputPath)
-      .webp({ quality: 80 })
-      .resize({ width: 1920, height: 1080, fit: "inside" })
-      .toFile(outputPath);
-    console.log(`Optimized: ${inputPath}`);
+  } catch (error) {
+    console.error(`Error processing directory ${inputPath}:`, error);
+    throw error;
   }
 }
 

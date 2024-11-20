@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "prebuild": "ts-node --project tsconfig.node.json scripts/optimize-images.ts",
     "build": "next build",
     "start": "next start",
+    "export": "cross-env NEXT_EXPORT=true next build",
+    "optimize-images": "ts-node --project tsconfig.node.json scripts/optimize-images.ts",
     "lint": "next lint"
   },
   "dependencies": {
@@ -51,6 +52,7 @@
     "@types/react-modal": "^3.16.3",
     "@types/sharp": "^0.32.0",
     "autoprefixer": "^10.4.20",
+    "cross-env": "^7.0.3",
     "daisyui": "^4.12.13",
     "eslint": "^8",
     "eslint-config-next": "14.2.16",
