@@ -11,8 +11,10 @@ import { MdChevronRight } from "react-icons/md";
 import logo from "@/public/assets/images/logo/logo.svg";
 import { clinicItems } from "@/model/mockData";
 import ContactInfoModal from "../ui/ContactInfoModal";
+import { useMarketingFeature } from "@/hooks/useMarketingFeature";
 
 export default function NavBar() {
+  const isMarketingFeatureEnabled = useMarketingFeature();
   const [isOpen, setIsOpen] = useState(false);
   const [isLocationOpen, setIsLocationOpen] = useState(false);
   const [isContactModalOpen, setContactIsModalOpen] = useState(false);
@@ -76,12 +78,14 @@ export default function NavBar() {
                 >
                   Our Team
                 </Link>
-                <Link
-                  href="/membership"
-                  className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-                >
-                  Membership
-                </Link>
+                {!isMarketingFeatureEnabled ? (
+                  <Link
+                    href="/membership"
+                    className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                  >
+                    Membership
+                  </Link>
+                ) : null}
               </div>
             </div>
           </div>
@@ -91,93 +95,95 @@ export default function NavBar() {
               buttonBackground="bg-secondary-1"
               buttonClickEvent={() => setContactIsModalOpen(true)}
             />
-            <DropdownMenu.Root>
-              <DropdownMenu.Trigger className="outline-none">
-                <Image
-                  src={Profile}
-                  alt="User logo"
-                  width={40}
-                  height={40}
-                  className="cursor-pointer outline-none"
-                />
-              </DropdownMenu.Trigger>
-              <DropdownMenu.Portal>
-                <DropdownMenu.Content
-                  className="bg-[#f7f1de] shadow-lg rounded-lg w-48 p-4 flex flex-col gap-1"
-                  align="start"
-                  sideOffset={5}
-                >
-                  <DropdownMenu.Item asChild>
-                    <div
-                      onClick={() => setContactIsModalOpen(true)}
-                      className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
-                    >
-                      Profile
-                    </div>
-                  </DropdownMenu.Item>
-                  <DropdownMenu.Item asChild>
-                    <div
-                      onClick={() => setContactIsModalOpen(true)}
-                      className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
-                    >
-                      My Pets
-                    </div>
-                  </DropdownMenu.Item>
+            {!isMarketingFeatureEnabled ? (
+              <DropdownMenu.Root>
+                <DropdownMenu.Trigger className="outline-none">
+                  <Image
+                    src={Profile}
+                    alt="User logo"
+                    width={40}
+                    height={40}
+                    className="cursor-pointer outline-none"
+                  />
+                </DropdownMenu.Trigger>
+                <DropdownMenu.Portal>
+                  <DropdownMenu.Content
+                    className="bg-[#f7f1de] shadow-lg rounded-lg w-48 p-4 flex flex-col gap-1"
+                    align="start"
+                    sideOffset={5}
+                  >
+                    <DropdownMenu.Item asChild>
+                      <div
+                        onClick={() => setContactIsModalOpen(true)}
+                        className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
+                      >
+                        Profile
+                      </div>
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Item asChild>
+                      <div
+                        onClick={() => setContactIsModalOpen(true)}
+                        className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
+                      >
+                        My Pets
+                      </div>
+                    </DropdownMenu.Item>
 
-                  <DropdownMenu.Item asChild>
-                    <div
-                      onClick={() => setContactIsModalOpen(true)}
-                      className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
-                    >
-                      Medical History
-                    </div>
-                  </DropdownMenu.Item>
-                  <DropdownMenu.Item asChild>
-                    <div
-                      onClick={() => setContactIsModalOpen(true)}
-                      className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
-                    >
-                      My Appointments
-                    </div>
-                  </DropdownMenu.Item>
-                  <div className="border-t border-gray-300 my-2" />
-                  <DropdownMenu.Item asChild>
-                    <div
-                      onClick={() => setContactIsModalOpen(true)}
-                      className="text-secondary-1 flex justify-between items-center hover:text-primary-1 cursor-pointer outline-none"
-                    >
-                      Become a Member <MdChevronRight />
-                    </div>
-                  </DropdownMenu.Item>
-                  <div className="border-t border-gray-300 my-2" />
-                  <DropdownMenu.Item asChild>
-                    <div
-                      onClick={() => setContactIsModalOpen(true)}
-                      className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
-                    >
-                      Billing Information
-                    </div>
-                  </DropdownMenu.Item>
-                  <DropdownMenu.Item asChild>
-                    <div
-                      onClick={() => setContactIsModalOpen(true)}
-                      className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
-                    >
-                      Account Settings
-                    </div>
-                  </DropdownMenu.Item>
-                  <DropdownMenu.Item asChild>
-                    <div
-                      onClick={() => setContactIsModalOpen(true)}
-                      className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
-                    >
-                      Logout
-                    </div>
-                  </DropdownMenu.Item>
-                  <DropdownMenu.Arrow className="fill-current text-[#f7f1de]" />
-                </DropdownMenu.Content>
-              </DropdownMenu.Portal>
-            </DropdownMenu.Root>
+                    <DropdownMenu.Item asChild>
+                      <div
+                        onClick={() => setContactIsModalOpen(true)}
+                        className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
+                      >
+                        Medical History
+                      </div>
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Item asChild>
+                      <div
+                        onClick={() => setContactIsModalOpen(true)}
+                        className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
+                      >
+                        My Appointments
+                      </div>
+                    </DropdownMenu.Item>
+                    <div className="border-t border-gray-300 my-2" />
+                    <DropdownMenu.Item asChild>
+                      <div
+                        onClick={() => setContactIsModalOpen(true)}
+                        className="text-secondary-1 flex justify-between items-center hover:text-primary-1 cursor-pointer outline-none"
+                      >
+                        Become a Member <MdChevronRight />
+                      </div>
+                    </DropdownMenu.Item>
+                    <div className="border-t border-gray-300 my-2" />
+                    <DropdownMenu.Item asChild>
+                      <div
+                        onClick={() => setContactIsModalOpen(true)}
+                        className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
+                      >
+                        Billing Information
+                      </div>
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Item asChild>
+                      <div
+                        onClick={() => setContactIsModalOpen(true)}
+                        className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
+                      >
+                        Account Settings
+                      </div>
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Item asChild>
+                      <div
+                        onClick={() => setContactIsModalOpen(true)}
+                        className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
+                      >
+                        Logout
+                      </div>
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Arrow className="fill-current text-[#f7f1de]" />
+                  </DropdownMenu.Content>
+                </DropdownMenu.Portal>
+              </DropdownMenu.Root>
+            ) : null}
           </div>
           <div className="-mr-2 flex lg:hidden">
             <button
@@ -249,101 +255,103 @@ export default function NavBar() {
           </div>
           <div className="pt-4 pb-3 border-t border-primary-2">
             <div className="flex items-center px-8 md:px-32 space-x-4">
-              <DropdownMenu.Root>
-                <DropdownMenu.Trigger>
-                  <Image
-                    src={Profile}
-                    alt="User logo"
-                    width={40}
-                    height={40}
-                    className="cursor-pointer"
-                  />
-                </DropdownMenu.Trigger>
-                <DropdownMenu.Portal>
-                  <DropdownMenu.Content
-                    className="bg-[#f7f1de] shadow-lg rounded-lg w-[100vh] lg:hidden p-4 md:pl-[136px]  space-y-2 pl-10"
-                    align="center"
-                    sideOffset={0}
-                  >
-                    <DropdownMenu.Item
-                      onClick={() => {
-                        setIsOpen(false);
-                        setContactIsModalOpen(true);
-                      }}
-                      className="text-primary-1 hover:text-secondary-1 cursor-pointer"
+              {!isMarketingFeatureEnabled ? (
+                <DropdownMenu.Root>
+                  <DropdownMenu.Trigger>
+                    <Image
+                      src={Profile}
+                      alt="User logo"
+                      width={40}
+                      height={40}
+                      className="cursor-pointer"
+                    />
+                  </DropdownMenu.Trigger>
+                  <DropdownMenu.Portal>
+                    <DropdownMenu.Content
+                      className="bg-[#f7f1de] shadow-lg rounded-lg w-[100vh] lg:hidden p-4 md:pl-[136px]  space-y-2 pl-10"
+                      align="center"
+                      sideOffset={0}
                     >
-                      Profile
-                    </DropdownMenu.Item>
-                    <DropdownMenu.Item
-                      onClick={() => {
-                        setIsOpen(false);
-                        setContactIsModalOpen(true);
-                      }}
-                      asChild
-                      className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none "
-                    >
-                      My Pets
-                    </DropdownMenu.Item>
-                    <DropdownMenu.Item
-                      onClick={() => {
-                        setIsOpen(false);
-                        setContactIsModalOpen(true);
-                      }}
-                      className="text-primary-1 hover:text-secondary-1 cursor-pointer"
-                    >
-                      Medical History
-                    </DropdownMenu.Item>
-                    <DropdownMenu.Item
-                      onClick={() => {
-                        setIsOpen(false);
-                        setContactIsModalOpen(true);
-                      }}
-                      className="text-primary-1 hover:text-secondary-1 cursor-pointer"
-                    >
-                      My Appointments
-                    </DropdownMenu.Item>
-                    <div className="border-t border-gray-300 my-2" />
-                    <DropdownMenu.Item
-                      onClick={() => {
-                        setIsOpen(false);
-                        setContactIsModalOpen(true);
-                      }}
-                      className="text-secondary-1 flex justify-between items-center hover:text-primary-1 cursor-pointer"
-                    >
-                      Become a Member <MdChevronRight />
-                    </DropdownMenu.Item>
-                    <div className="border-t border-gray-300 my-2" />
-                    <DropdownMenu.Item
-                      onClick={() => {
-                        setIsOpen(false);
-                        setContactIsModalOpen(true);
-                      }}
-                      className="text-primary-1 hover:text-secondary-1 cursor-pointer"
-                    >
-                      Billing Information
-                    </DropdownMenu.Item>
-                    <DropdownMenu.Item
-                      onClick={() => {
-                        setIsOpen(false);
-                        setContactIsModalOpen(true);
-                      }}
-                      className="text-primary-1 hover:text-secondary-1 cursor-pointer"
-                    >
-                      Account Settings
-                    </DropdownMenu.Item>
-                    <DropdownMenu.Item
-                      onClick={() => {
-                        setIsOpen(false);
-                        setContactIsModalOpen(true);
-                      }}
-                      className="text-primary-1 hover:text-secondary-1 cursor-pointer"
-                    >
-                      Log Out
-                    </DropdownMenu.Item>
-                    <DropdownMenu.Arrow className="fill-current text-[#f7f1de]" />
-                  </DropdownMenu.Content>
-                </DropdownMenu.Portal>
-              </DropdownMenu.Root>
+                      <DropdownMenu.Item
+                        onClick={() => {
+                          setIsOpen(false);
+                          setContactIsModalOpen(true);
+                        }}
+                        className="text-primary-1 hover:text-secondary-1 cursor-pointer"
+                      >
+                        Profile
+                      </DropdownMenu.Item>
+                      <DropdownMenu.Item
+                        onClick={() => {
+                          setIsOpen(false);
+                          setContactIsModalOpen(true);
+                        }}
+                        asChild
+                        className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none "
+                      >
+                        My Pets
+                      </DropdownMenu.Item>
+                      <DropdownMenu.Item
+                        onClick={() => {
+                          setIsOpen(false);
+                          setContactIsModalOpen(true);
+                        }}
+                        className="text-primary-1 hover:text-secondary-1 cursor-pointer"
+                      >
+                        Medical History
+                      </DropdownMenu.Item>
+                      <DropdownMenu.Item
+                        onClick={() => {
+                          setIsOpen(false);
+                          setContactIsModalOpen(true);
+                        }}
+                        className="text-primary-1 hover:text-secondary-1 cursor-pointer"
+                      >
+                        My Appointments
+                      </DropdownMenu.Item>
+                      <div className="border-t border-gray-300 my-2" />
+                      <DropdownMenu.Item
+                        onClick={() => {
+                          setIsOpen(false);
+                          setContactIsModalOpen(true);
+                        }}
+                        className="text-secondary-1 flex justify-between items-center hover:text-primary-1 cursor-pointer"
+                      >
+                        Become a Member <MdChevronRight />
+                      </DropdownMenu.Item>
+                      <div className="border-t border-gray-300 my-2" />
+                      <DropdownMenu.Item
+                        onClick={() => {
+                          setIsOpen(false);
+                          setContactIsModalOpen(true);
+                        }}
+                        className="text-primary-1 hover:text-secondary-1 cursor-pointer"
+                      >
+                        Billing Information
+                      </DropdownMenu.Item>
+                      <DropdownMenu.Item
+                        onClick={() => {
+                          setIsOpen(false);
+                          setContactIsModalOpen(true);
+                        }}
+                        className="text-primary-1 hover:text-secondary-1 cursor-pointer"
+                      >
+                        Account Settings
+                      </DropdownMenu.Item>
+                      <DropdownMenu.Item
+                        onClick={() => {
+                          setIsOpen(false);
+                          setContactIsModalOpen(true);
+                        }}
+                        className="text-primary-1 hover:text-secondary-1 cursor-pointer"
+                      >
+                        Log Out
+                      </DropdownMenu.Item>
+                      <DropdownMenu.Arrow className="fill-current text-[#f7f1de]" />
+                    </DropdownMenu.Content>
+                  </DropdownMenu.Portal>
+                </DropdownMenu.Root>
+              ) : null}
               <div onClick={() => setIsOpen(false)}>
                 <Button
                   buttonText="Book a visit"

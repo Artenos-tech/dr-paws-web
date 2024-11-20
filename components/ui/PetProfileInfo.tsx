@@ -104,35 +104,6 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
     }
   };
 
-  // This function calculate age if birthday is provided
-  // const calculateAge = (birthday: string): string => {
-  //   if (!birthday) return "";
-  //   if (birthday === "N/A") return "N/A";
-
-  //   const birthDate = new Date(birthday);
-  //   const now = new Date();
-
-  //   let years = now.getUTCFullYear() - birthDate.getUTCFullYear();
-  //   let months = now.getUTCMonth() - birthDate.getUTCMonth();
-  //   let days = now.getUTCDate() - birthDate.getUTCDate();
-
-  //   if (days < 0) {
-  //     months -= 1;
-  //     days += new Date(now.getUTCFullYear(), now.getUTCMonth(), 0).getDate();
-  //   }
-
-  //   if (months < 0) {
-  //     years -= 1;
-  //     months += 12;
-  //   }
-
-  //   const yearStr = years > 0 ? `${years} yrs` : "";
-  //   const monthStr = months > 0 ? `${months} mths` : "";
-  //   const dayStr = days > 0 ? `${days} d` : "";
-
-  //   return [yearStr, monthStr, dayStr].filter(Boolean).join(", ");
-  // };
-
   const handleAgeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     const newValue = Math.max(
@@ -322,28 +293,6 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                 )}
               </div>
 
-              {/* <div className="ml-4 md:ml-0">
-                <label
-                  className="text-secondary-1 text-xs md:text-sm"
-                  htmlFor="age"
-                >
-                  Age
-                </label>
-                {isEditing ? (
-                <><input
-                    type="text"
-                    disabled
-                    value={calculateAge(pet?.birthday || "")}
-                    className="outline-none border w-full p-1 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
-                  /></>
-                  
-                ) : (
-                <p className="text-primary-1 font-medium text-xs md:text-base">
-                  {pet?.birthday ? calculateAge(pet?.birthday || "N/A") : ""}
-                </p>
-                 )} 
-              </div> */}
-
               <div className={`${!isEditing && "ml-4"} md:ml-0`}>
                 <label
                   className="text-secondary-1 text-xs md:text-sm"
@@ -382,20 +331,6 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                         Months
                       </label>
                     </div>
-                    {/* <div>
-                      <label className="text-secondary-1 text-xs md:text-sm">
-                        Days
-                      </label>
-                      <input
-                        type="number"
-                        value={age.days}
-                        min="0"
-                        max="30"
-                        onChange={handleAgeChange}
-                        name="days"
-                        className="outline-none border w-full p-1 px-2 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
-                      />
-                    </div> */}
                   </div>
                 ) : (
                   <p className="text-primary-1 font-medium text-xs md:text-base">
@@ -499,23 +434,6 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
             />
           )}
         </div>
-
-        {/* {isEditing && (
-          <div className="self-end md:self-start my-5 md:my-0 order-2">
-            <div className="flex items-center">
-              <OutlineButton
-                outlineBtnText="Cancel"
-                outlineBtnLink={() => handleEditCancelClick()}
-              />
-              <button
-                type="submit"
-                className="btn border bg-secondary-1 text-white px-4 text-xs font-semibold py-2 rounded-full ml-3"
-              >
-                Submit
-              </button>
-            </div>
-          </div>
-        )} */}
       </form>
     </div>
   );

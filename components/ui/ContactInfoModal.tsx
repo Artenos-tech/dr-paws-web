@@ -8,9 +8,6 @@ import Call from "@/public/assets/images/ContactInfo/telephone-icon.svg";
 import Map from "@/public/assets/images/ContactInfo/location-icon.svg";
 import { Construction } from "lucide-react";
 
-// Define styles for react-modal
-// Modal.setAppElement('#__next'); // Required for accessibility in Next.js
-
 interface ContactInfoModalProps {
   isOpen: boolean;
   onRequestClose: () => void;
@@ -25,7 +22,7 @@ const ContactInfoModal: React.FC<ContactInfoModalProps> = ({
       isOpen={isOpen}
       onRequestClose={onRequestClose}
       className="fixed mx-auto w-[93%] h-fit sm:h-fit sm:w-fit inset-0 bg-primary-3 p-5 lg:p-6 my-12 rounded-lg shadow-lg  outline-none border-2"
-      overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+      overlayClassName="fixed inset-0 bg-black z-[999] bg-opacity-50 flex justify-center items-center"
       style={{
         overlay: {
           backgroundColor: "rgba(0, 0, 0, 0.5)",
