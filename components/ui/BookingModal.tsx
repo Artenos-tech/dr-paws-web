@@ -19,12 +19,12 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-3xl p-0 overflow-hidden">
         <div className="flex flex-col md:flex-row">
-          <div className="w-full md:w-1/3 h-[200px] md:h-[400px] relative">
+          <div className="  sm:w-full  md:w-1/3 h-[380px] md:h-[400px] relative">
             <Image
               src={ModalImage}
               alt="Vet with dog"
               fill
-              className="object-cover"
+              className="object-cover object-top"
             />
           </div>
 

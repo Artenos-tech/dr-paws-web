@@ -47,7 +47,7 @@ const SelectVet = () => {
         </p>
 
         {/* Responsive Two-Column Layout */}
-        <div className="flex flex-col lg:flex-row gap-8">
+         <div className="flex flex-col justify-center items-center lg:flex-row gap-8">
           {/* Calendar Section */}
           <div className="flex-shrink-0 lg:w-1/2 xl:w-1/3">
             <SelectCalendar onDateSelect={(date) => setSelectedDate(date)} />
@@ -56,19 +56,23 @@ const SelectVet = () => {
           {/* Timeslots Section */}
           {selectedDate && (
             <div className="flex-grow">
-              <div className="font-semibold text-gray-800 text-lg">
-                Available timeslots for {format(selectedDate, "EEEE, MMM d")}
+              <div className="font-semibold text-sm  text-gray-800 sm:text-lg">
+                Available timeslots for{" "}
+                <span className="text-secondary-1">
+                  {format(selectedDate, "EEEE, MMM d")}
+                </span>
               </div>
               <div
                 className="grid gap-4 mt-4"
                 style={{
                   gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))",
                 }}
+                // className="flex flex-wrap gap-4"
               >
                 {timeSlots.map((time, index) => (
                   <div
                     key={index}
-                    className={`text-center bg-primary-3 py-2 px-8 w-fit rounded-md border cursor-pointer shadow-md ${
+                    className={`text-center bg-primary-3 py-2 px-8 w-fit rounded-md cursor-pointer shadow-md ${
                       selectedSlot === time ? "border-secondary-1  " : ""
                     }`}
                     onClick={() => handleSelect(time)}

@@ -52,7 +52,7 @@ export default function AddPetModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto">
+    <div onClick={(e) => e.stopPropagation()} className="fixed inset-0 z-50 overflow-y-auto">
       <div
         className="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
         onClick={onClose}
