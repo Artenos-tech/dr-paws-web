@@ -5,7 +5,7 @@ import { BookingCategory } from "@/model/typeDefinitions";
 import ModalImage from "@/public/assets/images/Booking/girlWithDogModalImage.png";
 
 import Image from "next/image";
-import Button from "./CustomButton";
+import CustomButton from "./CustomButton";
 
 interface BookingModalProps {
   isOpen: boolean;
@@ -37,7 +37,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
             </p>
 
             <div className="flex justify-end ">
-              <Button
+              <CustomButton
                 buttonBackground="bg-secondary-1"
                 buttonText="Next"
                 buttonClickEvent={onClose}

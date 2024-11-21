@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import BookingCard from "@/components/ui/BookingCard";
 import BookingModal from "@/components/ui/BookingModal";
 import { bookingCategories } from "@/model/mockData";
-import Button from "./CustomButton";
+import CustomButton from "./CustomButton";
 
 export interface Pet {
   petId: string;
@@ -96,7 +96,7 @@ const SelectService: React.FC<SelectServiceProps> = ({
         ))}
       </div>
       <div className="my-16 w-full flex item-center justify-center">
-        <Button
+        <CustomButton
           buttonText="Next"
           buttonBackground="bg-secondary-1"
           buttonClickEvent={handleNext}

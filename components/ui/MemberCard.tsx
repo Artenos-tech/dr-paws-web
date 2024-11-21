@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { StaticImageData } from "next/image";
-import Button from "./CustomButton";
+import CustomButton from "./CustomButton";
 import { useMarketingFeature } from "@/hooks/useMarketingFeature";
 import { useState } from "react";
 import ContactInfoModal from "./ContactInfoModal";
@@ -80,7 +80,7 @@ export default function MemberCard({ plan, onSelect }: MemberCardProps) {
             !isMarketingFeatureEnabled ? onSelect(plan) : setIsModalOpen(true)
           }
         >
-          <Button buttonText="Select" buttonBackground="bg-accent" />
+          <CustomButton buttonText="Select" buttonBackground="bg-accent" />
         </div>
       </div>
       <ContactInfoModal

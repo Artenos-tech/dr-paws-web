@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Profile from "@/public/assets/images/profileThumnail.svg";
 import { Menu } from "lucide-react";
-import Button from "../ui/CustomButton";
+
 import Link from "next/link";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { MdChevronRight } from "react-icons/md";
@@ -12,6 +12,7 @@ import logo from "@/public/assets/images/logo/logo.svg";
 import { clinicItems } from "@/model/mockData";
 import ContactInfoModal from "../ui/ContactInfoModal";
 import { useMarketingFeature } from "@/hooks/useMarketingFeature";
+import CustomButton from "../ui/CustomButton";
 
 export default function NavBar() {
   const isMarketingFeatureEnabled = useMarketingFeature();
@@ -90,7 +91,7 @@ export default function NavBar() {
             </div>
           </div>
           <div className="hidden lg:flex items-center space-x-4 text-xs">
-            <Button
+            <CustomButton
               buttonText="Book a visit"
               buttonBackground="bg-secondary-1"
               buttonClickEvent={() => setContactIsModalOpen(true)}
@@ -353,7 +354,7 @@ export default function NavBar() {
                 </DropdownMenu.Root>
               ) : null}
               <div onClick={() => setIsOpen(false)}>
-                <Button
+                <CustomButton
                   buttonText="Book a visit"
                   buttonBackground="bg-secondary-1"
                   buttonClickEvent={() => setContactIsModalOpen(true)}

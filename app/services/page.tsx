@@ -3,7 +3,7 @@ import Image from "next/image";
 import DescritionImage from "@/public/assets/images/ServicesPage/DescriptionImage.png";
 import ServicePageTab from "@/components/ui/ServicePageTab";
 import { ServiceTabsData } from "@/model/mockData";
-import Button from "@/components/ui/CustomButton";
+import CustomButton from "@/components/ui/CustomButton";
 import { useState } from "react";
 import ContactInfoModal from "@/components/ui/ContactInfoModal";
 
@@ -29,7 +29,7 @@ const Services = () => {
               We also offer grooming, diagnostic tests, imaging, and retail.
             </p>
 
-            <Button
+            <CustomButton
               buttonText="Book a visit"
               buttonBackground="bg-secondary-1"
               buttonClickEvent={() => setContactIsModalOpen(true)}
@@ -47,7 +47,7 @@ const Services = () => {
             touch and we&apos;d be happy to help or refer you to someone that
             can
           </p>
-          <Button
+          <CustomButton
             buttonText="Get in Touch"
             buttonBackground="bg-secondary-2"
             buttonClickEvent={() => setContactIsModalOpen(true)}

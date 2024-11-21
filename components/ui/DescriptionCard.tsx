@@ -1,6 +1,6 @@
 import Image, { StaticImageData } from "next/image";
 import React from "react";
-import Button from "./CustomButton";
+import CustomButton from "./CustomButton";
 
 interface descriptionCardProps {
   index: number;
@@ -38,7 +38,7 @@ const DescriptionCard: React.FC<descriptionCardProps> = ({
         <p className="text-sm md:text-base my-3 md:my-5">
           {description.desciption}
         </p>
-        <Button {...button} buttonClickEvent={openContactModal} />
+        <CustomButton {...button} buttonClickEvent={openContactModal} />
       </div>
     </div>
   );

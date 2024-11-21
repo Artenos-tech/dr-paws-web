@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { clinicItems } from "@/model/mockData";
 import SelectClinicCard from "./SelectClinicCard";
-import Button from "./CustomButton";
+import CustomButton from "./CustomButton";
 
 interface SelectClinicProps {
   onNext: () => void; // Prop for navigation
@@ -36,7 +36,7 @@ const SelectClinic: React.FC<SelectClinicProps> = ({ onNext }) => {
         ))}
       </div>
       <div className="my-16 flex justify-center">
-        <Button
+        <CustomButton
           buttonText="Next"
           buttonBackground="bg-secondary-1"
           disabled={!selectedClinic}

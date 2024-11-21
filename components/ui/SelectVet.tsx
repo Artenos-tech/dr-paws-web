@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import SelectDoctorCard from "./SelectDoctorCard";
 import { doctors } from "@/model/mockData";
 
-import Button from "./CustomButton";
+import CustomButton from "./CustomButton";
 import SelectCalendar from "./SelectCalendar";
 import { format } from "date-fns";
 import { timeSlots } from "@/model/mockData";
@@ -47,7 +47,7 @@ const SelectVet = () => {
         </p>
 
         {/* Responsive Two-Column Layout */}
-         <div className="flex flex-col justify-center items-center lg:flex-row gap-8">
+        <div className="flex flex-col justify-center items-center lg:flex-row gap-8">
           {/* Calendar Section */}
           <div className="flex-shrink-0 lg:w-1/2 xl:w-1/3">
             <SelectCalendar onDateSelect={(date) => setSelectedDate(date)} />
@@ -88,7 +88,7 @@ const SelectVet = () => {
 
       {/* Next Button */}
       <div className="my-4 flex justify-center">
-        <Button buttonText="Next" buttonBackground="bg-secondary-1" />
+        <CustomButton buttonText="Next" buttonBackground="bg-secondary-1" />
       </div>
     </div>
   );
