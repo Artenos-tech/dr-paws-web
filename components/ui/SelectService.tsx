@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import BookingCard from "@/components/ui/BookingCard";
 import BookingModal from "@/components/ui/BookingModal";
 import { bookingCategories } from "@/model/mockData";
-import Button from "./Button";
+import Button from "./CustomButton";
 
 export interface Pet {
   petId: string;
@@ -44,7 +44,7 @@ const SelectService: React.FC<SelectServiceProps> = ({
   setIsModalOpen,
   onNext,
 }) => {
-    const [hasShownDisclaimerModal, setHasShownDisclaimerModal] = useState(false);
+  const [hasShownDisclaimerModal, setHasShownDisclaimerModal] = useState(false);
 
   const handleCardSelection = (cardId: string, selectedPet: Pet | null) => {
     setSelectedData({ [cardId]: selectedPet });
@@ -60,7 +60,7 @@ const SelectService: React.FC<SelectServiceProps> = ({
       }
       if (cardId === "Surgeries" && !hasShownDisclaimerModal) {
         setIsModalOpen(true);
-        setHasShownDisclaimerModal(true); 
+        setHasShownDisclaimerModal(true);
       }
       return prevOpenCard === cardId ? null : cardId;
     });
@@ -96,12 +96,12 @@ const SelectService: React.FC<SelectServiceProps> = ({
         ))}
       </div>
       <div className="my-16 w-full flex item-center justify-center">
-      <Button
-        buttonText="Next"
-        buttonBackground="bg-secondary-1"
-        buttonClickEvent={handleNext}
-        disabled={isButtonDisabled}
-      />
+        <Button
+          buttonText="Next"
+          buttonBackground="bg-secondary-1"
+          buttonClickEvent={handleNext}
+          disabled={isButtonDisabled}
+        />
       </div>
 
       <BookingModal

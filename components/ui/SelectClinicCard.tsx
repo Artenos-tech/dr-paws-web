@@ -17,7 +17,7 @@ const SelectClinicCard: React.FC<ClinicItemProps> = ({
   return (
     <div
       onClick={onSelect}
-      className={`cursor-pointer rounded-md overflow-hidden ${
+      className={`flex flex-col h-full cursor-pointer rounded-md  ${
         isSelected ? "outline outline-2 outline-primary-1" : "shadow-md"
       }`}
     >
@@ -28,7 +28,7 @@ const SelectClinicCard: React.FC<ClinicItemProps> = ({
         width={500}
         height={300}
       />
-      <div className="px-6 pt-6 pb-12 bg-primary-3">
+      <div className="flex flex-col flex-grow px-6 pt-6 pb-12 bg-primary-3">
         <h1 className="text-primary-1 text-base">{clinicName}</h1>
         <div className="flex gap-2 text-primary-1 text-xs mt-2">
           <p>{services}</p>

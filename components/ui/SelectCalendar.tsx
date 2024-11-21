@@ -13,88 +13,91 @@ import {
   addDays,
   isSameDay,
   isToday,
+  isBefore,
+  startOfDay,
 } from "date-fns";
 
 interface CalendarProps {
   timezone?: string;
+  onDateSelect: (date: Date) => void; // Callback for date selection
 }
 
 const SelectCalendar: React.FC<CalendarProps> = ({
   timezone = "India Standard Time (2:30pm)",
+  onDateSelect,
 }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
+  const today = startOfDay(new Date());
   const startDate = startOfWeek(startOfMonth(currentDate));
   const endDate = endOfWeek(endOfMonth(currentDate));
 
   const days = [];
   let day = startDate;
 
-  // Generate days for the calendar grid
   while (day <= endDate) {
     days.push(day);
     day = addDays(day, 1);
   }
 
-  // Handle month navigation
   const prevMonth = () => setCurrentDate(subMonths(currentDate, 1));
   const nextMonth = () => setCurrentDate(addMonths(currentDate, 1));
 
-  // Handle date selection
   const selectDate = (date: Date) => {
-    if (date.getMonth() === currentDate.getMonth()) {
+    if (date.getMonth() === currentDate.getMonth() && !isBefore(date, today)) {
       setSelectedDate(date);
+      onDateSelect(date); // Notify parent component
     }
   };
 
   return (
-    <div className="max-w-sm bg-primary-3 rounded-lg shadow-md p-8">
+    <div className="bg-primary-3 rounded-lg shadow-md p-4 md:p-8 max-w-full mx-auto">
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <div
-          onClick={prevMonth}
-          className="cursor-pointer text-gray-500"
-        >
+      <div className="flex items-center justify-between mb-8 sm:mb-4">
+        <div onClick={prevMonth} className="cursor-pointer text-gray-500">
           <ChevronLeft />
         </div>
-        <div className="text-lg text-center flex-1">
+        <div className="text-lg text-center flex-1 sm:text-base">
           {format(currentDate, "MMMM yyyy")}
         </div>
-        <div
-          onClick={nextMonth}
-          className="cursor-pointer text-gray-500"
-        >
+        <div onClick={nextMonth} className="cursor-pointer text-gray-500">
           <ChevronRight />
         </div>
       </div>
 
       {/* Days of the week */}
-      <div className="grid grid-cols-7 text-center text-sm text-gray-500 mb-2">
+      <div className="grid grid-cols-7 text-center text-sm text-gray-500 mb-2 sm:mb-1">
         {["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"].map((day, index) => (
-          <div key={index} className="font-medium">
+          <div
+            key={index}
+            className="font-medium p-1 sm:p-0 text-xs sm:text-sm"
+          >
             {day}
           </div>
         ))}
       </div>
 
       {/* Calendar grid */}
-      <div className="grid grid-cols-7 text-center">
+      <div className="grid grid-cols-7 text-center gap-1 sm:gap-0.5">
         {days.map((date, index) => {
           const isCurrentMonth = date.getMonth() === currentDate.getMonth();
           const isSelected = selectedDate && isSameDay(date, selectedDate);
+          const isPast = isBefore(date, today);
 
           return (
             <div
               key={index}
-              onClick={isCurrentMonth ? () => selectDate(date) : undefined}
-              className={`p-2 text-md rounded-sm ${
+              onClick={
+                isCurrentMonth && !isPast ? () => selectDate(date) : undefined
+              }
+              className={`p-2 text-md sm:text-sm rounded-sm ${
                 isSelected
                   ? "bg-secondary-1 text-white"
                   : isToday(date)
                   ? "border border-secondary-1 text-black"
-                  : isCurrentMonth
-                  ? "text-black cursor-pointer  "
+                  : isCurrentMonth && !isPast
+                  ? "text-black cursor-pointer"
                   : "text-gray-400 cursor-not-allowed"
               }`}
             >
@@ -105,8 +108,8 @@ const SelectCalendar: React.FC<CalendarProps> = ({
       </div>
 
       {/* Timezone display */}
-      <div className="pl-4 text-sm text-gray-500 mt-4 flex flex-col items-start">
-        <div className="">Time Zone</div>
+      <div className="pl-4 text-sm text-gray-500 mt-8 sm:mt-4 flex flex-col items-start">
+        <div>Time Zone</div>
         <div className="flex gap-1">🌍 {timezone}</div>
       </div>
     </div>

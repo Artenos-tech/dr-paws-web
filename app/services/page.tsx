@@ -3,7 +3,7 @@ import Image from "next/image";
 import DescritionImage from "@/public/assets/images/ServicesPage/DescriptionImage.png";
 import ServicePageTab from "@/components/ui/ServicePageTab";
 import { ServiceTabsData } from "@/model/mockData";
-import Button from "@/components/ui/Button";
+import Button from "@/components/ui/CustomButton";
 import { useState } from "react";
 import ContactInfoModal from "@/components/ui/ContactInfoModal";
 

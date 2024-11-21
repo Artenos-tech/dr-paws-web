@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { StaticImageData } from "next/image";
-import Button from "./Button";
+import Button from "./CustomButton";
 
 export interface Benefit {
   text: string;

@@ -5,7 +5,7 @@ import { BookingCategory } from "@/model/typeDefinitions";
 import ModalImage from "@/public/assets/images/Booking/girlWithDogModalImage.png";
 
 import Image from "next/image";
-import Button from "./Button";
+import Button from "./CustomButton";
 
 interface BookingModalProps {
   isOpen: boolean;
@@ -14,11 +14,7 @@ interface BookingModalProps {
   onNext?: () => void;
 }
 
-export default function BookingModal({
-  isOpen,
-  onClose,
-
-}: BookingModalProps) {
+export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-3xl p-0 overflow-hidden">
@@ -41,7 +37,11 @@ export default function BookingModal({
             </p>
 
             <div className="flex justify-end ">
-              <Button buttonBackground="bg-secondary-1" buttonText="Next" buttonClickEvent={onClose} />
+              <Button
+                buttonBackground="bg-secondary-1"
+                buttonText="Next"
+                buttonClickEvent={onClose}
+              />
             </div>
           </div>
         </div>

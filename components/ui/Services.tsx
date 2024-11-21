@@ -6,7 +6,7 @@ import UpSyringe from "@/public/assets/images/services/UpSyringe.svg";
 import Image from "next/image";
 
 import { serviceCategories, servicesData } from "@/model/mockData";
-import Button from "./Button";
+import Button from "./CustomButton";
 
 type ServiceCategory = keyof typeof servicesData;
 
@@ -50,7 +50,7 @@ const Services: React.FC = () => {
         </div>
 
         <div className="flex justify-center items-center mt-auto  sm:mb-4 ">
-           <Button
+          <Button
             buttonText="View Services"
             buttonBackground="bg-secondary-2"
             buttonLink="/services"

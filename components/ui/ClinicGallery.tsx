@@ -5,7 +5,7 @@ import React, { useState, useEffect } from "react";
 import ReactModal from "react-modal";
 import { IoIosArrowBack, IoIosArrowForward, IoMdClose } from "react-icons/io";
 import { Clinic } from "@/model/typeDefinitions";
-import Button from "./Button";
+import Button from "./CustomButton";
 import ContactInfoModal from "./ContactInfoModal";
 
 interface ClinicGalleryProps {

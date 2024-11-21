@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { X } from "lucide-react";
 import Image from "next/image";
-import Button from "./Button";
+import Button from "./CustomButton";
 import { MembershipPlan } from "./MemberCard";
 import { useRouter } from "next/navigation";
 

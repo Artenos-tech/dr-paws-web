@@ -959,3 +959,14 @@ export const bookingCategories: BookingCategory[] = [
     description: "training, boarding...",
   },
 ];
+
+export const timeSlots = [
+  "10:00am",
+  "11:00am",
+  "12:00pm",
+  "01:00pm",
+  "02:00pm",
+  "03:00pm",
+  "04:00pm",
+  "05:00pm",
+];

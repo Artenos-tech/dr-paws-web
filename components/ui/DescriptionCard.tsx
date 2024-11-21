@@ -1,6 +1,6 @@
 import Image, { StaticImageData } from "next/image";
 import React from "react";
-import Button from "./Button";
+import Button from "./CustomButton";
 
 interface descriptionCardProps {
   index: number;
