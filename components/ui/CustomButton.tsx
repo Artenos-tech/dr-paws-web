@@ -11,7 +11,7 @@ type ButtonProps = {
   disabled?: boolean; // Optional prop to disable the button
 };
 
-const Button: React.FC<ButtonProps> = ({
+const CustomButton: React.FC<ButtonProps> = ({
   buttonText,
   buttonBackground,
   buttonLink,
@@ -43,4 +43,4 @@ const Button: React.FC<ButtonProps> = ({
   );
 };
 
-export default Button;
+export default CustomButton;

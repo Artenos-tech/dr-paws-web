@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { X } from "lucide-react";
 import Image from "next/image";
 import Button from "./CustomButton";
@@ -13,41 +13,40 @@ interface ModalProps {
 
 const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
   const router = useRouter();
-  const [selectedPlan, setSelectedPlan] = useState({
-    duration: "2 Year",
-    price: "6,999",
-  });
+  // const [selectedPlan, setSelectedPlan] = useState({
+  //   duration: "2 Year",
+  //   price: "6,999",
+  // });
 
   if (!isOpen) return null;
 
-  const yearlyPlans = [
-    {
-      duration: "1 Year",
-      price: "6,999",
-    },
-    {
-      duration: "2 Year",
-      price: "6,999",
-    },
-    {
-      duration: "3 Year",
-      price: "5,499",
-    },
-  ];
+  // const yearlyPlans = [
+  //   {
+  //     duration: "1 Year",
+  //     price: "6,999",
+  //   },
+  //   {
+  //     duration: "2 Year",
+  //     price: "6,999",
+  //   },
+  //   {
+  //     duration: "3 Year",
+  //     price: "5,499",
+  //   },
+  // ];
 
   const handleContinue = () => {
     const params = new URLSearchParams({
       title: plan.title,
-      duration: selectedPlan.duration,
-      price: selectedPlan.price,
+      duration: plan.duration,
+      price: plan.price,
     });
     router.push(`/membership/payment?${params.toString()}`);
   };
 
-  const handlePaymentPlan = (yearPlan: { duration: string; price: string }) => {
-    console.log(selectedPlan);
-    setSelectedPlan(yearPlan);
-  };
+  // const handlePaymentPlan = (yearPlan: { duration: string; price: string }) => {
+  //   setSelectedPlan(yearPlan);
+  // };
 
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center">
@@ -98,10 +97,10 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
 
           {/* Right Section */}
           <div className="p-8 pt-14 bg-primary-3 rounded-r-2xl flex flex-col">
-            <h3 className="font-semibold text-xl text-primary-1 mb-6">
+            {/* <h3 className="font-semibold text-xl text-primary-1 mb-6">
               Choose a payment plan:
-            </h3>
-            <div className="flex flex-col gap-6">
+            </h3> */}
+            {/* <div className="flex flex-col gap-6">
               <div className="space-y-4">
                 {yearlyPlans.map((yearPlan, index) => (
                   <div
@@ -129,17 +128,15 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
               <p className="text-sm text-primary-1 font-bold mb-4">
                 Total benefits worth ₹15,000
               </p>
-            </div>
+            </div> */}
 
             <div className="mt-auto">
-              <div className="flex justify-end">
-                <div className="">
-                  <div onClick={handleContinue}>
-                    <Button
-                      buttonText="Continue"
-                      buttonBackground="bg-accent"
-                    />
-                  </div>
+              <div className="flex flex-col items-end">
+                <h3 className="font-semibold text-xl text-primary-1 mb-6">
+                  Total: {plan.price}
+                </h3>
+                <div onClick={handleContinue}>
+                  <Button buttonText="Continue" buttonBackground="bg-accent" />
                 </div>
               </div>
             </div>

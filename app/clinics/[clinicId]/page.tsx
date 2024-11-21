@@ -4,7 +4,7 @@ import ClinicReviews from "@/components/ui/ClinicReviews";
 import ClinicTabBar from "@/components/ui/ClinicTabBar";
 import Overview from "@/components/ui/OverView";
 
-import { clinicItems } from "@/model/mockData";
+import { clinicItems, doctors, reviews } from "@/model/mockData";
 import { Clinic } from "@/model/typeDefinitions";
 
 export async function generateStaticParams() {
@@ -31,7 +31,15 @@ const ClinicDetails: React.FC<ClinicDetailsProps> = ({ params }) => {
   const tabs = [
     {
       title: "Overview",
-      component: <Overview clinicContact={clinic.contact} />,
+      component: (
+        <Overview
+          clinicContact={clinic.contact}
+          clinicLocation={clinic.location}
+          clinicDoctors={doctors.filter((doctor) =>
+            doctor.clinicIds.includes(clinicId)
+          )}
+        />
+      ),
     },
     {
       title: "Photos",
@@ -39,7 +47,11 @@ const ClinicDetails: React.FC<ClinicDetailsProps> = ({ params }) => {
     },
     {
       title: "Reviews",
-      component: <ClinicReviews />,
+      component: (
+        <ClinicReviews
+          reviews={reviews.filter((review) => review.clinicId === clinicId)}
+        />
+      ),
     },
   ];
 

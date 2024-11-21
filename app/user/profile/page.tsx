@@ -11,7 +11,6 @@ import OutlineButton from "@/components/ui/OutlineButton";
 import toast, { Toaster } from "react-hot-toast";
 import EditProfileModal from "@/components/ui/EditProfileModal";
 
-// Define the Pet type
 interface Pet {
   petId: string;
   name: string;
@@ -24,8 +23,6 @@ const Profile: React.FC = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [pets, setPets] = useState<Pet[]>([]);
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
-
-  // Initialize petIdCounter as a string
   const [petIdCounter, setPetIdCounter] = useState<string>("1");
 
   useEffect(() => {

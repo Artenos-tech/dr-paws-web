@@ -8,18 +8,13 @@ interface ClinicItemProps {
   enlargedView: boolean;
 }
 
-// ${
-//   enlargedView
-//   ? "lg:grid-cols-3 lg:grid-rows-3"
-//   : ""
-// }
 const ClinicItemList = ({ showStaticCard, enlargedView }: ClinicItemProps) => {
   return (
     <div
       className={`${clinicItems.length >= 4 ? "gap-4" : "gap-12"} ${
         enlargedView
           ? "grid grid-cols-1 lg:grid-cols-4 "
-          : "flex flex-col lg:flex-row lg:flex-wrap lg:items-center lg:justify-between"
+          : "flex flex-col lg:flex-row lg:flex-wrap lg:items-center lg:justify-center"
       }`}
     >
       {clinicItems.map((clinic) => (

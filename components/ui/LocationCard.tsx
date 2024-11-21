@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { MapPin } from "lucide-react";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 
@@ -16,10 +16,51 @@ const mapContainerStyle = {
 
 const center = LOCATION;
 
-export function LocationCard() {
+interface LocationCardProps {
+  locationString: string;
+}
+
+export function LocationCard({ locationString }: LocationCardProps) {
+  const [location, setLocation] = useState<{ lat: number; lng: number } | null>(
+    null
+  );
+  const [address, setAddress] = useState<string | null>(null);
+
+  useEffect(() => {
+    const extractCoordinates = async (url: string) => {
+      try {
+        const regex = /@(-?\d+\.\d+),(-?\d+\.\d+)/;
+        const match = url.match(regex);
+
+        if (match) {
+          const lat = parseFloat(match[1]);
+          const lng = parseFloat(match[2]);
+
+          setLocation({ lat, lng });
+
+          const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`;
+          const response = await fetch(geocodeUrl);
+          const data = await response.json();
+
+          if (data.results && data.results.length > 0) {
+            setAddress(data.results[0].formatted_address);
+          }
+        }
+      } catch (error) {
+        console.error("Error extracting coordinates:", error);
+      }
+    };
+
+    if (locationString) {
+      extractCoordinates(locationString);
+    }
+  }, [locationString]);
+
   const getDirections = () => {
-    const url = `https://www.google.com/maps/search/?api=1&query=${LOCATION.lat},${LOCATION.lng}`;
-    window.open(url, "_blank", "noopener,noreferrer");
+    if (location) {
+      const url = `https://www.google.com/maps/search/?api=1&query=${location.lat},${location.lng}`;
+      window.open(url, "_blank", "noopener,noreferrer");
+    }
   };
 
   return (
@@ -28,28 +69,34 @@ export function LocationCard() {
         Location
       </h2>
       <div className="mb-4 rounded-lg h-64 lg:h-auto lg:flex-1">
-        <LoadScript
-          googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ""}
-        >
-          <GoogleMap
-            mapContainerStyle={mapContainerStyle}
-            center={center}
-            zoom={15}
+        {location ? (
+          <LoadScript
+            googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ""}
           >
-            <Marker position={center} />
-          </GoogleMap>
-        </LoadScript>
+            <GoogleMap
+              mapContainerStyle={mapContainerStyle}
+              center={center}
+              zoom={15}
+            >
+              <Marker position={center} />
+            </GoogleMap>
+          </LoadScript>
+        ) : (
+          <div>Loading Map...</div>
+        )}
       </div>
       <div className="flex items-start mb-4 ">
-        <MapPin className="h-5 w-5 mr-2 mt-1 text-gray-500" />
+        <div className="flex-1">
+          <MapPin className="h-5 w-5 mr-2 mt-1 text-gray-500" />
+        </div>
         <p className="text-gray-600 font-roca">
-          7th Main 4th Cross, Bengaluru, Karnataka 560038
+          {address || "Loading address..."}
         </p>
       </div>
       <button
         onClick={getDirections}
         className="bg-[#5281A2] text-white w-[175px] h-[40px] py-2 px-4 rounded-[20px] hover:bg-[#1e6ea6] transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-        aria-label="Get directions to Om Heera Panna Mall"
+        aria-label="Get directions to the clinic location"
       >
         Get Directions
       </button>

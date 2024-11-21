@@ -5,6 +5,7 @@ import Image from "next/image";
 import { CiLocationOn } from "react-icons/ci";
 import { Doctor } from "@/model/typeDefinitions";
 import DoctorDetailsModal from "./DoctorDetailsModal";
+import { useMarketingFeature } from "@/hooks/useMarketingFeature";
 
 interface DoctorCardProps {
   doctor: Doctor;
@@ -13,6 +14,7 @@ interface DoctorCardProps {
 const DoctorCard: React.FC<DoctorCardProps> = ({ doctor }) => {
   const { name, description, experience, location, image } = doctor;
   const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const isMarketingFeatureEnabled = useMarketingFeature();
 
   return (
     <>
@@ -31,12 +33,14 @@ const DoctorCard: React.FC<DoctorCardProps> = ({ doctor }) => {
           <CiLocationOn size={20} />
           <span className="text-sm sm:text-base">{location}</span>
         </div>
-        <button
-          className="mt-4 py-2 px-4 rounded-lg bg-accent text-white text-sm hover:bg-secondary-1"
-          onClick={() => setModalOpen(true)}
-        >
-          View Profile
-        </button>
+        {!isMarketingFeatureEnabled ? (
+          <button
+            className="mt-4 py-2 px-4 rounded-lg bg-accent text-white text-sm hover:bg-secondary-1"
+            onClick={() => setModalOpen(true)}
+          >
+            View Profile
+          </button>
+        ) : null}
       </div>
       <DoctorDetailsModal
         isOpen={modalOpen}

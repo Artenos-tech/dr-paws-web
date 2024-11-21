@@ -25,6 +25,7 @@ const ServiceTab = ({ tabs }: ServiceTabProps) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const activeTabContent = tabs.find((tab) => tab.id === activeTab);
+  console.log(activeTabContent);
   const activeTabTitle = tabs.find((tab) => tab.id === activeTab)?.title;
 
   return (
@@ -104,7 +105,7 @@ const ServiceTab = ({ tabs }: ServiceTabProps) => {
                   <Image
                     src={detail.img}
                     alt={detail.imgText}
-                    className="object-cover w-full h-full"
+                    className="object-cover w-[120px] h-[120px] md:w-[150px] md:h-[150px] lg:w-[165px] lg:h-[165px]"
                     width={165}
                     height={165}
                     unoptimized={typeof detail.img === "string"}
