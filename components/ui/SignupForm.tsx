@@ -35,7 +35,6 @@ const SignupForm: React.FC<SignUpFormProps> = ({ onSubmit, loading }) => {
     register,
     handleSubmit,
     formState: { errors },
-    setValue,
   } = useForm<SignUpFormData>({
     resolver: zodResolver(signUpSchema),
     defaultValues: { userName: "", mobileNumber: ""},

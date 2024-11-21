@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Modal from "react-modal";
 import ProfileForm from "./ProfileForm";
-import BillingForm from "./BillingForm";
 import { ProfileData } from "./ProfileCard";
-import { BillingFormData } from "./BillingForm";
 import { User, useUserContext } from "@/context/UserContext";
 
 interface EditProfileModalProps {
@@ -17,7 +15,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
   onClose,
   profileData,
 }) => {
-  const { updateUserDetailsHandler, user } = useUserContext();
+  const { updateUserDetailsHandler } = useUserContext();
 
   const handleProfileUpdate = (updatedProfile: User) => {
     updateUserDetailsHandler(updatedProfile);

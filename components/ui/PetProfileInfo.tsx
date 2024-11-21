@@ -45,12 +45,12 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
   }, [petProfileId, setValue]);
 
   const fetchPetDetails = () => {
-    const storedPets = localStorage.getItem("pets");
+    // const storedPets = localStorage.getItem("pets");
     if (userPets) {
       // const pets: PetInfo[] = JSON.parse(storedPets);
-      const foundPet = userPets.find(
-        (pet) => Number(pet.id) === Number(petProfileId)
-      );
+      // const foundPet = userPets.find(
+      //   (pet) => Number(pet.id) === Number(petProfileId)
+      // );
 
       // setPet(foundPet);
       // setImage(foundPet?.petImage || "");
