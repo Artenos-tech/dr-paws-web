@@ -85,7 +85,7 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
       className="flex relative z-[999] items-center justify-center"
       overlayClassName="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-[899]"
     >
-      <div className="relative bg-white rounded-2xl w-11/12 md:w-3/5 max-h-[90vh] overflow-y-auto lg:overflow-y-hidden">
+      <div className="relative bg-white rounded-2xl w-11/12 md:w-3/5 max-h-[92vh] overflow-y-auto lg:overflow-y-hidden">
         <button
           onClick={onClose}
           className="absolute right-4 top-4 text-gray-500 hover:text-gray-700"
@@ -129,9 +129,9 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
 
             <div className="flex flex-col mt-3 gap-2">
               <h3 className="font-semibold text-xl text-primary-1">
-                Total: {plan.price}
+                {plan.price}
               </h3>
-              <div onClick={handleContinue}>
+              <div onClick={handleContinue} >
                 <Button buttonText="Continue" buttonBackground="bg-accent" />
               </div>
             </div>

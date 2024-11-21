@@ -34,11 +34,9 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
         content: { maxHeight: "70vh", padding: "1rem", marginTop: "90px" },
       }}
     >
-      <div className="relative flex justify-around w-[85%] mx-auto border-b-2 border-secondary-1 mb-4 text-gray-700">
-        <h1 className={`relative py-2 transition-colors font-semibold  `}>
-          Profile
-        </h1>
-      </div>
+      <h1 className={`relative py-2 transition-colors text-center text-lg font-semibold  `}>
+        Profile
+      </h1>
 
       <ProfileForm
         profileData={profileData}
