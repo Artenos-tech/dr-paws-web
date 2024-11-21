@@ -29,6 +29,25 @@ const roca = localFont({
 export const metadata: Metadata = {
   title: "Dr. Paws",
   description: "The neighbourhood vet",
+  icons: [
+    {
+      rel: "icon",
+      type: "image/png",
+      sizes: "32x32",
+      url: "/custom-logo.png",
+    },
+    {
+      rel: "icon",
+      type: "image/png",
+      sizes: "16x16",
+      url: "/custom-logo.png",
+    },
+    {
+      rel: "apple-touch-icon",
+      sizes: "180x180",
+      url: "/custom-logo.png",
+    },
+  ],
 };
 
 export default function RootLayout({

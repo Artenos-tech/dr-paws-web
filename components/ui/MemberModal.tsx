@@ -17,10 +17,6 @@ interface ModalProps {
 
 const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
   const router = useRouter();
-  const [selectedPlan, setSelectedPlan] = useState({
-    duration: "2 Year",
-    price: "6,999",
-  });
   const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false); // Track authentication state
 
@@ -30,8 +26,8 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
   // Proceed with the payment route
   const params = new URLSearchParams({
     title: plan.title,
-    duration: selectedPlan.duration,
-    price: selectedPlan.price,
+    duration: plan.duration,
+    price: plan.price,
   });
 
   const handleLoginModalOpen = (val: string) => {
@@ -47,20 +43,20 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
 
   if (!isOpen) return null;
 
-  const yearlyPlans = [
-    {
-      duration: "1 Year",
-      price: "6,999",
-    },
-    {
-      duration: "2 Year",
-      price: "6,999",
-    },
-    {
-      duration: "3 Year",
-      price: "5,499",
-    },
-  ];
+  // const yearlyPlans = [
+  //   {
+  //     duration: "1 Year",
+  //     price: "6,999",
+  //   },
+  //   {
+  //     duration: "2 Year",
+  //     price: "6,999",
+  //   },
+  //   {
+  //     duration: "3 Year",
+  //     price: "5,499",
+  //   },
+  // ];
 
   const handleContinue = () => {
     if (!isAuthenticated) {
@@ -74,16 +70,12 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
   const onSuccess = (toastMessage: string) => {
     setIsAuthenticated(true);
     setLoginModalOpen(false);
-    refresh()
+    refresh();
     toast.success(`Successfully ${toastMessage}`, {
       duration: 3000,
       position: "bottom-right",
     });
     handleContinue();
-  };
-
-  const handlePaymentPlan = (yearPlan: { duration: string; price: string }) => {
-    setSelectedPlan(yearPlan);
   };
 
   return (
@@ -93,7 +85,7 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
       className="flex relative z-[999] items-center justify-center"
       overlayClassName="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-[899]"
     >
-      <div className="relative bg-white rounded-2xl w-[90%] md:w-[800px] max-h-[90vh] overflow-y-auto">
+      <div className="relative bg-white rounded-2xl w-11/12 md:w-3/5 max-h-[90vh] overflow-y-auto lg:overflow-y-hidden">
         <button
           onClick={onClose}
           className="absolute right-4 top-4 text-gray-500 hover:text-gray-700"
@@ -101,9 +93,8 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
           <X size={24} />
         </button>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 h-full">
-          {/* Left Section */}
-          <div className="p-8 bg-white rounded-l-2xl">
+        <div className="h-full w-full">
+          <div className="p-8 bg-white rounded-2xl">
             <div className="w-20 h-20 relative mb-2">
               <Image
                 src={plan.icon}
@@ -135,53 +126,13 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
                 ))}
               </ul>
             </div>
-          </div>
 
-          {/* Right Section */}
-          <div className="p-8 pt-14 bg-primary-3 rounded-r-2xl flex flex-col">
-            <h3 className="font-semibold text-xl text-primary-1 mb-6">
-              Choose a payment plan:
-            </h3>
-            <div className="flex flex-col gap-6">
-              <div className="space-y-4">
-                {yearlyPlans.map((yearPlan, index) => (
-                  <div
-                    key={index}
-                    className={`bg-white rounded-lg p-4 cursor-pointer ${
-                      selectedPlan.duration === yearPlan.duration
-                        ? "border-2 border-accent"
-                        : ""
-                    }`}
-                    onClick={() => handlePaymentPlan(yearPlan)}
-                  >
-                    <div className="flex items-center w-full">
-                      <div>
-                        <span className="text-2xl font-semibold text-primary-1">
-                          ₹{yearPlan.price}/Yr{" "}
-                        </span>
-                        <div className="text-sm text-gray-600">
-                          For {yearPlan.duration}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <p className="text-sm text-primary-1 font-bold mb-4">
-                Total benefits worth ₹15,000
-              </p>
-            </div>
-
-            <div className="mt-auto">
-              <div className="flex justify-end">
-                <div className="">
-                  <div onClick={handleContinue}>
-                    <Button
-                      buttonText="Continue"
-                      buttonBackground="bg-accent"
-                    />
-                  </div>
-                </div>
+            <div className="flex flex-col mt-3 gap-2">
+              <h3 className="font-semibold text-xl text-primary-1">
+                Total: {plan.price}
+              </h3>
+              <div onClick={handleContinue}>
+                <Button buttonText="Continue" buttonBackground="bg-accent" />
               </div>
             </div>
           </div>
@@ -194,7 +145,7 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
         onClose={() => setLoginModalOpen(false)}
         onSuccess={onSuccess} // Handle login success
         buttonText={buttonText}
-      /> 
+      />
       <Toaster />
     </Modal>
   );

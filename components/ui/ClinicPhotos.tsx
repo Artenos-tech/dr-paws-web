@@ -1,5 +1,5 @@
 "use client";
-import { photos } from "@/model/mockData"; // photos is an array of image objects
+import { photos } from "@/model/mockData";
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import ReactModal from "react-modal";
@@ -12,14 +12,12 @@ function ClinicPhotos() {
   // Ensure ReactModal can find the root app element for accessibility
   useEffect(() => {
     setIsMounted(true);
-    // if (typeof window !== "undefined") {
     const appElement = document.getElementById("__next");
     if (appElement) {
       ReactModal.setAppElement(appElement);
     } else {
       console.warn("ReactModal: App element with id '__next' not found.");
     }
-    // }
   }, []);
 
   const openModal = (imageSrc: string) => {

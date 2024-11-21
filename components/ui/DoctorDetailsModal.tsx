@@ -2,10 +2,11 @@ import { Doctor } from "@/model/typeDefinitions";
 import Modal from "react-modal";
 import React from "react";
 import Image from "next/image";
-import doctorImg from "@/public/assets/images/team/doctorImg.png";
 import starMedal from "@/public/assets/images/team/star-medal.png";
 import { CiStethoscope, CiLocationOn } from "react-icons/ci";
 import { IoClose } from "react-icons/io5";
+import { useMarketingFeature } from "@/hooks/useMarketingFeature";
+import { clinicItems } from "@/model/mockData";
 
 interface doctorDetailsProps {
   isOpen: boolean;
@@ -18,12 +19,14 @@ const DoctorDetailsModal: React.FC<doctorDetailsProps> = ({
   onClose,
   doctor,
 }) => {
-  const { name, experience, specialization, location, aboutVet, tag } = doctor;
+  const isMarketingFeatureEnabled = useMarketingFeature();
+  const { name, experience, specialization, clinicIds, aboutVet, tag, image } =
+    doctor;
   return (
     <Modal
       isOpen={isOpen}
       onRequestClose={onClose}
-      className="w-4/5 max-w-[950px] mt-20 mb-5 mx-auto  p-4 bg-white rounded-xl shadow-lg overflow-y-auto z-50 max-h-[80vh] md:max-h-none"
+      className="w-4/5 max-w-[950px] mt-20 mb-5 mx-auto  p-4 bg-white rounded-xl shadow-lg overflow-y-auto z-50 max-h-[80vh] md:max-h-none min-h-[40vh] md:min-h-[70vh]"
       overlayClassName="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center"
       style={{ content: { padding: "1rem" } }}
     >
@@ -41,52 +44,55 @@ const DoctorDetailsModal: React.FC<doctorDetailsProps> = ({
           </h1>
 
           <div className="flex flex-col md:items-center lg:items-start gap-3 md:gap-5 w-full text-center lg:text-left">
-            <div className="flex gap-1">
-              <CiStethoscope
-                size={20}
-                fontWeight={800}
-                className="mt-1 hidden lg:block"
-              />
-              <div className="space-y-1 w-full">
-                <p className="flex items-center justify-center lg:justify-start gap-1">
-                  {" "}
-                  <CiStethoscope
-                    size={20}
-                    fontWeight={800}
-                    className="mt-1 block lg:hidden"
-                  />
-                  Experience
-                </p>
-                <p className="font-semibold text-sm md:text-base">
-                  {experience}
-                </p>
+            {!isMarketingFeatureEnabled ? (
+              <div className="flex gap-1">
+                <CiStethoscope
+                  size={20}
+                  fontWeight={800}
+                  className="mt-1 hidden lg:block"
+                />
+                <div className="space-y-1 w-full">
+                  <p className="flex items-center justify-center lg:justify-start gap-1">
+                    {" "}
+                    <CiStethoscope
+                      size={20}
+                      fontWeight={800}
+                      className="mt-1 block lg:hidden"
+                    />
+                    Experience
+                  </p>
+                  <p className="font-semibold text-sm md:text-base">
+                    {experience}
+                  </p>
+                </div>
               </div>
-            </div>
-            <div className="flex items-start gap-1">
-              <Image
-                src={starMedal.src}
-                alt="star medal"
-                width={20}
-                height={20}
-                className="mt-1 hidden lg:block"
-              />
-              <div className="space-y-1 w-full">
-                <p className="flex items-center justify-center lg:justify-start gap-1">
-                  <Image
-                    src={starMedal.src}
-                    alt="star medal"
-                    width={20}
-                    height={20}
-                    className="mt-1 block lg:hidden"
-                  />
-                  Specialization
-                </p>
-                {/*  w-full md:w-11/12 lg:w-3/4  */}
-                <p className="font-semibold text-sm md:text-base">
-                  {specialization}
-                </p>
+            ) : null}
+            {!isMarketingFeatureEnabled ? (
+              <div className="flex items-start gap-1">
+                <Image
+                  src={starMedal.src}
+                  alt="star medal"
+                  width={20}
+                  height={20}
+                  className="mt-1 hidden lg:block"
+                />
+                <div className="space-y-1 w-full">
+                  <p className="flex items-center justify-center lg:justify-start gap-1">
+                    <Image
+                      src={starMedal.src}
+                      alt="star medal"
+                      width={20}
+                      height={20}
+                      className="mt-1 block lg:hidden"
+                    />
+                    Specialization
+                  </p>
+                  <p className="font-semibold text-sm md:text-base">
+                    {specialization}
+                  </p>
+                </div>
               </div>
-            </div>
+            ) : null}
             <div className="flex items-start gap-1">
               <CiLocationOn
                 size={20}
@@ -103,20 +109,30 @@ const DoctorDetailsModal: React.FC<doctorDetailsProps> = ({
                   />{" "}
                   Clinics
                 </p>
-                <p className="font-semibold text-sm md:text-base">{location}</p>
+                <p className="font-semibold text-sm md:text-base">
+                  {clinicIds
+                    .map(
+                      (id) =>
+                        clinicItems.find((clinic) => clinic.id === id)
+                          ?.clinicName
+                    )
+                    .join(", ")}
+                </p>
               </div>
             </div>
-            <div className="mt-4 md:mt-8">
-              <p className="font-semibold text-base md:text-lg mb-1">
-                About The Vet
-              </p>
-              <p className="w-full text-sm md:text-base">{aboutVet}</p>
-            </div>
+            {!isMarketingFeatureEnabled ? (
+              <div className="mt-4 md:mt-8">
+                <p className="font-semibold text-base md:text-lg mb-1">
+                  About The Vet
+                </p>
+                <p className="w-full text-sm md:text-base">{aboutVet}</p>
+              </div>
+            ) : null}
           </div>
         </div>
         <div className="self-center w-full lg:w-1/2">
           <Image
-            src={doctorImg}
+            src={image}
             alt="doctor with pet"
             width={500}
             height={600}

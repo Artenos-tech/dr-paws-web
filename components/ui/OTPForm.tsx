@@ -6,12 +6,14 @@ interface otpFormProps {
   userMobileNumber?: string;
   viewLoginForm: () => void;
   handleOTPVerification: (otp: string) => void;
+  loading: boolean;
 }
 
 const OTPForm: React.FC<otpFormProps> = ({
   userMobileNumber,
   viewLoginForm,
   handleOTPVerification,
+  loading,
 }) => {
   const [otp, setOtp] = useState("");
   const [err, setErr] = useState("");
@@ -73,7 +75,8 @@ const OTPForm: React.FC<otpFormProps> = ({
             className="w-[95%] md:w-full bg-secondary-1 text-white rounded-full py-3 text-xs md:text-sm my-2"
             onClick={handleVerify}
           >
-            Verify and Proceed
+            {" "}
+            {loading ? "Loading..." : "Verify and Proceed"}
           </button>
         </div>
       </form>

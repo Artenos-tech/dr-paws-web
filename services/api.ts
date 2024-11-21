@@ -84,6 +84,7 @@ export default createAPIClient({
           role: z.enum(["ADMIN", "USER"]),
           email: z.string().nullable(),
           current_address: z.string().nullable(),
+          profile_image: z.string().nullable(),
         }),
         user_pets: z
           .array(
@@ -95,6 +96,7 @@ export default createAPIClient({
               weight: z.number().nullable(),
               gender: z.string().nullable(),
               dob: z.date().nullable(),
+              profile_image: z.string().nullable(),
             })
           )
           .nullable(),

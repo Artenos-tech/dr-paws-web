@@ -15,9 +15,14 @@ type LoginFormData = z.infer<typeof loginSchema>;
 interface LoginFormProps {
   onSubmit: (mobileNumber: string) => void;
   buttonText?: string;
+  loading: boolean;
 }
 
-const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, buttonText }) => {
+const LoginForm: React.FC<LoginFormProps> = ({
+  onSubmit,
+  buttonText,
+  loading,
+}) => {
   const {
     register,
     handleSubmit,
@@ -60,7 +65,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, buttonText }) => {
           type="submit"
           className="w-full bg-secondary-1 text-white rounded-full py-3 text-xs md:text-sm my-2"
         >
-          Send OTP
+          {loading ? "Loading..." : "Send OTP"}
         </button>
       </form>
     </div>

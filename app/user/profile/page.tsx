@@ -12,12 +12,11 @@ import EditProfileModal from "@/components/ui/EditProfileModal";
 import { useUserContext } from "@/context/UserContext";
 import { useRouter } from "next/navigation";
 
-// Define the Pet type
 interface Pet {
   id: string;
   name: string;
   type: string;
-  petImage: string;
+  profileImage: string;
 }
 
 const Profile: React.FC = () => {
@@ -26,7 +25,7 @@ const Profile: React.FC = () => {
   const [pets, setPets] = useState<Pet[]>([]);
   const [profileData, setProfileData] = useState<ProfileData>({
     id: "", // Default empty string
-    profilePicture: defaultProfileImage.src,
+    profileImage: defaultProfileImage.src,
     name: "",
     mobile: "",
     email: "",
@@ -51,7 +50,7 @@ const Profile: React.FC = () => {
         id: pet.id || "",
         name: pet.name || "",
         type: pet.type || "",
-        petImage: pet.petImage || "",
+        profileImage: pet.profileImage || "",
       }));
       setPets(partialPetsDetails);
 
@@ -65,8 +64,8 @@ const Profile: React.FC = () => {
     }
   };
 
-  const addPet = (pet: Omit<Pet, "id" | "petImage">): void => {
-    const newPet: Pet = { ...pet, id: petIdCounter, petImage: "" };
+  const addPet = (pet: Omit<Pet, "id" | "profileImage">): void => {
+    const newPet: Pet = { ...pet, id: petIdCounter, profileImage: "" };
     setPets((prevPets) => {
       const updatedPets = [...prevPets, newPet];
 
@@ -92,7 +91,7 @@ const Profile: React.FC = () => {
         email: user.email || "",
         mobile: user.mobile,
         currentAddress: user.currentAddress || "",
-        profilePicture: user.profilePicture || defaultProfileImage.src,
+        profileImage: user.profileImage || defaultProfileImage.src,
       });
     }
   };
@@ -150,7 +149,7 @@ const Profile: React.FC = () => {
         <AddPetModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
-          onSubmit={(pet: Omit<Pet, "id" | "petImage">) => {
+          onSubmit={(pet: Omit<Pet, "id" | "profileImage">) => {
             addPet(pet);
             setIsModalOpen(false);
           }}

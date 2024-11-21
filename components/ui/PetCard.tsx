@@ -17,7 +17,7 @@ interface PetCardProps {
     id: string;
     name: string;
     type: string;
-    petImage: StaticImageData | string;
+    profileImage: StaticImageData | string;
   };
 }
 
@@ -31,14 +31,14 @@ export const petImageByType: Record<string, StaticImageData> = {
 };
 
 const PetCard: React.FC<PetCardProps> = ({ pet }) => {
-  const { name, id, petImage, type } = pet;
+  const { name, id, profileImage, type } = pet;
   const router = useRouter();
 
   const handlePetProfileView = () => {
     router.push(`/user/profile/pet-profile/${id}`);
   };
 
-  const defaultImageOrPetImage = petImage || petImageByType[type.toLowerCase()] || defaultPetImg;
+  const defaultImageOrPetImage = profileImage || petImageByType[type.toLowerCase()] || defaultPetImg;
 
   return (
     <div

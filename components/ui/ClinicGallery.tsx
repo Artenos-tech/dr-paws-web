@@ -86,6 +86,7 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
               className={`w-full h-full object-cover ${
                 index === limitedGalleryItems.length - 1 ? "opacity-60" : ""
               }`}
+              loading="lazy"
             />
             {index === limitedGalleryItems.length - 1 && (
               <span className="absolute inset-0 flex items-center justify-center text-white font-bold text-xl">
@@ -151,6 +152,7 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
               src={photos[currentIndex].src}
               alt="gallery image"
               className="overflow-hidden w-full h-[80vh] object-contain"
+              loading="lazy"
             />
           </div>
 

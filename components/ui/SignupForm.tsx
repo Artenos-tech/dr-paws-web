@@ -13,7 +13,6 @@ const signUpSchema = z.object({
     .string()
     .length(10, "Mobile number must be 10 digits")
     .regex(/^\d+$/, "Mobile number must contain only numbers"),
-  profilePicture: z.string().optional(),
 });
 
 type SignUpFormData = z.infer<typeof signUpSchema>;
@@ -22,11 +21,12 @@ interface SignUpFormProps {
   onSubmit: (data: {
     userName: string;
     mobileNumber: string;
-    profilePicture?: string;
+    profilePicture: string | null;
   }) => void;
+  loading: boolean;
 }
 
-const SignupForm: React.FC<SignUpFormProps> = ({ onSubmit }) => {
+const SignupForm: React.FC<SignUpFormProps> = ({ onSubmit, loading }) => {
   const [userProfileImage, setUserPofileImage] = useState<string>(
     defaultUserProfile.src
   );
@@ -38,7 +38,7 @@ const SignupForm: React.FC<SignUpFormProps> = ({ onSubmit }) => {
     setValue,
   } = useForm<SignUpFormData>({
     resolver: zodResolver(signUpSchema),
-    defaultValues: { userName: "", mobileNumber: "", profilePicture: "" },
+    defaultValues: { userName: "", mobileNumber: ""},
   });
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,14 +48,15 @@ const SignupForm: React.FC<SignUpFormProps> = ({ onSubmit }) => {
       reader.onload = () => {
         const result = reader.result as string;
         setUserPofileImage(result);
-        setValue("profilePicture", result);
       };
       reader.readAsDataURL(file);
     }
   };
 
   const signUpSubmitHandler = (data: SignUpFormData) => {
-    onSubmit(data);
+    console.log(userProfileImage)
+    console.log(data);
+    onSubmit({...data, profilePicture: userProfileImage});
   };
 
   return (
@@ -71,7 +72,7 @@ const SignupForm: React.FC<SignUpFormProps> = ({ onSubmit }) => {
         <div className="relative flex flex-col w-[40%] sm:w-[35%] md:w-[35%] mb-6 mx-auto">
           <div>
             <Image
-              src={userProfileImage || defaultUserProfile.src}
+              src={userProfileImage}
               alt="user-profile"
               width={150}
               height={150}
@@ -82,7 +83,9 @@ const SignupForm: React.FC<SignUpFormProps> = ({ onSubmit }) => {
                 <button
                   type="button"
                   className="absolute bottom-0 left-0 p-2.5 bg-red-500 rounded-full z-10"
-                  onClick={() => setUserPofileImage(defaultUserProfile.src)}
+                  onClick={() => {
+                    setUserPofileImage(defaultUserProfile.src);
+                  }}
                 >
                   <FaTrash size={8} fill="white" />
                 </button>
@@ -99,7 +102,6 @@ const SignupForm: React.FC<SignUpFormProps> = ({ onSubmit }) => {
             <input
               type="file"
               accept="image/*"
-              {...register("profilePicture")}
               onChange={handleImageChange}
               className="absolute bottom-0 right-0 opacity-0 w-full h-full cursor-pointer px-5"
               aria-label="Upload pet profile image"
@@ -139,7 +141,7 @@ const SignupForm: React.FC<SignUpFormProps> = ({ onSubmit }) => {
           type="submit"
           className="w-full bg-secondary-1 text-white rounded-full py-3 text-xs md:text-sm my-2"
         >
-          Send OTP
+          {loading ? "Loading..." : "Send OTP"}
         </button>
       </form>
     </div>

@@ -41,10 +41,16 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
   const { updateUserDetailsHandler, updateUserPetsHandler } = useUserContext();
 
   // API's
-  const { call: signupOTP } = useAPICall(api.signupOTP);
-  const { call: signupVerify } = useAPICall(api.signupVerify);
-  const { call: loginOTP } = useAPICall(api.loginOTP);
-  const { call: loginVerify } = useAPICall(api.loginVerify);
+  const { call: signupOTP, loading: signupOTPLoading } = useAPICall(
+    api.signupOTP
+  );
+  const { call: signupVerify, loading: signupVerifyLoading } = useAPICall(
+    api.signupVerify
+  );
+  const { call: loginOTP, loading: loginOTPLoading } = useAPICall(api.loginOTP);
+  const { call: loginVerify, loading: loginVerifyLoading } = useAPICall(
+    api.loginVerify
+  );
 
   const handleIncorrectNumber = () => {
     setUserMobileNumber(undefined);
@@ -77,14 +83,14 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
   const handleSignupSubmit = async (data: {
     userName: string;
     mobileNumber: string;
-    profilePicture?: string;
+    profilePicture: string | null;
   }) => {
     // TO-DO: Add profilePicture to the API call after adding profilePicture in the backend API
     const response = await signupOTP({
       name: data.userName,
       mobile: data.mobileNumber,
       role: "USER",
-      profile_image: data.profilePicture || "",
+      profile_image: data.profilePicture || null,
     });
     if (response?.ok) {
       setUserMobileNumber(data.mobileNumber);
@@ -116,9 +122,15 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
         if (response?.ok) {
           // Storing the token in the localstorage
           setAuthToken(response.value.body.token);
-          updateUserDetailsHandler(response.value.body.user);
+          const user = response.value.body.user;
+          updateUserDetailsHandler({
+            ...user,
+            currentAddress: user.current_address,
+            profileImage: user.profile_image,
+          });
           const pets = response.value.body.user_pets?.map((pet) => ({
             ...pet,
+            profileImage: pet.profile_image,
             gender: pet.gender ?? undefined,
           })) as Partial<Pet>[];
 
@@ -147,9 +159,15 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
         });
         if (response?.ok) {
           setAuthToken(response.value.body.token);
-          updateUserDetailsHandler(response.value.body.user);
+          const user = response.value.body.user;
+          updateUserDetailsHandler({
+            ...user,
+            currentAddress: user.current_address,
+            profileImage: user.profile_image,
+          });
           const pets = response.value.body.user_pets?.map((pet) => ({
             ...pet,
+            profileImage: pet.profile_image,
             gender: pet.gender ?? undefined,
           })) as Partial<Pet>[];
 
@@ -192,11 +210,19 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
             userMobileNumber={userMobileNumber}
             viewLoginForm={handleIncorrectNumber}
             handleOTPVerification={handleOTPVerification}
+            loading={signupVerifyLoading || loginVerifyLoading}
           />
         ) : isLogin ? (
-          <LoginForm onSubmit={handleLoginSubmit} buttonText={buttonText} />
+          <LoginForm
+            onSubmit={handleLoginSubmit}
+            buttonText={buttonText}
+            loading={loginOTPLoading}
+          />
         ) : (
-          <SignupForm onSubmit={handleSignupSubmit} />
+          <SignupForm
+            onSubmit={handleSignupSubmit}
+            loading={signupOTPLoading}
+          />
         )}
 
         {userMobileNumber ? (

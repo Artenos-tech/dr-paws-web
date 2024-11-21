@@ -9,7 +9,6 @@ import Link from "next/link";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { MdChevronRight } from "react-icons/md";
 import logo from "@/public/assets/images/logo/logo.svg";
-import { clinicItems } from "@/model/mockData";
 import ContactInfoModal from "../ui/ContactInfoModal";
 import UserAuthenticationModal from "../ui/UserAuthenticationModal";
 import { useRouter } from "next/navigation";
@@ -20,7 +19,7 @@ import { useAPICall } from "@/hooks/apicall";
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
-  const [isLocationOpen, setIsLocationOpen] = useState(false);
+  // const [isLocationOpen, setIsLocationOpen] = useState(false);
   const [isContactModalOpen, setContactIsModalOpen] = useState(false);
   const [loginModalOpen, setLoginModalOpen] = useState<boolean>(false);
   const navigate = useRouter();
@@ -81,7 +80,7 @@ export default function NavBar() {
             </div>
             <div className="hidden lg:block">
               <div className="flex items-center space-x-4 gap-3">
-                <div className="relative group">
+                {/* <div className="relative group">
                   <DropdownMenu.Root>
                     <DropdownMenu.Trigger className="outline-none">
                       <p className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
@@ -109,7 +108,13 @@ export default function NavBar() {
                       </DropdownMenu.Content>
                     </DropdownMenu.Portal>
                   </DropdownMenu.Root>
-                </div>
+                </div> */}
+                <Link
+                  href="/clinics"
+                  className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                >
+                  Locations
+                </Link>
                 <Link
                   href="/services"
                   className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
@@ -229,7 +234,7 @@ export default function NavBar() {
               <button
                 type="button"
                 onClick={() => handleLoginModalOpen("View Profile")}
-                className="text-primary-1 text-xs tracking-wider underline"
+                className="text-primary-1 text-sm tracking-wider"
               >
                 Login
               </button>
@@ -253,7 +258,7 @@ export default function NavBar() {
       {isOpen && (
         <div className="lg:hidden" id="mobile-menu">
           <div className="px-8 pt-2 pb-3 space-y-1 md:px-32 flex flex-col justify-end">
-            <button
+            {/* <button
               onClick={() => setIsLocationOpen(!isLocationOpen)}
               className="text-primary-1 hover:bg-primary-2 hover:text-white block text-left py-1 px-2 rounded-md text-base font-medium"
             >
@@ -279,7 +284,14 @@ export default function NavBar() {
                   ))}
                 </div>
               )}
-            </div>
+            </div> */}
+            <Link
+              onClick={() => setIsOpen(false)}
+              href="/clinics"
+              className="text-primary-1 hover:bg-primary-2 hover:text-white block py-2 px-2 rounded-md text-base font-medium"
+            >
+              Locations
+            </Link>
 
             <Link
               onClick={() => setIsOpen(false)}
@@ -401,7 +413,7 @@ export default function NavBar() {
                 <button
                   type="button"
                   onClick={() => handleLoginModalOpen("View Profile")}
-                  className="text-primary-1 text-xs tracking-wider underline"
+                  className="text-primary-1 text-sm tracking-wider"
                 >
                   Login
                 </button>

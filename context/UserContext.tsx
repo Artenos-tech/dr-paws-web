@@ -18,7 +18,7 @@ export interface User {
   role: UserRole;
   email: string | null;
   currentAddress: string | null;
-  profilePicture: string | undefined; // profile picture is optional
+  profileImage: string | null; // profile picture is optional
 }
 
 export interface Pet {
@@ -33,7 +33,7 @@ export interface Pet {
     years: number | null;
     months: number | null;
   };
-  petImage: string | undefined; // pet image is optional
+  profileImage: string | null; // pet image is optional
 }
 
 export interface UserContextType {
@@ -82,7 +82,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
           role: data.role || "USER",
           email: data.email || null,
           currentAddress: data.currentAddress || null,
-          profilePicture: data.profilePicture,
+          profileImage: data.profileImage || null,
         };
       }
 
@@ -109,7 +109,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
             years: updatedPet.age?.years || null,
             months: updatedPet.age?.months || null,
           },
-          petImage: updatedPet.petImage,
+          profileImage: updatedPet.profileImage || null,
         }));
       }
 
