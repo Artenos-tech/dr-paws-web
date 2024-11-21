@@ -18,8 +18,7 @@ const OTPForm: React.FC<otpFormProps> = ({
 
   const handleVerify = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    // TO-DO: Later OTP length should be 4
-    if (otp.length === 6) {
+    if (otp.length === 4) {
       handleOTPVerification(otp);
     } else {
       setErr("Please enter a valid 4-digit OTP.");

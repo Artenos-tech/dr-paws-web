@@ -9,7 +9,6 @@ import { User, useUserContext } from "@/context/UserContext";
 interface EditProfileModalProps {
   isOpen: boolean;
   onClose: () => void;
-  // onSave: (updatedProfile: ProfileData) => void;
   profileData: ProfileData;
 }
 
@@ -18,9 +17,6 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
   onClose,
   profileData,
 }) => {
-  const [activeTab, setActiveTab] = useState<"profile" | "billing">("profile");
-  const [billingData, setBillingData] = useState<BillingFormData | null>(null);
-
   const { updateUserDetailsHandler, user } = useUserContext();
 
   const handleProfileUpdate = (updatedProfile: User) => {
@@ -28,18 +24,6 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
     localStorage.setItem("userProfile", JSON.stringify(updatedProfile));
     onClose();
   };
-  const handleBillingSave = (data: BillingFormData) => {
-    setBillingData(data);
-    localStorage.setItem("billingData", JSON.stringify(data));
-    console.log(billingData);
-    onClose();
-  };
-
-  useEffect(() => {
-    if (isOpen) {
-      setActiveTab("profile");
-    }
-  }, [isOpen]);
 
   return (
     <Modal
@@ -52,41 +36,17 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
         content: { maxHeight: "70vh", padding: "1rem", marginTop: "90px" },
       }}
     >
-      <div className="relative flex justify-around w-[85%] mx-auto border-b-2 border-gray-300 mb-4 text-gray-700">
-        <button
-          onClick={() => setActiveTab("profile")}
-          className={`relative py-2 transition-colors w-1/2 ${
-            activeTab === "profile" ? " font-semibold" : "text-gray-500"
-          }`}
-        >
+      <div className="relative flex justify-around w-[85%] mx-auto border-b-2 border-secondary-1 mb-4 text-gray-700">
+        <h1 className={`relative py-2 transition-colors font-semibold  `}>
           Profile
-          {activeTab === "profile" && (
-            <span className="absolute bottom-[-2.5px] left-0 right-0 mx-auto w-full h-[3px] bg-secondary-1 rounded-full"></span>
-          )}
-        </button>
-
-        <button
-          onClick={() => setActiveTab("billing")}
-          className={`relative py-2 transition-colors w-1/2 ${
-            activeTab === "billing" ? " font-semibold" : "text-gray-500"
-          }`}
-        >
-          Billing Information
-          {activeTab === "billing" && (
-            <span className="absolute bottom-[-2.5px] left-0 right-0 mx-auto w-full h-[3px] bg-secondary-1 rounded-full"></span>
-          )}
-        </button>
+        </h1>
       </div>
 
-      {activeTab === "profile" ? (
-        <ProfileForm
-          profileData={profileData}
-          onSubmit={handleProfileUpdate}
-          onCancel={onClose}
-        />
-      ) : (
-        <BillingForm onSubmit={handleBillingSave} onCancel={onClose} />
-      )}
+      <ProfileForm
+        profileData={profileData}
+        onSubmit={handleProfileUpdate}
+        onCancel={onClose}
+      />
     </Modal>
   );
 };

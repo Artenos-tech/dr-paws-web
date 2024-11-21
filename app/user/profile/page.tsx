@@ -102,7 +102,7 @@ const Profile: React.FC = () => {
       navigate.push("/");
     }
     fetchProfileData();
-  }, [user, navigate]);
+  }, [authToken, navigate]);
 
   return (
     <div className="flex flex-col w-full h-full 2xl:h-screen items-center font-roca pb-20 flex-grow ">

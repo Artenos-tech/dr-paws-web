@@ -75,7 +75,7 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
     setIsAuthenticated(true);
     setLoginModalOpen(false);
     refresh()
-    toast.success(`Successfully ${toastMessage}!`, {
+    toast.success(`Successfully ${toastMessage}`, {
       duration: 3000,
       position: "bottom-right",
     });

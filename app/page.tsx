@@ -42,7 +42,7 @@ export default function Home() {
     if (buttonText === "Become a member") {
       navigate.push("/membership");
     }
-    toast.success(`Successfully ${toastMessage}!`, {
+    toast.success(`Successfully ${toastMessage}`, {
       duration: 3000,
       position: "bottom-right",
     });

@@ -32,7 +32,7 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
   const onSuccess = (toastMessage: string) => {
     setLoginModalOpen(false);
     refresh()
-    toast.success(`Successfully ${toastMessage}!`, {
+    toast.success(`Successfully ${toastMessage}`, {
       duration: 3000,
       position: "bottom-right",
     });

@@ -55,7 +55,7 @@ export default function NavBar() {
     if (buttonText === "View Profile" || buttonText === "View Pets") {
       navigate.push("/user/profile");
     }
-    toast.success(`Successfully ${toastMessage}!`, {
+    toast.success(`Successfully ${toastMessage}`, {
       duration: 3000,
       position: "bottom-right",
     });
@@ -228,10 +228,10 @@ export default function NavBar() {
             ) : (
               <button
                 type="button"
-                onClick={() => handleLoginModalOpen("")}
+                onClick={() => handleLoginModalOpen("View Profile")}
                 className="text-primary-1 text-xs tracking-wider underline"
               >
-                Signup/Login
+                Login
               </button>
             )}
           </div>
@@ -400,10 +400,10 @@ export default function NavBar() {
               ) : (
                 <button
                   type="button"
-                  onClick={() => handleLoginModalOpen("")}
+                  onClick={() => handleLoginModalOpen("View Profile")}
                   className="text-primary-1 text-xs tracking-wider underline"
                 >
-                  Signup/Login
+                  Login
                 </button>
               )}
               <div onClick={() => setIsOpen(false)}>

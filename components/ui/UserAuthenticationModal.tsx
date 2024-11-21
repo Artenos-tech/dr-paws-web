@@ -84,6 +84,7 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
       name: data.userName,
       mobile: data.mobileNumber,
       role: "USER",
+      profile_image: data.profilePicture || "",
     });
     if (response?.ok) {
       setUserMobileNumber(data.mobileNumber);
@@ -124,7 +125,7 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
           if (pets) {
             updateUserPetsHandler(pets);
           }
-          onSuccess("Logged in");
+          onSuccess("logged in");
         } else {
           const errorMessage =
             response?.error.apiClientErrorType === "ErrorResponseAPIError"
