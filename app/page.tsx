@@ -16,31 +16,37 @@ import { useState } from "react";
 import UserAuthenticationModal from "@/components/ui/UserAuthenticationModal";
 import { useRouter } from "next/navigation";
 import { useUserContext } from "@/context/UserContext";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function Home() {
   const [loginModalOpen, setLoginModalOpen] = useState<boolean>(false);
   const [buttonText, setButtonText] = useState<string>("");
   const navigate = useRouter();
 
-  const { user } = useUserContext();
+  const { authToken, refresh } = useUserContext();
 
   const handleLoginModalOpen = (text: string) => {
-    if (user?.id) {
-      if (text === "Become a member"){
+    if (authToken) {
+      if (text === "Become a member") {
         navigate.push("/membership");
-        return
+        return;
       }
       navigate.push("/");
-      return
+      return;
     }
     setLoginModalOpen(true);
     setButtonText(text);
   };
 
-  const onSuccess = () => {
+  const onSuccess = (toastMessage: string) => {
     if (buttonText === "Become a member") {
       navigate.push("/membership");
     }
+    toast.success(`Successfully ${toastMessage}!`, {
+      duration: 3000,
+      position: "bottom-right",
+    });
+    refresh()
     setLoginModalOpen(false);
   };
 
@@ -237,6 +243,7 @@ export default function Home() {
           />
         </div>
       </main>
+      <Toaster />
     </div>
   );
 }

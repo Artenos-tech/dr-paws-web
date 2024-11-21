@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Image, { StaticImageData } from "next/image";
 import { useForm } from "react-hook-form";
-import { Pet } from "@/model/typeDefinitions";
+import { PetInfo } from "@/model/typeDefinitions";
 import ImageEdit from "@/public/assets/images/Profile/ImageEdit.png";
 import OutlineButton from "./OutlineButton";
 import { FaTrash } from "react-icons/fa6";
@@ -15,17 +15,19 @@ interface PetProfileInfoProps {
 }
 
 const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
-  const [pet, setPet] = useState<Pet | null>(null);
+  const [pet, setPet] = useState<PetInfo | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [image, setImage] = useState<string | StaticImageData>("");
   const [age, setAge] = useState({ years: 0, months: 0 });
+
+  const {userPets} = useUserContext()
 
   const {
     register,
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm<Pet>({
+  } = useForm<PetInfo>({
     defaultValues: {
       name: "",
       type: "",
@@ -44,21 +46,21 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
 
   const fetchPetDetails = () => {
     const storedPets = localStorage.getItem("pets");
-    if (storedPets) {
-      const pets: Pet[] = JSON.parse(storedPets);
-      const foundPet = pets.find(
-        (pet) => Number(pet.petId) === Number(petProfileId)
+    if (userPets) {
+      // const pets: PetInfo[] = JSON.parse(storedPets);
+      const foundPet = userPets.find(
+        (pet) => Number(pet.id) === Number(petProfileId)
       );
 
-      setPet(foundPet || null);
-      setImage(foundPet?.petImage || "");
-      setAge(foundPet?.age || { years: 0, months: 0 });
+      // setPet(foundPet);
+      // setImage(foundPet?.petImage || "");
+      // setAge(foundPet?.age || { years: 0, months: 0 });
 
-      if (foundPet) {
-        for (const key in foundPet) {
-          setValue(key as keyof Pet, foundPet[key as keyof Pet]);
-        }
-      }
+      // if (foundPet) {
+      //   for (const key in foundPet) {
+      //     setValue(key as keyof PetInfo, foundPet[key as keyof PetInfo]);
+      //   }
+      // }
     }
   };
 
@@ -70,20 +72,20 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
           pet.petImage ||
             (pet?.type && petImageByType[pet.type.toLowerCase()].src)
         );
-        setValue(key as keyof Pet, pet[key as keyof Pet]);
+        setValue(key as keyof PetInfo, pet[key as keyof PetInfo]);
       }
     }
     setIsEditing(!isEditing);
   };
 
-  const onSubmit = (data: Pet) => {
+  const onSubmit = (data: PetInfo) => {
     const realPetImage =
       typeof image === "string" && image.includes("/_next/static/media/")
         ? ""
         : image;
 
     const storedPets = localStorage.getItem("pets");
-    const pets: Pet[] = storedPets ? JSON.parse(storedPets) : [];
+    const pets: PetInfo[] = storedPets ? JSON.parse(storedPets) : [];
 
     const updatedPets = pets.map((pet) =>
       Number(pet.petId) === Number(petProfileId)

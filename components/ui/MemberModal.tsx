@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import UserAuthenticationModal from "./UserAuthenticationModal";
 import Modal from "react-modal";
 import { useUserContext } from "@/context/UserContext";
+import toast, { Toaster } from "react-hot-toast";
 
 interface ModalProps {
   isOpen: boolean;
@@ -24,7 +25,7 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false); // Track authentication state
 
   const [buttonText, setButtonText] = useState<string>("");
-  const { user } = useUserContext();
+  const { authToken, refresh } = useUserContext();
 
   // Proceed with the payment route
   const params = new URLSearchParams({
@@ -34,7 +35,7 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
   });
 
   const handleLoginModalOpen = (val: string) => {
-    if (user?.id) {
+    if (authToken) {
       if (val === "Become a Member") {
         router.push(`/membership/payment?${params.toString()}`);
         return;
@@ -70,9 +71,14 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
     router.push(`/membership/payment?${params.toString()}`);
   };
 
-  const handleLoginSuccess = () => {
+  const onSuccess = (toastMessage: string) => {
     setIsAuthenticated(true);
     setLoginModalOpen(false);
+    refresh()
+    toast.success(`Successfully ${toastMessage}!`, {
+      duration: 3000,
+      position: "bottom-right",
+    });
     handleContinue();
   };
 
@@ -186,9 +192,10 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
       <UserAuthenticationModal
         isOpen={loginModalOpen}
         onClose={() => setLoginModalOpen(false)}
-        onSuccess={handleLoginSuccess} // Handle login success
+        onSuccess={onSuccess} // Handle login success
         buttonText={buttonText}
-      />
+      /> 
+      <Toaster />
     </Modal>
   );
 };

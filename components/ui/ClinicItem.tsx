@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Clinic } from "@/model/typeDefinitions";
 import UserAuthenticationModal from "./UserAuthenticationModal";
 import { useUserContext } from "@/context/UserContext";
+import toast, { Toaster } from "react-hot-toast";
 
 interface ClinicItemProps {
   clinic: Clinic;
@@ -17,10 +18,10 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
   const router = useRouter();
 
   const [buttonText, setButtonText] = useState<string>("");
-  const { user } = useUserContext();
+  const { authToken, refresh } = useUserContext();
 
   const handleLoginModalOpen = (val: string) => {
-    if (user?.id) {
+    if (authToken) {
       router.push("/");
       return;
     }
@@ -28,8 +29,13 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
     setButtonText(val);
   };
 
-  const onSuccess = () => {
+  const onSuccess = (toastMessage: string) => {
     setLoginModalOpen(false);
+    refresh()
+    toast.success(`Successfully ${toastMessage}!`, {
+      duration: 3000,
+      position: "bottom-right",
+    });
   };
 
   const handleBookVisit = () => {
@@ -71,6 +77,7 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
         buttonText={buttonText}
         onSuccess={onSuccess}
       />
+      <Toaster />
     </div>
   );
 };

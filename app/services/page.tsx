@@ -9,16 +9,17 @@ import ContactInfoModal from "@/components/ui/ContactInfoModal";
 import UserAuthenticationModal from "@/components/ui/UserAuthenticationModal";
 import { useUserContext } from "@/context/UserContext";
 import { useRouter } from "next/navigation";
+import toast, { Toaster } from "react-hot-toast";
 
 const Services = () => {
   const [isContactModalOpen, setContactIsModalOpen] = useState(false);
   const [loginModalOpen, setLoginModalOpen] = useState<boolean>(false);
   const [buttonText, setButtonText] = useState<string>("");
-  const { user } = useUserContext();
+  const { authToken, refresh } = useUserContext();
   const navigate = useRouter();
 
   const handleLoginModalOpen = (val: string) => {
-    if (user?.id) {
+    if (authToken) {
       navigate.push("/");
       return;
     }
@@ -26,8 +27,13 @@ const Services = () => {
     setButtonText(val);
   };
 
-  const onSuccess = () => {
+  const onSuccess = (toastMessage: string) => {
     setLoginModalOpen(false);
+    refresh()
+    toast.success(`Successfully ${toastMessage}!`, {
+      duration: 3000,
+      position: "bottom-right",
+    });
   };
 
   return (
@@ -86,6 +92,7 @@ const Services = () => {
         buttonText={buttonText}
         onSuccess={onSuccess}
       />
+      <Toaster />
     </div>
   );
 };

@@ -40,7 +40,6 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
       setActiveTab("profile");
     }
   }, [isOpen]);
-  console.log("user2:", user);
 
   return (
     <Modal

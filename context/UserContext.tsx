@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+} from "react";
 
 export type UserRole = "ADMIN" | "USER";
 export type Gender = "Male" | "Female";
@@ -23,6 +29,10 @@ export interface Pet {
   weight: number | null;
   gender: Gender;
   dob: string | null;
+  age: {
+    years: number | null;
+    months: number | null;
+  };
   petImage: string | undefined; // pet image is optional
 }
 
@@ -31,6 +41,8 @@ export interface UserContextType {
   userPets: Pet[] | null;
   updateUserDetailsHandler: (data: Partial<User>) => void;
   updateUserPetsHandler: (data: Partial<Pet>[]) => void;
+  authToken: boolean;
+  refresh: () => void;
 }
 
 export const UserContext = createContext<UserContextType | undefined>(
@@ -44,6 +56,20 @@ interface UserProviderProps {
 export const UserProvider = ({ children }: UserProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [userPets, setUserPets] = useState<Pet[] | null>(null);
+  const [authToken, setAuthToken] = useState<boolean>(false);
+
+  const handleCheckAuthToken = () => {
+    const token = localStorage.getItem("authToken");
+    if (token) {
+      setAuthToken(true);
+    } else {
+      setAuthToken(false);
+    }
+  };
+
+  useEffect(() => {
+    handleCheckAuthToken();
+  }, [authToken]);
 
   const updateUserDetailsHandler = (data: Partial<User>) => {
     setUser((prevDetails) => {
@@ -79,6 +105,10 @@ export const UserProvider = ({ children }: UserProviderProps) => {
           weight: updatedPet.weight || null,
           gender: updatedPet.gender || "Male",
           dob: updatedPet.dob || null,
+          age: {
+            years: updatedPet.age?.years || null,
+            months: updatedPet.age?.months || null,
+          },
           petImage: updatedPet.petImage,
         }));
       }
@@ -97,6 +127,8 @@ export const UserProvider = ({ children }: UserProviderProps) => {
         userPets,
         updateUserDetailsHandler,
         updateUserPetsHandler,
+        authToken,
+        refresh: handleCheckAuthToken,
       }}
     >
       {children}

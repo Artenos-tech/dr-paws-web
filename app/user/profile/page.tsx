@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import ProfileCard, { ProfileData } from "@/components/ui/ProfileCard";
-import defaultProfileImage from "@/public/assets/images/Profile/Profile.png";
+import defaultProfileImage from "@/public/assets/images/Profile/profileLogo.jpg";
 import AddPetModal from "@/components/ui/AddPetModal";
 import PetCard from "@/components/ui/PetCard";
 import "react-toastify/dist/ReactToastify.css";
@@ -34,8 +34,7 @@ const Profile: React.FC = () => {
     // Add other properties with sensible defaults
   });
 
-  const {  updateUserPetsHandler, userPets, user } =
-    useUserContext();
+  const { updateUserPetsHandler, userPets, user, authToken } = useUserContext();
 
   // Initialize petIdCounter as a string
   const [petIdCounter, setPetIdCounter] = useState<string>("1");
@@ -99,7 +98,7 @@ const Profile: React.FC = () => {
   };
 
   useEffect(() => {
-    if (!user) {
+    if (!authToken) {
       navigate.push("/");
     }
     fetchProfileData();

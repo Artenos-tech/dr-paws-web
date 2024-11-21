@@ -42,6 +42,7 @@ const OTPForm: React.FC<otpFormProps> = ({
         <div className="flex flex-col justify-center items-center my-10 gap-10">
           <div>
             <InputOTP
+              // TO-DO: Later OTP length should be 4
               maxLength={6}
               pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
               className="border-2"

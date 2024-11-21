@@ -9,6 +9,7 @@ import Button from "./Button";
 import UserAuthenticationModal from "./UserAuthenticationModal";
 import { useUserContext } from "@/context/UserContext";
 import { useRouter } from "next/navigation";
+import toast, { Toaster } from "react-hot-toast";
 
 interface ClinicGalleryProps {
   clinic: Clinic;
@@ -22,11 +23,11 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
   const [isMounted, setIsMounted] = useState(false);
 
   const [buttonText, setButtonText] = useState<string>("");
-  const { user } = useUserContext();
+  const { authToken, refresh } = useUserContext();
   const navigate = useRouter();
 
   const handleLoginModalOpen = (val: string) => {
-    if (user?.id) {
+    if (authToken) {
       navigate.push("/");
       return;
     }
@@ -34,8 +35,13 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
     setButtonText(val);
   };
 
-  const onSuccess = () => {
+  const onSuccess = (toastMessage: string) => {
     setLoginModalOpen(false);
+    refresh()
+    toast.success(`Successfully ${toastMessage}!`, {
+      duration: 3000,
+      position: "bottom-right",
+    });
   };
 
   useEffect(() => {
@@ -170,6 +176,7 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
         buttonText={buttonText}
         onSuccess={onSuccess}
       />
+      <Toaster />
     </div>
   );
 }

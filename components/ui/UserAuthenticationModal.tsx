@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import Modal from "react-modal";
 import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
 import OTPForm from "./OTPForm";
 import { useAPICall } from "@/hooks/apicall";
-import api from "@/services/api";
+import api, { setAuthToken } from "@/services/api";
 import toast, { Toaster } from "react-hot-toast";
 import { Pet, useUserContext } from "@/context/UserContext";
 
@@ -21,7 +21,7 @@ interface authenticationProps {
    * We’ll first check if the user is logged in before requiring this prop.
    */
   initialMobileNumber?: string;
-  onSuccess?: () => void;
+  onSuccess: (toastMessage: string) => void;
   buttonText?: string;
 }
 
@@ -113,9 +113,9 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
           otp,
         });
         if (response?.ok) {
-          onSuccess?.();
+          // Storing the token in the localstorage
+          setAuthToken(response.value.body.token);
           updateUserDetailsHandler(response.value.body.user);
-
           const pets = response.value.body.user_pets?.map((pet) => ({
             ...pet,
             gender: pet.gender ?? undefined,
@@ -124,10 +124,7 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
           if (pets) {
             updateUserPetsHandler(pets);
           }
-          toast.success("Successfully logged in!", {
-            duration: 3000,
-            position: "bottom-right",
-          });
+          onSuccess("Logged in");
         } else {
           const errorMessage =
             response?.error.apiClientErrorType === "ErrorResponseAPIError"
@@ -148,9 +145,8 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
           otp,
         });
         if (response?.ok) {
-          onSuccess?.();
+          setAuthToken(response.value.body.token);
           updateUserDetailsHandler(response.value.body.user);
-
           const pets = response.value.body.user_pets?.map((pet) => ({
             ...pet,
             gender: pet.gender ?? undefined,
@@ -159,11 +155,7 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
           if (pets) {
             updateUserPetsHandler(pets);
           }
-
-          toast.success("Successfully signed up!", {
-            duration: 3000,
-            position: "bottom-right",
-          });
+          onSuccess("signed up");
         } else {
           const errorMessage =
             response?.error.apiClientErrorType === "ErrorResponseAPIError"

@@ -22,7 +22,7 @@ export interface Clinic {
   services: string
   contact: string
 }
-export interface Pet {
+export interface PetInfo {
   petId: string;
   name: string;
   type: string;
