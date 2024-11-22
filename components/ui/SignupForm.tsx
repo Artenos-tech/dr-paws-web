@@ -37,7 +37,7 @@ const SignupForm: React.FC<SignUpFormProps> = ({ onSubmit, loading }) => {
     formState: { errors },
   } = useForm<SignUpFormData>({
     resolver: zodResolver(signUpSchema),
-    defaultValues: { userName: "", mobileNumber: ""},
+    defaultValues: { userName: "", mobileNumber: "" },
   });
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,9 +53,11 @@ const SignupForm: React.FC<SignUpFormProps> = ({ onSubmit, loading }) => {
   };
 
   const signUpSubmitHandler = (data: SignUpFormData) => {
-    console.log(userProfileImage)
-    console.log(data);
-    onSubmit({...data, profilePicture: userProfileImage});
+    const isDefaultImage = userProfileImage.includes("/_next/static/media/")
+      ? null
+      : userProfileImage;
+
+    onSubmit({ ...data, profilePicture: isDefaultImage });
   };
 
   return (

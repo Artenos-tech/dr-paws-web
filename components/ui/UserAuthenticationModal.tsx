@@ -85,7 +85,6 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
     mobileNumber: string;
     profilePicture: string | null;
   }) => {
-    // TO-DO: Add profilePicture to the API call after adding profilePicture in the backend API
     const response = await signupOTP({
       name: data.userName,
       mobile: data.mobileNumber,
