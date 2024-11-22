@@ -11,7 +11,12 @@ import rabbitImg from "../public/assets/images/rabbitimg.png";
 import doctorFemale from "../public/assets/images/clinic/doctorFemale.webp";
 import doctorMale from "../public/assets/images/clinic/doctorMale.webp";
 import ClinicDog from "../public/assets/images/clinic/maggidog.png";
-import { Clinic, Review } from "@/model/typeDefinitions";
+import {
+  AppointmentStatus,
+  AppointmentType,
+  Clinic,
+  Review,
+} from "@/model/typeDefinitions";
 import ParasiteControl from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/ParasiteControl.webp";
 import SkinInfections from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/SkinInfections.jpeg";
 import { BookingCategory } from "@/model/typeDefinitions";
@@ -67,6 +72,9 @@ import CareSenior from "@/public/assets/images/Membership/Care Senior.png";
 import Grooming from "@/public/assets/images/Membership/Grooming.png";
 import StarCare from "@/public/assets/images/Membership/Star Care and Grooming.png";
 import { MembershipPlan } from "@/components/ui/MemberCard";
+
+import AppointmentPetImage from "@/public/assets/images/Appointments/petImage.png";
+import AppointmentVetImage from "@/public/assets/images/Appointments/vetImage.png";
 
 export const FaqData = [
   {
@@ -885,7 +893,6 @@ export const membershipData: MembershipPlan[] = [
   },
 ];
 
-
 export const bookingCategories: BookingCategory[] = [
   {
     id: "Planned Visits",
@@ -912,10 +919,11 @@ export const bookingCategories: BookingCategory[] = [
     title: "Physiotherapy",
     description: "lethargy, vomiting, limping...",
   },
-  { 
-    id: "Grooming", 
-    title: "Grooming", 
-    description: "haircut, spa..." },
+  {
+    id: "Grooming",
+    title: "Grooming",
+    description: "haircut, spa...",
+  },
   {
     id: "Pet Services",
     title: "Pet Services",
@@ -932,4 +940,73 @@ export const timeSlots = [
   "03:00pm",
   "04:00pm",
   "05:00pm",
+];
+
+export const mockAppointments: AppointmentType[] = [
+  {
+    id: "1",
+    petName: "Buddy",
+    vetName: "Dr. Smith",
+    petImage: AppointmentPetImage.src,
+    vetImage: AppointmentVetImage.src,
+    date: "2023-10-15",
+    time: "10:00 AM",
+    status: AppointmentStatus.Upcoming,
+    service: "Vaccination",
+  },
+  {
+    id: "2",
+    petName: "Whiskers",
+    vetName: "Dr. Johnson",
+    petImage: AppointmentPetImage.src,
+    vetImage: AppointmentVetImage.src,
+    date: "2023-10-10",
+    time: "02:30 PM",
+    status: AppointmentStatus.Past,
+    service: "Dental Cleaning",
+  },
+  {
+    id: "3",
+    petName: "Rex",
+    vetName: "Dr. Lee",
+    petImage: AppointmentPetImage.src,
+    vetImage: AppointmentVetImage.src,
+    date: "2023-10-20",
+    time: "11:15 AM",
+    status: AppointmentStatus.Upcoming,
+    service: "Check-up",
+  },
+  {
+    id: "4",
+    petName: "Bella",
+    vetName: "Dr. Wong",
+    petImage: AppointmentPetImage.src,
+    vetImage: AppointmentVetImage.src,
+    date: "2023-09-30",
+    time: "09:00 AM",
+    status: AppointmentStatus.Past,
+    service: "Spay/Neuter",
+  },
+  {
+    id: "5",
+    petName: "Charlie",
+    vetName: "Dr. Brown",
+    petImage: AppointmentPetImage.src,
+    vetImage: AppointmentVetImage.src,
+    date: "2023-11-05",
+    time: "01:00 PM",
+    status: AppointmentStatus.Upcoming,
+    service: "Allergy Consultation",
+  },
+  {
+    id: "6",
+    petName: "Daisy",
+    vetName: "Dr. Green",
+    petImage: AppointmentPetImage.src,
+    vetImage: AppointmentVetImage.src,
+    date: "2023-10-12",
+    time: "03:45 PM",
+    status: AppointmentStatus.Cancelled,
+    service: "Routine Check-up",
+  },
 ];
