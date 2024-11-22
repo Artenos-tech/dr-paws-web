@@ -1,14 +1,51 @@
-import { AppointmentType } from '@/model/typeDefinitions';
-import React from 'react'
-import OutlineButton from './OutlineButton';
-import { customDate } from './UpcomingAppointmentCard';
-import Image from 'next/image';
+
+"use client"
+import { AppointmentType } from "@/model/typeDefinitions";
+import React from "react";
+import OutlineButton from "./OutlineButton";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+// import { customDate } from "@/lib/utils";
 
 type PastCardProps = {
-    pastAppointment: AppointmentType;
-  };
+  pastAppointment: AppointmentType;
+};
 
-const PastAppointmentCard:React.FC<PastCardProps> = ({pastAppointment}) => {
+export const customDate = (date: string) => {
+  const dayNames = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+  const monthNames = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+
+  const getDay = new Date(date).getUTCDay(); // Day of the week (0-6)
+  const getMonth = new Date(date).getUTCMonth(); // Month (0-11)
+  const getDate = new Date(date).getUTCDate(); // Day of the month (1-31)
+  const getYear = new Date(date).getUTCFullYear(); // Full year (e.g., 2024)
+
+  return `${dayNames[getDay]}, ${monthNames[getMonth]} ${getDate}, ${getYear}`; // e.g., "Mon, Jan 21, 2024"
+};
+
+const PastAppointmentCard: React.FC<PastCardProps> = ({ pastAppointment }) => {
+  const navigate = useRouter()
   return (
     <div className="p-4 border-l-4 border-l-primary-2 bg-primary-3 flex flex-col gap-3 rounded-lg shadow-md w-full">
       <div className="text-xs flex justify-between">
@@ -40,11 +77,13 @@ const PastAppointmentCard:React.FC<PastCardProps> = ({pastAppointment}) => {
         <p>{customDate(pastAppointment.date)}</p>
         <p>{pastAppointment.time}</p>
       </div>
-      <div className="self-end">
-        <OutlineButton outlineBtnText="View Details" />
+      <div className="self-end"> 
+        <OutlineButton outlineBtnText="View Details" outlineBtnLink={() =>
+            navigate.push(`/my-bookings/${pastAppointment.id}`)
+          } />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default PastAppointmentCard
+export default PastAppointmentCard;

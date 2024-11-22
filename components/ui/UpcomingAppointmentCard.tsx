@@ -1,7 +1,11 @@
+"use client";
+
 import { AppointmentType } from "@/model/typeDefinitions";
 import Image from "next/image";
 import React from "react";
 import OutlineButton from "./OutlineButton";
+import { useRouter } from "next/navigation";
+// import { customDate } from "@/lib/utils";
 
 type UpcomingCardProps = {
   upcomingAppointment: AppointmentType;
@@ -39,9 +43,12 @@ export const customDate = (date: string) => {
 
   return `${dayNames[getDay]}, ${monthNames[getMonth]} ${getDate}, ${getYear}`; // e.g., "Mon, Jan 21, 2024"
 };
+
+
 const UpcomingAppointmentCard: React.FC<UpcomingCardProps> = ({
   upcomingAppointment,
 }) => {
+  const navigate = useRouter();
   return (
     <div className="p-4 border-l-4 border-l-secondary-1 flex flex-col gap-3 rounded-lg shadow-md w-full">
       <div className="text-xs flex justify-between">
@@ -74,7 +81,12 @@ const UpcomingAppointmentCard: React.FC<UpcomingCardProps> = ({
         <p>{upcomingAppointment.time}</p>
       </div>
       <div className="self-end">
-        <OutlineButton outlineBtnText="View Details" />
+        <OutlineButton
+          outlineBtnText="View Details"
+          outlineBtnLink={() =>
+            navigate.push(`/my-bookings/${upcomingAppointment.id}`)
+          }
+        />
       </div>
     </div>
   );

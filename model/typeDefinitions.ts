@@ -68,4 +68,5 @@ export interface AppointmentType {
   time: string;
   status: AppointmentStatus;
   service: string;
+  clinicAddress?: string
 }
