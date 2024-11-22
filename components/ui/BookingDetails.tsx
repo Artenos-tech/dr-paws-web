@@ -87,22 +87,21 @@ const BookingDetails: React.FC<bookingDetailsProps> = ({ bookingId }) => {
               {bookingDetails.time}
             </p>
           </div>
-          <button
-            className={`border-b-2 border-primary-1 leading-none text-xs flex items-center ${
-              bookingDetails.status !== "Upcoming" && "mb-4"
-            }`}
-          >
-            <FiPlus /> Add to Calendar
-          </button>
           {bookingDetails.status === "Upcoming" && (
-            <div className="flex justify-center mb-4 mt-2 items-center gap-4 w-full ">
-              <button className="w-full md:w-1/4 text-xs md:text-sm border-2 border-secondary-1 bg-transparent py-2 text-secondary-1 font-semibold rounded-full">
-                Cancel
+            <>
+              <button className="border-b-2 border-primary-1 leading-none text-xs flex items-center ">
+                <FiPlus /> Add to Calendar
               </button>
-              <button className=" w-full md:w-1/4 text-xs md:text-sm border-2 border-secondary-1 bg-transparent py-2 text-secondary-1 font-semibold rounded-full">
-                Reschedule
-              </button>
-            </div>
+
+              <div className="flex justify-center mb-4 mt-2 items-center gap-4 w-full ">
+                <button className="w-full md:w-1/4 text-xs md:text-sm border-2 border-secondary-1 bg-transparent py-2 text-secondary-1 font-semibold rounded-full">
+                  Cancel
+                </button>
+                <button className=" w-full md:w-1/4 text-xs md:text-sm border-2 border-secondary-1 bg-transparent py-2 text-secondary-1 font-semibold rounded-full">
+                  Reschedule
+                </button>
+              </div>
+            </>
           )}
         </div>
       </div>
