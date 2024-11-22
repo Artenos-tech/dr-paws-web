@@ -10,7 +10,6 @@ import { GrLocation } from "react-icons/gr";
 import { HiOutlineCalendar } from "react-icons/hi";
 import { customDate } from "./UpcomingAppointmentCard";
 import { FiPlus } from "react-icons/fi";
-import OutlineButton from "./OutlineButton";
 type bookingDetailsProps = {
   bookingId: string;
 };
