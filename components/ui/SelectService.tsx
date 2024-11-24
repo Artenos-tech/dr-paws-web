@@ -92,6 +92,7 @@ const SelectService: React.FC<SelectServiceProps> = ({
             isOpen={openCard === category.id}
             toggleCard={toggleCard}
             setPets={setPets}
+            selectedData={selectedData}
           />
         ))}
       </div>
@@ -112,5 +113,6 @@ const SelectService: React.FC<SelectServiceProps> = ({
     </div>
   );
 };
+
 
 export default SelectService;
