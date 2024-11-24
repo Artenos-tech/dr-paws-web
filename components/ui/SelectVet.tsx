@@ -6,6 +6,13 @@ import CustomButton from "./CustomButton";
 import SelectCalendar from "./SelectCalendar";
 import { format } from "date-fns";
 import { timeSlots } from "@/model/mockData";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "./carousel";
 
 const SelectVet = () => {
   const [selectedDoctor, setSelectedDoctor] = useState<string | null>(null);
@@ -27,16 +34,26 @@ const SelectVet = () => {
         <h1 className="text-3xl font-bold mb-4">Select Vet</h1>
         <p className="text-gray-600 mb-6">Book Spot for your visit</p>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-          {doctors.map((doctor) => (
-            <SelectDoctorCard
-              key={doctor.name}
-              doctor={doctor}
-              isSelected={selectedDoctor === doctor.name}
-              onDoctorSelect={handleDoctorSelection}
-            />
-          ))}
-        </div>
+        <Carousel className="w-full  mx-auto">
+          <CarouselContent className="-ml-1">
+            {doctors.map((doctor) => (
+              <CarouselItem
+                key={doctor.name}
+                className="pl-1 basis-full sm:basis-3 lg:basis-1/5"
+              >
+                <div className="w-full h-full">
+                  <SelectDoctorCard
+                    doctor={doctor}
+                    isSelected={selectedDoctor === doctor.name}
+                    onDoctorSelect={handleDoctorSelection}
+                  />
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious />
+          <CarouselNext />
+        </Carousel>
       </div>
 
       {/* Calendar and Date Selection */}
@@ -47,7 +64,7 @@ const SelectVet = () => {
         </p>
 
         {/* Responsive Two-Column Layout */}
-        <div className="flex flex-col justify-center items-center lg:flex-row gap-8">
+        <div className="flex flex-col justify-center items-center md:flex-row gap-8">
           {/* Calendar Section */}
           <div className="flex-shrink-0 lg:w-1/2 xl:w-1/3">
             <SelectCalendar onDateSelect={(date) => setSelectedDate(date)} />

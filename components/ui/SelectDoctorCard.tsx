@@ -4,23 +4,29 @@ import Image from "next/image";
 import { Doctor } from "@/model/typeDefinitions";
 
 interface SelectDoctorCardProps {
-    doctor: Doctor;
-    isSelected: boolean;
-    onDoctorSelect: (doctorName: string) => void;
-  }
-  
-  const SelectDoctorCard: React.FC<SelectDoctorCardProps> = ({ doctor, isSelected, onDoctorSelect }) => {
-    const { name, image } = doctor;
+  doctor: Doctor;
+  isSelected: boolean;
+  onDoctorSelect: (doctorName: string) => void;
+}
+
+const SelectDoctorCard: React.FC<SelectDoctorCardProps> = ({
+  doctor,
+  isSelected,
+  onDoctorSelect,
+}) => {
+  const { name, image } = doctor;
 
   const handleCardClick = () => {
-    onDoctorSelect(name); 
+    onDoctorSelect(name);
   };
-
 
   return (
     <div
-    onClick={handleCardClick}
-    className={`flex flex-col items-center rounded-lg  p-4 gap-4 bg-primary-3 ${isSelected ? `border-2 border-secondary-1` : `` }`}>
+      onClick={handleCardClick}
+      className={`min-w-[150px] min-h-[230px] flex flex-col items-center justify-center rounded-lg  p-4 gap-4 bg-primary-3 ${
+        isSelected ? `border-2 border-secondary-1` : ``
+      }`}
+    >
       <Image
         src={image}
         alt={name}
