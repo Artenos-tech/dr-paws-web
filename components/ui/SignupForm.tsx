@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import defaultUserProfile from "@/public/assets/images/defaultUserProfile.png";
+import defaultUserProfile from "@/public/assets/images/Profile/profileLogo.jpg";
 import editIcon from "@/public/assets/images/Profile/ImageEdit.png";
 import Image from "next/image";
 import { FaTrash } from "react-icons/fa6";
@@ -24,9 +24,14 @@ interface SignUpFormProps {
     profilePicture: string | null;
   }) => void;
   loading: boolean;
+  errMsg: string;
 }
 
-const SignupForm: React.FC<SignUpFormProps> = ({ onSubmit, loading }) => {
+const SignupForm: React.FC<SignUpFormProps> = ({
+  onSubmit,
+  loading,
+  errMsg,
+}) => {
   const [userProfileImage, setUserPofileImage] = useState<string>(
     defaultUserProfile.src
   );
@@ -144,6 +149,9 @@ const SignupForm: React.FC<SignUpFormProps> = ({ onSubmit, loading }) => {
         >
           {loading ? "Loading..." : "Send OTP"}
         </button>
+        {errMsg && (
+          <p className="text-red-500 text-center text-xs mt-1">{errMsg}</p>
+        )}
       </form>
     </div>
   );

@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "./input-otp";
 import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
 
@@ -7,6 +9,8 @@ interface otpFormProps {
   viewLoginForm: () => void;
   handleOTPVerification: (otp: string) => void;
   loading: boolean;
+  resendOTPHandler: () => void;
+  errMsg: string;
 }
 
 const OTPForm: React.FC<otpFormProps> = ({
@@ -14,16 +18,25 @@ const OTPForm: React.FC<otpFormProps> = ({
   viewLoginForm,
   handleOTPVerification,
   loading,
+  resendOTPHandler,
+  errMsg,
 }) => {
-  const [otp, setOtp] = useState("");
-  const [err, setErr] = useState("");
+  const [otp, setOtp] = useState<string>("");
+  const [err, setErr] = useState<string>("");
+
+  useEffect(() => {
+    if (errMsg) {
+      setErr(errMsg);
+    }
+  }, [errMsg]);
 
   const handleVerify = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (otp.length === 4) {
       handleOTPVerification(otp);
+      setErr("");
     } else {
-      setErr("Please enter a valid 4-digit OTP.");
+      setErr("Please enter valid 4-digit OTP");
     }
   };
   return (
@@ -43,11 +56,11 @@ const OTPForm: React.FC<otpFormProps> = ({
         <div className="flex flex-col justify-center items-center my-10 gap-10">
           <div>
             <InputOTP
-              // TO-DO: Later OTP length should be 4
-              maxLength={6}
+              maxLength={4}
               pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
               className="border-2"
               onChange={(value) => setOtp(value)}
+              value={otp}
             >
               <InputOTPGroup>
                 <InputOTPSlot
@@ -70,6 +83,7 @@ const OTPForm: React.FC<otpFormProps> = ({
             </InputOTP>
           </div>
           {err && <p className="text-xs text-red-500 text-left">{err}</p>}
+
           <button
             type="button"
             className="w-[95%] md:w-full bg-secondary-1 text-white rounded-full py-3 text-xs md:text-sm my-2"
@@ -77,6 +91,23 @@ const OTPForm: React.FC<otpFormProps> = ({
           >
             {" "}
             {loading ? "Loading..." : "Verify and Proceed"}
+          </button>
+        </div>
+
+        <div className="flex justify-center items-center gap-1">
+          <p className="text-sm md:text-base">
+            Didn&apos;t receive your code?{" "}
+          </p>
+          <button
+            type="button"
+            className="font-semibold cursor-pointer"
+            onClick={() => {
+              setOtp("");
+              setErr("");
+              resendOTPHandler();
+            }}
+          >
+            Resend Code
           </button>
         </div>
       </form>

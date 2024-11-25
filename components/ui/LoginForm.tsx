@@ -16,12 +16,14 @@ interface LoginFormProps {
   onSubmit: (mobileNumber: string) => void;
   buttonText?: string;
   loading: boolean;
+  errMsg: string;
 }
 
 const LoginForm: React.FC<LoginFormProps> = ({
   onSubmit,
   buttonText,
   loading,
+  errMsg,
 }) => {
   const {
     register,
@@ -67,6 +69,13 @@ const LoginForm: React.FC<LoginFormProps> = ({
         >
           {loading ? "Loading..." : "Send OTP"}
         </button>
+        {errMsg && (
+          <p className="text-red-500 text-center text-xs mt-1">
+            {errMsg === "User not found"
+              ? "User not found, Please create an account"
+              : errMsg}
+          </p>
+        )}
       </form>
     </div>
   );

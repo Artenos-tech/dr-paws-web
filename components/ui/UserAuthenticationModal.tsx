@@ -37,6 +37,13 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
     initialMobileNumber
   );
 
+  const [userName, setUserName] = useState<string>("");
+  const [profileImage, setUserPofileImage] = useState<string | null>(null);
+
+  const [loginErr, setLoginErr] = useState("");
+  const [signupErr, setSignupErr] = useState("");
+  const [otpErr, setOtpErr] = useState("");
+
   // context
   const { updateUserDetailsHandler, updateUserPetsHandler } = useUserContext();
 
@@ -66,11 +73,14 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
         duration: 3000,
         position: "bottom-right",
       });
+      setLoginErr("");
     } else {
       const errorMessage =
         response?.error.apiClientErrorType === "ErrorResponseAPIError"
           ? response.error.body.message
           : (response?.error.message as string);
+
+      setLoginErr(errorMessage);
 
       toast.error(errorMessage, {
         duration: 3000,
@@ -85,6 +95,9 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
     mobileNumber: string;
     profilePicture: string | null;
   }) => {
+    // Updating state variables for resending OTP
+    setUserName(data.userName);
+    setUserPofileImage(data.profilePicture);
     const response = await signupOTP({
       name: data.userName,
       mobile: data.mobileNumber,
@@ -97,11 +110,14 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
         duration: 3000,
         position: "bottom-right",
       });
+      setSignupErr("");
     } else {
       const errorMessage =
         response?.error.apiClientErrorType === "ErrorResponseAPIError"
           ? response.error.body.message
           : (response?.error.message as string);
+
+      setSignupErr(errorMessage);
 
       toast.error(errorMessage, {
         duration: 3000,
@@ -133,6 +149,8 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
             gender: pet.gender ?? undefined,
           })) as Partial<Pet>[];
 
+          setOtpErr("");
+
           if (pets) {
             updateUserPetsHandler(pets);
           }
@@ -142,11 +160,21 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
             response?.error.apiClientErrorType === "ErrorResponseAPIError"
               ? response.error.body.message
               : (response?.error.message as string);
+          setOtpErr(
+            errorMessage === "Invalid mobile number or OTP"
+              ? "Invalid OTP, Please enter valid 4-digit OTP"
+              : errorMessage
+          );
 
-          toast.error(errorMessage, {
-            duration: 3000,
-            position: "bottom-right",
-          });
+          toast.error(
+            errorMessage === "Invalid mobile number or OTP"
+              ? "Invalid OTP or Please enter valid 4-digit OTP"
+              : errorMessage,
+            {
+              duration: 3000,
+              position: "bottom-right",
+            }
+          );
         }
       }
     } else {
@@ -173,33 +201,88 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
           if (pets) {
             updateUserPetsHandler(pets);
           }
+          setOtpErr("");
           onSuccess("signed up");
         } else {
           const errorMessage =
             response?.error.apiClientErrorType === "ErrorResponseAPIError"
               ? response.error.body.message
               : (response?.error.message as string);
+          setOtpErr(
+            errorMessage === "Invalid mobile number or OTP"
+              ? "Invalid OTP, Please enter valid 4-digit OTP"
+              : errorMessage
+          );
 
-          toast.error(errorMessage, {
-            duration: 3000,
-            position: "bottom-right",
-          });
+          toast.error(
+            errorMessage === "Invalid mobile number or OTP"
+              ? "Invalid OTP, Please enter valid 4-digit OTP"
+              : errorMessage,
+            {
+              duration: 3000,
+              position: "bottom-right",
+            }
+          );
         }
       }
     }
   };
 
+  const handleResendOTP = async () => {
+    if (userMobileNumber) {
+      const response = isLogin
+        ? await loginOTP({ mobile: userMobileNumber, role: "USER" })
+        : await signupOTP({
+            mobile: userMobileNumber,
+            role: "USER",
+            name: userName,
+            profile_image: profileImage,
+          });
+
+      if (response.ok) {
+        toast.success("OTP resent to your mobile number", {
+          duration: 3000,
+          position: "bottom-right",
+        });
+        setLoginErr("");
+        setSignupErr("");
+      } else {
+        const errorMessage =
+          response?.error.apiClientErrorType === "ErrorResponseAPIError"
+            ? response.error.body.message
+            : (response?.error.message as string);
+        if (isLogin) {
+          setLoginErr(errorMessage);
+        } else {
+          setSignupErr(errorMessage);
+        }
+        toast.error(errorMessage, {
+          duration: 3000,
+          position: "bottom-right",
+        });
+      }
+    }
+  };
+
+  const handleCloseOnRequest = () => {
+    setIsLogin(true);
+    onClose();
+    setOtpErr("");
+    setLoginErr("");
+    setSignupErr("");
+  };
+
   return (
     <Modal
       isOpen={isOpen}
-      onRequestClose={onClose}
+      onRequestClose={handleCloseOnRequest}
       className="relative z-[1000] mt-16 mx-3 px-10 py-5 bg-white rounded-xl shadow-lg overflow-y-auto"
       overlayClassName="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-[999]"
     >
       <button
         className="text-gray-500 absolute right-2 top-2 hover:text-gray-700 transition-colors"
         aria-label="Close modal"
-        onClick={onClose}
+        onClick={handleCloseOnRequest}
       >
         <IoClose size={20} />
       </button>
@@ -210,28 +293,25 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
             viewLoginForm={handleIncorrectNumber}
             handleOTPVerification={handleOTPVerification}
             loading={signupVerifyLoading || loginVerifyLoading}
+            resendOTPHandler={handleResendOTP}
+            errMsg={otpErr}
           />
         ) : isLogin ? (
           <LoginForm
             onSubmit={handleLoginSubmit}
             buttonText={buttonText}
             loading={loginOTPLoading}
+            errMsg={loginErr}
           />
         ) : (
           <SignupForm
             onSubmit={handleSignupSubmit}
             loading={signupOTPLoading}
+            errMsg={signupErr}
           />
         )}
 
-        {userMobileNumber ? (
-          <div>
-            <p className="text-sm md:text-base">
-              Didn&apos;t receive your code?{" "}
-              <span className="font-semibold cursor-pointer">Resend Code</span>
-            </p>
-          </div>
-        ) : (
+        {userMobileNumber ? null : (
           <div className="mt-4">
             {isLogin ? (
               <p className="text-sm md:text-base">
@@ -247,7 +327,11 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
               <p className="text-sm md:text-base">
                 Already have an Account?{" "}
                 <span
-                  onClick={() => setIsLogin(true)}
+                  onClick={() => {
+                    setIsLogin(true);
+                    setLoginErr("");
+                    setSignupErr("");
+                  }}
                   className="font-semibold cursor-pointer text-sm md:text-base"
                 >
                   Log In
