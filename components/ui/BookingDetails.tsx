@@ -38,6 +38,9 @@ const BookingDetails: React.FC<bookingDetailsProps> = ({ bookingId }) => {
       setBookingDetails(foundAppointment);
     }
   };
+  
+  const isCancelled = bookingDetails.status === AppointmentStatus.Cancelled;
+
   return (
     <div className="w-full h-full">
       <BackButton />
@@ -45,7 +48,11 @@ const BookingDetails: React.FC<bookingDetailsProps> = ({ bookingId }) => {
       <div className="flex flex-col justify-center gap-4 items-center">
         <h1 className="text-3xl">Your Booking</h1>
 
-        <div className="bg-[#FFFCF3] p-4 text-primary-1 w-11/12 md:w-4/5 lg:w-[50%] shadow-md my-5 flex flex-col gap-2 items-center">
+        <div
+          className={`p-4 text-primary-1 w-11/12 md:w-4/5 lg:w-[50%] shadow-md my-5 flex flex-col gap-2 items-center ${
+            isCancelled ? "bg-gray-200 opacity" : "bg-[#FFFCF3]"
+          }`}
+        >
           <p className="text-lg font-semibold mt-4">
             {bookingDetails.petName} is scheduled with {bookingDetails.vetName}
           </p>
@@ -67,19 +74,31 @@ const BookingDetails: React.FC<bookingDetailsProps> = ({ bookingId }) => {
             />
           </div>
           <div className="my-4 space-y-3">
-            <p className="flex items-center gap-2">
+            <p
+              className={`flex items-center gap-2 ${
+                isCancelled ? "line-through" : ""
+              }`}
+            >
               <span className="text-secondary-1">
                 <GrLocation />
               </span>{" "}
               {bookingDetails.clinicAddress || "Andheri West Clinic"}
             </p>
-            <p className="flex items-center gap-2">
+            <p
+              className={`flex items-center gap-2 ${
+                isCancelled ? "line-through" : ""
+              }`}
+            >
               <span className="text-secondary-1">
                 <HiOutlineCalendar />
               </span>
               {customDate(bookingDetails.date)}
             </p>
-            <p className="flex items-center gap-2">
+            <p
+              className={`flex items-center gap-2 ${
+                isCancelled ? "line-through" : ""
+              }`}
+            >
               <span className="text-secondary-1">
                 <MdOutlineAccessTime />
               </span>
@@ -89,9 +108,9 @@ const BookingDetails: React.FC<bookingDetailsProps> = ({ bookingId }) => {
           </div>
           {bookingDetails.status === "Upcoming" && (
             <>
-              <button className="border-b-2 border-primary-1 leading-none text-xs flex items-center ">
+              {/* <button className="border-b-2 border-primary-1 leading-none text-xs flex items-center ">
                 <FiPlus /> Add to Calendar
-              </button>
+              </button> */}
 
               <div className="flex justify-center mb-4 mt-2 items-center gap-4 w-full ">
                 <button className="w-full md:w-1/4 text-xs md:text-sm border-2 border-secondary-1 bg-transparent py-2 text-secondary-1 font-semibold rounded-full">

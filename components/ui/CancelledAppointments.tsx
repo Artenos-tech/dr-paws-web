@@ -10,12 +10,17 @@ type CancelledAppointmentsProps = {
 const CancelledAppointments: React.FC<CancelledAppointmentsProps> = ({
   cancelledAppointments,
 }) => {
+  const sortedCancelledAppointments = [...cancelledAppointments].sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+  );
+  
+
   return (
-    <div className={`w-full  ${cancelledAppointments.length !==0 ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" : "h-full lg:h-screen"} `}>
-      {cancelledAppointments.length === 0 ? (
+    <div className={`w-full  ${sortedCancelledAppointments.length !==0 ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" : "h-full lg:h-screen"} `}>
+      {sortedCancelledAppointments.length === 0 ? (
         <NoAppointments />
       ) : (
-        cancelledAppointments.map((appointment: AppointmentType) => (
+        sortedCancelledAppointments.map((appointment: AppointmentType) => (
           <CancelledAppointmentCard
             key={appointment.id}
             cancelledAppointment={appointment}

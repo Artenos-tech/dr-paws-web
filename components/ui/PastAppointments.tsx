@@ -10,12 +10,16 @@ type PastAppointmentsProps = {
 const PastAppointments: React.FC<PastAppointmentsProps> = ({
   pastAppointments,
 }) => {
+  const sortedPastAppointments = [...pastAppointments].sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+  );
+
   return (
-    <div className={`w-full  ${pastAppointments.length !==0 ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" : "h-full lg:h-screen"} `}>
-      {pastAppointments.length === 0 ? (
+    <div className={`w-full  ${sortedPastAppointments.length !==0 ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" : "h-full lg:h-screen"} `}>
+      {sortedPastAppointments.length === 0 ? (
         <NoAppointments />
       ) : (
-        pastAppointments.map((appointment: AppointmentType) => (
+        sortedPastAppointments.map((appointment: AppointmentType) => (
           <PastAppointmentCard
             key={appointment.id}
             pastAppointment={appointment}
