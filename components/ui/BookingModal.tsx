@@ -1,7 +1,4 @@
-"use client";
-
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-
 import ModalImage from "@/public/assets/images/Booking/girlWithDogModalImage.png";
 
 import Image from "next/image";

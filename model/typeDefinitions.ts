@@ -51,5 +51,22 @@ export interface BookingCategory {
   id: string;
   title: string;
   description: string;
+}
 
+export enum AppointmentStatus {
+  Upcoming = "Upcoming",
+  Past = "Past",
+  Cancelled = "Cancelled"
+}
+export interface AppointmentType {
+  id: string;
+  petName: string;
+  vetName: string;
+  petImage: string;
+  vetImage: string;
+  date: string;
+  time: string;
+  status: AppointmentStatus;
+  service: string;
+  clinicAddress?: string
 }

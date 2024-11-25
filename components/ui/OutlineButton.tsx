@@ -14,6 +14,8 @@ const OutlineButton: React.FC<outlineProps> = ({
     <FiEdit2 />
   ) : outlineBtnText.includes("Cancel") ? (
     ""
+  ) : outlineBtnText.includes("View Details") ? (
+    ""
   ) : (
     <FiPlus />
   );

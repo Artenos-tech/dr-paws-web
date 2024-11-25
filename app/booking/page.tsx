@@ -25,7 +25,7 @@ const Booking: React.FC = () => {
   useEffect(() => {
     const savedPets = localStorage.getItem("pets");
     const parsedPets: Pet[] = savedPets
-      ? JSON.parse(savedPets).map((pet: PetType) => ({
+      ? JSON.parse(savedPets).map((pet: Pet) => ({
           ...pet,
           type: pet.type || "other",
           petImage: pet.petImage || undefined,

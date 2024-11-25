@@ -45,8 +45,8 @@ const ClinicTabBar = ({ tabs }: ClinicTabBarProps) => {
           </div>
         </div>
       </div>
-      <div className="mt-6 text-neutral-600">
-        <div className="w-full">
+      <div className="my-8 text-neutral-600">
+        <div className="w-full h-full lg:h-screen">
           {tabs.find((tab) => (tab.id || tab.title) === activeTab)?.component}
         </div>
       </div>
