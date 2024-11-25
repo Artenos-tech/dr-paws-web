@@ -34,12 +34,12 @@ const SelectVet = () => {
         <h1 className="text-3xl font-bold mb-4">Select Vet</h1>
         <p className="text-gray-600 mb-6">Book Spot for your visit</p>
 
-        <Carousel className="w-full  mx-auto">
+        <Carousel className="pr-1 w-[90%] sm:w-full  mx-auto">
           <CarouselContent className="-ml-1">
             {doctors.map((doctor) => (
               <CarouselItem
                 key={doctor.name}
-                className="pl-1 basis-full sm:basis-3 lg:basis-1/5"
+                className=" basis-full sm:basis-1/2  md:basis-1/3 lg:basis-1/4 xl:basis-1/5"
               >
                 <div className="w-full h-full">
                   <SelectDoctorCard
@@ -73,14 +73,14 @@ const SelectVet = () => {
           {/* Timeslots Section */}
           {selectedDate && (
             <div className="flex-grow">
-              <div className="font-semibold text-sm  text-gray-800 sm:text-lg">
+              <div className="font-semibold text-xs  text-gray-800  lg:text-lg">
                 Available timeslots for{" "}
                 <span className="text-secondary-1">
                   {format(selectedDate, "EEEE, MMM d")}
                 </span>
               </div>
               <div
-                className="grid gap-4 mt-4"
+                className="grid gap-2 lg:gap-4 mt-4"
                 style={{
                   gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))",
                 }}
@@ -89,8 +89,8 @@ const SelectVet = () => {
                 {timeSlots.map((time, index) => (
                   <div
                     key={index}
-                    className={`text-center bg-primary-3 py-2 px-8 w-fit rounded-md cursor-pointer shadow-md ${
-                      selectedSlot === time ? "border-secondary-1  " : ""
+                    className={`text-center bg-primary-3 py-2 px-7  sm:py-1 sm:px-6 lg:py-2 lg:px-8  w-fit rounded-md cursor-pointer shadow-md ${
+                      selectedSlot === time ? "border border-secondary-1  " : ""
                     }`}
                     onClick={() => handleSelect(time)}
                   >
