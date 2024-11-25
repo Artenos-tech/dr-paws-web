@@ -51,6 +51,7 @@ const SelectService: React.FC<SelectServiceProps> = ({
   };
 
   const toggleCard = (cardId: string) => {
+    
     setOpenCard((prevOpenCard) => {
       if (prevOpenCard && prevOpenCard !== cardId) {
         setSelectedData((prevSelectedData) => ({
@@ -77,8 +78,8 @@ const SelectService: React.FC<SelectServiceProps> = ({
 
   return (
     <div className="w-full h-full">
-      <h1 className="text-2xl font-bold mb-4">Select Services</h1>
-      <p className="text-gray-600 mb-6">Choose from our services:</p>
+      <h1 className="text-2xl mb-2">Select Services</h1>
+      <p className="text-gray-600 mb-12">Choose from our services:</p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-start ">
         {bookingCategories.map((category) => (
@@ -92,6 +93,7 @@ const SelectService: React.FC<SelectServiceProps> = ({
             isOpen={openCard === category.id}
             toggleCard={toggleCard}
             setPets={setPets}
+            selectedData={selectedData}
           />
         ))}
       </div>
@@ -112,5 +114,6 @@ const SelectService: React.FC<SelectServiceProps> = ({
     </div>
   );
 };
+
 
 export default SelectService;
