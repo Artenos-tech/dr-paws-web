@@ -20,14 +20,16 @@ import {
 interface CalendarProps {
   timezone?: string;
   onDateSelect: (date: Date) => void; // Callback for date selection
+  selectedDate: Date | null;
 }
 
 const SelectCalendar: React.FC<CalendarProps> = ({
   timezone = "India Standard Time (2:30pm)",
   onDateSelect,
+  selectedDate,
 }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+
 
   const today = startOfDay(new Date());
   const startDate = startOfWeek(startOfMonth(currentDate));
@@ -46,7 +48,7 @@ const SelectCalendar: React.FC<CalendarProps> = ({
 
   const selectDate = (date: Date) => {
     if (date.getMonth() === currentDate.getMonth() && !isBefore(date, today)) {
-      setSelectedDate(date);
+      onDateSelect(date);
       onDateSelect(date); // Notify parent component
     }
   };

@@ -20,19 +20,31 @@ const SelectVet = () => {
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
 
   const handleSelect = (time: string) => {
-    setSelectedSlot(time);
+    setSelectedSlot(selectedSlot === time ? null : time);
   };
 
   const handleDoctorSelection = (doctorName: string) => {
+    if (selectedDoctor !== doctorName) {
+      setSelectedDate(null);
+      setSelectedSlot(null);
+    }
     setSelectedDoctor(doctorName);
+  };
+
+  const isNextButtonEnabled =
+    selectedDoctor !== null && selectedDate !== null && selectedSlot !== null;
+
+  const handleDateSelect = (date: Date) => {
+    setSelectedSlot(null);
+    setSelectedDate(date);
   };
 
   return (
     <div className="h-full flex flex-col gap-12 px-4 lg:px-16">
       {/* Doctor Selection */}
       <div>
-        <h1 className="text-3xl font-bold mb-4">Select Vet</h1>
-        <p className="text-gray-600 mb-6">Book Spot for your visit</p>
+        <h1 className="text-3xl  mb-2">Select Vet</h1>
+        <p className="text-gray-600 mb-12">Book Spot for your visit</p>
 
         <Carousel className="pr-1 w-[90%] sm:w-full  mx-auto">
           <CarouselContent className="-ml-1">
@@ -58,16 +70,25 @@ const SelectVet = () => {
 
       {/* Calendar and Date Selection */}
       <div className="flex flex-col gap-8">
-        <h1 className="text-3xl font-bold">Select Date and Time</h1>
-        <p className="text-gray-600 mb-4">
-          Choose a date and time for your visit
-        </p>
+        <div className="flex flex-col gap-2">
+          <h1 className="text-3xl font-bold">Select Date and Time</h1>
+          <p className="text-gray-600 mb-4">
+            Choose a date and time for your visit
+          </p>
+        </div>
 
         {/* Responsive Two-Column Layout */}
         <div className="flex flex-col justify-center items-center md:flex-row gap-8">
           {/* Calendar Section */}
-          <div className="flex-shrink-0 lg:w-1/2 xl:w-1/3">
-            <SelectCalendar onDateSelect={(date) => setSelectedDate(date)} />
+          <div
+            className={`flex-shrink-0 lg:w-1/2 xl:w-1/3 ${
+              !selectedDoctor && "opacity-100 pointer-events-none"
+            }`}
+          >
+            <SelectCalendar
+              selectedDate={selectedDate}
+              onDateSelect={(date) => handleDateSelect(date)}
+            />
           </div>
 
           {/* Timeslots Section */}
@@ -80,16 +101,16 @@ const SelectVet = () => {
                 </span>
               </div>
               <div
-                className="grid gap-2 lg:gap-4 mt-4"
+                className="grid grid-cols-2 gap-2 lg:gap-4 mt-4"
                 style={{
-                  gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(118px, 1fr))",
                 }}
                 // className="flex flex-wrap gap-4"
               >
                 {timeSlots.map((time, index) => (
                   <div
                     key={index}
-                    className={`text-center bg-primary-3 py-2 px-7  sm:py-1 sm:px-6 lg:py-2 lg:px-8  w-fit rounded-md cursor-pointer shadow-md ${
+                    className={`text-center bg-primary-3 py-2 px-6  sm:py-1 sm:px-6 lg:py-2 lg:px-8  w-fit rounded-md cursor-pointer shadow-md ${
                       selectedSlot === time ? "border border-secondary-1  " : ""
                     }`}
                     onClick={() => handleSelect(time)}
@@ -105,7 +126,11 @@ const SelectVet = () => {
 
       {/* Next Button */}
       <div className="my-4 flex justify-center">
-        <CustomButton buttonText="Next" buttonBackground="bg-secondary-1" />
+        <CustomButton
+          buttonText="Next"
+          buttonBackground="bg-secondary-1"
+          disabled={!isNextButtonEnabled}
+        />
       </div>
     </div>
   );
