@@ -1,4 +1,4 @@
-import { StaticImageData } from "next/image";
+import Image, { StaticImageData } from "next/image";
 import React from "react";
 import Button from "./Button";
 
@@ -12,21 +12,24 @@ interface descriptionCardProps {
       buttonText: string;
       buttonBackground: string;
       buttonLink?: string;
+      buttonClickEvent?: () => void;
     };
   };
+  openContactModal?: () => void;
 }
 
 const DescriptionCard: React.FC<descriptionCardProps> = ({
   index,
   description,
+  openContactModal,
 }) => {
   const { image, title, button } = description;
   return (
-    <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center px-8 md:px-32 lg:px-40 lg:gap-20">
+    <div className="w-full flex flex-col lg:flex-row lg:justify-between lg:items-center lg:gap-20">
       <div className={`w-full ${index % 2 !== 0 ? "lg:order-2" : ""}`}>
-        <img
-          src={image.src}
-          alt={title + "image"}
+        <Image
+          src={image}
+          alt={title + " image"}
           className="mx-auto rounded-md"
         />
       </div>
@@ -35,7 +38,7 @@ const DescriptionCard: React.FC<descriptionCardProps> = ({
         <p className="text-sm md:text-base my-3 md:my-5">
           {description.desciption}
         </p>
-        <Button {...button} />
+        <Button {...button} buttonClickEvent={openContactModal} />
       </div>
     </div>
   );

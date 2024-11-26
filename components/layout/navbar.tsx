@@ -8,19 +8,26 @@ import Button from "../ui/Button";
 import Link from "next/link";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { MdChevronRight } from "react-icons/md";
+import logo from "@/public/assets/images/logo/logo.svg";
+import { clinicItems } from "@/model/mockData";
+import ContactInfoModal from "../ui/ContactInfoModal";
+import { useMarketingFeature } from "@/hooks/useMarketingFeature";
 
 export default function NavBar() {
+  const isMarketingFeatureEnabled = useMarketingFeature();
   const [isOpen, setIsOpen] = useState(false);
+  const [isLocationOpen, setIsLocationOpen] = useState(false);
+  const [isContactModalOpen, setContactIsModalOpen] = useState(false);
 
   return (
-    <div className="fixed left-0 top-0 z-50 bg-primary-3 w-full">
-      <div className="mx-auto px-8 md:px-32 lg:px-40">
+    <div className="fixed left-0 top-0 z-30 bg-primary-3 w-full">
+      <div className="mx-auto px-8 md:px-32 lg:px-20 xl:px-40">
         <div className="flex justify-between items-center h-16">
-          <div className="flex items-center">
+          <div className="flex items-center gap-9">
             <div className="flex-shrink-0">
               <Link href="/">
                 <Image
-                  src="/assets/images/logo/logo.svg"
+                  src={logo}
                   alt="Dr. Paws Logo"
                   width={100}
                   height={30}
@@ -28,85 +35,155 @@ export default function NavBar() {
                 />
               </Link>
             </div>
-          </div>
-          <div className="hidden lg:block">
-            <div className="flex items-baseline space-x-4">
-              <div className="relative group">
-                <button className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
-                  Locations
-                </button>
+            <div className="hidden lg:block">
+              <div className="flex items-center space-x-4 gap-3">
+                <div className="relative group">
+                  <DropdownMenu.Root>
+                    <DropdownMenu.Trigger className="outline-none">
+                      <p className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
+                        Locations
+                      </p>
+                    </DropdownMenu.Trigger>
+                    <DropdownMenu.Portal>
+                      <DropdownMenu.Content
+                        className="bg-[#f7f1de] shadow-lg rounded-lg w-48 p-4 flex flex-col gap-2"
+                        align="start"
+                        sideOffset={5}
+                      >
+                        {clinicItems.map((clinic) => (
+                          <DropdownMenu.Item
+                            asChild
+                            key={clinic.id}
+                            className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
+                          >
+                            <Link href={`/clinics/${clinic.id}`}>
+                              {clinic.clinicName}
+                            </Link>
+                          </DropdownMenu.Item>
+                        ))}
+                        <DropdownMenu.Arrow className="fill-current text-[#f7f1de]" />
+                      </DropdownMenu.Content>
+                    </DropdownMenu.Portal>
+                  </DropdownMenu.Root>
+                </div>
+                <Link
+                  href="/services"
+                  className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                >
+                  Our Services
+                </Link>
+                <Link
+                  href="/team"
+                  className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                >
+                  Our Team
+                </Link>
+                {!isMarketingFeatureEnabled ? (
+                  <Link
+                    href="/membership"
+                    className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                  >
+                    Membership
+                  </Link>
+                ) : null}
               </div>
-              <Link
-                href="/services"
-                className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-              >
-                Our Services
-              </Link>
-              <a
-                href="#"
-                className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-              >
-                Our Team
-              </a>
-              <a
-                href="#"
-                className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-              >
-                Membership
-              </a>
             </div>
           </div>
-          <div className="hidden lg:flex items-center space-x-4">
+          <div className="hidden lg:flex items-center space-x-4 text-xs">
             <Button
               buttonText="Book a visit"
               buttonBackground="bg-secondary-1"
+              buttonClickEvent={() => setContactIsModalOpen(true)}
             />
-            <DropdownMenu.Root>
-              <DropdownMenu.Trigger>
-                <Image
-                  src={Profile}
-                  alt="User logo"
-                  width={40}
-                  height={40}
-                  className="cursor-pointer"
-                />
-              </DropdownMenu.Trigger>
-              <DropdownMenu.Portal>
-                <DropdownMenu.Content
-                  className="bg-[#f7f1de] shadow-lg rounded-lg w-48 p-4 space-y-2"
-                  align="start"
-                  sideOffset={5}
-                >
-                  <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer">
-                    Profile
-                  </DropdownMenu.Item>
-                  <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer">
-                    My Pets
-                  </DropdownMenu.Item>
-                  <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer">
-                    Medical History
-                  </DropdownMenu.Item>
-                  <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer">
-                    My Appointments
-                  </DropdownMenu.Item>
-                  <div className="border-t border-gray-300 my-2" />
-                  <DropdownMenu.Item className="text-secondary-1 flex justify-between items-center hover:text-primary-1 cursor-pointer">
-                    Become a Member <MdChevronRight />
-                  </DropdownMenu.Item>
-                  <div className="border-t border-gray-300 my-2" />
-                  <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer">
-                    Billing Information
-                  </DropdownMenu.Item>
-                  <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer">
-                    Account Settings
-                  </DropdownMenu.Item>
-                  <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer">
-                    Log Out
-                  </DropdownMenu.Item>
-                  <DropdownMenu.Arrow className="fill-current text-[#f7f1de]" />
-                </DropdownMenu.Content>
-              </DropdownMenu.Portal>
-            </DropdownMenu.Root>
+            {!isMarketingFeatureEnabled ? (
+              <DropdownMenu.Root>
+                <DropdownMenu.Trigger className="outline-none">
+                  <Image
+                    src={Profile}
+                    alt="User logo"
+                    width={40}
+                    height={40}
+                    className="cursor-pointer outline-none"
+                  />
+                </DropdownMenu.Trigger>
+                <DropdownMenu.Portal>
+                  <DropdownMenu.Content
+                    className="bg-[#f7f1de] shadow-lg rounded-lg w-48 p-4 flex flex-col gap-1"
+                    align="start"
+                    sideOffset={5}
+                  >
+                    <DropdownMenu.Item asChild>
+                      <div
+                        onClick={() => setContactIsModalOpen(true)}
+                        className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
+                      >
+                        Profile
+                      </div>
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Item asChild>
+                      <div
+                        onClick={() => setContactIsModalOpen(true)}
+                        className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
+                      >
+                        My Pets
+                      </div>
+                    </DropdownMenu.Item>
+
+                    <DropdownMenu.Item asChild>
+                      <div
+                        onClick={() => setContactIsModalOpen(true)}
+                        className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
+                      >
+                        Medical History
+                      </div>
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Item asChild>
+                      <div
+                        onClick={() => setContactIsModalOpen(true)}
+                        className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
+                      >
+                        My Appointments
+                      </div>
+                    </DropdownMenu.Item>
+                    <div className="border-t border-gray-300 my-2" />
+                    <DropdownMenu.Item asChild>
+                      <div
+                        onClick={() => setContactIsModalOpen(true)}
+                        className="text-secondary-1 flex justify-between items-center hover:text-primary-1 cursor-pointer outline-none"
+                      >
+                        Become a Member <MdChevronRight />
+                      </div>
+                    </DropdownMenu.Item>
+                    <div className="border-t border-gray-300 my-2" />
+                    <DropdownMenu.Item asChild>
+                      <div
+                        onClick={() => setContactIsModalOpen(true)}
+                        className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
+                      >
+                        Billing Information
+                      </div>
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Item asChild>
+                      <div
+                        onClick={() => setContactIsModalOpen(true)}
+                        className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
+                      >
+                        Account Settings
+                      </div>
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Item asChild>
+                      <div
+                        onClick={() => setContactIsModalOpen(true)}
+                        className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
+                      >
+                        Logout
+                      </div>
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Arrow className="fill-current text-[#f7f1de]" />
+                  </DropdownMenu.Content>
+                </DropdownMenu.Portal>
+              </DropdownMenu.Root>
+            ) : null}
           </div>
           <div className="-mr-2 flex lg:hidden">
             <button
@@ -126,87 +203,170 @@ export default function NavBar() {
       {isOpen && (
         <div className="lg:hidden" id="mobile-menu">
           <div className="px-8 pt-2 pb-3 space-y-1 md:px-32 flex flex-col justify-end">
-            <a
-              href="#"
-              className="text-primary-1 hover:bg-primary-2 hover:text-white block py-2 px-2 rounded-md text-base font-medium"
+            <button
+              onClick={() => setIsLocationOpen(!isLocationOpen)}
+              className="text-primary-1 hover:bg-primary-2 hover:text-white block text-left py-1 px-2 rounded-md text-base font-medium"
             >
               Locations
-            </a>
-            <a
+            </button>
+            <div className="pl-8 flex flex-col text-primary-1">
+              {isLocationOpen && (
+                <div>
+                  {clinicItems.map((clinic) => (
+                    <div
+                      key={clinic.id}
+                      className="my-3 text-sm"
+                      onClick={() => {
+                        setIsOpen(false);
+                        setIsLocationOpen(false);
+                      }}
+                    >
+                      <Link href={`/clinics/${clinic.id}`}>
+                        {clinic.clinicName}
+                      </Link>
+                      <div className="border-t border-primary-2 my-2 w-full" />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <Link
+              onClick={() => setIsOpen(false)}
               href="/services"
               className="text-primary-1 hover:bg-primary-2 hover:text-white block py-2 px-2 rounded-md text-base font-medium"
             >
               Our Services
-            </a>
-            <a
-              href="#"
+            </Link>
+            <Link
+              onClick={() => setIsOpen(false)}
+              href="/team"
               className="text-primary-1 hover:bg-primary-2 hover:text-white block py-2 px-2 rounded-md text-base font-medium"
             >
               Our Team
-            </a>
-            <a
-              href="#"
+            </Link>
+            <Link
+              onClick={() => setIsOpen(false)}
+              href="/membership"
               className="text-primary-1 hover:bg-primary-2 hover:text-white block py-2 px-2 rounded-md text-base font-medium"
             >
               Membership
-            </a>
+            </Link>
           </div>
           <div className="pt-4 pb-3 border-t border-primary-2">
             <div className="flex items-center px-8 md:px-32 space-x-4">
-              <DropdownMenu.Root>
-                <DropdownMenu.Trigger>
-                  <Image
-                    src={Profile}
-                    alt="User logo"
-                    width={40}
-                    height={40}
-                    className="cursor-pointer"
-                  />
-                </DropdownMenu.Trigger>
-                <DropdownMenu.Portal>
-                  <DropdownMenu.Content
-                    className="bg-[#f7f1de] shadow-lg rounded-lg w-[100vh] lg:hidden p-4 space-y-2 pl-10"
-                    align="center"
-                    sideOffset={0}
-                  >
-                    <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer">
-                      Profile
-                    </DropdownMenu.Item>
-                    <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer">
-                      My Pets
-                    </DropdownMenu.Item>
-                    <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer">
-                      Medical History
-                    </DropdownMenu.Item>
-                    <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer">
-                      My Appointments
-                    </DropdownMenu.Item>
-                    <div className="border-t border-gray-300 my-2" />
-                    <DropdownMenu.Item className="text-secondary-1 flex justify-between items-center hover:text-primary-1 cursor-pointer">
-                      Become a Member <MdChevronRight />
-                    </DropdownMenu.Item>
-                    <div className="border-t border-gray-300 my-2" />
-                    <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer">
-                      Billing Information
-                    </DropdownMenu.Item>
-                    <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer">
-                      Account Settings
-                    </DropdownMenu.Item>
-                    <DropdownMenu.Item className="text-primary-1 hover:text-secondary-1 cursor-pointer">
-                      Log Out
-                    </DropdownMenu.Item>
-                    <DropdownMenu.Arrow className="fill-current text-[#f7f1de]" />
-                  </DropdownMenu.Content>
-                </DropdownMenu.Portal>
-              </DropdownMenu.Root>
-              <Button
-                buttonText="Book a visit"
-                buttonBackground="bg-secondary-1"
-              />
+              {!isMarketingFeatureEnabled ? (
+                <DropdownMenu.Root>
+                  <DropdownMenu.Trigger>
+                    <Image
+                      src={Profile}
+                      alt="User logo"
+                      width={40}
+                      height={40}
+                      className="cursor-pointer"
+                    />
+                  </DropdownMenu.Trigger>
+                  <DropdownMenu.Portal>
+                    <DropdownMenu.Content
+                      className="bg-[#f7f1de] shadow-lg rounded-lg w-[100vh] lg:hidden p-4 md:pl-[136px]  space-y-2 pl-10"
+                      align="center"
+                      sideOffset={0}
+                    >
+                      <DropdownMenu.Item
+                        onClick={() => {
+                          setIsOpen(false);
+                          setContactIsModalOpen(true);
+                        }}
+                        className="text-primary-1 hover:text-secondary-1 cursor-pointer"
+                      >
+                        Profile
+                      </DropdownMenu.Item>
+                      <DropdownMenu.Item
+                        onClick={() => {
+                          setIsOpen(false);
+                          setContactIsModalOpen(true);
+                        }}
+                        asChild
+                        className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none "
+                      >
+                        My Pets
+                      </DropdownMenu.Item>
+                      <DropdownMenu.Item
+                        onClick={() => {
+                          setIsOpen(false);
+                          setContactIsModalOpen(true);
+                        }}
+                        className="text-primary-1 hover:text-secondary-1 cursor-pointer"
+                      >
+                        Medical History
+                      </DropdownMenu.Item>
+                      <DropdownMenu.Item
+                        onClick={() => {
+                          setIsOpen(false);
+                          setContactIsModalOpen(true);
+                        }}
+                        className="text-primary-1 hover:text-secondary-1 cursor-pointer"
+                      >
+                        My Appointments
+                      </DropdownMenu.Item>
+                      <div className="border-t border-gray-300 my-2" />
+                      <DropdownMenu.Item
+                        onClick={() => {
+                          setIsOpen(false);
+                          setContactIsModalOpen(true);
+                        }}
+                        className="text-secondary-1 flex justify-between items-center hover:text-primary-1 cursor-pointer"
+                      >
+                        Become a Member <MdChevronRight />
+                      </DropdownMenu.Item>
+                      <div className="border-t border-gray-300 my-2" />
+                      <DropdownMenu.Item
+                        onClick={() => {
+                          setIsOpen(false);
+                          setContactIsModalOpen(true);
+                        }}
+                        className="text-primary-1 hover:text-secondary-1 cursor-pointer"
+                      >
+                        Billing Information
+                      </DropdownMenu.Item>
+                      <DropdownMenu.Item
+                        onClick={() => {
+                          setIsOpen(false);
+                          setContactIsModalOpen(true);
+                        }}
+                        className="text-primary-1 hover:text-secondary-1 cursor-pointer"
+                      >
+                        Account Settings
+                      </DropdownMenu.Item>
+                      <DropdownMenu.Item
+                        onClick={() => {
+                          setIsOpen(false);
+                          setContactIsModalOpen(true);
+                        }}
+                        className="text-primary-1 hover:text-secondary-1 cursor-pointer"
+                      >
+                        Log Out
+                      </DropdownMenu.Item>
+                      <DropdownMenu.Arrow className="fill-current text-[#f7f1de]" />
+                    </DropdownMenu.Content>
+                  </DropdownMenu.Portal>
+                </DropdownMenu.Root>
+              ) : null}
+              <div onClick={() => setIsOpen(false)}>
+                <Button
+                  buttonText="Book a visit"
+                  buttonBackground="bg-secondary-1"
+                  buttonClickEvent={() => setContactIsModalOpen(true)}
+                />
+              </div>
             </div>
           </div>
         </div>
       )}
+      <ContactInfoModal
+        isOpen={isContactModalOpen}
+        onRequestClose={() => setContactIsModalOpen(false)}
+      />
     </div>
   );
 }

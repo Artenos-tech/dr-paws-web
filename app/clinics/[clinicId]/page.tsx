@@ -3,9 +3,8 @@ import ClinicPhotos from "@/components/ui/ClinicPhotos";
 import ClinicReviews from "@/components/ui/ClinicReviews";
 import ClinicTabBar from "@/components/ui/ClinicTabBar";
 import Overview from "@/components/ui/OverView";
-import React from "react";
 
-import { clinicItems } from "@/model/mockData";
+import { clinicItems, doctors, reviews } from "@/model/mockData";
 import { Clinic } from "@/model/typeDefinitions";
 
 export async function generateStaticParams() {
@@ -21,33 +20,44 @@ interface ClinicDetailsProps {
   };
 }
 
-const tabs = [
-  {
-    title: "Overview",
-    component: <Overview />,
-  },
-  {
-    title: "Photos",
-    component: <ClinicPhotos />,
-  },
-  {
-    title: "Reviews",
-    component: <ClinicReviews />,
-  },
-];
-
 const ClinicDetails: React.FC<ClinicDetailsProps> = ({ params }) => {
   const { clinicId } = params;
-  console.log(clinicId);
   const clinic = clinicItems.find((item) => item.id === clinicId);
 
   if (!clinic) {
     return <div>Clinic not found</div>;
   }
 
+  const tabs = [
+    {
+      title: "Overview",
+      component: (
+        <Overview
+          clinicContact={clinic.contact}
+          clinicLocation={clinic.location}
+          clinicDoctors={doctors.filter((doctor) =>
+            doctor.clinicIds.includes(clinicId)
+          )}
+        />
+      ),
+    },
+    {
+      title: "Photos",
+      component: <ClinicPhotos />,
+    },
+    {
+      title: "Reviews",
+      component: (
+        <ClinicReviews
+          reviews={reviews.filter((review) => review.clinicId === clinicId)}
+        />
+      ),
+    },
+  ];
+
   return (
-    <div className="flex flex-col w-full h-full items-center justify-items-center font-roca pb-20 flex-grow">
-      <main className="flex flex-col gap-[80px] row-start-2 items-center w-[70%]">
+    <div className="flex flex-col w-full h-full items-center justify-items-center font-roca pb-20 flex-grow px-8 md:px-32 lg:px-20 xl:px-40">
+      <main className="w-full flex flex-col gap-[80px] row-start-2 items-center">
         <ClinicGallery clinic={clinic} />
 
         <ClinicTabBar tabs={tabs} />

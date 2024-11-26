@@ -1,3 +1,5 @@
+"use client";
+
 import FaqList from "@/components/ui/FaqList";
 import ReviewCard from "@/components/ui/ReviewCard";
 import { reviewData } from "@/model/mockData";
@@ -10,8 +12,11 @@ import GreenBackground from "@/public/assets/images/reviewImages/greenBackground
 import Lady from "@/public/assets/images/reviewImages/Girl.png";
 import YellowAndDocWithDog from "@/public/assets/images/petValues/YellowAndDocWithDog.svg";
 import TickMark from "@/public/assets/images/petValues/TickMark.svg";
+import ContactInfoModal from "@/components/ui/ContactInfoModal";
+import { useState } from "react";
 
 export default function Home() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   return (
     <div className="w-full h-full items-center justify-items-center font-roca">
       <main className="w-full flex flex-col gap-8 row-start-2 items-center sm:items-start">
@@ -19,14 +24,10 @@ export default function Home() {
           <div className="flex flex-col items-center md:items-start gap-0 w-full md:w-full  lg:w-1/2 mx-auto mt-6 md:ml-32 md:mt-10 lg:gap-4 lg:mt-12 lg:ml-40 text-center md:text-left">
             <div>
               <h1 className="text-[32px] md:text-[40px] lg:text-[56px]  leading-tight md:leading-snug lg:leading-none text-white">
-                Veterinary Care
+                India&apos;s Friendliest Vet Clinics
               </h1>
-              <h1 className="text-[32px] md:text-[40px] lg:text-[56px] leading-tight md:leading-snug lg:leading-none text-white">
-                {" "}
-                re-imagined
-              </h1>
-              <h1 className="text-primary-3 text-[32px] md:text-[40px] lg:text-[56px] leading-tight md:leading-snug lg:leading-none">
-                by pet lovers
+              <h1 className="lg:w-full text-[28px] md:w-[80%] md:text-[34px] lg:text-[48px] text-primary-3 leading-tight md:leading-snug lg:leading-none">
+                Because your best friend deserves the very best
               </h1>
             </div>
             <p className="text-white w-full md:w-[80%] lg:w-[70%] text-[14px] md:text-[16px] lg:text-[18px] px-10 md:px-0">
@@ -34,33 +35,35 @@ export default function Home() {
               meet?
             </p>
             <div className="flex justify-center md:justify-start">
-              <BannerList />
+              <BannerList openContactModal={() => setIsModalOpen(true)} />
             </div>
           </div>
         </div>
 
-        <div>
+        <div className="w-full px-8 md:px-32 lg:px-20 xl:px-40">
           <div className="flex flex-col items-center justify-center">
             <h1 className="mt-4 mb-16 text-center text-primary-1 text-xl md:text-4xl px-8">
               Veterinary care, redesigned to be better
             </h1>
-            <DescriptionCardList />
+            <DescriptionCardList
+              openContactModal={() => setIsModalOpen(true)}
+            />
           </div>
           <div className="mx-auto mt-12 lg:mt-32">
             <h1 className="mx-auto text-center text-xl md:text-4xl">
               Check out the places
             </h1>
-            <h1 className="mx-auto text-center text-xl md:text-4xl">
+            <h1 className="mx-auto text-center text-xl md:text-4xl mb-4 md:mb-10">
               we call home
             </h1>
-            <div className="mx-auto pt-5 px-8 md:px-32 lg:px-40">
+            <div className="mx-auto pt-5 w-full">
               <ClinicItemList showStaticCard={false} enlargedView={false} />
             </div>
           </div>
 
-          <div className="flex flex-col items-center justify-center w-full mt-20 px-8 md:px-32 lg:scroll-px-40">
-            <div className="mx-auto text-center mb-10">
-              <h1 className="mx-auto text-xl md:text-4xl px-1 md:px-20">
+          <div className="flex flex-col items-center justify-center w-full mt-20 md:mt-32 lg:scroll-px-40">
+            <div className="mx-auto text-center mb-14">
+              <h1 className="mx-auto text-xl md:text-4xl px-1 md:px-20 mb-6">
                 Whatever your pet needs, we&apos;re there
               </h1>
               <p>
@@ -71,9 +74,9 @@ export default function Home() {
           </div>
           <Services />
 
-          <div className="w-full mt-20">
+          <div className="w-full mt-20 md:mt-32">
             <h1 className="text-xl md:text-4xl text-center text-primary-1">
-              Reviews
+              See What Our Customers Are Saying About Us
             </h1>
             <div className="flex justify-center items-center mt-10 md:mt-20">
               <div className="relative flex flex-col items-center justify-center custom:flex-row border-yellow-500">
@@ -101,37 +104,37 @@ export default function Home() {
                 <div className="flex flex-col mt-4 custom:mt-0 custom:flex-none">
                   {/* ReviewCard 1 */}
                   <ReviewCard
-                    name={reviewData.name}
-                    review={reviewData.review}
+                    name={reviewData[0].name}
+                    review={reviewData[0].review}
                     className="w-[290px] md:w-[330px] custom:min-w-[410px] custom:absolute custom:-top-14 custom:-right-[92%]"
                   />
                   {/* ReviewCard 2 */}
                   <ReviewCard
-                    name={reviewData.name}
-                    review={reviewData.review}
-                    className="w-[290px] md:w-[330px] custom:min-w-[405px] custom:absolute custom:-bottom-14 custom:-right-[80%]"
+                    name={reviewData[1].name}
+                    review={reviewData[1].review}
+                    className="w-[290px] md:w-[330px] custom:min-w-[410px] custom:absolute custom:-bottom-18 custom:-right-[85%]"
                   />
                   {/* ReviewCard 3 */}
                   <ReviewCard
-                    name={reviewData.name}
-                    review={reviewData.review}
-                    className="w-[290px] md:w-[330px] custom:min-w-[365px] custom:absolute custom:top-[15%] custom:-left-[90%]"
+                    name={reviewData[2].name}
+                    review={reviewData[2].review}
+                    className="w-[290px] md:w-[330px] custom:min-w-[410px] custom:absolute custom:top-[5%] custom:-left-[90%]"
                   />
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="w-[75%] mx-auto mt-20 md:mt-40 flex flex-col gap-8">
+          <div className="mx-auto mt-20 md:mt-40 flex flex-col gap-8">
             <h1 className="text-xl md:text-4xl text-center">
-              Our vets bring the magic to Dr. Paws
+              Our Medical Teams Bring The Magic to Dr. Paws
             </h1>
             <div className="flex flex-col lg:flex-row gap-2">
               <div className="w-full lg:w-1/2 flex justify-center lg:justify-end">
                 <Image src={YellowAndDocWithDog} alt="Yellow" />
               </div>
-              <div className="p-10 flex flex-col gap-6 w-full lg:w-1/2">
-                <div className="">
+              <div className="p-5 lg:p-10 flex flex-col gap-6 w-full lg:w-1/2">
+                <div className="flex flex-col gap-2">
                   <div className="flex w-full gap-[18px]">
                     <Image
                       src={TickMark}
@@ -139,16 +142,16 @@ export default function Home() {
                       alt="tick mark"
                     />
                     <h1 className="text-[15px] sm:text-[20px]">
-                      Animals first. Always.
+                      Doing What&apos;s Right. Always
                     </h1>
                   </div>
-                  <p className=" text-[14px] ml-[58px]">
-                    Unlike other clinics, we evaluate our vets based on customer
+                  <p className=" text-[14px] ml-0 lg:ml-[58px] text-start">
+                    Unlike other clinics, our teams are evaluated on customer
                     satisfaction over revenue. This ensures we never
                     over-medicate or suggest unnecessary treatments.
                   </p>
                 </div>
-                <div className="">
+                <div className="flex flex-col gap-2">
                   <div className="flex w-full gap-[18px]">
                     <Image
                       src={TickMark}
@@ -156,16 +159,17 @@ export default function Home() {
                       alt="tick mark"
                     />
                     <h1 className="text-[15px] sm:text-[20px]">
-                      Highly qualified, trained on the latest methods
+                      Highly Qualified & Up-to-Date
                     </h1>
                   </div>
-                  <p className=" text-[14px] ml-[58px]">
-                    We only hire vets from the best veterinary schools, and make
-                    sure they are supported to attend courses and learn new
-                    techniques across the world
+                  <p className=" text-[14px] ml-0 lg:ml-[58px] text-start">
+                    We have a highly selective hiring process, with vets &
+                    technicians coming from the best schools & practices. Once
+                    on the team, we ensure they attend conferences and courses
+                    to learn new skills, and stay up-to-date
                   </p>
                 </div>
-                <div className="">
+                <div className="flex flex-col gap-2">
                   <div className="flex w-full gap-[18px]">
                     <Image
                       src={TickMark}
@@ -173,21 +177,21 @@ export default function Home() {
                       alt="tick mark"
                     />
                     <h1 className="text-[15px] sm:text-[20px]">
-                      Your best friend is our best friend
+                      Treating Animals, Like They&apos;re Our Own
                     </h1>
                   </div>
-                  <p className=" text-[14px] ml-[58px]">
-                    All our vets are passionate about animals, and love being
-                    around them. Rest assured your animal will feel comfortable
-                    and at home with us
+                  <p className=" text-[14px] ml-0 lg:ml-[58px] text-start">
+                    We focus on bedside manner, pet psychology and handling in
+                    every team member&apos;s training. Your pet will feel at
+                    ease with us
                   </p>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="mx-auto text-center my-20 flex flex-col px-8 md:px-32 lg:px-40">
-            <h1 className="text-xl md:text-4xl">Still have questions?</h1>
+          <div className="mx-auto text-center my-20 flex flex-col">
+            <h1 className="text-xl md:text-4xl mb-8">Still have questions?</h1>
             <p className=" md:text-xl">
               If your question is still not answered, please get in touch and
               we&apos;d be happy to help
@@ -195,6 +199,10 @@ export default function Home() {
           </div>
 
           <FaqList />
+          <ContactInfoModal
+            isOpen={isModalOpen}
+            onRequestClose={() => setIsModalOpen(false)}
+          />
         </div>
       </main>
     </div>
