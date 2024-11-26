@@ -1,0 +1,13 @@
+name: Code Quality Checks
+on: push
+
+jobs:
+  ts-check:
+    name: Next.js Build Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: npm install
+      - name: Create React Build
+        run: npm run build
