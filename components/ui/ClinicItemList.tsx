@@ -1,7 +1,7 @@
 import Image from "next/image";
 import ClinicItem from "./ClinicItem";
 import { clinicItems } from "@/model/mockData";
-import ClinicThumbnail from "@/public/assets/images/clinic/ClinicThumbnail.svg";
+import ClinicThumbnail from "@/public/assets/images/clinic/clinicThumbnail.svg";
 
 interface ClinicItemProps {
   showStaticCard: boolean;
