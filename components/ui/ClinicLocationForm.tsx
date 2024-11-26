@@ -4,8 +4,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Toaster, toast } from "react-hot-toast";
 
 const formSchema = z.object({
   firstName: z.string().min(2, "First name must be at least 2 characters"),
@@ -14,7 +14,12 @@ const formSchema = z.object({
     .string()
     .regex(/^\d{10}$/, "Please enter a valid 10-digit phone number"),
   pincode: z.string().regex(/^\d{5,6}$/, "Please enter a valid pincode"),
-  whatsappConsent: z.boolean(),
+  whatsappConsent: z
+    .preprocess((val) => val === "on" || val === true, z.boolean())
+    .refine(
+      (val) => val === true,
+      "Please tick the box to give consent for WhatsApp chat"
+    ),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -43,10 +48,14 @@ export default function ClinicLocationForm() {
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000));
       console.log(data);
-      toast.success("Successfully submitted. Our team will get back to you.");
+      toast.success("Successfully submitted. Our team will get back to you.", {
+        duration: 3000,
+      });
       reset();
     } catch {
-      toast.error("Something went wrong. Please try again.");
+      toast.error("Something went wrong. Please try again.", {
+        duration: 3000,
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -121,20 +130,27 @@ export default function ClinicLocationForm() {
             )}
           </div>
         </div>
-
-        <div className="flex flex-row items-center space-x-3">
-          <input
-            type="checkbox"
-            {...register("whatsappConsent")}
-            className="mt-1 h-4 w-4 rounded border-neutral-300 text-[#95a781] focus:ring-[#95a781]"
-          />
-          <label className="text-sm text-neutral-700">
-            Ticking this box means we have your consent to chat on WhatsApp
-          </label>
+        <div>
+          <div className="flex flex-row items-center space-x-3">
+            <input
+              type="checkbox"
+              {...register("whatsappConsent")}
+              className="mt-1 h-4 w-4 rounded border-neutral-300 text-[#95a781] focus:ring-[#95a781]"
+            />
+            <label className="text-sm text-neutral-700">
+              Ticking this box means we have your consent to chat on WhatsApp
+            </label>
+          </div>
+          {errors.whatsappConsent && (
+            <p className="mt-1 text-sm text-red-500">
+              {errors.whatsappConsent.message}
+            </p>
+          )}
         </div>
 
         <button
           type="submit"
+          value="on"
           disabled={isSubmitting}
           className="w-[210px] h-[50px] px-[9px] py-[6px]  bg-[#9fa983] hover:bg-[#7c8c6a] text-white rounded-[25px] transition-colors duration-200 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >
@@ -147,18 +163,7 @@ export default function ClinicLocationForm() {
           )}
         </button>
       </form>
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="colored"
-      />
+      <Toaster position="bottom-right" />
     </div>
   );
 }
