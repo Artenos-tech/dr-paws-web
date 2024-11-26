@@ -39,7 +39,7 @@ export default function MemberCard({ plan, onSelect }: MemberCardProps) {
           </div>
         </div>
       )}
-      <div className="flex flex-col h-[240px]">
+      <div className="flex self-start flex-col h-[240px]">
         <div className="w-20 h-20 mb-4 self-center">
           <Image
             src={plan.icon}
