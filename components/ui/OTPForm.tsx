@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "./input-otp";
 import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
 import { ClipLoader } from "react-spinners";
@@ -87,7 +87,11 @@ const OTPForm: React.FC<otpFormProps> = ({
             onClick={handleVerify}
           >
             {" "}
-            {loading ? <ClipLoader size={20} color="white" /> : "Verify and Proceed"}
+            {loading ? (
+              <ClipLoader size={20} color="white" />
+            ) : (
+              "Verify and Proceed"
+            )}
           </button>
         </div>
 
