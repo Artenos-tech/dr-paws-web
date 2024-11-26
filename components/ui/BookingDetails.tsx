@@ -13,6 +13,7 @@ import CustomButton from "./CustomButton";
 
 type BookingDetailsProps = {
   bookingId: string;
+  onReschedule: () => void;
 };
 
 const cancelReasons = [
@@ -30,7 +31,10 @@ const rescheduleReasons = [
   "My pet needs the treatment later",
 ];
 
-const BookingDetails: React.FC<BookingDetailsProps> = ({ bookingId }) => {
+const BookingDetails: React.FC<BookingDetailsProps> = ({
+  bookingId,
+  onReschedule,
+}) => {
   const [bookingDetails, setBookingDetails] = useState<AppointmentType | null>(
     null
   );
@@ -41,6 +45,8 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({ bookingId }) => {
 
   const [cancelReason, setCancelReason] = useState<string | null>(null);
   const [rescheduleReason, setRescheduleReason] = useState<string | null>(null);
+
+  const [cancelFlowEnd, setCancelFlowEnd] = useState(false);
 
   useEffect(() => {
     fetchBookingDetails();
@@ -56,6 +62,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({ bookingId }) => {
   };
 
   const handleCancelBooking = () => {
+    setCancelFlowEnd(true);
     if (bookingDetails) {
       // Update status to Cancelled
       setBookingDetails({
@@ -82,8 +89,9 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({ bookingId }) => {
           </h1>
 
           <div
-            className={`p-4 text-primary-1 w-11/12 md:w-4/5 lg:w-[50%] shadow-md my-5 flex flex-col gap-2 items-center ${
-              isCancelled ? "bg-gray-200 opacity" : "bg-[#FFFCF3]"
+            className={`p-4 text-primary-1 w-11/12 md:w-4/5 lg:w-[50%] shadow-md my-5 flex flex-col gap-2 items-center 
+            ${isCancelled ? "bg-gray-200 opacity" : "bg-[#FFFCF3]"} ${
+              bookingDetails.status === "Past" ? "bg-primary-3" : "bg-[#FFFCF3]"
             }`}
           >
             <p className="text-lg font-semibold mt-4">
@@ -141,22 +149,22 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({ bookingId }) => {
               </p>
             </div>
             {!isCancelled && bookingDetails.status === "Upcoming" && (
-              <div className="flex justify-center mb-4 mt-2 items-center gap-4 w-full ">
+              <div className="flex justify-center mb-4 mt-2 items-center gap-2 w-full md:w-[75%]">
                 <button
                   onClick={() => setCurrentView("cancel")}
-                  className="w-full md:w-1/4 text-xs md:text-sm border-2 border-secondary-1 bg-transparent py-2 text-secondary-1 font-semibold rounded-full"
+                  className="w-full md:w-1/2 text-xs md:text-sm border-2 border-secondary-1 bg-transparent py-2 text-secondary-1 font-semibold rounded-full"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={() => setCurrentView("reschedule")}
-                  className=" w-full md:w-1/4 text-xs md:text-sm border-2 border-secondary-1 bg-transparent py-2 text-secondary-1 font-semibold rounded-full"
+                  className=" w-full md:w-1/2 text-xs md:text-sm border-2 border-secondary-1 bg-transparent py-2 text-secondary-1 font-semibold rounded-full"
                 >
                   Reschedule
                 </button>
               </div>
             )}
-            {isCancelled && (
+            {cancelFlowEnd && (
               <div className="flex items-center">
                 <CustomButton
                   buttonText="Done"
@@ -242,7 +250,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({ bookingId }) => {
                 No
               </button>
               <button
-                onClick={handleCancelBooking}
+                onClick={() => onReschedule()}
                 className="w-full py-3  border-2 border-secondary-1 rounded-full text-sm"
               >
                 Yes
