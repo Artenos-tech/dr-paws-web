@@ -5,7 +5,6 @@ import Image from "next/image";
 import { CiLocationOn } from "react-icons/ci";
 import { Doctor } from "@/model/typeDefinitions";
 import DoctorDetailsModal from "./DoctorDetailsModal";
-import { useMarketingFeature } from "@/hooks/useMarketingFeature";
 
 interface DoctorCardProps {
   doctor: Doctor;
@@ -14,7 +13,6 @@ interface DoctorCardProps {
 const DoctorCard: React.FC<DoctorCardProps> = ({ doctor }) => {
   const { name, position, experience, location, image } = doctor;
   const [modalOpen, setModalOpen] = useState<boolean>(false);
-  const isMarketingFeatureEnabled = useMarketingFeature();
   const truncate = (text: string, maxLength: number) =>
     text?.length > maxLength ? text.slice(0, maxLength) + "..." : text;
 

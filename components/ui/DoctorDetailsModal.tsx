@@ -5,7 +5,6 @@ import Image from "next/image";
 import starMedal from "@/public/assets/images/team/star-medal.png";
 import { CiStethoscope, CiLocationOn } from "react-icons/ci";
 import { IoClose } from "react-icons/io5";
-import { useMarketingFeature } from "@/hooks/useMarketingFeature";
 import { clinicItems } from "@/model/mockData";
 
 interface doctorDetailsProps {
@@ -19,7 +18,6 @@ const DoctorDetailsModal: React.FC<doctorDetailsProps> = ({
   onClose,
   doctor,
 }) => {
-  const isMarketingFeatureEnabled = useMarketingFeature();
   const {
     name,
     experience,
@@ -239,7 +237,7 @@ const DoctorDetailsModal: React.FC<doctorDetailsProps> = ({
               )}
               <div className="mt-5">
                 <p className="font-semibold text-base md:text-lg mb-1">
-                  What's My Spirit Animal and Why?
+                  What&apos;s My Spirit Animal and Why?
                 </p>
                 <p className="w-full text-sm md:text-base">
                   {spiritAnimalInfo}
