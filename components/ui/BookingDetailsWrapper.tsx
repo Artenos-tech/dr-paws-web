@@ -6,11 +6,12 @@ import SelectVet from "@/components/ui/SelectVet";
 import BackButton from "./BackButton";
 
 interface WrapperProps {
-  bookingId: string;
+  appointmentId: string;
 }
 
-const BookingDetailsWrapper: React.FC<WrapperProps> = ({ bookingId }) => {
+const BookingDetailsWrapper: React.FC<WrapperProps> = ({ appointmentId }) => {
   const [currentView, setCurrentView] = useState<"BookingDetails" | "selectVet">("BookingDetails");
+  console.log(appointmentId)
 
   const handleNavigation = (view: "BookingDetails" | "selectVet") => {
     setCurrentView(view);
@@ -19,13 +20,13 @@ const BookingDetailsWrapper: React.FC<WrapperProps> = ({ bookingId }) => {
     <div className="flex flex-col w-full h-full items-center justify-items-center font-roca pb-20 flex-grow ">
       <main className="w-full h-full flex flex-col  my-5 row-start-2 items-center">
         {currentView === "BookingDetails" && (
-          <BookingDetails bookingId={bookingId} onReschedule={() => handleNavigation("selectVet")} />
+          <BookingDetails appointmentId={appointmentId} onReschedule={() => handleNavigation("selectVet")} />
         )}
         {currentView === "selectVet" && (
           <div className="w-full">
             <BackButton />
             <SelectVet
-            // bookingId={bookingId}
+            // appointmentId={appointmentId}
             />
           </div>
         )}

@@ -79,7 +79,7 @@ const PastAppointmentCard: React.FC<PastCardProps> = ({ pastAppointment }) => {
       </div>
       <div className="self-end"> 
         <OutlineButton outlineBtnText="View Details" outlineBtnLink={() =>
-            navigate.push(`/my-bookings/${pastAppointment.id}`)
+            navigate.push(`/user/my-appointments/${pastAppointment.id}`)
           } />
       </div>
     </div>

@@ -12,7 +12,7 @@ import { customDate } from "./UpcomingAppointmentCard";
 import CustomButton from "./CustomButton";
 
 type BookingDetailsProps = {
-  bookingId: string;
+  appointmentId: string;
   onReschedule: () => void;
 };
 
@@ -32,7 +32,7 @@ const rescheduleReasons = [
 ];
 
 const BookingDetails: React.FC<BookingDetailsProps> = ({
-  bookingId,
+  appointmentId,
   onReschedule,
 }) => {
   const [bookingDetails, setBookingDetails] = useState<AppointmentType | null>(
@@ -55,7 +55,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
 
   const fetchBookingDetails = () => {
     const foundAppointment = mockAppointments.find(
-      (appointment: AppointmentType) => appointment.id === bookingId
+      (appointment: AppointmentType) => appointment.id === appointmentId
     );
     if (foundAppointment) {
       setBookingDetails(foundAppointment);
@@ -96,8 +96,6 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
 
   const isCancelled = bookingDetails?.status === AppointmentStatus.Cancelled;
 
-  if (!bookingDetails) return <p>Loading...</p>;
-
   return (
     <div className="w-full h-full">
       <BackButton />
@@ -112,29 +110,35 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
           <div
             className={`p-4 text-primary-1 w-11/12 md:w-4/5 lg:w-[50%] shadow-md my-5 flex flex-col gap-2 items-center 
             ${isCancelled ? "bg-gray-200 opacity" : "bg-[#FFFCF3]"} ${
-              bookingDetails.status === "Past" ? "bg-primary-3" : "bg-[#FFFCF3]"
+              bookingDetails?.status === "Past"
+                ? "bg-primary-3"
+                : "bg-[#FFFCF3]"
             }`}
           >
             <p className="text-lg font-semibold mt-4">
-              {bookingDetails.petName} is scheduled with{" "}
-              {bookingDetails.vetName}
+              {bookingDetails?.petName} is scheduled with{" "}
+              {bookingDetails?.vetName}
             </p>
-            <p>for {bookingDetails.service} consultation</p>
+            <p>for {bookingDetails?.service} consultation</p>
 
             <div className="flex items-center my-4">
-              <Image
-                src={bookingDetails.petImage}
-                alt="pet-image"
-                width={130}
-                height={130}
-              />
-              <Image
-                src={bookingDetails.vetImage}
-                alt="vet-image"
-                width={130}
-                height={130}
-                className="ml-[-30px]"
-              />
+              {bookingDetails && (
+                <>
+                  <Image
+                    src={bookingDetails.petImage}
+                    alt="pet-image"
+                    width={130}
+                    height={130}
+                  />
+                  <Image
+                    src={bookingDetails.vetImage}
+                    alt="vet-image"
+                    width={130}
+                    height={130}
+                    className="ml-[-30px]"
+                  />
+                </>
+              )}
             </div>
             <div className="my-4 space-y-3">
               <p
@@ -145,7 +149,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                 <span className="text-secondary-1">
                   <GrLocation />
                 </span>{" "}
-                {bookingDetails.clinicAddress || "Andheri West Clinic"}
+                {bookingDetails?.clinicAddress || "Andheri West Clinic"}
               </p>
               <p
                 className={`flex items-center gap-2 ${
@@ -155,7 +159,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                 <span className="text-secondary-1">
                   <HiOutlineCalendar />
                 </span>
-                {customDate(bookingDetails.date)}
+                {bookingDetails && customDate(bookingDetails.date)}
               </p>
               <p
                 className={`flex items-center gap-2 ${
@@ -166,10 +170,10 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                   <MdOutlineAccessTime />
                 </span>
 
-                {bookingDetails.time}
+                {bookingDetails?.time}
               </p>
             </div>
-            {!isCancelled && bookingDetails.status === "Upcoming" && (
+            {!isCancelled && bookingDetails?.status === "Upcoming" && (
               <div className="flex justify-center mb-4 mt-2 items-center gap-2 w-full md:w-[75%]">
                 <button
                   onClick={() => setCurrentView("cancel")}
