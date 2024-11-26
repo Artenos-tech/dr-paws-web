@@ -9,7 +9,6 @@ import { MdOutlineAccessTime } from "react-icons/md";
 import { GrLocation } from "react-icons/gr";
 import { HiOutlineCalendar } from "react-icons/hi";
 import { customDate } from "./UpcomingAppointmentCard";
-import { FiPlus } from "react-icons/fi";
 type bookingDetailsProps = {
   bookingId: string;
 };
@@ -38,7 +37,7 @@ const BookingDetails: React.FC<bookingDetailsProps> = ({ bookingId }) => {
       setBookingDetails(foundAppointment);
     }
   };
-  
+
   const isCancelled = bookingDetails.status === AppointmentStatus.Cancelled;
 
   return (

@@ -6,12 +6,6 @@ import SelectClinic from "@/components/ui/SelectClinic";
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
 import SelectVet from "@/components/ui/SelectVet";
 
-interface PetType {
-  petId: string;
-  name: string;
-  type: string;
-  petImage?: string;
-}
 
 const Booking: React.FC = () => {
   const [pets, setPets] = useState<Pet[]>([]);
