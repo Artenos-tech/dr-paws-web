@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "./input-otp";
 import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
+import { ClipLoader } from "react-spinners";
 
 interface otpFormProps {
   userMobileNumber?: string;
@@ -23,12 +24,6 @@ const OTPForm: React.FC<otpFormProps> = ({
 }) => {
   const [otp, setOtp] = useState<string>("");
   const [err, setErr] = useState<string>("");
-
-  useEffect(() => {
-    if (errMsg) {
-      setErr(errMsg);
-    }
-  }, [errMsg]);
 
   const handleVerify = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -82,7 +77,9 @@ const OTPForm: React.FC<otpFormProps> = ({
               </InputOTPGroup>
             </InputOTP>
           </div>
-          {err && <p className="text-xs text-red-500 text-left">{err}</p>}
+          {(err || errMsg) && (
+            <p className="text-xs text-red-500 text-left">{err || errMsg}</p>
+          )}
 
           <button
             type="button"
@@ -90,7 +87,7 @@ const OTPForm: React.FC<otpFormProps> = ({
             onClick={handleVerify}
           >
             {" "}
-            {loading ? "Loading..." : "Verify and Proceed"}
+            {loading ? <ClipLoader size={20} color="white" /> : "Verify and Proceed"}
           </button>
         </div>
 

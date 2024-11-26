@@ -82,7 +82,7 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
 
       setLoginErr(errorMessage);
 
-      toast.error(errorMessage, {
+      toast.error("Something went wrong. Please try again.", {
         duration: 3000,
         position: "bottom-right",
       });
@@ -119,7 +119,7 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
 
       setSignupErr(errorMessage);
 
-      toast.error(errorMessage, {
+      toast.error("Something went wrong. Please try again.", {
         duration: 3000,
         position: "bottom-right",
       });
@@ -162,19 +162,14 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
               : (response?.error.message as string);
           setOtpErr(
             errorMessage === "Invalid mobile number or OTP"
-              ? "Invalid OTP, Please enter valid 4-digit OTP"
+              ? "Invalid OTP"
               : errorMessage
           );
 
-          toast.error(
-            errorMessage === "Invalid mobile number or OTP"
-              ? "Invalid OTP or Please enter valid 4-digit OTP"
-              : errorMessage,
-            {
-              duration: 3000,
-              position: "bottom-right",
-            }
-          );
+          toast.error("Something went wrong. Please try again.", {
+            duration: 3000,
+            position: "bottom-right",
+          });
         }
       }
     } else {
@@ -210,23 +205,19 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
               : (response?.error.message as string);
           setOtpErr(
             errorMessage === "Invalid mobile number or OTP"
-              ? "Invalid OTP, Please enter valid 4-digit OTP"
+              ? "Invalid OTP"
               : errorMessage
           );
 
-          toast.error(
-            errorMessage === "Invalid mobile number or OTP"
-              ? "Invalid OTP, Please enter valid 4-digit OTP"
-              : errorMessage,
-            {
-              duration: 3000,
-              position: "bottom-right",
-            }
-          );
+          toast.error("Something went wrong. Please try again.", {
+            duration: 3000,
+            position: "bottom-right",
+          });
         }
       }
     }
   };
+  console.log("islogin", isLogin);
 
   const handleResendOTP = async () => {
     if (userMobileNumber) {
@@ -270,6 +261,7 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
     setOtpErr("");
     setLoginErr("");
     setSignupErr("");
+    setUserMobileNumber(undefined);
   };
 
   return (

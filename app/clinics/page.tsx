@@ -4,10 +4,8 @@ import Image from "next/image";
 import DogImage from "@/public/assets/images/clinic/ClinicImage.png";
 import ClinicLocationForm from "@/components/ui/ClinicLocationForm";
 import ClinicItemList from "@/components/ui/ClinicItemList";
-import { useMarketingFeature } from "@/hooks/useMarketingFeature";
 
 export default function Clinics() {
-  const isMarketingFeatureEnabled = useMarketingFeature();
   return (
     <div className="flex flex-col w-full h-full 3xl:h-screen items-center justify-items-center font-roca pb-20 flex-grow">
       <main className="flex flex-col gap-8 md:gap-20 row-start-2 items-center w-full px-8 md:px-32 lg:px-20 xl:px-40">
@@ -45,7 +43,7 @@ export default function Clinics() {
         </div>
 
         {/*clinic location form*/}
-        {!isMarketingFeatureEnabled ? <ClinicLocationForm /> : null}
+        <ClinicLocationForm />
       </main>
     </div>
   );

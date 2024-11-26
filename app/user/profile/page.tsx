@@ -11,6 +11,7 @@ import toast, { Toaster } from "react-hot-toast";
 import EditProfileModal from "@/components/ui/EditProfileModal";
 import { useUserContext } from "@/context/UserContext";
 import { useRouter } from "next/navigation";
+import Loader from "@/components/ui/Loader";
 
 interface Pet {
   id: string;
@@ -102,6 +103,9 @@ const Profile: React.FC = () => {
     }
     fetchProfileData();
   }, [authToken, navigate]);
+  if (!profileData.id) {
+    return <Loader />;
+  }
 
   return (
     <div className="flex flex-col w-full h-full 2xl:h-screen items-center font-roca pb-20 flex-grow ">

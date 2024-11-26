@@ -2,6 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import {ClipLoader} from "react-spinners";
 
 const loginSchema = z.object({
   mobileNumber: z
@@ -67,7 +68,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
           type="submit"
           className="w-full bg-secondary-1 text-white rounded-full py-3 text-xs md:text-sm my-2"
         >
-          {loading ? "Loading..." : "Send OTP"}
+          {loading ? <ClipLoader size={20} color="white" /> : "Send OTP"}
         </button>
         {errMsg && (
           <p className="text-red-500 text-center text-xs mt-1">
