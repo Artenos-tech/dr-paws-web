@@ -47,6 +47,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
   const [rescheduleReason, setRescheduleReason] = useState<string | null>(null);
 
   const [cancelFlowEnd, setCancelFlowEnd] = useState(false);
+  const [showValidationMessage, setShowValidationMessage] = useState(false);
 
   useEffect(() => {
     fetchBookingDetails();
@@ -70,6 +71,26 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
         status: AppointmentStatus.Cancelled,
       });
       setCurrentView("default"); // Switch back to the default view
+    }
+  };
+
+  const handleCancelNo = () => {
+    setCurrentView("default");
+    setCancelReason(null);
+    setShowValidationMessage(false);
+  };
+
+  const handleRescheduleNo = () => {
+    setRescheduleReason(null);
+    setCurrentView("default");
+    setShowValidationMessage(false);
+  };
+
+  const handleYesClick = (reason: string | null, onConfirm: () => void) => {
+    if (reason) {
+      onConfirm();
+    } else {
+      setShowValidationMessage(true);
     }
   };
 
@@ -186,13 +207,14 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
             <p>You will receive a cancellation email for the booking.</p>
             <div className="space-y-3">
               {cancelReasons.map((reason, index) => (
-                <div className="flex items-center gap-2" key={index}>
+                <div className="flex items-start gap-2" key={index}>
                   <input
                     type="radio"
                     id={`reason${index}`}
                     name="cancelReason"
                     value={reason}
                     onChange={() => setCancelReason(reason)}
+                    className="mt-1.5"
                   />
                   <label htmlFor={`reason${index}`} className="">
                     {reason}
@@ -200,16 +222,24 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                 </div>
               ))}
             </div>
-            <div className="flex items-center justify-center w-full md:w-[85%]  gap-4 md:mt-4">
+            {/* Validation Message */}
+            {showValidationMessage && !cancelReason && (
+              <p className="text-red-500 text-sm">
+                Please select a reason to proceed.
+              </p>
+            )}
+            <div className="flex items-center justify-center w-full md:w-[85%] gap-4 md:mt-4">
               <button
-                onClick={() => setCurrentView("default")}
+                onClick={handleCancelNo}
                 className="w-full py-3 bg-gray-300 rounded-full text-sm text-white bg-secondary-1"
               >
                 No
               </button>
               <button
-                onClick={handleCancelBooking}
-                className="w-full py-3  border-2 border-secondary-1 rounded-full text-sm"
+                onClick={() => {
+                  handleYesClick(cancelReason, handleCancelBooking);
+                }}
+                className="w-full py-3 border-2 border-secondary-1 rounded-full text-sm"
               >
                 Yes
               </button>
@@ -228,13 +258,14 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
             <p>You will receive an email for the rescheduled booking</p>
             <div className="space-y-3">
               {rescheduleReasons.map((reason, index) => (
-                <div className="flex items-center gap-2" key={index}>
+                <div className="flex items-start gap-2" key={index}>
                   <input
                     type="radio"
                     id={`rescheduleReason${index}`}
                     name="rescheduleReason"
                     value={reason}
                     onChange={() => setRescheduleReason(reason)}
+                    className="mt-1.5"
                   />
                   <label htmlFor={`rescheduleReason${index}`} className="">
                     {reason}
@@ -242,16 +273,23 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                 </div>
               ))}
             </div>
-            <div className="flex items-center justify-center w-full md:w-[85%]  gap-4 md:mt-4">
+            {showValidationMessage && !rescheduleReason && (
+              <p className="text-red-500 text-sm">
+                Please select a reason to proceed.
+              </p>
+            )}
+            <div className="flex items-center justify-center w-full md:w-[85%] gap-4 md:mt-4">
               <button
-                onClick={() => setCurrentView("default")}
+                onClick={handleRescheduleNo}
                 className="w-full py-3 bg-gray-300 rounded-full text-sm text-white bg-secondary-1"
               >
                 No
               </button>
               <button
-                onClick={() => onReschedule()}
-                className="w-full py-3  border-2 border-secondary-1 rounded-full text-sm"
+                onClick={() => {
+                  handleYesClick(rescheduleReason, onReschedule);
+                }}
+                className="w-full py-3 border-2 border-secondary-1 rounded-full text-sm"
               >
                 Yes
               </button>
