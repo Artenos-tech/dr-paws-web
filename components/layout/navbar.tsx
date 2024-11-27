@@ -246,13 +246,15 @@ export default function NavBar() {
             >
               Our Team
             </Link>
-            <Link
-              onClick={() => setIsOpen(false)}
-              href="/membership"
-              className="text-primary-1 hover:bg-primary-2 hover:text-white block py-2 px-2 rounded-md text-base font-medium"
-            >
-              Membership
-            </Link>
+            {!isMarketingFeatureEnabled ? (
+              <Link
+                onClick={() => setIsOpen(false)}
+                href="/membership"
+                className="text-primary-1 hover:bg-primary-2 hover:text-white block py-2 px-2 rounded-md text-base font-medium"
+              >
+                Membership
+              </Link>
+            ) : null}
           </div>
           <div className="pt-4 pb-3 border-t border-primary-2">
             <div className="flex items-center px-8 md:px-32 space-x-4">

@@ -8,8 +8,6 @@ import description6 from "../public/assets/images/description6.png";
 import dogImg from "../public/assets/images/dogimg.png";
 import catImg from "../public/assets/images/catimg.png";
 import rabbitImg from "../public/assets/images/rabbitimg.png";
-import doctorFemale from "../public/assets/images/clinic/doctorFemale.webp";
-import doctorMale from "../public/assets/images/clinic/doctorMale.webp";
 import ClinicDog from "../public/assets/images/clinic/maggidog.png";
 import { Clinic, Review } from "@/model/typeDefinitions";
 import ParasiteControl from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/ParasiteControl.webp";
@@ -163,7 +161,7 @@ export const clinicItems: Clinic[] = [
     parkingInformation:
       "Ample parking available outside clinic, and in surrounding lanes",
     location:
-      "https://www.google.com/maps/place/Dr.+Paws+-+Veterinarian+in+Indiranagar,+Bengaluru+%7C+Vet+Consultation,+Pet+Vaccination,+Pet+Grooming,+Pet+Surgery+%7C+Pet+Clinic/@12.9655253,77.6385461,17z/data=!3m1!4b1!4m6!3m5!1s0x3bae150fe803f393:0x5820ed9ef42478d3!8m2!3d12.9655253!4d77.6385461!16s%2Fg%2F11vxxyv2zc?entry=ttu&g_ep=EgoyMDI0MTExNy4wIKXMDSoASAFQAw%3D%3D",
+      "https://www.google.com/maps/place/Dr.+Paws+-+Veterinarian+in+Indiranagar,+Bengaluru+%7C+Vet+Consultation,+Pet+Vaccination,+Pet+Grooming,+Pet+Surgery+%7C+Pet+Clinic/@12.9655253,77.6359712,17z/data=!3m1!4b1!4m6!3m5!1s0x3bae150fe803f393:0x5820ed9ef42478d3!8m2!3d12.9655253!4d77.6385461!16s%2Fg%2F11vxxyv2zc?entry=ttu&g_ep=EgoyMDI0MTExOS4yIKXMDSoASAFQAw%3D%3D",
   },
   {
     id: "2",
@@ -175,7 +173,7 @@ export const clinicItems: Clinic[] = [
     parkingInformation:
       "Ample parking available outside clinic, and in surrounding lanes",
     location:
-      "https://www.google.com/maps/place/Dr.+Paws+-+Veterinarian+in+RMV+(Dollars+Colony)+%7C+Vet+Consultation,+Pet+Vaccination,+Pet+Grooming,+Pet+Surgery+%7C+Pet+Clinic/@13.0434066,77.5680191,17z/data=!3m1!4b1!4m6!3m5!1s0x3bae174f82ebbe2f:0xc9a13342ab7933ac!8m2!3d13.0434014!4d77.570594!16s%2Fg%2F11w8ffwb9b?entry=tts&g_ep=EgoyMDI0MTExMi4wIPu8ASoASAFQAw%3D%3D",
+      "https://www.google.com/maps/place/Dr.+Paws+-+Veterinarian+in+RMV+(Dollars+Colony)+%7C+Vet+Consultation,+Pet+Vaccination,+Pet+Grooming,+Pet+Surgery+%7C+Pet+Clinic/@13.0434014,77.570594,17z/data=!3m1!4b1!4m6!3m5!1s0x3bae174f82ebbe2f:0xc9a13342ab7933ac!8m2!3d13.0434014!4d77.570594!16s%2Fg%2F11w8ffwb9b?entry=ttu&g_ep=EgoyMDI0MTExOS4yIKXMDSoASAFQAw%3D%3D",
   },
   // {
   //   id: "3",
