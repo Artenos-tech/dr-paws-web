@@ -13,8 +13,6 @@ interface DoctorCardProps {
 const DoctorCard: React.FC<DoctorCardProps> = ({ doctor }) => {
   const { name, position, experience, location, image } = doctor;
   const [modalOpen, setModalOpen] = useState<boolean>(false);
-  const truncate = (text: string, maxLength: number) =>
-    text?.length > maxLength ? text.slice(0, maxLength) + "..." : text;
 
   return (
     <>
@@ -31,7 +29,7 @@ const DoctorCard: React.FC<DoctorCardProps> = ({ doctor }) => {
         <p className="text-sm sm:text-base">{experience}</p>
         <div className="flex items-center space-x-2 text-primary-1">
           <CiLocationOn size={20} />
-          <span className="text-sm sm:text-base">{truncate(location, 20)}</span>
+          <span className="text-sm sm:text-base truncate">{location}</span>
         </div>
         {/* {!isMarketingFeatureEnabled ? ( */}
           <button

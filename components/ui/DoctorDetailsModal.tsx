@@ -34,12 +34,12 @@ const DoctorDetailsModal: React.FC<doctorDetailsProps> = ({
     <Modal
       isOpen={isOpen}
       onRequestClose={onClose}
-      className="w-3/4 max-w-[950px] mt-20 mb-5 mx-auto  p-4 bg-white rounded-xl shadow-lg overflow-y-auto z-50 h-[60vh] md:h-[400px] lg:h-[600px]"
+      className="w-3/4 max-w-[950px] mt-20 mb-5 mx-auto bg-white rounded-xl shadow-lg overflow-y-auto z-50 h-[60vh] md:h-[400px] lg:h-[600px]"
       overlayClassName="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center"
       style={{ content: { padding: "1rem" } }}
     >
-      <div className="p-5 text-primary-1">
-        <div className="flex flex-col lg:flex-row justify-between lg:my-4 items-center relative">
+      <div className="px-5 pb-5 text-primary-1 flex flex-col justify-center">
+        <div className="flex flex-col lg:flex-row justify-between items-center relative">
           <button
             className="absolute top-0 right-0 text-gray-500 z-10 hover:text-gray-700 transition-colors"
             aria-label="Close modal"
@@ -47,13 +47,12 @@ const DoctorDetailsModal: React.FC<doctorDetailsProps> = ({
           >
             <IoClose />
           </button>
-          <div className="space-y-4 w-full lg:w-1/2 order-1 lg:order-none translate-y-[-8%] lg:translate-y-0">
+          <div className="space-y-4 w-full lg:w-1/2 order-1 lg:order-none mt-5 lg:mt-0">
             <h1 className="text-xl md:text-2xl text-center lg:text-left my-3 lg:my-0">
               {name}
             </h1>
 
             <div className="flex flex-col md:items-center lg:items-start gap-3 md:gap-5 w-full text-center lg:text-left">
-              {/* {!isMarketingFeatureEnabled ? ( */}
               <div className="flex gap-1">
                 <CiStethoscope
                   size={20}
@@ -75,8 +74,6 @@ const DoctorDetailsModal: React.FC<doctorDetailsProps> = ({
                   </p>
                 </div>
               </div>
-              {/* ) : null} */}
-              {/* {!isMarketingFeatureEnabled ? ( */}
               <div className="flex items-start gap-1">
                 <Image
                   src={starMedal.src}
@@ -235,43 +232,40 @@ const DoctorDetailsModal: React.FC<doctorDetailsProps> = ({
                   </div>
                 </div>
               )}
-              <div className="mt-5">
-                <p className="font-semibold text-base md:text-lg mb-1">
-                  What&apos;s My Spirit Animal and Why?
-                </p>
-                <p className="w-full text-sm md:text-base">
-                  {spiritAnimalInfo}
-                </p>
-              </div>
             </div>
           </div>
-          <div className="self-start flex flex-col w-full lg:w-1/2 h-[450px] translate-y-[-15%]">
+          <div className="self-center flex flex-col justify-center items-center gap-3 w-full lg:w-1/2 h-[450px] ">
             <Image
               src={image}
               alt="doctor with pet"
               width={300}
               height={300}
-              className="w-auto h-[220px] object-contain object-top flex-1 mt-5 lg:h-[420px] "
-              // translate-x-[10%] translate-y-[-20%]
+              className="w-auto self-center h-[220px] object-contain flex-1 mt-5 lg:h-[420px] "
             />
-            <p className="text-center lg:text-left self-start lg:w-[350px] md:mx-auto mt-6 text-xs md:text-sm z-10 ">
-              {/* md:translate-y-[-160%] lg:translate-y-[-85%] */}
+            <p className="text-center lg:text-left block lg:hidden self-start w-full lg:w-[350px] md:mx-auto text-xs md:text-sm z-10 ">
               {vetPassionInfo}
             </p>
           </div>
         </div>
-        {/* {!isMarketingFeatureEnabled ? ( */}
-        <div
-          className={`lg:mt-6 ${
-            !favouritePet && "lg:translate-y-12"
-          } translate-y-[-10%] text-center lg:text-left`}
-        >
-          <p className="font-semibold text-base md:text-lg mb-1">
-            About The Vet
-          </p>
-          <p className="w-full text-sm md:text-base">{aboutMe}</p>
+        <div className={`space-y-4 mt-5 `}>
+          <div className={`flex justify-between items-start gap-5 w-full `}>
+            <div className="w-full lg:w-1/2 text-center lg:text-left">
+              <p className="font-semibold text-base md:text-lg mb-1">
+                What&apos;s My Spirit Animal and Why?
+              </p>
+              <p className="w-full text-sm md:text-base">{spiritAnimalInfo}</p>
+            </div>
+            <p className="text-center lg:text-left hidden lg:block self-start w-full lg:w-1/2 md:mx-auto text-xs md:text-sm z-10 ">
+              {vetPassionInfo}
+            </p>
+          </div>
+          <div className={`text-center lg:text-left`}>
+            <p className="font-semibold text-base md:text-lg mb-1">
+              About The Vet
+            </p>
+            <p className="w-full text-sm md:text-base">{aboutMe}</p>
+          </div>
         </div>
-        {/* ) : null} */}
       </div>
     </Modal>
   );
