@@ -73,7 +73,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
 
   return (
     <div
-      className={`flex flex-col h-full rounded-sm shadow-sm cursor-pointer font-sans ${
+      className={`flex flex-col h-full rounded-sm  cursor-pointer font-sans ${
         isOpen ? "border-secondary-1 border-2" : "border-gray-300"
       }`}
       onClick={() => toggleCard(cardId)}
