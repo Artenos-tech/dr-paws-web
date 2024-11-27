@@ -10,6 +10,7 @@ interface petMedicalHistoryProps {
 // TO-DO: Temporary type for medical history untill API is ready
 export interface MedicalHistoryType {
   petId: string;
+  petName: string;
   diagnosticReports: {
     id: string;
     file: File;
@@ -37,14 +38,15 @@ const PetMedicalHistory: React.FC<petMedicalHistoryProps> = ({
   useEffect(() => {
     const petsMedicalHistory = localStorage.getItem("pets-history");
     if (petsMedicalHistory) {
-      const parsedMedicalHistory = JSON.parse(petsMedicalHistory);
+      const parsedMedicalHistory: MedicalHistoryType[] =
+        JSON.parse(petsMedicalHistory);
       setMedicalHistory(
         parsedMedicalHistory.find(
           (history: MedicalHistoryType) => history.petId === petId
-        )
+        ) ?? null
       );
     }
-  }, []);
+  }, [petId]);
 
   return (
     <div className="w-full h-screen flex flex-col">
