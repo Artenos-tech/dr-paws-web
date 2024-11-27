@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Image, { StaticImageData } from "next/image";
+import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { Pet } from "@/model/typeDefinitions";
 import ImageEdit from "@/public/assets/images/Profile/ImageEdit.png";
@@ -16,7 +16,7 @@ interface PetProfileInfoProps {
 const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
   const [pet, setPet] = useState<Pet | null>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [image, setImage] = useState<string | StaticImageData>("");
+  const [image, setImage] = useState<string>("");
   const [age, setAge] = useState({ years: 0, months: 0 });
 
   const {

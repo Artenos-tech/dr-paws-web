@@ -6,7 +6,6 @@ import defaultProfileImage from "@/public/assets/images/Profile/Profile.png";
 import AddPetModal from "@/components/ui/AddPetModal";
 import PetCard from "@/components/ui/PetCard";
 import "react-toastify/dist/ReactToastify.css";
-import { StaticImageData } from "next/image";
 import OutlineButton from "@/components/ui/OutlineButton";
 import toast, { Toaster } from "react-hot-toast";
 import EditProfileModal from "@/components/ui/EditProfileModal";
@@ -15,7 +14,7 @@ interface Pet {
   petId: string;
   name: string;
   type: string;
-  petImage: StaticImageData | string;
+  petImage: string;
 }
 
 const Profile: React.FC = () => {

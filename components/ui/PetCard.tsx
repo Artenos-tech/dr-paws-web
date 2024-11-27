@@ -17,7 +17,7 @@ interface PetCardProps {
     petId: string;
     name: string;
     type: string;
-    petImage: StaticImageData | string;
+    petImage: string;
   };
 }
 

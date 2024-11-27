@@ -25,7 +25,7 @@ export interface Pet {
   };
   birthday: string;
   weight: string;
-  petImage: StaticImageData | string;
+  petImage: string;
 }
 
 export interface Doctor {
