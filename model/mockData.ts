@@ -7,7 +7,7 @@ import description5 from "../public/assets/images/description5.png";
 import description6 from "../public/assets/images/description6.png";
 import dogImg from "../public/assets/images/dogimg.png";
 import catImg from "../public/assets/images/catimg.png";
-import rabbitImg from "../public/assets/images/rabbitimg.png";
+import rabbitImg from "../public/assets/images/rabbitImg.png";
 import ClinicDog from "../public/assets/images/clinic/maggidog.png";
 import { Clinic, Review } from "@/model/typeDefinitions";
 import ParasiteControl from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/ParasiteControl.webp";
