@@ -18,49 +18,53 @@ export function LocationCard({ locationString }: LocationCardProps) {
     null
   );
   const [address, setAddress] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const extractCoordinates = async (url: string) => {
+    const fetchPlaceDetails = async () => {
+      const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+      if (!apiKey) {
+        setError("Google Maps API key is not set");
+        return;
+      }
+
       try {
-        const regex = /@(-?\d+\.\d+),(-?\d+\.\d+)/;
-        const match = url.match(regex);
+        const response = await fetch(
+          `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+            locationString
+          )}&key=${apiKey}`
+        );
+        const data = await response.json();
 
-        if (match) {
-          const lat = parseFloat(match[1]);
-          const lng = parseFloat(match[2]);
-
-          setLocation({ lat, lng });
-
-          const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-          if (!apiKey) {
-            throw new Error("Google Maps API key is not set");
-          }
-
-          const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`;
-          const response = await fetch(geocodeUrl);
-          const data = await response.json();
-
-          if (data.results && data.results.length > 0) {
-            setAddress(data.results[0].formatted_address);
-          } else {
-            throw new Error("No address found for the given coordinates");
-          }
+        if (data.status === "OK" && data.results.length > 0) {
+          const result = data.results[0];
+          setLocation({
+            lat: result.geometry.location.lat,
+            lng: result.geometry.location.lng,
+          });
+          setAddress(result.formatted_address);
+          setError(null);
         } else {
-          throw new Error("Invalid location string");
+          throw new Error("Place not found");
         }
       } catch (error) {
-        console.error("Error extracting coordinates:", error);
+        console.error("Error fetching place details:", error);
+        setError("Failed to fetch location details. Please try again.");
+        setLocation(null);
+        setAddress(null);
       }
     };
 
     if (locationString) {
-      extractCoordinates(locationString);
+      fetchPlaceDetails();
     }
   }, [locationString]);
 
   const getDirections = () => {
     if (location) {
-      const url = `https://www.google.com/maps/search/?api=1&query=${location.lat},${location.lng}`;
+      const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+        locationString
+      )}`;
       window.open(url, "_blank", "noopener,noreferrer");
     }
   };
@@ -88,7 +92,7 @@ export function LocationCard({ locationString }: LocationCardProps) {
           </LoadScript>
         ) : (
           <div className="flex items-center justify-center h-full bg-gray-100 text-gray-500">
-            Loading Map...
+            {error || "Loading Map..."}
           </div>
         )}
       </div>
@@ -100,7 +104,7 @@ export function LocationCard({ locationString }: LocationCardProps) {
           />
         </div>
         <p className="text-gray-600 font-roca">
-          {address || "Loading address..."}
+          {address || error || "Loading address..."}
         </p>
       </div>
       <button

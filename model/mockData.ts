@@ -160,8 +160,7 @@ export const clinicItems: Clinic[] = [
     contact: "+91 9606994627",
     parkingInformation:
       "Ample parking available outside clinic, and in surrounding lanes",
-    location:
-      "https://www.google.com/maps/place/Dr.+Paws+-+Veterinarian+in+Indiranagar,+Bengaluru+%7C+Vet+Consultation,+Pet+Vaccination,+Pet+Grooming,+Pet+Surgery+%7C+Pet+Clinic/@12.9655253,77.6359712,17z/data=!3m1!4b1!4m6!3m5!1s0x3bae150fe803f393:0x5820ed9ef42478d3!8m2!3d12.9655253!4d77.6385461!16s%2Fg%2F11vxxyv2zc?entry=ttu&g_ep=EgoyMDI0MTExOS4yIKXMDSoASAFQAw%3D%3D",
+    location: "Dr. Paws - Veterinarian in Indiranagar, Bengaluru",
   },
   {
     id: "2",
@@ -172,8 +171,7 @@ export const clinicItems: Clinic[] = [
     contact: "+91 7204996899",
     parkingInformation:
       "Ample parking available outside clinic, and in surrounding lanes",
-    location:
-      "https://www.google.com/maps/place/Dr.+Paws+-+Veterinarian+in+RMV+(Dollars+Colony)+%7C+Vet+Consultation,+Pet+Vaccination,+Pet+Grooming,+Pet+Surgery+%7C+Pet+Clinic/@13.0434014,77.570594,17z/data=!3m1!4b1!4m6!3m5!1s0x3bae174f82ebbe2f:0xc9a13342ab7933ac!8m2!3d13.0434014!4d77.570594!16s%2Fg%2F11w8ffwb9b?entry=ttu&g_ep=EgoyMDI0MTExOS4yIKXMDSoASAFQAw%3D%3D",
+    location: "Dr. Paws - Veterinarian in RMV (Dollars Colony), Bengaluru",
   },
   // {
   //   id: "3",

@@ -25,7 +25,6 @@ const ServiceTab = ({ tabs }: ServiceTabProps) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const activeTabContent = tabs.find((tab) => tab.id === activeTab);
-  console.log(activeTabContent);
   const activeTabTitle = tabs.find((tab) => tab.id === activeTab)?.title;
 
   return (
