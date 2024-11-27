@@ -27,9 +27,9 @@ const DoctorCard: React.FC<DoctorCardProps> = ({ doctor }) => {
         <h2 className="text-lg sm:text-xl">{name}</h2>
         <p className="text-sm sm:text-base">{position}</p>
         <p className="text-sm sm:text-base">{experience}</p>
-        <div className="flex items-center space-x-2 text-primary-1">
+        <div className="flex items-center space-x-2 text-primary-1 truncate">
           <CiLocationOn size={20} />
-          <span className="text-sm sm:text-base truncate">{location}</span>
+          <span className="text-sm sm:text-base">{location}</span>
         </div>
         {/* {!isMarketingFeatureEnabled ? ( */}
           <button

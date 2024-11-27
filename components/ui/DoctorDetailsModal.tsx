@@ -234,13 +234,13 @@ const DoctorDetailsModal: React.FC<doctorDetailsProps> = ({
               )}
             </div>
           </div>
-          <div className="self-center flex flex-col justify-center items-center gap-3 w-full lg:w-1/2 h-[450px] ">
+          <div className="self-center flex flex-col justify-center items-center gap-3 w-full lg:w-1/2 lg:h-[450px] ">
             <Image
               src={image}
               alt="doctor with pet"
-              width={300}
-              height={300}
-              className="w-auto self-center h-[220px] object-contain flex-1 mt-5 lg:h-[420px] "
+              width={200}
+              height={100}
+              className="w-auto self-center flex-1 mt-5 lg:h-[420px] "
             />
             <p className="text-center lg:text-left block lg:hidden self-start w-full lg:w-[350px] md:mx-auto text-xs md:text-sm z-10 ">
               {vetPassionInfo}
