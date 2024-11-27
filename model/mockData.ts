@@ -897,37 +897,37 @@ export const bookingCategories: BookingCategory[] = [
   {
     id: "Planned Visits",
     title: "Planned Visits",
-    description: "vaccination, health checkup...",
+    description: "Vaccination, Health Checkup...",
   },
   {
     id: "Sickness & Emergency",
     title: "Sickness & Emergency",
-    description: "lethargy, vomiting, limping...",
+    description: "Trauma Care, Pain Management...",
   },
   {
     id: "Diagnostics",
     title: "Diagnostics",
-    description: "blood test, tick fever test...",
+    description: "Blood Tests, Biochemistry Tests...",
   },
   {
     id: "Surgeries",
     title: "Surgeries",
-    description: "vaccination, health checkup...",
+    description: "Spraying & Neutering, Dental Scaling...",
   },
   {
     id: "Physiotherapy",
     title: "Physiotherapy",
-    description: "lethargy, vomiting, limping...",
+    description: "Laser Therapy, Water Treadmil Therapy...",
   },
   {
     id: "Grooming",
     title: "Grooming",
-    description: "haircut, spa...",
+    description: "Spa Baths, Haircuts & Hair Shaping...",
   },
   {
     id: "Pet Services",
     title: "Pet Services",
-    description: "training, boarding...",
+    description: "Microchipping, Travel Document Preparation...",
   },
 ];
 
