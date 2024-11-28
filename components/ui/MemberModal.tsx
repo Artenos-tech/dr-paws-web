@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { X } from "lucide-react";
 import Image from "next/image";
-import Button from "./Button";
 import { MembershipPlan } from "./MemberCard";
 import { useRouter } from "next/navigation";
 import UserAuthenticationModal from "./UserAuthenticationModal";
 import Modal from "react-modal";
 import { useUserContext } from "@/context/UserContext";
 import toast, { Toaster } from "react-hot-toast";
+import CustomButton from "./CustomButton";
 
 interface ModalProps {
   isOpen: boolean;
@@ -94,7 +94,7 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
         </button>
 
         <div className="h-full w-full">
-          <div className="p-8 bg-white rounded-2xl">
+          <div className="p-5 bg-white rounded-2xl">
             <div className="w-20 h-20 relative mb-2">
               <Image
                 src={plan.icon}
@@ -131,8 +131,11 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
               <h3 className="font-semibold text-xl text-primary-1">
                 {plan.price}
               </h3>
-              <div onClick={handleContinue} >
-                <Button buttonText="Continue" buttonBackground="bg-accent" />
+              <div onClick={handleContinue}>
+                <CustomButton
+                  buttonText="Continue"
+                  buttonBackground="bg-accent"
+                />
               </div>
             </div>
           </div>

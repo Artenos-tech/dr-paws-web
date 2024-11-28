@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { StaticImageData } from "next/image";
-import Button from "./Button";
+import CustomButton from "./CustomButton";
 import { useMarketingFeature } from "@/hooks/useMarketingFeature";
 import { useState } from "react";
 import ContactInfoModal from "./ContactInfoModal";
@@ -39,7 +39,7 @@ export default function MemberCard({ plan, onSelect }: MemberCardProps) {
           </div>
         </div>
       )}
-      <div className="flex flex-col h-[240px]">
+      <div className="flex self-start flex-col h-[240px]">
         <div className="w-20 h-20 mb-4 self-center">
           <Image
             src={plan.icon}
@@ -75,12 +75,8 @@ export default function MemberCard({ plan, onSelect }: MemberCardProps) {
         <div className="mt-2 text-lg font-bold w-full mb-8 md:mb-0 flex justify-center">
           <span className="text-primary-1">{plan.price}</span>
         </div>
-        <div
-          onClick={() =>
-            !isMarketingFeatureEnabled ? onSelect(plan) : setIsModalOpen(true)
-          }
-        >
-          <Button buttonText="Select" buttonBackground="bg-accent" />
+        <div onClick={() => onSelect(plan)}>
+          <CustomButton buttonText="Select" buttonBackground="bg-accent" />
         </div>
       </div>
       <ContactInfoModal

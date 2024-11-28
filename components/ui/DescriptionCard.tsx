@@ -1,6 +1,6 @@
 import Image, { StaticImageData } from "next/image";
 import React from "react";
-import Button from "./Button";
+import CustomButton from "./CustomButton";
 
 interface descriptionCardProps {
   index: number;
@@ -29,10 +29,10 @@ const DescriptionCard: React.FC<descriptionCardProps> = ({
 
   const handleModalByButtonText = () => {
     if (button.buttonText.includes("Download")) {
-      return <Button {...button} buttonClickEvent={openContactModal} />;
+      return <CustomButton {...button} buttonClickEvent={openContactModal} />;
     }
     return (
-      <Button
+      <CustomButton
         {...button}
         buttonClickEvent={() => {
           if (openLoginModal) {

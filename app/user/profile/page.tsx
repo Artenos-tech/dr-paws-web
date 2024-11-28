@@ -21,7 +21,7 @@ interface Pet {
 }
 
 const Profile: React.FC = () => {
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isAddPetModalOpen, setIsAddPetModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [pets, setPets] = useState<Pet[]>([]);
   const [profileData, setProfileData] = useState<ProfileData>({
@@ -124,7 +124,7 @@ const Profile: React.FC = () => {
             {pets.length > 0 && (
               <OutlineButton
                 outlineBtnText="Add Pet"
-                outlineBtnLink={() => setIsModalOpen(true)}
+                outlineBtnLink={() => setIsAddPetModalOpen(true)}
               />
             )}
           </div>
@@ -135,7 +135,7 @@ const Profile: React.FC = () => {
                 You haven&apos;t added any <span>pets yet</span>
               </h3>
               <button
-                onClick={() => setIsModalOpen(true)}
+                onClick={() => setIsAddPetModalOpen(true)}
                 className="text-sm text-secondary-1 border px-5 py-2 rounded-full border-secondary-1 hover:bg-blue-50"
               >
                 + Add Pet
@@ -151,11 +151,11 @@ const Profile: React.FC = () => {
         </div>
 
         <AddPetModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
+          isOpen={isAddPetModalOpen}
+          onClose={() => setIsAddPetModalOpen(false)}
           onSubmit={(pet: Omit<Pet, "id" | "profileImage">) => {
             addPet(pet);
-            setIsModalOpen(false);
+            setIsAddPetModalOpen(false);
           }}
         />
       </main>

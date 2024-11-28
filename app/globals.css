@@ -245,3 +245,22 @@
 .inputGroup :is(input:focus, input:valid) {
   border-color: var(--secondary-1);
 }
+
+*::-webkit-scrollbar {
+  width: 5px;
+}
+
+*::-webkit-scrollbar-track {
+  background: lightgray;
+  border-radius: 5px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: gray;
+  border-radius: 14px;
+  border: 2px solid gray;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: orange;
+}

@@ -31,8 +31,6 @@ const Membership = () => {
     (plan) => plan.petType === petType
   );
 
-  console.log(petType);
-
   const togglePetType = () => {
     setPetType((prevType) => (prevType === "Dog" ? "Cat" : "Dog"));
   };

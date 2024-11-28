@@ -5,7 +5,7 @@ import React, { useState, useEffect } from "react";
 import ReactModal from "react-modal";
 import { IoIosArrowBack, IoIosArrowForward, IoMdClose } from "react-icons/io";
 import { Clinic } from "@/model/typeDefinitions";
-import Button from "./Button";
+import CustomButton from "./CustomButton";
 import UserAuthenticationModal from "./UserAuthenticationModal";
 import { useUserContext } from "@/context/UserContext";
 import { useRouter } from "next/navigation";
@@ -101,7 +101,7 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
           <h1 className="text-xl md:text-4xl">{clinic.clinicName}</h1>
         </div>
         <div>
-          <Button
+          <CustomButton
             buttonText="Book a visit"
             buttonBackground="bg-secondary-1"
             buttonClickEvent={() => handleLoginModalOpen("Book a Visit")}

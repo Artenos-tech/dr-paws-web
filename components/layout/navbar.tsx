@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Profile from "@/public/assets/images/profileThumnail.svg";
 import { Menu } from "lucide-react";
-import Button from "../ui/Button";
+
 import Link from "next/link";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { MdChevronRight } from "react-icons/md";
@@ -16,6 +16,7 @@ import { useUserContext } from "@/context/UserContext";
 import toast, { Toaster } from "react-hot-toast";
 import api, { clearAuthToken } from "@/services/api";
 import { useAPICall } from "@/hooks/apicall";
+import CustomButton from "../ui/CustomButton";
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -137,7 +138,7 @@ export default function NavBar() {
             </div>
           </div>
           <div className="hidden lg:flex items-center space-x-4 text-xs">
-            <Button
+            <CustomButton
               buttonText="Book a visit"
               buttonBackground="bg-secondary-1"
               buttonClickEvent={() => handleLoginModalOpen("Book a Visit")}
@@ -307,6 +308,7 @@ export default function NavBar() {
             >
               Our Team
             </Link>
+            {/* {!isMarketingFeatureEnabled ? ( */}
             <Link
               onClick={() => setIsOpen(false)}
               href="/membership"
@@ -314,6 +316,7 @@ export default function NavBar() {
             >
               Membership
             </Link>
+            {/* ) : null} */}
           </div>
           <div className="pt-4 pb-3 border-t border-primary-2">
             <div className="flex items-center px-8 md:px-32 space-x-4">
@@ -419,7 +422,7 @@ export default function NavBar() {
                 </button>
               )}
               <div onClick={() => setIsOpen(false)}>
-                <Button
+                <CustomButton
                   buttonText="Book a visit"
                   buttonBackground="bg-secondary-1"
                   buttonClickEvent={() => handleLoginModalOpen("Book a Visit")}
