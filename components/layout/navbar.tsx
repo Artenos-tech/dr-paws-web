@@ -10,7 +10,7 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { MdChevronRight } from "react-icons/md";
 import logo from "@/public/assets/images/logo/logo.svg";
 import ContactInfoModal from "../ui/ContactInfoModal";
-import { useMarketingFeature } from "@/hooks/useMarketingFeature";
+// import { useMarketingFeature } from "@/hooks/useMarketingFeature";
 import CustomButton from "../ui/CustomButton";
 
 export default function NavBar() {
