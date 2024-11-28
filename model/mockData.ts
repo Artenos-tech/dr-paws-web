@@ -1,4 +1,4 @@
-import clinic1 from "../public/assets/images/catimg.png";
+import clinic1 from "../public/assets/images/clinic-1.png";
 import description1 from "../public/assets/images/description1.png";
 import description2 from "../public/assets/images/description2.png";
 import description3 from "../public/assets/images/description3.png";
