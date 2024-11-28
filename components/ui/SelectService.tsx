@@ -55,7 +55,7 @@ const SelectService: React.FC<SelectServiceProps> = ({
       if (prevOpenCard && prevOpenCard !== cardId) {
         setSelectedData((prevSelectedData) => ({
           ...prevSelectedData,
-          [prevOpenCard]: null, // Unselect pet for the previously open card
+          [prevOpenCard]: null,
         }));
       }
       const isClosingCurrentCard = prevOpenCard === cardId;
@@ -63,7 +63,7 @@ const SelectService: React.FC<SelectServiceProps> = ({
       if (isClosingCurrentCard) {
         setSelectedData((prevSelectedData) => ({
           ...prevSelectedData,
-          [cardId]: null, // Unselect pet if the same card is being closed
+          [cardId]: null,
         }));
       }
   
@@ -72,7 +72,7 @@ const SelectService: React.FC<SelectServiceProps> = ({
         setHasShownDisclaimerModal(true);
       }
   
-      return isClosingCurrentCard ? null : cardId; // Toggle card open/close
+      return isClosingCurrentCard ? null : cardId;
     });
   };
   

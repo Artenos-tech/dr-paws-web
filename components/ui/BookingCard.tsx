@@ -76,9 +76,11 @@ const BookingCard: React.FC<BookingCardProps> = ({
       className={`flex flex-col h-full rounded-sm  cursor-pointer font-sans ${
         isOpen ? "border-secondary-1 border-2" : "border-gray-300"
       }`}
-      onClick={() => toggleCard(cardId)}
     >
-      <div className={`bg-primary-3 p-4 flex flex-col gap-2`}>
+      <div
+        className={`bg-primary-3 p-4 flex flex-col gap-2`}
+        onClick={() => toggleCard(cardId)}
+      >
         <div className="flex items-center justify-between gap-1">
           <h2 className=" lg:text-xl font-sans font-semibold">{title}</h2>
           <input

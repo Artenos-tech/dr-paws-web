@@ -40,7 +40,7 @@ const SelectVet = () => {
   };
 
   return (
-    <div className="h-full flex flex-col gap-12 px-4 lg:px-16">
+    <div className="h-full flex flex-col gap-12 px-4 lg:px-0">
       {/* Doctor Selection */}
       <div>
         <h1 className="text-3xl  mb-2">Select Vet</h1>
@@ -78,7 +78,7 @@ const SelectVet = () => {
         </div>
 
         {/* Responsive Two-Column Layout */}
-        <div className="flex flex-col justify-center items-center md:flex-row gap-8">
+        <div className="flex flex-col justify-center items-center sm:flex-row gap-8">
           {/* Calendar Section */}
           <div
             className={`flex-shrink-0 lg:w-1/2 xl:w-1/3 ${
@@ -93,7 +93,7 @@ const SelectVet = () => {
 
           {/* Timeslots Section */}
           {selectedDate && (
-            <div className="flex-grow">
+            <div className="w-full">
               <div className="font-semibold text-xs  text-gray-800  lg:text-lg">
                 Available timeslots for{" "}
                 <span className="text-secondary-1">
