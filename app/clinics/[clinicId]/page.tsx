@@ -35,6 +35,7 @@ const ClinicDetails: React.FC<ClinicDetailsProps> = ({ params }) => {
         <Overview
           clinicContact={clinic.contact}
           clinicLocation={clinic.location}
+          clinicParking={clinic.parkingInformation}
           clinicDoctors={doctors.filter((doctor) =>
             doctor.clinicIds.includes(clinicId)
           )}

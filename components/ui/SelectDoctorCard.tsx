@@ -27,13 +27,16 @@ const SelectDoctorCard: React.FC<SelectDoctorCardProps> = ({
         isSelected ? `border-2 border-secondary-1` : ``
       }`}
     >
-      <Image
+      <div className="">
+        <Image
         src={image}
         alt={name}
         width={100}
         height={100}
         className="rounded-full object-cover"
       />
+      </div>
+      
       <h2 className="text-center text-lg font-semibold">{name}</h2>
     </div>
   );

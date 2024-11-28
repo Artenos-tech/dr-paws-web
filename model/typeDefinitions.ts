@@ -11,6 +11,7 @@ export interface Clinic {
   services: string;
   contact: string;
   location: string;
+  parkingInformation: string
 }
 
 export interface Pet {
@@ -30,13 +31,16 @@ export interface Pet {
 
 export interface Doctor {
   name: string;
-  description?: string;
+  position?: string;
   experience?: string;
   location: string;
   image: StaticImageData;
   specialization?: string;
-  aboutVet?: string;
-  tag?: string;
+  qualification?: string;
+  aboutMe?: string;
+  vetPassionInfo?: string;
+  spiritAnimalInfo?: string;
+  favouritePet?: string;
   clinicIds: string[];
 }
 

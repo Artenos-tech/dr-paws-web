@@ -4,17 +4,10 @@ import React, { useEffect, useState } from "react";
 import { MapPin } from "lucide-react";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 
-const LOCATION = {
-  lat: 12.9725533,
-  lng: 77.6397607,
-};
-
 const mapContainerStyle = {
   width: "100%",
   height: "100%",
 };
-
-const center = LOCATION;
 
 interface LocationCardProps {
   locationString: string;
@@ -25,40 +18,53 @@ export function LocationCard({ locationString }: LocationCardProps) {
     null
   );
   const [address, setAddress] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const extractCoordinates = async (url: string) => {
+    const fetchPlaceDetails = async () => {
+      const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+      if (!apiKey) {
+        setError("Google Maps API key is not set");
+        return;
+      }
+
       try {
-        const regex = /@(-?\d+\.\d+),(-?\d+\.\d+)/;
-        const match = url.match(regex);
+        const response = await fetch(
+          `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+            locationString
+          )}&key=${apiKey}`
+        );
+        const data = await response.json();
 
-        if (match) {
-          const lat = parseFloat(match[1]);
-          const lng = parseFloat(match[2]);
-
-          setLocation({ lat, lng });
-
-          const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`;
-          const response = await fetch(geocodeUrl);
-          const data = await response.json();
-
-          if (data.results && data.results.length > 0) {
-            setAddress(data.results[0].formatted_address);
-          }
+        if (data.status === "OK" && data.results.length > 0) {
+          const result = data.results[0];
+          setLocation({
+            lat: result.geometry.location.lat,
+            lng: result.geometry.location.lng,
+          });
+          setAddress(result.formatted_address);
+          setError(null);
+        } else {
+          throw new Error("Place not found");
         }
       } catch (error) {
-        console.error("Error extracting coordinates:", error);
+        console.error("Error fetching place details:", error);
+        setError("Failed to fetch location details. Please try again.");
+        setLocation(null);
+        setAddress(null);
       }
     };
 
     if (locationString) {
-      extractCoordinates(locationString);
+      fetchPlaceDetails();
     }
   }, [locationString]);
 
   const getDirections = () => {
     if (location) {
-      const url = `https://www.google.com/maps/search/?api=1&query=${location.lat},${location.lng}`;
+      const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+        locationString
+      )}`;
       window.open(url, "_blank", "noopener,noreferrer");
     }
   };
@@ -75,28 +81,37 @@ export function LocationCard({ locationString }: LocationCardProps) {
           >
             <GoogleMap
               mapContainerStyle={mapContainerStyle}
-              center={center}
+              center={{ lat: location.lat, lng: location.lng }}
               zoom={15}
             >
-              <Marker position={center} />
+              <Marker
+                position={{ lat: location.lat, lng: location.lng }}
+                label="Dr. Paws"
+              />
             </GoogleMap>
           </LoadScript>
         ) : (
-          <div>Loading Map...</div>
+          <div className="flex items-center justify-center h-full bg-gray-100 text-gray-500">
+            {error || "Loading Map..."}
+          </div>
         )}
       </div>
       <div className="flex items-start mb-4 ">
         <div className="flex-1">
-          <MapPin className="h-5 w-5 mr-2 mt-1 text-gray-500" />
+          <MapPin
+            className="h-5 w-5 mr-2 mt-1 text-gray-500"
+            aria-hidden="true"
+          />
         </div>
         <p className="text-gray-600 font-roca">
-          {address || "Loading address..."}
+          {address || error || "Loading address..."}
         </p>
       </div>
       <button
         onClick={getDirections}
         className="bg-[#5281A2] text-white w-[175px] h-[40px] py-2 px-4 rounded-[20px] hover:bg-[#1e6ea6] transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         aria-label="Get directions to the clinic location"
+        disabled={!location}
       >
         Get Directions
       </button>
