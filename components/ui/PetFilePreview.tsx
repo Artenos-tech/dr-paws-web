@@ -1,23 +1,30 @@
 import React, { useEffect, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import Modal from "react-modal";
+import { Navigation } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/navigation";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
-interface filePreviewProps {
+interface FilePreviewProps {
   isOpen: boolean;
   onClose: () => void;
   currentIndex: number;
-  currentCategory: string;
+  currentCategory: "diagnosticReports" | "scansAndXRays" | "vaccines";
 }
 
-const PetFilePreview: React.FC<filePreviewProps> = ({
+const PetFilePreview: React.FC<FilePreviewProps> = ({
   isOpen,
   onClose,
   currentCategory,
   currentIndex,
 }) => {
   const [isMounted, setIsMounted] = useState(false);
+  const [files, setFiles] = useState<
+    { name: string; type: string; size: number; content: string }[]
+  >([]);
   const [currentId, setCurrentId] = useState(currentIndex);
-  const [files, setFiles] = useState();
 
   useEffect(() => {
     setIsMounted(true);
@@ -29,37 +36,88 @@ const PetFilePreview: React.FC<filePreviewProps> = ({
     }
   }, []);
 
-  //   useEffect(() => {
-  //     const storedFiles = localStorage.getItem("pets-history");
-  //     if (storedFiles) {
-  //       const parsedFiles = JSON.parse(storedFiles);
-  //       const categoryFiles = parsedFiles.find(
-  //         (record: { petId: string }) => record.petName === currentCategory
-  //       );
-  //       if (categoryFiles) {
-  //         setFiles(categoryFiles.diagnosticReports || []);
-  //       }
-  //     }
-  //   }, [currentId]);
+  useEffect(() => {
+    const storedData = localStorage.getItem("pets-history");
+    if (storedData) {
+      const parsedData = JSON.parse(storedData);
+      const allFiles = parsedData.reduce(
+        (acc: any[], record: any) => acc.concat(record[currentCategory] || []),
+        []
+      );
+      setFiles(allFiles);
+    }
+  }, [currentCategory]);
 
-  if (!isMounted) {
+  if (!isMounted || files.length === 0) {
     return null;
   }
+
   return (
     <Modal
       isOpen={isOpen}
       onRequestClose={onClose}
-      className="mt-20 mb-5 mx-auto p-4 bg-transparent rounded-xl shadow-lg overflow-y-auto z-50"
+      className="mt-20 mb-5 mx-auto p-4 bg-transparent border-none outline-none rounded-xl shadow-lg w-full max-w-4xl z-50 h-[600px]"
       overlayClassName="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center"
     >
-      <div className="flex flex-col lg:flex-row justify-between w-full items-center p-5 text-primary-1 relative">
+      <div className="flex flex-col relative">
         <button
-          className="absolute top-0 right-0 text-gray-500 hover:text-gray-700 transition-colors"
+          className="absolute top-2 right-2 text-gray-500 z-10 hover:text-gray-700 transition-colors"
           aria-label="Close modal"
           onClick={onClose}
         >
-          <IoClose />
+          <IoClose size={24} />
         </button>
+
+        <div className="flex flex-col items-center overflow-hidden mt-3">
+          <div className="relative px-8 max-w-screen-xl w-full mx-auto">
+            <button className="custom-swiper-button-prev absolute -left-[18px] top-1/2 -translate-y-1/2 rounded-full p-2 transition-colors">
+              <ChevronLeft size={42} className="text-[#5281A2]" />
+            </button>
+            <button className="custom-swiper-button-next absolute -right-[18px] top-1/2 -translate-y-1/2 rounded-full p-2  transition-colors">
+              <ChevronRight size={42} className="text-[#5281A2]" />
+            </button>
+
+            <Swiper
+              modules={[Navigation]}
+              navigation={{
+                prevEl: ".custom-swiper-button-prev",
+                nextEl: ".custom-swiper-button-next",
+              }}
+              spaceBetween={30}
+              slidesPerView={1}
+              breakpoints={{
+                640: { slidesPerView: 1 },
+                972: { slidesPerView: 1 },
+                1280: { slidesPerView: 1 },
+              }}
+              className="w-full"
+              style={{ zIndex: 0 }}
+            >
+              {files.map((file, index) => (
+                <SwiperSlide
+                  key={index}
+                  className="flex items-center justify-center"
+                >
+                  {file.type === "application/pdf" ? (
+                    <iframe
+                      src={file.content}
+                      title={file.name}
+                      className="w-full h-[550px] border rounded-lg"
+                    ></iframe>
+                  ) : (
+                    <div className="text-red-500">
+                      Unsupported file type: {file.type}
+                    </div>
+                  )}
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </div>
+        </div>
+
+        <div className="mt-2 text-center text-sm text-gray-500">
+          {files[currentId]?.name}
+        </div>
       </div>
     </Modal>
   );

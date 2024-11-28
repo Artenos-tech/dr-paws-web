@@ -43,8 +43,8 @@ const PetMedicalHistory: React.FC<petMedicalHistoryProps> = ({
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [currentFileIndexCategory, setCurrentFileIndexCategory] = useState<{
     index: number;
-    category: string;
-  }>({ index: 0, category: "" });
+    category: "diagnosticReports" | "scansAndXRays" | "vaccines";
+  }>({ index: 0, category: "diagnosticReports" });
 
   const navigate = useRouter();
 
