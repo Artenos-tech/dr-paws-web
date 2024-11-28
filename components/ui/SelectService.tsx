@@ -51,7 +51,6 @@ const SelectService: React.FC<SelectServiceProps> = ({
   };
 
   const toggleCard = (cardId: string) => {
-    
     setOpenCard((prevOpenCard) => {
       if (prevOpenCard && prevOpenCard !== cardId) {
         setSelectedData((prevSelectedData) => ({
@@ -59,13 +58,24 @@ const SelectService: React.FC<SelectServiceProps> = ({
           [prevOpenCard]: null,
         }));
       }
+      const isClosingCurrentCard = prevOpenCard === cardId;
+  
+      if (isClosingCurrentCard) {
+        setSelectedData((prevSelectedData) => ({
+          ...prevSelectedData,
+          [cardId]: null,
+        }));
+      }
+  
       if (cardId === "Surgeries" && !hasShownDisclaimerModal) {
         setIsModalOpen(true);
         setHasShownDisclaimerModal(true);
       }
-      return prevOpenCard === cardId ? null : cardId;
+  
+      return isClosingCurrentCard ? null : cardId;
     });
   };
+  
 
   const isButtonDisabled = !Object.values(selectedData).some(
     (selectedPet) => selectedPet !== null
@@ -81,7 +91,7 @@ const SelectService: React.FC<SelectServiceProps> = ({
       <h1 className="text-2xl mb-2">Select Services</h1>
       <p className="text-gray-600 mb-12">Choose from our services:</p>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-start ">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
         {bookingCategories.map((category) => (
           <BookingCard
             key={category.id}

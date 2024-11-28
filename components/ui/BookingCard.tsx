@@ -18,7 +18,7 @@ interface BookingCardProps {
   title: string;
   description: string;
   pets: Pet[];
-  onCardSelection: (cardId: string, selectedPet: Pet | null) => void; // Changed to handle single pet selection
+  onCardSelection: (cardId: string, selectedPet: Pet | null) => void;
   isOpen: boolean;
   toggleCard: (cardId: string) => void;
   setPets: React.Dispatch<React.SetStateAction<Pet[]>>;
@@ -36,16 +36,16 @@ const BookingCard: React.FC<BookingCardProps> = ({
   setPets,
   selectedData,
 }) => {
-  const [isAddPetModalOpen, setIsAddPetModalOpen] = useState(false); // Add missing state
+  const [isAddPetModalOpen, setIsAddPetModalOpen] = useState(false);
 
   const handlePetClick = (pet: Pet) => {
     const isAlreadySelected = selectedData[cardId]?.petId === pet.petId;
-    const newSelectedPet = isAlreadySelected ? null : pet; // Toggle selection
-    onCardSelection(cardId, newSelectedPet); // Update parent state
+    const newSelectedPet = isAlreadySelected ? null : pet;
+    onCardSelection(cardId, newSelectedPet);
   };
 
   const handleAddPetClick = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent card toggle when clicking on Add Pet
+    e.stopPropagation();
     setIsAddPetModalOpen(true);
   };
 
@@ -62,7 +62,6 @@ const BookingCard: React.FC<BookingCardProps> = ({
       petImage: petImageByType[petType]?.src,
     };
 
-    // Update pets in parent
     setPets((prevPets) => {
       const updatedPets = [...prevPets, newPetObject];
       localStorage.setItem("pets", JSON.stringify(updatedPets));
@@ -74,14 +73,16 @@ const BookingCard: React.FC<BookingCardProps> = ({
 
   return (
     <div
-      className={`rounded-sm overflow-hidden shadow-sm cursor-pointer font-sans ${
+      className={`flex flex-col h-full rounded-sm  cursor-pointer font-sans ${
         isOpen ? "border-secondary-1 border-2" : "border-gray-300"
       }`}
-      onClick={() => toggleCard(cardId)}
     >
-      <div className="bg-primary-3 p-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-xl font-sans font-semibold">{title}</h2>
+      <div
+        className={`bg-primary-3 p-4 flex flex-col gap-2`}
+        onClick={() => toggleCard(cardId)}
+      >
+        <div className="flex items-center justify-between gap-1">
+          <h2 className=" lg:text-xl font-sans font-semibold">{title}</h2>
           <input
             type="checkbox"
             checked={isOpen}
@@ -89,11 +90,11 @@ const BookingCard: React.FC<BookingCardProps> = ({
             className="w-6 h-6 cursor-pointer"
           />
         </div>
-        <p className="text-gray-500 mb-4">{description}</p>
+        <p className="text-gray-500 mb-4 truncate">{description}</p>
       </div>
 
       {isOpen && (
-        <div className="p-4">
+        <div className="p-4 ">
           <h3 className="text-lg font-medium mb-2">Select your Pet:</h3>
           <div className="flex gap-3 flex-wrap justify-center items-center">
             {pets.map((pet) => {
@@ -107,7 +108,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
               return (
                 <div
                   key={pet.petId}
-                  className="relative cursor-pointer"
+                  className="relative cursor-pointer m-2"
                   onClick={(e) => {
                     e.stopPropagation();
                     handlePetClick(pet);
