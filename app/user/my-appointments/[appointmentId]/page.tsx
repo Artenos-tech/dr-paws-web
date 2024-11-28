@@ -1,4 +1,4 @@
-import BookingDetails from "@/components/ui/BookingDetails";
+
 import BookingDetailsWrapper from "@/components/ui/BookingDetailsWrapper";
 import React from "react";
 
