@@ -130,7 +130,7 @@ async function makeApiCall<TParams, TResp, TErrResp, TBaseResp>(
   // from the params.
   path = path.replace(
     /\{([^}]+)\}/g,
-    (_, paramName) => (params as any)[paramName] || ""
+    (_, paramName) => (params as Record<string, string>)[paramName] || ""
   );
 
   let body: string | FormData;
@@ -160,7 +160,7 @@ async function makeApiCall<TParams, TResp, TErrResp, TBaseResp>(
 
   let response: Response;
   try {
-    let headers = {
+    const headers = {
       ...requestContext.getHeaders(),
     };
     // Note: Fetch will implicitly add the right content-type header for multipart form data body

@@ -29,7 +29,7 @@ type AsyncResultHookReturn<R extends Result<unknown, unknown>> = {
  */
 
 export function useAsyncResult<
-  R extends Result<any, any>
+  R extends Result<unknown, unknown>
 >(): AsyncResultHookReturn<R> {
   const [getResult, setResult] = useRefState<R | undefined>(undefined);
   const [getLoading, setLoading] = useRefState(false);
