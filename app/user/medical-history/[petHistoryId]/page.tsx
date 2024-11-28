@@ -98,10 +98,75 @@ const page: React.FC<petHistoryIdProps> = ({ params }) => {
     });
   };
 
-  // const handleSaveFiles = () => {
-  //   const medicalReports = {petId: petHistoryId, petName: petName, }
-  //   localStorage.setItem("pets-history", )
-  // }
+  const handleSaveFiles = async () => {
+    // Convert File to base64
+    const fileToBase64 = (file: File): Promise<string> =>
+      new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = (error) => reject(error);
+        reader.readAsDataURL(file);
+      });
+
+    // Convert files to a storable format
+    const fileFormat = async (files: File[] | null) => {
+      if (!files) return [];
+      return Promise.all(
+        files.map(async (file) => ({
+          name: file.name,
+          type: file.type,
+          size: file.size,
+          content: await fileToBase64(file),
+        }))
+      );
+    };
+
+    const diagnosticReports = await fileFormat(diagnosticReport);
+    const scansAndXRays = await fileFormat(scansAndXRaysFile);
+    const vaccines = await fileFormat(vaccineFile);
+
+    const medicalReports = {
+      petId: petHistoryId,
+      petName: petName,
+      diagnosticReports,
+      scansAndXRays,
+      vaccines,
+    };
+
+    const existingData = localStorage.getItem("pets-history");
+    let updatedData = [];
+
+    if (existingData) {
+      updatedData = JSON.parse(existingData);
+
+      const existingPetIndex = updatedData.findIndex(
+        (record: { petId: string }) => record.petId === petHistoryId
+      );
+
+      if (existingPetIndex > -1) {
+        updatedData[existingPetIndex].diagnosticReports = [
+          ...updatedData[existingPetIndex].diagnosticReports,
+          ...diagnosticReports,
+        ];
+        updatedData[existingPetIndex].scansAndXRays = [
+          ...updatedData[existingPetIndex].scansAndXRays,
+          ...scansAndXRays,
+        ];
+        updatedData[existingPetIndex].vaccines = [
+          ...updatedData[existingPetIndex].vaccines,
+          ...vaccines,
+        ];
+      } else {
+        // Add a new pet history if not found
+        updatedData.push(medicalReports);
+      }
+    } else {
+      // If no existing data, add the first pet record
+      updatedData.push(medicalReports);
+    }
+
+    localStorage.setItem("pets-history", JSON.stringify(updatedData));
+  };
 
   return (
     <div className="flex flex-col w-full h-full items-center justify-items-center font-roca pb-20">
@@ -137,7 +202,7 @@ const page: React.FC<petHistoryIdProps> = ({ params }) => {
                   diagnosticReport.map((file: File, index: number) => (
                     <FileDisplayCard
                       fileName={file.name}
-                      onClose={() =>
+                      onRemove={() =>
                         handleFileRemove(index, setDiagnosticReport)
                       }
                     />
@@ -168,7 +233,7 @@ const page: React.FC<petHistoryIdProps> = ({ params }) => {
                   scansAndXRaysFile.map((file: File, index: number) => (
                     <FileDisplayCard
                       fileName={file.name}
-                      onClose={() =>
+                      onRemove={() =>
                         handleFileRemove(index, setScansAndXRaysFile)
                       }
                     />
@@ -199,7 +264,7 @@ const page: React.FC<petHistoryIdProps> = ({ params }) => {
                   vaccineFile.map((file: File, index: number) => (
                     <FileDisplayCard
                       fileName={file.name}
-                      onClose={() => handleFileRemove(index, setVaccineFile)}
+                      onRemove={() => handleFileRemove(index, setVaccineFile)}
                     />
                   ))}
               </div>
@@ -213,7 +278,7 @@ const page: React.FC<petHistoryIdProps> = ({ params }) => {
             <button
               type="button"
               className="rounded-full font-semibold text-white bg-secondary-1 px-10 py-2 w-1/5"
-              // onClick={handleSaveFiles}
+              onClick={handleSaveFiles}
             >
               Save
             </button>

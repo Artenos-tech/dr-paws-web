@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import OutlineButton from "./OutlineButton";
 import { useRouter } from "next/navigation";
+import FileDisplayCard from "./FileDisplayCard";
+import PetFilePreview from "./PetFilePreview";
 
 interface petMedicalHistoryProps {
   petId: string;
@@ -12,16 +14,22 @@ export interface MedicalHistoryType {
   petId: string;
   petName: string;
   diagnosticReports: {
-    id: string;
-    file: File;
+    name: string;
+    type: string;
+    size: number;
+    content: string;
   }[];
   scansAndXRays: {
-    id: string;
-    file: File;
+    name: string;
+    type: string;
+    size: number;
+    content: string;
   }[];
   vaccines: {
-    id: string;
-    file: File;
+    name: string;
+    type: string;
+    size: number;
+    content: string;
   }[];
 }
 
@@ -32,6 +40,12 @@ const PetMedicalHistory: React.FC<petMedicalHistoryProps> = ({
   const [medicalHistory, setMedicalHistory] =
     useState<MedicalHistoryType | null>(null);
 
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [currentFileIndexCategory, setCurrentFileIndexCategory] = useState<{
+    index: number;
+    category: string;
+  }>({ index: 0, category: "" });
+
   const navigate = useRouter();
 
   // TO-DO: For Testing Purpose
@@ -40,11 +54,10 @@ const PetMedicalHistory: React.FC<petMedicalHistoryProps> = ({
     if (petsMedicalHistory) {
       const parsedMedicalHistory: MedicalHistoryType[] =
         JSON.parse(petsMedicalHistory);
-      setMedicalHistory(
-        parsedMedicalHistory.find(
-          (history: MedicalHistoryType) => history.petId === petId
-        ) ?? null
+      const history = parsedMedicalHistory.find(
+        (history: MedicalHistoryType) => history.petId === petId
       );
+      setMedicalHistory(history ?? null);
     }
   }, [petId]);
 
@@ -80,9 +93,76 @@ const PetMedicalHistory: React.FC<petMedicalHistoryProps> = ({
             You haven't added medical history
           </h1>
         ) : (
-          <></>
+          <>
+            <div className="border-b-2 border-b-primary-3 py-4 w-full">
+              <h3 className="text-lg">Past Diagnostic Reports</h3>
+              <div className="py-2 flex flex-wrap gap-3 w-full">
+                {medicalHistory.diagnosticReports.map((report, index) => (
+                  <div
+                    key={index}
+                    onClick={() => {
+                      setModalOpen(true);
+                      setCurrentFileIndexCategory({
+                        index,
+                        category: "diagnosticReports",
+                      });
+                    }}
+                  >
+                    <FileDisplayCard fileName={report.name} />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="border-b-2 border-b-primary-3 py-4 w-full">
+              <h3 className="text-lg">Past Scans and X-rays</h3>
+              <div className="py-2 flex flex-wrap w-full gap-3">
+                {medicalHistory.scansAndXRays.map((scan, index) => (
+                  <div
+                    key={index}
+                    onClick={() => {
+                      setModalOpen(true);
+                      setCurrentFileIndexCategory({
+                        index,
+                        category: "scansAndXRays",
+                      });
+                    }}
+                  >
+                    <FileDisplayCard fileName={scan.name} />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="border-b-2 border-b-primary-3 py-4 w-full">
+              <h3 className="text-lg">Vaccines</h3>
+              <div className="py-2 flex flex-wrap w-full gap-3">
+                {medicalHistory.vaccines.map((vaccine, index) => (
+                  <div
+                    key={index}
+                    onClick={() => {
+                      setModalOpen(true);
+                      setCurrentFileIndexCategory({
+                        index,
+                        category: "vaccines",
+                      });
+                    }}
+                  >
+                    <FileDisplayCard fileName={vaccine.name} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </>
         )}
       </div>
+
+      <PetFilePreview
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        currentIndex={currentFileIndexCategory.index}
+        currentCategory={currentFileIndexCategory.category}
+      />
     </div>
   );
 };

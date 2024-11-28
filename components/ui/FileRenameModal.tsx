@@ -17,6 +17,18 @@ const FileRenameModal: React.FC<fileRenameProps> = ({
 }) => {
   const [newFileName, setNewFileName] = useState<string>(currentFileName);
 
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+    const appElement = document.getElementById("__next");
+    if (appElement) {
+      Modal.setAppElement(appElement);
+    } else {
+      console.warn("ReactModal: App element with id '__next' not found.");
+    }
+  }, []);
+
   useEffect(() => {
     setNewFileName(currentFileName);
   }, [currentFileName]);
@@ -25,6 +37,11 @@ const FileRenameModal: React.FC<fileRenameProps> = ({
     onConfirm(newFileName);
     // setNewFileName("");
   };
+
+  if (!isMounted) {
+    return null;
+  }
+
   return (
     <Modal
       isOpen={isOpen}
