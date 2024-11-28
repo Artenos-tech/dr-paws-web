@@ -1,7 +1,7 @@
 import React from "react";
 import { X } from "lucide-react";
 import Image from "next/image";
-import Button from "./Button";
+import CustomButton from "./CustomButton";
 import { MembershipPlan } from "./MemberCard";
 import { useRouter } from "next/navigation";
 
@@ -136,7 +136,7 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
                   Total: {plan.price}
                 </h3>
                 <div onClick={handleContinue}>
-                  <Button buttonText="Continue" buttonBackground="bg-accent" />
+                  <CustomButton buttonText="Continue" buttonBackground="bg-accent" />
                 </div>
               </div>
             </div>

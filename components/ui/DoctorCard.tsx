@@ -5,16 +5,14 @@ import Image from "next/image";
 import { CiLocationOn } from "react-icons/ci";
 import { Doctor } from "@/model/typeDefinitions";
 import DoctorDetailsModal from "./DoctorDetailsModal";
-import { useMarketingFeature } from "@/hooks/useMarketingFeature";
 
 interface DoctorCardProps {
   doctor: Doctor;
 }
 
 const DoctorCard: React.FC<DoctorCardProps> = ({ doctor }) => {
-  const { name, description, experience, location, image } = doctor;
+  const { name, position, experience, location, image } = doctor;
   const [modalOpen, setModalOpen] = useState<boolean>(false);
-  const isMarketingFeatureEnabled = useMarketingFeature();
 
   return (
     <>
@@ -22,25 +20,25 @@ const DoctorCard: React.FC<DoctorCardProps> = ({ doctor }) => {
         <Image
           src={image}
           alt={name}
-          width={100}
-          height={100}
-          className="rounded-full object-cover w-[100px] h-[100px]"
+          width={120}
+          height={120}
+          className="rounded-full object-contain w-[120px] h-[120px]"
         />
         <h2 className="text-lg sm:text-xl">{name}</h2>
-        <p className="text-sm sm:text-base">{description}</p>
+        <p className="text-sm sm:text-base">{position}</p>
         <p className="text-sm sm:text-base">{experience}</p>
-        <div className="flex items-center space-x-2 text-primary-1">
+        <div className="flex items-center space-x-2 text-primary-1 truncate">
           <CiLocationOn size={20} />
           <span className="text-sm sm:text-base">{location}</span>
         </div>
-        {!isMarketingFeatureEnabled ? (
+        {/* {!isMarketingFeatureEnabled ? ( */}
           <button
             className="mt-4 py-2 px-4 rounded-lg bg-accent text-white text-sm hover:bg-secondary-1"
             onClick={() => setModalOpen(true)}
           >
             View Profile
           </button>
-        ) : null}
+        {/* ) : null} */}
       </div>
       <DoctorDetailsModal
         isOpen={modalOpen}

@@ -13,12 +13,14 @@ interface OverviewProps {
   clinicContact: string;
   clinicLocation: string;
   clinicDoctors: Doctor[];
+  clinicParking: string;
 }
 
 const Overview: React.FC<OverviewProps> = ({
   clinicContact,
   clinicLocation,
   clinicDoctors,
+  clinicParking,
 }) => {
   return (
     <div className="w-full flex flex-col gap-[80px]">
@@ -33,6 +35,10 @@ const Overview: React.FC<OverviewProps> = ({
               </span>
               <p className="text-sm md:text-xl">{clinicContact}</p>
             </div>
+          </div>
+          <div className="flex flex-col w-full gap-2 md:gap-4 mb-6">
+            <h2 className="text-2xl font-roca mb-3">Parking Information</h2>
+            <p className="text-sm md:text-xl">{clinicParking}</p>
           </div>
           <div className="flex flex-col w-full gap-2 md:gap-4">
             <h2 className="text-2xl font-roca mb-3">Timings</h2>

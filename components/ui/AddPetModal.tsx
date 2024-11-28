@@ -52,7 +52,7 @@ export default function AddPetModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto">
+    <div onClick={(e) => e.stopPropagation()} className="fixed inset-0 z-50 overflow-y-auto">
       <div
         className="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
         onClick={onClose}
@@ -107,13 +107,13 @@ export default function AddPetModal({
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-full focus:outline-none  focus:ring-offset-2"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="flex-1 px-4 py-2 bg-secondary-1 text-white rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                className="flex-1 px-4 py-2 bg-secondary-1 text-white rounded-full  focus:outline-none  focus:ring-offset-2"
               >
                 Save
               </button>
