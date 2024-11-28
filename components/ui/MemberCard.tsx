@@ -1,7 +1,6 @@
 import Image from "next/image";
 import { StaticImageData } from "next/image";
 import CustomButton from "./CustomButton";
-import { useMarketingFeature } from "@/hooks/useMarketingFeature";
 import { useState } from "react";
 import ContactInfoModal from "./ContactInfoModal";
 
@@ -24,7 +23,6 @@ interface MemberCardProps {
 }
 
 export default function MemberCard({ plan, onSelect }: MemberCardProps) {
-  const isMarketingFeatureEnabled = useMarketingFeature();
   const [isModalOpen, setIsModalOpen] = useState(false);
   return (
     <div
