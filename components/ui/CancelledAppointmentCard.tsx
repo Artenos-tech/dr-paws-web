@@ -82,7 +82,7 @@ const CancelledAppointmentCard: React.FC<CancelledCardProps> = ({
         <OutlineButton
           outlineBtnText="View Details"
           outlineBtnLink={() =>
-            navigate.push(`/my-bookings/${cancelledAppointment.id}`)
+            navigate.push(`/user/my-appointments/${cancelledAppointment.id}`)
           }
         />
       </div>

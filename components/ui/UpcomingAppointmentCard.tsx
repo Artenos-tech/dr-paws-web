@@ -49,6 +49,7 @@ const UpcomingAppointmentCard: React.FC<UpcomingCardProps> = ({
   upcomingAppointment,
 }) => {
   const navigate = useRouter();
+  console.log(upcomingAppointment.id)
   return (
     <div className="p-4 border-l-4 border-l-secondary-1 flex flex-col gap-3 rounded-lg shadow-md w-full">
       <div className="text-xs flex justify-between">
@@ -84,7 +85,7 @@ const UpcomingAppointmentCard: React.FC<UpcomingCardProps> = ({
         <OutlineButton
           outlineBtnText="View Details"
           outlineBtnLink={() =>
-            navigate.push(`/my-bookings/${upcomingAppointment.id}`)
+            navigate.push(`/user/my-appointments/${upcomingAppointment.id}`)
           }
         />
       </div>

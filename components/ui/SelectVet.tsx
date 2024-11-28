@@ -77,7 +77,7 @@ const SelectVet = () => {
           </p>
         </div>
 
-        {/* Responsive Two-Column Layout */}
+
         <div className="flex flex-col justify-center items-center sm:flex-row gap-8">
           {/* Calendar Section */}
           <div
@@ -105,7 +105,7 @@ const SelectVet = () => {
                 style={{
                   gridTemplateColumns: "repeat(auto-fit, minmax(118px, 1fr))",
                 }}
-                // className="flex flex-wrap gap-4"
+
               >
                 {timeSlots.map((time, index) => (
                   <div
