@@ -17,6 +17,7 @@ import toast, { Toaster } from "react-hot-toast";
 import api, { clearAuthToken } from "@/services/api";
 import { useAPICall } from "@/hooks/apicall";
 import CustomButton from "../ui/CustomButton";
+import { useMarketingFeature } from "@/hooks/useMarketingFeature";
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -24,6 +25,7 @@ export default function NavBar() {
   const [isContactModalOpen, setContactIsModalOpen] = useState(false);
   const [loginModalOpen, setLoginModalOpen] = useState<boolean>(false);
   const navigate = useRouter();
+  const isMarketingFeatureEnabled = useMarketingFeature();
 
   const [buttonText, setButtonText] = useState<string>("");
 
@@ -128,12 +130,14 @@ export default function NavBar() {
                 >
                   Our Team
                 </Link>
-                <Link
-                  href="/membership"
-                  className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-                >
-                  Membership
-                </Link>
+                {!isMarketingFeatureEnabled ? (
+                  <Link
+                    href="/membership"
+                    className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                  >
+                    Membership
+                  </Link>
+                ) : null}
               </div>
             </div>
           </div>
@@ -293,7 +297,6 @@ export default function NavBar() {
             >
               Locations
             </Link>
-
             <Link
               onClick={() => setIsOpen(false)}
               href="/services"
@@ -308,15 +311,15 @@ export default function NavBar() {
             >
               Our Team
             </Link>
-            {/* {!isMarketingFeatureEnabled ? ( */}
-            <Link
-              onClick={() => setIsOpen(false)}
-              href="/membership"
-              className="text-primary-1 hover:bg-primary-2 hover:text-white block py-2 px-2 rounded-md text-base font-medium"
-            >
-              Membership
-            </Link>
-            {/* ) : null} */}
+            {!isMarketingFeatureEnabled ? (
+              <Link
+                onClick={() => setIsOpen(false)}
+                href="/membership"
+                className="text-primary-1 hover:bg-primary-2 hover:text-white block py-2 px-2 rounded-md text-base font-medium"
+              >
+                Membership
+              </Link>
+            ) : null}
           </div>
           <div className="pt-4 pb-3 border-t border-primary-2">
             <div className="flex items-center px-8 md:px-32 space-x-4">
@@ -373,17 +376,21 @@ export default function NavBar() {
                       >
                         My Appointments
                       </DropdownMenu.Item>
-                      <div className="border-t border-gray-300 my-2" />
-                      <DropdownMenu.Item
-                        onClick={() => {
-                          setIsOpen(false);
-                          navigate.push("/membership");
-                        }}
-                        className="text-secondary-1 flex justify-between items-center hover:text-primary-1 cursor-pointer"
-                      >
-                        Become a Member <MdChevronRight />
-                      </DropdownMenu.Item>
-                      <div className="border-t border-gray-300 my-2" />
+                      {!isMarketingFeatureEnabled ? (
+                        <>
+                          <div className="border-t border-gray-300 my-2" />
+                          <DropdownMenu.Item
+                            onClick={() => {
+                              setIsOpen(false);
+                              navigate.push("/membership");
+                            }}
+                            className="text-secondary-1 flex justify-between items-center hover:text-primary-1 cursor-pointer"
+                          >
+                            Become a Member <MdChevronRight />
+                          </DropdownMenu.Item>
+                          <div className="border-t border-gray-300 my-2" />
+                        </>
+                      ) : null}
                       <DropdownMenu.Item
                         onClick={() => {
                           setIsOpen(false);

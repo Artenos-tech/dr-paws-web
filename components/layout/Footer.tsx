@@ -8,9 +8,12 @@ import LinkedIn from "@/public/assets/images/Footer/linkedin.svg";
 import Link from "next/link";
 import ContactInfoModal from "../ui/ContactInfoModal";
 import { useState } from "react";
+import { useMarketingFeature } from "@/hooks/useMarketingFeature";
 
 const Footer = () => {
   const [isContactModalOpen, setContactIsModalOpen] = useState(false);
+  const isMarketingFeatureEnabled = useMarketingFeature();
+
   return (
     <footer className="bg-primary-3 py-10">
       <div className="mx-auto px-8 md:px-32 lg:px-20 xl:px-40">
@@ -67,14 +70,14 @@ const Footer = () => {
             >
               Locations
             </Link>
-            {/* {!isMarketingFeatureEnabled ? ( */}
-            <Link
-              href="/membership"
-              className="block mt-1 text-primary-1 hover:text-primary-2"
-            >
-              Membership
-            </Link>
-            {/* ) : null} */}
+            {!isMarketingFeatureEnabled ? (
+              <Link
+                href="/membership"
+                className="block mt-1 text-primary-1 hover:text-primary-2"
+              >
+                Membership
+              </Link>
+            ) : null}
             <Link
               href="#"
               onClick={() => setContactIsModalOpen(true)}
