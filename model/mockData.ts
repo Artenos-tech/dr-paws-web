@@ -15,8 +15,8 @@ import IND_Exterior1 from "../public/assets/images/ClinicDetails/IND_Exterior1.j
 import IND_Exterior2 from "../public/assets/images/ClinicDetails/IND_Exterior2.jpg";
 import RMV_Exterior from "../public/assets/images/ClinicDetails/RMV_Exterior.jpg";
 import RMV_Exterior1 from "../public/assets/images/ClinicDetails/RMV_Exterior1.jpg";
-import RMV_1st_floor from "../public/assets/images/ClinicDetails/RMV_1st floor.jpg";
-import RMV_Cat_consulation_1 from "../public/assets/images/ClinicDetails/RMV_Cat_consulation_1.jpg";
+import RMV_1st_floor from "../public/assets/images/ClinicDetails/RMV_1st_floor.jpg";
+import RMV_Cat_consulation_1 from "../public/assets/images/ClinicDetails/RMV_Cat_consultation_1.jpg";
 import RMV_Cat_grooming from "../public/assets/images/ClinicDetails/RMV_Cat_grooming.jpg";
 import RMV_Cat_waiting_area from "../public/assets/images/ClinicDetails/RMV_Cat_waiting_area.jpg";
 import RMV_Dog_grooming from "../public/assets/images/ClinicDetails/RMV_Dog_grooming.jpg";
@@ -320,7 +320,7 @@ export const doctors = [
     name: "Dr. Archana G.",
     // description: "DMV - Veterinary Medicine",
     position: "Lead Veterinarian",
-    experience: "5 Years of Experience",
+    experience: "6 Years of Experience",
     clinicIds: ["1"],
     location: "Indiranagar",
     image: DrArchanaImg,
@@ -329,10 +329,10 @@ export const doctors = [
       "I'm a huge pet-lover firstly, who also happens to be a Dogtor! I particularly love cats and have two of my own called Floki & Quisp. I started my veterinary journey at the Hassan Veterinary College, Karnataka, before completing my Master's in Surgery & Radiology at the Kerala Veterinary & Animal Science University in Wayanad. Post this, I've worked across pet hospitals and establised chains in Kochi, Mumbai and Bangalore.",
     // tag: "Passionate about animal care and active member of AVMA.",
     vetPassionInfo:
-      "I love being able to help both pets and their pet-parents understand the root cause of the sickness a pet might be having. Giving a voice to creatures that can't speak, whilst reassuring their pet-parents is the best part of my job!",
+      "As a vet, I love having the ability to be able to help animals who cannot speak for themselves, and seeing them get better.",
     spiritAnimalInfo:
-      "It's got to be a Baboon like Rafiki from the Lion King - a friend and trusted advisor to all.",
-    favouritePet: "Floki & Quisp - my babies are purrfect",
+      "Definitely a cat! I love the indoors and am very stingy about sharing my space (mentally and physically) with too many people!",
+    favouritePet: "Dost",
     qualification: "BVSc & AH, MVSc (Surgery & Radiology)",
   },
   {

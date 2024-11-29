@@ -50,7 +50,7 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
 
   return (
     <div className="w-full">
-      <div className="gallery-container grid grid-cols-3 gap-4 max-h-[75vh] relative  overflow-y-auto">
+      <div className="gallery-container grid grid-cols-3 gap-4 max-h-[75vh] relative overflow-y-auto">
         {limitedGalleryItems.map((image, index) => (
           <div
             key={index}
@@ -119,7 +119,7 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
             className="p-2 rounded-full bg-gray-700 text-white hover:bg-gray-600 focus:outline-none"
             onClick={() =>
               setCurrentIndex((prev) =>
-                prev === 0 ? photos.length - 1 : prev - 1
+                prev === 0 ? limitedGalleryItems.length - 1 : prev - 1
               )
             }
             aria-label="Previous Image"
@@ -142,7 +142,7 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
             className="p-2 rounded-full bg-gray-700 text-white hover:bg-gray-600 focus:outline-none"
             onClick={() =>
               setCurrentIndex((prev) =>
-                prev === photos.length - 1 ? 0 : prev + 1
+                prev === limitedGalleryItems.length - 1 ? 0 : prev + 1
               )
             }
             aria-label="Next Image"
