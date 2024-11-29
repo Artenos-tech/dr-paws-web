@@ -16,7 +16,10 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const limitedGalleryItems = photos.slice(0, 7);
+  const clinicImages = photos.find((clinicInfo) => clinicInfo.id === clinic.id);
+  const limitedGalleryItems = clinicImages
+    ? clinicImages.photos.slice(0, 7)
+    : [];
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {

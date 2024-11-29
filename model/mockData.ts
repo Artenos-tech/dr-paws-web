@@ -5,10 +5,19 @@ import description3 from "../public/assets/images/description3.png";
 import description4 from "../public/assets/images/description4.png";
 import description5 from "../public/assets/images/description5.png";
 import description6 from "../public/assets/images/description6.png";
+import IND_2ndFloor from "../public/assets/images/ClinicDetails/IND_2ndFloor.jpg";
+import IND_2ndFloor1 from "../public/assets/images/ClinicDetails/IND_2ndFloor1.jpg";
+import IND_Diagnostics from "../public/assets/images/ClinicDetails/IND_Diagnostics.jpg";
+import IND_OPT from "../public/assets/images/ClinicDetails/IND_OPT.jpg";
+import IND_Reception from "../public/assets/images/ClinicDetails/IND_Reception.jpg";
+import IND_WaitingArea from "../public/assets/images/ClinicDetails/IND_WaitingArea.jpg";
+import IND_Exterior1 from "../public/assets/images/ClinicDetails/IND_Exterior1.jpg";
+import IND_Exterior2 from "../public/assets/images/ClinicDetails/IND_Exterior2.jpg";
+import RMV_Exterior from "../public/assets/images/ClinicDetails/RMV_Exterior.jpg";
+import RMV_Exterior1 from "../public/assets/images/ClinicDetails/RMV_Exterior1.jpg";
 import dogImg from "../public/assets/images/dogimg.png";
 import catImg from "../public/assets/images/catimg.png";
 import rabbitImg from "../public/assets/images/rabbitImg.png";
-import ClinicDog from "../public/assets/images/clinic/maggidog.png";
 import { Clinic, Review } from "@/model/typeDefinitions";
 import { BookingCategory } from "@/model/typeDefinitions";
 import ParasiteControl from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/ParasiteControl.png";
@@ -59,7 +68,6 @@ import Microchipping from "@/public/assets/images/ServicesPage/Pet Services/Micr
 import Customer1 from "../public/assets/images/clinic/customer1.png";
 import Customer2 from "../public/assets/images/clinic/customer2.png";
 import Customer3 from "../public/assets/images/clinic/customer3.png";
-import ClinicOT from "../public/assets/images/clinic/clinicopertn.png";
 import CareJunior from "@/public/assets/images/Membership/Care Junior.png";
 import CareSenior from "@/public/assets/images/Membership/Care Senior.png";
 import Grooming from "@/public/assets/images/Membership/Grooming.png";
@@ -512,14 +520,31 @@ export const doctors = [
 ];
 
 export const photos = [
-  description1,
-  ClinicDog,
-  description2,
-  description3,
-  description4,
-  description5,
-  description6,
-  ClinicOT,
+  {
+    id: "1",
+    photos: [
+      IND_2ndFloor,
+      IND_2ndFloor1,
+      IND_Diagnostics,
+      IND_Exterior1,
+      IND_Exterior2,
+      IND_OPT,
+      IND_Reception,
+      IND_WaitingArea,
+    ],
+  },
+  {
+    id: "2",
+    photos: [RMV_Exterior, RMV_Exterior1],
+  },
+  // description1,
+  // ClinicDog,
+  // description2,
+  // description3,
+  // description4,
+  // description5,
+  // description6,
+  // ClinicOT,
 ];
 
 export const serviceCategories = [
