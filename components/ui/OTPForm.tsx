@@ -95,8 +95,8 @@ const OTPForm: React.FC<otpFormProps> = ({
           </button>
         </div>
 
-        <div className="flex justify-center items-center gap-1">
-          <p className="text-sm md:text-base">
+        <div className="flex justify-center items-center gap-1 text-xs sm:text-sm md:text-base">
+          <p>
             Didn&apos;t receive your code?{" "}
           </p>
           <button

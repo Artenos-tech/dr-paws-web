@@ -104,6 +104,21 @@ export default createAPIClient({
       errorResponseSchema: z.object({}),
     },
 
+    signupCancel: {
+      method: "POST",
+      path: "/signup/cancel",
+      pathParamsSchema: z.object({}),
+      requestSchema: z.object({
+        mobile: z.string(),
+        role: z.enum(["ADMIN", "USER"]),
+      }),
+      responseSchema: z.object({
+        status: z.number(),
+        message: z.string(),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+
     loginOTP: {
       method: "POST",
       path: "/login/otp",
@@ -148,7 +163,7 @@ export default createAPIClient({
               name: z.string(),
               type: z.string(),
               breed: z.string().nullable(),
-              weight: z.number().nullable(),
+              weight: z.string().nullable(),
               gender: z.string().nullable(),
               dob: z.string().nullable(),
               profile_image: z.string().nullable(),
@@ -163,10 +178,47 @@ export default createAPIClient({
       method: "POST",
       path: "/login/logout",
       pathParamsSchema: z.object({}),
+      requestSchema: z.object({
+        id: z.string(),
+      }),
+      responseSchema: z.object({
+        status: z.number(),
+        message: z.string(),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+
+    getuser: {
+      method: "GET",
+      path: "/user/{id}",
+      pathParamsSchema: z.object({ id: z.string() }),
       requestSchema: z.object({}),
       responseSchema: z.object({
         status: z.number(),
         message: z.string(),
+        user: z.object({
+          id: z.string(),
+          vetport_id: z.number().nullable(),
+          mobile: z.string(),
+          name: z.string(),
+          role: z.enum(["ADMIN", "USER"]),
+          email: z.string().nullable(),
+          current_address: z.string().nullable(),
+          profile_image: z.string().nullable(),
+        }),
+        user_pets: z.array(
+          z.object({
+            id: z.string(),
+            vetport_id: z.number().nullable(),
+            name: z.string(),
+            type: z.string(),
+            breed: z.string().nullable(),
+            weight: z.string().nullable(),
+            gender: z.string().nullable(),
+            dob: z.date().nullable(),
+            profile_image: z.string().nullable(),
+          })
+        ),
       }),
       errorResponseSchema: z.object({}),
     },

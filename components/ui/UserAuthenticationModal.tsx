@@ -59,12 +59,15 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
     api.loginVerify
   );
 
+  const { call: signupCancel } = useAPICall(api.signupCancel);
+
   const handleIncorrectNumber = () => {
     setUserMobileNumber(undefined);
     setIsLogin(true);
   };
 
   const handleLoginSubmit = async (mobileNumber: string) => {
+    setOtpErr("");
     const response = await loginOTP({ mobile: mobileNumber, role: "USER" });
 
     if (response.ok) {
@@ -95,6 +98,7 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
     mobileNumber: string;
     profilePicture: string | null;
   }) => {
+    setOtpErr("");
     // Updating state variables for resending OTP
     setUserName(data.userName);
     setUserPofileImage(data.profilePicture);
@@ -217,9 +221,9 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
       }
     }
   };
-  console.log("islogin", isLogin);
 
   const handleResendOTP = async () => {
+    setOtpErr("");
     if (userMobileNumber) {
       const response = isLogin
         ? await loginOTP({ mobile: userMobileNumber, role: "USER" })
@@ -243,11 +247,12 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
             ? response.error.body.message
             : (response?.error.message as string);
         if (isLogin) {
-          setLoginErr(errorMessage);
+          console.log(errorMessage);
+          setOtpErr(errorMessage);
         } else {
-          setSignupErr(errorMessage);
+          setOtpErr(errorMessage);
         }
-        toast.error(errorMessage, {
+        toast.error("Something went wrong. Please try again.", {
           duration: 3000,
           position: "bottom-right",
         });
@@ -255,7 +260,10 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
     }
   };
 
-  const handleCloseOnRequest = () => {
+  const handleCloseOnRequest = async () => {
+    if (userMobileNumber) {
+      await signupCancel({ mobile: userMobileNumber, role: "USER" });
+    }
     setIsLogin(true);
     onClose();
     setOtpErr("");

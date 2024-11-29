@@ -24,6 +24,7 @@
     "date-fns": "^4.1.0",
     "fs-extra": "^11.2.0",
     "input-otp": "^1.4.1",
+    "jsonwebtoken": "^9.0.2",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.453.0",
     "next": "14.2.16",
@@ -50,6 +51,7 @@
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
+    "@types/jsonwebtoken": "^9.0.7",
     "@types/leaflet": "^1.9.14",
     "@types/node": "^20",
     "@types/react": "^18.3.12",

@@ -4,7 +4,6 @@ import { useState } from "react";
 import Image from "next/image";
 import Profile from "@/public/assets/images/profileThumnail.svg";
 import { Menu } from "lucide-react";
-
 import Link from "next/link";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { MdChevronRight } from "react-icons/md";
@@ -29,13 +28,15 @@ export default function NavBar() {
 
   const [buttonText, setButtonText] = useState<string>("");
 
-  const { authToken, refresh } = useUserContext();
+  const { authToken, refresh, user } = useUserContext();
 
   // API
   const { call: logout } = useAPICall(api.logout);
 
   const handleLogout = async () => {
-    await logout({});
+    if (user) {
+      await logout({ id: user.id });
+    }
     clearAuthToken();
     window.location.reload();
   };

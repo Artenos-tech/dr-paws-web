@@ -1,5 +1,7 @@
 "use client";
 
+import { useAPICall } from "@/hooks/apicall";
+import api from "@/services/api";
 import {
   createContext,
   useContext,
@@ -7,6 +9,8 @@ import {
   ReactNode,
   useEffect,
 } from "react";
+import jwt from "jsonwebtoken";
+import { z } from "zod";
 
 export type UserRole = "ADMIN" | "USER";
 export type Gender = "Male" | "Female";
@@ -58,10 +62,38 @@ export const UserProvider = ({ children }: UserProviderProps) => {
   const [userPets, setUserPets] = useState<Pet[] | null>(null);
   const [authToken, setAuthToken] = useState<boolean>(false);
 
-  const handleCheckAuthToken = () => {
+  const { call: getUser } = useAPICall(api.getuser);
+
+  const SECRET_KEY = process.env.NEXT_PUBLIC_JWT_SECRET_KEY as string;
+
+  const JwtPayloadSchema = z.object({
+    id: z.string(),
+  });
+
+  const handleCheckAuthToken = async () => {
     const token = localStorage.getItem("authToken");
     if (token) {
       setAuthToken(true);
+
+      if (token) {
+        const decodedToken = jwt.decode(token);
+        const payload = JwtPayloadSchema.parse(decodedToken);
+        console.log(payload.id)
+        const response = await getUser({ id: payload.id });
+        if (response.ok) {
+          const userResponse = response.value.body.user;
+          updateUserDetailsHandler(userResponse);
+          const pets = response.value.body.user_pets?.map((pet) => ({
+            ...pet,
+            profileImage: pet.profile_image,
+            gender: pet.gender ?? undefined,
+          })) as Partial<Pet>[];
+
+          if (pets) {
+            updateUserPetsHandler(pets);
+          }
+        }
+      }
     } else {
       setAuthToken(false);
     }
