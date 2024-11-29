@@ -27,7 +27,7 @@ import AnimalBites from "@/public/assets/images/ServicesPage/Sickness and Emerge
 import FeverInfection from "@/public/assets/images/ServicesPage/Sickness and Emergency/FeverInfection.png";
 import VomittingDiarrhoea from "@/public/assets/images/ServicesPage/Sickness and Emergency/VomittingDiarrhoea.webp";
 import AppetiteLoss from "@/public/assets/images/ServicesPage/Sickness and Emergency/AppetiteLoss.jpg";
-import BloodTests from "@/public/assets/images/ServicesPage/Dignostics/BloodTests.jpeg";
+import BloodTests from "@/public/assets/images/ServicesPage/Dignostics/BloodTests.png";
 import Ultrasound from "@/public/assets/images/ServicesPage/Dignostics/Ultrsound.png";
 import Microscopy from "@/public/assets/images/ServicesPage/Dignostics/Microscopy.png";
 import UrineAnalysis from "@/public/assets/images/ServicesPage/Dignostics/UrineAnalysis.jpg";
