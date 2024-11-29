@@ -44,7 +44,7 @@ const ClinicDetails: React.FC<ClinicDetailsProps> = ({ params }) => {
     },
     {
       title: "Photos",
-      component: <ClinicPhotos />,
+      component: <ClinicPhotos clinicId={clinicId}/>,
     },
     {
       title: "Reviews",

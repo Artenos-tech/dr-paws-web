@@ -7,12 +7,15 @@ import { IoIosArrowBack, IoIosArrowForward, IoMdClose } from "react-icons/io";
 import { Clinic } from "@/model/typeDefinitions";
 import CustomButton from "./CustomButton";
 import ContactInfoModal from "./ContactInfoModal";
+import Image from "next/image";
 
 interface ClinicGalleryProps {
   clinic: Clinic;
 }
 
 function ClinicGallery({ clinic }: ClinicGalleryProps) {
+ 
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -67,7 +70,7 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
               loading="lazy"
             />
             {index === limitedGalleryItems.length - 1 && (
-              <span className="absolute inset-0 flex items-center justify-center text-white font-bold text-xl">
+              <span className="absolute inset-0 flex items-center justify-center !text-gray-600 font-bold text-xl">
                 View Gallery
               </span>
             )}
@@ -127,7 +130,7 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
           {/* Current Image */}
           <div className="w-full">
             <img
-              src={photos[currentIndex].src}
+              src={limitedGalleryItems[currentIndex].src}
               alt="gallery image"
               className="overflow-hidden w-full h-[80vh] object-contain"
               loading="lazy"
