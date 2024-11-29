@@ -4,7 +4,7 @@ import MedicalPetTabs from "@/components/ui/MedicalPetTabs";
 import { Pet } from "@/model/typeDefinitions";
 import React, { useEffect, useState } from "react";
 
-const page = () => {
+const MedicalHistoryPage = () => {
   const [pets, setPets] = useState<Pet[] | null>(null);
 
   useEffect(() => {
@@ -33,4 +33,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default MedicalHistoryPage;

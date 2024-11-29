@@ -16,9 +16,12 @@ const MedicalPetTabs: React.FC<medicalPetTabsProps> = ({ petsTab }) => {
   const [activeTab, setActiveTab] = useState<string | null>(null);
 
   useEffect(() => {
-    petsTab && setActiveTab(petsTab[0].petId);
+    if (petsTab && petsTab.length > 0) {
+      setActiveTab(petsTab[0].petId);
+    }
   }, [petsTab]);
   const pet = petsTab && petsTab.find((pet) => pet.petId === activeTab);
+
   return (
     <div className="w-full h-full m-auto">
       <div className="flex flex-wrap items-center gap-3 w-full">

@@ -90,7 +90,7 @@ const PetMedicalHistory: React.FC<petMedicalHistoryProps> = ({
       <div className="flex flex-col justify-start items-center mt-10 w-full h-full">
         {!medicalHistory ? (
           <h1 className="text-center text-lg text-secondary-1 opacity-40">
-            You haven't added medical history
+            You haven&apos;t added medical history
           </h1>
         ) : (
           <>

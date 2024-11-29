@@ -6,12 +6,20 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { MedicalHistoryType } from "./PetMedicalHistory";
 
 interface FilePreviewProps {
   isOpen: boolean;
   onClose: () => void;
   currentIndex: number;
   currentCategory: "diagnosticReports" | "scansAndXRays" | "vaccines";
+}
+
+interface FileType {
+  name: string;
+  type: string;
+  size: number;
+  content: string;
 }
 
 const PetFilePreview: React.FC<FilePreviewProps> = ({
@@ -21,10 +29,7 @@ const PetFilePreview: React.FC<FilePreviewProps> = ({
   currentIndex,
 }) => {
   const [isMounted, setIsMounted] = useState(false);
-  const [files, setFiles] = useState<
-    { name: string; type: string; size: number; content: string }[]
-  >([]);
-  const [currentId, setCurrentId] = useState(currentIndex);
+  const [files, setFiles] = useState<FileType[]>([]);
 
   useEffect(() => {
     setIsMounted(true);
@@ -39,11 +44,15 @@ const PetFilePreview: React.FC<FilePreviewProps> = ({
   useEffect(() => {
     const storedData = localStorage.getItem("pets-history");
     if (storedData) {
-      const parsedData = JSON.parse(storedData);
-      const allFiles = parsedData.reduce(
-        (acc: any[], record: any) => acc.concat(record[currentCategory] || []),
-        []
-      );
+      const parsedData: MedicalHistoryType[] = JSON.parse(storedData);
+      const allFiles = parsedData
+        .flatMap((record) => record[currentCategory] || [])
+        .map((file) => ({
+          name: file.name,
+          type: file.type,
+          size: file.size,
+          content: file.content,
+        }));
       setFiles(allFiles);
     }
   }, [currentCategory]);
@@ -116,7 +125,7 @@ const PetFilePreview: React.FC<FilePreviewProps> = ({
         </div>
 
         <div className="mt-2 text-center text-sm text-gray-500">
-          {files[currentId]?.name}
+          {files[currentIndex]?.name}
         </div>
       </div>
     </Modal>

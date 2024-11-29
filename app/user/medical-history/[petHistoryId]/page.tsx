@@ -11,7 +11,7 @@ interface petHistoryIdProps {
   };
 }
 
-const page: React.FC<petHistoryIdProps> = ({ params }) => {
+const PetHistoryPage: React.FC<petHistoryIdProps> = ({ params }) => {
   const { petHistoryId } = params;
 
   const [diagnosticReport, setDiagnosticReport] = useState<File[] | null>(null);
@@ -201,6 +201,7 @@ const page: React.FC<petHistoryIdProps> = ({ params }) => {
                 {diagnosticReport &&
                   diagnosticReport.map((file: File, index: number) => (
                     <FileDisplayCard
+                      key={index}
                       fileName={file.name}
                       onRemove={() =>
                         handleFileRemove(index, setDiagnosticReport)
@@ -232,6 +233,7 @@ const page: React.FC<petHistoryIdProps> = ({ params }) => {
                 {scansAndXRaysFile &&
                   scansAndXRaysFile.map((file: File, index: number) => (
                     <FileDisplayCard
+                      key={index}
                       fileName={file.name}
                       onRemove={() =>
                         handleFileRemove(index, setScansAndXRaysFile)
@@ -263,6 +265,7 @@ const page: React.FC<petHistoryIdProps> = ({ params }) => {
                 {vaccineFile &&
                   vaccineFile.map((file: File, index: number) => (
                     <FileDisplayCard
+                      key={index}
                       fileName={file.name}
                       onRemove={() => handleFileRemove(index, setVaccineFile)}
                     />
@@ -273,7 +276,7 @@ const page: React.FC<petHistoryIdProps> = ({ params }) => {
 
           <div className="flex items-center justify-center my-10 gap-5">
             <button type="button" className="underline text-secondary-1 w-1/5">
-              I'll do it later
+              I&apos;ll do it later
             </button>
             <button
               type="button"
@@ -295,4 +298,4 @@ const page: React.FC<petHistoryIdProps> = ({ params }) => {
   );
 };
 
-export default page;
+export default PetHistoryPage;
