@@ -15,6 +15,16 @@ import IND_Exterior1 from "../public/assets/images/ClinicDetails/IND_Exterior1.j
 import IND_Exterior2 from "../public/assets/images/ClinicDetails/IND_Exterior2.jpg";
 import RMV_Exterior from "../public/assets/images/ClinicDetails/RMV_Exterior.jpg";
 import RMV_Exterior1 from "../public/assets/images/ClinicDetails/RMV_Exterior1.jpg";
+import RMV_1st_floor from "../public/assets/images/ClinicDetails/RMV_1st floor.jpg";
+import RMV_Cat_consulation_1 from "../public/assets/images/ClinicDetails/RMV_Cat_consulation_1.jpg";
+import RMV_Cat_grooming from "../public/assets/images/ClinicDetails/RMV_Cat_grooming.jpg";
+import RMV_Cat_waiting_area from "../public/assets/images/ClinicDetails/RMV_Cat_waiting_area.jpg";
+import RMV_Dog_grooming from "../public/assets/images/ClinicDetails/RMV_Dog_grooming.jpg";
+import RMV_Dog_grooming_2 from "../public/assets/images/ClinicDetails/RMV_Dog_grooming_2.jpg";
+import RMV_Dog_grooming_3 from "../public/assets/images/ClinicDetails/RMV_Dog_grooming_3.jpg";
+import RMV_Dog_consultation_room from "../public/assets/images/ClinicDetails/RMV_Dog_consultation_room.jpg";
+import RMV_Hydrotherapy_room from "../public/assets/images/ClinicDetails/RMV_Hydrotherapy_room.jpg";
+import RMV_Reception_area from "../public/assets/images/ClinicDetails/RMV_Reception_area.jpg";
 import dogImg from "../public/assets/images/dogimg.png";
 import catImg from "../public/assets/images/catimg.png";
 import rabbitImg from "../public/assets/images/rabbitImg.png";
@@ -524,7 +534,7 @@ export const photos = [
     id: "1",
     photos: [
       IND_Exterior2,
-      
+
       IND_2ndFloor1,
       IND_2ndFloor,
       IND_WaitingArea,
@@ -532,12 +542,24 @@ export const photos = [
       IND_Diagnostics,
       IND_OPT,
       IND_Reception,
-      
     ],
   },
   {
     id: "2",
-    photos: [RMV_Exterior, RMV_Exterior1],
+    photos: [
+      RMV_Exterior,
+      RMV_Exterior1,
+      RMV_1st_floor,
+      RMV_Cat_consulation_1,
+      RMV_Cat_grooming,
+      RMV_Cat_waiting_area,
+      RMV_Dog_grooming_2,
+      RMV_Dog_grooming_3,
+      RMV_Dog_grooming,
+      RMV_Dog_consultation_room,
+      RMV_Hydrotherapy_room,
+      RMV_Reception_area,
+    ],
   },
   // description1,
   // ClinicDog,
