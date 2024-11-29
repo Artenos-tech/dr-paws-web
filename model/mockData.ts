@@ -523,11 +523,12 @@ export const photos = [
   {
     id: "1",
     photos: [
-      IND_Exterior1,
+      IND_Exterior2,
+      
       IND_2ndFloor1,
       IND_2ndFloor,
       IND_WaitingArea,
-      IND_Exterior2,
+      IND_Exterior1,
       IND_Diagnostics,
       IND_OPT,
       IND_Reception,

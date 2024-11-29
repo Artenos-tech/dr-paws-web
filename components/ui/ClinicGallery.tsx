@@ -50,7 +50,7 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
 
   return (
     <div className="w-full">
-      <div className="gallery-container grid grid-cols-3 gap-4">
+      <div className="gallery-container grid grid-cols-3 gap-4 max-h-[75vh] relative  overflow-y-auto">
         {limitedGalleryItems.map((image, index) => (
           <div
             key={index}
