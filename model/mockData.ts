@@ -10,50 +10,50 @@ import catImg from "../public/assets/images/catimg.png";
 import rabbitImg from "../public/assets/images/rabbitImg.png";
 import ClinicDog from "../public/assets/images/clinic/maggidog.png";
 import { Clinic, Review } from "@/model/typeDefinitions";
-import ParasiteControl from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/ParasiteControl.webp";
-import SkinInfections from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/SkinInfections.jpeg";
 import { BookingCategory } from "@/model/typeDefinitions";
+import ParasiteControl from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/ParasiteControl.png";
+import SkinInfections from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/SkinInfections.jpeg";
 import Vaccination from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/Vaccinations.png";
 import Deworming from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/Deworming.png";
+import EarEyeCheckUp from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/EarEyeCheckUp.png";
 import GeneralCheckUp from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/General check up.png";
 import NutritionalCounceling from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/NutritionalCounceling.png";
 import TraumaCare from "@/public/assets/images/ServicesPage/Sickness and Emergency/TraumaCare.webp";
 import PainManagement from "@/public/assets/images/ServicesPage/Sickness and Emergency/PainManagement.webp";
 import AllergiesAndRashes from "@/public/assets/images/ServicesPage/Sickness and Emergency/Allergies and rashes.png";
-import EarInfections from "@/public/assets/images/ServicesPage/Sickness and Emergency/EarInfections.png";
 import Lethargy from "@/public/assets/images/ServicesPage/Sickness and Emergency/Lethargy.png";
 import Limping from "@/public/assets/images/ServicesPage/Sickness and Emergency/Limping.png";
 import AnimalBites from "@/public/assets/images/ServicesPage/Sickness and Emergency/Animal Bites.png";
 import FeverInfection from "@/public/assets/images/ServicesPage/Sickness and Emergency/FeverInfection.png";
 import VomittingDiarrhoea from "@/public/assets/images/ServicesPage/Sickness and Emergency/VomittingDiarrhoea.webp";
-import AppetiteLoss from "@/public/assets/images/ServicesPage/Sickness and Emergency/AppetiteLoss.jpg";
+import AppetiteLoss from "@/public/assets/images/ServicesPage/Sickness and Emergency/AppetiteLoss.png";
 import BloodTests from "@/public/assets/images/ServicesPage/Dignostics/BloodTests.png";
-import Ultrasound from "@/public/assets/images/ServicesPage/Dignostics/Ultrsound.png";
+import Ultrasound from "@/public/assets/images/ServicesPage/Dignostics/Ultrasound.png";
 import Microscopy from "@/public/assets/images/ServicesPage/Dignostics/Microscopy.png";
-import UrineAnalysis from "@/public/assets/images/ServicesPage/Dignostics/UrineAnalysis.jpg";
+import UrineAnalysis from "@/public/assets/images/ServicesPage/Dignostics/UrineAnalysis.png";
 import Biochemistry from "@/public/assets/images/ServicesPage/Dignostics/Biochemistry.jpg";
 import KidneyLiverFunction from "@/public/assets/images/ServicesPage/Dignostics/KidneyLiverFunction.jpg";
 import StoolAnalysis from "@/public/assets/images/ServicesPage/Dignostics/StoolAnalysis.png";
 import HormoneAnalysis from "@/public/assets/images/ServicesPage/Dignostics/HormoneAnalysis.jpg";
 import Xray from "@/public/assets/images/ServicesPage/Dignostics/XRay.png";
-import Sprays from "@/public/assets/images/ServicesPage/Planned Surgeries/Sprays.png";
-import DentalScaling from "@/public/assets/images/ServicesPage/Planned Surgeries/DentalScaling.jpeg";
-import Tumors from "@/public/assets/images/ServicesPage/Planned Surgeries/Tumor.png";
+import SpayingNeutering from "@/public/assets/images/ServicesPage/Planned Surgeries/SpayingNeutering.png";
+import DentalScaling from "@/public/assets/images/ServicesPage/Planned Surgeries/DentalScaling.png";
+import Tumorremoval from "@/public/assets/images/ServicesPage/Planned Surgeries/Tumourremoval.png";
 import Foreign from "@/public/assets/images/ServicesPage/Planned Surgeries/Foreign.png";
-import Ortho from "@/public/assets/images/ServicesPage/Planned Surgeries/Orthopedic.png";
+import Orthopaedic from "@/public/assets/images/ServicesPage/Planned Surgeries/Orthopaedic.png";
 import SoftTissue from "@/public/assets/images/ServicesPage/Planned Surgeries/SoftTissue.png";
-import ToothEx from "@/public/assets/images/ServicesPage/Dental/ToothExt.png";
+import ToothExtraction from "@/public/assets/images/ServicesPage/Planned Surgeries/ToothExtraction.png";
 import ToothRes from "@/public/assets/images/ServicesPage/Dental/ToothRes.png";
 import LaserTherapy from "@/public/assets/images/ServicesPage/Physiotherapy/LaserTherapy.png";
-import WaterThreadmill from "@/public/assets/images/ServicesPage/Physiotherapy/WaterThreadmill.jpg";
-import HairCut from "@/public/assets/images/ServicesPage/Grooming/HairCut.png";
+import Hydrotherapy from "@/public/assets/images/ServicesPage/Physiotherapy/Hydrotherapy.png";
+import Trimming from "@/public/assets/images/ServicesPage/Grooming/Trimming.png";
 import EarClean from "@/public/assets/images/ServicesPage/Grooming/EarClean.png";
-import Bath from "@/public/assets/images/ServicesPage/Grooming/Bath.png";
-import OilMassages from "@/public/assets/images/ServicesPage/Grooming/OilMassages.jpg";
+import SpaBath from "@/public/assets/images/ServicesPage/Grooming/SpaBath.png";
+import OilMassage from "@/public/assets/images/ServicesPage/Grooming/OilMassage.png";
 import HairColoring from "@/public/assets/images/ServicesPage/Grooming/HairColoring.jpg";
-import AnalGlandExpression from "@/public/assets/images/ServicesPage/Grooming/AnalGlandExpression.jpeg";
+import AnalGlandExpression from "@/public/assets/images/ServicesPage/Grooming/AnalGlandExpression.png";
 import Boarding from "@/public/assets/images/ServicesPage/Pet Services/Boarding.png";
-import Sitting from "@/public/assets/images/ServicesPage/Pet Services/Sitting.png";
+import TravelDocs from "@/public/assets/images/ServicesPage/Pet Services/TravelDocs.png";
 import Microchipping from "@/public/assets/images/ServicesPage/Pet Services/Microchipping.jpg";
 
 import Customer1 from "../public/assets/images/clinic/customer1.png";
@@ -621,7 +621,7 @@ export const ServiceTabsData = [
         imgText: "Parasite Control",
       },
       {
-        img: EarInfections,
+        img: EarEyeCheckUp,
         imgText: "Ear & Eye Check-ups",
       },
     ],
@@ -721,7 +721,7 @@ export const ServiceTabsData = [
       "Our wide range of surgeries and deep doctor expertise, allow us to help get your pet back to their healthy self, should intervention be required. If we can’t help, we’ll refer you to a place that can.",
     imageDetails: [
       {
-        img: Sprays,
+        img: SpayingNeutering,
         imgText: "Spaying & Neutering",
       },
       {
@@ -729,7 +729,7 @@ export const ServiceTabsData = [
         imgText: "Dental Scaling",
       },
       {
-        img: Tumors,
+        img: Tumorremoval,
         imgText: "Tumor and Mass Removals",
       },
       {
@@ -737,11 +737,11 @@ export const ServiceTabsData = [
         imgText: "Foreign Body Removals",
       },
       {
-        img: ToothEx,
+        img: ToothExtraction,
         imgText: "Tooth Extractions",
       },
       {
-        img: Ortho,
+        img: Orthopaedic,
         imgText: "Orthopaedic Surgeries",
       },
       {
@@ -761,7 +761,7 @@ export const ServiceTabsData = [
         imgText: "Laser Therapy",
       },
       {
-        img: WaterThreadmill,
+        img: Hydrotherapy,
         imgText: "Water Treadmill Therapy",
       },
     ],
@@ -773,11 +773,11 @@ export const ServiceTabsData = [
       "Our state-of-the-art grooming studios help to keep you pet looking and feeling great.",
     imageDetails: [
       {
-        img: Bath,
+        img: SpaBath,
         imgText: "Spa Baths",
       },
       {
-        img: HairCut,
+        img: Trimming,
         imgText: "Haircuts & Hair Shaping",
       },
       {
@@ -789,7 +789,7 @@ export const ServiceTabsData = [
         imgText: "Dental Cleaning",
       },
       {
-        img: OilMassages,
+        img: OilMassage,
         imgText: "Oil Massages",
       },
       {
@@ -813,7 +813,7 @@ export const ServiceTabsData = [
         imgText: "Microchipping",
       },
       {
-        img: Sitting,
+        img: TravelDocs,
         imgText: "Travel Document Preparation",
       },
       {
