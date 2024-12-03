@@ -222,3 +222,15 @@
 ::-webkit-scrollbar-thumb:hover {
   background-color: orange;
 }
+
+.image-container {
+  height: 200px; /* Set a fixed or maximum height */
+  overflow: hidden; /* Prevent content from spilling out */
+  position: relative;
+}
+
+.image {
+  object-fit: cover; /* Ensures the image fits within the container */
+  width: 100%; /* Span the full width of the container */
+  height: 100%; /* Match the height of the container */
+}
