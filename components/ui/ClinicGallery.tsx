@@ -7,7 +7,6 @@ import { IoIosArrowBack, IoIosArrowForward, IoMdClose } from "react-icons/io";
 import { Clinic } from "@/model/typeDefinitions";
 import CustomButton from "./CustomButton";
 import ContactInfoModal from "./ContactInfoModal";
-import Image from "next/image";
 
 interface ClinicGalleryProps {
   clinic: Clinic;
