@@ -1,10 +1,3 @@
-import clinic1 from "../public/assets/images/clinic-1.png";
-import description1 from "../public/assets/images/description1.png";
-import description2 from "../public/assets/images/description2.png";
-import description3 from "../public/assets/images/description3.png";
-import description4 from "../public/assets/images/description4.png";
-import description5 from "../public/assets/images/description5.png";
-import description6 from "../public/assets/images/description6.png";
 import IND_2ndFloor from "../public/assets/images/ClinicDetails/IND_2ndFloor.jpg";
 import IND_2ndFloor1 from "../public/assets/images/ClinicDetails/IND_2ndFloor1.jpg";
 import IND_Diagnostics from "../public/assets/images/ClinicDetails/IND_Diagnostics.jpg";
@@ -13,8 +6,8 @@ import IND_Reception from "../public/assets/images/ClinicDetails/IND_Reception.j
 import IND_WaitingArea from "../public/assets/images/ClinicDetails/IND_WaitingArea.jpg";
 import IND_Exterior1 from "../public/assets/images/ClinicDetails/IND_Exterior1.jpg";
 import IND_Exterior2 from "../public/assets/images/ClinicDetails/IND_Exterior2.jpg";
-import RMV_Exterior from "../public/assets/images/ClinicDetails/RMV_Exterior.jpg";
-import RMV_Exterior1 from "../public/assets/images/ClinicDetails/RMV_Exterior1.jpg";
+import RMV_Exterior1 from "../public/assets/images/ClinicDetails/RMV_Exterior.jpg";
+import RMV_Exterior2 from "../public/assets/images/ClinicDetails/RMV_Exterior1.jpg";
 import RMV_1st_floor from "../public/assets/images/ClinicDetails/RMV_1st_floor.jpg";
 import RMV_Cat_consulation_1 from "../public/assets/images/ClinicDetails/RMV_Cat_consultation_1.jpg";
 import RMV_Cat_grooming from "../public/assets/images/ClinicDetails/RMV_Cat_grooming.jpg";
@@ -38,27 +31,27 @@ import EarEyeCheckUp from "@/public/assets/images/ServicesPage/PlannedCheckUpIma
 import GeneralCheckUp from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/General check up.png";
 import NutritionalCounceling from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/NutritionalCounceling.png";
 import TraumaCare from "@/public/assets/images/ServicesPage/Sickness and Emergency/TraumaCare.webp";
-import PainManagement from "@/public/assets/images/ServicesPage/Sickness and Emergency/PainManagement.webp";
+import PainManagement from "@/public/assets/images/ServicesPage/Sickness and Emergency/PainManagement.png";
 import AllergiesAndRashes from "@/public/assets/images/ServicesPage/Sickness and Emergency/Allergies and rashes.png";
-import Lethargy from "@/public/assets/images/ServicesPage/Sickness and Emergency/Lethargy.png";
 import Limping from "@/public/assets/images/ServicesPage/Sickness and Emergency/Limping.png";
 import AnimalBites from "@/public/assets/images/ServicesPage/Sickness and Emergency/Animal Bites.png";
 import FeverInfection from "@/public/assets/images/ServicesPage/Sickness and Emergency/FeverInfection.png";
-import VomittingDiarrhoea from "@/public/assets/images/ServicesPage/Sickness and Emergency/VomittingDiarrhoea.webp";
+import VomittingDiarrhoeaCare from "@/public/assets/images/ServicesPage/Sickness and Emergency/VomittingDiarrhoeaCare.png";
 import AppetiteLoss from "@/public/assets/images/ServicesPage/Sickness and Emergency/AppetiteLoss.png";
 import BloodTests from "@/public/assets/images/ServicesPage/Dignostics/BloodTests.png";
 import Ultrasound from "@/public/assets/images/ServicesPage/Dignostics/Ultrasound.png";
 import Microscopy from "@/public/assets/images/ServicesPage/Dignostics/Microscopy.png";
 import UrineAnalysis from "@/public/assets/images/ServicesPage/Dignostics/UrineAnalysis.png";
-import Biochemistry from "@/public/assets/images/ServicesPage/Dignostics/Biochemistry.jpg";
-import KidneyLiverFunction from "@/public/assets/images/ServicesPage/Dignostics/KidneyLiverFunction.jpg";
+import Biochemistry from "@/public/assets/images/ServicesPage/Dignostics/Biochemistry.png";
+import KidneyLiverFunction from "@/public/assets/images/ServicesPage/Dignostics/KidneyLiverFunction.png";
 import StoolAnalysis from "@/public/assets/images/ServicesPage/Dignostics/StoolAnalysis.png";
-import HormoneAnalysis from "@/public/assets/images/ServicesPage/Dignostics/HormoneAnalysis.jpg";
+import HormoneAnalysis from "@/public/assets/images/ServicesPage/Dignostics/HormoneAnalysis.png";
 import Xray from "@/public/assets/images/ServicesPage/Dignostics/XRay.png";
+import FeverInfectionTests from "@/public/assets/images/ServicesPage/Sickness and Emergency/FeverInfection.png";
 import SpayingNeutering from "@/public/assets/images/ServicesPage/Planned Surgeries/SpayingNeutering.png";
 import DentalScaling from "@/public/assets/images/ServicesPage/Planned Surgeries/DentalScaling.png";
 import Tumorremoval from "@/public/assets/images/ServicesPage/Planned Surgeries/Tumourremoval.png";
-import Foreign from "@/public/assets/images/ServicesPage/Planned Surgeries/Foreign.png";
+import ForeignBodyRemoval from "@/public/assets/images/ServicesPage/Planned Surgeries/ForeignBodyRemoval.png";
 import Orthopaedic from "@/public/assets/images/ServicesPage/Planned Surgeries/Orthopaedic.png";
 import SoftTissue from "@/public/assets/images/ServicesPage/Planned Surgeries/SoftTissue.png";
 import ToothExtraction from "@/public/assets/images/ServicesPage/Planned Surgeries/ToothExtraction.png";
@@ -71,9 +64,9 @@ import SpaBath from "@/public/assets/images/ServicesPage/Grooming/SpaBath.png";
 import OilMassage from "@/public/assets/images/ServicesPage/Grooming/OilMassage.png";
 import HairColoring from "@/public/assets/images/ServicesPage/Grooming/HairColoring.jpg";
 import AnalGlandExpression from "@/public/assets/images/ServicesPage/Grooming/AnalGlandExpression.png";
-import Boarding from "@/public/assets/images/ServicesPage/Pet Services/Boarding.png";
+import NewPetCounselling from "@/public/assets/images/ServicesPage/Pet Services/NewPetCounselling.png";
 import TravelDocs from "@/public/assets/images/ServicesPage/Pet Services/TravelDocs.png";
-import Microchipping from "@/public/assets/images/ServicesPage/Pet Services/Microchipping.jpg";
+import Microchipping from "@/public/assets/images/ServicesPage/Pet Services/Microchipping.png";
 
 import Customer1 from "../public/assets/images/clinic/customer1.png";
 import Customer2 from "../public/assets/images/clinic/customer2.png";
@@ -96,6 +89,14 @@ import DrNinoImg from "@/public/assets/images/vets/dr_nino.png";
 import DrPreranaImg from "@/public/assets/images/vets/dr_prerana.png";
 import DrRajashreeImg from "@/public/assets/images/vets/dr_rajashree.png";
 import DrShravyaImg from "@/public/assets/images/vets/dr_shravya.png";
+
+import LP_DocsThatCare from '@/public/assets/images/Landing Page/LP_DocsThatCare.png'
+import LP_EverythingUnderRoof from '@/public/assets/images/Landing Page/LP_EverythingUnderRoof.png'
+import LP_FeelsLikeHome from '@/public/assets/images/Landing Page/LP_FeelsLikeHome.png'
+import LP_MembershipsCount from '@/public/assets/images/Landing Page/LP_MembershipsCount.png'
+import LP_OneTap from '@/public/assets/images/Landing Page/LP_OneTap.png'
+import LP_OnlyNecessaryTreatment from '@/public/assets/images/Landing Page/LP_OnlyNecessaryTreatments.png'
+import LP_SpaceForCats from '@/public/assets/images/Landing Page/LP_SpaceForCats.png'
 
 export const FaqData = [
   {
@@ -171,7 +172,7 @@ export const reviewData = [
 export const clinicItems: Clinic[] = [
   {
     id: "1",
-    image: clinic1,
+    image: IND_Exterior1,
     clinicName: "Indiranagar",
     services:
       "Consults | Grooming | Surgery | Dignostics | Ultrasound | Retail",
@@ -182,7 +183,7 @@ export const clinicItems: Clinic[] = [
   },
   {
     id: "2",
-    image: clinic1,
+    image: RMV_Exterior1,
     clinicName: "RMV (Dollars Colony)",
     services:
       "Consults | Grooming | Surgery | Dignostics | Ultrasound | Retail",
@@ -204,7 +205,7 @@ export const clinicItems: Clinic[] = [
 
 export const descriptionItems = [
   {
-    image: description1,
+    image: LP_FeelsLikeHome,
     title: "A Clinic That Feels Like Home",
     desciption:
       "Our thoughtfully designed clinics are all about warmth & comfort, making each visit stress-free.",
@@ -215,7 +216,7 @@ export const descriptionItems = [
     },
   },
   {
-    image: description3,
+    image: LP_DocsThatCare,
     title: "Doctors That Care",
     desciption:
       " We’re here to look after your best friend. It’s our duty to listen, answer all your questions, and explain what we’re seeing in a way that makes sense.",
@@ -226,7 +227,7 @@ export const descriptionItems = [
     },
   },
   {
-    image: description4,
+    image: LP_EverythingUnderRoof,
     title: "Everything Under One Roof",
     desciption:
       "From consults through to emergency surgeries, we have you covered. We also offer grooming, diagnostic tests, imaging, and retail.",
@@ -237,7 +238,7 @@ export const descriptionItems = [
     },
   },
   {
-    image: description5,
+    image: LP_OnlyNecessaryTreatment,
     title: "Only the Necessary Treatment",
     desciption:
       "We’re here to earn your trust. We commit to never over-prescribing medicines, tests, and procedures.",
@@ -248,7 +249,7 @@ export const descriptionItems = [
     },
   },
   {
-    image: description6,
+    image: LP_SpaceForCats,
     title: "A Space Just for Cats",
     desciption:
       "At Dr. Paws, cats are not an afterthought- with our dedicated cat waiting rooms, consult rooms, and grooming studios, our clinics are designed around the needs of cats.",
@@ -259,7 +260,7 @@ export const descriptionItems = [
     },
   },
   {
-    image: description2,
+    image: LP_MembershipsCount,
     title: "Memberships That Count",
     desciption:
       "Our membership packs are tailor-made to offer great value and cover all the essentials to keep your pet happy & healthy.",
@@ -270,7 +271,7 @@ export const descriptionItems = [
     },
   },
   {
-    image: description4,
+    image: LP_OneTap,
     title: "Your Pet’s Health in a Tap",
     desciption:
       "Book appointments in a few taps, and always stay updated and informed on your pet’s health with our app",
@@ -533,12 +534,11 @@ export const photos = [
   {
     id: "1",
     photos: [
+      IND_Exterior1,
       IND_Exterior2,
-
       IND_2ndFloor1,
       IND_2ndFloor,
       IND_WaitingArea,
-      IND_Exterior1,
       IND_Diagnostics,
       IND_OPT,
       IND_Reception,
@@ -547,8 +547,8 @@ export const photos = [
   {
     id: "2",
     photos: [
-      RMV_Exterior,
       RMV_Exterior1,
+      RMV_Exterior2,
       RMV_1st_floor,
       RMV_Cat_consulation_1,
       RMV_Cat_grooming,
@@ -702,7 +702,7 @@ export const ServiceTabsData = [
         imgText: "Limping & Wound Care",
       },
       {
-        img: VomittingDiarrhoea,
+        img: VomittingDiarrhoeaCare,
         imgText: "Vomiting & Diarrhoea Care",
       },
       {
@@ -750,7 +750,7 @@ export const ServiceTabsData = [
         imgText: "Allergy Tests",
       },
       {
-        img: Lethargy,
+        img: FeverInfectionTests,
         imgText: "Fever & Infection Tests",
       },
       {
@@ -782,7 +782,7 @@ export const ServiceTabsData = [
         imgText: "Tumor and Mass Removals",
       },
       {
-        img: Foreign,
+        img: ForeignBodyRemoval,
         imgText: "Foreign Body Removals",
       },
       {
@@ -870,7 +870,7 @@ export const ServiceTabsData = [
         imgText: "Nutritional Counselling",
       },
       {
-        img: Boarding,
+        img: NewPetCounselling,
         imgText: "New-Pet Preparation Counselling",
       },
     ],
