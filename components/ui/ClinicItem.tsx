@@ -18,9 +18,10 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
   const router = useRouter();
 
   const [buttonText, setButtonText] = useState<string>("");
-  const { authToken, refresh } = useUserContext();
+  const { getAuthToken, refresh } = useUserContext();
 
   const handleLoginModalOpen = (val: string) => {
+    const authToken = getAuthToken();
     if (authToken) {
       router.push("/");
       return;

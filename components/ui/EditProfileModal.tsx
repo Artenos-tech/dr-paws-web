@@ -1,13 +1,12 @@
 import React from "react";
 import Modal from "react-modal";
 import ProfileForm from "./ProfileForm";
-import { ProfileData } from "./ProfileCard";
 import { User, useUserContext } from "@/context/UserContext";
 
 interface EditProfileModalProps {
   isOpen: boolean;
   onClose: () => void;
-  profileData: ProfileData;
+  profileData: User;
 }
 
 const EditProfileModal: React.FC<EditProfileModalProps> = ({

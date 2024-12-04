@@ -15,10 +15,11 @@ const Services = () => {
   const [isContactModalOpen, setContactIsModalOpen] = useState(false);
   const [loginModalOpen, setLoginModalOpen] = useState<boolean>(false);
   const [buttonText, setButtonText] = useState<string>("");
-  const { authToken, refresh } = useUserContext();
+  const { getAuthToken, refresh } = useUserContext();
   const navigate = useRouter();
 
   const handleLoginModalOpen = (val: string) => {
+    const authToken = getAuthToken();
     if (authToken) {
       navigate.push("/");
       return;

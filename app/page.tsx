@@ -23,9 +23,10 @@ export default function Home() {
   const [buttonText, setButtonText] = useState<string>("");
   const navigate = useRouter();
 
-  const { authToken, refresh } = useUserContext();
+  const { getAuthToken, refresh } = useUserContext();
 
   const handleLoginModalOpen = (text: string) => {
+    const authToken = getAuthToken();
     if (authToken) {
       if (text === "Become a member") {
         navigate.push("/membership");

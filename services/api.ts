@@ -86,7 +86,7 @@ export default createAPIClient({
           current_address: z.string().nullable(),
           profile_image: z.string().nullable(),
         }),
-        user_pets: z
+        pets: z
           .array(
             z.object({
               id: z.string(),
@@ -156,7 +156,7 @@ export default createAPIClient({
           current_address: z.string().nullable(),
           profile_image: z.string().nullable(),
         }),
-        user_pets: z
+        pets: z
           .array(
             z.object({
               id: z.string(),
@@ -206,7 +206,7 @@ export default createAPIClient({
           current_address: z.string().nullable(),
           profile_image: z.string().nullable(),
         }),
-        user_pets: z.array(
+        pets: z.array(
           z.object({
             id: z.string(),
             vetport_id: z.number().nullable(),

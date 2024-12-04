@@ -23,11 +23,11 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
   const [isMounted, setIsMounted] = useState(false);
 
   const [buttonText, setButtonText] = useState<string>("");
-  const { authToken, refresh } = useUserContext();
+  const { getAuthToken, refresh } = useUserContext();
   const navigate = useRouter();
 
   const handleLoginModalOpen = (val: string) => {
-    if (authToken) {
+    if (getAuthToken()) {
       navigate.push("/");
       return;
     }

@@ -5,7 +5,6 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import ImageEdit from "@/public/assets/images/Profile/ImageEdit.png";
-import { ProfileData } from "./ProfileCard";
 import { FaTrash } from "react-icons/fa6";
 import ProfileLogo from "@/public/assets/images/Profile/profileLogo.jpg";
 import { User } from "@/context/UserContext";
@@ -16,14 +15,14 @@ const profileSchema = z.object({
     .string()
     .length(10, "Contact must be 10 digits")
     .regex(/^\d{10}$/, "Contact must be numeric"),
-  email: z.string().email("Invalid email address"),
-  currentAddress: z.string().min(1, "Address is required"),
+  email: z.string().email("Invalid email address").nullable(),
+  currentAddress: z.string().nullable(),
 });
 
 type ProfileFormData = z.infer<typeof profileSchema>;
 
 interface ProfileFormProps {
-  profileData: ProfileData;
+  profileData: User;
   onSubmit: (data: User) => void;
   onCancel: () => void;
 }

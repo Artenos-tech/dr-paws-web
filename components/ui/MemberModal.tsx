@@ -21,7 +21,7 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false); // Track authentication state
 
   const [buttonText, setButtonText] = useState<string>("");
-  const { authToken, refresh } = useUserContext();
+  const { getAuthToken, refresh } = useUserContext();
 
   // Proceed with the payment route
   const params = new URLSearchParams({
@@ -31,6 +31,7 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
   });
 
   const handleLoginModalOpen = (val: string) => {
+    const authToken = getAuthToken();
     if (authToken) {
       if (val === "Become a Member") {
         router.push(`/membership/payment?${params.toString()}`);

@@ -28,7 +28,7 @@ export default function NavBar() {
 
   const [buttonText, setButtonText] = useState<string>("");
 
-  const { authToken, refresh, user } = useUserContext();
+  const { getAuthToken, refresh, user } = useUserContext();
 
   // API
   const { call: logout } = useAPICall(api.logout);
@@ -42,6 +42,7 @@ export default function NavBar() {
   };
 
   const handleLoginModalOpen = (text: string) => {
+    const authToken = getAuthToken();
     if (authToken) {
       if (text === "View Profile" || text === "View Pets") {
         navigate.push("/user/profile");
@@ -148,7 +149,7 @@ export default function NavBar() {
               buttonBackground="bg-secondary-1"
               buttonClickEvent={() => handleLoginModalOpen("Book a Visit")}
             />
-            {authToken ? (
+            {getAuthToken() ? (
               <DropdownMenu.Root>
                 <DropdownMenu.Trigger className="outline-none">
                   <Image
@@ -324,7 +325,7 @@ export default function NavBar() {
           </div>
           <div className="pt-4 pb-3 border-t border-primary-2">
             <div className="flex items-center px-8 md:px-32 space-x-4">
-              {authToken ? (
+              {getAuthToken() ? (
                 <DropdownMenu.Root>
                   <DropdownMenu.Trigger>
                     <Image

@@ -1,8 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import ProfileCard, { ProfileData } from "@/components/ui/ProfileCard";
-import defaultProfileImage from "@/public/assets/images/Profile/profileLogo.jpg";
+import ProfileCard from "@/components/ui/ProfileCard";
 import AddPetModal from "@/components/ui/AddPetModal";
 import PetCard from "@/components/ui/PetCard";
 import "react-toastify/dist/ReactToastify.css";
@@ -23,56 +22,18 @@ interface Pet {
 const Profile: React.FC = () => {
   const [isAddPetModalOpen, setIsAddPetModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [pets, setPets] = useState<Pet[]>([]);
-  const [profileData, setProfileData] = useState<ProfileData>({
-    id: "", // Default empty string
-    profileImage: defaultProfileImage.src,
-    name: "",
-    mobile: "",
-    email: "",
-    currentAddress: "",
-    // Add other properties with sensible defaults
-  });
 
-  const { updateUserPetsHandler, userPets, user, authToken } = useUserContext();
+  const { updateUserPetsHandler, userPets, user, getAuthToken } = useUserContext();
 
   // Initialize petIdCounter as a string
   const [petIdCounter, setPetIdCounter] = useState<string>("1");
 
   const navigate = useRouter();
 
-  useEffect(() => {
-    fetchUserPets();
-  }, [userPets, navigate]);
-
-  const fetchUserPets = () => {
-    if (userPets) {
-      const partialPetsDetails: Pet[] = userPets.map((pet) => ({
-        id: pet.id || "",
-        name: pet.name || "",
-        type: pet.type || "",
-        profileImage: pet.profileImage || "",
-      }));
-      setPets(partialPetsDetails);
-
-      // Set petIdCounter based on the last petId in the list, converting to a string
-      if (partialPetsDetails.length > 0) {
-        const maxId = Math.max(
-          ...partialPetsDetails.map((pet: Pet) => parseInt(pet.id))
-        );
-        setPetIdCounter((maxId + 1).toString());
-      }
-    }
-  };
-
+  
   const addPet = (pet: Omit<Pet, "id" | "profileImage">): void => {
     const newPet: Pet = { ...pet, id: petIdCounter, profileImage: "" };
-    setPets((prevPets) => {
-      const updatedPets = [...prevPets, newPet];
-
-      updateUserPetsHandler([...prevPets, newPet]);
-      return updatedPets;
-    });
+    updateUserPetsHandler(userPets ? [...userPets, newPet] : [newPet]);
     toast.success("Added pet successfully", {
       duration: 3000,
       style: {
@@ -83,36 +44,24 @@ const Profile: React.FC = () => {
     });
     setPetIdCounter((parseInt(petIdCounter) + 1).toString());
   };
-
-  const fetchProfileData = () => {
-    if (user) {
-      setProfileData({
-        id: user.id,
-        name: user.name,
-        email: user.email || "",
-        mobile: user.mobile,
-        currentAddress: user.currentAddress || "",
-        profileImage: user.profileImage || defaultProfileImage.src,
-      });
-    }
-  };
-
+  
   useEffect(() => {
+    const authToken = getAuthToken();
     if (!authToken) {
       navigate.push("/");
     }
-    fetchProfileData();
-  }, [authToken, navigate]);
-  if (!profileData.id) {
+  }, [getAuthToken, navigate]);
+
+  if (!user) {
     return <Loader />;
   }
 
   return (
     <div className="flex flex-col w-full h-full 2xl:h-screen items-center font-roca pb-20 flex-grow ">
       <main className="flex flex-col w-full gap-8 md:gap-16 items-center px-8 md:px-32 lg:px-20 xl:px-40">
-        {profileData && (
+        {user && (
           <ProfileCard
-            profile={profileData}
+            profile={user}
             onEdit={() => setIsEditModalOpen(true)}
           />
         )}
@@ -121,7 +70,7 @@ const Profile: React.FC = () => {
         <div className="flex flex-col w-full min-h-[350px] gap-2">
           <div className="flex items-center justify-between">
             <h1 className="text-2xl text-secondary-1">Your Pets</h1>
-            {pets.length > 0 && (
+            {userPets && userPets.length > 0 && (
               <OutlineButton
                 outlineBtnText="Add Pet"
                 outlineBtnLink={() => setIsAddPetModalOpen(true)}
@@ -129,7 +78,7 @@ const Profile: React.FC = () => {
             )}
           </div>
 
-          {pets.length === 0 ? (
+          {userPets && userPets.length === 0 ? (
             <div className="flex flex-col items-center justify-center flex-1 gap-2">
               <h3 className="text-secondary-1">
                 You haven&apos;t added any <span>pets yet</span>
@@ -143,7 +92,7 @@ const Profile: React.FC = () => {
             </div>
           ) : (
             <div className="flex justify-center items-center md:justify-start  flex-wrap gap-4 my-8 md:my-4">
-              {pets.map((pet) => (
+              {userPets && userPets.map((pet) => (
                 <PetCard key={pet.id} pet={pet} />
               ))}
             </div>
@@ -160,11 +109,11 @@ const Profile: React.FC = () => {
         />
       </main>
 
-      {profileData && (
+      {user && (
         <EditProfileModal
           isOpen={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}
-          profileData={profileData}
+          profileData={user}
         />
       )}
       <Toaster position="bottom-right" />

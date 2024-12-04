@@ -10,15 +10,11 @@ import defaultHamsterImg from "@/public/assets/images/pets/hamster.png";
 import defaultBirdImg from "@/public/assets/images/pets/bird.png";
 import defaultRabbitImg from "@/public/assets/images/pets/rabbit.png";
 import defaultOtherPetImage from "@/public/assets/images/pets/petImg.png";
+import { Pet } from "@/context/UserContext";
 
 
 interface PetCardProps {
-  pet: {
-    id: string;
-    name: string;
-    type: string;
-    profileImage: StaticImageData | string;
-  };
+  pet: Pet;
 }
 
 export const petImageByType: Record<string, StaticImageData> = {

@@ -8,6 +8,7 @@ import {
   useState,
   ReactNode,
   useEffect,
+  useCallback,
 } from "react";
 import jwt from "jsonwebtoken";
 import { z } from "zod";
@@ -22,7 +23,7 @@ export interface User {
   role: UserRole;
   email: string | null;
   currentAddress: string | null;
-  profileImage: string | null; // profile picture is optional
+  profileImage: string | null;
 }
 
 export interface Pet {
@@ -45,7 +46,7 @@ export interface UserContextType {
   userPets: Pet[] | null;
   updateUserDetailsHandler: (data: Partial<User>) => void;
   updateUserPetsHandler: (data: Partial<Pet>[]) => void;
-  authToken: boolean;
+  getAuthToken: () => string | null;
   refresh: () => void;
 }
 
@@ -60,50 +61,19 @@ interface UserProviderProps {
 export const UserProvider = ({ children }: UserProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [userPets, setUserPets] = useState<Pet[] | null>(null);
-  const [authToken, setAuthToken] = useState<boolean>(false);
 
   const { call: getUser } = useAPICall(api.getuser);
-
-  const SECRET_KEY = process.env.NEXT_PUBLIC_JWT_SECRET_KEY as string;
 
   const JwtPayloadSchema = z.object({
     id: z.string(),
   });
 
-  const handleCheckAuthToken = async () => {
+  const getAuthToken = useCallback(() => {
     const token = localStorage.getItem("authToken");
-    if (token) {
-      setAuthToken(true);
+    return token;
+  }, []);
 
-      if (token) {
-        const decodedToken = jwt.decode(token);
-        const payload = JwtPayloadSchema.parse(decodedToken);
-        console.log(payload.id)
-        const response = await getUser({ id: payload.id });
-        if (response.ok) {
-          const userResponse = response.value.body.user;
-          updateUserDetailsHandler(userResponse);
-          const pets = response.value.body.user_pets?.map((pet) => ({
-            ...pet,
-            profileImage: pet.profile_image,
-            gender: pet.gender ?? undefined,
-          })) as Partial<Pet>[];
-
-          if (pets) {
-            updateUserPetsHandler(pets);
-          }
-        }
-      }
-    } else {
-      setAuthToken(false);
-    }
-  };
-
-  useEffect(() => {
-    handleCheckAuthToken();
-  }, [authToken]);
-
-  const updateUserDetailsHandler = (data: Partial<User>) => {
+  const updateUserDetailsHandler = useCallback((data: Partial<User>) => {
     setUser((prevDetails) => {
       if (!prevDetails) {
         // If no previous details exist, initialize a new user object with defaults
@@ -124,9 +94,9 @@ export const UserProvider = ({ children }: UserProviderProps) => {
         ...data,
       };
     });
-  };
+  }, []);
 
-  const updateUserPetsHandler = (updatedPets: Partial<Pet>[]) => {
+  const updateUserPetsHandler = useCallback((updatedPets: Partial<Pet>[]) => {
     setUserPets((prevPets) => {
       if (!prevPets || prevPets.length === 0) {
         return updatedPets.map((updatedPet) => ({
@@ -150,7 +120,39 @@ export const UserProvider = ({ children }: UserProviderProps) => {
         return updatedPet ? { ...pet, ...updatedPet } : pet;
       });
     });
-  };
+  }, []);
+
+  const handleCheckAuthToken = useCallback(async () => {
+    const token = getAuthToken();
+    if (token) {
+      const decodedToken = jwt.decode(token);
+      const payload = JwtPayloadSchema.parse(decodedToken);
+      if (!user) {
+        try {
+          const response = await getUser({ id: payload.id });
+          if (response.ok) {
+            const userResponse = response.value.body.user;
+            updateUserDetailsHandler(userResponse);
+            const pets = response.value.body.pets?.map((pet) => ({
+              ...pet,
+              profileImage: pet.profile_image,
+              gender: pet.gender,
+            })) as Partial<Pet>[];
+    
+            if (pets) {
+              updateUserPetsHandler(pets);
+            }
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    handleCheckAuthToken();
+  }, [handleCheckAuthToken]);
 
   return (
     <UserContext.Provider
@@ -159,7 +161,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
         userPets,
         updateUserDetailsHandler,
         updateUserPetsHandler,
-        authToken,
+        getAuthToken,
         refresh: handleCheckAuthToken,
       }}
     >

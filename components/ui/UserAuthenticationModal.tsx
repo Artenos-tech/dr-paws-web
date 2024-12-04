@@ -147,7 +147,7 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
             currentAddress: user.current_address,
             profileImage: user.profile_image,
           });
-          const pets = response.value.body.user_pets?.map((pet) => ({
+          const pets = response.value.body.pets?.map((pet) => ({
             ...pet,
             profileImage: pet.profile_image,
             gender: pet.gender ?? undefined,
@@ -191,7 +191,7 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
             currentAddress: user.current_address,
             profileImage: user.profile_image,
           });
-          const pets = response.value.body.user_pets?.map((pet) => ({
+          const pets = response.value.body.pets?.map((pet) => ({
             ...pet,
             profileImage: pet.profile_image,
             gender: pet.gender ?? undefined,
