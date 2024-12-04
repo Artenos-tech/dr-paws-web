@@ -13,7 +13,6 @@ import { useState } from "react";
 const Footer = () => {
   const [isContactModalOpen, setContactIsModalOpen] = useState(false);
 
-
   return (
     <footer className="bg-primary-3 py-10">
       <div className="mx-auto px-8 md:px-32 lg:px-20 xl:px-40">
