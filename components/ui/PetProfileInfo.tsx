@@ -41,28 +41,28 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
   });
 
   useEffect(() => {
+    const fetchPetDetails = () => {
+      // const storedPets = localStorage.getItem("pets");
+      if (userPets) {
+        // const pets: PetInfo[] = JSON.parse(storedPets);
+        // const foundPet = userPets.find(
+        //   (pet) => Number(pet.id) === Number(petProfileId)
+        // );
+
+        // setPet(foundPet);
+        // setImage(foundPet?.petImage || "");
+        // setAge(foundPet?.age || { years: 0, months: 0 });
+
+        // if (foundPet) {
+        //   for (const key in foundPet) {
+        //     setValue(key as keyof PetInfo, foundPet[key as keyof PetInfo]);
+        //   }
+        // }
+      }
+    };
+
     fetchPetDetails();
-  }, [petProfileId, setValue]);
-
-  const fetchPetDetails = () => {
-    // const storedPets = localStorage.getItem("pets");
-    if (userPets) {
-      // const pets: PetInfo[] = JSON.parse(storedPets);
-      // const foundPet = userPets.find(
-      //   (pet) => Number(pet.id) === Number(petProfileId)
-      // );
-
-      // setPet(foundPet);
-      // setImage(foundPet?.petImage || "");
-      // setAge(foundPet?.age || { years: 0, months: 0 });
-
-      // if (foundPet) {
-      //   for (const key in foundPet) {
-      //     setValue(key as keyof PetInfo, foundPet[key as keyof PetInfo]);
-      //   }
-      // }
-    }
-  };
+  }, [petProfileId, setValue, userPets]);
 
   const handleEditCancelClick = () => {
     if (pet) {
@@ -84,16 +84,17 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
         ? ""
         : image;
 
-    const storedPets = localStorage.getItem("pets");
-    const pets: PetInfo[] = storedPets ? JSON.parse(storedPets) : [];
-
-    const updatedPets = pets.map((pet) =>
-      Number(pet.petId) === Number(petProfileId)
-        ? { ...data, petImage: realPetImage }
-        : pet
-    );
-
-    localStorage.setItem("pets", JSON.stringify(updatedPets));
+    if (typeof window !== "undefined") {
+      const storedPets = localStorage.getItem("pets");
+      const pets: PetInfo[] = storedPets ? JSON.parse(storedPets) : [];
+  
+      const updatedPets = pets.map((pet) =>
+        Number(pet.petId) === Number(petProfileId)
+          ? { ...data, petImage: realPetImage }
+          : pet
+      );
+      localStorage.setItem("pets", JSON.stringify(updatedPets));
+    }
     setPet({ ...data, petImage: realPetImage });
     setIsEditing(false);
   };

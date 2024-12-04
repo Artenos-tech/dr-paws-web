@@ -69,8 +69,11 @@ export const UserProvider = ({ children }: UserProviderProps) => {
   });
 
   const getAuthToken = useCallback(() => {
-    const token = localStorage.getItem("authToken");
-    return token;
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("authToken");
+      return token;
+    }
+    return null
   }, []);
 
   const updateUserDetailsHandler = useCallback((data: Partial<User>) => {

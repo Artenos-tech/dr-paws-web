@@ -18,7 +18,9 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
 
   const handleProfileUpdate = (updatedProfile: User) => {
     updateUserDetailsHandler(updatedProfile);
-    localStorage.setItem("userProfile", JSON.stringify(updatedProfile));
+    if (typeof window !== "undefined") {
+      localStorage.setItem("userProfile", JSON.stringify(updatedProfile));
+    }
     onClose();
   };
 
