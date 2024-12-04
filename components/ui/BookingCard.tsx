@@ -64,7 +64,9 @@ const BookingCard: React.FC<BookingCardProps> = ({
 
     setPets((prevPets) => {
       const updatedPets = [...prevPets, newPetObject];
-      localStorage.setItem("pets", JSON.stringify(updatedPets));
+      if (typeof window !== "undefined") {
+        localStorage.setItem("pets", JSON.stringify(updatedPets));
+      }
       return updatedPets;
     });
 

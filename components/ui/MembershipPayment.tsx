@@ -1,12 +1,11 @@
 "use client";
 
-import { ArrowLeft } from "lucide-react";
-import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
+import BackButton from "./BackButton";
 
 const paymentSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -66,13 +65,8 @@ const MembershipPayment = () => {
         <div className="flex flex-col lg:flex-row gap-4 lg:gap-28 px-8 md:px-32 lg:px-20 xl:px-40 lg:mb-4">
           {/* Payment Form */}
           <div className="lg:w-3/5">
-            <Link
-              href="/membership"
-              className="flex items-center text-primary-1 my-8"
-            >
-              <ArrowLeft className="mr-2" size={20} />
-              Back
-            </Link>
+            <BackButton />
+
             <h1 className="text-[32px] font-semibold text-primary-1 mb-6">
               Enter payment details
             </h1>
@@ -249,7 +243,7 @@ const MembershipPayment = () => {
                       For {duration}
                     </div>
                     <div className="text-xl font-semibold text-primary-1">
-                      ₹{price}/yr
+                      {price}/yr
                     </div>
                   </div>
                 </div>
@@ -258,11 +252,11 @@ const MembershipPayment = () => {
                   <div className="flex flex-col gap-4  flex-1">
                     <div className="flex justify-between text-sm text-gray-600">
                       <span>Subtotal</span>
-                      <span>₹{price}</span>
+                      <span>{price}</span>
                     </div>
                     <div className="flex justify-between font-medium text-primary-1">
                       <span>TOTAL</span>
-                      <span>₹{price}</span>
+                      <span>{price}</span>
                     </div>
                   </div>
                 </div>

@@ -11,8 +11,9 @@ import { useState } from "react";
 // import { useMarketingFeature } from "@/hooks/useMarketingFeature";
 
 const Footer = () => {
-  // const isMarketingFeatureEnabled = useMarketingFeature();
   const [isContactModalOpen, setContactIsModalOpen] = useState(false);
+
+
   return (
     <footer className="bg-primary-3 py-10">
       <div className="mx-auto px-8 md:px-32 lg:px-20 xl:px-40">
@@ -45,12 +46,12 @@ const Footer = () => {
               Team
             </Link>
             {/* {!isMarketingFeatureEnabled ? ( */}
-              <Link
-                href="#"
-                className="block mt-1 text-primary-1 hover:text-primary-2"
-              >
-                Careers
-              </Link>
+            <Link
+              href="#"
+              className="block mt-1 text-primary-1 hover:text-primary-2"
+            >
+              Careers
+            </Link>
             {/* ) : null} */}
           </div>
           <div>

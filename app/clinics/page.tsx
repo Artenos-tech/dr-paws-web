@@ -45,7 +45,7 @@ export default function Clinics() {
         </div>
 
         {/*clinic location form*/}
-        {!isMarketingFeatureEnabled ? <ClinicLocationForm /> : null}
+        {!isMarketingFeatureEnabled && <ClinicLocationForm />}
       </main>
     </div>
   );

@@ -5,26 +5,25 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import ImageEdit from "@/public/assets/images/Profile/ImageEdit.png";
-import { ProfileData } from "./ProfileCard";
 import { FaTrash } from "react-icons/fa6";
-import ProfileLogo from '@/public/assets/images/Profile/profileLogo.jpg'
-
+import ProfileLogo from "@/public/assets/images/Profile/profileLogo.jpg";
+import { User } from "@/context/UserContext";
 
 const profileSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  contact: z
+  mobile: z
     .string()
     .length(10, "Contact must be 10 digits")
     .regex(/^\d{10}$/, "Contact must be numeric"),
-  email: z.string().email("Invalid email address"),
-  address: z.string().min(1, "Address is required"),
+  email: z.string().email("Invalid email address").nullable(),
+  currentAddress: z.string().nullable(),
 });
 
 type ProfileFormData = z.infer<typeof profileSchema>;
 
 interface ProfileFormProps {
-  profileData: ProfileData;
-  onSubmit: (data: ProfileData) => void;
+  profileData: User;
+  onSubmit: (data: User) => void;
   onCancel: () => void;
 }
 
@@ -43,11 +42,11 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
     defaultValues: profileData,
   });
 
-  const [image, setImage] = useState(profileData.image);
+  const [image, setImage] = useState(profileData.profileImage);
 
   useEffect(() => {
     reset(profileData);
-    setImage(profileData.image);
+    setImage(profileData.profileImage);
   }, [profileData, reset]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -60,12 +59,17 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
   };
 
   const handleFormSubmit = (data: ProfileFormData) => {
-    onSubmit({ ...data, image });
+    onSubmit({
+      id: profileData.id,
+      profileImage: image,
+      role: "USER",
+      ...data,
+    });
   };
 
   const handleDeleteImage = () => {
-    setImage(ProfileLogo.src)
-  }
+    setImage(ProfileLogo.src);
+  };
 
   return (
     <form
@@ -92,13 +96,15 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
             onChange={handleImageChange}
             className="absolute bottom-0 right-0 opacity-0 w-1/2 h-1/2 cursor-pointer"
           />
-          { image !== ProfileLogo.src && <button
-            type="button"
-            className="absolute bottom-0 left-0 p-3 bg-red-500 rounded-full z-10"
-            onClick={handleDeleteImage}
-          >
-            <FaTrash size={10} fill="white" />
-          </button>}
+          {image !== ProfileLogo.src && (
+            <button
+              type="button"
+              className="absolute bottom-0 left-0 p-3 bg-red-500 rounded-full z-10"
+              onClick={handleDeleteImage}
+            >
+              <FaTrash size={10} fill="white" />
+            </button>
+          )}
         </div>
       </div>
 
@@ -115,14 +121,14 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
       <div className="flex flex-col ">
         <label className="text-sm">Contact No</label>
         <input
-          {...register("contact")}
+          {...register("mobile")}
           type="text"
           maxLength={10}
           pattern="\d*"
           className="rounded-md p-2 border w-full border-[#74A7B3]"
         />
-        {errors.contact && (
-          <span className="text-red-500 text-sm">{errors.contact.message}</span>
+        {errors.mobile && (
+          <span className="text-red-500 text-sm">{errors.mobile.message}</span>
         )}
       </div>
       <div className="flex flex-col ">
@@ -138,11 +144,13 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
       <div className="flex flex-col ">
         <label className="text-sm">Address</label>
         <input
-          {...register("address")}
+          {...register("currentAddress")}
           className="input rounded-md p-2 border w-full border-[#74A7B3]"
         />
-        {errors.address && (
-          <span className="text-red-500 text-sm">{errors.address.message}</span>
+        {errors.currentAddress && (
+          <span className="text-red-500 text-sm">
+            {errors.currentAddress.message}
+          </span>
         )}
       </div>
       <div className="flex gap-2 pt-2">

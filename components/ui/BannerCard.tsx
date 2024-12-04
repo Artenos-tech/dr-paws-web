@@ -6,10 +6,10 @@ interface bannerCardProps {
     bannerImage: StaticImageData;
     bannerText: string;
   };
-  openContactModal: () => void;
+  openLoginModal: ((val: string) => void) | undefined;
 }
 
-const BannerCard: React.FC<bannerCardProps> = ({ banItem, openContactModal }) => {
+const BannerCard: React.FC<bannerCardProps> = ({ banItem, openLoginModal }) => {
   const { bannerImage, bannerText } = banItem;
   return (
     <div className="w-[100px] md:w-[130px] lg:w-[150px] flex flex-col items-center">
@@ -28,8 +28,10 @@ const BannerCard: React.FC<bannerCardProps> = ({ banItem, openContactModal }) =>
         </div>
       </div>
       <div className="w-full">
-        <button className="w-full py-2 bg-secondary-1 hover:bg-primary-1 text-white rounded-b-3xl text-xs md:text-sm"
-        onClick={openContactModal}>
+        <button
+          className="w-full py-2 bg-secondary-1 hover:bg-primary-1 text-white rounded-b-3xl text-xs md:text-sm"
+          onClick={() => openLoginModal && openLoginModal("Book a Visit")}
+        >
           Book a Visit
         </button>
       </div>
