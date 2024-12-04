@@ -13,10 +13,15 @@ interface ClinicGalleryProps {
 }
 
 function ClinicGallery({ clinic }: ClinicGalleryProps) {
+ 
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const limitedGalleryItems = photos.slice(0, 7);
+  const clinicImages = photos.find((clinicInfo) => clinicInfo.id === clinic.id);
+  const limitedGalleryItems = clinicImages
+    ? clinicImages.photos.slice(0, 7)
+    : [];
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -44,7 +49,7 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
 
   return (
     <div className="w-full">
-      <div className="gallery-container grid grid-cols-3 gap-4">
+      <div className="gallery-container grid grid-cols-3 gap-4 max-h-[75vh] relative overflow-y-auto">
         {limitedGalleryItems.map((image, index) => (
           <div
             key={index}
@@ -64,7 +69,7 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
               loading="lazy"
             />
             {index === limitedGalleryItems.length - 1 && (
-              <span className="absolute inset-0 flex items-center justify-center text-white font-bold text-xl">
+              <span className="absolute inset-0 flex items-center justify-center !text-gray-600 font-bold text-xl">
                 View Gallery
               </span>
             )}
@@ -113,7 +118,7 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
             className="p-2 rounded-full bg-gray-700 text-white hover:bg-gray-600 focus:outline-none"
             onClick={() =>
               setCurrentIndex((prev) =>
-                prev === 0 ? photos.length - 1 : prev - 1
+                prev === 0 ? limitedGalleryItems.length - 1 : prev - 1
               )
             }
             aria-label="Previous Image"
@@ -124,7 +129,7 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
           {/* Current Image */}
           <div className="w-full">
             <img
-              src={photos[currentIndex].src}
+              src={limitedGalleryItems[currentIndex].src}
               alt="gallery image"
               className="overflow-hidden w-full h-[80vh] object-contain"
               loading="lazy"
@@ -136,7 +141,7 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
             className="p-2 rounded-full bg-gray-700 text-white hover:bg-gray-600 focus:outline-none"
             onClick={() =>
               setCurrentIndex((prev) =>
-                prev === photos.length - 1 ? 0 : prev + 1
+                prev === limitedGalleryItems.length - 1 ? 0 : prev + 1
               )
             }
             aria-label="Next Image"
