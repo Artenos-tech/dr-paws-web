@@ -10,6 +10,7 @@ import { GrLocation } from "react-icons/gr";
 import { HiOutlineCalendar } from "react-icons/hi";
 import { customDate } from "./UpcomingAppointmentCard";
 import CustomButton from "./CustomButton";
+import { useRouter } from "next/navigation";
 
 type BookingDetailsProps = {
   appointmentId: string;
@@ -48,6 +49,8 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
 
   const [cancelFlowEnd, setCancelFlowEnd] = useState(false);
   const [showValidationMessage, setShowValidationMessage] = useState(false);
+
+  const navigate = useRouter();
 
   useEffect(() => {
     fetchBookingDetails();
@@ -194,6 +197,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                 <CustomButton
                   buttonText="Done"
                   buttonBackground="bg-secondary-1"
+                  buttonClickEvent={() => navigate.push("/user/my-appointments")}
                 />
               </div>
             )}
