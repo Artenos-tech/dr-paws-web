@@ -1,23 +1,20 @@
 import IND_2ndFloor from "../public/assets/images/ClinicDetails/IND_2ndFloor.jpg";
-import IND_2ndFloor1 from "../public/assets/images/ClinicDetails/IND_2ndFloor1.jpg";
+import IND_2ndFloor1 from "../public/assets/images/ClinicDetails/IND_2ndfloor1.jpg";
 import IND_Diagnostics from "../public/assets/images/ClinicDetails/IND_Diagnostics.jpg";
 import IND_OPT from "../public/assets/images/ClinicDetails/IND_OPT.jpg";
 import IND_Reception from "../public/assets/images/ClinicDetails/IND_Reception.jpg";
 import IND_WaitingArea from "../public/assets/images/ClinicDetails/IND_WaitingArea.jpg";
 import IND_Exterior1 from "../public/assets/images/ClinicDetails/IND_Exterior1.jpg";
 import IND_Exterior2 from "../public/assets/images/ClinicDetails/IND_Exterior2.jpg";
-import RMV_Exterior1 from "../public/assets/images/ClinicDetails/RMV_Exterior.jpg";
-import RMV_Exterior2 from "../public/assets/images/ClinicDetails/RMV_Exterior1.jpg";
-import RMV_1st_floor from "../public/assets/images/ClinicDetails/RMV_1st_floor.jpg";
-import RMV_Cat_consulation_1 from "../public/assets/images/ClinicDetails/RMV_Cat_consultation_1.jpg";
-import RMV_Cat_grooming from "../public/assets/images/ClinicDetails/RMV_Cat_grooming.jpg";
-import RMV_Cat_waiting_area from "../public/assets/images/ClinicDetails/RMV_Cat_waiting_area.jpg";
-import RMV_Dog_grooming from "../public/assets/images/ClinicDetails/RMV_Dog_grooming.jpg";
-import RMV_Dog_grooming_2 from "../public/assets/images/ClinicDetails/RMV_Dog_grooming_2.jpg";
-import RMV_Dog_grooming_3 from "../public/assets/images/ClinicDetails/RMV_Dog_grooming_3.jpg";
-import RMV_Dog_consultation_room from "../public/assets/images/ClinicDetails/RMV_Dog_consultation_room.jpg";
-import RMV_Hydrotherapy_room from "../public/assets/images/ClinicDetails/RMV_Hydrotherapy_room.jpg";
-import RMV_Reception_area from "../public/assets/images/ClinicDetails/RMV_Reception_area.jpg";
+import RMV_Exterior1 from "../public/assets/images/ClinicDetails/RMV_Exterior1.jpg";
+import RMV_Exterior2 from "../public/assets/images/ClinicDetails/RMV_Exterior2.jpg";
+import RMV_CatWaiting from "../public/assets/images/ClinicDetails/RMV_CatWaiting.png";
+import RMV_ConsultRoom from "../public/assets/images/ClinicDetails/RMV_ConsultRoom.png";
+import RMV_Grooming from "../public/assets/images/ClinicDetails/RMV_Grooming.png";
+import RMV_Hallway from "../public/assets/images/ClinicDetails/RMV_Hallway.png";
+import RMV_Hydrotherapy from "../public/assets/images/ClinicDetails/RMV_Hydrotherapy.png";
+import RMV_Reception from "../public/assets/images/ClinicDetails/RMV_Reception.png";
+import RMV_Retail from "../public/assets/images/ClinicDetails/RMV_Retail.png";
 import dogImg from "../public/assets/images/dogimg.png";
 import catImg from "../public/assets/images/catimg.png";
 import rabbitImg from "../public/assets/images/rabbitImg.png";
@@ -549,16 +546,13 @@ export const photos = [
     photos: [
       RMV_Exterior1,
       RMV_Exterior2,
-      RMV_1st_floor,
-      RMV_Cat_consulation_1,
-      RMV_Cat_grooming,
-      RMV_Cat_waiting_area,
-      RMV_Dog_grooming_2,
-      RMV_Dog_grooming_3,
-      RMV_Dog_grooming,
-      RMV_Dog_consultation_room,
-      RMV_Hydrotherapy_room,
-      RMV_Reception_area,
+      RMV_CatWaiting,
+      RMV_ConsultRoom,
+      RMV_Grooming,
+      RMV_Hallway,
+      RMV_Hydrotherapy,
+      RMV_Reception,
+      RMV_Retail,
     ],
   },
   // description1,
