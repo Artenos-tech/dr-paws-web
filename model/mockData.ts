@@ -24,7 +24,7 @@ import ParasiteControl from "@/public/assets/images/ServicesPage/PlannedCheckUpI
 import SkinInfections from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/SkinInfections.jpeg";
 import Vaccination from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/Vaccinations.png";
 import Deworming from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/Deworming.png";
-import EarEyeCheckUp from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/EarEyeCheckUp.png";
+import EarEyeCheckUp from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/EarEyeCheckup.png";
 import GeneralCheckUp from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/General check up.png";
 import NutritionalCounceling from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/NutritionalCounceling.png";
 import TraumaCare from "@/public/assets/images/ServicesPage/Sickness and Emergency/TraumaCare.webp";
