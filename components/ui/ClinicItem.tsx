@@ -3,7 +3,9 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Clinic } from "@/model/typeDefinitions";
-import ContactInfoModal from "./ContactInfoModal";
+import UserAuthenticationModal from "./UserAuthenticationModal";
+import { useUserContext } from "@/context/UserContext";
+import toast, { Toaster } from "react-hot-toast";
 
 interface ClinicItemProps {
   clinic: Clinic;
@@ -12,8 +14,30 @@ interface ClinicItemProps {
 
 const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
   const { image, clinicName, services, id } = clinic;
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loginModalOpen, setLoginModalOpen] = useState<boolean>(false);
   const router = useRouter();
+
+  const [buttonText, setButtonText] = useState<string>("");
+  const { getAuthToken, refresh } = useUserContext();
+
+  const handleLoginModalOpen = (val: string) => {
+    const authToken = getAuthToken();
+    if (authToken) {
+      router.push("/");
+      return;
+    }
+    setLoginModalOpen(true);
+    setButtonText(val);
+  };
+
+  const onSuccess = (toastMessage: string) => {
+    setLoginModalOpen(false);
+    refresh()
+    toast.success(`Successfully ${toastMessage}`, {
+      duration: 3000,
+      position: "bottom-right",
+    });
+  };
 
   const handleBookVisit = () => {
     router.push(`/clinics/${id}`);
@@ -41,15 +65,20 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
         </div>
       </div>
       <button
-        onClick={() => setIsModalOpen(true)}
+        onClick={() => handleLoginModalOpen("Book a Visit")}
         className={`btn bg-secondary-1 rounded-none border-none z text-white w-full rounded-b-md py-3`}
       >
         Book a Visit
       </button>
-      <ContactInfoModal
-        isOpen={isModalOpen}
-        onRequestClose={() => setIsModalOpen(false)}
+
+      <UserAuthenticationModal
+        isOpen={loginModalOpen}
+        onClose={() => setLoginModalOpen(false)}
+        // initialMobileNumber="9440705361"
+        buttonText={buttonText}
+        onSuccess={onSuccess}
       />
+      <Toaster />
     </div>
   );
 };

@@ -13,8 +13,7 @@ export interface Clinic {
   location: string;
   parkingInformation: string
 }
-
-export interface Pet {
+export interface PetInfo {
   petId: string;
   name: string;
   type: string;

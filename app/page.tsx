@@ -12,11 +12,45 @@ import GreenBackground from "@/public/assets/images/reviewImages/greenBackground
 import Lady from "@/public/assets/images/reviewImages/Girl.png";
 import YellowAndDocWithDog from "@/public/assets/images/petValues/YellowAndDocWithDog.svg";
 import TickMark from "@/public/assets/images/petValues/TickMark.svg";
-import ContactInfoModal from "@/components/ui/ContactInfoModal";
 import { useState } from "react";
+import UserAuthenticationModal from "@/components/ui/UserAuthenticationModal";
+import { useRouter } from "next/navigation";
+import { useUserContext } from "@/context/UserContext";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function Home() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loginModalOpen, setLoginModalOpen] = useState<boolean>(false);
+  const [buttonText, setButtonText] = useState<string>("");
+  const navigate = useRouter();
+
+  const { getAuthToken, refresh } = useUserContext();
+
+  const handleLoginModalOpen = (text: string) => {
+    const authToken = getAuthToken();
+    if (authToken) {
+      if (text === "Become a member") {
+        navigate.push("/membership");
+        return;
+      }
+      navigate.push("/");
+      return;
+    }
+    setLoginModalOpen(true);
+    setButtonText(text);
+  };
+
+  const onSuccess = (toastMessage: string) => {
+    if (buttonText === "Become a member") {
+      navigate.push("/membership");
+    }
+    toast.success(`Successfully ${toastMessage}`, {
+      duration: 3000,
+      position: "bottom-right",
+    });
+    refresh()
+    setLoginModalOpen(false);
+  };
+
   return (
     <div className="w-full h-full items-center justify-items-center font-roca">
       <main className="w-full flex flex-col gap-8 row-start-2 items-center sm:items-start">
@@ -35,7 +69,7 @@ export default function Home() {
               meet?
             </p>
             <div className="flex justify-center md:justify-start">
-              <BannerList openContactModal={() => setIsModalOpen(true)} />
+              <BannerList openLoginModal={handleLoginModalOpen} />
             </div>
           </div>
         </div>
@@ -45,9 +79,7 @@ export default function Home() {
             <h1 className="mt-4 mb-16 text-center text-primary-1 text-xl md:text-4xl px-8">
               Veterinary care, redesigned to be better
             </h1>
-            <DescriptionCardList
-              openContactModal={() => setIsModalOpen(true)}
-            />
+            <DescriptionCardList openLoginModal={handleLoginModalOpen} />
           </div>
           <div className="mx-auto mt-12 lg:mt-32">
             <h1 className="mx-auto text-center text-xl md:text-4xl">
@@ -199,12 +231,17 @@ export default function Home() {
           </div>
 
           <FaqList />
-          <ContactInfoModal
-            isOpen={isModalOpen}
-            onRequestClose={() => setIsModalOpen(false)}
+
+          <UserAuthenticationModal
+            isOpen={loginModalOpen}
+            onClose={() => setLoginModalOpen(false)}
+            buttonText={buttonText}
+            onSuccess={onSuccess}
+            // initialMobileNumber="9440705361"
           />
         </div>
       </main>
+      <Toaster />
     </div>
   );
 }

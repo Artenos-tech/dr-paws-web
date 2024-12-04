@@ -17,7 +17,7 @@ const Booking: React.FC = () => {
   const [currentStep, setCurrentStep] = useState<number>(1); 
 
   useEffect(() => {
-    const savedPets = localStorage.getItem("pets");
+    const savedPets = typeof window !== "undefined" ? localStorage.getItem("pets") : null;
     const parsedPets: Pet[] = savedPets
       ? JSON.parse(savedPets).map((pet: Pet) => ({
           ...pet,

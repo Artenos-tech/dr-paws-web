@@ -4,19 +4,68 @@ import { useState } from "react";
 import Image from "next/image";
 import Profile from "@/public/assets/images/profileThumnail.svg";
 import { Menu } from "lucide-react";
-
 import Link from "next/link";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { MdChevronRight } from "react-icons/md";
 import logo from "@/public/assets/images/logo/logo.svg";
 import ContactInfoModal from "../ui/ContactInfoModal";
-import { useMarketingFeature } from "@/hooks/useMarketingFeature";
+import UserAuthenticationModal from "../ui/UserAuthenticationModal";
+import { useRouter } from "next/navigation";
+import { useUserContext } from "@/context/UserContext";
+import toast, { Toaster } from "react-hot-toast";
+import api, { clearAuthToken } from "@/services/api";
+import { useAPICall } from "@/hooks/apicall";
 import CustomButton from "../ui/CustomButton";
+import { useMarketingFeature } from "@/hooks/useMarketingFeature";
 
 export default function NavBar() {
-  const isMarketingFeatureEnabled = useMarketingFeature();
   const [isOpen, setIsOpen] = useState(false);
+  // const [isLocationOpen, setIsLocationOpen] = useState(false);
   const [isContactModalOpen, setContactIsModalOpen] = useState(false);
+  const [loginModalOpen, setLoginModalOpen] = useState<boolean>(false);
+  const navigate = useRouter();
+  const isMarketingFeatureEnabled = useMarketingFeature();
+
+  const [buttonText, setButtonText] = useState<string>("");
+
+  const { getAuthToken, refresh, user } = useUserContext();
+
+  // API
+  const { call: logout } = useAPICall(api.logout);
+
+  const handleLogout = async () => {
+    if (user) {
+      await logout({ id: user.id });
+    }
+    clearAuthToken();
+    window.location.reload();
+  };
+
+  const handleLoginModalOpen = (text: string) => {
+    const authToken = getAuthToken();
+    if (authToken) {
+      if (text === "View Profile" || text === "View Pets") {
+        navigate.push("/user/profile");
+        return;
+      }
+      navigate.push("/");
+      return;
+    }
+    setLoginModalOpen(true);
+    setButtonText(text);
+  };
+
+  const onSuccess = (toastMessage: string) => {
+    if (buttonText === "View Profile" || buttonText === "View Pets") {
+      navigate.push("/user/profile");
+    }
+    toast.success(`Successfully ${toastMessage}`, {
+      duration: 3000,
+      position: "bottom-right",
+    });
+    refresh();
+    setLoginModalOpen(false);
+  };
 
   return (
     <div className="fixed left-0 top-0 z-30 bg-primary-3 w-full">
@@ -98,9 +147,9 @@ export default function NavBar() {
             <CustomButton
               buttonText="Book a visit"
               buttonBackground="bg-secondary-1"
-              buttonClickEvent={() => setContactIsModalOpen(true)}
+              buttonClickEvent={() => handleLoginModalOpen("Book a Visit")}
             />
-            {!isMarketingFeatureEnabled ? (
+            {getAuthToken() ? (
               <DropdownMenu.Root>
                 <DropdownMenu.Trigger className="outline-none">
                   <Image
@@ -119,7 +168,7 @@ export default function NavBar() {
                   >
                     <DropdownMenu.Item asChild>
                       <div
-                        onClick={() => setContactIsModalOpen(true)}
+                        onClick={() => handleLoginModalOpen("View Profile")}
                         className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
                       >
                         Profile
@@ -127,7 +176,7 @@ export default function NavBar() {
                     </DropdownMenu.Item>
                     <DropdownMenu.Item asChild>
                       <div
-                        onClick={() => setContactIsModalOpen(true)}
+                        onClick={() => handleLoginModalOpen("View Pets")}
                         className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
                       >
                         My Pets
@@ -153,7 +202,7 @@ export default function NavBar() {
                     <div className="border-t border-gray-300 my-2" />
                     <DropdownMenu.Item asChild>
                       <div
-                        onClick={() => setContactIsModalOpen(true)}
+                        onClick={() => navigate.push("/membership")}
                         className="text-secondary-1 flex justify-between items-center hover:text-primary-1 cursor-pointer outline-none"
                       >
                         Become a Member <MdChevronRight />
@@ -178,7 +227,7 @@ export default function NavBar() {
                     </DropdownMenu.Item>
                     <DropdownMenu.Item asChild>
                       <div
-                        onClick={() => setContactIsModalOpen(true)}
+                        onClick={handleLogout}
                         className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
                       >
                         Logout
@@ -188,7 +237,15 @@ export default function NavBar() {
                   </DropdownMenu.Content>
                 </DropdownMenu.Portal>
               </DropdownMenu.Root>
-            ) : null}
+            ) : (
+              <button
+                type="button"
+                onClick={() => handleLoginModalOpen("View Profile")}
+                className="text-primary-1 text-sm tracking-wider"
+              >
+                Login
+              </button>
+            )}
           </div>
           <div className="-mr-2 flex lg:hidden">
             <button
@@ -242,7 +299,6 @@ export default function NavBar() {
             >
               Locations
             </Link>
-
             <Link
               onClick={() => setIsOpen(false)}
               href="/services"
@@ -269,7 +325,7 @@ export default function NavBar() {
           </div>
           <div className="pt-4 pb-3 border-t border-primary-2">
             <div className="flex items-center px-8 md:px-32 space-x-4">
-              {!isMarketingFeatureEnabled ? (
+              {getAuthToken() ? (
                 <DropdownMenu.Root>
                   <DropdownMenu.Trigger>
                     <Image
@@ -289,7 +345,7 @@ export default function NavBar() {
                       <DropdownMenu.Item
                         onClick={() => {
                           setIsOpen(false);
-                          setContactIsModalOpen(true);
+                          handleLoginModalOpen("View Profile");
                         }}
                         className="text-primary-1 hover:text-secondary-1 cursor-pointer"
                       >
@@ -298,9 +354,8 @@ export default function NavBar() {
                       <DropdownMenu.Item
                         onClick={() => {
                           setIsOpen(false);
-                          setContactIsModalOpen(true);
+                          handleLoginModalOpen("View Pets");
                         }}
-                        asChild
                         className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none "
                       >
                         My Pets
@@ -323,17 +378,21 @@ export default function NavBar() {
                       >
                         My Appointments
                       </DropdownMenu.Item>
-                      <div className="border-t border-gray-300 my-2" />
-                      <DropdownMenu.Item
-                        onClick={() => {
-                          setIsOpen(false);
-                          setContactIsModalOpen(true);
-                        }}
-                        className="text-secondary-1 flex justify-between items-center hover:text-primary-1 cursor-pointer"
-                      >
-                        Become a Member <MdChevronRight />
-                      </DropdownMenu.Item>
-                      <div className="border-t border-gray-300 my-2" />
+                      {!isMarketingFeatureEnabled ? (
+                        <>
+                          <div className="border-t border-gray-300 my-2" />
+                          <DropdownMenu.Item
+                            onClick={() => {
+                              setIsOpen(false);
+                              navigate.push("/membership");
+                            }}
+                            className="text-secondary-1 flex justify-between items-center hover:text-primary-1 cursor-pointer"
+                          >
+                            Become a Member <MdChevronRight />
+                          </DropdownMenu.Item>
+                          <div className="border-t border-gray-300 my-2" />
+                        </>
+                      ) : null}
                       <DropdownMenu.Item
                         onClick={() => {
                           setIsOpen(false);
@@ -353,10 +412,7 @@ export default function NavBar() {
                         Account Settings
                       </DropdownMenu.Item>
                       <DropdownMenu.Item
-                        onClick={() => {
-                          setIsOpen(false);
-                          setContactIsModalOpen(true);
-                        }}
+                        onClick={handleLogout}
                         className="text-primary-1 hover:text-secondary-1 cursor-pointer"
                       >
                         Log Out
@@ -365,12 +421,20 @@ export default function NavBar() {
                     </DropdownMenu.Content>
                   </DropdownMenu.Portal>
                 </DropdownMenu.Root>
-              ) : null}
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => handleLoginModalOpen("View Profile")}
+                  className="text-primary-1 text-sm tracking-wider"
+                >
+                  Login
+                </button>
+              )}
               <div onClick={() => setIsOpen(false)}>
                 <CustomButton
                   buttonText="Book a visit"
                   buttonBackground="bg-secondary-1"
-                  buttonClickEvent={() => setContactIsModalOpen(true)}
+                  buttonClickEvent={() => handleLoginModalOpen("Book a Visit")}
                 />
               </div>
             </div>
@@ -381,6 +445,16 @@ export default function NavBar() {
         isOpen={isContactModalOpen}
         onRequestClose={() => setContactIsModalOpen(false)}
       />
+
+      <UserAuthenticationModal
+        isOpen={loginModalOpen}
+        onClose={() => setLoginModalOpen(false)}
+        // initialMobileNumber="9440705361"
+        buttonText={buttonText}
+        onSuccess={onSuccess}
+      />
+
+      <Toaster />
     </div>
   );
 }

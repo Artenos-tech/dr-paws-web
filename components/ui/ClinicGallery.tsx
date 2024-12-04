@@ -6,16 +6,17 @@ import ReactModal from "react-modal";
 import { IoIosArrowBack, IoIosArrowForward, IoMdClose } from "react-icons/io";
 import { Clinic } from "@/model/typeDefinitions";
 import CustomButton from "./CustomButton";
-import ContactInfoModal from "./ContactInfoModal";
+import UserAuthenticationModal from "./UserAuthenticationModal";
+import { useUserContext } from "@/context/UserContext";
+import { useRouter } from "next/navigation";
+import toast, { Toaster } from "react-hot-toast";
 
 interface ClinicGalleryProps {
   clinic: Clinic;
 }
 
 function ClinicGallery({ clinic }: ClinicGalleryProps) {
- 
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loginModalOpen, setLoginModalOpen] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const clinicImages = photos.find((clinicInfo) => clinicInfo.id === clinic.id);
@@ -23,6 +24,28 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
     ? clinicImages.photos.slice(0, 7)
     : [];
   const [isMounted, setIsMounted] = useState(false);
+
+  const [buttonText, setButtonText] = useState<string>("");
+  const { getAuthToken, refresh } = useUserContext();
+  const navigate = useRouter();
+
+  const handleLoginModalOpen = (val: string) => {
+    if (getAuthToken()) {
+      navigate.push("/");
+      return;
+    }
+    setLoginModalOpen(true);
+    setButtonText(val);
+  };
+
+  const onSuccess = (toastMessage: string) => {
+    setLoginModalOpen(false);
+    refresh()
+    toast.success(`Successfully ${toastMessage}`, {
+      duration: 3000,
+      position: "bottom-right",
+    });
+  };
 
   useEffect(() => {
     setIsMounted(true);
@@ -84,7 +107,7 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
           <CustomButton
             buttonText="Book a visit"
             buttonBackground="bg-secondary-1"
-            buttonClickEvent={() => setIsModalOpen(true)}
+            buttonClickEvent={() => handleLoginModalOpen("Book a Visit")}
           />
         </div>
       </div>
@@ -150,10 +173,15 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
           </button>
         </div>
       </ReactModal>
-      <ContactInfoModal
-        isOpen={isModalOpen}
-        onRequestClose={() => setIsModalOpen(false)}
+
+      <UserAuthenticationModal
+        isOpen={loginModalOpen}
+        onClose={() => setLoginModalOpen(false)}
+        // initialMobileNumber="9440705361"
+        buttonText={buttonText}
+        onSuccess={onSuccess}
       />
+      <Toaster />
     </div>
   );
 }
