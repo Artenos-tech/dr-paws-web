@@ -20,17 +20,17 @@ export default function Home() {
   return (
     <div className="w-full h-full items-center justify-items-center font-roca">
       <main className="w-full flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <div className="bg-banner bg-cover bg-center bg-no-repeat h-96 w-full md:h-[500px] lg:h-[600px] min-h-[300px]">
+        <div className="bg-banner bg-cover bg-top bg-no-repeat h-96 w-full md:h-[500px] lg:h-[600px] min-h-[300px]">
           <div className="flex flex-col items-center md:items-start gap-0 w-full md:w-full  lg:w-1/2 mx-auto mt-6 md:ml-32 md:mt-10 lg:gap-4 lg:mt-12 lg:ml-40 text-center md:text-left">
             <div>
-              <h1 className="text-[32px] md:text-[40px] lg:text-[56px]  leading-tight md:leading-snug lg:leading-none text-white">
+              <h1 className="text-[32px] md:text-[40px] lg:text-[56px]  leading-tight md:leading-snug lg:leading-none text-primary-1">
                 India&apos;s Friendliest Vet Clinics
               </h1>
-              <h1 className="lg:w-full text-[28px] md:w-[80%] md:text-[34px] lg:text-[48px] text-primary-3 leading-tight md:leading-snug lg:leading-none">
+              <h1 className="lg:w-full text-[28px] md:w-[80%] md:text-[34px] lg:text-[48px] text-primary-1 leading-tight md:leading-snug lg:leading-none">
                 Because your best friend deserves the very best
               </h1>
             </div>
-            <p className="text-white w-full md:w-[80%] lg:w-[70%] text-[14px] md:text-[16px] lg:text-[18px] px-10 md:px-0">
+            <p className="text-primary-1 w-full md:w-[80%] lg:w-[70%] text-[14px] md:text-[16px] lg:text-[18px] px-10 md:px-0">
               Book a visit to one of our clinics right now. Which friend will we
               meet?
             </p>

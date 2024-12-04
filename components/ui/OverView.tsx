@@ -43,19 +43,19 @@ const Overview: React.FC<OverviewProps> = ({
           <div className="flex flex-col w-full gap-2 md:gap-4">
             <h2 className="text-2xl font-roca mb-3">Timings</h2>
             <div className="text-sm md:text-lg">
-              <p className="flex justify-between">
+              <p className="flex justify-between mr-4">
                 Monday to Friday{" "}
                 <span className="text-base md:text-xl font-roca ml-4">
                   09:00 - 20:00
                 </span>
               </p>
-              <p className="flex justify-between">
+              <p className="flex justify-between mr-4">
                 Saturday{" "}
                 <span className="text-base md:text-xl font-roca ml-4">
                   09:00 - 20:00
                 </span>
               </p>
-              <p className="flex justify-between">
+              <p className="flex justify-between mr-4">
                 Sunday{" "}
                 <span className="text-base md:text-xl font-roca ml-4">
                   09:00 - 20:00
