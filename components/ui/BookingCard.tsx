@@ -5,23 +5,15 @@ import Image from "next/image";
 import AddPetModal from "./AddPetModal";
 import { petImageByType } from "./PetCard";
 import tickMark from "@/public/assets/images/Booking/tick-svgrepo-com.svg";
-
-interface Pet {
-  petId: string;
-  name: string;
-  type: string;
-  petImage?: string;
-}
+import { Pet, useUserContext } from "@/context/UserContext";
 
 interface BookingCardProps {
   cardId: string;
   title: string;
   description: string;
-  pets: Pet[];
   onCardSelection: (cardId: string, selectedPet: Pet | null) => void;
   isOpen: boolean;
   toggleCard: (cardId: string) => void;
-  setPets: React.Dispatch<React.SetStateAction<Pet[]>>;
   selectedData: Record<string, Pet | null>;
 }
 
@@ -29,17 +21,16 @@ const BookingCard: React.FC<BookingCardProps> = ({
   cardId,
   title,
   description,
-  pets,
   onCardSelection,
   isOpen,
   toggleCard,
-  setPets,
   selectedData,
 }) => {
   const [isAddPetModalOpen, setIsAddPetModalOpen] = useState(false);
+  const { userPets, updateUserPetsHandler } = useUserContext();
 
   const handlePetClick = (pet: Pet) => {
-    const isAlreadySelected = selectedData[cardId]?.petId === pet.petId;
+    const isAlreadySelected = selectedData[cardId]?.id === pet.id;
     const newSelectedPet = isAlreadySelected ? null : pet;
     onCardSelection(cardId, newSelectedPet);
   };
@@ -56,19 +47,17 @@ const BookingCard: React.FC<BookingCardProps> = ({
   const handleNewPetSubmit = (newPet: { name: string; type: string }) => {
     const petType = newPet.type.toLowerCase();
     const newPetObject: Pet = {
-      petId: Date.now().toString(),
+      id: Date.now().toString(),
       name: newPet.name,
       type: petType,
-      petImage: petImageByType[petType]?.src,
+      profileImage: petImageByType[petType]?.src,
+      breed: null,
+      weight: null,
+      gender: null,
+      dob: null,
+      age: { years: null, months: null },
     };
-
-    setPets((prevPets) => {
-      const updatedPets = [...prevPets, newPetObject];
-      if (typeof window !== "undefined") {
-        localStorage.setItem("pets", JSON.stringify(updatedPets));
-      }
-      return updatedPets;
-    });
+    updateUserPetsHandler(userPets ? [...userPets, newPetObject] : [newPetObject]);
 
     handleAddPetModalClose();
   };
@@ -99,17 +88,17 @@ const BookingCard: React.FC<BookingCardProps> = ({
         <div className="p-4 ">
           <h3 className="text-lg font-medium mb-2">Select your Pet:</h3>
           <div className="flex gap-3 flex-wrap justify-center items-center">
-            {pets.map((pet) => {
+            {userPets && userPets.map((pet) => {
               const petImage =
-                pet.petImage ||
+                pet.profileImage ||
                 petImageByType[pet.type.toLowerCase()]?.src ||
                 petImageByType["other"].src;
 
-              const isSelected = selectedData[cardId]?.petId === pet.petId;
+              const isSelected = selectedData[cardId]?.id === pet.id;
 
               return (
                 <div
-                  key={pet.petId}
+                  key={pet.id}
                   className="relative cursor-pointer m-2"
                   onClick={(e) => {
                     e.stopPropagation();

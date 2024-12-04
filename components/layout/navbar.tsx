@@ -38,6 +38,7 @@ export default function NavBar() {
       await logout({ id: user.id });
     }
     clearAuthToken();
+    navigate.push("/");
     window.location.reload();
   };
 
@@ -69,9 +70,10 @@ export default function NavBar() {
 
   const handleBookAVisit = () => {
     const authToken = getAuthToken();
+    console.log(authToken);
     return authToken
-      ?  handleLoginModalOpen("Book a Visit")
-      :  navigate.push("/user/book-appointment");
+      ?  navigate.push("/user/book-appointment")
+      : handleLoginModalOpen("Book a Visit");
   };
 
   return (

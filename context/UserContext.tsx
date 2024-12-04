@@ -14,7 +14,6 @@ import jwt from "jsonwebtoken";
 import { z } from "zod";
 
 export type UserRole = "ADMIN" | "USER";
-export type Gender = "Male" | "Female";
 
 export interface User {
   id: string;
@@ -32,7 +31,7 @@ export interface Pet {
   type: string;
   breed: string | null;
   weight: number | null;
-  gender: Gender;
+  gender: string | null;
   dob: string | null;
   age: {
     years: number | null;

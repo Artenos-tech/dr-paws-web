@@ -1,4 +1,6 @@
+import { useUserContext } from "@/context/UserContext";
 import Image, { StaticImageData } from "next/image";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 interface bannerCardProps {
@@ -11,6 +13,16 @@ interface bannerCardProps {
 
 const BannerCard: React.FC<bannerCardProps> = ({ banItem, openLoginModal }) => {
   const { bannerImage, bannerText } = banItem;
+  const { getAuthToken } = useUserContext();
+  const navigate = useRouter();
+  
+  const handleBookAVisit = () => {
+    const authToken = getAuthToken();
+    return authToken
+      ?  navigate.push("/user/book-appointment")
+      : openLoginModal && openLoginModal("Book a Visit");
+  };
+
   return (
     <div className="w-[100px] md:w-[130px] lg:w-[150px] flex flex-col items-center">
       <div className="bg-white rounded-t-3xl w-full flex flex-col items-center p-2 md:p-4">
@@ -30,7 +42,7 @@ const BannerCard: React.FC<bannerCardProps> = ({ banItem, openLoginModal }) => {
       <div className="w-full">
         <button
           className="w-full py-2 bg-secondary-1 hover:bg-primary-1 text-white rounded-b-3xl text-xs md:text-sm"
-          onClick={() => openLoginModal && openLoginModal("Book a Visit")}
+          onClick={handleBookAVisit}
         >
           Book a Visit
         </button>

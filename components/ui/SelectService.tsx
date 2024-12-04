@@ -5,13 +5,7 @@ import BookingCard from "@/components/ui/BookingCard";
 import BookingModal from "@/components/ui/BookingModal";
 import { bookingCategories } from "@/model/mockData";
 import CustomButton from "./CustomButton";
-
-export interface Pet {
-  petId: string;
-  name: string;
-  type: string;
-  petImage?: string;
-}
+import { Pet } from "@/context/UserContext";
 
 export interface BookingCategory {
   id: string;
@@ -20,8 +14,6 @@ export interface BookingCategory {
 }
 
 interface SelectServiceProps {
-  pets: Pet[];
-  setPets: React.Dispatch<React.SetStateAction<Pet[]>>;
   selectedData: Record<string, Pet | null>;
   setSelectedData: React.Dispatch<
     React.SetStateAction<Record<string, Pet | null>>
@@ -34,8 +26,6 @@ interface SelectServiceProps {
 }
 
 const SelectService: React.FC<SelectServiceProps> = ({
-  pets,
-  setPets,
   selectedData,
   setSelectedData,
   openCard,
@@ -98,11 +88,9 @@ const SelectService: React.FC<SelectServiceProps> = ({
             cardId={category.id}
             title={category.title}
             description={category.description}
-            pets={pets}
             onCardSelection={handleCardSelection}
             isOpen={openCard === category.id}
             toggleCard={toggleCard}
-            setPets={setPets}
             selectedData={selectedData}
           />
         ))}
