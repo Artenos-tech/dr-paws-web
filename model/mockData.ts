@@ -20,6 +20,12 @@ import catImg from "../public/assets/images/catimg.png";
 import rabbitImg from "../public/assets/images/rabbitImg.png";
 import { Clinic, Review } from "@/model/typeDefinitions";
 import { BookingCategory } from "@/model/typeDefinitions";
+import {
+  AppointmentStatus,
+  AppointmentType,
+} from "@/model/typeDefinitions";
+
+
 import ParasiteControl from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/ParasiteControl.png";
 import SkinInfections from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/SkinInfections.jpeg";
 import Vaccination from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/Vaccinations.png";
