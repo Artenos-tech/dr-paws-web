@@ -45,18 +45,18 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
   return (
     <div
       className={`bg-[#FFFCF3] ${
-        !enlargedView && "w-full lg:w-[25%] min-h-[270px]"
+        !enlargedView && "w-full lg:w-[50%] xl:w-[25%] min-h-[270px]"
       } flex flex-col justify-between h-full w-full shadow-md rounded-md`}
     >
       <div onClick={handleBookVisit} className="cursor-pointer">
-        <Image
-          src={image.src}
-          alt={clinicName + " image"}
-          className="rounded-t-md"
-          layout="responsive"
-          width={500}
-          height={300}
-        />
+        <div className="image-container">
+          <Image
+            src={image.src}
+            alt={clinicName + " image"}
+            className="image rounded-t-md"
+            layout="fill"
+          />
+        </div>
         <div className="p-2">
           <h1 className="text-primary-1 text-base">{clinicName}</h1>
           <div className="flex gap-2 text-primary-1 text-xs mt-2 ">

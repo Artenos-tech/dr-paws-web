@@ -4,10 +4,16 @@ import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import ReactModal from "react-modal";
 
-function ClinicPhotos() {
+interface ClinicPhotosProps{
+  clinicId: string
+}
+
+function ClinicPhotos({clinicId}:ClinicPhotosProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [currentImage, setCurrentImage] = useState<string>("");
   const [isMounted, setIsMounted] = useState(false);
+
+  const clinicImages = photos.find((photoGroup) => photoGroup.id === clinicId);
 
   // Ensure ReactModal can find the root app element for accessibility
   useEffect(() => {
@@ -37,7 +43,7 @@ function ClinicPhotos() {
   return (
     <div className="w-full py-[40px]">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[20px] justify-items-center sm:justify-items-start">
-        {photos.map((photo, index) => (
+      {clinicImages?.photos.map((photo, index) => (
           <div
             key={index}
             className="w-full max-w-[245px] h-full max-h-[245px] rounded-[5px] overflow-hidden border border-gray-300 shadow-md cursor-pointer"
