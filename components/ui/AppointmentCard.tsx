@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import catImg from "@/public/assets/images/catimg.png";
 
 // Helper Functions
-const formatDate = (dateString: string) => {
+export const formatDate = (dateString: string) => {
   const date = new Date(dateString);
   const dayNames = [
     "Sunday",
@@ -38,7 +38,7 @@ const formatDate = (dateString: string) => {
   } ${date.getFullYear()}`;
 };
 
-const formatTimeRange = (start: string, end: string) => {
+export const formatTimeRange = (start: string, end: string) => {
   const formatTime = (time: string) => {
     const options: Intl.DateTimeFormatOptions = {
       hour: "2-digit",
@@ -144,7 +144,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({ appointment }) => {
         <OutlineButton
           outlineBtnText="View Details"
           outlineBtnLink={() =>
-            router.push(`/user/my-appointments/${appointment.user_vetport_id}`)
+            router.push(`/user/my-appointments/${appointment.id}`)
           }
         />
       </div>

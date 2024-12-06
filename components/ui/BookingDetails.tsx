@@ -1,16 +1,20 @@
 "use client";
 
 import { mockAppointments } from "@/model/mockData";
-import { AppointmentStatus, AppointmentType } from "@/model/typeDefinitions";
+import { AppointmentType } from "@/model/typeDefinitions";
 import React, { useEffect, useState } from "react";
 import BackButton from "./BackButton";
-import Image from "next/image";
+// import Image from "next/image";
 import { MdOutlineAccessTime } from "react-icons/md";
 import { GrLocation } from "react-icons/gr";
 import { HiOutlineCalendar } from "react-icons/hi";
-import { customDate } from "./UpcomingAppointmentCard";
+
 import CustomButton from "./CustomButton";
 import { useRouter } from "next/navigation";
+
+import { useAppointmentsContext } from "@/context/AppointmentsContext";
+import Loader from "@/components/ui/Loader";
+import {formatDate, formatTimeRange} from "@/components/ui/AppointmentCard"
 
 type BookingDetailsProps = {
   appointmentId: string;
@@ -50,6 +54,8 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
   const [cancelFlowEnd, setCancelFlowEnd] = useState(false);
   const [showValidationMessage, setShowValidationMessage] = useState(false);
 
+  const { appointments, loading } = useAppointmentsContext();
+
   const navigate = useRouter();
 
   useEffect(() => {
@@ -57,7 +63,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
   }, []);
 
   const fetchBookingDetails = () => {
-    const foundAppointment = mockAppointments.find(
+    const foundAppointment = appointments?.find(
       (appointment: AppointmentType) => appointment.id === appointmentId
     );
     if (foundAppointment) {
@@ -67,14 +73,14 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
 
   const handleCancelBooking = () => {
     setCancelFlowEnd(true);
-    if (bookingDetails) {
-      // Update status to Cancelled
-      setBookingDetails({
-        ...bookingDetails,
-        status: AppointmentStatus.Cancelled,
-      });
+    // if (bookingDetails) {
+    //   // Update status to Cancelled
+    //   setBookingDetails({
+    //     ...bookingDetails,
+    //     status: AppointmentStatus.Cancelled,
+    //   });
       setCurrentView("default"); // Switch back to the default view
-    }
+    // }
   };
 
   const handleCancelNo = () => {
@@ -97,7 +103,13 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
     }
   };
 
-  const isCancelled = bookingDetails?.status === AppointmentStatus.Cancelled;
+  const isCancelled = bookingDetails?.appt_status === "Cancel";
+
+
+
+  if (loading) {
+    return <div><Loader /></div>;
+  }
 
   return (
     <div className="w-full h-full">
@@ -113,21 +125,27 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
           <div
             className={`p-4 text-primary-1 w-11/12 md:w-4/5 lg:w-[50%] shadow-md my-5 flex flex-col gap-2 items-center 
             ${isCancelled ? "bg-gray-200 opacity" : "bg-[#FFFCF3]"} ${
-              bookingDetails?.status === "Past"
+              bookingDetails?.appt_status === "Scheduled" ||
+              bookingDetails?.appt_status === "Confirm" ||
+              bookingDetails?.appt_status === "Check In"
                 ? "bg-primary-3"
                 : "bg-[#FFFCF3]"
             }`}
           >
             <p className="text-lg font-semibold mt-4">
-              {bookingDetails?.petName} is scheduled with{" "}
-              {bookingDetails?.vetName}
+              {/* {bookingDetails?.petName} is scheduled with
+              {bookingDetails?.vetName} */}
+              pet name with vet name
             </p>
-            <p>for {bookingDetails?.service} consultation</p>
+            <p>for 
+              {/* {bookingDetails?.service}  */}
+              Grooming
+              consultation</p>
 
             <div className="flex items-center my-4">
               {bookingDetails && (
                 <>
-                  <Image
+                  {/* <Image
                     src={bookingDetails.petImage}
                     alt="pet-image"
                     width={130}
@@ -139,7 +157,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                     width={130}
                     height={130}
                     className="ml-[-30px]"
-                  />
+                  /> */}
                 </>
               )}
             </div>
@@ -152,7 +170,8 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                 <span className="text-secondary-1">
                   <GrLocation />
                 </span>{" "}
-                {bookingDetails?.clinicAddress || "Andheri West Clinic"}
+                {/* {bookingDetails?.clinicAddress */}
+                 "Andheri West Clinic"
               </p>
               <p
                 className={`flex items-center gap-2 ${
@@ -162,7 +181,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                 <span className="text-secondary-1">
                   <HiOutlineCalendar />
                 </span>
-                {bookingDetails && customDate(bookingDetails.date)}
+                {bookingDetails && formatDate(bookingDetails.appt_start?.toString())}
               </p>
               <p
                 className={`flex items-center gap-2 ${
@@ -173,10 +192,11 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                   <MdOutlineAccessTime />
                 </span>
 
-                {bookingDetails?.time}
+                {bookingDetails && formatTimeRange(bookingDetails.appt_start?.toString(), bookingDetails.appt_end?.toString())}
               </p>
             </div>
-            {!isCancelled && bookingDetails?.status === "Upcoming" && (
+            {!isCancelled && bookingDetails?.appt_status === "Complete" ||
+              bookingDetails?.appt_status === "Check out" && (
               <div className="flex justify-center mb-4 mt-2 items-center gap-2 w-full md:w-[75%]">
                 <button
                   onClick={() => setCurrentView("cancel")}

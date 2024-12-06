@@ -62,6 +62,7 @@ export enum AppointmentStatus {
   Cancelled = "Cancelled"
 }
 export interface AppointmentType {
+  id: string
   pet_vetport_id: number;
   user_vetport_id: number;
   vet_vetport_id: number;

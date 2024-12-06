@@ -233,6 +233,7 @@ export default createAPIClient({
         message: z.string(),
         appointments: z.array(
           z.object({
+            id: z.string(),
             pet_vetport_id: z.number(),
             user_vetport_id: z.number(),
             vet_vetport_id: z.number(),
