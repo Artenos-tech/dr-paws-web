@@ -10,7 +10,7 @@ import OutlineButton from "./OutlineButton";
 import { FaTrash } from "react-icons/fa6";
 import { petImageByType } from "./PetCard";
 import { useUserContext } from "@/context/UserContext";
-import defaultPetImg from "@/public/assets/images/pets/petImg.png";
+
 
 
 interface PetProfileInfoProps {
