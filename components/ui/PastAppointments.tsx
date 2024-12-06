@@ -2,6 +2,7 @@ import { AppointmentType } from "@/model/typeDefinitions";
 import React from "react";
 import PastAppointmentCard from "./PastAppointmentCard";
 import NoAppointments from "./NoAppointments";
+import AppointmentCard from "./AppointmentCard";
 
 type PastAppointmentsProps = {
   pastAppointments: AppointmentType[];
@@ -11,7 +12,7 @@ const PastAppointments: React.FC<PastAppointmentsProps> = ({
   pastAppointments,
 }) => {
   const sortedPastAppointments = [...pastAppointments].sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+    // (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
   );
 
   return (
@@ -20,9 +21,9 @@ const PastAppointments: React.FC<PastAppointmentsProps> = ({
         <NoAppointments />
       ) : (
         sortedPastAppointments.map((appointment: AppointmentType) => (
-          <PastAppointmentCard
-            key={appointment.id}
-            pastAppointment={appointment}
+          <AppointmentCard
+            key={appointment.vet_vetport_id}
+            appointment={appointment}
           />
         ))
       )}

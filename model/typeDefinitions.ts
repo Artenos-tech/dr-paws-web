@@ -62,14 +62,20 @@ export enum AppointmentStatus {
   Cancelled = "Cancelled"
 }
 export interface AppointmentType {
-  id: string;
-  petName: string;
-  vetName: string;
-  petImage: string;
-  vetImage: string;
-  date: string;
-  time: string;
-  status: AppointmentStatus;
-  service: string;
-  clinicAddress?: string
+  pet_vetport_id: number;
+  user_vetport_id: number;
+  vet_vetport_id: number;
+  clinic_id: number;
+  appt_start: string;
+  appt_end: string;
+  appt_status:
+    | "Check In"
+    | "Complete"
+    | "Scheduled"
+    | "Check out"
+    | "Attending"
+    | "Confirm"
+    | "Cancel"
+    | "Active";
+  appt_reason: string | null;
 }

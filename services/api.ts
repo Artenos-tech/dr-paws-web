@@ -222,5 +222,39 @@ export default createAPIClient({
       }),
       errorResponseSchema: z.object({}),
     },
+
+    getAppointments: {
+      method: "GET",
+      path: "/user/{id}/appointments",
+      pathParamsSchema: z.object({ id: z.string() }),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        status: z.number(),
+        message: z.string(),
+        appointments: z.array(
+          z.object({
+            pet_vetport_id: z.number(),
+            user_vetport_id: z.number(),
+            vet_vetport_id: z.number(),
+            clinic_id: z.number(),
+            appt_start: z.string(),
+            appt_end: z.string(),
+            appt_status: z.enum([
+              "Check In",
+              "Complete",
+              "Scheduled",
+              "Check out",
+              "Attending",
+              "Confirm",
+              "Cancel",
+              "Active",
+            ]),
+            appt_reason: z.string().nullable(),
+          })
+        ),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+    
   },
 });

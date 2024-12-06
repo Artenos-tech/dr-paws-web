@@ -60,6 +60,7 @@ interface UserProviderProps {
 export const UserProvider = ({ children }: UserProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [userPets, setUserPets] = useState<Pet[] | null>(null);
+  
 
   const { call: getUser } = useAPICall(api.getuser);
 

@@ -1,7 +1,8 @@
 import { AppointmentType } from "@/model/typeDefinitions";
 import React from "react";
-import UpcomingAppointmentCard from "./UpcomingAppointmentCard";
+
 import NoAppointments from "./NoAppointments";
+import AppointmentCard from "./AppointmentCard";
 
 type UpcomingAppointmentsProps = {
   upcomingAppointments: AppointmentType[];
@@ -11,7 +12,7 @@ const UpcomingAppointments: React.FC<UpcomingAppointmentsProps> = ({
   upcomingAppointments,
 }) => {
   const sortedUpcomingAppointments = [...upcomingAppointments].sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+    (a, b) => new Date(b.appt_start).getTime() - new Date(a.appt_start).getTime()
   );
 
   return (
@@ -26,9 +27,9 @@ const UpcomingAppointments: React.FC<UpcomingAppointmentsProps> = ({
         <NoAppointments />
       ) : (
         sortedUpcomingAppointments.map((appointment: AppointmentType) => (
-          <UpcomingAppointmentCard
-            key={appointment.id}
-            upcomingAppointment={appointment}
+          <AppointmentCard
+            key={appointment.user_vetport_id}
+            appointment={appointment}
           />
         ))
       )}

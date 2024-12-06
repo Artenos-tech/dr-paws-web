@@ -6,12 +6,14 @@ import React from "react";
 import OutlineButton from "./OutlineButton";
 import { useRouter } from "next/navigation";
 // import { customDate } from "@/lib/utils";
+import catImg from '@/public/assets/images/catimg.png'
 
 type UpcomingCardProps = {
   upcomingAppointment: AppointmentType;
 };
 
-export const customDate = (date: string) => {
+export const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
   const dayNames = [
     "Sunday",
     "Monday",
@@ -36,38 +38,51 @@ export const customDate = (date: string) => {
     "Dec",
   ];
 
-  const getDay = new Date(date).getUTCDay(); // Day of the week (0-6)
-  const getMonth = new Date(date).getUTCMonth(); // Month (0-11)
-  const getDate = new Date(date).getUTCDate(); // Day of the month (1-31)
-  const getYear = new Date(date).getUTCFullYear(); // Full year (e.g., 2024)
+  const day = dayNames[date.getDay()];
+    const dateOfMonth = date.getDate();
+    const month = monthNames[date.getMonth()];
+    const year = date.getFullYear();
 
-  return `${dayNames[getDay]}, ${monthNames[getMonth]} ${getDate}, ${getYear}`; // e.g., "Mon, Jan 21, 2024"
+  return `${day}, ${dateOfMonth} ${month} ${year}`;
+
 };
 
+const formatTimeRange = (start: string, end: string) => {
+  const formatTime = (time: string) => {
+    const options: Intl.DateTimeFormatOptions = {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    };
+    return new Date(time).toLocaleTimeString(undefined, options);
+  };
+
+  return `${formatTime(start)} - ${formatTime(end)}`;
+};
 
 const UpcomingAppointmentCard: React.FC<UpcomingCardProps> = ({
   upcomingAppointment,
 }) => {
   const navigate = useRouter();
-  console.log(upcomingAppointment.id)
+  console.log(upcomingAppointment.user_vetport_id)
   return (
     <div className="p-4 border-l-4 border-l-secondary-1 flex flex-col gap-3 rounded-lg shadow-md w-full">
       <div className="text-xs flex justify-between">
-        <p className="text-secondary-1">{upcomingAppointment.status}</p>
+        <p className="text-secondary-1">{upcomingAppointment.appt_status}</p>
         <p className="bg-primary-2 text-primary-1 px-2 py-1 rounded-md">
-          {upcomingAppointment.service}
+          {upcomingAppointment.appt_reason ?? "Grooming"}
         </p>
       </div>
 
       <div className="flex items-center">
         <Image
-          src={upcomingAppointment.petImage}
+          src={catImg}
           alt="pet-image"
           width={50}
           height={50}
         />
         <Image
-          src={upcomingAppointment.vetImage}
+          src={catImg}
           alt="vet-image"
           width={50}
           height={50}
@@ -76,16 +91,16 @@ const UpcomingAppointmentCard: React.FC<UpcomingCardProps> = ({
       </div>
       <div className="space-y-1 text-primary-1">
         <p className="font-semibold">
-          {upcomingAppointment.petName} and {upcomingAppointment.vetName}
+          {/* Have to add dynamic names here */}
+          {"Tonny"} and {"Doctor"}
         </p>
-        <p>{customDate(upcomingAppointment.date)}</p>
-        <p>{upcomingAppointment.time}</p>
-      </div>
+        <p>{formatDate(upcomingAppointment.appt_start)}</p>
+        <p>{formatTimeRange(upcomingAppointment.appt_start, upcomingAppointment.appt_end)}</p>      </div>
       <div className="self-end">
         <OutlineButton
           outlineBtnText="View Details"
           outlineBtnLink={() =>
-            navigate.push(`/user/my-appointments/${upcomingAppointment.id}`)
+            navigate.push(`/user/my-appointments/${upcomingAppointment.user_vetport_id}`)
           }
         />
       </div>
