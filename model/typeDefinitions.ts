@@ -13,19 +13,22 @@ export interface Clinic {
   location: string;
   parkingInformation: string
 }
-export interface PetInfo {
-  petId: string;
+
+export type Gender = "Male" | "Female" | "";
+export interface Pet {
+  id: string;
   name: string;
   type: string;
-  breed: string;
-  gender: string;
+  breed: string | null;
+  weight: number | null;
+  gender: Gender;
+  dob: string | null;
   age: {
-    years: number;
-    months: number;
+    years: number | null;
+    months: number | null;
   };
-  birthday: string;
-  weight: string;
-  petImage: StaticImageData | string;
+  profileImage: string | StaticImageData | null;
+  birthday?: string;
 }
 
 export interface Doctor {

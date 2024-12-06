@@ -215,7 +215,7 @@ export default createAPIClient({
             breed: z.string().nullable(),
             weight: z.string().nullable(),
             gender: z.string().nullable(),
-            dob: z.date().nullable(),
+            dob: z.string().nullable(),
             profile_image: z.string().nullable(),
           })
         ),
