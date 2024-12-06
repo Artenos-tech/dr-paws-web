@@ -73,14 +73,14 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
 
   const handleCancelBooking = () => {
     setCancelFlowEnd(true);
-    // if (bookingDetails) {
-    //   // Update status to Cancelled
-    //   setBookingDetails({
-    //     ...bookingDetails,
-    //     status: AppointmentStatus.Cancelled,
-    //   });
-      setCurrentView("default"); // Switch back to the default view
-    // }
+    if (!bookingDetails) return; 
+  setBookingDetails({
+    ...bookingDetails,
+    appt_status: "Cancel", 
+  });
+  setCurrentView("default");
+      setCurrentView("default"); 
+
   };
 
   const handleCancelNo = () => {
@@ -196,7 +196,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
               </p>
             </div>
             {!isCancelled && bookingDetails?.appt_status === "Complete" ||
-              bookingDetails?.appt_status === "Check out" && (
+              bookingDetails?.appt_status === "Check In" && (
               <div className="flex justify-center mb-4 mt-2 items-center gap-2 w-full md:w-[75%]">
                 <button
                   onClick={() => setCurrentView("cancel")}
