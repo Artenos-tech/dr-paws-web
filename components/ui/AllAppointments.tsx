@@ -1,8 +1,4 @@
 import { AppointmentType } from "@/model/typeDefinitions";
-import React, { useEffect, useState } from "react";
-import UpcomingAppointmentCard from "./UpcomingAppointmentCard";
-import CancelledAppointmentCard from "./CancelledAppointmentCard";
-import PastAppointmentCard from "./PastAppointmentCard";
 import NoAppointments from "./NoAppointments";
 import AppointmentCard from "./AppointmentCard";
 
