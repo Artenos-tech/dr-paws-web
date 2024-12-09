@@ -45,13 +45,13 @@ const Booking: React.FC = () => {
 
   return (
     <div className="font-roca pb-20 h-full w-full">
-      <main className="flex flex-col items-center w-full mt-4 lg:mt-24 px-8 md:px-32 lg:px-20 xl:px-40">
+      <main className="flex flex-col items-center w-full mt-4 lg:mt-16 px-8 md:px-32 lg:px-20 xl:px-40">
         <div className="w-full">
-          {currentStep > 1 && (
+          {(currentStep > 1 && currentStep !== 4) && (
             <button
               type="button"
               onClick={goToPrevStep}
-              className="flex gap-1 my-4 items-center self-start"
+              className="flex gap-1 mb-4 items-center self-start"
             >
               <MdOutlineKeyboardArrowLeft /> Back
             </button>

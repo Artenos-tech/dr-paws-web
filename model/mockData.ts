@@ -1262,10 +1262,13 @@ export const staffSchedule = {
   "vet_full_name": "Shailesh Shinde",
   "vet_vetport_id": 146,
   "weeks": {
-      "Tuesday": "00:02 to 24:02",
-      "Wednesday": "00:02 to 24:02",
-      "Thursday": "00:02 to 24:02",
-      "Friday": "00:02 to 24:02"
+    "Monday": "11:00 to 21:00",
+    "Tuesday": "09:00 to 21:00",
+    "Wednesday": "09:00 to 21:00",
+    "Thursday": "09:00 to 21:00",
+    "Friday": "09:00 to 21:00",
+    "Saturday": "09:00 to 21:00",
+    "Sunday": "09:00 to 21:00"
   },
   "year": {
       "January": "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31",

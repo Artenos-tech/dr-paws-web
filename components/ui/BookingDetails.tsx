@@ -1,6 +1,5 @@
 "use client";
 
-import { mockAppointments } from "@/model/mockData";
 import { AppointmentType } from "@/model/typeDefinitions";
 import React, { useEffect, useState } from "react";
 import BackButton from "./BackButton";
@@ -15,6 +14,14 @@ import { useRouter } from "next/navigation";
 import { useAppointmentsContext } from "@/context/AppointmentsContext";
 import Loader from "@/components/ui/Loader";
 import { formatDate, formatTimeRange } from "@/components/ui/AppointmentCard";
+import { parse, format, addMinutes } from "date-fns";
+
+// TO-DO: For testing purpose
+import defaultVetImage from "@/public/assets/images/Appointments/vetImage.png";
+import defaultPetImage from "@/public/assets/images/Appointments/petImage.png";
+
+import { BsCheckCircleFill } from "react-icons/bs";
+import Image from "next/image";
 
 export const cancelReasons = [
   "Another commitment has come up",
@@ -113,19 +120,36 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
     );
   }
 
+  const addMinutesToTime = (time: string, minutes: number): string => {
+    try {
+      const parsedTime = parse(time, "HH:mm", new Date());
+      const updatedTime = addMinutes(parsedTime, minutes);
+      return format(updatedTime, "HH:mm");
+    } catch (error) {
+      console.error("Error parsing time:", error);
+      return "";
+    }
+  };
+
+  console.log(selectedAppointment.selectedSlot);
+
   return (
     <div className="w-full h-full">
-      <BackButton />
+      {appointmentId && <BackButton />}
 
       {currentView === "default" && (
         <div className="flex flex-col justify-center gap-4 items-center">
           {/* Dynamic heading */}
-          <h1 className="text-3xl">
-            {isCancelled
-              ? "Booking Cancelled"
-              : !appointmentId
-              ? "Booking Confirmed"
-              : "Your Booking"}
+          <h1 className="text-3xl flex items-center gap-4">
+            {isCancelled ? (
+              "Booking Cancelled"
+            ) : !appointmentId ? (
+              <>
+                Booking Confirmed <BsCheckCircleFill fill="#5281a2" />
+              </>
+            ) : (
+              "Your Booking"
+            )}
           </h1>
 
           <div
@@ -142,7 +166,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
             <p className="text-lg font-semibold mt-4">
               {/* {bookingDetails?.petName} is scheduled with
               {bookingDetails?.vetName} */}
-              pet name with vet name
+              Pet name is scheduled with Vet name
             </p>
             <p>
               for
@@ -168,6 +192,23 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                   /> */}
                 </>
               )}
+              {!appointmentId && (
+                <>
+                  <Image
+                    src={defaultPetImage}
+                    alt="pet-image"
+                    width={130}
+                    height={130}
+                  />
+                  <Image
+                    src={defaultVetImage}
+                    alt="vet-image"
+                    width={130}
+                    height={130}
+                    className="ml-[-30px]"
+                  />
+                </>
+              )}
             </div>
             <div className="my-4 space-y-3">
               <p
@@ -189,8 +230,11 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                 <span className="text-secondary-1">
                   <HiOutlineCalendar />
                 </span>
-                {bookingDetails &&
-                  formatDate(bookingDetails.appt_start?.toString())}
+                {bookingDetails
+                  ? formatDate(bookingDetails.appt_start?.toString())
+                  : !appointmentId &&
+                    selectedAppointment.selectedDate &&
+                    formatDate(selectedAppointment.selectedDate.toString())}
               </p>
               <p
                 className={`flex items-center gap-2 ${
@@ -201,11 +245,19 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                   <MdOutlineAccessTime />
                 </span>
 
-                {bookingDetails &&
+                {bookingDetails ? (
                   formatTimeRange(
                     bookingDetails.appt_start?.toString(),
                     bookingDetails.appt_end?.toString()
-                  )}
+                  )
+                ) : (
+                  <>
+                    {selectedAppointment.selectedSlot} -{" "}
+                    {selectedAppointment.selectedSlot
+                      ? addMinutesToTime(selectedAppointment.selectedSlot, 30)
+                      : ""}
+                  </>
+                )}
               </p>
             </div>
             {(!isCancelled && bookingDetails?.appt_status === "Complete") ||
@@ -225,17 +277,18 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                   </button>
                 </div>
               ))}
-            {cancelFlowEnd && (
-              <div className="flex items-center">
-                <CustomButton
-                  buttonText="Done"
-                  buttonBackground="bg-secondary-1"
-                  buttonClickEvent={() =>
-                    navigate.push("/user/my-appointments")
-                  }
-                />
-              </div>
-            )}
+            {cancelFlowEnd ||
+              (!appointmentId && (
+                <div className="flex items-center">
+                  <CustomButton
+                    buttonText="Done"
+                    buttonBackground="bg-secondary-1"
+                    buttonClickEvent={() =>
+                      navigate.push("/user/my-appointments")
+                    }
+                  />
+                </div>
+              ))}
           </div>
         </div>
       )}

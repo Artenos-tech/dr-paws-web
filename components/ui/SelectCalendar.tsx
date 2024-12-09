@@ -46,6 +46,7 @@ const SelectCalendar: React.FC<CalendarProps> = ({
 
   const prevMonth = () => setCurrentDate(subMonths(currentDate, 1));
   const nextMonth = () => setCurrentDate(addMonths(currentDate, 1));
+
   const isDateDisabled = (date: Date) => {
     const monthName = format(date, "MMMM");
     const dateNumber = date.getDate();

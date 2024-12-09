@@ -25,7 +25,7 @@ import { useAppointmentsContext } from "@/context/AppointmentsContext";
 interface selectVetProps {
   selectedData?: Record<string, Pet | null>;
   selectedClinic?: string | null;
-  onNext: () => void;
+  onNext?: () => void;
 }
 
 const SelectVet: React.FC<selectVetProps> = ({
@@ -98,7 +98,9 @@ const SelectVet: React.FC<selectVetProps> = ({
 
   const onSuccess = (toastMessage: string) => {
     setAuthModalOpen(false);
-
+    if (onNext) {
+      onNext();
+    }
     toast.success(`Successfully ${toastMessage}`, {
       duration: 3000,
       position: "bottom-right",
@@ -112,19 +114,38 @@ const SelectVet: React.FC<selectVetProps> = ({
   const generateHourlySlots = (timeRange: string) => {
     if (!timeRange) return [];
 
-    const [start, end] = timeRange
-      .split(" to ")
-      .map((time) => parse(time, "HH:mm", new Date()));
+    try {
+      const [startTimeStr, endTimeStr] = timeRange.split(" to ");
+      if (!startTimeStr || !endTimeStr) {
+        throw new Error("Invalid time range format");
+      }
 
-    const slots = [];
-    let current = start;
+      let startTime = parse(startTimeStr, "HH:mm", new Date());
+      let endTime = parse(endTimeStr, "HH:mm", new Date());
 
-    while (current <= end) {
-      slots.push(format(current, "HH:mm"));
-      current = addMinutes(current, 30); // Add 30 minutes
+      // Normalize 24:00 or beyond to next day
+      if (endTimeStr.startsWith("24") || endTimeStr.startsWith("25")) {
+        endTime = parse("00:02", "HH:mm", addMinutes(new Date(), 1440)); // Add 1 day
+      }
+
+      // Check if parsed dates are valid
+      if (isNaN(startTime.getTime()) || isNaN(endTime.getTime())) {
+        throw new Error("Invalid time range values");
+      }
+
+      const slots = [];
+      let current = startTime;
+
+      while (current <= endTime) {
+        slots.push(format(current, "HH:mm"));
+        current = addMinutes(current, 30); // Increment by 30 minutes
+      }
+
+      return slots.length > 0 ? slots : [];
+    } catch (error) {
+      console.error("Error parsing time range:", error);
+      return [];
     }
-
-    return slots;
   };
 
   const selectedDay = selectedDate && format(selectedDate, "EEEE");
@@ -132,6 +153,11 @@ const SelectVet: React.FC<selectVetProps> = ({
     selectedDay &&
     staffScheduleResult?.ok &&
     staffScheduleResult.value.body.staffschedule.weeks[selectedDay];
+  console.log(timeRange);
+
+  // const timeRange =
+  //   selectedDay &&
+  //   staffSchedule.weeks[selectedDay as keyof typeof staffSchedule.weeks];
 
   const availableSlots =
     typeof timeRange === "string" ? generateHourlySlots(timeRange) : [];
@@ -214,35 +240,22 @@ const SelectVet: React.FC<selectVetProps> = ({
                   gridTemplateColumns: "repeat(auto-fit, minmax(118px, 1fr))",
                 }}
               >
-                {availableSlots ? (
-                  Array.isArray(availableSlots) ? (
-                    availableSlots.map((time, index) => (
-                      <div
-                        key={index}
-                        className={`text-center bg-primary-3 py-2 px-6 sm:py-1 sm:px-6 lg:py-2 lg:px-8 w-fit rounded-md cursor-pointer shadow-md ${
-                          selectedSlot === time
-                            ? "border border-secondary-1"
-                            : ""
-                        }`}
-                        onClick={() => handleSlotSelect(time)}
-                      >
-                        {time}
-                      </div>
-                    ))
-                  ) : (
+                {availableSlots.length > 0 ? (
+                  availableSlots.map((time, index) => (
                     <div
+                      key={index}
                       className={`text-center bg-primary-3 py-2 px-6 sm:py-1 sm:px-6 lg:py-2 lg:px-8 w-fit rounded-md cursor-pointer shadow-md ${
-                        selectedSlot === availableSlots
-                          ? "border border-secondary-1"
-                          : ""
+                        selectedSlot === time ? "border border-secondary-1" : ""
                       }`}
-                      onClick={() => handleSlotSelect(availableSlots)}
+                      onClick={() => handleSlotSelect(time)}
                     >
-                      {availableSlots}
+                      {time}
                     </div>
-                  )
+                  ))
                 ) : (
-                  <p>No slots available for the selected date.</p>
+                  <p className="text-gray-500 text-sm">
+                    No slots available for the selected date.
+                  </p>
                 )}
               </div>
             </div>
