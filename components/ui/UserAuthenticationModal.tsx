@@ -273,9 +273,6 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
     setUserMobileNumber(undefined);
   };
 
-  console.log(bookingFlow)
-
-
   return (
     <Modal
       isOpen={isOpen}
@@ -299,7 +296,7 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
             loading={signupVerifyLoading || loginVerifyLoading}
             resendOTPHandler={handleResendOTP}
             errMsg={otpErr}
-            bookingFlow={bookingFlow} 
+            bookingFlow={bookingFlow}
           />
         ) : isLogin ? (
           <LoginForm

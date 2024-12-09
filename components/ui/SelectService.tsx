@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import BookingCard from "@/components/ui/BookingCard";
 import BookingModal from "@/components/ui/BookingModal";
-import { bookingCategories } from "@/model/mockData";
+import { ServiceTabsData } from "@/model/mockData";
 import CustomButton from "./CustomButton";
 import { Pet } from "@/context/UserContext";
 
@@ -49,23 +49,22 @@ const SelectService: React.FC<SelectServiceProps> = ({
         }));
       }
       const isClosingCurrentCard = prevOpenCard === cardId;
-  
+
       if (isClosingCurrentCard) {
         setSelectedData((prevSelectedData) => ({
           ...prevSelectedData,
           [cardId]: null,
         }));
       }
-  
+
       if (cardId === "Surgeries" && !hasShownDisclaimerModal) {
         setIsModalOpen(true);
         setHasShownDisclaimerModal(true);
       }
-  
+
       return isClosingCurrentCard ? null : cardId;
     });
   };
-  
 
   const isButtonDisabled = !Object.values(selectedData).some(
     (selectedPet) => selectedPet !== null
@@ -82,7 +81,7 @@ const SelectService: React.FC<SelectServiceProps> = ({
       <p className="text-gray-600 mb-12">Choose from our services:</p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
-        {bookingCategories.map((category) => (
+        {ServiceTabsData.map((category) => (
           <BookingCard
             key={category.id}
             cardId={category.id}
@@ -112,6 +111,5 @@ const SelectService: React.FC<SelectServiceProps> = ({
     </div>
   );
 };
-
 
 export default SelectService;

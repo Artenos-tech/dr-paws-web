@@ -21,15 +21,16 @@ interface CalendarProps {
   timezone?: string;
   onDateSelect: (date: Date) => void; // Callback for date selection
   selectedDate: Date | null;
+  years: Record<string, string>;
 }
 
 const SelectCalendar: React.FC<CalendarProps> = ({
   timezone = "India Standard Time (2:30pm)",
   onDateSelect,
   selectedDate,
+  years,
 }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
-
 
   const today = startOfDay(new Date());
   const startDate = startOfWeek(startOfMonth(currentDate));
@@ -45,6 +46,12 @@ const SelectCalendar: React.FC<CalendarProps> = ({
 
   const prevMonth = () => setCurrentDate(subMonths(currentDate, 1));
   const nextMonth = () => setCurrentDate(addMonths(currentDate, 1));
+  const isDateDisabled = (date: Date) => {
+    const monthName = format(date, "MMMM");
+    const dateNumber = date.getDate();
+    const monthDates = years[monthName]?.split(",").map(Number) || [];
+    return !monthDates.includes(dateNumber);
+  };
 
   const selectDate = (date: Date) => {
     if (date.getMonth() === currentDate.getMonth() && !isBefore(date, today)) {
@@ -86,19 +93,22 @@ const SelectCalendar: React.FC<CalendarProps> = ({
           const isCurrentMonth = date.getMonth() === currentDate.getMonth();
           const isSelected = selectedDate && isSameDay(date, selectedDate);
           const isPast = isBefore(date, today);
+          const disabled = isCurrentMonth && isDateDisabled(date);
 
           return (
             <div
               key={index}
               onClick={
-                isCurrentMonth && !isPast ? () => selectDate(date) : undefined
+                isCurrentMonth && !isPast && !disabled
+                  ? () => selectDate(date)
+                  : undefined
               }
               className={`p-2 text-md sm:text-sm rounded-sm ${
                 isSelected
                   ? "bg-secondary-1 text-white"
                   : isToday(date)
                   ? "border border-secondary-1 text-black"
-                  : isCurrentMonth && !isPast
+                  : isCurrentMonth && !isPast  && !disabled
                   ? "text-black cursor-pointer"
                   : "text-gray-400 cursor-not-allowed"
               }`}

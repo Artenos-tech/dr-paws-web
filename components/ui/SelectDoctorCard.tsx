@@ -14,10 +14,10 @@ const SelectDoctorCard: React.FC<SelectDoctorCardProps> = ({
   isSelected,
   onDoctorSelect,
 }) => {
-  const { name, image } = doctor;
+  const { name, image, id } = doctor;
 
   const handleCardClick = () => {
-    onDoctorSelect(name);
+    onDoctorSelect(id);
   };
 
   return (

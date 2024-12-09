@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import SelectDoctorCard from "./SelectDoctorCard";
-import { doctors } from "@/model/mockData";
+import { doctors, staffSchedule } from "@/model/mockData";
 
 import CustomButton from "./CustomButton";
 import SelectCalendar from "./SelectCalendar";
-import { format } from "date-fns";
-import { timeSlots } from "@/model/mockData";
+import { addMinutes, format, parse } from "date-fns";
 import {
   Carousel,
   CarouselContent,
@@ -24,9 +25,14 @@ import { useAppointmentsContext } from "@/context/AppointmentsContext";
 interface selectVetProps {
   selectedData?: Record<string, Pet | null>;
   selectedClinic?: string | null;
+  onNext: () => void;
 }
 
-const SelectVet: React.FC<selectVetProps> = ({ selectedClinic, selectedData}) => {
+const SelectVet: React.FC<selectVetProps> = ({
+  selectedClinic,
+  selectedData,
+  onNext,
+}) => {
   const { setSelectedAppointment } = useAppointmentsContext();
 
   const [selectedDoctor, setSelectedDoctor] = useState<string | null>(null);
@@ -37,6 +43,24 @@ const SelectVet: React.FC<selectVetProps> = ({ selectedClinic, selectedData}) =>
   const [otpLoading, setOtpLoading] = useState<boolean>(false);
 
   const { call: sendOTP } = useAPICall(api.loginOTP);
+  const { call: getStaffSchedule, result: staffScheduleResult } = useAPICall(
+    api.getStaffSchedule
+  );
+
+  useEffect(() => {
+    if (selectedDoctor) {
+      fetchStaffSchedule();
+    }
+  }, [selectedDoctor]);
+
+  const fetchStaffSchedule = async () => {
+    if (selectedDoctor && selectedClinic) {
+      await getStaffSchedule({
+        clinicid: selectedClinic,
+        staffid: "950",
+      });
+    }
+  };
 
   const handleNextClick = async () => {
     setSelectedAppointment({
@@ -46,86 +70,98 @@ const SelectVet: React.FC<selectVetProps> = ({ selectedClinic, selectedData}) =>
       selectedDate,
       selectedSlot,
     });
+
     try {
       setOtpLoading(true);
       const response = await sendOTP({ mobile: "5133158593", role: "USER" });
       setOtpLoading(false);
 
       if (response.ok) {
-        // OTP sent successfully
         setAuthModalOpen(true);
         toast.success("OTP sent to your mobile number", {
           duration: 3000,
           position: "bottom-right",
         });
       } else {
-        // Handle error
-        const errorMessage = response?.error.message || "Failed to send OTP.";
-        toast.error(errorMessage, {
-          duration: 3000,
-          position: "bottom-right",
-        });
+        toast.error("Failed to send OTP.");
       }
-    } catch (error) {
+    } catch {
       setOtpLoading(false);
-      toast.error("An unexpected error occurred.", {
-        duration: 3000,
-        position: "bottom-right",
-      });
+      toast.error("An unexpected error occurred.");
     }
+  };
+
+  const handleDateSelect = (date: Date) => {
+    setSelectedDate(date);
+    setSelectedSlot(null);
   };
 
   const onSuccess = (toastMessage: string) => {
     setAuthModalOpen(false);
-    
+
     toast.success(`Successfully ${toastMessage}`, {
       duration: 3000,
       position: "bottom-right",
     });
   };
 
-
-  const handleSelect = (time: string) => {
+  const handleSlotSelect = (time: string) => {
     setSelectedSlot(selectedSlot === time ? null : time);
   };
 
-  const handleDoctorSelection = (doctorName: string) => {
-    if (selectedDoctor !== doctorName) {
-      setSelectedDate(null);
-      setSelectedSlot(null);
+  const generateHourlySlots = (timeRange: string) => {
+    if (!timeRange) return [];
+
+    const [start, end] = timeRange
+      .split(" to ")
+      .map((time) => parse(time, "HH:mm", new Date()));
+
+    const slots = [];
+    let current = start;
+
+    while (current <= end) {
+      slots.push(format(current, "HH:mm"));
+      current = addMinutes(current, 30); // Add 30 minutes
     }
-    setSelectedDoctor(doctorName);
+
+    return slots;
   };
+
+  const selectedDay = selectedDate && format(selectedDate, "EEEE");
+  const timeRange =
+    selectedDay &&
+    staffScheduleResult?.ok &&
+    staffScheduleResult.value.body.staffschedule.weeks[selectedDay];
+
+  const availableSlots =
+    typeof timeRange === "string" ? generateHourlySlots(timeRange) : [];
+  console.log(availableSlots);
 
   const isNextButtonEnabled =
     selectedDoctor !== null && selectedDate !== null && selectedSlot !== null;
 
-  const handleDateSelect = (date: Date) => {
-    setSelectedSlot(null);
-    setSelectedDate(date);
-  };
-
   return (
     <div className="h-full flex flex-col gap-12 px-4 lg:px-0">
-      {/* Doctor Selection */}
       <div>
-        <h1 className="text-3xl  mb-2">Select Vet</h1>
+        <h1 className="text-3xl mb-2">Select Vet</h1>
         <p className="text-gray-600 mb-12">Book Spot for your visit</p>
 
-        <Carousel className="pr-1 w-[90%] sm:w-full  mx-auto">
+        {/* Carousel for Doctor Selection */}
+        <Carousel className="pr-1 w-[90%] sm:w-full mx-auto">
           <CarouselContent className="-ml-1">
             {doctors.map((doctor) => (
               <CarouselItem
-                key={doctor.name}
-                className=" basis-full sm:basis-5/12 lg:basis-1/4 xl:basis-1/5"
+                key={doctor.id}
+                className="basis-full sm:basis-5/12 lg:basis-1/4 xl:basis-1/5"
               >
-                <div className="w-full h-full">
-                  <SelectDoctorCard
-                    doctor={doctor}
-                    isSelected={selectedDoctor === doctor.name}
-                    onDoctorSelect={handleDoctorSelection}
-                  />
-                </div>
+                <SelectDoctorCard
+                  doctor={doctor}
+                  isSelected={selectedDoctor === doctor.id}
+                  onDoctorSelect={(id) => {
+                    setSelectedDoctor(id);
+                    setSelectedDate(null); // Reset date and slot on doctor change
+                  }}
+                />
               </CarouselItem>
             ))}
           </CarouselContent>
@@ -134,7 +170,7 @@ const SelectVet: React.FC<selectVetProps> = ({ selectedClinic, selectedData}) =>
         </Carousel>
       </div>
 
-      {/* Calendar and Date Selection */}
+      {/* Calendar and Timeslot Selection */}
       <div className="flex flex-col gap-8">
         <div className="flex flex-col gap-2">
           <h1 className="text-3xl font-bold">Select Date and Time</h1>
@@ -142,7 +178,6 @@ const SelectVet: React.FC<selectVetProps> = ({ selectedClinic, selectedData}) =>
             Choose a date and time for your visit
           </p>
         </div>
-
 
         <div className="flex flex-col justify-center items-center sm:flex-row gap-8">
           {/* Calendar Section */}
@@ -153,14 +188,21 @@ const SelectVet: React.FC<selectVetProps> = ({ selectedClinic, selectedData}) =>
           >
             <SelectCalendar
               selectedDate={selectedDate}
-              onDateSelect={(date) => handleDateSelect(date)}
+              onDateSelect={handleDateSelect}
+              // years={
+              //   staffScheduleResult?.ok
+              //     ? (staffScheduleResult.value.body.staffschedule
+              //         .year as Record<string, string>)
+              //     : {}
+              // }
+              years={staffSchedule.year}
             />
           </div>
 
           {/* Timeslots Section */}
           {selectedDate && (
             <div className="w-full">
-              <div className="font-semibold text-xs  text-gray-800  lg:text-lg">
+              <div className="font-semibold text-xs text-gray-800 lg:text-lg">
                 Available timeslots for{" "}
                 <span className="text-secondary-1">
                   {format(selectedDate, "EEEE, MMM d")}
@@ -171,19 +213,37 @@ const SelectVet: React.FC<selectVetProps> = ({ selectedClinic, selectedData}) =>
                 style={{
                   gridTemplateColumns: "repeat(auto-fit, minmax(118px, 1fr))",
                 }}
-
               >
-                {timeSlots.map((time, index) => (
-                  <div
-                    key={index}
-                    className={`text-center bg-primary-3 py-2 px-6  sm:py-1 sm:px-6 lg:py-2 lg:px-8  w-fit rounded-md cursor-pointer shadow-md ${
-                      selectedSlot === time ? "border border-secondary-1  " : ""
-                    }`}
-                    onClick={() => handleSelect(time)}
-                  >
-                    {time}
-                  </div>
-                ))}
+                {availableSlots ? (
+                  Array.isArray(availableSlots) ? (
+                    availableSlots.map((time, index) => (
+                      <div
+                        key={index}
+                        className={`text-center bg-primary-3 py-2 px-6 sm:py-1 sm:px-6 lg:py-2 lg:px-8 w-fit rounded-md cursor-pointer shadow-md ${
+                          selectedSlot === time
+                            ? "border border-secondary-1"
+                            : ""
+                        }`}
+                        onClick={() => handleSlotSelect(time)}
+                      >
+                        {time}
+                      </div>
+                    ))
+                  ) : (
+                    <div
+                      className={`text-center bg-primary-3 py-2 px-6 sm:py-1 sm:px-6 lg:py-2 lg:px-8 w-fit rounded-md cursor-pointer shadow-md ${
+                        selectedSlot === availableSlots
+                          ? "border border-secondary-1"
+                          : ""
+                      }`}
+                      onClick={() => handleSlotSelect(availableSlots)}
+                    >
+                      {availableSlots}
+                    </div>
+                  )
+                ) : (
+                  <p>No slots available for the selected date.</p>
+                )}
               </div>
             </div>
           )}
@@ -202,7 +262,7 @@ const SelectVet: React.FC<selectVetProps> = ({ selectedClinic, selectedData}) =>
       <UserAuthenticationModal
         isOpen={authModalOpen}
         onClose={() => setAuthModalOpen(false)}
-        initialMobileNumber={"5133158593"}
+        initialMobileNumber="5133158593"
         onSuccess={onSuccess}
         buttonText="Verify OTP"
         bookingFlow={true}

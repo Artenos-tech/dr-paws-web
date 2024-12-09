@@ -26,10 +26,10 @@ const Booking: React.FC = () => {
   const [currentStep, setCurrentStep] = useState<number>(1);
   const { userPets } = useUserContext();
 
-  const handleClinicSelection = (clinicName: string) => {
+  const handleClinicSelection = (clinicId: string) => {
     // Toggle selection: if the clicked clinic is already selected, deselect it.
     setSelectedClinic((prevSelected) =>
-      prevSelected === clinicName ? null : clinicName
+      prevSelected === clinicId ? null : clinicId
     );
   };
 
@@ -77,7 +77,7 @@ const Booking: React.FC = () => {
           />
           }
 
-          {currentStep === 3 && <SelectVet selectedClinic={selectedClinic} selectedData={selectedData} />}
+          {currentStep === 3 && <SelectVet onNext={goToNextStep} selectedClinic={selectedClinic} selectedData={selectedData} />}
           {currentStep === 4 && <BookingDetails />}
         </div>
       </main>

@@ -14,9 +14,7 @@ import { useRouter } from "next/navigation";
 
 import { useAppointmentsContext } from "@/context/AppointmentsContext";
 import Loader from "@/components/ui/Loader";
-import {formatDate, formatTimeRange} from "@/components/ui/AppointmentCard"
-
-
+import { formatDate, formatTimeRange } from "@/components/ui/AppointmentCard";
 
 export const cancelReasons = [
   "Another commitment has come up",
@@ -36,7 +34,6 @@ export const rescheduleReasons = [
 type BookingDetailsProps = {
   appointmentId?: string;
   onReschedule?: () => void;
-
 };
 
 const BookingDetails: React.FC<BookingDetailsProps> = ({
@@ -57,7 +54,8 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
   const [cancelFlowEnd, setCancelFlowEnd] = useState(false);
   const [showValidationMessage, setShowValidationMessage] = useState(false);
 
-  const { appointments, loading } = useAppointmentsContext();
+  const { appointments, loading, selectedAppointment } =
+    useAppointmentsContext();
 
   const navigate = useRouter();
 
@@ -76,14 +74,13 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
 
   const handleCancelBooking = () => {
     setCancelFlowEnd(true);
-    if (!bookingDetails) return; 
-  setBookingDetails({
-    ...bookingDetails,
-    appt_status: "Cancel", 
-  });
-  setCurrentView("default");
-      setCurrentView("default"); 
-
+    if (!bookingDetails) return;
+    setBookingDetails({
+      ...bookingDetails,
+      appt_status: "Cancel",
+    });
+    setCurrentView("default");
+    setCurrentView("default");
   };
 
   const handleCancelNo = () => {
@@ -108,10 +105,12 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
 
   const isCancelled = bookingDetails?.appt_status === "Cancel";
 
-
-
   if (loading) {
-    return <div><Loader /></div>;
+    return (
+      <div>
+        <Loader />
+      </div>
+    );
   }
 
   return (
@@ -122,7 +121,11 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
         <div className="flex flex-col justify-center gap-4 items-center">
           {/* Dynamic heading */}
           <h1 className="text-3xl">
-            {isCancelled ? "Booking Cancelled" : "Your Booking"}
+            {isCancelled
+              ? "Booking Cancelled"
+              : !appointmentId
+              ? "Booking Confirmed"
+              : "Your Booking"}
           </h1>
 
           <div
@@ -130,7 +133,8 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
             ${isCancelled ? "bg-gray-200 opacity" : "bg-[#FFFCF3]"} ${
               bookingDetails?.appt_status === "Scheduled" ||
               bookingDetails?.appt_status === "Confirm" ||
-              bookingDetails?.appt_status === "Check In"
+              bookingDetails?.appt_status === "Check In" ||
+              !appointmentId
                 ? "bg-primary-3"
                 : "bg-[#FFFCF3]"
             }`}
@@ -140,10 +144,11 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
               {bookingDetails?.vetName} */}
               pet name with vet name
             </p>
-            <p>for 
+            <p>
+              for
               {/* {bookingDetails?.service}  */}
-              Grooming
-              consultation</p>
+              Grooming consultation
+            </p>
 
             <div className="flex items-center my-4">
               {bookingDetails && (
@@ -174,7 +179,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                   <GrLocation />
                 </span>{" "}
                 {/* {bookingDetails?.clinicAddress */}
-                 "Andheri West Clinic"
+                "Andheri West Clinic"
               </p>
               <p
                 className={`flex items-center gap-2 ${
@@ -184,7 +189,8 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                 <span className="text-secondary-1">
                   <HiOutlineCalendar />
                 </span>
-                {bookingDetails && formatDate(bookingDetails.appt_start?.toString())}
+                {bookingDetails &&
+                  formatDate(bookingDetails.appt_start?.toString())}
               </p>
               <p
                 className={`flex items-center gap-2 ${
@@ -195,32 +201,38 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                   <MdOutlineAccessTime />
                 </span>
 
-                {bookingDetails && formatTimeRange(bookingDetails.appt_start?.toString(), bookingDetails.appt_end?.toString())}
+                {bookingDetails &&
+                  formatTimeRange(
+                    bookingDetails.appt_start?.toString(),
+                    bookingDetails.appt_end?.toString()
+                  )}
               </p>
             </div>
-            {!isCancelled && bookingDetails?.appt_status === "Complete" ||
-              bookingDetails?.appt_status === "Check In" && (
-              <div className="flex justify-center mb-4 mt-2 items-center gap-2 w-full md:w-[75%]">
-                <button
-                  onClick={() => setCurrentView("cancel")}
-                  className="w-full md:w-1/2 text-xs md:text-sm border-2 border-secondary-1 bg-transparent py-2 text-secondary-1 font-semibold rounded-full"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={() => setCurrentView("reschedule")}
-                  className=" w-full md:w-1/2 text-xs md:text-sm border-2 border-secondary-1 bg-transparent py-2 text-secondary-1 font-semibold rounded-full"
-                >
-                  Reschedule
-                </button>
-              </div>
-            )}
+            {(!isCancelled && bookingDetails?.appt_status === "Complete") ||
+              (bookingDetails?.appt_status === "Check In" && (
+                <div className="flex justify-center mb-4 mt-2 items-center gap-2 w-full md:w-[75%]">
+                  <button
+                    onClick={() => setCurrentView("cancel")}
+                    className="w-full md:w-1/2 text-xs md:text-sm border-2 border-secondary-1 bg-transparent py-2 text-secondary-1 font-semibold rounded-full"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => setCurrentView("reschedule")}
+                    className=" w-full md:w-1/2 text-xs md:text-sm border-2 border-secondary-1 bg-transparent py-2 text-secondary-1 font-semibold rounded-full"
+                  >
+                    Reschedule
+                  </button>
+                </div>
+              ))}
             {cancelFlowEnd && (
               <div className="flex items-center">
                 <CustomButton
                   buttonText="Done"
                   buttonBackground="bg-secondary-1"
-                  buttonClickEvent={() => navigate.push("/user/my-appointments")}
+                  buttonClickEvent={() =>
+                    navigate.push("/user/my-appointments")
+                  }
                 />
               </div>
             )}

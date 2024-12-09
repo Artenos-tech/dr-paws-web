@@ -8,7 +8,7 @@ import CustomButton from "./CustomButton";
 interface SelectClinicProps {
   onNext: () => void; // Prop for navigation
   selectedClinic: string | null;
- handleClinicSelection: (clinicName: string) => void; 
+ handleClinicSelection: (clinicId: string) => void; 
 }
 
 const SelectClinic: React.FC<SelectClinicProps> = ({ onNext, selectedClinic, handleClinicSelection }) => {
@@ -24,7 +24,7 @@ const SelectClinic: React.FC<SelectClinicProps> = ({ onNext, selectedClinic, han
               key={item.id}
               clinic={item}
               isSelected={selectedClinic === item.clinicName}
-              onSelect={() => handleClinicSelection(item.clinicName)}
+              onSelect={() => handleClinicSelection(item.id)}
             />
           </div>
         ))}

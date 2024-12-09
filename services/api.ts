@@ -256,6 +256,30 @@ export default createAPIClient({
       }),
       errorResponseSchema: z.object({}),
     },
-    
+
+    getStaffSchedule: {
+      method: "GET",
+      path: "/clinic/{clinicid}/staffschedule/{staffid}",
+      pathParamsSchema: z.object({ clinicid: z.string(), staffid: z.string() }),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        status: z.number(),
+        message: z.string(),
+        staffschedule: z.object({
+          id: z.number(),
+          vet_full_name: z.string(),
+          vet_vetport_id: z.number(),
+          weeks: z.record(
+            z.string(),
+            z.union([z.array(z.string()), z.string()])
+          ),
+          year: z.record(
+            z.string(),
+            z.union([z.array(z.string()), z.string()])
+          ),
+        }),
+      }),
+      errorResponseSchema: z.object({}),
+    },
   },
 });
