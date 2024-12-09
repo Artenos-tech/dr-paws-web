@@ -1,21 +1,37 @@
 "use client";
 
+type BookingDetails = {
+  doctor: string | null;
+  date: Date | null;
+  slot: string | null;
+};
+
+
 import React, { useState } from "react";
 import SelectService from "@/components/ui/SelectService";
 import SelectClinic from "@/components/ui/SelectClinic";
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
 import SelectVet from "@/components/ui/SelectVet";
 import { Pet, useUserContext } from "@/context/UserContext";
-
+import BookingDetails from "@/components/ui/BookingDetails";
 
 const Booking: React.FC = () => {
   const [selectedData, setSelectedData] = useState<Record<string, Pet | null>>(
     {}
   );
+  const [selectedClinic, setSelectedClinic] = useState<string | null>(null);
+
   const [openCard, setOpenCard] = useState<string | null>(null); // Persist this state
   const [isDisclaimerModalOpen, setIsDisclaimerModalOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState<number>(1);
   const { userPets } = useUserContext();
+
+  const handleClinicSelection = (clinicName: string) => {
+    // Toggle selection: if the clicked clinic is already selected, deselect it.
+    setSelectedClinic((prevSelected) =>
+      prevSelected === clinicName ? null : clinicName
+    );
+  };
 
   const goToNextStep = () => {
     setCurrentStep((prevStep) => prevStep + 1);
@@ -53,9 +69,16 @@ const Booking: React.FC = () => {
             />
           )}
 
-          {currentStep === 2 && <SelectClinic onNext={goToNextStep} />}
+          {currentStep === 2 && 
+          <SelectClinic 
+            onNext={goToNextStep} 
+            selectedClinic={selectedClinic} 
+            handleClinicSelection={handleClinicSelection}
+          />
+          }
 
-          {currentStep === 3 && <SelectVet />}
+          {currentStep === 3 && <SelectVet selectedClinic={selectedClinic} selectedData={selectedData} />}
+          {currentStep === 4 && <BookingDetails />}
         </div>
       </main>
     </div>

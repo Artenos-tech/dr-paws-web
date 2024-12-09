@@ -1,23 +1,17 @@
 "use client";
 
-import React, { useState } from "react";
+
 import { clinicItems } from "@/model/mockData";
 import SelectClinicCard from "./SelectClinicCard";
 import CustomButton from "./CustomButton";
 
 interface SelectClinicProps {
   onNext: () => void; // Prop for navigation
+  selectedClinic: string | null;
+ handleClinicSelection: (clinicName: string) => void; 
 }
 
-const SelectClinic: React.FC<SelectClinicProps> = ({ onNext }) => {
-  const [selectedClinic, setSelectedClinic] = useState<string | null>(null);
-
-  const handleClinicSelection = (clinicName: string) => {
-    // Toggle selection: if the clicked clinic is already selected, deselect it.
-    setSelectedClinic((prevSelected) =>
-      prevSelected === clinicName ? null : clinicName
-    );
-  };
+const SelectClinic: React.FC<SelectClinicProps> = ({ onNext, selectedClinic, handleClinicSelection }) => {
 
   return (
     <div className=" flex flex-col">

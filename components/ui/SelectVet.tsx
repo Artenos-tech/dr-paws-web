@@ -14,10 +14,76 @@ import {
   CarouselPrevious,
 } from "./carousel";
 
-const SelectVet = () => {
+import UserAuthenticationModal from "@/components/ui/UserAuthenticationModal";
+import { useAPICall } from "@/hooks/apicall";
+import api from "@/services/api";
+import toast, { Toaster } from "react-hot-toast";
+import { Pet } from "@/context/UserContext";
+import { useAppointmentsContext } from "@/context/AppointmentsContext";
+
+interface selectVetProps {
+  selectedData?: Record<string, Pet | null>;
+  selectedClinic?: string | null;
+}
+
+const SelectVet: React.FC<selectVetProps> = ({ selectedClinic, selectedData}) => {
+  const { setSelectedAppointment } = useAppointmentsContext();
+
   const [selectedDoctor, setSelectedDoctor] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
+
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [otpLoading, setOtpLoading] = useState<boolean>(false);
+
+  const { call: sendOTP } = useAPICall(api.loginOTP);
+
+  const handleNextClick = async () => {
+    setSelectedAppointment({
+      selectedData,
+      selectedClinic,
+      selectedDoctor,
+      selectedDate,
+      selectedSlot,
+    });
+    try {
+      setOtpLoading(true);
+      const response = await sendOTP({ mobile: "5133158593", role: "USER" });
+      setOtpLoading(false);
+
+      if (response.ok) {
+        // OTP sent successfully
+        setAuthModalOpen(true);
+        toast.success("OTP sent to your mobile number", {
+          duration: 3000,
+          position: "bottom-right",
+        });
+      } else {
+        // Handle error
+        const errorMessage = response?.error.message || "Failed to send OTP.";
+        toast.error(errorMessage, {
+          duration: 3000,
+          position: "bottom-right",
+        });
+      }
+    } catch (error) {
+      setOtpLoading(false);
+      toast.error("An unexpected error occurred.", {
+        duration: 3000,
+        position: "bottom-right",
+      });
+    }
+  };
+
+  const onSuccess = (toastMessage: string) => {
+    setAuthModalOpen(false);
+    
+    toast.success(`Successfully ${toastMessage}`, {
+      duration: 3000,
+      position: "bottom-right",
+    });
+  };
+
 
   const handleSelect = (time: string) => {
     setSelectedSlot(selectedSlot === time ? null : time);
@@ -127,11 +193,21 @@ const SelectVet = () => {
       {/* Next Button */}
       <div className="my-4 flex justify-center">
         <CustomButton
-          buttonText="Next"
+          buttonText={otpLoading ? "Sending OTP..." : "Next"}
           buttonBackground="bg-secondary-1"
           disabled={!isNextButtonEnabled}
+          buttonClickEvent={handleNextClick}
         />
       </div>
+      <UserAuthenticationModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        initialMobileNumber={"5133158593"}
+        onSuccess={onSuccess}
+        buttonText="Verify OTP"
+        bookingFlow={true}
+      />
+      <Toaster />
     </div>
   );
 };

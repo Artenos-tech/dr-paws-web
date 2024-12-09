@@ -23,6 +23,7 @@ interface authenticationProps {
   initialMobileNumber?: string;
   onSuccess: (toastMessage: string) => void;
   buttonText?: string;
+  bookingFlow?: boolean;
 }
 
 const UserAuthenticationModal: React.FC<authenticationProps> = ({
@@ -31,6 +32,7 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
   initialMobileNumber,
   onSuccess,
   buttonText,
+  bookingFlow = false,
 }) => {
   const [isLogin, setIsLogin] = useState<boolean>(true);
   const [userMobileNumber, setUserMobileNumber] = useState<string | undefined>(
@@ -129,7 +131,6 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
       });
     }
   };
-
   const handleOTPVerification = async (otp: string) => {
     if (isLogin) {
       if (userMobileNumber) {
@@ -272,6 +273,9 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
     setUserMobileNumber(undefined);
   };
 
+  console.log(bookingFlow)
+
+
   return (
     <Modal
       isOpen={isOpen}
@@ -295,6 +299,7 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
             loading={signupVerifyLoading || loginVerifyLoading}
             resendOTPHandler={handleResendOTP}
             errMsg={otpErr}
+            bookingFlow={bookingFlow} 
           />
         ) : isLogin ? (
           <LoginForm

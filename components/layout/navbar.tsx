@@ -39,7 +39,7 @@ export default function NavBar() {
     }
     clearAuthToken();
     navigate.push("/");
-    window.location.reload();
+    refresh();
   };
 
   const handleLoginModalOpen = (text: string) => {

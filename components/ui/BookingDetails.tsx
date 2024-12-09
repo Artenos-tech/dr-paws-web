@@ -16,12 +16,9 @@ import { useAppointmentsContext } from "@/context/AppointmentsContext";
 import Loader from "@/components/ui/Loader";
 import {formatDate, formatTimeRange} from "@/components/ui/AppointmentCard"
 
-type BookingDetailsProps = {
-  appointmentId: string;
-  onReschedule: () => void;
-};
 
-const cancelReasons = [
+
+export const cancelReasons = [
   "Another commitment has come up",
   "I'm sick / unwell",
   "I have to travel out of the city",
@@ -29,12 +26,18 @@ const cancelReasons = [
   "I've visited / will visit another clinic",
 ];
 
-const rescheduleReasons = [
+export const rescheduleReasons = [
   "Another commitment has come up",
   "I'm sick / unwell",
   "I have to travel out of the city",
   "My pet needs the treatment later",
 ];
+
+type BookingDetailsProps = {
+  appointmentId?: string;
+  onReschedule?: () => void;
+
+};
 
 const BookingDetails: React.FC<BookingDetailsProps> = ({
   appointmentId,
@@ -315,7 +318,9 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
               </button>
               <button
                 onClick={() => {
-                  handleYesClick(rescheduleReason, onReschedule);
+                  if (onReschedule) {
+                    handleYesClick(rescheduleReason, onReschedule);
+                  }
                 }}
                 className="w-full py-3 border-2 border-secondary-1 rounded-full text-sm"
               >
