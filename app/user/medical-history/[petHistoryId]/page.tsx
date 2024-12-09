@@ -3,6 +3,7 @@ import BackButton from "@/components/ui/BackButton";
 import FileDisplayCard from "@/components/ui/FileDisplayCard";
 import FileRenameModal from "@/components/ui/FileRenameModal";
 import { Pet } from "@/model/typeDefinitions";
+import { useRouter } from "next/navigation";
 import React, { ChangeEvent, useEffect, useState } from "react";
 
 interface petHistoryIdProps {
@@ -24,6 +25,8 @@ const PetHistoryPage: React.FC<petHistoryIdProps> = ({ params }) => {
   const [currentFile, setCurrentFile] = useState<File | null>(null);
   const [newFileName, setNewFileName] = useState("");
   const [petName, setPetName] = useState("");
+
+  const navigate = useRouter();
 
   useEffect(() => {
     const pets = localStorage.getItem("pets");
@@ -50,6 +53,7 @@ const PetHistoryPage: React.FC<petHistoryIdProps> = ({ params }) => {
     }
   };
 
+  // File rename function of a file
   const handleRenameConfirm = (newFileName: string) => {
     if (currentFile) {
       const renamedFile = new File([currentFile], newFileName, {
@@ -61,9 +65,18 @@ const PetHistoryPage: React.FC<petHistoryIdProps> = ({ params }) => {
         fileSetter: React.Dispatch<React.SetStateAction<File[] | null>>
       ) => {
         if (!fileList) return;
-        const updatedFiles = fileList.map((file) =>
-          file === currentFile ? renamedFile : file
-        );
+
+        const updatedFiles = fileList.map((file) => {
+          if (file === currentFile) {
+            const newName = renamedFile.name.includes("pdf")
+              ? renamedFile.name
+              : renamedFile.name + ".pdf";
+
+            return new File([file], newName, { type: file.type });
+          }
+          return file;
+        });
+
         fileSetter(updatedFiles);
       };
 
@@ -88,6 +101,7 @@ const PetHistoryPage: React.FC<petHistoryIdProps> = ({ params }) => {
     setNewFileName("");
   };
 
+  // File remove function
   const handleFileRemove = (
     index: number,
     setter: React.Dispatch<React.SetStateAction<File[] | null>>
@@ -98,6 +112,7 @@ const PetHistoryPage: React.FC<petHistoryIdProps> = ({ params }) => {
     });
   };
 
+  // File save function
   const handleSaveFiles = async () => {
     // Convert File to base64
     const fileToBase64 = (file: File): Promise<string> =>
@@ -166,6 +181,7 @@ const PetHistoryPage: React.FC<petHistoryIdProps> = ({ params }) => {
     }
 
     localStorage.setItem("pets-history", JSON.stringify(updatedData));
+    navigate.push("/user/medical-history");
   };
 
   return (

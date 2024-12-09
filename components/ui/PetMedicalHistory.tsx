@@ -40,7 +40,7 @@ const PetMedicalHistory: React.FC<petMedicalHistoryProps> = ({
   const [medicalHistory, setMedicalHistory] =
     useState<MedicalHistoryType | null>(null);
 
-  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [previewModalOpen, setPreviewModalOpen] = useState<boolean>(false);
   const [currentFileIndexCategory, setCurrentFileIndexCategory] = useState<{
     index: number;
     category: "diagnosticReports" | "scansAndXRays" | "vaccines";
@@ -101,7 +101,7 @@ const PetMedicalHistory: React.FC<petMedicalHistoryProps> = ({
                   <div
                     key={index}
                     onClick={() => {
-                      setModalOpen(true);
+                      setPreviewModalOpen(true);
                       setCurrentFileIndexCategory({
                         index,
                         category: "diagnosticReports",
@@ -121,7 +121,7 @@ const PetMedicalHistory: React.FC<petMedicalHistoryProps> = ({
                   <div
                     key={index}
                     onClick={() => {
-                      setModalOpen(true);
+                      setPreviewModalOpen(true);
                       setCurrentFileIndexCategory({
                         index,
                         category: "scansAndXRays",
@@ -141,7 +141,7 @@ const PetMedicalHistory: React.FC<petMedicalHistoryProps> = ({
                   <div
                     key={index}
                     onClick={() => {
-                      setModalOpen(true);
+                      setPreviewModalOpen(true);
                       setCurrentFileIndexCategory({
                         index,
                         category: "vaccines",
@@ -158,10 +158,11 @@ const PetMedicalHistory: React.FC<petMedicalHistoryProps> = ({
       </div>
 
       <PetFilePreview
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
+        isOpen={previewModalOpen}
+        onClose={() => setPreviewModalOpen(false)}
         currentIndex={currentFileIndexCategory.index}
         currentCategory={currentFileIndexCategory.category}
+        petMedicalHistory={medicalHistory}
       />
     </div>
   );
