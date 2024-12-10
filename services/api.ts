@@ -299,5 +299,94 @@ export default createAPIClient({
       }),
       errorResponseSchema: z.object({}),
     },
+
+    getPetSpecies: {
+      method: "GET",
+      path: "/pets/species",
+      pathParamsSchema: z.object({}),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        status: z.number(),
+        message: z.string(),
+        species: z.array(
+          z.object({
+            id: z.number(),
+            name: z.string(),
+            status: z.enum(["Active", "Inactive"]),
+            uid: z.string(),
+          })
+        ),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+
+    getPets: {
+      method: "GET",
+      path: "/user/{id}/pets",
+      pathParamsSchema: z.object({ id: z.string() }),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        status: z.number(),
+        message: z.string(),
+        pets: z.array(
+          z.object({
+            id: z.string(),
+            vetport_id: z.number().nullable(),
+            name: z.string(),
+            type: z.string(),
+            breed: z.string().nullable(),
+            weight: z.string().nullable(),
+            gender: z.string().nullable(),
+            dob: z.string().nullable(),
+            profile_image: z.string().nullable(),
+          })
+        ),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+
+    addNewPet: {
+      method: "POST",
+      path: "/user/{id}/pet",
+      pathParamsSchema: z.object({ id: z.string() }),
+      requestSchema: z.object({
+        pet: z.object({
+          name: z.string(),
+          species: z.object({
+            id: z.number(),
+            name: z.string(),
+          }),
+        }),
+      }),
+      responseSchema: z.object({
+        status: z.number(),
+        message: z.string(),
+        id: z.string(),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+
+    updatePets: {
+      method: "PUT",
+      path: "/user/{id}/pets",
+      pathParamsSchema: z.object({ id: z.string() }),
+      requestSchema: z.object({
+        pet: z.object({
+          name: z.string(),
+          species: z.object({
+            id: z.number(),
+            name: z.string(),
+          }),
+          breed: z.string().nullable(),
+          weight: z.string().nullable(),
+          gender: z.string().nullable(),
+        }),
+      }),
+      responseSchema: z.object({
+        status: z.number(),
+        message: z.string(),
+      }),
+      errorResponseSchema: z.object({}),
+    },
   },
 });
