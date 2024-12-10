@@ -18,7 +18,6 @@ import {
 // import UserAuthenticationModal from "@/components/ui/UserAuthenticationModal";
 import { useAPICall } from "@/hooks/apicall";
 import api from "@/services/api";
-import toast, { Toaster } from "react-hot-toast";
 import { Pet, useUserContext } from "@/context/UserContext";
 import { useAppointmentsContext } from "@/context/AppointmentsContext";
 
@@ -43,7 +42,7 @@ const SelectVet: React.FC<selectVetProps> = ({
 
   // const [authModalOpen, setAuthModalOpen] = useState(false);
   const [otpLoading, setOtpLoading] = useState<boolean>(false);
-
+  
   // const { call: sendOTP } = useAPICall(api.loginOTP);
   const { call: getStaffSchedule, result: staffScheduleResult } = useAPICall(
     api.getStaffSchedule

@@ -15,25 +15,25 @@ import "swiper/css";
 import "swiper/css/navigation";
 import { MembershipPlan } from "@/components/ui/MemberCard";
 
-type PetType = "Dog" | "Cat";
+// type PetType = "Dog" | "Cat";
 
 const Membership = () => {
   const [selectedPlan, setSelectedPlan] = useState<MembershipPlan | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [petType, setPetType] = useState<PetType>("Dog");
+  // const [petType, setPetType] = useState<PetType>("Dog");
 
   const handlePlanSelect = (plan: MembershipPlan) => {
     setSelectedPlan(plan);
     setIsModalOpen(true);
   };
 
-  const filteredMembershipData = membershipData.filter(
-    (plan) => plan.petType === petType
-  );
+  // const filteredMembershipData = membershipData.filter(
+  //   (plan) => plan.petType === petType
+  // );
 
-  const togglePetType = () => {
-    setPetType((prevType) => (prevType === "Dog" ? "Cat" : "Dog"));
-  };
+  // const togglePetType = () => {
+  //   setPetType((prevType) => (prevType === "Dog" ? "Cat" : "Dog"));
+  // };
 
   return (
     <div className="w-full h-full items-center justify-items-center font-roca">
@@ -65,7 +65,7 @@ const Membership = () => {
         <div className="bg-primary-3 w-full text-center text-3xl my-16 pb-12 px-8 md:px-32 lg:px-20 xl:px-40">
           <h1 className="pt-12 pb-8 lg:pb-16">Become A Member</h1>
 
-          <div className="flex justify-start mb-8">
+          {/* <div className="flex justify-start mb-8">
             <div className="flex items-start bg-white rounded-full p-1 shadow-md">
               <button
                 className={`px-4 py-2 rounded-full transition-colors text-base ${
@@ -88,7 +88,7 @@ const Membership = () => {
                 Cat
               </button>
             </div>
-          </div>
+          </div> */}
 
           <div className="mx-auto relative">
             <button className="custom-swiper-button-prev absolute -left-[42px] sm:-left-[48px] top-1/2 -translate-y-1/2 z-10 rounded-full p-2 transition-colors">
@@ -113,7 +113,7 @@ const Membership = () => {
               }}
               className="w-full h-full"
             >
-              {filteredMembershipData.map((plan, index) => (
+              {membershipData.map((plan, index) => (
                 <SwiperSlide key={index} className="h-[100%] ">
                   <div className="flex justify-center mt-2 h-full">
                     <MemberCard plan={plan} onSelect={handlePlanSelect} />

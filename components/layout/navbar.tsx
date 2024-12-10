@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import Profile from "@/public/assets/images/profileThumnail.svg";
 import { Menu } from "lucide-react";
@@ -193,14 +193,14 @@ export default function NavBar() {
                       </div>
                     </DropdownMenu.Item>
 
-                    <DropdownMenu.Item asChild>
+                    {/* <DropdownMenu.Item asChild>
                       <div
                         onClick={() => setContactIsModalOpen(true)}
                         className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
                       >
                         Medical History
                       </div>
-                    </DropdownMenu.Item>
+                    </DropdownMenu.Item> */}
                     <DropdownMenu.Item asChild>
                       <div
                         onClick={() => navigate.push("/user/my-appointments")}
@@ -219,22 +219,14 @@ export default function NavBar() {
                       </div>
                     </DropdownMenu.Item>
                     <div className="border-t border-gray-300 my-2" />
-                    <DropdownMenu.Item asChild>
-                      <div
-                        onClick={() => setContactIsModalOpen(true)}
-                        className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
-                      >
-                        Billing Information
-                      </div>
-                    </DropdownMenu.Item>
-                    <DropdownMenu.Item asChild>
+                    {/* <DropdownMenu.Item asChild>
                       <div
                         onClick={() => setContactIsModalOpen(true)}
                         className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
                       >
                         Account Settings
                       </div>
-                    </DropdownMenu.Item>
+                    </DropdownMenu.Item> */}
                     <DropdownMenu.Item asChild>
                       <div
                         onClick={handleLogout}
@@ -370,7 +362,7 @@ export default function NavBar() {
                       >
                         My Pets
                       </DropdownMenu.Item>
-                      <DropdownMenu.Item
+                      {/* <DropdownMenu.Item
                         onClick={() => {
                           setIsOpen(false);
                           setContactIsModalOpen(true);
@@ -378,7 +370,7 @@ export default function NavBar() {
                         className="text-primary-1 hover:text-secondary-1 cursor-pointer"
                       >
                         Medical History
-                      </DropdownMenu.Item>
+                      </DropdownMenu.Item> */}
                       <DropdownMenu.Item
                         onClick={() => {
                           setIsOpen(false);
@@ -403,16 +395,7 @@ export default function NavBar() {
                           <div className="border-t border-gray-300 my-2" />
                         </>
                       ) : null}
-                      <DropdownMenu.Item
-                        onClick={() => {
-                          setIsOpen(false);
-                          setContactIsModalOpen(true);
-                        }}
-                        className="text-primary-1 hover:text-secondary-1 cursor-pointer"
-                      >
-                        Billing Information
-                      </DropdownMenu.Item>
-                      <DropdownMenu.Item
+                      {/* <DropdownMenu.Item
                         onClick={() => {
                           setIsOpen(false);
                           setContactIsModalOpen(true);
@@ -420,7 +403,7 @@ export default function NavBar() {
                         className="text-primary-1 hover:text-secondary-1 cursor-pointer"
                       >
                         Account Settings
-                      </DropdownMenu.Item>
+                      </DropdownMenu.Item> */}
                       <DropdownMenu.Item
                         onClick={handleLogout}
                         className="text-primary-1 hover:text-secondary-1 cursor-pointer"
