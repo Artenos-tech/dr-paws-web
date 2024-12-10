@@ -175,24 +175,24 @@ export const clinicItems: Clinic[] = [
   {
     id: "220",
     image: IND_Exterior1,
-    clinicName: "Indiranagar",
+    location: "Indiranagar",
     services:
       "Consults | Grooming | Surgery | Dignostics | Ultrasound | Retail",
     contact: "+91 9606994627",
     parkingInformation:
       "Ample parking available outside clinic, and in surrounding lanes",
-    location: "Dr. Paws - Veterinarian in Indiranagar, Bengaluru",
+    clinicName: "Dr. Paws - Veterinarian in Indiranagar, Bengaluru",
   },
   {
     id: "221",
     image: RMV_Exterior1,
-    clinicName: "RMV (Dollars Colony)",
+    location: "RMV (Dollars Colony)",
     services:
       "Consults | Grooming | Surgery | Dignostics | Ultrasound | Retail",
     contact: "+91 7204996899",
     parkingInformation:
       "Ample parking available outside clinic, and in surrounding lanes",
-    location: "Dr. Paws - Veterinarian in RMV (Dollars Colony), Bengaluru",
+    clinicName: "Dr. Paws - Veterinarian in RMV (Dollars Colony), Bengaluru",
   },
   // {
   //   id: "3",
@@ -557,7 +557,7 @@ export const doctors = [
 
 export const photos = [
   {
-    id: "1",
+    id: "220",
     photos: [
       IND_Exterior1,
       IND_Exterior2,
@@ -570,7 +570,7 @@ export const photos = [
     ],
   },
   {
-    id: "2",
+    id: "221",
     photos: [
       RMV_Exterior1,
       RMV_Exterior2,

@@ -281,5 +281,23 @@ export default createAPIClient({
       }),
       errorResponseSchema: z.object({}),
     },
+    createAppointment: {
+      method: "POST",
+      path: "/user/{id}/appointment",
+      pathParamsSchema: z.object({ id: z.string() }),
+      requestSchema: z.object({
+        vet_id: z.number(),
+        pet_id: z.string(),
+        appt_start: z.string(),
+        appt_end: z.string(),
+        appt_reason: z.string().nullable(),
+        clinic_id: z.number(),
+      }),
+      responseSchema: z.object({
+        status: z.number(),
+        message: z.string(),
+      }),
+      errorResponseSchema: z.object({}),
+    },
   },
 });

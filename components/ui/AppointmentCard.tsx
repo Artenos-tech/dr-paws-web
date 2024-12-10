@@ -106,7 +106,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({ appointment }) => {
             statusCategory === "cancelled" ? "text-[#909090]" : "text-primary-1"
           }`}
         >
-        {/* appointmentType will come here */}
+          {/* appointmentType will come here */}
           {appointment.appt_reason ?? "Grooming"}
         </p>
       </div>
@@ -138,14 +138,16 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({ appointment }) => {
       </div>
 
       {/* View Details Button */}
-      <div className="self-end">
-        <OutlineButton
-          outlineBtnText="View Details"
-          outlineBtnLink={() =>
-            router.push(`/user/my-appointments/${appointment.id}`)
-          }
-        />
-      </div>
+      {statusCategory === "upcoming" && (
+        <div className="self-end">
+          <OutlineButton
+            outlineBtnText="View Details"
+            outlineBtnLink={() =>
+              router.push(`/user/my-appointments/${appointment.id}`)
+            }
+          />
+        </div>
+      )}
     </div>
   );
 };

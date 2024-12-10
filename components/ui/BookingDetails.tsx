@@ -17,6 +17,13 @@ import { formatDate, formatTimeRange } from "@/components/ui/AppointmentCard";
 import { parse, format, addMinutes } from "date-fns";
 
 import { BsCheckCircleFill } from "react-icons/bs";
+import { clinicItems } from "@/model/mockData";
+import Image from "next/image";
+
+// TO-DO: For testing purpose
+import defaultVetImage from "@/public/assets/images/Appointments/vetImage.png";
+import defaultPetImage from "@/public/assets/images/Appointments/petImage.png";
+import { petImageByType } from "./PetCard";
 
 export const cancelReasons = [
   "Another commitment has come up",
@@ -126,8 +133,6 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
     }
   };
 
-  console.log(selectedAppointment.selectedSlot);
-
   return (
     <div className="w-full h-full">
       {appointmentId && <BackButton />}
@@ -161,30 +166,71 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
             <p className="text-lg font-semibold mt-4">
               {/* {bookingDetails?.petName} is scheduled with
               {bookingDetails?.vetName} */}
-              Pet name is scheduled with Vet name
+              {selectedAppointment.selectedData &&
+              Object.keys(selectedAppointment.selectedData).includes("Grooming")
+                ? "Pet name is scheduled"
+                : "Pet name is scheduled with Vet name"}
             </p>
             <p>
               for
-              {/* {bookingDetails?.service}  */}
-              Grooming consultation
+              {/* {bookingDetails?.service}  */}{" "}
+              {selectedAppointment.selectedData &&
+              Object.keys(selectedAppointment.selectedData).includes("Grooming")
+                ? "Grooming consultation"
+                : selectedAppointment.selectedData &&
+                  Object.keys(selectedAppointment.selectedData) +
+                    " consultation"}
             </p>
 
             <div className="flex items-center my-4">
               {bookingDetails && (
                 <>
-                  {/* <Image
-                    src={bookingDetails.petImage}
+                  <Image
+                    src={defaultPetImage}
                     alt="pet-image"
                     width={130}
                     height={130}
                   />
                   <Image
-                    src={bookingDetails.vetImage}
+                    src={defaultVetImage}
                     alt="vet-image"
                     width={130}
                     height={130}
                     className="ml-[-30px]"
-                  /> */}
+                  />
+                </>
+              )}
+              {!appointmentId && selectedAppointment.selectedData && (
+                <>
+                  <Image
+                    src={
+                      (typeof selectedAppointment.selectedData.profileImage ===
+                        "string" &&
+                        (selectedAppointment.selectedData
+                          .profileImage as string)) ||
+                      petImageByType[
+                        (selectedAppointment.selectedData?.type
+                          ?.toString()
+                          .toLowerCase() as keyof typeof petImageByType) ||
+                          "other"
+                      ]
+                    }
+                    alt="pet-image"
+                    width={130}
+                    height={130}
+                  />
+                  {selectedAppointment.selectedData &&
+                    !Object.keys(selectedAppointment.selectedData).includes(
+                      "Grooming"
+                    ) && (
+                      <Image
+                        src={defaultVetImage}
+                        alt="vet-image"
+                        width={130}
+                        height={130}
+                        className="ml-[-30px]"
+                      />
+                    )}
                 </>
               )}
             </div>
@@ -198,8 +244,15 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                   <GrLocation />
                 </span>{" "}
                 {/* {bookingDetails?.clinicAddress */}
-                Andheri West Clinic
+                {!appointmentId
+                  ? selectedAppointment.selectedClinic &&
+                    clinicItems.find(
+                      (clinic) =>
+                        clinic.id === selectedAppointment.selectedClinic
+                    )?.location
+                  : "Andheri West Clinic"}
               </p>
+
               <p
                 className={`flex items-center gap-2 ${
                   isCancelled ? "line-through" : ""
@@ -231,14 +284,21 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                 ) : (
                   <>
                     {selectedAppointment.selectedSlot} -{" "}
-                    {selectedAppointment.selectedSlot
-                      ? addMinutesToTime(selectedAppointment.selectedSlot, 30)
-                      : ""}
+                    {selectedAppointment.selectedSlot &&
+                      addMinutesToTime(
+                        selectedAppointment.selectedSlot,
+                        selectedAppointment.selectedData &&
+                          Object.keys(
+                            selectedAppointment.selectedData
+                          ).includes("Grooming")
+                          ? 90
+                          : 30
+                      )}
                   </>
                 )}
               </p>
             </div>
-            {(!isCancelled && bookingDetails?.appt_status === "Complete") ||
+            {/* {(!isCancelled && bookingDetails?.appt_status === "Complete") ||
               (bookingDetails?.appt_status === "Check In" && (
                 <div className="flex justify-center mb-4 mt-2 items-center gap-2 w-full md:w-[75%]">
                   <button
@@ -254,7 +314,15 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                     Reschedule
                   </button>
                 </div>
-              ))}
+              ))} */}
+
+            {bookingDetails?.appt_status && (
+              <p className="italic text-gray-400 text-sm w-3/4 text-center">
+                Note: For cancel or reschedule the appointment please contact to
+                this clincs - +91 9606994627 (Indiranagar) and +91 7204996899
+                (RMV Dollar Colony)
+              </p>
+            )}
             {cancelFlowEnd ||
               (!appointmentId && (
                 <div className="flex items-center">

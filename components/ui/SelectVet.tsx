@@ -15,7 +15,7 @@ import {
   CarouselPrevious,
 } from "./carousel";
 
-import UserAuthenticationModal from "@/components/ui/UserAuthenticationModal";
+// import UserAuthenticationModal from "@/components/ui/UserAuthenticationModal";
 import { useAPICall } from "@/hooks/apicall";
 import api from "@/services/api";
 import toast, { Toaster } from "react-hot-toast";
@@ -35,31 +35,44 @@ const SelectVet: React.FC<selectVetProps> = ({
 }) => {
   const { setSelectedAppointment } = useAppointmentsContext();
 
-  const { user } = useUserContext();
+  const { user, userPets } = useUserContext();
 
   const [selectedDoctor, setSelectedDoctor] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
 
-  const [authModalOpen, setAuthModalOpen] = useState(false);
+  // const [authModalOpen, setAuthModalOpen] = useState(false);
   const [otpLoading, setOtpLoading] = useState<boolean>(false);
 
-  const { call: sendOTP } = useAPICall(api.loginOTP);
+  // const { call: sendOTP } = useAPICall(api.loginOTP);
   const { call: getStaffSchedule, result: staffScheduleResult } = useAPICall(
     api.getStaffSchedule
   );
 
+  const { call: createAnAppointment } = useAPICall(api.createAppointment);
+
   useEffect(() => {
-    if (selectedDoctor) {
+    if (
+      selectedDoctor ||
+      (selectedData && Object.keys(selectedData).includes("Grooming"))
+    ) {
       fetchStaffSchedule();
     }
   }, [selectedDoctor]);
+  const staffIdBasedServices =
+    selectedData && Object.keys(selectedData).includes("Grooming")
+      ? "0"
+      : "146";
 
   const fetchStaffSchedule = async () => {
-    if (selectedDoctor && selectedClinic) {
+    if (
+      (selectedDoctor ||
+        (selectedData && Object.keys(selectedData).includes("Grooming"))) &&
+      selectedClinic
+    ) {
       await getStaffSchedule({
         clinicid: selectedClinic,
-        staffid: "146",
+        staffid: staffIdBasedServices,
       });
     }
   };
@@ -73,30 +86,74 @@ const SelectVet: React.FC<selectVetProps> = ({
       selectedSlot,
     });
 
-    try {
-      setOtpLoading(true);
-      if (user) {
-        const response = await sendOTP({
-          mobile: user?.mobile,
-          role: user?.role,
-        });
+    if (user && userPets && selectedSlot) {
+      const staffId = Number(staffIdBasedServices);
+      const clinicId = Number(selectedClinic);
+      const pet = userPets.find(
+        (pet) => pet.id === selectedData?.[Object.keys(selectedData)[0]]?.id
+      );
 
-        setOtpLoading(false);
+      if (!pet) return;
 
-        if (response.ok) {
-          setAuthModalOpen(true);
-          toast.success("OTP sent to your mobile number", {
-            duration: 3000,
-            position: "bottom-right",
-          });
-        } else {
-          toast.error("Failed to send OTP.");
-        }
+      const today = new Date();
+      const [hours, minutes] = selectedSlot.split(":").map(Number);
+      console.log(hours, minutes);
+      today.setHours(hours, minutes, 0, 0);
+      const apptStart = today.toISOString();
+      console.log(apptStart);
+      console.log("apptstart :", typeof apptStart);
+
+      const endDate = new Date(today);
+      endDate.setMinutes(
+        endDate.getMinutes() +
+          (selectedData && Object.keys(selectedData).includes("Grooming")
+            ? 90
+            : 30)
+      );
+      const apptEnd = endDate.toISOString();
+
+      const response = await createAnAppointment({
+        id: user?.id,
+        vet_id: staffId,
+        pet_id: pet?.id,
+        clinic_id: clinicId,
+        appt_reason: null,
+        appt_start: apptStart,
+        appt_end: apptEnd,
+      });
+      console.log(response);
+      if (response.ok) {
+        console.log(response);
       }
-    } catch {
-      setOtpLoading(false);
-      toast.error("An unexpected error occurred.");
     }
+    if (onNext) {
+      onNext();
+    }
+
+    // try {
+    //   setOtpLoading(true);
+    //   if (user) {
+    //     const response = await sendOTP({
+    //       mobile: user?.mobile,
+    //       role: user?.role,
+    //     });
+
+    //     setOtpLoading(false);
+
+    //     if (response.ok) {
+    //       // setAuthModalOpen(true);
+    //       toast.success("OTP sent to your mobile number", {
+    //         duration: 3000,
+    //         position: "bottom-right",
+    //       });
+    //     } else {
+    //       toast.error("Failed to send OTP.");
+    //     }
+    //   }
+    // } catch {
+    //   setOtpLoading(false);
+    //   toast.error("An unexpected error occurred.");
+    // }
   };
 
   const handleDateSelect = (date: Date) => {
@@ -104,16 +161,16 @@ const SelectVet: React.FC<selectVetProps> = ({
     setSelectedSlot(null);
   };
 
-  const onSuccess = (toastMessage: string) => {
-    setAuthModalOpen(false);
-    if (onNext) {
-      onNext();
-    }
-    toast.success(`Successfully ${toastMessage}`, {
-      duration: 3000,
-      position: "bottom-right",
-    });
-  };
+  // const onSuccess = (toastMessage: string) => {
+  //   // setAuthModalOpen(false);
+  //   if (onNext) {
+  //     onNext();
+  //   }
+  //   toast.success(`Successfully ${toastMessage}`, {
+  //     duration: 3000,
+  //     position: "bottom-right",
+  //   });
+  // };
 
   const handleSlotSelect = (time: string) => {
     setSelectedSlot(selectedSlot === time ? null : time);
@@ -122,38 +179,36 @@ const SelectVet: React.FC<selectVetProps> = ({
   const generateHourlySlots = (timeRange: string) => {
     if (!timeRange) return [];
 
-    try {
-      const [startTimeStr, endTimeStr] = timeRange.split(" to ");
-      if (!startTimeStr || !endTimeStr) {
-        throw new Error("Invalid time range format");
-      }
-
-      const startTime = parse(startTimeStr, "HH:mm", new Date());
-      let endTime = parse(endTimeStr, "HH:mm", new Date());
-
-      // Normalize 24:00 or beyond to next day
-      if (endTimeStr.startsWith("24") || endTimeStr.startsWith("25")) {
-        endTime = parse("00:02", "HH:mm", addMinutes(new Date(), 1440)); // Add 1 day
-      }
-
-      // Check if parsed dates are valid
-      if (isNaN(startTime.getTime()) || isNaN(endTime.getTime())) {
-        throw new Error("Invalid time range values");
-      }
-
-      const slots = [];
-      let current = startTime;
-
-      while (current <= endTime) {
-        slots.push(format(current, "HH:mm"));
-        current = addMinutes(current, 30); // Increment by 30 minutes
-      }
-
-      return slots.length > 0 ? slots : [];
-    } catch (error) {
-      console.error("Error parsing time range:", error);
-      return [];
+    const [startTimeStr, endTimeStr] = timeRange.split(" to ");
+    if (!startTimeStr || !endTimeStr) {
+      throw new Error("Invalid time range format");
     }
+
+    const startTime = parse(startTimeStr, "HH:mm", new Date());
+    let endTime = parse(endTimeStr, "HH:mm", new Date());
+
+    // Normalize 24:00 or beyond to next day
+    if (endTimeStr.startsWith("24") || endTimeStr.startsWith("25")) {
+      endTime = parse("00:02", "HH:mm", addMinutes(new Date(), 1440)); // Add 1 day
+    }
+
+    // Check if parsed dates are valid
+    if (isNaN(startTime.getTime()) || isNaN(endTime.getTime())) {
+      throw new Error("Invalid time range values");
+    }
+
+    const slots = [];
+    let current = startTime;
+
+    while (current <= endTime) {
+      slots.push(format(current, "HH:mm"));
+      current = addMinutes(
+        current,
+        selectedData && Object.keys(selectedData).includes("Grooming") ? 90 : 30
+      );
+    }
+
+    return slots.length > 0 ? slots : [];
   };
 
   const selectedDay = selectedDate && format(selectedDate, "EEEE");
@@ -162,7 +217,6 @@ const SelectVet: React.FC<selectVetProps> = ({
     selectedDay &&
     staffScheduleResult?.ok &&
     staffScheduleResult.value.body.staffschedule.weeks[selectedDay];
-  console.log(timeRange);
 
   // const timeRange =
   //   selectedDay &&
@@ -170,11 +224,13 @@ const SelectVet: React.FC<selectVetProps> = ({
 
   const availableSlots =
     typeof timeRange === "string" ? generateHourlySlots(timeRange) : [];
-  console.log(availableSlots);
 
   const isNextButtonEnabled =
-    selectedDoctor !== null && selectedDate !== null && selectedSlot !== null;
-  console.log("select day", selectedDay);
+    (selectedDoctor !== null &&
+      selectedDate !== null &&
+      selectedSlot !== null) ||
+    (selectedData && Object.keys(selectedData).includes("Grooming"));
+
   return (
     <div className="h-full flex flex-col gap-12 px-4 lg:px-0">
       {selectedData && !Object.keys(selectedData).includes("Grooming") && (
@@ -287,14 +343,14 @@ const SelectVet: React.FC<selectVetProps> = ({
           buttonClickEvent={handleNextClick}
         />
       </div>
-      <UserAuthenticationModal
+      {/* <UserAuthenticationModal
         isOpen={authModalOpen}
         onClose={() => setAuthModalOpen(false)}
         initialMobileNumber="5133158593"
         onSuccess={onSuccess}
         buttonText="Verify OTP"
         bookingFlow={true}
-      />
+      /> */}
       <Toaster />
     </div>
   );

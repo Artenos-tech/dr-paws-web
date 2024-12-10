@@ -56,7 +56,6 @@ const SelectCalendar: React.FC<CalendarProps> = ({
 
   const selectDate = (date: Date) => {
     if (date.getMonth() === currentDate.getMonth() && !isBefore(date, today)) {
-      console.log("date,", date); // if I select MON in calender, it giving response of sunday
       onDateSelect(date);
     }
   };

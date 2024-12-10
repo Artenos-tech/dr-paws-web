@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Profile from "@/public/assets/images/profileThumnail.svg";
 import { Menu } from "lucide-react";
@@ -40,7 +40,7 @@ export default function NavBar() {
     clearAuthToken();
     navigate.push("/");
     refresh();
-    window.location.reload()
+    window.location.reload();
   };
 
   const handleLoginModalOpen = (text: string) => {
@@ -337,7 +337,7 @@ export default function NavBar() {
             <div className="flex items-center px-8 md:px-32 space-x-4">
               {getAuthToken() ? (
                 <DropdownMenu.Root>
-                  <DropdownMenu.Trigger>
+                  <DropdownMenu.Trigger asChild>
                     <Image
                       src={Profile}
                       alt="User logo"
