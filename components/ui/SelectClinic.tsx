@@ -23,7 +23,7 @@ const SelectClinic: React.FC<SelectClinicProps> = ({ onNext, selectedClinic, han
             <SelectClinicCard
               key={item.id}
               clinic={item}
-              isSelected={selectedClinic === item.clinicName}
+              isSelected={selectedClinic === item.id}
               onSelect={() => handleClinicSelection(item.id)}
             />
           </div>

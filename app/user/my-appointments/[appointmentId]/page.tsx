@@ -8,7 +8,7 @@ interface myBookingsProps {
   };
 }
 
-const page: React.FC<myBookingsProps> = ({ params }) => {
+const MyAppointmentIdPage: React.FC<myBookingsProps> = ({ params }) => {
   const { appointmentId } = params;
   console.log("id:",appointmentId);
   return (
@@ -20,4 +20,4 @@ const page: React.FC<myBookingsProps> = ({ params }) => {
   );
 };
 
-export default page;
+export default MyAppointmentIdPage;

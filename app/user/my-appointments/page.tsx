@@ -13,7 +13,7 @@ import { useAppointmentsContext } from "@/context/AppointmentsContext";
 
 import Loader from "@/components/ui/Loader";
 
-const page = () => {
+const MyAppointmentsPage = () => {
   const { appointments, loading } = useAppointmentsContext();
 
   if (loading) {
@@ -73,4 +73,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default MyAppointmentsPage;

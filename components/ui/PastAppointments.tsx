@@ -1,6 +1,5 @@
 import { AppointmentType } from "@/model/typeDefinitions";
 import React from "react";
-import PastAppointmentCard from "./PastAppointmentCard";
 import NoAppointments from "./NoAppointments";
 import AppointmentCard from "./AppointmentCard";
 

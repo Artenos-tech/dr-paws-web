@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import SelectDoctorCard from "./SelectDoctorCard";
-import { doctors, staffSchedule } from "@/model/mockData";
+import { doctors } from "@/model/mockData";
 
 import CustomButton from "./CustomButton";
 import SelectCalendar from "./SelectCalendar";
@@ -19,7 +19,7 @@ import UserAuthenticationModal from "@/components/ui/UserAuthenticationModal";
 import { useAPICall } from "@/hooks/apicall";
 import api from "@/services/api";
 import toast, { Toaster } from "react-hot-toast";
-import { Pet } from "@/context/UserContext";
+import { Pet, useUserContext } from "@/context/UserContext";
 import { useAppointmentsContext } from "@/context/AppointmentsContext";
 
 interface selectVetProps {
@@ -34,6 +34,8 @@ const SelectVet: React.FC<selectVetProps> = ({
   onNext,
 }) => {
   const { setSelectedAppointment } = useAppointmentsContext();
+
+  const { user } = useUserContext();
 
   const [selectedDoctor, setSelectedDoctor] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -57,7 +59,7 @@ const SelectVet: React.FC<selectVetProps> = ({
     if (selectedDoctor && selectedClinic) {
       await getStaffSchedule({
         clinicid: selectedClinic,
-        staffid: "950",
+        staffid: "146",
       });
     }
   };
@@ -73,17 +75,23 @@ const SelectVet: React.FC<selectVetProps> = ({
 
     try {
       setOtpLoading(true);
-      const response = await sendOTP({ mobile: "5133158593", role: "USER" });
-      setOtpLoading(false);
-
-      if (response.ok) {
-        setAuthModalOpen(true);
-        toast.success("OTP sent to your mobile number", {
-          duration: 3000,
-          position: "bottom-right",
+      if (user) {
+        const response = await sendOTP({
+          mobile: user?.mobile,
+          role: user?.role,
         });
-      } else {
-        toast.error("Failed to send OTP.");
+
+        setOtpLoading(false);
+
+        if (response.ok) {
+          setAuthModalOpen(true);
+          toast.success("OTP sent to your mobile number", {
+            duration: 3000,
+            position: "bottom-right",
+          });
+        } else {
+          toast.error("Failed to send OTP.");
+        }
       }
     } catch {
       setOtpLoading(false);
@@ -120,7 +128,7 @@ const SelectVet: React.FC<selectVetProps> = ({
         throw new Error("Invalid time range format");
       }
 
-      let startTime = parse(startTimeStr, "HH:mm", new Date());
+      const startTime = parse(startTimeStr, "HH:mm", new Date());
       let endTime = parse(endTimeStr, "HH:mm", new Date());
 
       // Normalize 24:00 or beyond to next day
@@ -149,6 +157,7 @@ const SelectVet: React.FC<selectVetProps> = ({
   };
 
   const selectedDay = selectedDate && format(selectedDate, "EEEE");
+
   const timeRange =
     selectedDay &&
     staffScheduleResult?.ok &&
@@ -165,36 +174,38 @@ const SelectVet: React.FC<selectVetProps> = ({
 
   const isNextButtonEnabled =
     selectedDoctor !== null && selectedDate !== null && selectedSlot !== null;
-
+  console.log("select day", selectedDay);
   return (
     <div className="h-full flex flex-col gap-12 px-4 lg:px-0">
-      <div>
-        <h1 className="text-3xl mb-2">Select Vet</h1>
-        <p className="text-gray-600 mb-12">Book Spot for your visit</p>
+      {selectedData && !Object.keys(selectedData).includes("Grooming") && (
+        <div>
+          <h1 className="text-3xl mb-2">Select Vet</h1>
+          <p className="text-gray-600 mb-12">Book Spot for your visit</p>
 
-        {/* Carousel for Doctor Selection */}
-        <Carousel className="pr-1 w-[90%] sm:w-full mx-auto">
-          <CarouselContent className="-ml-1">
-            {doctors.map((doctor) => (
-              <CarouselItem
-                key={doctor.id}
-                className="basis-full sm:basis-5/12 lg:basis-1/4 xl:basis-1/5"
-              >
-                <SelectDoctorCard
-                  doctor={doctor}
-                  isSelected={selectedDoctor === doctor.id}
-                  onDoctorSelect={(id) => {
-                    setSelectedDoctor(id);
-                    setSelectedDate(null); // Reset date and slot on doctor change
-                  }}
-                />
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
-        </Carousel>
-      </div>
+          {/* Carousel for Doctor Selection */}
+          <Carousel className="pr-1 w-[90%] sm:w-full mx-auto">
+            <CarouselContent className="-ml-1">
+              {doctors.map((doctor) => (
+                <CarouselItem
+                  key={doctor.id}
+                  className="basis-full sm:basis-5/12 lg:basis-1/4 xl:basis-1/5"
+                >
+                  <SelectDoctorCard
+                    doctor={doctor}
+                    isSelected={selectedDoctor === doctor.id}
+                    onDoctorSelect={(id) => {
+                      setSelectedDoctor(id);
+                      setSelectedDate(null); // Reset date and slot on doctor change
+                    }}
+                  />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious />
+            <CarouselNext />
+          </Carousel>
+        </div>
+      )}
 
       {/* Calendar and Timeslot Selection */}
       <div className="flex flex-col gap-8">
@@ -209,19 +220,23 @@ const SelectVet: React.FC<selectVetProps> = ({
           {/* Calendar Section */}
           <div
             className={`flex-shrink-0 lg:w-1/2 xl:w-1/3 ${
-              !selectedDoctor && "opacity-100 pointer-events-none"
+              !selectedDoctor &&
+              selectedData &&
+              !Object.keys(selectedData).includes("Grooming")
+                ? "opacity-100 pointer-events-none"
+                : ""
             }`}
           >
             <SelectCalendar
               selectedDate={selectedDate}
               onDateSelect={handleDateSelect}
-              // years={
-              //   staffScheduleResult?.ok
-              //     ? (staffScheduleResult.value.body.staffschedule
-              //         .year as Record<string, string>)
-              //     : {}
-              // }
-              years={staffSchedule.year}
+              years={
+                staffScheduleResult?.ok
+                  ? (staffScheduleResult.value.body.staffschedule
+                      .year as Record<string, string>)
+                  : {}
+              }
+              // years={staffSchedule.year}
             />
           </div>
 

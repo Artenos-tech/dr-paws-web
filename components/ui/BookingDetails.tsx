@@ -16,12 +16,7 @@ import Loader from "@/components/ui/Loader";
 import { formatDate, formatTimeRange } from "@/components/ui/AppointmentCard";
 import { parse, format, addMinutes } from "date-fns";
 
-// TO-DO: For testing purpose
-import defaultVetImage from "@/public/assets/images/Appointments/vetImage.png";
-import defaultPetImage from "@/public/assets/images/Appointments/petImage.png";
-
 import { BsCheckCircleFill } from "react-icons/bs";
-import Image from "next/image";
 
 export const cancelReasons = [
   "Another commitment has come up",
@@ -192,23 +187,6 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                   /> */}
                 </>
               )}
-              {!appointmentId && (
-                <>
-                  <Image
-                    src={defaultPetImage}
-                    alt="pet-image"
-                    width={130}
-                    height={130}
-                  />
-                  <Image
-                    src={defaultVetImage}
-                    alt="vet-image"
-                    width={130}
-                    height={130}
-                    className="ml-[-30px]"
-                  />
-                </>
-              )}
             </div>
             <div className="my-4 space-y-3">
               <p
@@ -220,7 +198,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                   <GrLocation />
                 </span>{" "}
                 {/* {bookingDetails?.clinicAddress */}
-                "Andheri West Clinic"
+                Andheri West Clinic
               </p>
               <p
                 className={`flex items-center gap-2 ${

@@ -40,6 +40,7 @@ export default function NavBar() {
     clearAuthToken();
     navigate.push("/");
     refresh();
+    window.location.reload()
   };
 
   const handleLoginModalOpen = (text: string) => {
@@ -72,7 +73,7 @@ export default function NavBar() {
     const authToken = getAuthToken();
     console.log(authToken);
     return authToken
-      ?  navigate.push("/user/book-appointment")
+      ? navigate.push("/user/book-appointment")
       : handleLoginModalOpen("Book a Visit");
   };
 

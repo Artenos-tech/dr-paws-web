@@ -33,8 +33,8 @@ const SelectCalendar: React.FC<CalendarProps> = ({
   const [currentDate, setCurrentDate] = useState(new Date());
 
   const today = startOfDay(new Date());
-  const startDate = startOfWeek(startOfMonth(currentDate));
-  const endDate = endOfWeek(endOfMonth(currentDate));
+  const startDate = startOfWeek(startOfMonth(currentDate), { weekStartsOn: 1 }); 
+  const endDate = endOfWeek(endOfMonth(currentDate), { weekStartsOn: 1 });
 
   const days = [];
   let day = startDate;
@@ -56,8 +56,8 @@ const SelectCalendar: React.FC<CalendarProps> = ({
 
   const selectDate = (date: Date) => {
     if (date.getMonth() === currentDate.getMonth() && !isBefore(date, today)) {
+      console.log("date,", date); // if I select MON in calender, it giving response of sunday
       onDateSelect(date);
-      onDateSelect(date); // Notify parent component
     }
   };
 
@@ -109,7 +109,7 @@ const SelectCalendar: React.FC<CalendarProps> = ({
                   ? "bg-secondary-1 text-white"
                   : isToday(date)
                   ? "border border-secondary-1 text-black"
-                  : isCurrentMonth && !isPast  && !disabled
+                  : isCurrentMonth && !isPast && !disabled
                   ? "text-black cursor-pointer"
                   : "text-gray-400 cursor-not-allowed"
               }`}

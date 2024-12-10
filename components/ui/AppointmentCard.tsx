@@ -1,11 +1,9 @@
 "use client";
 
 import { AppointmentType } from "@/model/typeDefinitions";
-import Image from "next/image";
 import React from "react";
 import OutlineButton from "./OutlineButton";
 import { useRouter } from "next/navigation";
-import catImg from "@/public/assets/images/catimg.png";
 
 // Helper Functions
 export const formatDate = (dateString: string) => {
