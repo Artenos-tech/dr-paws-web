@@ -60,7 +60,8 @@ const BookingCard: React.FC<BookingCardProps> = ({
     updateUserPetsHandler(
       userPets ? [...userPets, newPetObject] : [newPetObject]
     );
-
+    //auto select newly added pet
+    // onCardSelection(cardId, newPetObject);
     handleAddPetModalClose();
   };
 
