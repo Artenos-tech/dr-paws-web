@@ -20,7 +20,11 @@ import { useAPICall } from "@/hooks/apicall";
 import api from "@/services/api";
 import { Pet, useUserContext } from "@/context/UserContext";
 import { useAppointmentsContext } from "@/context/AppointmentsContext";
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
+
+export function convertDateToEpoch(date: string) {
+  return Date.parse(date)
+}
 
 interface selectVetProps {
   selectedData?: Record<string, Pet | null>;
@@ -33,7 +37,7 @@ const SelectVet: React.FC<selectVetProps> = ({
   selectedData,
   onNext,
 }) => {
-  const { setSelectedAppointment } = useAppointmentsContext();
+  const { setSelectedAppointment, fetchAppointments } = useAppointmentsContext();
 
   const { user, userPets } = useUserContext();
 
@@ -76,7 +80,7 @@ const SelectVet: React.FC<selectVetProps> = ({
     ) {
       fetchStaffSchedule();
     }
-  }, [selectedDoctor, selectedData, fetchStaffSchedule]);
+  }, [selectedDoctor]);
 
   const handleNextClick = async () => {
     setSelectedAppointment({
@@ -86,24 +90,21 @@ const SelectVet: React.FC<selectVetProps> = ({
       selectedDate,
       selectedSlot,
     });
-
+  
     if (user && userPets && selectedSlot) {
       const staffId = Number(staffIdBasedServices);
       const clinicId = Number(selectedClinic);
       const pet = userPets.find(
         (pet) => pet.id === selectedData?.[Object.keys(selectedData)[0]]?.id
       );
-
+  
       if (!pet) return;
-
+  
       const today = new Date();
       const [hours, minutes] = selectedSlot.split(":").map(Number);
-      console.log(hours, minutes);
       today.setHours(hours, minutes, 0, 0);
       const apptStart = today.toISOString();
-      console.log(apptStart);
-      console.log("apptstart :", typeof apptStart);
-
+  
       const endDate = new Date(today);
       endDate.setMinutes(
         endDate.getMinutes() +
@@ -112,50 +113,50 @@ const SelectVet: React.FC<selectVetProps> = ({
             : 30)
       );
       const apptEnd = endDate.toISOString();
+  
+      try {
+        const response = await createAnAppointment({
+          id: user?.id,
+          vet_id: staffId,
+          pet_id: pet?.id,
+          clinic_id: clinicId,
+          appt_reason: null,
+          appt_start: convertDateToEpoch(apptStart),
+          appt_end: convertDateToEpoch(apptEnd),
+        });
+  
+        if (response.ok) {
+          toast.success("Appointment created successfully!", {
+            duration: 3000,
+            position: "bottom-right",
+          });
 
-      const response = await createAnAppointment({
-        id: user?.id,
-        vet_id: staffId,
-        pet_id: pet?.id,
-        clinic_id: clinicId,
-        appt_reason: null,
-        appt_start: apptStart,
-        appt_end: apptEnd,
-      });
-      console.log(response);
-      if (response.ok) {
-        console.log(response);
+          fetchAppointments();
+
+          if (onNext) {
+            onNext(); // Navigate to the next page only if the API succeeds
+          }
+        } else {
+          toast.error("Failed to create appointment. Please try again.", {
+            duration: 3000,
+            position: "bottom-right",
+          });
+        }
+      } catch (error) {
+        console.error("Error creating appointment:", error);
+        toast.error("An unexpected error occurred. Please try again.", {
+          duration: 3000,
+          position: "bottom-right",
+        });
       }
+    } else {
+      toast.error("Please fill out all required fields before proceeding.", {
+        duration: 3000,
+        position: "bottom-right",
+      });
     }
-    if (onNext) {
-      onNext();
-    }
-
-    // try {
-    //   setOtpLoading(true);
-    //   if (user) {
-    //     const response = await sendOTP({
-    //       mobile: user?.mobile,
-    //       role: user?.role,
-    //     });
-
-    //     setOtpLoading(false);
-
-    //     if (response.ok) {
-    //       // setAuthModalOpen(true);
-    //       toast.success("OTP sent to your mobile number", {
-    //         duration: 3000,
-    //         position: "bottom-right",
-    //       });
-    //     } else {
-    //       toast.error("Failed to send OTP.");
-    //     }
-    //   }
-    // } catch {
-    //   setOtpLoading(false);
-    //   toast.error("An unexpected error occurred.");
-    // }
   };
+  
 
   const handleDateSelect = (date: Date) => {
     setSelectedDate(date);

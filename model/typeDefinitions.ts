@@ -68,8 +68,10 @@ export enum AppointmentStatus {
 export interface AppointmentType {
   id: string;
   pet_vetport_id: number;
+  pet_name: string;
   user_vetport_id: number;
   vet_vetport_id: number;
+  vet_name: string;
   clinic_id: number;
   appt_start: string;
   appt_end: string;

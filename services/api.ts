@@ -235,8 +235,10 @@ export default createAPIClient({
           z.object({
             id: z.string(),
             pet_vetport_id: z.number(),
+            pet_name: z.string(),
             user_vetport_id: z.number(),
             vet_vetport_id: z.number(),
+            vet_name: z.string(),
             clinic_id: z.number(),
             appt_start: z.string(),
             appt_end: z.string(),
@@ -288,8 +290,8 @@ export default createAPIClient({
       requestSchema: z.object({
         vet_id: z.number(),
         pet_id: z.string(),
-        appt_start: z.string(),
-        appt_end: z.string(),
+        appt_start: z.number(),
+        appt_end: z.number(),
         appt_reason: z.string().nullable(),
         clinic_id: z.number(),
       }),
