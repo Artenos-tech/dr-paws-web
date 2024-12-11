@@ -36,6 +36,7 @@ const PetCard: React.FC<PetCardProps> = ({ pet }) => {
 
   const defaultImageOrPetImage = profileImage || petImageByType[type.toLowerCase()] || defaultPetImg;
 
+
   return (
     <div
       className="w-[150px] border-2 border-[#E2DBC4] bg-[#E2DBC4] text-center rounded-2xl shadow-md cursor-pointer"

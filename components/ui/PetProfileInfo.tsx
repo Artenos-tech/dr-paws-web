@@ -1,33 +1,42 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+
 import Image, { StaticImageData } from "next/image";
 import { useForm } from "react-hook-form";
-import { PetInfo } from "@/model/typeDefinitions";
+import { Pet } from "@/model/typeDefinitions";
 import ImageEdit from "@/public/assets/images/Profile/ImageEdit.png";
 import OutlineButton from "./OutlineButton";
 import { FaTrash } from "react-icons/fa6";
 import { petImageByType } from "./PetCard";
 import { useUserContext } from "@/context/UserContext";
 
+
+
 interface PetProfileInfoProps {
   petProfileId: string;
 }
 
 const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
-  const [pet, setPet] = useState<PetInfo | null>(null);
+  const [pet, setPet] = useState<Pet>();
   const [isEditing, setIsEditing] = useState(false);
   const [image, setImage] = useState<string | StaticImageData>("");
-  const [age, setAge] = useState({ years: 0, months: 0 });
+  const [age, setAge] = useState<{
+    years: number | null;
+    months: number | null;
+  }>({
+    years: 0,
+    months: 0,
+  });
 
-  const {userPets} = useUserContext()
+  const { userPets } = useUserContext();
 
   const {
     register,
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm<PetInfo>({
+  } = useForm<Pet>({
     defaultValues: {
       name: "",
       type: "",
@@ -35,50 +44,58 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
       gender: "",
       age: { years: 0, months: 0 },
       birthday: "",
-      weight: "",
-      petImage: pet?.type && petImageByType[pet.type.toLowerCase()].src,
+      weight: null,
+      profileImage: pet && petImageByType[pet.type.toLowerCase()],
     },
   });
 
   useEffect(() => {
     const fetchPetDetails = () => {
-      // const storedPets = localStorage.getItem("pets");
-      if (userPets) {
-        // const pets: PetInfo[] = JSON.parse(storedPets);
-        // const foundPet = userPets.find(
-        //   (pet) => Number(pet.id) === Number(petProfileId)
-        // );
+      if (!userPets || !petProfileId) return;
 
-        // setPet(foundPet);
-        // setImage(foundPet?.petImage || "");
-        // setAge(foundPet?.age || { years: 0, months: 0 });
+      const foundPet = userPets.find((pet) => pet.id === petProfileId);
 
-        // if (foundPet) {
-        //   for (const key in foundPet) {
-        //     setValue(key as keyof PetInfo, foundPet[key as keyof PetInfo]);
-        //   }
-        // }
+
+      if (foundPet) {
+        setPet(foundPet as Pet);
+        setImage(foundPet.profileImage || "");
+        setAge(foundPet.age || { years: 0, months: 0 }); 
+
+       
+        Object.entries(foundPet).forEach(([key, value]) => {
+          if (key in foundPet) {
+            setValue(key as keyof Pet, value);
+          }
+        });
       }
     };
 
     fetchPetDetails();
   }, [petProfileId, setValue, userPets]);
 
+
   const handleEditCancelClick = () => {
+    
     if (pet) {
       for (const key in pet) {
-        // Reseting to previous image or default image when user clicks on cancel button
-        setImage(
-          pet.petImage ||
-            (pet?.type && petImageByType[pet.type.toLowerCase()].src)
-        );
-        setValue(key as keyof PetInfo, pet[key as keyof PetInfo]);
+        if (Object.prototype.hasOwnProperty.call(pet, key)) {
+          const typedKey = key as keyof Pet;
+          setValue(typedKey, pet[typedKey]);
+        }
+      }
+  
+      const typeKey = pet?.type?.toLowerCase() || "other";
+      const defaultImage = petImageByType[typeKey]?.src || "";
+      if (image !== (pet?.profileImage || defaultImage)) {
+        setImage(pet?.profileImage || defaultImage); 
       }
     }
+  
     setIsEditing(!isEditing);
   };
+  
 
-  const onSubmit = (data: PetInfo) => {
+  const onSubmit = (data: Pet) => {
     const realPetImage =
       typeof image === "string" && image.includes("/_next/static/media/")
         ? ""
@@ -86,16 +103,16 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
 
     if (typeof window !== "undefined") {
       const storedPets = localStorage.getItem("pets");
-      const pets: PetInfo[] = storedPets ? JSON.parse(storedPets) : [];
-  
+      const pets: Pet[] = storedPets ? JSON.parse(storedPets) : [];
+
       const updatedPets = pets.map((pet) =>
-        Number(pet.petId) === Number(petProfileId)
+        Number(pet.id) === Number(petProfileId)
           ? { ...data, petImage: realPetImage }
           : pet
       );
       localStorage.setItem("pets", JSON.stringify(updatedPets));
     }
-    setPet({ ...data, petImage: realPetImage });
+    setPet({ ...data, profileImage: realPetImage });
     setIsEditing(false);
   };
 
@@ -106,7 +123,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
       reader.onload = () => {
         const result = reader.result as string;
         setImage(result);
-        setValue("petImage", result);
+        setValue("profileImage", result);
       };
       reader.readAsDataURL(file);
     }
@@ -130,9 +147,9 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
     setImage(newImage);
   };
 
-  // Here According to the type of pet, the image is selected
-  const defaultImageOrPetImage =
-    image || (pet?.type ? petImageByType[pet.type.toLowerCase()].src : "");
+
+  const defaultImageOrPetImage = image || petImageByType[ pet?.type || "other"] || petImageByType.other;
+
 
   return (
     <div className="bg-primary-3 rounded-lg p-3 md:p-6 lg:p-8 w-full">
@@ -171,13 +188,13 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                 <Image
                   src={ImageEdit}
                   alt="Image Edit"
-                  className="absolute bottom-0 right-0 "
+                  className="absolute bottom-0 right-10 "
                 />
                 <div className="px-5">
                   <input
                     type="file"
                     accept="image/*"
-                    {...register("petImage")}
+                    {...register("profileImage")}
                     onChange={handleImageChange}
                     className="absolute bottom-0 right-0 opacity-0 w-full h-full cursor-pointer px-5"
                     aria-label="Upload pet profile image"
@@ -313,7 +330,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                     <div className="w-full flex flex-col">
                       <input
                         type="number"
-                        value={age.years}
+                        value={age.years ?? ""}
                         placeholder="0 years"
                         min="0"
                         max="40"
@@ -328,7 +345,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                     <div className="w-full flex flex-col">
                       <input
                         type="number"
-                        value={age.months}
+                        value={age.months ?? ""}
                         min="0"
                         max="12"
                         onChange={handleAgeChange}

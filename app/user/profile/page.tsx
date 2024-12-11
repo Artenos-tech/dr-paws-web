@@ -26,8 +26,10 @@ const Profile: React.FC = () => {
   const [isAddPetModalOpen, setIsAddPetModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-  const { updateUserPetsHandler, userPets, user, getAuthToken, refresh } =
-    useUserContext();
+  const { updateUserPetsHandler, userPets, user, getAuthToken, refresh } = useUserContext();
+
+  // Initialize petIdCounter as a string
+
 
   const navigate = useRouter();
 
