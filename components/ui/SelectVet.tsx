@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import SelectDoctorCard from "./SelectDoctorCard";
 import { doctors } from "@/model/mockData";
 
@@ -20,6 +20,7 @@ import { useAPICall } from "@/hooks/apicall";
 import api from "@/services/api";
 import { Pet, useUserContext } from "@/context/UserContext";
 import { useAppointmentsContext } from "@/context/AppointmentsContext";
+import { Toaster } from "react-hot-toast";
 
 interface selectVetProps {
   selectedData?: Record<string, Pet | null>;
@@ -41,7 +42,7 @@ const SelectVet: React.FC<selectVetProps> = ({
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
 
   // const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [otpLoading, setOtpLoading] = useState<boolean>(false);
+  // const [otpLoading, setOtpLoading] = useState<boolean>(false);
   
   // const { call: sendOTP } = useAPICall(api.loginOTP);
   const { call: getStaffSchedule, result: staffScheduleResult } = useAPICall(
@@ -50,20 +51,12 @@ const SelectVet: React.FC<selectVetProps> = ({
 
   const { call: createAnAppointment } = useAPICall(api.createAppointment);
 
-  useEffect(() => {
-    if (
-      selectedDoctor ||
-      (selectedData && Object.keys(selectedData).includes("Grooming"))
-    ) {
-      fetchStaffSchedule();
-    }
-  }, [selectedDoctor]);
   const staffIdBasedServices =
-    selectedData && Object.keys(selectedData).includes("Grooming")
-      ? "0"
-      : "146";
+  selectedData && Object.keys(selectedData).includes("Grooming")
+    ? "0"
+    : "146";
 
-  const fetchStaffSchedule = async () => {
+  const fetchStaffSchedule = useCallback(async () => {
     if (
       (selectedDoctor ||
         (selectedData && Object.keys(selectedData).includes("Grooming"))) &&
@@ -74,7 +67,16 @@ const SelectVet: React.FC<selectVetProps> = ({
         staffid: staffIdBasedServices,
       });
     }
-  };
+  }, [selectedDoctor, selectedData, selectedClinic, getStaffSchedule, staffIdBasedServices]);
+  
+  useEffect(() => {
+    if (
+      selectedDoctor ||
+      (selectedData && Object.keys(selectedData).includes("Grooming"))
+    ) {
+      fetchStaffSchedule();
+    }
+  }, [selectedDoctor, selectedData, fetchStaffSchedule]);
 
   const handleNextClick = async () => {
     setSelectedAppointment({
@@ -336,7 +338,7 @@ const SelectVet: React.FC<selectVetProps> = ({
       {/* Next Button */}
       <div className="my-4 flex justify-center">
         <CustomButton
-          buttonText={otpLoading ? "Sending OTP..." : "Next"}
+          buttonText={"Next"}
           buttonBackground="bg-secondary-1"
           disabled={!isNextButtonEnabled}
           buttonClickEvent={handleNextClick}
