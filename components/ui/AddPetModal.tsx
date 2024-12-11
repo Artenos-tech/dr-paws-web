@@ -4,7 +4,6 @@ import { X } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "react-toastify";
 import "react-dropdown/style.css";
 import { useEffect, useState } from "react";
 import { useAPICall } from "@/hooks/apicall";
