@@ -30,13 +30,13 @@ export interface Pet {
   name: string;
   type: string;
   breed: string | null;
-  weight: number | null;
+  weight: string | null;
   gender: string | null;
   dob: string | null;
-  age: {
-    years: number | null;
-    months: number | null;
-  };
+  // age: {
+  //   years: number | null;
+  //   months: number | null;
+  // };
   vetPortId: number | null;
   profileImage: string | null; // pet image is optional
 }
@@ -118,10 +118,10 @@ export const UserProvider = ({ children }: UserProviderProps) => {
           weight: updatedPet.weight || null,
           gender: updatedPet.gender || "Male",
           dob: updatedPet.dob || null,
-          age: {
-            years: updatedPet.age?.years || null,
-            months: updatedPet.age?.months || null,
-          },
+          // age: {
+          //   years: updatedPet.age?.years || null,
+          //   months: updatedPet.age?.months || null,
+          // },
           vetPortId: updatedPet.vetPortId || null,
           profileImage: updatedPet.profileImage || null,
         }));

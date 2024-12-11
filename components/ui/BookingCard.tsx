@@ -5,7 +5,8 @@ import Image from "next/image";
 import AddPetModal from "./AddPetModal";
 import { petImageByType } from "./PetCard";
 import tickMark from "@/public/assets/images/Booking/tick-svgrepo-com.svg";
-import { Pet, useUserContext } from "@/context/UserContext";
+import { Pet } from "@/context/UserContext";
+import toast, { Toaster } from "react-hot-toast";
 
 interface BookingCardProps {
   cardId: string;
@@ -15,6 +16,8 @@ interface BookingCardProps {
   isOpen: boolean;
   toggleCard: (cardId: string) => void;
   selectedData: Record<string, Pet | null>;
+  pets: Pet[];
+  fetchPets: () => void;
 }
 
 const BookingCard: React.FC<BookingCardProps> = ({
@@ -25,9 +28,10 @@ const BookingCard: React.FC<BookingCardProps> = ({
   isOpen,
   toggleCard,
   selectedData,
+  pets,
+  fetchPets,
 }) => {
   const [isAddPetModalOpen, setIsAddPetModalOpen] = useState(false);
-  const { userPets, updateUserPetsHandler } = useUserContext();
 
   const handlePetClick = (pet: Pet) => {
     const isAlreadySelected = selectedData[cardId]?.id === pet.id;
@@ -44,27 +48,27 @@ const BookingCard: React.FC<BookingCardProps> = ({
     setIsAddPetModalOpen(false);
   };
 
-  const handleNewPetSubmit = (newPet: { name: string; type: string }) => {
-    const petType = newPet.type.toLowerCase();
-    const newPetObject: Pet = {
-      id: Date.now().toString(),
-      vetPortId: null, //TODO: add vetPortId
-      name: newPet.name,
-      type: petType,
-      profileImage: petImageByType[petType]?.src,
-      breed: null,
-      weight: null,
-      gender: null,
-      dob: null,
-      age: { years: null, months: null },
-    };
-    updateUserPetsHandler(
-      userPets ? [...userPets, newPetObject] : [newPetObject]
-    );
-    //auto select newly added pet
-    // onCardSelection(cardId, newPetObject);
-    handleAddPetModalClose();
-  };
+  // const handleNewPetSubmit = (newPet: { name: string; type: string }) => {
+  //   const petType = newPet.type.toLowerCase();
+  //   const newPetObject: Pet = {
+  //     id: Date.now().toString(),
+  //     vetPortId: null, //TODO: add vetPortId
+  //     name: newPet.name,
+  //     type: petType,
+  //     profileImage: petImageByType[petType]?.src,
+  //     breed: null,
+  //     weight: null,
+  //     gender: null,
+  //     dob: null,
+  //     // age: { years: null, months: null },
+  //   };
+  //   updateUserPetsHandler(
+  //     userPets ? [...userPets, newPetObject] : [newPetObject]
+  //   );
+  //   //auto select newly added pet
+  //   // onCardSelection(cardId, newPetObject);
+  //   handleAddPetModalClose();
+  // };
 
   return (
     <div
@@ -97,8 +101,9 @@ const BookingCard: React.FC<BookingCardProps> = ({
         <div className="p-4 ">
           <h3 className="text-lg font-medium mb-2">Select your Pet:</h3>
           <div className="flex gap-3 flex-wrap justify-center items-center">
-            {userPets &&
-              userPets.map((pet) => {
+            {/* {loading && <ClipLoader color="#33495f" />} */}
+            {pets &&
+              pets.map((pet) => {
                 const petImage =
                   pet.profileImage ||
                   petImageByType[pet.type.toLowerCase()]?.src ||
@@ -154,8 +159,21 @@ const BookingCard: React.FC<BookingCardProps> = ({
       <AddPetModal
         isOpen={isAddPetModalOpen}
         onClose={handleAddPetModalClose}
-        onSubmit={handleNewPetSubmit}
+        onSuccess={() => {
+          setIsAddPetModalOpen(false);
+          fetchPets();
+          toast.success("Added pet successfully", {
+            duration: 3000,
+            position: "bottom-right",
+            style: {
+              backgroundColor: "#4CAF50",
+              color: "#fff",
+              fontWeight: 700,
+            },
+          });
+        }}
       />
+      <Toaster />
     </div>
   );
 };

@@ -2,16 +2,15 @@
 
 import React, { useEffect, useState } from "react";
 
-import Image, { StaticImageData } from "next/image";
+import Image from "next/image";
 import { useForm } from "react-hook-form";
-import { Pet } from "@/model/typeDefinitions";
 import ImageEdit from "@/public/assets/images/Profile/ImageEdit.png";
 import OutlineButton from "./OutlineButton";
 import { FaTrash } from "react-icons/fa6";
 import { petImageByType } from "./PetCard";
-import { useUserContext } from "@/context/UserContext";
-
-
+import { Pet, PetSpecies, useUserContext } from "@/context/UserContext";
+import { useAPICall } from "@/hooks/apicall";
+import api from "@/services/api";
 
 interface PetProfileInfoProps {
   petProfileId: string;
@@ -20,16 +19,17 @@ interface PetProfileInfoProps {
 const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
   const [pet, setPet] = useState<Pet>();
   const [isEditing, setIsEditing] = useState(false);
-  const [image, setImage] = useState<string | StaticImageData>("");
-  const [age, setAge] = useState<{
-    years: number | null;
-    months: number | null;
-  }>({
-    years: 0,
-    months: 0,
-  });
+  const [image, setImage] = useState<string>("");
+  // const [age, setAge] = useState<{
+  //   years: number | null;
+  //   months: number | null;
+  // }>({
+  //   years: 0,
+  //   months: 0,
+  // });
 
-  const { userPets } = useUserContext();
+  const { userPets, petSpecies, updatePetSpeciesHandler } = useUserContext();
+  const { call: getPetSpecies } = useAPICall(api.getPetSpecies);
 
   const {
     register,
@@ -42,12 +42,28 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
       type: "",
       breed: "",
       gender: "",
-      age: { years: 0, months: 0 },
-      birthday: "",
-      weight: null,
-      profileImage: pet && petImageByType[pet.type.toLowerCase()],
+      // age: { years: 0, months: 0 },
+      dob: "",
+      weight: "",
+      profileImage: "",
     },
   });
+
+  useEffect(() => {
+    if (petProfileId) fetchPetSpecies();
+  }, [petProfileId]);
+
+  const fetchPetSpecies = async () => {
+    const response = await getPetSpecies({});
+    if (response?.ok) {
+      updatePetSpeciesHandler(
+        response.value.body.species.map((specie: PetSpecies) => ({
+          id: specie.id,
+          name: specie.name,
+        }))
+      );
+    }
+  };
 
   useEffect(() => {
     const fetchPetDetails = () => {
@@ -55,13 +71,11 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
 
       const foundPet = userPets.find((pet) => pet.id === petProfileId);
 
-
       if (foundPet) {
         setPet(foundPet as Pet);
         setImage(foundPet.profileImage || "");
-        setAge(foundPet.age || { years: 0, months: 0 }); 
+        // setAge(foundPet.age || { years: 0, months: 0 });
 
-       
         Object.entries(foundPet).forEach(([key, value]) => {
           if (key in foundPet) {
             setValue(key as keyof Pet, value);
@@ -73,9 +87,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
     fetchPetDetails();
   }, [petProfileId, setValue, userPets]);
 
-
   const handleEditCancelClick = () => {
-    
     if (pet) {
       for (const key in pet) {
         if (Object.prototype.hasOwnProperty.call(pet, key)) {
@@ -83,17 +95,16 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
           setValue(typedKey, pet[typedKey]);
         }
       }
-  
+
       const typeKey = pet?.type?.toLowerCase() || "other";
       const defaultImage = petImageByType[typeKey]?.src || "";
       if (image !== (pet?.profileImage || defaultImage)) {
-        setImage(pet?.profileImage || defaultImage); 
+        setImage(pet?.profileImage || defaultImage);
       }
     }
-  
+
     setIsEditing(!isEditing);
   };
-  
 
   const onSubmit = (data: Pet) => {
     const realPetImage =
@@ -129,17 +140,17 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
     }
   };
 
-  const handleAgeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    const newValue = Math.max(
-      0,
-      Math.min(parseInt(value) || 0, name === "months" ? 12 : 40)
-    );
+  // const handleAgeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const { name, value } = e.target;
+  //   const newValue = Math.max(
+  //     0,
+  //     Math.min(parseInt(value) || 0, name === "months" ? 12 : 40)
+  //   );
 
-    const updatedAge = { ...age, [name]: newValue };
-    setAge(updatedAge);
-    setValue("age", updatedAge);
-  };
+  //   const updatedAge = { ...age, [name]: newValue };
+  //   setAge(updatedAge);
+  //   setValue("age", updatedAge);
+  // };
 
   const handlePetTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedType = e.target.value.toLowerCase();
@@ -147,9 +158,9 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
     setImage(newImage);
   };
 
-
-  const defaultImageOrPetImage = image || petImageByType[ pet?.type || "other"] || petImageByType.other;
-
+  const defaultImageOrPetImage =
+    image || petImageByType[pet?.type || "other"] || petImageByType.other;
+  console.log(defaultImageOrPetImage);
 
   return (
     <div className="bg-primary-3 rounded-lg p-3 md:p-6 lg:p-8 w-full">
@@ -164,31 +175,35 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
               alt="Profile"
               width={130}
               height={130}
-              className="rounded-full bg-white w-[130px] h-[130px] md:self-start"
+              className="rounded-full bg-white w-[130px] h-[130px] md:self-center"
             />
             {isEditing && (
               <>
-                {typeof image === "string" &&
-                  !image.includes("/_next/static/media/") && (
-                    <button
-                      type="button"
-                      className="absolute bottom-0 left-0 p-3 bg-red-500 rounded-full z-10"
-                      onClick={() =>
-                        setImage(
-                          (pet?.type &&
-                            petImageByType[pet.type.toLowerCase()].src) ||
-                            ""
-                        )
-                      }
-                    >
-                      <FaTrash size={10} fill="white" />
-                    </button>
-                  )}
+                {(image
+                  ? !image.includes("/_next/static/media/")
+                  : typeof defaultImageOrPetImage === "object" &&
+                    !defaultImageOrPetImage.src.includes(
+                      "/_next/static/media/"
+                    )) && (
+                  <button
+                    type="button"
+                    className="absolute bottom-0 left-0 p-3 bg-red-500 rounded-full z-20"
+                    onClick={() => {
+                      const defaultImage =
+                        pet?.type && petImageByType[pet.type.toLowerCase()]
+                          ? petImageByType[pet.type.toLowerCase()].src
+                          : petImageByType.other.src;
+                      setImage(defaultImage);
+                    }}
+                  >
+                    <FaTrash size={10} fill="white" />
+                  </button>
+                )}
 
                 <Image
                   src={ImageEdit}
                   alt="Image Edit"
-                  className="absolute bottom-0 right-10 "
+                  className="absolute bottom-0 right-0"
                 />
                 <div className="px-5">
                   <input
@@ -239,15 +254,12 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                       defaultValue={pet?.type}
                       onChange={handlePetTypeChange}
                     >
-                      <option value="" disabled>
-                        Type of Pet
-                      </option>
-                      <option value="Dog">Dog</option>
-                      <option value="Cat">Cat</option>
-                      <option value="Bird">Bird</option>
-                      <option value="Rabbit">Rabbit</option>
-                      <option value="Hamster">Hamster</option>
-                      <option value="Other">Other</option>
+                      <option value="">Type of Pet</option>
+                      {petSpecies?.map((species) => (
+                        <option key={species.id} value={species.name}>
+                          {species.name}
+                        </option>
+                      ))}
                     </select>{" "}
                     {errors.type && (
                       <p className="text-red-500 text-xs">
@@ -299,7 +311,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                     <select
                       {...register("gender")}
                       className="outline-none border w-full px-2 p-1 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
-                      defaultValue={pet?.gender}
+                      defaultValue={pet?.gender || "Male"}
                     >
                       <option value="Male">Male</option>
                       <option value="Female">Female</option>
@@ -330,11 +342,11 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                     <div className="w-full flex flex-col">
                       <input
                         type="number"
-                        value={age.years ?? ""}
+                        // value={age.years ?? ""}
                         placeholder="0 years"
                         min="0"
                         max="40"
-                        onChange={handleAgeChange}
+                        // onChange={handleAgeChange}
                         name="years"
                         className="outline-none border w-full p-[5px] px-2 text-xs md:text-sm  mt-2 rounded bg-transparent border-secondary-1"
                       />
@@ -345,10 +357,10 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                     <div className="w-full flex flex-col">
                       <input
                         type="number"
-                        value={age.months ?? ""}
+                        // value={age.months ?? ""}
                         min="0"
                         max="12"
-                        onChange={handleAgeChange}
+                        // onChange={handleAgeChange}
                         name="months"
                         className="outline-none border w-full p-[5px] px-2 text-xs md:text-sm mt-2 rounded bg-transparent border-secondary-1"
                       />
@@ -357,12 +369,11 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                       </label>
                     </div>
                   </div>
-                ) : (
-                  <p className="text-primary-1 font-medium text-xs md:text-base">
-                    {pet?.age?.years ? `${pet.age.years} yrs ` : ""}
-                    {pet?.age?.months ? `${pet.age.months} mths ` : ""}
-                  </p>
-                )}
+                ) : // <p className="text-primary-1 font-medium text-xs md:text-base">
+                //   {pet?.age?.years ? `${pet.age.years} yrs ` : ""}
+                //   {pet?.age?.months ? `${pet.age.months} mths ` : ""}
+                // </p>
+                null}
               </div>
 
               <div className="">
@@ -376,26 +387,23 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                   <>
                     <input
                       type="date"
-                      {...register("birthday")}
+                      {...register("dob")}
                       className="outline-none border px-2 w-full p-1 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
                     />
-                    {errors.birthday && (
+                    {errors.dob && (
                       <p className="text-red-500 text-xs">
-                        {errors.birthday.message}
+                        {errors.dob.message}
                       </p>
                     )}
                   </>
                 ) : (
                   <p className="text-primary-1 font-medium text-xs md:text-base">
-                    {pet?.birthday
-                      ? new Date(pet?.birthday || "").toLocaleDateString(
-                          "en-GB",
-                          {
-                            day: "numeric",
-                            month: "short",
-                            year: "numeric",
-                          }
-                        )
+                    {pet?.dob
+                      ? new Date(pet?.dob || "").toLocaleDateString("en-GB", {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                        })
                       : ""}
                   </p>
                 )}

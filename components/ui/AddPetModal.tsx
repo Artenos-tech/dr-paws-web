@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { useAPICall } from "@/hooks/apicall";
 import api from "@/services/api";
 import { PetSpecies, useUserContext } from "@/context/UserContext";
+import { PetType } from "@/app/user/profile/page";
 
 const petSchema = z.object({
   spicesId: z.number(),
@@ -21,16 +22,24 @@ type PetFormData = z.infer<typeof petSchema>;
 interface AddPetModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: PetFormData) => void;
+  onSuccess: (newPet?: { name: string; type: string }) => void;
 }
 
 export default function AddPetModal({
   isOpen,
   onClose,
-  onSubmit,
+  onSuccess,
 }: AddPetModalProps) {
   const { call: getPetSpecies } = useAPICall(api.getPetSpecies);
-  const { updatePetSpeciesHandler, petSpecies } = useUserContext();
+
+  const { call: addNewPetAPI } = useAPICall(api.addNewPet);
+
+  const {
+    updateUserPetsHandler,
+    user,
+    updatePetSpeciesHandler,
+    petSpecies,
+  } = useUserContext();
   const [selectedType, setSelectedType] = useState<string>("");
 
   const {
@@ -59,11 +68,34 @@ export default function AddPetModal({
     }
   };
 
-  const handleFormSubmit = (data: PetFormData) => {
-    onSubmit(data);
-    reset({ name: "", type: "" });
-    setSelectedType("");
-    onClose();
+  const handleFormSubmit = async (data: PetFormData) => {
+    if (user) {
+      const response = await addNewPetAPI({
+        id: user.id,
+        pet: {
+          name: data.name,
+          species: { id: data.spicesId, name: data.type },
+        },
+      });
+
+      if (response.ok) {
+        console.log("Add Pet API response:", response.value.body);
+        const petId = response.value.body.id;
+        const newPet: Partial<PetType> = {
+          id: petId,
+          spicesId: data.spicesId,
+          name: data.name,
+          type: data.type,
+          profileImage: "",
+        };
+
+        updateUserPetsHandler([newPet]);
+        onSuccess();
+        reset({ name: "", type: "" });
+        setSelectedType("");
+        onClose();
+      }
+    }
   };
 
   const handleTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -121,9 +153,9 @@ export default function AddPetModal({
                 onChange={handleTypeChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value="">Type of Pet</option>
+                <option value="" disabled className="!w-3/4">Type of Pet</option>
                 {petSpecies?.map((species) => (
-                  <option key={species.id} value={species.name}>
+                  <option key={species.id} value={species.name} className="!w-3/4">
                     {species.name}
                   </option>
                 ))}

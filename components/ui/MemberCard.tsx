@@ -37,8 +37,8 @@ export default function MemberCard({ plan, onSelect }: MemberCardProps) {
           </div>
         </div>
       )}
-      <div className="flex self-start flex-col h-[240px]">
-        <div className="w-20 h-20 mb-4 self-center">
+      <div className="flex self-start flex-col mb-4 ">
+        <div className="w-20 h-20 self-center">
           <Image
             src={plan.icon}
             alt={`${plan.title} icon`}
@@ -55,7 +55,7 @@ export default function MemberCard({ plan, onSelect }: MemberCardProps) {
         </p>
       </div>
 
-      <div className="w-full mb-4">
+      <div className="w-full">
         <p className="text-primary-1 text-base font-bold text-start mb-2">
           Includes:
         </p>
