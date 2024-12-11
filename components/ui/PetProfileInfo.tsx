@@ -57,7 +57,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
 
 
       if (foundPet) {
-        setPet(foundPet);
+        setPet(foundPet as Pet);
         setImage(foundPet.profileImage || "");
         setAge(foundPet.age || { years: 0, months: 0 }); 
 

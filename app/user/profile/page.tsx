@@ -29,7 +29,7 @@ const Profile: React.FC = () => {
   const { updateUserPetsHandler, userPets, user, getAuthToken, refresh } = useUserContext();
 
   // Initialize petIdCounter as a string
-  const [petIdCounter, setPetIdCounter] = useState<string>("1");
+
 
   const navigate = useRouter();
 
