@@ -48,6 +48,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
     const petType = newPet.type.toLowerCase();
     const newPetObject: Pet = {
       id: Date.now().toString(),
+      vetPortId: null, //TODO: add vetPortId
       name: newPet.name,
       type: petType,
       profileImage: petImageByType[petType]?.src,
