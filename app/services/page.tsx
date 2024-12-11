@@ -37,6 +37,14 @@ const Services = () => {
     });
   };
 
+  const handleBookAVisit = () => {
+    const authToken = getAuthToken();
+    console.log(authToken);
+    return authToken
+      ?  navigate.push("/user/book-appointment")
+      : handleLoginModalOpen("Book a Visit");
+  };
+
   return (
     <div className="flex flex-col w-full h-full items-center justify-items-center font-roca pb-20">
       <main className="flex flex-col gap-[80px] row-start-2 items-center w-full px-8 md:px-32 lg:px-20 xl:px-40">
@@ -60,7 +68,7 @@ const Services = () => {
             <CustomButton
               buttonText="Book a visit"
               buttonBackground="bg-secondary-1"
-              buttonClickEvent={() => handleLoginModalOpen("Book a Visit")}
+              buttonClickEvent={handleBookAVisit}
             />
           </div>
         </div>

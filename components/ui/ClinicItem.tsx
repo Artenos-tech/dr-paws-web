@@ -19,6 +19,7 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
 
   const [buttonText, setButtonText] = useState<string>("");
   const { getAuthToken, refresh } = useUserContext();
+  const navigate = useRouter();
 
   const handleLoginModalOpen = (val: string) => {
     const authToken = getAuthToken();
@@ -37,6 +38,14 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
       duration: 3000,
       position: "bottom-right",
     });
+  };
+
+  const handleBookAVisit = () => {
+    const authToken = getAuthToken();
+    console.log(authToken);
+    return authToken
+      ?  navigate.push("/user/book-appointment")
+      : handleLoginModalOpen("Book a Visit");
   };
 
   const handleBookVisit = () => {
@@ -65,7 +74,7 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
         </div>
       </div>
       <button
-        onClick={() => handleLoginModalOpen("Book a Visit")}
+        onClick={handleBookAVisit}
         className={`btn bg-secondary-1 rounded-none border-none z text-white w-full rounded-b-md py-3`}
       >
         Book a Visit

@@ -31,6 +31,9 @@ export default function Home() {
       if (text === "Become a member") {
         navigate.push("/membership");
         return;
+      } else if (text === "Book a Visit") {
+        navigate.push("/book-appointment");
+        return;
       }
       navigate.push("/");
       return;
@@ -40,8 +43,12 @@ export default function Home() {
   };
 
   const onSuccess = (toastMessage: string) => {
+    console.log(buttonText);
     if (buttonText === "Become a member") {
       navigate.push("/membership");
+    }
+    if (buttonText === "Book a Visit") {
+      navigate.push("/book-appointment");
     }
     toast.success(`Successfully ${toastMessage}`, {
       duration: 3000,
@@ -237,7 +244,6 @@ export default function Home() {
             onClose={() => setLoginModalOpen(false)}
             buttonText={buttonText}
             onSuccess={onSuccess}
-            // initialMobileNumber="9440705361"
           />
         </div>
       </main>

@@ -20,6 +20,8 @@ import catImg from "../public/assets/images/catimg.png";
 import rabbitImg from "../public/assets/images/rabbitImg.png";
 import { Clinic, Review } from "@/model/typeDefinitions";
 import { BookingCategory } from "@/model/typeDefinitions";
+import { AppointmentStatus, AppointmentType } from "@/model/typeDefinitions";
+
 import ParasiteControl from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/ParasiteControl.png";
 import SkinInfections from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/SkinInfections.jpeg";
 import Vaccination from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/Vaccinations.png";
@@ -87,13 +89,16 @@ import DrPreranaImg from "@/public/assets/images/vets/dr_prerana.png";
 import DrRajashreeImg from "@/public/assets/images/vets/dr_rajashree.png";
 import DrShravyaImg from "@/public/assets/images/vets/dr_shravya.png";
 
-import LP_DocsThatCare from '@/public/assets/images/Landing Page/LP_DocsThatCare.png'
-import LP_EverythingUnderRoof from '@/public/assets/images/Landing Page/LP_EverythingUnderRoof.png'
-import LP_FeelsLikeHome from '@/public/assets/images/Landing Page/LP_FeelsLikeHome.png'
-import LP_MembershipsCount from '@/public/assets/images/Landing Page/LP_MembershipsCount.png'
-import LP_OneTap from '@/public/assets/images/Landing Page/LP_OneTap.png'
-import LP_OnlyNecessaryTreatment from '@/public/assets/images/Landing Page/LP_OnlyNecessaryTreatments.png'
-import LP_SpaceForCats from '@/public/assets/images/Landing Page/LP_SpaceForCats.png'
+import LP_DocsThatCare from "@/public/assets/images/Landing Page/LP_DocsThatCare.png";
+import LP_EverythingUnderRoof from "@/public/assets/images/Landing Page/LP_EverythingUnderRoof.png";
+import LP_FeelsLikeHome from "@/public/assets/images/Landing Page/LP_FeelsLikeHome.png";
+import LP_MembershipsCount from "@/public/assets/images/Landing Page/LP_MembershipsCount.png";
+import LP_OneTap from "@/public/assets/images/Landing Page/LP_OneTap.png";
+import LP_OnlyNecessaryTreatment from "@/public/assets/images/Landing Page/LP_OnlyNecessaryTreatments.png";
+import LP_SpaceForCats from "@/public/assets/images/Landing Page/LP_SpaceForCats.png";
+
+import AppointmentPetImage from "@/public/assets/images/Appointments/petImage.png";
+import AppointmentVetImage from "@/public/assets/images/Appointments/vetImage.png";
 
 export const FaqData = [
   {
@@ -157,7 +162,7 @@ export const reviewData = [
   {
     name: "Menorah Bridal",
     review:
-      "I’ve finally found my Neighbourhood Vet clinic, I brought in my community dog for a quick check-up today. Beautiful space in the heart of indranagar, feels like home and wonderful team at Dr.Paws.",
+      "I've finally found my Neighbourhood Vet clinic, I brought in my community dog for a quick check-up today. Beautiful space in the heart of indranagar, feels like home and wonderful team at Dr.Paws.",
   },
   {
     name: "Bharath Shamasundar",
@@ -168,26 +173,26 @@ export const reviewData = [
 
 export const clinicItems: Clinic[] = [
   {
-    id: "1",
+    id: "220",
     image: IND_Exterior1,
-    clinicName: "Indiranagar",
+    location: "Indiranagar",
     services:
       "Consults | Grooming | Surgery | Dignostics | Ultrasound | Retail",
     contact: "+91 9606994627",
     parkingInformation:
       "Ample parking available outside clinic, and in surrounding lanes",
-    location: "Dr. Paws - Veterinarian in Indiranagar, Bengaluru",
+    clinicName: "Dr. Paws - Veterinarian in Indiranagar, Bengaluru",
   },
   {
-    id: "2",
+    id: "221",
     image: RMV_Exterior1,
-    clinicName: "RMV (Dollars Colony)",
+    location: "RMV (Dollars Colony)",
     services:
       "Consults | Grooming | Surgery | Dignostics | Ultrasound | Retail",
     contact: "+91 7204996899",
     parkingInformation:
       "Ample parking available outside clinic, and in surrounding lanes",
-    location: "Dr. Paws - Veterinarian in RMV (Dollars Colony), Bengaluru",
+    clinicName: "Dr. Paws - Veterinarian in RMV (Dollars Colony), Bengaluru",
   },
   // {
   //   id: "3",
@@ -297,10 +302,11 @@ export const bannerItems = [
 
 export const doctors = [
   {
+    id: "112",
     name: "Dr. Girish Kumar V.K.",
     position: "Chief Veterinary Officer",
     experience: "16 Years of Experience",
-    clinicIds: ["1", "2"],
+    clinicIds: ["220", "221"],
     location: "Indiranagar, RMV (Dollars Colony)",
     image: DrGirishImg,
     qualification: "BVSc & AH, MVSc (Clinical Medicine)",
@@ -315,11 +321,13 @@ export const doctors = [
     favouritePet: "Ozzy",
   },
   {
+    id: "136",
+
     name: "Dr. Archana G.",
     // description: "DMV - Veterinary Medicine",
     position: "Lead Veterinarian",
     experience: "6 Years of Experience",
-    clinicIds: ["1"],
+    clinicIds: ["220"],
     location: "Indiranagar",
     image: DrArchanaImg,
     specialization: "Surgery, Internal Medicine",
@@ -334,11 +342,13 @@ export const doctors = [
     qualification: "BVSc & AH, MVSc (Surgery & Radiology)",
   },
   {
+    id: "137",
+
     name: "Dr. Hitesh Bhardwaj",
     // description: "DMV - Small Animal Surgery",
     position: "Lead Veterinarian",
     experience: "5 Years of Experience",
-    clinicIds: ["2"],
+    clinicIds: ["221"],
     location: "RMV (Dollars Colony)",
     image: DrHiteshImg,
     specialization: "Critical Care & Soft-Tissue Surgery",
@@ -353,11 +363,13 @@ export const doctors = [
     qualification: "BVSc & AH, Post Graduate Diploma (Animal Welfare)",
   },
   {
+    id: "138",
+
     name: "Dr. Shrayva B.L.",
     // description: "DMV - Exotic Animals",
     position: "Veterinarian",
     experience: "3 Years of Experience",
-    clinicIds: ["1"],
+    clinicIds: ["220"],
     location: "Indiranagar",
     image: DrShravyaImg,
     specialization: "Gynaecology & Obstetrics",
@@ -373,11 +385,13 @@ export const doctors = [
     qualification: "BVSc & AH, MVSc (Gynaecology & Obstetrics)",
   },
   {
+    id: "140",
+
     name: "Dr. Prerana S.J.",
     // description: "DMV - Animal Dermatology",
     position: "Veterinarian",
     experience: "3 Years of Experience",
-    clinicIds: ["1"],
+    clinicIds: ["220"],
     location: "Indiranagar",
     image: DrPreranaImg,
     specialization: "Soft Tissue Surgeries, Orthopaedic Surgeries",
@@ -392,11 +406,13 @@ export const doctors = [
     qualification: "BVSc & AH, MVSc (Surgery & Radiology)",
   },
   {
+    id: "141",
+
     name: "Dr. Kiran K.S.",
     // description: "DMV - Veterinary Medicine",
     position: "Veterinarian",
     experience: "2 Years of Experience",
-    clinicIds: ["2"],
+    clinicIds: ["221"],
     location: "RMV (Dollars Colony)",
     image: DrKiranImg,
     specialization: "Surgery & Veterinary Endoscopy",
@@ -411,11 +427,13 @@ export const doctors = [
     qualification: "BVSc & AH, MVSc (Surgery & Radiology)",
   },
   {
+    id: "142",
+
     name: "Dr Aarti Goswami",
     // description: "DMV - Veterinary Medicine",
     position: "Veterinarian",
     experience: "3 Years of Experience",
-    clinicIds: ["2"],
+    clinicIds: ["221"],
     location: "RMV (Dollars Colony), Bangalore",
     image: DrAartiImg,
     specialization: "Surgery & Radiology",
@@ -430,11 +448,13 @@ export const doctors = [
     qualification: "BVSc & AH, MVSc (Surgery & Radiology)",
   },
   {
+    id: "143",
+
     name: "Dr. Neha Menon",
     // description: "DMV - Animal Dermatology",
     position: "Veterinarian",
     experience: "2 Years of Experience",
-    clinicIds: ["1"],
+    clinicIds: ["220"],
     location: "Indiranagar",
     image: DrNehaImg,
     specialization: "Internal Medicine, Alternative Therapies",
@@ -449,11 +469,13 @@ export const doctors = [
     qualification: "BVSc & AH",
   },
   {
+    id: "144",
+
     name: "Dr. Gisha Nair",
     // description: "DMV - Animal Dermatology",
     position: "Veterinarian",
     experience: "5 Years of Experience",
-    clinicIds: ["1"],
+    clinicIds: ["220"],
     location: "Indiranagar",
     image: DrGishaImg,
     specialization: "Ophthalmology and Soft-Tissue Surgery",
@@ -468,11 +490,13 @@ export const doctors = [
     qualification: "BVSc & AH",
   },
   {
+    id: "147",
+
     name: "Dr. Rajashri Bodepalli",
     // description: "DMV - Animal Dermatology",
     position: "Veterinarian",
     experience: "3 Years of Experience",
-    clinicIds: ["1"],
+    clinicIds: ["220"],
     location: "Indiranagar",
     image: DrRajashreeImg,
     specialization:
@@ -488,11 +512,13 @@ export const doctors = [
     qualification: "BVSc & AH",
   },
   {
+    id: "151",
+
     name: "Dr. Charu Nino",
     // description: "DMV - Veterinary Medicine",
     position: "Veterinarian",
     experience: "2 Years of Experience",
-    clinicIds: ["2"],
+    clinicIds: ["221"],
     location: "RMV (Dollars Colony)",
     image: DrNinoImg,
     specialization: "General Medicine & OPD",
@@ -507,11 +533,13 @@ export const doctors = [
     qualification: "BVSc & AH",
   },
   {
+    id: "153",
+
     name: "Dr. Deepak Dhindhwal",
     // description: "DMV - Veterinary Medicine",
     position: "Veterinarian",
     experience: "1 Years of Experience",
-    clinicIds: ["2"],
+    clinicIds: ["221"],
     location: "RMV (Dollars Colony)",
     image: DrDeepakImg,
     specialization: "General Medicine",
@@ -529,7 +557,7 @@ export const doctors = [
 
 export const photos = [
   {
-    id: "1",
+    id: "220",
     photos: [
       IND_Exterior1,
       IND_Exterior2,
@@ -542,7 +570,7 @@ export const photos = [
     ],
   },
   {
-    id: "2",
+    id: "221",
     photos: [
       RMV_Exterior1,
       RMV_Exterior2,
@@ -1030,43 +1058,43 @@ export const membershipData: MembershipPlan[] = [
   },
 ];
 
-export const bookingCategories: BookingCategory[] = [
-  {
-    id: "Planned Visits",
-    title: "Planned Visits",
-    description: "vaccination, health checkup...",
-  },
-  {
-    id: "Sickness & Emergency",
-    title: "Sickness & Emergency",
-    description: "lethargy, vomiting, limping...",
-  },
-  {
-    id: "Diagnostics",
-    title: "Diagnostics",
-    description: "blood test, tick fever test...",
-  },
-  {
-    id: "Surgeries",
-    title: "Surgeries",
-    description: "vaccination, health checkup...",
-  },
-  {
-    id: "Physiotherapy",
-    title: "Physiotherapy",
-    description: "lethargy, vomiting, limping...",
-  },
-  {
-    id: "Grooming",
-    title: "Grooming",
-    description: "haircut, spa...",
-  },
-  {
-    id: "Pet Services",
-    title: "Pet Services",
-    description: "training, boarding...",
-  },
-];
+// export const bookingCategories: BookingCategory[] = [
+//   {
+//     id: "Planned Visits",
+//     title: "Planned Visits",
+//     description: "Vaccination, Health Checkup...",
+//   },
+//   {
+//     id: "Sickness & Emergency",
+//     title: "Sickness & Emergency",
+//     description: "Trauma Care, Pain Management...",
+//   },
+//   {
+//     id: "Diagnostics",
+//     title: "Diagnostics",
+//     description: "Blood Tests, Biochemistry Tests...",
+//   },
+//   {
+//     id: "Surgeries",
+//     title: "Surgeries",
+//     description: "Spraying & Neutering, Dental Scaling...",
+//   },
+//   {
+//     id: "Physiotherapy",
+//     title: "Physiotherapy",
+//     description: "Laser Therapy, Water Treadmil Therapy...",
+//   },
+//   {
+//     id: "Grooming",
+//     title: "Grooming",
+//     description: "Spa Baths, Haircuts & Hair Shaping...",
+//   },
+//   {
+//     id: "Pet Services",
+//     title: "Pet Services",
+//     description: "Microchipping, Travel Document Preparation...",
+//   },
+// ];
 
 export const timeSlots = [
   "10:00am",
@@ -1078,3 +1106,181 @@ export const timeSlots = [
   "04:00pm",
   "05:00pm",
 ];
+
+// export const mockAppointments: AppointmentType[] = [
+//   {
+//     id: "1",
+//     petName: "Buddy",
+//     vetName: "Dr. Smith",
+//     petImage: AppointmentPetImage.src,
+//     vetImage: AppointmentVetImage.src,
+//     date: "2023-10-15",
+//     time: "10:00 AM",
+//     status: AppointmentStatus.Upcoming,
+//     service: "Vaccination",
+//   },
+//   {
+//     id: "2",
+//     petName: "Whiskers",
+//     vetName: "Dr. Johnson",
+//     petImage: AppointmentPetImage.src,
+//     vetImage: AppointmentVetImage.src,
+//     date: "2023-10-10",
+//     time: "02:30 PM",
+//     status: AppointmentStatus.Past,
+//     service: "Dental Cleaning",
+//   },
+//   {
+//     id: "3",
+//     petName: "Rex",
+//     vetName: "Dr. Lee",
+//     petImage: AppointmentPetImage.src,
+//     vetImage: AppointmentVetImage.src,
+//     date: "2023-10-20",
+//     time: "11:15 AM",
+//     status: AppointmentStatus.Upcoming,
+//     service: "Check-up",
+//   },
+//   {
+//     id: "4",
+//     petName: "Bella",
+//     vetName: "Dr. Wong",
+//     petImage: AppointmentPetImage.src,
+//     vetImage: AppointmentVetImage.src,
+//     date: "2023-09-30",
+//     time: "09:00 AM",
+//     status: AppointmentStatus.Past,
+//     service: "Spay/Neuter",
+//   },
+//   {
+//     id: "5",
+//     petName: "Charlie",
+//     vetName: "Dr. Brown",
+//     petImage: AppointmentPetImage.src,
+//     vetImage: AppointmentVetImage.src,
+//     date: "2023-11-05",
+//     time: "01:00 PM",
+//     status: AppointmentStatus.Upcoming,
+//     service: "Allergy Consultation",
+//   },
+//   {
+//     id: "6",
+//     petName: "Daisy",
+//     vetName: "Dr. Green",
+//     petImage: AppointmentPetImage.src,
+//     vetImage: AppointmentVetImage.src,
+//     date: "2023-10-12",
+//     time: "03:45 PM",
+//     status: AppointmentStatus.Cancelled,
+//     service: "Routine Check-up",
+//   },
+// ];
+
+export const mockAppointments: AppointmentType[] = [
+  {
+    id: "1",
+    pet_vetport_id: 219,
+    user_vetport_id: 60,
+    vet_vetport_id: 1790,
+    clinic_id: 220,
+    appt_start: "1970-01-21T01:00:00.000Z",
+    appt_end: "1970-01-21T02:00:00.000Z",
+    appt_status: "Complete",
+    appt_reason: null,
+  },
+  {
+    id: "2",
+    pet_vetport_id: 219,
+    user_vetport_id: 60,
+    vet_vetport_id: 1790,
+    clinic_id: 220,
+    appt_start: "2024-12-03T02:00:00.000Z",
+    appt_end: "2024-12-03T02:30:00.000z",
+    appt_status: "Check In",
+    appt_reason: null,
+  },
+  {
+    id: "3",
+    pet_vetport_id: 219,
+    user_vetport_id: 60,
+    vet_vetport_id: 1790,
+    clinic_id: 220,
+    appt_start: "1970-01-21T01:26:36.570Z",
+    appt_end: "1970-01-21T01:26:36.570Z",
+    appt_status: "Scheduled",
+    appt_reason: null,
+  },
+  {
+    id: "4",
+    pet_vetport_id: 219,
+    user_vetport_id: 60,
+    vet_vetport_id: 1790,
+    clinic_id: 220,
+    appt_start: "1970-01-21T01:26:36.285Z",
+    appt_end: "1970-01-21T01:26:36.285Z",
+    appt_status: "Complete",
+    appt_reason: null,
+  },
+  {
+    id: "5",
+    pet_vetport_id: 219,
+    user_vetport_id: 60,
+    vet_vetport_id: 1790,
+    clinic_id: 220,
+    appt_start: "1970-01-21T01:26:36.013Z",
+    appt_end: "1970-01-21T01:26:36.013Z",
+    appt_status: "Check out",
+    appt_reason: null,
+  },
+  {
+    id: "6",
+    pet_vetport_id: 219,
+    user_vetport_id: 60,
+    vet_vetport_id: 1790,
+    clinic_id: 220,
+    appt_start: "1970-01-21T01:26:35.360Z",
+    appt_end: "1970-01-21T01:26:35.360Z",
+    appt_status: "Cancel",
+    appt_reason: null,
+  },
+  {
+    id: "7",
+    pet_vetport_id: 219,
+    user_vetport_id: 60,
+    vet_vetport_id: 1790,
+    clinic_id: 220,
+    appt_start: "1970-01-21T01:26:35.360Z",
+    appt_end: "1970-01-21T01:26:35.360Z",
+    appt_status: "Cancel",
+    appt_reason: null,
+  },
+];
+
+
+export const staffSchedule = {
+  "id": 52,
+  "vet_full_name": "Shailesh Shinde",
+  "vet_vetport_id": 146,
+  "weeks": {
+    "Monday": "11:00 to 21:00",
+    "Tuesday": "09:00 to 21:00",
+    "Wednesday": "09:00 to 21:00",
+    "Thursday": "09:00 to 21:00",
+    "Friday": "09:00 to 21:00",
+    "Saturday": "09:00 to 21:00",
+    "Sunday": "09:00 to 21:00"
+  },
+  "year": {
+      "January": "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31",
+      "February": "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29",
+      "April": "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30",
+      "May": "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31",
+      "June": "1,2,3,4,5,6,7,8,9,10,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30",
+      "July": "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31",
+      "August": "1,2,3,4,5,6,7,8,9,10,11,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31",
+      "September": "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30",
+      "October": "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,20,21,22,23,24,25,26,27,28,29,30,31",
+      "November": "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30",
+      "December": "1,2,3,4,5,6,7,8,9,10,12,13,14,15,16,17,18,20,21,22,23,24,25,26,27,28,29,30,31"
+  }
+}

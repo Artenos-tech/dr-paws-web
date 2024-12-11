@@ -14,7 +14,6 @@ import jwt from "jsonwebtoken";
 import { z } from "zod";
 
 export type UserRole = "ADMIN" | "USER";
-export type Gender = "Male" | "Female";
 
 export interface User {
   id: string;
@@ -32,22 +31,30 @@ export interface Pet {
   type: string;
   breed: string | null;
   weight: number | null;
-  gender: Gender;
+  gender: string | null;
   dob: string | null;
   age: {
     years: number | null;
     months: number | null;
   };
+  vetPortId: number | null;
   profileImage: string | null; // pet image is optional
+}
+
+export interface PetSpecies {
+  id: number;
+  name: string;
 }
 
 export interface UserContextType {
   user: User | null;
   userPets: Pet[] | null;
+  petSpecies: PetSpecies[] | null;
   updateUserDetailsHandler: (data: Partial<User>) => void;
   updateUserPetsHandler: (data: Partial<Pet>[]) => void;
   getAuthToken: () => string | null;
   refresh: () => void;
+  updatePetSpeciesHandler: (data: PetSpecies[]) => void;
 }
 
 export const UserContext = createContext<UserContextType | undefined>(
@@ -61,6 +68,7 @@ interface UserProviderProps {
 export const UserProvider = ({ children }: UserProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [userPets, setUserPets] = useState<Pet[] | null>(null);
+  const [petSpecies, setPetSpecies] = useState<PetSpecies[] | null>(null);
 
   const { call: getUser } = useAPICall(api.getuser);
 
@@ -73,7 +81,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
       const token = localStorage.getItem("authToken");
       return token;
     }
-    return null
+    return null;
   }, []);
 
   const updateUserDetailsHandler = useCallback((data: Partial<User>) => {
@@ -114,6 +122,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
             years: updatedPet.age?.years || null,
             months: updatedPet.age?.months || null,
           },
+          vetPortId: updatedPet.vetPortId || null,
           profileImage: updatedPet.profileImage || null,
         }));
       }
@@ -124,6 +133,32 @@ export const UserProvider = ({ children }: UserProviderProps) => {
       });
     });
   }, []);
+
+  const updatePetSpeciesHandler = (data: Partial<PetSpecies>[]) => {
+  setPetSpecies((prevSpecies) => {
+    if (!prevSpecies || prevSpecies.length === 0) {
+      return data
+        .filter((species) => species.id !== undefined && species.name !== undefined) // Ensure valid data
+        .map((species) => ({
+          id: species.id as number, // Cast since we ensured validity above
+          name: species.name as string,
+        }));
+    }
+
+    return prevSpecies.map((species) => {
+      const updatedPetSpecies = data.find(
+        (updated) => updated.id === species.id
+      );
+      return updatedPetSpecies
+        ? {
+            id: species.id,
+            name: updatedPetSpecies.name ?? species.name, // Fallback to the original name
+          }
+        : species;
+    });
+  });
+};
+
 
   const handleCheckAuthToken = useCallback(async () => {
     const token = getAuthToken();
@@ -141,7 +176,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
               profileImage: pet.profile_image,
               gender: pet.gender,
             })) as Partial<Pet>[];
-    
+
             if (pets) {
               updateUserPetsHandler(pets);
             }
@@ -162,10 +197,12 @@ export const UserProvider = ({ children }: UserProviderProps) => {
       value={{
         user,
         userPets,
+        petSpecies,
         updateUserDetailsHandler,
         updateUserPetsHandler,
         getAuthToken,
         refresh: handleCheckAuthToken,
+        updatePetSpeciesHandler,
       }}
     >
       {children}

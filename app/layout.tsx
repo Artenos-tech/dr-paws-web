@@ -5,6 +5,7 @@ import "./globals.css";
 import NavBar from "@/components/layout/navbar";
 import Footer from "@/components/layout/Footer";
 import { UserProvider } from "@/context/UserContext";
+import { AppointmentsProvider } from "@/context/AppointmentsContext";
 
 // Load Open Sans from Google Fonts
 const openSans = Open_Sans({
@@ -57,16 +58,18 @@ export default function RootLayout({
 }>) {
   return (
     <UserProvider>
+      <AppointmentsProvider>
       <html lang="en" className={`${roca.variable} ${openSans.variable}`}>
-        <body className={`w-full min-h-screen overflow-x-hidden`}>
-          <div className="w-full overflow-x-hidden">
+        <body className={`w-full min-h-screen overflow-x-hidden flex flex-col`}>
+          <div className="flex-grow flex flex-col w-full overflow-x-hidden ">
             <NavBar />
-            <div className="mt-16">{children}</div>
+            <div className="mt-16 flex-grow">{children}</div>
 
             <Footer />
           </div>
         </body>
       </html>
+      </AppointmentsProvider>
     </UserProvider>
   );
 }

@@ -40,6 +40,8 @@ export default function NavBar() {
     clearAuthToken();
     navigate.push("/");
     refresh();
+    window.location.reload();
+
   };
 
   const handleLoginModalOpen = (text: string) => {
@@ -332,7 +334,7 @@ export default function NavBar() {
             <div className="flex items-center px-8 md:px-32 space-x-4">
               {getAuthToken() ? (
                 <DropdownMenu.Root>
-                  <DropdownMenu.Trigger>
+                  <DropdownMenu.Trigger asChild>
                     <Image
                       src={Profile}
                       alt="User logo"
