@@ -3,49 +3,40 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import AddPetModal from "./AddPetModal";
-
 import { petImageByType } from "./PetCard";
 import tickMark from "@/public/assets/images/Booking/tick-svgrepo-com.svg";
-
-interface Pet {
-  petId: string;
-  name: string;
-  type: string;
-  petImage?: string;
-}
+import { Pet, useUserContext } from "@/context/UserContext";
 
 interface BookingCardProps {
   cardId: string;
   title: string;
   description: string;
-  pets: Pet[];
-  onCardSelection: (cardId: string, selectedPet: Pet | null) => void; // Changed to handle single pet selection
+  onCardSelection: (cardId: string, selectedPet: Pet | null) => void;
   isOpen: boolean;
   toggleCard: (cardId: string) => void;
-  setPets: React.Dispatch<React.SetStateAction<Pet[]>>;
+  selectedData: Record<string, Pet | null>;
 }
 
 const BookingCard: React.FC<BookingCardProps> = ({
   cardId,
   title,
   description,
-  pets,
   onCardSelection,
   isOpen,
   toggleCard,
-  setPets,
+  selectedData,
 }) => {
-  const [selectedPet, setSelectedPet] = useState<Pet | null>(null); // Only one pet can be selected
   const [isAddPetModalOpen, setIsAddPetModalOpen] = useState(false);
+  const { userPets, updateUserPetsHandler } = useUserContext();
 
   const handlePetClick = (pet: Pet) => {
-    const newSelectedPet = selectedPet?.petId === pet.petId ? null : pet; // Toggle selection
-    setSelectedPet(newSelectedPet);
+    const isAlreadySelected = selectedData[cardId]?.id === pet.id;
+    const newSelectedPet = isAlreadySelected ? null : pet;
     onCardSelection(cardId, newSelectedPet);
   };
 
   const handleAddPetClick = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent card toggle when clicking on Add Pet
+    e.stopPropagation();
     setIsAddPetModalOpen(true);
   };
 
@@ -56,94 +47,97 @@ const BookingCard: React.FC<BookingCardProps> = ({
   const handleNewPetSubmit = (newPet: { name: string; type: string }) => {
     const petType = newPet.type.toLowerCase();
     const newPetObject: Pet = {
-      petId: Date.now().toString(),
+      id: Date.now().toString(),
+      vetPortId: null, //TODO: add vetPortId
       name: newPet.name,
       type: petType,
-      petImage: petImageByType[petType]?.src,
+      profileImage: petImageByType[petType]?.src,
+      breed: null,
+      weight: null,
+      gender: null,
+      dob: null,
+      age: { years: null, months: null },
     };
-
-    // Update pets in parent
-    setPets((prevPets) => {
-      const updatedPets = [...prevPets, newPetObject];
-      if (typeof window !== "undefined") {
-        localStorage.setItem("pets", JSON.stringify(updatedPets));
-      }
-      return updatedPets;
-    });
-
+    updateUserPetsHandler(
+      userPets ? [...userPets, newPetObject] : [newPetObject]
+    );
+    //auto select newly added pet
+    // onCardSelection(cardId, newPetObject);
     handleAddPetModalClose();
-  };
-
-  const handleCardClick = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent toggling other cards in the grid
-    toggleCard(cardId); // Pass the specific cardId to toggle its state
   };
 
   return (
     <div
-      className={`rounded-sm overflow-hidden shadow-sm cursor-pointer font-sans ${
+      className={`flex flex-col h-full rounded-sm  cursor-pointer font-sans ${
         isOpen ? "border-secondary-1 border-2" : "border-gray-300"
       }`}
-      onClick={handleCardClick}
     >
-      <div className="bg-primary-3 p-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-xl font-semibold">{title}</h2>
+      <div
+        className={`bg-primary-3 p-4 flex flex-col gap-2`}
+        onClick={() => toggleCard(cardId)}
+      >
+        <div className="flex items-center justify-between gap-1">
+          <h2 className=" lg:text-xl font-sans font-semibold">{title}</h2>
           <input
             type="checkbox"
             checked={isOpen}
             readOnly
             className="w-6 h-6 cursor-pointer"
-            onClick={handleCardClick}
           />
         </div>
-        <p className="text-gray-500 mb-4">{description}</p>
+        <div className="relative group">
+          <p className="text-gray-500 mb-4 truncate">{description}</p>
+          <div className="absolute bottom-full right-0 mb-2 hidden group-hover:block bg-primary-3 p-2 text-primary-1 w-[200px] text-sm rounded shadow-lg">
+            {description}
+          </div>
+        </div>
       </div>
 
       {isOpen && (
         <div className="p-4 ">
           <h3 className="text-lg font-medium mb-2">Select your Pet:</h3>
           <div className="flex gap-3 flex-wrap justify-center items-center">
-            {pets.map((pet) => {
-              const petImage =
-                pet.petImage ||
-                petImageByType[pet.type.toLowerCase()]?.src || // Fallback to type-based default image
-                petImageByType["other"].src; // Fallback to "other" type
+            {userPets &&
+              userPets.map((pet) => {
+                const petImage =
+                  pet.profileImage ||
+                  petImageByType[pet.type.toLowerCase()]?.src ||
+                  petImageByType["other"].src;
 
-              return (
-                <div
-                  key={pet.petId}
-                  className="relative cursor-pointer"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handlePetClick(pet);
-                  }}
-                >
-                  <Image
-                    src={petImage}
-                    alt={pet.name}
-                    width={70}
-                    height={70}
-                    className={`rounded-full border-2 min-w-[70px] min-h-[70px] ${
-                      selectedPet?.petId === pet.petId
-                        ? "opacity-50 "
-                        : "opacity-100"
-                    }`}
-                  />
-                  {selectedPet?.petId === pet.petId && (
-                    <div className="absolute inset-0 -top-7 flex items-center justify-center text-white font-bold">
-                      <Image
-                        src={tickMark.src}
-                        alt="tick mark"
-                        width={50}
-                        height={50}
-                      />
-                    </div>
-                  )}
-                  <p className="text-center mt-2">{pet.name}</p>
-                </div>
-              );
-            })}
+                const isSelected = selectedData[cardId]?.id === pet.id;
+
+                return (
+                  <div
+                    key={pet.id}
+                    className="relative cursor-pointer m-2"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handlePetClick(pet);
+                    }}
+                  >
+                    <Image
+                      src={petImage}
+                      alt={pet.name}
+                      width={70}
+                      height={70}
+                      className={`rounded-full border-2 min-w-[70px] min-h-[70px] ${
+                        isSelected ? "opacity-50 " : "opacity-100"
+                      }`}
+                    />
+                    {isSelected && (
+                      <div className="absolute inset-0 -top-7 flex items-center justify-center text-white font-bold">
+                        <Image
+                          src={tickMark.src}
+                          alt="tick mark"
+                          width={50}
+                          height={50}
+                        />
+                      </div>
+                    )}
+                    <p className="text-center mt-2">{pet.name}</p>
+                  </div>
+                );
+              })}
             <div className="flex flex-col items-center justify-center gap-3">
               <div
                 className="flex flex-col items-center rounded-full justify-center cursor-pointer border border-dashed border-gray-400 w-[70px] h-[70px] text-gray-500"

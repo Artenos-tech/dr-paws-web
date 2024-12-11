@@ -2,6 +2,7 @@
   "name": "dr-paws-web",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -22,6 +23,7 @@
     "clsx": "^2.1.1",
     "daisyui": "^4.12.13",
     "date-fns": "^4.1.0",
+    "embla-carousel-react": "^8.5.1",
     "fs-extra": "^11.2.0",
     "input-otp": "^1.4.1",
     "jsonwebtoken": "^9.0.2",

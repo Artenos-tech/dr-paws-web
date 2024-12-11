@@ -7,7 +7,7 @@ import UserAuthenticationModal from "./UserAuthenticationModal";
 import Modal from "react-modal";
 import { useUserContext } from "@/context/UserContext";
 import toast, { Toaster } from "react-hot-toast";
-import CustomButton from "./CustomButton";
+// import CustomButton from "./CustomButton";
 
 interface ModalProps {
   isOpen: boolean;
@@ -128,16 +128,16 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
               </ul>
             </div>
 
-            <div className="flex flex-col mt-3 gap-2">
+            <div className="flex mt-3 gap-2">
               <h3 className="font-semibold text-xl text-primary-1">
                 {plan.price}
               </h3>
-              <div onClick={handleContinue}>
+              {/* <div onClick={handleContinue}>
                 <CustomButton
                   buttonText="Continue"
                   buttonBackground="bg-accent"
                 />
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

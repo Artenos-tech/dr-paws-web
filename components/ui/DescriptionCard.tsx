@@ -1,6 +1,9 @@
+import { useUserContext } from "@/context/UserContext";
 import Image, { StaticImageData } from "next/image";
 import React from "react";
 import CustomButton from "./CustomButton";
+import { useRouter } from "next/navigation";
+
 
 interface descriptionCardProps {
   index: number;
@@ -26,10 +29,22 @@ const DescriptionCard: React.FC<descriptionCardProps> = ({
   openLoginModal,
 }) => {
   const { image, title, button } = description;
+  const { getAuthToken } = useUserContext();
+  const navigate = useRouter();
+
+  const handleBookAVisit = () => {
+    const authToken = getAuthToken();
+    return authToken
+      ?  navigate.push("/user/book-appointment")
+      : openLoginModal && openLoginModal("Book a Visit");
+  };
 
   const handleModalByButtonText = () => {
     if (button.buttonText.includes("Download")) {
       return <CustomButton {...button} buttonClickEvent={openContactModal} />;
+    }
+    else if(button.buttonText=== "Book a Visit"){
+      return <CustomButton {...button} buttonClickEvent={handleBookAVisit} />;
     }
     return (
       <CustomButton

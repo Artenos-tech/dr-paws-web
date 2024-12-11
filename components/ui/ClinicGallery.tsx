@@ -66,6 +66,14 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
     setIsOpen(false);
   };
 
+  const handleBookAVisit = () => {
+    const authToken = getAuthToken();
+    console.log(authToken);
+    return authToken
+      ?  navigate.push("/user/book-appointment")
+      : handleLoginModalOpen("Book a Visit");
+  };
+
   if (!isMounted) {
     return null;
   }
@@ -107,7 +115,7 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
           <CustomButton
             buttonText="Book a visit"
             buttonBackground="bg-secondary-1"
-            buttonClickEvent={() => handleLoginModalOpen("Book a Visit")}
+            buttonClickEvent={handleBookAVisit}
           />
         </div>
       </div>

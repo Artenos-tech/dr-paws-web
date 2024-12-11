@@ -215,10 +215,176 @@ export default createAPIClient({
             breed: z.string().nullable(),
             weight: z.string().nullable(),
             gender: z.string().nullable(),
-            dob: z.date().nullable(),
+            dob: z.string().nullable(),
             profile_image: z.string().nullable(),
           })
         ),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+
+    getAppointments: {
+      method: "GET",
+      path: "/user/{id}/appointments",
+      pathParamsSchema: z.object({ id: z.string() }),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        status: z.number(),
+        message: z.string(),
+        appointments: z.array(
+          z.object({
+            id: z.string(),
+            pet_vetport_id: z.number(),
+            user_vetport_id: z.number(),
+            vet_vetport_id: z.number(),
+            clinic_id: z.number(),
+            appt_start: z.string(),
+            appt_end: z.string(),
+            appt_status: z.enum([
+              "Check In",
+              "Complete",
+              "Scheduled",
+              "Check out",
+              "Attending",
+              "Confirm",
+              "Cancel",
+              "Active",
+            ]),
+            appt_reason: z.string().nullable(),
+          })
+        ),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+
+    getStaffSchedule: {
+      method: "GET",
+      path: "/clinic/{clinicid}/staffschedule/{staffid}",
+      pathParamsSchema: z.object({ clinicid: z.string(), staffid: z.string() }),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        status: z.number(),
+        message: z.string(),
+        staffschedule: z.object({
+          id: z.number(),
+          vet_full_name: z.string(),
+          vet_vetport_id: z.number(),
+          weeks: z.record(
+            z.string(),
+            z.union([z.array(z.string()), z.string()])
+          ),
+          year: z.record(
+            z.string(),
+            z.union([z.array(z.string()), z.string()])
+          ),
+        }),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+    createAppointment: {
+      method: "POST",
+      path: "/user/{id}/appointment",
+      pathParamsSchema: z.object({ id: z.string() }),
+      requestSchema: z.object({
+        vet_id: z.number(),
+        pet_id: z.string(),
+        appt_start: z.string(),
+        appt_end: z.string(),
+        appt_reason: z.string().nullable(),
+        clinic_id: z.number(),
+      }),
+      responseSchema: z.object({
+        status: z.number(),
+        message: z.string(),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+
+    getPetSpecies: {
+      method: "GET",
+      path: "/pets/species",
+      pathParamsSchema: z.object({}),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        status: z.number(),
+        message: z.string(),
+        species: z.array(
+          z.object({
+            id: z.number(),
+            name: z.string(),
+            status: z.enum(["Active", "Inactive"]),
+            uid: z.string(),
+          })
+        ),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+
+    getPets: {
+      method: "GET",
+      path: "/user/{id}/pets",
+      pathParamsSchema: z.object({ id: z.string() }),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        status: z.number(),
+        message: z.string(),
+        pets: z.array(
+          z.object({
+            id: z.string(),
+            vetport_id: z.number().nullable(),
+            name: z.string(),
+            type: z.string(),
+            breed: z.string().nullable(),
+            weight: z.string().nullable(),
+            gender: z.string().nullable(),
+            dob: z.string().nullable(),
+            profile_image: z.string().nullable(),
+          })
+        ),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+
+    addNewPet: {
+      method: "POST",
+      path: "/user/{id}/pet",
+      pathParamsSchema: z.object({ id: z.string() }),
+      requestSchema: z.object({
+        pet: z.object({
+          name: z.string(),
+          species: z.object({
+            id: z.number(),
+            name: z.string(),
+          }),
+        }),
+      }),
+      responseSchema: z.object({
+        status: z.number(),
+        message: z.string(),
+        id: z.string(),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+
+    updatePets: {
+      method: "PUT",
+      path: "/user/{id}/pets",
+      pathParamsSchema: z.object({ id: z.string() }),
+      requestSchema: z.object({
+        pet: z.object({
+          name: z.string(),
+          species: z.object({
+            id: z.number(),
+            name: z.string(),
+          }),
+          breed: z.string().nullable(),
+          weight: z.string().nullable(),
+          gender: z.string().nullable(),
+        }),
+      }),
+      responseSchema: z.object({
+        status: z.number(),
+        message: z.string(),
       }),
       errorResponseSchema: z.object({}),
     },

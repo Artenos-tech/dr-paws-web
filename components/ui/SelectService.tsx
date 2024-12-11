@@ -3,15 +3,9 @@
 import React, { useState } from "react";
 import BookingCard from "@/components/ui/BookingCard";
 import BookingModal from "@/components/ui/BookingModal";
-import { bookingCategories } from "@/model/mockData";
+import { ServiceTabsData } from "@/model/mockData";
 import CustomButton from "./CustomButton";
-
-export interface Pet {
-  petId: string;
-  name: string;
-  type: string;
-  petImage?: string;
-}
+import { Pet } from "@/context/UserContext";
 
 export interface BookingCategory {
   id: string;
@@ -20,8 +14,6 @@ export interface BookingCategory {
 }
 
 interface SelectServiceProps {
-  pets: Pet[];
-  setPets: React.Dispatch<React.SetStateAction<Pet[]>>;
   selectedData: Record<string, Pet | null>;
   setSelectedData: React.Dispatch<
     React.SetStateAction<Record<string, Pet | null>>
@@ -34,8 +26,6 @@ interface SelectServiceProps {
 }
 
 const SelectService: React.FC<SelectServiceProps> = ({
-  pets,
-  setPets,
   selectedData,
   setSelectedData,
   openCard,
@@ -58,11 +48,21 @@ const SelectService: React.FC<SelectServiceProps> = ({
           [prevOpenCard]: null,
         }));
       }
+      const isClosingCurrentCard = prevOpenCard === cardId;
+
+      if (isClosingCurrentCard) {
+        setSelectedData((prevSelectedData) => ({
+          ...prevSelectedData,
+          [cardId]: null,
+        }));
+      }
+
       if (cardId === "Surgeries" && !hasShownDisclaimerModal) {
         setIsModalOpen(true);
         setHasShownDisclaimerModal(true);
       }
-      return prevOpenCard === cardId ? null : cardId;
+
+      return isClosingCurrentCard ? null : cardId;
     });
   };
 
@@ -77,21 +77,20 @@ const SelectService: React.FC<SelectServiceProps> = ({
 
   return (
     <div className="w-full h-full">
-      <h1 className="text-2xl font-bold mb-4">Select Services</h1>
-      <p className="text-gray-600 mb-6">Choose from our services:</p>
+      <h1 className="text-2xl mb-2">Select Services</h1>
+      <p className="text-gray-600 mb-12">Choose from our services:</p>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-start ">
-        {bookingCategories.map((category) => (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
+        {ServiceTabsData.map((category) => (
           <BookingCard
             key={category.id}
             cardId={category.id}
             title={category.title}
             description={category.description}
-            pets={pets}
             onCardSelection={handleCardSelection}
             isOpen={openCard === category.id}
             toggleCard={toggleCard}
-            setPets={setPets}
+            selectedData={selectedData}
           />
         ))}
       </div>

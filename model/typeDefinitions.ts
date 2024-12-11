@@ -11,7 +11,7 @@ export interface Clinic {
   services: string;
   contact: string;
   location: string;
-  parkingInformation: string
+  parkingInformation: string;
 }
 export interface PetInfo {
   petId: string;
@@ -29,6 +29,7 @@ export interface PetInfo {
 }
 
 export interface Doctor {
+  id: string;
   name: string;
   position?: string;
   experience?: string;
@@ -54,4 +55,29 @@ export interface BookingCategory {
   id: string;
   title: string;
   description: string;
+}
+
+export enum AppointmentStatus {
+  Upcoming = "Upcoming",
+  Past = "Past",
+  Cancelled = "Cancelled",
+}
+export interface AppointmentType {
+  id: string;
+  pet_vetport_id: number;
+  user_vetport_id: number;
+  vet_vetport_id: number;
+  clinic_id: number;
+  appt_start: string;
+  appt_end: string;
+  appt_status:
+    | "Check In"
+    | "Complete"
+    | "Scheduled"
+    | "Check out"
+    | "Attending"
+    | "Confirm"
+    | "Cancel"
+    | "Active";
+  appt_reason: string | null;
 }
