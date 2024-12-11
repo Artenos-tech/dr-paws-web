@@ -126,7 +126,8 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({ appointment }) => {
       {/* Details */}
       <div className={`space-y-1 ${text}`}>
         <p className="font-semibold">
-          {"Pet"} and {"Vet"}
+          {appointment.pet_name}
+          {appointment.vet_name && ` and ${appointment.vet_name}`}
         </p>
         <p>{formatDate(appointment.appt_start.toString())}</p>
         <p>
