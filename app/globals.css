@@ -276,3 +276,14 @@
   width: 100%; /* Span the full width of the container */
   height: 100%; /* Match the height of the container */
 }
+
+.drop-down {
+  width: 200px; /* width of the select dropdown */
+}
+
+.drop-down option {
+  max-width: 150px; /* width of individual options */
+  white-space: nowrap; /* Prevent wrapping */
+  overflow: hidden; /* Hide overflow text */
+  text-overflow: ellipsis; /* Add ellipsis for long text */
+}

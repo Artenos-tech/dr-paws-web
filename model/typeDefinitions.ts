@@ -15,21 +15,7 @@ export interface Clinic {
 }
 
 export type Gender = "Male" | "Female" | "";
-export interface Pet {
-  id: string;
-  name: string;
-  type: string;
-  breed: string | null;
-  weight: number | null;
-  gender: Gender;
-  dob: string | null;
-  age: {
-    years: number | null;
-    months: number | null;
-  };
-  profileImage: string | StaticImageData | null;
-  birthday?: string;
-}
+
 
 export interface Doctor {
   id: string;

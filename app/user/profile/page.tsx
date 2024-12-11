@@ -13,8 +13,9 @@ import { useRouter } from "next/navigation";
 import Loader from "@/components/ui/Loader";
 import { useAPICall } from "@/hooks/apicall";
 import api from "@/services/api";
+import { ClipLoader } from "react-spinners";
 
-interface Pet {
+export interface Pet {
   id: string;
   spicesId: number;
   name: string;
@@ -26,21 +27,24 @@ const Profile: React.FC = () => {
   const [isAddPetModalOpen, setIsAddPetModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-  const { updateUserPetsHandler, userPets, user, getAuthToken, refresh } = useUserContext();
+  const { updateUserPetsHandler, userPets, user, getAuthToken, refresh } =
+    useUserContext();
 
   // Initialize petIdCounter as a string
 
-
   const navigate = useRouter();
 
-  const { call: getPetsAPI } = useAPICall(api.getPets);
-  const { call: addNewPetAPI } = useAPICall(api.addNewPet);
+  const {
+    call: getPetsAPI,
+    loading,
+    result: getPetsAPIResult,
+  } = useAPICall(api.getPets);
 
   useEffect(() => {
     if (user) {
       fetchPets();
     }
-  }, [user,]);
+  }, [user]);
 
   const fetchPets = async () => {
     if (user) {
@@ -60,42 +64,14 @@ const Profile: React.FC = () => {
     }
   };
 
-  const addPet = async (pet: Omit<Pet, "profileImage" | "id">) => {
-    if (user) {
-      const response = await addNewPetAPI({
-        id: user.id,
-        pet: {
-          name: pet.name,
-          species: { id: pet.spicesId, name: pet.type },
-        },
-      });
-
-      if (response.ok) {
-        console.log("Add Pet API response:", response.value.body);
-        const petId = response.value.body.id;
-        const newPet: Partial<Pet> = {
-          id: petId,
-          spicesId: pet.spicesId,
-          name: pet.name,
-          type: pet.type,
-          profileImage: "",
-        };
-
-        updateUserPetsHandler([newPet]);
-        console.log("Updated userPets:", userPets);
-        toast.success("Added pet successfully", {
-          duration: 3000,
-          position: "bottom-right",
-          style: {
-            backgroundColor: "#4CAF50",
-            color: "#fff",
-            fontWeight: 700,
-          },
-        });
-      }
-      fetchPets();
-    }
-  };
+  const pets =
+    getPetsAPIResult?.ok &&
+    getPetsAPIResult.value.body.pets.map((pet) => ({
+      ...pet,
+      profileImage: pet.profile_image,
+      vetPortId: pet.vetport_id,
+      gender: pet.gender,
+    }));
 
   useEffect(() => {
     const authToken = getAuthToken();
@@ -109,7 +85,7 @@ const Profile: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col w-full h-full 2xl:h-screen items-center font-roca pb-20 flex-grow ">
+    <div className="flex flex-col w-full h-full items-center font-roca pb-20 flex-grow ">
       <main className="flex flex-col w-full gap-8 md:gap-16 items-center px-8 md:px-32 lg:px-20 xl:px-40">
         {user && (
           <ProfileCard profile={user} onEdit={() => setIsEditModalOpen(true)} />
@@ -127,7 +103,8 @@ const Profile: React.FC = () => {
             )}
           </div>
 
-          {userPets && userPets.length === 0 ? (
+          {getPetsAPIResult?.ok &&
+          getPetsAPIResult.value.body.pets.length === 0 ? (
             <div className="flex flex-col items-center justify-center flex-1 gap-2">
               <h3 className="text-secondary-1">
                 You haven&apos;t added any <span>pets yet</span>
@@ -140,9 +117,13 @@ const Profile: React.FC = () => {
               </button>
             </div>
           ) : (
-            <div className="flex justify-center items-center md:justify-start  flex-wrap gap-4 my-8 md:my-4">
-              {userPets &&
-                userPets.map((pet) => <PetCard key={pet.id} pet={pet} />)}
+            <div
+              className={`flex justify-center items-center ${
+                !loading && "md:justify-start"
+              }  flex-wrap gap-4 my-8 md:my-4`}
+            >
+              {loading && <ClipLoader color="#33495f" />}
+              {pets && pets.map((pet) => <PetCard key={pet.id} pet={pet} />)}
             </div>
           )}
         </div>
@@ -150,9 +131,18 @@ const Profile: React.FC = () => {
         <AddPetModal
           isOpen={isAddPetModalOpen}
           onClose={() => setIsAddPetModalOpen(false)}
-          onSubmit={(pet: Omit<Pet, "profileImage" | "id">) => {
-            addPet(pet);
+          onSuccess={() => {
+            fetchPets();
             setIsAddPetModalOpen(false);
+            toast.success("Added pet successfully", {
+              duration: 3000,
+              position: "bottom-right",
+              style: {
+                backgroundColor: "#4CAF50",
+                color: "#fff",
+                fontWeight: 700,
+              },
+            });
           }}
         />
       </main>
