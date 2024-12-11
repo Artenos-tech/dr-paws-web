@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import AddPetModal from "./AddPetModal";
 import { petImageByType } from "./PetCard";
@@ -16,6 +16,8 @@ interface BookingCardProps {
   isOpen: boolean;
   toggleCard: (cardId: string) => void;
   selectedData: Record<string, Pet | null>;
+  pets: Pet[];
+  fetchPets: () => void;
 }
 
 const BookingCard: React.FC<BookingCardProps> = ({
@@ -26,6 +28,8 @@ const BookingCard: React.FC<BookingCardProps> = ({
   isOpen,
   toggleCard,
   selectedData,
+  pets,
+  fetchPets,
 }) => {
   const [isAddPetModalOpen, setIsAddPetModalOpen] = useState(false);
   const { userPets, updateUserPetsHandler } = useUserContext();
@@ -44,10 +48,6 @@ const BookingCard: React.FC<BookingCardProps> = ({
   const handleAddPetModalClose = () => {
     setIsAddPetModalOpen(false);
   };
-
-  useEffect(() => {
-    if (userPets) updateUserPetsHandler([])
-  }, [userPets])
 
   // const handleNewPetSubmit = (newPet: { name: string; type: string }) => {
   //   const petType = newPet.type.toLowerCase();
@@ -102,8 +102,9 @@ const BookingCard: React.FC<BookingCardProps> = ({
         <div className="p-4 ">
           <h3 className="text-lg font-medium mb-2">Select your Pet:</h3>
           <div className="flex gap-3 flex-wrap justify-center items-center">
-            {userPets &&
-              userPets.map((pet) => {
+            {/* {loading && <ClipLoader color="#33495f" />} */}
+            {pets &&
+              pets.map((pet) => {
                 const petImage =
                   pet.profileImage ||
                   petImageByType[pet.type.toLowerCase()]?.src ||
@@ -161,6 +162,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
         onClose={handleAddPetModalClose}
         onSuccess={() => {
           setIsAddPetModalOpen(false);
+          fetchPets();
           toast.success("Added pet successfully", {
             duration: 3000,
             position: "bottom-right",

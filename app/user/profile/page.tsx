@@ -15,7 +15,7 @@ import { useAPICall } from "@/hooks/apicall";
 import api from "@/services/api";
 import { ClipLoader } from "react-spinners";
 
-export interface Pet {
+export interface PetType {
   id: string;
   spicesId: number;
   name: string;
@@ -55,7 +55,7 @@ const Profile: React.FC = () => {
           profileImage: pet.profile_image,
           vetPortId: pet.vetport_id,
           gender: pet.gender,
-        })) as Partial<Pet>[];
+        })) as Partial<PetType>[];
 
         if (pets) {
           updateUserPetsHandler(pets);

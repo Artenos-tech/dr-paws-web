@@ -1,11 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import BookingCard from "@/components/ui/BookingCard";
 import BookingModal from "@/components/ui/BookingModal";
 import { ServiceTabsData } from "@/model/mockData";
 import CustomButton from "./CustomButton";
-import { Pet } from "@/context/UserContext";
+import { Pet, useUserContext } from "@/context/UserContext";
+import { useAPICall } from "@/hooks/apicall";
+import api from "@/services/api";
 
 export interface BookingCategory {
   id: string;
@@ -35,6 +37,41 @@ const SelectService: React.FC<SelectServiceProps> = ({
   onNext,
 }) => {
   const [hasShownDisclaimerModal, setHasShownDisclaimerModal] = useState(false);
+  const {  updateUserPetsHandler, user } = useUserContext();
+
+  const { call: getPetsAPI, result: getPetsAPIResult} = useAPICall(
+    api.getPets
+  );
+
+  useEffect(() => {
+    fetchPets();
+  }, []);
+
+  const fetchPets = async () => {
+    if (user) {
+      const response = await getPetsAPI({ id: user?.id });
+      if (response.ok) {
+        const pets = response.value.body.pets?.map((pet) => ({
+          ...pet,
+          profileImage: pet.profile_image,
+          vetPortId: pet.vetport_id,
+          gender: pet.gender,
+        })) as Partial<Pet>[];
+
+        if (pets) {
+          updateUserPetsHandler(pets);
+        }
+      }
+    }
+  };
+
+  const pets =
+    getPetsAPIResult?.ok &&
+    getPetsAPIResult.value.body.pets.map((pet) => ({
+      ...pet,
+      profileImage: pet.profile_image,
+      vetPortId: pet.vetport_id,
+    }));
 
   const handleCardSelection = (cardId: string, selectedPet: Pet | null) => {
     setSelectedData({ [cardId]: selectedPet });
@@ -91,6 +128,8 @@ const SelectService: React.FC<SelectServiceProps> = ({
             isOpen={openCard === category.id}
             toggleCard={toggleCard}
             selectedData={selectedData}
+            pets={pets || []}
+            fetchPets={fetchPets}
           />
         ))}
       </div>

@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import { useAPICall } from "@/hooks/apicall";
 import api from "@/services/api";
 import { PetSpecies, useUserContext } from "@/context/UserContext";
-import { Pet } from "@/app/user/profile/page";
+import { PetType } from "@/app/user/profile/page";
 
 const petSchema = z.object({
   spicesId: z.number(),
@@ -22,7 +22,7 @@ type PetFormData = z.infer<typeof petSchema>;
 interface AddPetModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess: () => void;
+  onSuccess: (newPet?: { name: string; type: string }) => void;
 }
 
 export default function AddPetModal({
@@ -36,7 +36,6 @@ export default function AddPetModal({
 
   const {
     updateUserPetsHandler,
-    userPets,
     user,
     updatePetSpeciesHandler,
     petSpecies,
@@ -82,7 +81,7 @@ export default function AddPetModal({
       if (response.ok) {
         console.log("Add Pet API response:", response.value.body);
         const petId = response.value.body.id;
-        const newPet: Partial<Pet> = {
+        const newPet: Partial<PetType> = {
           id: petId,
           spicesId: data.spicesId,
           name: data.name,
@@ -154,9 +153,9 @@ export default function AddPetModal({
                 onChange={handleTypeChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value="" disabled>Type of Pet</option>
+                <option value="" disabled className="!w-3/4">Type of Pet</option>
                 {petSpecies?.map((species) => (
-                  <option key={species.id} value={species.name}>
+                  <option key={species.id} value={species.name} className="!w-3/4">
                     {species.name}
                   </option>
                 ))}

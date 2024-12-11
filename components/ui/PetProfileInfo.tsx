@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 
-import Image, { StaticImageData } from "next/image";
+import Image from "next/image";
 import { useForm } from "react-hook-form";
 import ImageEdit from "@/public/assets/images/Profile/ImageEdit.png";
 import OutlineButton from "./OutlineButton";
