@@ -5,7 +5,7 @@ import Image from "next/image";
 import AddPetModal from "./AddPetModal";
 import { petImageByType } from "./PetCard";
 import tickMark from "@/public/assets/images/Booking/tick-svgrepo-com.svg";
-import { Pet, useUserContext } from "@/context/UserContext";
+import { Pet } from "@/context/UserContext";
 import toast, { Toaster } from "react-hot-toast";
 
 interface BookingCardProps {
