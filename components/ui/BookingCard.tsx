@@ -32,7 +32,6 @@ const BookingCard: React.FC<BookingCardProps> = ({
   fetchPets,
 }) => {
   const [isAddPetModalOpen, setIsAddPetModalOpen] = useState(false);
-  const { userPets, updateUserPetsHandler } = useUserContext();
 
   const handlePetClick = (pet: Pet) => {
     const isAlreadySelected = selectedData[cardId]?.id === pet.id;
