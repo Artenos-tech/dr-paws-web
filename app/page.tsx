@@ -64,16 +64,15 @@ export default function Home() {
         <div className="bg-banner bg-cover bg-top bg-no-repeat h-96 w-full md:h-[500px] lg:h-[600px] min-h-[300px]">
           <div className="flex flex-col items-center md:items-start gap-0 w-full md:w-full  lg:w-1/2 mx-auto mt-6 md:ml-32 md:mt-10 lg:gap-4 lg:mt-12 lg:ml-40 text-center md:text-left">
             <div>
-              <h1 className="text-[32px] md:text-[40px] lg:text-[56px]  leading-tight md:leading-snug lg:leading-none text-primary-1">
-                India&apos;s Friendliest Vet Clinics
-              </h1>
-              <h1 className="lg:w-full text-[28px] md:w-[80%] md:text-[34px] lg:text-[48px] text-primary-1 leading-tight md:leading-snug lg:leading-none">
-                Because your best friend deserves the very best
+              <p className="text-[12px] md:text-[16px] lg:text-[18px] font-openSans tracking-[0.29em] font-bold leading-tight md:leading-snug lg:leading-none text-primary-1">
+                INDIA&apos;S FRIENDLIEST VET CLINICS
+              </p>
+              <h1 className="lg:w-full text-[28px] md:w-[80%] md:text-[40px] lg:text-[60px] text-primary-1 leading-tight md:leading-snug lg:leading-none">
+                Where pets bring <br />their people.
               </h1>
             </div>
-            <p className="text-primary-1 w-full md:w-[80%] lg:w-[70%] text-[14px] md:text-[16px] lg:text-[18px] px-10 md:px-0">
-              Book a visit to one of our clinics right now. Which friend will we
-              meet?
+            <p className="text-primary-1 w-full md:w-[80%] lg:w-[70%] text-[12px] md:text-[14px] lg:text-[16px] px-10 md:px-0 mt-2 font-openSans tracking-wider font-semibold">
+              WHO BRINGS YOU HERE TODAY?
             </p>
             <div className="flex justify-center md:justify-start">
               <BannerList openLoginModal={handleLoginModalOpen} />

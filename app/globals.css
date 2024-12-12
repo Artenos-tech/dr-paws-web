@@ -287,3 +287,23 @@
   overflow: hidden; /* Hide overflow text */
   text-overflow: ellipsis; /* Add ellipsis for long text */
 }
+
+.bg-banner {
+  position: relative;
+}
+
+.bg-banner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to right, white 40%, transparent 65%);
+  z-index: 0;
+}
+
+.bg-banner > * {
+  position: relative; 
+  z-index: 1;
+}

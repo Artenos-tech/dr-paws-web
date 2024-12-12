@@ -15,12 +15,12 @@ import RMV_Hallway from "../public/assets/images/ClinicDetails/RMV_Hallway.png";
 import RMV_Hydrotherapy from "../public/assets/images/ClinicDetails/RMV_Hydrotherapy.png";
 import RMV_Reception from "../public/assets/images/ClinicDetails/RMV_Reception.png";
 import RMV_Retail from "../public/assets/images/ClinicDetails/RMV_Retail.png";
-import dogImg from "../public/assets/images/dogimg.png";
-import catImg from "../public/assets/images/catimg.png";
-import rabbitImg from "../public/assets/images/rabbitImg.png";
+import dogImg from "../public/assets/images/dogimg.webp";
+import catImg from "../public/assets/images/catimg.webp";
+import otherPetsImg from "../public/assets/images/otherpetimg.png";
 import { Clinic, Review } from "@/model/typeDefinitions";
-import { BookingCategory } from "@/model/typeDefinitions";
-import { AppointmentStatus, AppointmentType } from "@/model/typeDefinitions";
+// import { BookingCategory } from "@/model/typeDefinitions";
+// import { AppointmentStatus, AppointmentType } from "@/model/typeDefinitions";
 
 import ParasiteControl from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/ParasiteControl.png";
 import SkinInfections from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/SkinInfections.jpeg";
@@ -288,15 +288,15 @@ export const descriptionItems = [
 export const bannerItems = [
   {
     bannerImage: dogImg,
-    bannerText: "Dog",
+    bannerText: "Dogs.",
   },
   {
     bannerImage: catImg,
-    bannerText: "Cat",
+    bannerText: "Cats.",
   },
   {
-    bannerImage: rabbitImg,
-    bannerText: "Small Animal",
+    bannerImage: otherPetsImg,
+    bannerText: "Other Pets.",
   },
 ];
 
