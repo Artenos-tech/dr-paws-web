@@ -240,8 +240,8 @@ export default createAPIClient({
             vet_vetport_id: z.number(),
             vet_name: z.string(),
             clinic_id: z.number(),
-            appt_start: z.string(),
-            appt_end: z.string(),
+            appt_start: z.number(),
+            appt_end: z.number(),
             appt_status: z.enum([
               "Check In",
               "Complete",
