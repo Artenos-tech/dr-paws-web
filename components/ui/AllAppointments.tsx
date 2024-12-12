@@ -1,6 +1,6 @@
 import { AppointmentType } from "@/model/typeDefinitions";
 import NoAppointments from "./NoAppointments";
-import AppointmentCard, { epochToDate } from "./AppointmentCard";
+import AppointmentCard from "./AppointmentCard";
 
 
 
