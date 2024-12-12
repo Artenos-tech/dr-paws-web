@@ -363,7 +363,10 @@ export default createAPIClient({
       responseSchema: z.object({
         status: z.number(),
         message: z.string(),
-        id: z.string(),
+        pet: z.object({
+          id: z.string(),
+          vetport_id: z.number(),
+        }),
       }),
       errorResponseSchema: z.object({}),
     },

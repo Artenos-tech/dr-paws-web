@@ -22,7 +22,7 @@ type PetFormData = z.infer<typeof petSchema>;
 interface AddPetModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess: (newPet?: { name: string; type: string }) => void;
+  onSuccess: () => void;
 }
 
 export default function AddPetModal({
@@ -34,12 +34,8 @@ export default function AddPetModal({
 
   const { call: addNewPetAPI } = useAPICall(api.addNewPet);
 
-  const {
-    updateUserPetsHandler,
-    user,
-    updatePetSpeciesHandler,
-    petSpecies,
-  } = useUserContext();
+  const { updateUserPetsHandler, user, updatePetSpeciesHandler, petSpecies } =
+    useUserContext();
   const [selectedType, setSelectedType] = useState<string>("");
 
   const {
@@ -69,7 +65,9 @@ export default function AddPetModal({
   };
 
   const handleFormSubmit = async (data: PetFormData) => {
+    console.log("loading");
     if (user) {
+      console.log("submitting");
       const response = await addNewPetAPI({
         id: user.id,
         pet: {
@@ -77,16 +75,18 @@ export default function AddPetModal({
           species: { id: data.spicesId, name: data.type },
         },
       });
+      console.log("resposne:", response);
 
       if (response.ok) {
         console.log("Add Pet API response:", response.value.body);
-        const petId = response.value.body.id;
+        const petResponse = response.value.body.pet;
         const newPet: Partial<PetType> = {
-          id: petId,
+          id: petResponse.id,
           spicesId: data.spicesId,
           name: data.name,
           type: data.type,
           profileImage: "",
+          vetPortId: petResponse.vetport_id,
         };
 
         updateUserPetsHandler([newPet]);
@@ -153,9 +153,15 @@ export default function AddPetModal({
                 onChange={handleTypeChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value="" disabled className="!w-3/4">Type of Pet</option>
+                <option value="" disabled className="!w-3/4">
+                  Type of Pet
+                </option>
                 {petSpecies?.map((species) => (
-                  <option key={species.id} value={species.name} className="!w-3/4">
+                  <option
+                    key={species.id}
+                    value={species.name}
+                    className="!w-3/4"
+                  >
                     {species.name}
                   </option>
                 ))}

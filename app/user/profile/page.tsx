@@ -8,7 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import OutlineButton from "@/components/ui/OutlineButton";
 import toast, { Toaster } from "react-hot-toast";
 import EditProfileModal from "@/components/ui/EditProfileModal";
-import { useUserContext } from "@/context/UserContext";
+import { Pet, useUserContext } from "@/context/UserContext";
 import { useRouter } from "next/navigation";
 import Loader from "@/components/ui/Loader";
 import { useAPICall } from "@/hooks/apicall";
@@ -21,6 +21,7 @@ export interface PetType {
   name: string;
   type: string;
   profileImage: string;
+  vetPortId: number | null;
 }
 
 const Profile: React.FC = () => {
@@ -55,7 +56,7 @@ const Profile: React.FC = () => {
           profileImage: pet.profile_image,
           vetPortId: pet.vetport_id,
           gender: pet.gender,
-        })) as Partial<PetType>[];
+        })) as Partial<Pet>[];
 
         if (pets) {
           updateUserPetsHandler(pets);
