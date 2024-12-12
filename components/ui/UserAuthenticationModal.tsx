@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import Modal from "react-modal";
 import LoginForm from "./LoginForm";
@@ -14,13 +14,6 @@ import { Pet, useUserContext } from "@/context/UserContext";
 interface authenticationProps {
   isOpen: boolean;
   onClose: () => void;
-  /**
-   * Optional user mobile number.
-   * If the user is already logged in, we don’t need to send this prop since the
-   * user's mobile number will be retrieved automatically.
-   * We’ll first check if the user is logged in before requiring this prop.
-   */
-  initialMobileNumber?: string;
   onSuccess: (toastMessage: string) => void;
   buttonText?: string;
   bookingFlow?: boolean;
@@ -29,14 +22,13 @@ interface authenticationProps {
 const UserAuthenticationModal: React.FC<authenticationProps> = ({
   isOpen,
   onClose,
-  initialMobileNumber,
   onSuccess,
   buttonText,
   bookingFlow = false,
 }) => {
   const [isLogin, setIsLogin] = useState<boolean>(true);
   const [userMobileNumber, setUserMobileNumber] = useState<string | undefined>(
-    initialMobileNumber
+    undefined
   );
 
   const [userName, setUserName] = useState<string>("");
@@ -47,7 +39,8 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
   const [otpErr, setOtpErr] = useState("");
 
   // context
-  const { updateUserDetailsHandler, updateUserPetsHandler } = useUserContext();
+  const { updateUserDetailsHandler, updateUserPetsHandler, user } =
+    useUserContext();
 
   // API's
   const { call: signupOTP, loading: signupOTPLoading } = useAPICall(
@@ -62,6 +55,12 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
   );
 
   const { call: signupCancel } = useAPICall(api.signupCancel);
+
+  useEffect(() => {
+    if (user) {
+      setUserMobileNumber(user.mobile);
+    }
+  }, [user]);
 
   const handleIncorrectNumber = () => {
     setUserMobileNumber(undefined);
