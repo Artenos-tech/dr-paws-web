@@ -1,35 +1,34 @@
 import { AppointmentType } from "@/model/typeDefinitions";
 import NoAppointments from "./NoAppointments";
 import AppointmentCard from "./AppointmentCard";
-
-
+import { useCheckVetportDemo } from "@/hooks/useCheckVetportDemo";
 
 type AllAppointmentsProps = {
   allAppointments: AppointmentType[];
 };
 
-
-
 const AllAppointments: React.FC<AllAppointmentsProps> = ({
   allAppointments,
 }) => {
-
+  const isVetportDemo = useCheckVetportDemo();
 
   const sortedAppointments = [...allAppointments].sort(
-    (a, b) => new Date(b.appt_start).getTime() - new Date(a.appt_start).getTime()
+    (a, b) =>
+      new Date(b.appt_start).getTime() - new Date(a.appt_start).getTime()
   );
-  
 
-  const validStatuses = [
-    "Check In",
-    "Complete",
-    "Scheduled",
-    "Check out",
-    "Attending",
-    "Confirm",
-    "Cancel",
-    "Active",
-  ];
+  const validStatuses = !isVetportDemo
+    ? [
+        "Check In",
+        "Complete",
+        "Scheduled",
+        "Check out",
+        "Attending",
+        "Confirm",
+        "Cancel",
+        "Active",
+      ]
+    : ["Check-in", "Check-out", "Complete", "Confirmed"];
 
   return (
     <div
@@ -48,7 +47,7 @@ const AllAppointments: React.FC<AllAppointmentsProps> = ({
               key={appointment.user_vetport_id}
               appointment={appointment}
             />
-          // ) : appointment.appt_status === "Complete" ? (
+          ) : // ) : appointment.appt_status === "Complete" ? (
           //   <PastAppointmentCard
           //     key={appointment.user_vetport_id}
           //     pastAppointment={appointment}
@@ -59,8 +58,9 @@ const AllAppointments: React.FC<AllAppointmentsProps> = ({
           //     cancelledAppointment={appointment}
           //   />
           // )
-        ):null
-      ))}
+          null
+        )
+      )}
     </div>
   );
 };

@@ -4,6 +4,7 @@ import { AppointmentType } from "@/model/typeDefinitions";
 import React from "react";
 import OutlineButton from "./OutlineButton";
 import { useRouter } from "next/navigation";
+import { useCheckVetportDemo } from "@/hooks/useCheckVetportDemo";
 
 // Helper Functions
 export const formatDate = (dateString: string) => {
@@ -56,6 +57,7 @@ type AppointmentCardProps = {
 // Main Component
 const AppointmentCard: React.FC<AppointmentCardProps> = ({ appointment }) => {
   const router = useRouter();
+  const isVetportDemo = useCheckVetportDemo();
 
   // Styles and labels based on appt_status
   const cardStyles = {
@@ -78,8 +80,10 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({ appointment }) => {
 
   // Mapping appt_status to style categories
   const getStatusCategory = (status: AppointmentType["appt_status"]) => {
-    const upcomingStatuses = ["Confirm", "Scheduled", "Check In"];
-    const pastStatuses = ["Complete", "Check out"];
+    const upcomingStatuses = !isVetportDemo
+      ? ["Confirm", "Scheduled", "Check In"]
+      : ["Confirmed", "Check-in"];
+    const pastStatuses = !isVetportDemo ? ["Complete", "Check out"] : ["Complete", "Check-out"];
     const cancelledStatuses = ["Cancel"];
 
     if (upcomingStatuses.includes(status)) return "upcoming";

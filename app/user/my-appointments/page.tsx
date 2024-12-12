@@ -12,9 +12,11 @@ import { useAppointmentsContext } from "@/context/AppointmentsContext";
 
 
 import Loader from "@/components/ui/Loader";
+import { useCheckVetportDemo } from "@/hooks/useCheckVetportDemo";
 
 const MyAppointmentsPage = () => {
   const { appointments, loading } = useAppointmentsContext();
+  const isVetportDemo = useCheckVetportDemo()
 
   if (loading) {
     return <div><Loader /></div>;
@@ -32,9 +34,12 @@ const MyAppointmentsPage = () => {
         <UpcomingAppointments
           upcomingAppointments={(appointments || []).filter(
             (appointment: AppointmentType) =>
-              appointment.appt_status === "Scheduled" ||
+              isVetportDemo
+            ? appointment.appt_status === "Scheduled" ||
               appointment.appt_status === "Confirm" ||
               appointment.appt_status === "Check In"
+            : appointment.appt_status === "Confirmed" ||
+              appointment.appt_status.includes("check-in")
           )}
         />
       ),
@@ -45,8 +50,11 @@ const MyAppointmentsPage = () => {
         <PastAppointments
           pastAppointments={(appointments || []).filter(
             (appointment: AppointmentType) =>
-              appointment.appt_status === "Complete" ||
-              appointment.appt_status === "Check out"
+              isVetportDemo
+                ? appointment.appt_status === "Complete" ||
+                  appointment.appt_status === "Check out"
+                : appointment.appt_status === "Complete" ||
+                  appointment.appt_status === "Check-out"
           )}
         />
       ),

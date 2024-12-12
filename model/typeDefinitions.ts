@@ -69,6 +69,10 @@ export interface AppointmentType {
     | "Attending"
     | "Confirm"
     | "Cancel"
-    | "Active";
+    | "Active"
+    | "Confirmed"
+    | "Check-in"
+    | "Check-out"
+    ;
   appt_reason: string | null;
 }
