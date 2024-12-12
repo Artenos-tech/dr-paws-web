@@ -80,7 +80,7 @@ export default function NavBar() {
   };
 
   return (
-    <div className="fixed left-0 top-0 z-30 bg-primary-3 w-full">
+    <div className="fixed left-0 top-0 z-30 bg-primary-3 w-full drop-shadow-lg">
       <div className="mx-auto px-8 md:px-32 lg:px-20 xl:px-40">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center gap-9">
