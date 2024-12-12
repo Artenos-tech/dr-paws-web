@@ -41,7 +41,6 @@ export default function NavBar() {
     navigate.push("/");
     refresh();
     window.location.reload();
-
   };
 
   const handleLoginModalOpen = (text: string) => {
@@ -62,6 +61,9 @@ export default function NavBar() {
     if (buttonText === "View Profile" || buttonText === "View Pets") {
       navigate.push("/user/profile");
     }
+
+    if (buttonText === "Book a Visit") handleBookAVisit();
+
     toast.success(`Successfully ${toastMessage}`, {
       duration: 3000,
       position: "bottom-right",
@@ -73,11 +75,9 @@ export default function NavBar() {
   const handleBookAVisit = () => {
     const authToken = getAuthToken();
     return authToken
-      ?  navigate.push("/user/book-appointment")
+      ? navigate.push("/user/book-appointment")
       : handleLoginModalOpen("Book a Visit");
   };
-
-
 
   return (
     <div className="fixed left-0 top-0 z-30 bg-primary-3 w-full">
@@ -144,14 +144,14 @@ export default function NavBar() {
                 >
                   Our Team
                 </Link>
-                {!isMarketingFeatureEnabled ? ( 
-                <Link
-                  href="/membership"
-                  className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-                >
-                  Membership
-                </Link>
-                 ) : null}
+                {!isMarketingFeatureEnabled ? (
+                  <Link
+                    href="/membership"
+                    className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                  >
+                    Membership
+                  </Link>
+                ) : null}
               </div>
             </div>
           </div>
@@ -213,17 +213,17 @@ export default function NavBar() {
                     </DropdownMenu.Item>
                     {/* <div className="border-t border-gray-300 my-2" /> */}
                     {!isMarketingFeatureEnabled ? (
-                    <DropdownMenu.Item asChild>
-                      <div
-                        onClick={() => navigate.push("/membership")}
-                        className="text-secondary-1 flex justify-between items-center hover:text-primary-1 cursor-pointer outline-none"
-                      >
-                        Become a Member <MdChevronRight />
-                      </div>
-                    </DropdownMenu.Item>
-                    ): null}
+                      <DropdownMenu.Item asChild>
+                        <div
+                          onClick={() => navigate.push("/membership")}
+                          className="text-secondary-1 flex justify-between items-center hover:text-primary-1 cursor-pointer outline-none"
+                        >
+                          Become a Member <MdChevronRight />
+                        </div>
+                      </DropdownMenu.Item>
+                    ) : null}
                     {/* <div className="border-t border-gray-300 my-2" /> */}
-                    
+
                     {/* <DropdownMenu.Item asChild>
                       <div
                         onClick={() => setContactIsModalOpen(true)}
@@ -321,13 +321,13 @@ export default function NavBar() {
               Our Team
             </Link>
             {!isMarketingFeatureEnabled ? (
-            <Link
-              onClick={() => setIsOpen(false)}
-              href="/membership"
-              className="text-primary-1 hover:bg-primary-2 hover:text-white block py-2 px-2 rounded-md text-base font-medium"
-            >
-              Membership
-            </Link>
+              <Link
+                onClick={() => setIsOpen(false)}
+                href="/membership"
+                className="text-primary-1 hover:bg-primary-2 hover:text-white block py-2 px-2 rounded-md text-base font-medium"
+              >
+                Membership
+              </Link>
             ) : null}
           </div>
           <div className="pt-4 pb-3 border-t border-primary-2">
@@ -385,7 +385,7 @@ export default function NavBar() {
                       >
                         My Appointments
                       </DropdownMenu.Item>
-                      
+
                       {!isMarketingFeatureEnabled ? (
                         <>
                           <div className="border-t border-gray-300 my-2" />
@@ -401,7 +401,7 @@ export default function NavBar() {
                           <div className="border-t border-gray-300 my-2" />
                         </>
                       ) : null}
-                      
+
                       {/* <DropdownMenu.Item
                         onClick={() => {
                           setIsOpen(false);
