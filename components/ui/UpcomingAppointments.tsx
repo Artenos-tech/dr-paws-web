@@ -28,7 +28,7 @@ const UpcomingAppointments: React.FC<UpcomingAppointmentsProps> = ({
       ) : (
         sortedUpcomingAppointments.map((appointment: AppointmentType) => (
           <AppointmentCard
-            key={appointment.user_vetport_id}
+            key={appointment.id}
             appointment={appointment}
           />
         ))

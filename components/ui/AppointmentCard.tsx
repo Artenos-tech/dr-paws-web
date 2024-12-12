@@ -53,6 +53,10 @@ type AppointmentCardProps = {
   appointment: AppointmentType;
 };
 
+export function epochToDate(timestamp: number) {
+  return new Date(timestamp*1000).toLocaleString()
+}
+
 // Main Component
 const AppointmentCard: React.FC<AppointmentCardProps> = ({ appointment }) => {
   const router = useRouter();
@@ -90,6 +94,8 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({ appointment }) => {
 
   const statusCategory = getStatusCategory(appointment.appt_status);
   const { border, bg, text } = cardStyles[statusCategory];
+
+  // console.log(epochToDate(appointment.appt_start))
 
   return (
     <div
@@ -129,11 +135,14 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({ appointment }) => {
           {appointment.pet_name}
           {appointment.vet_name && ` and ${appointment.vet_name}`}
         </p>
-        <p>{formatDate(appointment.appt_start.toString())}</p>
+        <p>
+          {formatDate(epochToDate(appointment.appt_start).toString())}
+
+        </p>
         <p>
           {formatTimeRange(
-            appointment.appt_start.toString(),
-            appointment.appt_end.toString()
+            epochToDate(appointment.appt_start).toString(),
+            epochToDate(appointment.appt_end).toString()
           )}
         </p>
       </div>

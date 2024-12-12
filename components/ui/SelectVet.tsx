@@ -21,9 +21,10 @@ import api from "@/services/api";
 import { Pet, useUserContext } from "@/context/UserContext";
 import { useAppointmentsContext } from "@/context/AppointmentsContext";
 import toast, { Toaster } from "react-hot-toast";
+import { epochToDate } from "./AppointmentCard";
 
 export function convertDateToEpoch(date: string) {
-  return Date.parse(date)
+  return Date.parse(date);
 }
 
 interface selectVetProps {
@@ -37,7 +38,8 @@ const SelectVet: React.FC<selectVetProps> = ({
   selectedData,
   onNext,
 }) => {
-  const { setSelectedAppointment, fetchAppointments } = useAppointmentsContext();
+  const { setSelectedAppointment, fetchAppointments } =
+    useAppointmentsContext();
 
   const { user, userPets } = useUserContext();
 
@@ -47,7 +49,7 @@ const SelectVet: React.FC<selectVetProps> = ({
 
   // const [authModalOpen, setAuthModalOpen] = useState(false);
   // const [otpLoading, setOtpLoading] = useState<boolean>(false);
-  
+
   // const { call: sendOTP } = useAPICall(api.loginOTP);
   const { call: getStaffSchedule, result: staffScheduleResult } = useAPICall(
     api.getStaffSchedule
@@ -56,9 +58,9 @@ const SelectVet: React.FC<selectVetProps> = ({
   const { call: createAnAppointment } = useAPICall(api.createAppointment);
 
   const staffIdBasedServices =
-  selectedData && Object.keys(selectedData).includes("Grooming")
-    ? "0"
-    : "146";
+    selectedData && Object.keys(selectedData).includes("Grooming")
+      ? "0"
+      : "146";
 
   const fetchStaffSchedule = useCallback(async () => {
     if (
@@ -71,8 +73,14 @@ const SelectVet: React.FC<selectVetProps> = ({
         staffid: staffIdBasedServices,
       });
     }
-  }, [selectedDoctor, selectedData, selectedClinic, getStaffSchedule, staffIdBasedServices]);
-  
+  }, [
+    selectedDoctor,
+    selectedData,
+    selectedClinic,
+    getStaffSchedule,
+    staffIdBasedServices,
+  ]);
+
   useEffect(() => {
     if (
       selectedDoctor ||
@@ -90,30 +98,31 @@ const SelectVet: React.FC<selectVetProps> = ({
       selectedDate,
       selectedSlot,
     });
-  
-    if (user && userPets && selectedSlot) {
+
+    if (user && userPets && selectedSlot && selectedDate) {
       const staffId = Number(staffIdBasedServices);
       const clinicId = Number(selectedClinic);
       const pet = userPets.find(
         (pet) => pet.id === selectedData?.[Object.keys(selectedData)[0]]?.id
       );
-  
+
       if (!pet) return;
-  
-      const today = new Date();
-      const [hours, minutes] = selectedSlot.split(":").map(Number);
-      today.setHours(hours, minutes, 0, 0);
-      const apptStart = today.toISOString();
-  
-      const endDate = new Date(today);
-      endDate.setMinutes(
-        endDate.getMinutes() +
-          (selectedData && Object.keys(selectedData).includes("Grooming")
-            ? 90
-            : 30)
-      );
-      const apptEnd = endDate.toISOString();
-  
+        const [hours, minutes] = selectedSlot.split(":").map(Number);
+        selectedDate.setHours(hours, minutes, 0, 0);
+        const apptStart = selectedDate.toISOString();
+        console.log(selectedDate);
+
+        selectedDate.setMinutes(
+          selectedDate.getMinutes() +
+            (selectedData && Object.keys(selectedData).includes("Grooming")
+              ? 90
+              : 30)
+        );
+        const apptEnd = selectedDate.toISOString();
+        const epoch = convertDateToEpoch(apptStart)
+        console.log("epoch:", convertDateToEpoch(apptStart));
+        console.log("epoch date:", epochToDate(epoch));
+
       try {
         const response = await createAnAppointment({
           id: user?.id,
@@ -124,7 +133,7 @@ const SelectVet: React.FC<selectVetProps> = ({
           appt_start: convertDateToEpoch(apptStart),
           appt_end: convertDateToEpoch(apptEnd),
         });
-  
+
         if (response.ok) {
           toast.success("Appointment created successfully!", {
             duration: 3000,
@@ -156,7 +165,6 @@ const SelectVet: React.FC<selectVetProps> = ({
       });
     }
   };
-  
 
   const handleDateSelect = (date: Date) => {
     setSelectedDate(date);

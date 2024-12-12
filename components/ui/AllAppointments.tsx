@@ -18,7 +18,6 @@ const AllAppointments: React.FC<AllAppointmentsProps> = ({
   const sortedAppointments = [...allAppointments].sort(
     (a, b) => new Date(b.appt_start).getTime() - new Date(a.appt_start).getTime()
   );
-  
 
   const validStatuses = [
     "Check In",
@@ -45,7 +44,7 @@ const AllAppointments: React.FC<AllAppointmentsProps> = ({
         sortedAppointments.map((appointment: AppointmentType) =>
           validStatuses.includes(appointment.appt_status) ? (
             <AppointmentCard
-              key={appointment.user_vetport_id}
+              key={appointment.id}
               appointment={appointment}
             />
           // ) : appointment.appt_status === "Complete" ? (
