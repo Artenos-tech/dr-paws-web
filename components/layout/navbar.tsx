@@ -20,6 +20,7 @@ import { useMarketingFeature } from "@/hooks/useMarketingFeature";
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   // const [isLocationOpen, setIsLocationOpen] = useState(false);
   const [isContactModalOpen, setContactIsModalOpen] = useState(false);
   const [loginModalOpen, setLoginModalOpen] = useState<boolean>(false);
@@ -32,6 +33,8 @@ export default function NavBar() {
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const profileDropdownRef = useRef<HTMLDivElement>(null);
+  const profileButtonRef = useRef<HTMLButtonElement>(null);
 
   // API
   const { call: logout } = useAPICall(api.logout);
@@ -46,6 +49,14 @@ export default function NavBar() {
         !buttonRef.current.contains(event.target as Node)
       ) {
         setIsOpen(false);
+      }
+      if (
+        profileDropdownRef.current &&
+        !profileDropdownRef.current.contains(event.target as Node) &&
+        profileButtonRef.current &&
+        !profileButtonRef.current.contains(event.target as Node)
+      ) {
+        setIsProfileOpen(false);
       }
     };
 
@@ -279,7 +290,10 @@ export default function NavBar() {
           <div className="-mr-2 flex lg:hidden">
             <button
               ref={buttonRef}
-              onClick={() => setIsOpen(!isOpen)}
+              onClick={() => {
+                setIsOpen(!isOpen);
+                setIsProfileOpen(false);
+              }}
               type="button"
               className="bg-primary-3 inline-flex items-center justify-center p-2 rounded-md text-primary-1 hover:text-white hover:bg-primary-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-primary-3 focus:ring-white"
               aria-controls="mobile-menu"
@@ -356,94 +370,21 @@ export default function NavBar() {
           <div className="pt-4 pb-3 border-t border-primary-2">
             <div className="flex items-center px-8 md:px-32 space-x-4">
               {getAuthToken() ? (
-                <DropdownMenu.Root>
-                  <DropdownMenu.Trigger asChild>
-                    <Image
-                      src={Profile}
-                      alt="User logo"
-                      width={40}
-                      height={40}
-                      className="cursor-pointer"
-                    />
-                  </DropdownMenu.Trigger>
-                  <DropdownMenu.Portal>
-                    <DropdownMenu.Content ref={dropdownRef}
-                      className="bg-[#f7f1de] shadow-lg rounded-lg w-[100vh] lg:hidden p-4 md:pl-[136px]  space-y-2 pl-10 z-10"
-                      align="center"
-                      sideOffset={0}
-                    >
-                      <DropdownMenu.Item
-                        onClick={() => {
-                          setIsOpen(false);
-                          handleLoginModalOpen("View Profile");
-                        }}
-                        className="text-primary-1 hover:text-secondary-1 cursor-pointer"
-                      >
-                        Profile
-                      </DropdownMenu.Item>
-                      <DropdownMenu.Item
-                        onClick={() => {
-                          setIsOpen(false);
-                          handleLoginModalOpen("View Pets");
-                        }}
-                        className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none "
-                      >
-                        My Pets
-                      </DropdownMenu.Item>
-                      {/* <DropdownMenu.Item
-                        onClick={() => {
-                          setIsOpen(false);
-                          setContactIsModalOpen(true);
-                        }}
-                        className="text-primary-1 hover:text-secondary-1 cursor-pointer"
-                      >
-                        Medical History
-                      </DropdownMenu.Item> */}
-                      <DropdownMenu.Item
-                        onClick={() => {
-                          setIsOpen(false);
-                          navigate.push("/user/my-appointments");
-                        }}
-                        className="text-primary-1 hover:text-secondary-1 cursor-pointer"
-                      >
-                        My Appointments
-                      </DropdownMenu.Item>
-
-                      {!isMarketingFeatureEnabled ? (
-                        <>
-                          <div className="border-t border-gray-300 my-2" />
-                          <DropdownMenu.Item
-                            onClick={() => {
-                              setIsOpen(false);
-                              navigate.push("/membership");
-                            }}
-                            className="text-secondary-1 flex justify-between items-center hover:text-primary-1 cursor-pointer"
-                          >
-                            Become a Member <MdChevronRight />
-                          </DropdownMenu.Item>
-                          <div className="border-t border-gray-300 my-2" />
-                        </>
-                      ) : null}
-
-                      {/* <DropdownMenu.Item
-                        onClick={() => {
-                          setIsOpen(false);
-                          setContactIsModalOpen(true);
-                        }}
-                        className="text-primary-1 hover:text-secondary-1 cursor-pointer"
-                      >
-                        Account Settings
-                      </DropdownMenu.Item> */}
-                      <DropdownMenu.Item
-                        onClick={handleLogout}
-                        className="text-primary-1 hover:text-secondary-1 cursor-pointer"
-                      >
-                        Log Out
-                      </DropdownMenu.Item>
-                      <DropdownMenu.Arrow className="fill-current text-[#f7f1de]" />
-                    </DropdownMenu.Content>
-                  </DropdownMenu.Portal>
-                </DropdownMenu.Root>
+                <button
+                  type="button"
+                  ref={profileButtonRef}
+                  onClick={() => {
+                    setIsProfileOpen(!isProfileOpen);
+                  }}
+                >
+                  <Image
+                    src={Profile}
+                    alt="User logo"
+                    width={40}
+                    height={40}
+                    className="cursor-pointer"
+                  />
+                </button>
               ) : (
                 <button
                   type="button"
@@ -465,6 +406,94 @@ export default function NavBar() {
                 />
               </div>
             </div>
+            {isProfileOpen && (
+              <div
+                ref={profileDropdownRef}
+                className="bg-[#f7f1de] text-left rounded-lg w-[100vh] lg:hidden px-4 pt-4 md:pl-[136px] pl-10 space-y-2 z-10 list-none"
+                // align="center"
+                // sideOffset={0}
+              >
+                <li>
+                  <button
+                    onClick={() => {
+                      setIsOpen(false);
+                      handleLoginModalOpen("View Profile");
+                    }}
+                    className="text-primary-1 hover:text-secondary-1 cursor-pointer"
+                  >
+                    Profile
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => {
+                      setIsOpen(false);
+                      handleLoginModalOpen("View Pets");
+                    }}
+                    className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none "
+                  >
+                    My Pets
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => {
+                      setIsOpen(false);
+                      navigate.push("/user/my-appointments");
+                    }}
+                    className="text-primary-1 hover:text-secondary-1 cursor-pointer"
+                  >
+                    My Appointments
+                  </button>
+                </li>
+
+                {/* <button
+                        onClick={() => {
+                          setIsOpen(false);
+                          setContactIsModalOpen(true);
+                        }}
+                        className="text-primary-1 hover:text-secondary-1 cursor-pointer"
+                      >
+                        Medical History
+                      </button> */}
+
+                {!isMarketingFeatureEnabled ? (
+                  <>
+                    <div className="border-t border-gray-300 my-2" />
+                    <button
+                      onClick={() => {
+                        setIsOpen(false);
+                        navigate.push("/membership");
+                      }}
+                      className="text-secondary-1 flex justify-between items-center hover:text-primary-1 cursor-pointer"
+                    >
+                      Become a Member <MdChevronRight />
+                    </button>
+                    <div className="border-t border-gray-300 my-2" />
+                  </>
+                ) : null}
+
+                {/* <button
+                        onClick={() => {
+                          setIsOpen(false);
+                          setContactIsModalOpen(true);
+                        }}
+                        className="text-primary-1 hover:text-secondary-1 cursor-pointer"
+                      >
+                        Account Settings
+                      </button> */}
+                <li>
+                  <button
+                    onClick={handleLogout}
+                    className="text-primary-1 hover:text-secondary-1 cursor-pointer"
+                  >
+                    Log Out
+                  </button>
+                </li>
+
+                {/* <DropdownMenu.Arrow className="fill-current text-[#f7f1de]" /> */}
+              </div>
+            )}
           </div>
         </div>
       )}
