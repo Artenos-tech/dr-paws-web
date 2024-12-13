@@ -64,6 +64,7 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
 
   const handleIncorrectNumber = () => {
     setUserMobileNumber(undefined);
+    setLoginErr("");
     setIsLogin(true);
   };
 
@@ -318,7 +319,11 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
               <p className="text-sm md:text-base">
                 Don&apos;t have an Account?{" "}
                 <span
-                  onClick={() => setIsLogin(false)}
+                  onClick={() => {
+                    setSignupErr("")
+                    setLoginErr("");
+                    setIsLogin(false)
+                  }}
                   className="font-semibold cursor-pointer"
                 >
                   Sign Up
@@ -329,9 +334,9 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
                 Already have an Account?{" "}
                 <span
                   onClick={() => {
-                    setIsLogin(true);
                     setLoginErr("");
                     setSignupErr("");
+                    setIsLogin(true);
                   }}
                   className="font-semibold cursor-pointer text-sm md:text-base"
                 >

@@ -398,11 +398,7 @@ export default function NavBar() {
                 <CustomButton
                   buttonText="Book a visit"
                   buttonBackground="bg-secondary-1"
-                  buttonClickEvent={
-                    getAuthToken()
-                      ? () => handleLoginModalOpen("Book a Visit")
-                      : () => navigate.push("/user/book-appointment")
-                  }
+                  buttonClickEvent={handleBookAVisit}
                 />
               </div>
             </div>
