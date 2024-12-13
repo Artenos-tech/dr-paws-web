@@ -52,7 +52,6 @@ export default function Home() {
     }
     toast.success(`Successfully ${toastMessage}`, {
       duration: 3000,
-      position: "bottom-right",
     });
     refresh()
     setLoginModalOpen(false);

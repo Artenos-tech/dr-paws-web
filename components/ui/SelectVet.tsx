@@ -137,7 +137,6 @@ const SelectVet: React.FC<selectVetProps> = ({
         if (response.ok) {
           toast.success("Appointment created successfully!", {
             duration: 3000,
-            position: "bottom-right",
           });
 
           fetchAppointments();
@@ -148,20 +147,17 @@ const SelectVet: React.FC<selectVetProps> = ({
         } else {
           toast.error("Failed to create appointment. Please try again.", {
             duration: 3000,
-            position: "bottom-right",
           });
         }
       } catch (error) {
         console.error("Error creating appointment:", error);
         toast.error("An unexpected error occurred. Please try again.", {
           duration: 3000,
-          position: "bottom-right",
         });
       }
     } else {
       toast.error("Please fill out all required fields before proceeding.", {
         duration: 3000,
-        position: "bottom-right",
       });
     }
   };
@@ -178,7 +174,6 @@ const SelectVet: React.FC<selectVetProps> = ({
   //   }
   //   toast.success(`Successfully ${toastMessage}`, {
   //     duration: 3000,
-  //     position: "bottom-right",
   //   });
   // };
 

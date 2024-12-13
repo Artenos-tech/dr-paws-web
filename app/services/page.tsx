@@ -33,7 +33,6 @@ const Services = () => {
     refresh()
     toast.success(`Successfully ${toastMessage}`, {
       duration: 3000,
-      position: "bottom-right",
     });
   };
 

@@ -36,7 +36,6 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
     refresh()
     toast.success(`Successfully ${toastMessage}`, {
       duration: 3000,
-      position: "bottom-right",
     });
   };
 

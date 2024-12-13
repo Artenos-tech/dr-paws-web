@@ -137,7 +137,6 @@ const Profile: React.FC = () => {
             setIsAddPetModalOpen(false);
             toast.success("Added pet successfully", {
               duration: 3000,
-              position: "bottom-right",
               style: {
                 backgroundColor: "#4CAF50",
                 color: "#fff",

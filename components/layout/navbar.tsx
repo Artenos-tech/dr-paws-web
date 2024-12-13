@@ -66,7 +66,6 @@ export default function NavBar() {
 
     toast.success(`Successfully ${toastMessage}`, {
       duration: 3000,
-      position: "bottom-right",
     });
     refresh();
     setLoginModalOpen(false);

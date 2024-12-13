@@ -164,7 +164,6 @@ const BookingCard: React.FC<BookingCardProps> = ({
           fetchPets();
           toast.success("Added pet successfully", {
             duration: 3000,
-            position: "bottom-right",
             style: {
               backgroundColor: "#4CAF50",
               color: "#fff",

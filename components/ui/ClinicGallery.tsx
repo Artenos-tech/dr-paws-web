@@ -40,10 +40,9 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
 
   const onSuccess = (toastMessage: string) => {
     setLoginModalOpen(false);
-    refresh()
+    refresh();
     toast.success(`Successfully ${toastMessage}`, {
       duration: 3000,
-      position: "bottom-right",
     });
   };
 
@@ -70,7 +69,7 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
     const authToken = getAuthToken();
     console.log(authToken);
     return authToken
-      ?  navigate.push("/user/book-appointment")
+      ? navigate.push("/user/book-appointment")
       : handleLoginModalOpen("Book a Visit");
   };
 

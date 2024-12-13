@@ -51,7 +51,6 @@ const MembershipPayment = () => {
 
       toast.success("Subscription created", {
         duration: 3000,
-        position: "bottom-right",
       });
       reset();
     } catch (error) {

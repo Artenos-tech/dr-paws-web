@@ -75,7 +75,6 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
       setUserMobileNumber(mobileNumber);
       toast.success("OTP sent to your mobile number", {
         duration: 3000,
-        position: "bottom-right",
       });
       setLoginErr("");
     } else {
@@ -88,7 +87,7 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
 
       toast.error("Something went wrong. Please try again.", {
         duration: 3000,
-        position: "bottom-right",
+        
       });
     }
   };
@@ -113,7 +112,6 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
       setUserMobileNumber(data.mobileNumber);
       toast.success("OTP sent to your mobile number", {
         duration: 3000,
-        position: "bottom-right",
       });
       setSignupErr("");
     } else {
@@ -126,7 +124,6 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
 
       toast.error("Something went wrong. Please try again.", {
         duration: 3000,
-        position: "bottom-right",
       });
     }
   };
@@ -172,7 +169,6 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
 
           toast.error("Something went wrong. Please try again.", {
             duration: 3000,
-            position: "bottom-right",
           });
         }
       }
@@ -215,7 +211,6 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
 
           toast.error("Something went wrong. Please try again.", {
             duration: 3000,
-            position: "bottom-right",
           });
         }
       }
@@ -237,7 +232,6 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
       if (response.ok) {
         toast.success("OTP resent to your mobile number", {
           duration: 3000,
-          position: "bottom-right",
         });
         setLoginErr("");
         setSignupErr("");
@@ -254,7 +248,6 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
         }
         toast.error("Something went wrong. Please try again.", {
           duration: 3000,
-          position: "bottom-right",
         });
       }
     }

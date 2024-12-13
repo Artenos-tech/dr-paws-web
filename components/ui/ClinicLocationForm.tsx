@@ -163,7 +163,7 @@ export default function ClinicLocationForm() {
           )}
         </button>
       </form>
-      <Toaster position="bottom-right" />
+      <Toaster />
     </div>
   );
 }
