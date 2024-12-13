@@ -22,7 +22,7 @@ const OTPForm: React.FC<otpFormProps> = ({
   loading,
   resendOTPHandler,
   errMsg,
-  bookingFlow
+  bookingFlow,
 }) => {
   const [otp, setOtp] = useState<string>("");
   const [err, setErr] = useState<string>("");
@@ -40,7 +40,7 @@ const OTPForm: React.FC<otpFormProps> = ({
     <div className="text-center w-full">
       <h1 className="text-lg md:text-2xl my-3">Verify your Phone Number</h1>
       <p className="text-xs md:text-base text-primary-1">
-      {bookingFlow
+        {bookingFlow
           ? `To book a visit, please enter the OTP sent to +91 ${userMobileNumber}.`
           : `Enter the OTP sent to +91 ${userMobileNumber}.`}
       </p>
@@ -82,12 +82,14 @@ const OTPForm: React.FC<otpFormProps> = ({
             </InputOTP>
           </div>
           {(err || errMsg) && (
-            <p className="text-xs text-red-500 w-[50%] text-left">{err || errMsg}</p>
+            <p className="text-xs text-red-500 w-3/4 text-center">
+              {err || errMsg}
+            </p>
           )}
 
           <button
             type="button"
-            className="w-fit md:w-full bg-secondary-1 text-white rounded-full py-3 text-xs md:text-sm my-2"
+            className="w-full bg-secondary-1 text-white rounded-full py-3 text-xs md:text-sm my-2"
             onClick={handleVerify}
           >
             {loading ? (
@@ -101,9 +103,7 @@ const OTPForm: React.FC<otpFormProps> = ({
         </div>
 
         <div className="flex justify-center items-center gap-1 text-xs sm:text-sm md:text-base">
-          <p>
-            Didn&apos;t receive your code?{" "}
-          </p>
+          <p>Didn&apos;t receive your code? </p>
           <button
             type="button"
             className="font-semibold cursor-pointer"
