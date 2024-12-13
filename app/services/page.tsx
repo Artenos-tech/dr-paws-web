@@ -29,6 +29,11 @@ const Services = () => {
   };
 
   const onSuccess = (toastMessage: string) => {
+    if (buttonText === "View Profile" || buttonText === "View Pets") {
+      navigate.push("/user/profile");
+    }
+
+    if (buttonText === "Book a Visit") handleBookAVisit();
     setLoginModalOpen(false);
     refresh()
     toast.success(`Successfully ${toastMessage}`, {
