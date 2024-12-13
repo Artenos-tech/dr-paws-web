@@ -17,7 +17,7 @@ import { formatDate, formatTimeRange } from "@/components/ui/AppointmentCard";
 import { parse, format, addMinutes } from "date-fns";
 
 import { BsCheckCircleFill } from "react-icons/bs";
-import { clinicItems } from "@/model/mockData";
+
 import Image from "next/image";
 import { doctors } from "@/model/mockData";
 
