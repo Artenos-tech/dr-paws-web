@@ -78,7 +78,7 @@ const Booking: React.FC = () => {
           }
 
           {currentStep === 3 && <SelectVet onNext={goToNextStep} selectedClinic={selectedClinic} selectedData={selectedData} />}
-          {currentStep === 4 && <BookingDetails />}
+          {currentStep === 4 && <BookingDetails selectedData={selectedData} />}
         </div>
       </main>
     </div>

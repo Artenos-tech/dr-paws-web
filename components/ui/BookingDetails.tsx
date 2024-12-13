@@ -19,11 +19,16 @@ import { parse, format, addMinutes } from "date-fns";
 import { BsCheckCircleFill } from "react-icons/bs";
 import { clinicItems } from "@/model/mockData";
 import Image from "next/image";
+import { doctors } from "@/model/mockData";
 
 // TO-DO: For testing purpose
-import defaultVetImage from "@/public/assets/images/Appointments/vetImage.png";
+import defaultVetImage from "@/public/assets/images/clinic/doctorFemale.webp";
+
 import defaultPetImage from "@/public/assets/images/Appointments/petImage.png";
 import { petImageByType } from "./PetCard";
+import { capitalizeFirstLetter } from "@/components/ui/AppointmentCard";
+import { epochToDate } from "@/components/ui/AppointmentCard";
+import { Pet } from "@/context/UserContext";
 
 export const cancelReasons = [
   "Another commitment has come up",
@@ -43,11 +48,13 @@ export const rescheduleReasons = [
 type BookingDetailsProps = {
   appointmentId?: string;
   onReschedule?: () => void;
+  selectedData?: Record<string, Pet | null>;
 };
 
 const BookingDetails: React.FC<BookingDetailsProps> = ({
   appointmentId,
   onReschedule,
+  selectedData,
 }) => {
   const [bookingDetails, setBookingDetails] = useState<AppointmentType | null>(
     null
@@ -114,6 +121,13 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
 
   const isCancelled = bookingDetails?.appt_status === "Cancel";
 
+  const matchedDoctor = doctors.find(
+    (doctor) => Number(doctor.id) === bookingDetails?.vet_vetport_id
+  );
+
+  console.log("selected data", selectedData);
+  console.log("selectedData.name", selectedData?.name);
+
   if (loading) {
     return (
       <div>
@@ -132,6 +146,15 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
       return "";
     }
   };
+
+  // console.log("selected Appointment",selectedAppointment.selectedData);
+  // // console.log("selectedAppointment.selectedData.[].name",  Object.keys(selectedAppointment.selectedData).includes(selectedAppointment?.selectedData).name);
+  // if (selectedAppointment?.selectedData?.name) {
+  //   console.log("selectedData.name:", selectedAppointment.selectedData);
+  //   console.log("selected appointment", selectedAppointment)
+  // } else {
+  //   console.log("Property 'name' is not present in selectedData.");
+  // }
 
   return (
     <div className="w-full h-full">
@@ -164,18 +187,30 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
             }`}
           >
             <p className="text-lg font-semibold mt-4">
-              {/* {bookingDetails?.petName} is scheduled with
-              {bookingDetails?.vetName} */}
-              {selectedAppointment.selectedData &&
-              Object.keys(selectedAppointment.selectedData).includes("Grooming")
-                ? "Pet name is scheduled"
-                : "Pet name is scheduled with Vet name"}
+              {appointmentId ? (
+                <>
+                  {capitalizeFirstLetter(bookingDetails?.pet_name || "")}
+                  {bookingDetails?.vet_vetport_id !== 0 &&
+                    ` and ${matchedDoctor?.name}`}
+                </>
+              ) : selectedAppointment.selectedData &&
+                Object.keys(selectedAppointment.selectedData).includes(
+                  "Grooming"
+                ) ? (
+                `${selectedAppointment?.selectedData.name} is scheduled`
+              ) : (
+                `${selectedAppointment?.selectedData.name} is scheduled with ${selectedAppointment.selectedDoctor}`
+              )}
             </p>
             <p>
               for
               {/* {bookingDetails?.service}  */}{" "}
-              {selectedAppointment.selectedData &&
-              Object.keys(selectedAppointment.selectedData).includes("Grooming")
+              {appointmentId
+                ? "Service" // TO-DO: Later give booking service
+                : selectedAppointment.selectedData &&
+                  Object.keys(selectedAppointment.selectedData).includes(
+                    "Grooming"
+                  )
                 ? "Grooming consultation"
                 : selectedAppointment.selectedData &&
                   Object.keys(selectedAppointment.selectedData) +
@@ -191,13 +226,15 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                     width={130}
                     height={130}
                   />
-                  <Image
-                    src={defaultVetImage}
-                    alt="vet-image"
-                    width={130}
-                    height={130}
-                    className="ml-[-30px]"
-                  />
+                  <div className="bg-white rounded-full w-[130px] p-3 flex justify-center items-center ml-[-30px]">
+                    <Image
+                      src={matchedDoctor?.image ?? defaultVetImage}
+                      alt="vet-image"
+                      width={100}
+                      height={100}
+                      className=" w-full mx-auto"
+                    />
+                  </div>
                 </>
               )}
               {!appointmentId && selectedAppointment.selectedData && (
@@ -234,6 +271,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                 </>
               )}
             </div>
+
             <div className="my-4 space-y-3">
               <p
                 className={`flex items-center gap-2 ${
@@ -244,13 +282,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                   <GrLocation />
                 </span>{" "}
                 {/* {bookingDetails?.clinicAddress */}
-                {!appointmentId
-                  ? selectedAppointment.selectedClinic &&
-                    clinicItems.find(
-                      (clinic) =>
-                        clinic.id === selectedAppointment.selectedClinic
-                    )?.location
-                  : "Andheri West Clinic"}
+                {matchedDoctor?.location}
               </p>
 
               <p
@@ -262,7 +294,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                   <HiOutlineCalendar />
                 </span>
                 {bookingDetails
-                  ? formatDate(bookingDetails.appt_start?.toString())
+                  ? formatDate(epochToDate(bookingDetails.appt_start))
                   : !appointmentId &&
                     selectedAppointment.selectedDate &&
                     formatDate(selectedAppointment.selectedDate.toString())}
@@ -278,8 +310,8 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
 
                 {bookingDetails ? (
                   formatTimeRange(
-                    bookingDetails.appt_start?.toString(),
-                    bookingDetails.appt_end?.toString()
+                    epochToDate(bookingDetails.appt_start),
+                    epochToDate(bookingDetails.appt_end)
                   )
                 ) : (
                   <>
@@ -318,9 +350,11 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
 
             {bookingDetails?.appt_status && (
               <p className="italic text-gray-400 text-sm w-3/4 text-center">
-                Note: For cancel or reschedule the appointment please contact to
-                this clincs - +91 9606994627 (Indiranagar) and +91 7204996899
-                (RMV Dollar Colony)
+                Note: For cancel or reschedule, please contact
+                {matchedDoctor?.location === "RMV (Dollars Colony)"
+                  ? ` +91 7204996899
+                (RMV Dollar Colony)`
+                  : ` +91 9606994627 (Indiranagar)`}
               </p>
             )}
             {cancelFlowEnd ||
