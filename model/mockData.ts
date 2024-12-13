@@ -667,6 +667,7 @@ export const servicesData = {
 export const ServiceTabsData = [
   {
     id: "planned-Visits",
+    vetPortId: 5,
     title: "Planned Visits",
     description:
       "Regular check-ups and preventative measures are essential to keep your pet in the best health. Take care of any vaccinations, get any help you need, or simply visit us to ensure your pet is doing just fine!",
@@ -699,6 +700,7 @@ export const ServiceTabsData = [
   },
   {
     id: "sickness-emergency",
+    vetPortId: 10,
     title: "Sickness & Emergency",
     description:
       "When your pet falls ill or faces an emergency, we know it's a stressful time. We're here for you and will do our best to get your pet back to their usual happy & healthy self.",
@@ -735,6 +737,7 @@ export const ServiceTabsData = [
   },
   {
     id: "Diagonstics",
+    vetPortId: 12,
     title: "Diagonstics",
     description:
       "Our pets don’t always communicate what’s wrong making diagnostic tests a crucial part of our care. With our wide range of tests and expert doctors, we’ll do our best to diagnose exactly what’s going as soon as possible.",
@@ -787,6 +790,7 @@ export const ServiceTabsData = [
   },
   {
     id: "Surgeries",
+    vetPortId: 13,
     title: "Surgeries",
     description:
       "Our wide range of surgeries and deep doctor expertise, allow us to help get your pet back to their healthy self, should intervention be required. If we can’t help, we’ll refer you to a place that can.",
@@ -823,6 +827,7 @@ export const ServiceTabsData = [
   },
   {
     id: "Physiotherapy",
+    vetPortId: 27,
     title: "Physiotherapy",
     description:
       "We offer a range of specialised therapies with cutting-edge equipment to help pets deal with chronic mobility conditions, or prevent them in the first-place.",
@@ -839,6 +844,7 @@ export const ServiceTabsData = [
   },
   {
     id: "Grooming",
+    vetPortId: 8,
     title: "Grooming",
     description:
       "Our state-of-the-art grooming studios help to keep you pet looking and feeling great.",
@@ -875,6 +881,7 @@ export const ServiceTabsData = [
   },
   {
     id: "Pet Services",
+    vetPortId: 24,
     title: "Pet Services",
     description:
       "We offer a range of services to help make pet-ownership easier and stress-free",
