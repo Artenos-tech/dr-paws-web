@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Profile from "@/public/assets/images/profileThumnail.svg";
 import { Menu } from "lucide-react";
@@ -30,8 +30,30 @@ export default function NavBar() {
 
   const { getAuthToken, refresh, user } = useUserContext();
 
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
   // API
   const { call: logout } = useAPICall(api.logout);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      // Check if click was outside of dropdown and button
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [dropdownRef]);
 
   const handleLogout = async () => {
     if (user) {
@@ -256,6 +278,7 @@ export default function NavBar() {
           </div>
           <div className="-mr-2 flex lg:hidden">
             <button
+              ref={buttonRef}
               onClick={() => setIsOpen(!isOpen)}
               type="button"
               className="bg-primary-3 inline-flex items-center justify-center p-2 rounded-md text-primary-1 hover:text-white hover:bg-primary-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-primary-3 focus:ring-white"
@@ -270,7 +293,7 @@ export default function NavBar() {
       </div>
 
       {isOpen && (
-        <div className="lg:hidden" id="mobile-menu">
+        <div ref={dropdownRef} className="lg:hidden" id="mobile-menu">
           <div className="px-8 pt-2 pb-3 space-y-1 md:px-32 flex flex-col justify-end">
             {/* <button
               onClick={() => setIsLocationOpen(!isLocationOpen)}
@@ -344,8 +367,8 @@ export default function NavBar() {
                     />
                   </DropdownMenu.Trigger>
                   <DropdownMenu.Portal>
-                    <DropdownMenu.Content
-                      className="bg-[#f7f1de] shadow-lg rounded-lg w-[100vh] lg:hidden p-4 md:pl-[136px]  space-y-2 pl-10"
+                    <DropdownMenu.Content ref={dropdownRef}
+                      className="bg-[#f7f1de] shadow-lg rounded-lg w-[100vh] lg:hidden p-4 md:pl-[136px]  space-y-2 pl-10 z-10"
                       align="center"
                       sideOffset={0}
                     >
