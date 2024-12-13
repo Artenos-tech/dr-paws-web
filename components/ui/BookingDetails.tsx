@@ -125,8 +125,14 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
     (doctor) => Number(doctor.id) === bookingDetails?.vet_vetport_id
   );
 
-  console.log("selected data", selectedData);
-  console.log("selectedData.name", selectedData?.name);
+  const foundDoctor = doctors.find(
+    (doctor) => doctor.id === selectedAppointment.selectedDoctor
+  );
+
+  console.log(
+    "Object.values(selectedAppointment?.selectedData || {})[0]?.name}",
+    Object.values(selectedAppointment?.selectedData || {})[0]?.name
+  );
 
   if (loading) {
     return (
@@ -146,15 +152,6 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
       return "";
     }
   };
-
-  // console.log("selected Appointment",selectedAppointment.selectedData);
-  // // console.log("selectedAppointment.selectedData.[].name",  Object.keys(selectedAppointment.selectedData).includes(selectedAppointment?.selectedData).name);
-  // if (selectedAppointment?.selectedData?.name) {
-  //   console.log("selectedData.name:", selectedAppointment.selectedData);
-  //   console.log("selected appointment", selectedAppointment)
-  // } else {
-  //   console.log("Property 'name' is not present in selectedData.");
-  // }
 
   return (
     <div className="w-full h-full">
@@ -197,14 +194,20 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                 Object.keys(selectedAppointment.selectedData).includes(
                   "Grooming"
                 ) ? (
-                `${selectedAppointment?.selectedData.name} is scheduled`
+                `${
+                  Object.values(selectedAppointment?.selectedData || {})[0]
+                    ?.name
+                } is scheduled`
               ) : (
-                `${selectedAppointment?.selectedData.name} is scheduled with ${selectedAppointment.selectedDoctor}`
+                `${
+                  Object.values(selectedAppointment?.selectedData || {})[0]
+                    ?.name
+                } is scheduled with ${foundDoctor?.name}`
               )}
             </p>
             <p>
               for
-              {/* {bookingDetails?.service}  */}{" "}
+              {/* {bookingDetails?.service}  */}
               {appointmentId
                 ? "Service" // TO-DO: Later give booking service
                 : selectedAppointment.selectedData &&
@@ -220,22 +223,26 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
             <div className="flex items-center my-4">
               {bookingDetails && (
                 <>
+                <div className="bg-white rounded-full w-[130px] h-[130px] p-3 flex justify-center items-center">
                   <Image
                     src={defaultPetImage}
                     alt="pet-image"
                     width={130}
                     height={130}
+                    className="rounded-full"
                   />
-                  <div className="bg-white rounded-full w-[130px] p-3 flex justify-center items-center ml-[-30px]">
-                    <Image
-                      src={matchedDoctor?.image ?? defaultVetImage}
-                      alt="vet-image"
-                      width={100}
-                      height={100}
-                      className=" w-full mx-auto"
-                    />
-                  </div>
-                </>
+                </div>
+                <div className="bg-white rounded-full w-[130px] h-[130px] p-8 ml-[-30px] border flex justify-center items-center">
+                  <Image
+                    src={matchedDoctor?.image ?? defaultVetImage}
+                    alt="vet-image"
+                    width={100}
+                    height={100}
+                    className="rounded-full"
+                  />
+                </div>
+              </>
+              
               )}
               {!appointmentId && selectedAppointment.selectedData && (
                 <>
@@ -260,13 +267,15 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                     !Object.keys(selectedAppointment.selectedData).includes(
                       "Grooming"
                     ) && (
-                      <Image
-                        src={defaultVetImage}
-                        alt="vet-image"
-                        width={130}
-                        height={130}
-                        className="ml-[-30px]"
-                      />
+                      <div className="bg-white rounded-full  w-full p-3 flex justify-center items-center ml-[-30px]">
+                        <Image
+                          src={foundDoctor?.image ?? defaultVetImage}
+                          alt="vet-image"
+                          width={100}
+                          height={100}
+                          className=" w-full mx-auto"
+                        />
+                      </div>
                     )}
                 </>
               )}
@@ -282,7 +291,9 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                   <GrLocation />
                 </span>{" "}
                 {/* {bookingDetails?.clinicAddress */}
-                {matchedDoctor?.location}
+                {appointmentId
+                  ? matchedDoctor?.location
+                  : foundDoctor?.location}
               </p>
 
               <p
