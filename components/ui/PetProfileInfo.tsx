@@ -44,7 +44,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
       gender: "",
       // age: { years: 0, months: 0 },
       dob: "",
-      weight: "",
+      weight: null,
       profileImage: "",
     },
   });
@@ -435,7 +435,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                   </>
                 ) : (
                   <p className="text-primary-1 font-medium text-xs md:text-base">
-                    {pet?.weight ? `${pet.weight} kg` : ""}
+                    {pet?.weight ? `${pet.weight}` : ""}
                   </p>
                 )}
               </div>
