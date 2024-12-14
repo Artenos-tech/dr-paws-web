@@ -28,7 +28,7 @@ import defaultPetImage from "@/public/assets/images/Appointments/petImage.png";
 import { petImageByType } from "./PetCard";
 import { capitalizeFirstLetter } from "@/components/ui/AppointmentCard";
 import { epochToDate } from "@/components/ui/AppointmentCard";
-import { Pet } from "@/context/UserContext";
+
 
 export const cancelReasons = [
   "Another commitment has come up",
@@ -48,13 +48,13 @@ export const rescheduleReasons = [
 type BookingDetailsProps = {
   appointmentId?: string;
   onReschedule?: () => void;
-  selectedData?: Record<string, Pet | null>;
+
 };
 
 const BookingDetails: React.FC<BookingDetailsProps> = ({
   appointmentId,
   onReschedule,
-  selectedData,
+
 }) => {
   const [bookingDetails, setBookingDetails] = useState<AppointmentType | null>(
     null
@@ -188,7 +188,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                 <>
                   {capitalizeFirstLetter(bookingDetails?.pet_name || "")}
                   {bookingDetails?.vet_vetport_id !== 0 &&
-                    ` and ${matchedDoctor?.name}`}
+                    ` with ${matchedDoctor?.name}`}
                 </>
               ) : selectedAppointment.selectedData &&
                 Object.keys(selectedAppointment.selectedData).includes(
