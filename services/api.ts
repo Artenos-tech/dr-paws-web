@@ -256,6 +256,7 @@ export default createAPIClient({
               "Check-out",  
             ]),
             appt_reason: z.string().nullable(),
+            appt_type: z.string().nullable(),
           })
         ),
       }),
