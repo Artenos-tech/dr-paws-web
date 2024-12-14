@@ -62,13 +62,16 @@ export interface AppointmentType {
   appt_start: number;
   appt_end: number;
   appt_status:
-    | "Check In"
-    | "Complete"
-    | "Scheduled"
-    | "Check out"
-    | "Attending"
-    | "Confirm"
-    | "Cancel"
-    | "Active";
+  | "Check In"
+  | "Complete"
+  | "Scheduled"
+  | "Check out"
+  | "Attending"
+  | "Confirm"
+  | "Cancel"
+  | "Active"
+  | "Waiting"
+  | "Testing"
+  | "Check-out";
   appt_reason: string | null;
 }
