@@ -67,7 +67,6 @@ export default function AddPetModal({
   const handleFormSubmit = async (data: PetFormData) => {
     if (user) {
       const response = await addNewPetAPI({
-        id: user.id,
         pet: {
           name: data.name,
           species: { id: data.spicesId, name: data.type },

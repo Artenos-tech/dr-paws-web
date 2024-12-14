@@ -125,7 +125,6 @@ const SelectVet: React.FC<selectVetProps> = ({
 
       try {
         const response = await createAnAppointment({
-          id: user?.id,
           vet_id: staffId,
           pet_id: pet?.id,
           clinic_id: clinicId,

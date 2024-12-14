@@ -64,7 +64,7 @@ export const AppointmentsProvider = ({ children }: AppointmentsProviderProps) =>
     if (!user?.id) return;
     setLoading(true);
     try {
-      const result = await getAppointments({ id: user.id });
+      const result = await getAppointments({});
       if (result.ok) {
         setAppointments(result.value.body.appointments);
       }

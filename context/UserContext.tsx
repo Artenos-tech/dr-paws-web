@@ -167,7 +167,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
       const payload = JwtPayloadSchema.parse(decodedToken);
       if (!user) {
         try {
-          const response = await getUser({ id: payload.id });
+          const response = await getUser({});
           if (response.ok) {
             const userResponse = response.value.body.user;
             updateUserDetailsHandler(userResponse);

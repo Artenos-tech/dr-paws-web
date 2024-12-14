@@ -1,25 +1,29 @@
 "use client";
 
+import { useEffect } from "react";
+
 import AllAppointments from "@/components/ui/AllAppointments";
 import CancelledAppointments from "@/components/ui/CancelledAppointments";
 import ClinicTabBar from "@/components/ui/ClinicTabBar";
 import PastAppointments from "@/components/ui/PastAppointments";
 import UpcomingAppointments from "@/components/ui/UpcomingAppointments";
-// import { mockAppointments } from "@/model/mockData";
 import { AppointmentType } from "@/model/typeDefinitions";
-
-import { useAppointmentsContext } from "@/context/AppointmentsContext";
-
-
 import Loader from "@/components/ui/Loader";
+import { useAPICall } from "@/hooks/apicall";
+import api from "@/services/api";
 
 const MyAppointmentsPage = () => {
-  const { appointments, loading } = useAppointmentsContext();
+  const { call: getAppointments, loading, result } = useAPICall(api.getAppointments);
+
+  useEffect(() => {
+    getAppointments({});
+  }, [])
 
   if (loading) {
     return <div><Loader /></div>;
   }
 
+  const appointments = result?.ok ? result.value.body.appointments : null;
 
   const tabs = [
     {

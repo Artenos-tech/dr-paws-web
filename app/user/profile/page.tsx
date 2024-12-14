@@ -49,7 +49,7 @@ const Profile: React.FC = () => {
 
   const fetchPets = async () => {
     if (user) {
-      const response = await getPetsAPI({ id: user?.id });
+      const response = await getPetsAPI({});
       if (response.ok) {
         const pets = response.value.body.pets?.map((pet) => ({
           ...pet,

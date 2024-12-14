@@ -190,8 +190,8 @@ export default createAPIClient({
 
     getuser: {
       method: "GET",
-      path: "/user/{id}",
-      pathParamsSchema: z.object({ id: z.string() }),
+      path: "/user",
+      pathParamsSchema: z.object({}),
       requestSchema: z.object({}),
       responseSchema: z.object({
         status: z.number(),
@@ -225,8 +225,8 @@ export default createAPIClient({
 
     getAppointments: {
       method: "GET",
-      path: "/user/{id}/appointments",
-      pathParamsSchema: z.object({ id: z.string() }),
+      path: "/user/appointments",
+      pathParamsSchema: z.object({}),
       requestSchema: z.object({}),
       responseSchema: z.object({
         status: z.number(),
@@ -288,8 +288,8 @@ export default createAPIClient({
     },
     createAppointment: {
       method: "POST",
-      path: "/user/{id}/appointment",
-      pathParamsSchema: z.object({ id: z.string() }),
+      path: "/user/appointment",
+      pathParamsSchema: z.object({}),
       requestSchema: z.object({
         vet_id: z.number(),
         pet_id: z.string(),
@@ -327,8 +327,8 @@ export default createAPIClient({
 
     getPets: {
       method: "GET",
-      path: "/user/{id}/pets",
-      pathParamsSchema: z.object({ id: z.string() }),
+      path: "/user/pets",
+      pathParamsSchema: z.object({}),
       requestSchema: z.object({}),
       responseSchema: z.object({
         status: z.number(),
@@ -352,8 +352,8 @@ export default createAPIClient({
 
     addNewPet: {
       method: "POST",
-      path: "/user/{id}/pet",
-      pathParamsSchema: z.object({ id: z.string() }),
+      path: "/user/pet",
+      pathParamsSchema: z.object({}),
       requestSchema: z.object({
         pet: z.object({
           name: z.string(),
@@ -374,27 +374,28 @@ export default createAPIClient({
       errorResponseSchema: z.object({}),
     },
 
-    updatePets: {
-      method: "PUT",
-      path: "/user/{id}/pets",
-      pathParamsSchema: z.object({ id: z.string() }),
-      requestSchema: z.object({
-        pet: z.object({
-          name: z.string(),
-          species: z.object({
-            id: z.number(),
-            name: z.string(),
-          }),
-          breed: z.string().nullable(),
-          weight: z.string().nullable(),
-          gender: z.string().nullable(),
-        }),
-      }),
-      responseSchema: z.object({
-        status: z.number(),
-        message: z.string(),
-      }),
-      errorResponseSchema: z.object({}),
-    },
+    // CURRENTLY NOT USED. NEEDS PATH PARAM FOR PET ID.
+    // updatePets: {
+    //   method: "PUT",
+    //   path: "/user/pets",
+    //   pathParamsSchema: z.object({}),
+    //   requestSchema: z.object({
+    //     pet: z.object({
+    //       name: z.string(),
+    //       species: z.object({
+    //         id: z.number(),
+    //         name: z.string(),
+    //       }),
+    //       breed: z.string().nullable(),
+    //       weight: z.string().nullable(),
+    //       gender: z.string().nullable(),
+    //     }),
+    //   }),
+    //   responseSchema: z.object({
+    //     status: z.number(),
+    //     message: z.string(),
+    //   }),
+    //   errorResponseSchema: z.object({}),
+    // },
   },
 });
