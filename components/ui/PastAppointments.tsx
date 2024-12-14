@@ -1,6 +1,6 @@
 import { AppointmentType } from "@/model/typeDefinitions";
 import React from "react";
-import NoAppointments from "./NoAppointments";
+
 import AppointmentCard from "./AppointmentCard";
 type PastAppointmentsProps = {
   pastAppointments: AppointmentType[];
