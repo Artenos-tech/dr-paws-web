@@ -48,14 +48,18 @@ export const formatTimeRange = (start: string, end: string) => {
   return `${formatTime(start)} - ${formatTime(end)}`;
 };
 
+export const capitalizeFirstLetter = (string: string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+};
+
+export function epochToDate(timestamp: number) {
+  return new Date(timestamp * 1000).toLocaleString();
+}
+
 // Component Props
 type AppointmentCardProps = {
   appointment: AppointmentType;
 };
-
-export function epochToDate(timestamp: number) {
-  return new Date(timestamp*1000).toLocaleString()
-}
 
 // Main Component
 const AppointmentCard: React.FC<AppointmentCardProps> = ({ appointment }) => {
@@ -132,13 +136,11 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({ appointment }) => {
       {/* Details */}
       <div className={`space-y-1 ${text}`}>
         <p className="font-semibold">
-          {appointment.pet_name}
-          {appointment.vet_name && ` and ${appointment.vet_name}`}
+          {capitalizeFirstLetter(appointment.pet_name)}
+          {appointment.vet_vetport_id !== 0 &&
+            ` and ${capitalizeFirstLetter(appointment.vet_name)}`}
         </p>
-        <p>
-          {formatDate(epochToDate(appointment.appt_start).toString())}
-
-        </p>
+        <p>{formatDate(epochToDate(appointment.appt_start).toString())}</p>
         <p>
           {formatTimeRange(
             epochToDate(appointment.appt_start).toString(),

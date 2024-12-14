@@ -251,6 +251,9 @@ export default createAPIClient({
               "Confirm",
               "Cancel",
               "Active",
+              "Waiting",
+              "Testing",
+              "Check-out",  
             ]),
             appt_reason: z.string().nullable(),
           })
@@ -290,8 +293,8 @@ export default createAPIClient({
       requestSchema: z.object({
         vet_id: z.number(),
         pet_id: z.string(),
-        appt_start: z.number(),
-        appt_end: z.number(),
+        appt_start: z.string(),
+        appt_end: z.string(),
         appt_reason: z.string().nullable(),
         clinic_id: z.number(),
       }),

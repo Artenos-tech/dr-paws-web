@@ -60,13 +60,13 @@ const SelectVet: React.FC<selectVetProps> = ({
   const staffIdBasedServices =
     selectedData && Object.keys(selectedData).includes("Grooming")
       ? "0"
-      : "950";
+      : selectedDoctor;
 
   const fetchStaffSchedule = useCallback(async () => {
     if (
       (selectedDoctor ||
         (selectedData && Object.keys(selectedData).includes("Grooming"))) &&
-      selectedClinic
+      selectedClinic && staffIdBasedServices
     ) {
       await getStaffSchedule({
         clinicid: selectedClinic,
@@ -107,21 +107,21 @@ const SelectVet: React.FC<selectVetProps> = ({
       );
 
       if (!pet) return;
-        const [hours, minutes] = selectedSlot.split(":").map(Number);
-        selectedDate.setHours(hours, minutes, 0, 0);
-        const apptStart = selectedDate.toISOString();
-        console.log(selectedDate);
+      const [hours, minutes] = selectedSlot.split(":").map(Number);
+      selectedDate.setHours(hours, minutes, 0, 0);
+      const apptStart = selectedDate.toISOString();
+      console.log(selectedDate);
 
-        selectedDate.setMinutes(
-          selectedDate.getMinutes() +
-            (selectedData && Object.keys(selectedData).includes("Grooming")
-              ? 90
-              : 30)
-        );
-        const apptEnd = selectedDate.toISOString();
-        const epoch = convertDateToEpoch(apptStart)
-        console.log("epoch:", convertDateToEpoch(apptStart));
-        console.log("epoch date:", epochToDate(epoch));
+      selectedDate.setMinutes(
+        selectedDate.getMinutes() +
+          (selectedData && Object.keys(selectedData).includes("Grooming")
+            ? 90
+            : 30)
+      );
+      const apptEnd = selectedDate.toISOString();
+      const epoch = convertDateToEpoch(apptStart);
+      console.log("epoch:", convertDateToEpoch(apptStart));
+      console.log("epoch date:", epochToDate(epoch));
 
       try {
         const response = await createAnAppointment({
@@ -130,8 +130,8 @@ const SelectVet: React.FC<selectVetProps> = ({
           pet_id: pet?.id,
           clinic_id: clinicId,
           appt_reason: null,
-          appt_start: convertDateToEpoch(apptStart),
-          appt_end: convertDateToEpoch(apptEnd),
+          appt_start: apptStart,
+          appt_end: apptEnd,
         });
 
         if (response.ok) {
@@ -241,6 +241,11 @@ const SelectVet: React.FC<selectVetProps> = ({
       selectedSlot !== null) ||
     (selectedData && Object.keys(selectedData).includes("Grooming"));
 
+  const filteredDoctors =
+    selectedClinic === "221"
+      ? doctors.filter((doctor) => doctor.clinicIds.includes("221"))
+      : doctors.filter((doctor) => doctor.clinicIds.includes("220"));
+
   return (
     <div className="h-full flex flex-col gap-12 px-4 lg:px-0">
       {selectedData && !Object.keys(selectedData).includes("Grooming") && (
@@ -251,7 +256,7 @@ const SelectVet: React.FC<selectVetProps> = ({
           {/* Carousel for Doctor Selection */}
           <Carousel className="pr-1 w-[90%] sm:w-full mx-auto">
             <CarouselContent className="-ml-1">
-              {doctors.map((doctor) => (
+              {filteredDoctors.map((doctor) => (
                 <CarouselItem
                   key={doctor.id}
                   className="basis-full sm:basis-5/12 lg:basis-1/4 xl:basis-1/5"

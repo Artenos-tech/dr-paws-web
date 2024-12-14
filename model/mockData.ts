@@ -327,7 +327,7 @@ export const doctors = [
     // description: "DMV - Veterinary Medicine",
     position: "Lead Veterinarian",
     experience: "6 Years of Experience",
-    clinicIds: ["220"],
+    clinicIds: ["220"], //
     location: "Indiranagar",
     image: DrArchanaImg,
     specialization: "Surgery, Internal Medicine",
@@ -342,7 +342,7 @@ export const doctors = [
     qualification: "BVSc & AH, MVSc (Surgery & Radiology)",
   },
   {
-    id: "137",
+    id: "1737",
 
     name: "Dr. Hitesh Bhardwaj",
     // description: "DMV - Small Animal Surgery",
@@ -406,7 +406,7 @@ export const doctors = [
     qualification: "BVSc & AH, MVSc (Surgery & Radiology)",
   },
   {
-    id: "141",
+    id: "236",
 
     name: "Dr. Kiran K.S.",
     // description: "DMV - Veterinary Medicine",
@@ -427,7 +427,7 @@ export const doctors = [
     qualification: "BVSc & AH, MVSc (Surgery & Radiology)",
   },
   {
-    id: "142",
+    id: "1465",
 
     name: "Dr Aarti Goswami",
     // description: "DMV - Veterinary Medicine",
@@ -512,7 +512,7 @@ export const doctors = [
     qualification: "BVSc & AH",
   },
   {
-    id: "151",
+    id: "320",
 
     name: "Dr. Charu Nino",
     // description: "DMV - Veterinary Medicine",
@@ -533,7 +533,7 @@ export const doctors = [
     qualification: "BVSc & AH",
   },
   {
-    id: "153",
+    id: "146",
 
     name: "Dr. Deepak Dhindhwal",
     // description: "DMV - Veterinary Medicine",
