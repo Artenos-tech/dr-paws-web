@@ -32,7 +32,7 @@ export default function Home() {
         navigate.push("/membership");
         return;
       } else if (text === "Book a Visit") {
-        navigate.push("/book-appointment");
+        navigate.push("/user/book-appointment");
         return;
       }
       navigate.push("/");
@@ -48,7 +48,7 @@ export default function Home() {
       navigate.push("/membership");
     }
     if (buttonText === "Book a Visit") {
-      navigate.push("/book-appointment");
+      navigate.push("/user/book-appointment");
     }
     toast.success(`Successfully ${toastMessage}`, {
       duration: 3000,

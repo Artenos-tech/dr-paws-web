@@ -162,11 +162,11 @@ export default createAPIClient({
               id: z.string(),
               name: z.string(),
               type: z.string(),
-              breed: z.string().optional(),
-              weight: z.string().optional(),
-              gender: z.string().optional(),
-              dob: z.string().optional(),
-              profile_image: z.string().optional(),
+              breed: z.string().nullable(),
+              weight: z.string().nullable(),
+              gender: z.string().nullable(),
+              dob: z.string().nullable(),
+              profile_image: z.string().nullable(),
             })
           )
           .nullable(),

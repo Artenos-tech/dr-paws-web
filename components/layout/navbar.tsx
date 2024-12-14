@@ -345,7 +345,7 @@ export default function NavBar() {
                   </DropdownMenu.Trigger>
                   <DropdownMenu.Portal>
                     <DropdownMenu.Content
-                      className="bg-[#f7f1de] shadow-lg rounded-lg w-[100vh] lg:hidden p-4 md:pl-[136px]  space-y-2 pl-10"
+                      className="bg-[#f7f1de] shadow-lg rounded-lg w-[100vh] lg:hidden p-4 md:pl-[136px]  space-y-2 pl-10 z-10"
                       align="center"
                       sideOffset={0}
                     >
@@ -434,11 +434,7 @@ export default function NavBar() {
                 <CustomButton
                   buttonText="Book a visit"
                   buttonBackground="bg-secondary-1"
-                  buttonClickEvent={
-                    getAuthToken()
-                      ? () => handleLoginModalOpen("Book a Visit")
-                      : () => navigate.push("/user/book-appointment")
-                  }
+                  buttonClickEvent={handleBookAVisit}
                 />
               </div>
             </div>
