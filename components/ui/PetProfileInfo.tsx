@@ -435,7 +435,9 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                   </>
                 ) : (
                   <p className="text-primary-1 font-medium text-xs md:text-base">
-                    {pet?.weight ? `${pet.weight}` : ""}
+                    {pet?.weight && /^\d+(\.\d+)?/.test(pet.weight)
+                      ? pet.weight.match(/\d+(\.\d+)?/)?.[0]
+                      : ""}
                   </p>
                 )}
               </div>
