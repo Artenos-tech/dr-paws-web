@@ -1,17 +1,21 @@
 "use client";
 
-import { useAPICall } from "@/hooks/apicall";
-import api from "@/services/api";
+
+import jwt from "jsonwebtoken";
+import { useRouter } from "next/navigation";
 import {
   createContext,
-  useContext,
-  useState,
   ReactNode,
-  useEffect,
   useCallback,
+  useContext,
+  useEffect,
+  useState,
 } from "react";
-import jwt from "jsonwebtoken";
 import { z } from "zod";
+
+import UserAuthenticationModal from "@/components/ui/UserAuthenticationModal";
+import { useAPICall } from "@/hooks/apicall";
+import api from "@/services/api";
 
 export type UserRole = "ADMIN" | "USER";
 
@@ -55,6 +59,7 @@ export interface UserContextType {
   getAuthToken: () => string | null;
   refresh: () => void;
   updatePetSpeciesHandler: (data: PetSpecies[]) => void;
+  initiateLogin: (loginText: string) => void;
 }
 
 export const UserContext = createContext<UserContextType | undefined>(
@@ -188,6 +193,22 @@ export const UserProvider = ({ children }: UserProviderProps) => {
     }
   }, []);
 
+  
+  const [loginModalOpen, setLoginModalOpen] = useState<boolean>(false);
+  const [loginText, setLoginText] = useState<string>("");
+  const router = useRouter();
+
+  function initiateLogin(loginText: string) {
+    setLoginModalOpen(true);
+    setLoginText(loginText);
+  }
+
+  function handleLoginSuccess(loginSuccessMsg: string) {
+    setLoginModalOpen(false);
+    router.push("/user/profile");
+    // TODO: toast.success(loginSuccessMsg);
+  }
+
   useEffect(() => {
     handleCheckAuthToken();
   }, [handleCheckAuthToken]);
@@ -203,8 +224,15 @@ export const UserProvider = ({ children }: UserProviderProps) => {
         getAuthToken,
         refresh: handleCheckAuthToken,
         updatePetSpeciesHandler,
+        initiateLogin,
       }}
     >
+      <UserAuthenticationModal
+        isOpen={loginModalOpen}
+        onClose={() => setLoginModalOpen(false)}
+        buttonText={loginText}
+        onSuccess={handleLoginSuccess}
+      />
       {children}
     </UserContext.Provider>
   );

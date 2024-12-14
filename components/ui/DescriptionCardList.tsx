@@ -5,7 +5,7 @@ import DescriptionCard from "./DescriptionCard";
 import ContactInfoModal from "./ContactInfoModal";
 
 interface DescriptionCardListProps {
-  openLoginModal?: ((val: string) => void) | undefined
+  openLoginModal: (val: string) => void
 }
 
 const DescriptionCardList: React.FC<DescriptionCardListProps> = ({

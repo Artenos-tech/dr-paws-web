@@ -6,20 +6,10 @@ interface bannerCardProps {
     bannerImage: StaticImageData;
     bannerText: string;
   };
-  openLoginModal: ((val: string) => void) | undefined;
 }
 
 const BannerCard: React.FC<bannerCardProps> = ({ banItem }) => {
   const { bannerImage, bannerText } = banItem;
-  // const { getAuthToken } = useUserContext();
-  // const navigate = useRouter();
-
-  // const handleBookAVisit = () => {
-  //   const authToken = getAuthToken();
-  //   return authToken
-  //     ? navigate.push("/user/book-appointment")
-  //     : openLoginModal && openLoginModal("Book a Visit");
-  // };
 
   return (
     <div className="relative w-[100px] md:w-[130px] lg:w-[150px] min-h-[100px] rounded-t-3xl flex flex-col justify-end items-center">

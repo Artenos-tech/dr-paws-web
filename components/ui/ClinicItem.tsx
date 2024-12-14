@@ -1,11 +1,12 @@
 "use client";
-import React, { useState } from "react";
+
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Clinic } from "@/model/typeDefinitions";
-import UserAuthenticationModal from "./UserAuthenticationModal";
-import { useUserContext } from "@/context/UserContext";
+import React, { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
+
+import { useUserContext } from "@/context/UserContext";
+import { Clinic } from "@/model/typeDefinitions";
 
 interface ClinicItemProps {
   clinic: Clinic;
@@ -18,18 +19,8 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
   const router = useRouter();
 
   const [buttonText, setButtonText] = useState<string>("");
-  const { getAuthToken, refresh } = useUserContext();
+  const { getAuthToken, refresh, initiateLogin } = useUserContext();
   const navigate = useRouter();
-
-  const handleLoginModalOpen = (val: string) => {
-    const authToken = getAuthToken();
-    if (authToken) {
-      router.push("/");
-      return;
-    }
-    setLoginModalOpen(true);
-    setButtonText(val);
-  };
 
   const onSuccess = (toastMessage: string) => {
     if (buttonText === "View Profile" || buttonText === "View Pets") {
@@ -50,19 +41,20 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
     console.log(authToken);
     return authToken
       ?  navigate.push("/user/book-appointment")
-      : handleLoginModalOpen("Book a Visit");
+      : initiateLogin("Book a Visit");
   };
 
-  const handleBookVisit = () => {
+  const goToClinicPage = () => {
     router.push(`/clinics/${id}`);
   };
+
   return (
     <div
       className={`bg-[#FFFCF3] ${
         !enlargedView && "w-full lg:w-[50%] xl:w-[25%] min-h-[270px]"
       } flex flex-col justify-between h-full w-full shadow-md rounded-md`}
     >
-      <div onClick={handleBookVisit} className="cursor-pointer">
+      <div onClick={goToClinicPage} className="cursor-pointer">
         <div className="image-container">
           <Image
             src={image.src}
@@ -84,14 +76,6 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
       >
         Book a Visit
       </button>
-
-      <UserAuthenticationModal
-        isOpen={loginModalOpen}
-        onClose={() => setLoginModalOpen(false)}
-        // initialMobileNumber="9440705361"
-        buttonText={buttonText}
-        onSuccess={onSuccess}
-      />
       <Toaster />
     </div>
   );

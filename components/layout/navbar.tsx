@@ -1,35 +1,32 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
-import Profile from "@/public/assets/images/profileThumnail.svg";
 import { Menu } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
-import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { MdChevronRight } from "react-icons/md";
-import logo from "@/public/assets/images/logo/logo.svg";
-import ContactInfoModal from "../ui/ContactInfoModal";
-import UserAuthenticationModal from "../ui/UserAuthenticationModal";
 import { useRouter } from "next/navigation";
+import { Toaster } from "react-hot-toast";
+import { MdChevronRight } from "react-icons/md";
+
+import ContactInfoModal from "@/components/ui/ContactInfoModal";
+import CustomButton from "@/components/ui/CustomButton";
 import { useUserContext } from "@/context/UserContext";
-import toast, { Toaster } from "react-hot-toast";
-import api, { clearAuthToken } from "@/services/api";
 import { useAPICall } from "@/hooks/apicall";
-import CustomButton from "../ui/CustomButton";
 import { useMarketingFeature } from "@/hooks/useMarketingFeature";
+import logo from "@/public/assets/images/logo/logo.svg";
+import Profile from "@/public/assets/images/profileThumnail.svg";
+import api, { clearAuthToken } from "@/services/api";
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+import { useEffect, useRef, useState } from "react";
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   // const [isLocationOpen, setIsLocationOpen] = useState(false);
   const [isContactModalOpen, setContactIsModalOpen] = useState(false);
-  const [loginModalOpen, setLoginModalOpen] = useState<boolean>(false);
   const navigate = useRouter();
   const isMarketingFeatureEnabled = useMarketingFeature();
 
-  const [buttonText, setButtonText] = useState<string>("");
-
-  const { getAuthToken, refresh, user } = useUserContext();
+  const { getAuthToken, refresh, user, initiateLogin } = useUserContext();
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -76,40 +73,13 @@ export default function NavBar() {
     window.location.reload();
   };
 
-  const handleLoginModalOpen = (text: string) => {
-    const authToken = getAuthToken();
-    if (authToken) {
-      if (text === "View Profile" || text === "View Pets") {
-        navigate.push("/user/profile");
-        return;
-      }
-      navigate.push("/");
-      return;
-    }
-    setLoginModalOpen(true);
-    setButtonText(text);
-  };
-
-  const onSuccess = (toastMessage: string) => {
-    if (buttonText === "View Profile" || buttonText === "View Pets") {
-      navigate.push("/user/profile");
-    }
-
-    if (buttonText === "Book a Visit") handleBookAVisit();
-
-    toast.success(`Successfully ${toastMessage}`, {
-      duration: 3000,
-      position: "bottom-right",
-    });
-    refresh();
-    setLoginModalOpen(false);
-  };
-
   const handleBookAVisit = () => {
     const authToken = getAuthToken();
-    return authToken
-      ? navigate.push("/user/book-appointment")
-      : handleLoginModalOpen("Book a Visit");
+    if (authToken) {
+      navigate.push("/user/book-appointment");
+    } else {
+      initiateLogin("Book a Visit");
+    }
   };
 
   return (
@@ -213,7 +183,7 @@ export default function NavBar() {
                   >
                     <DropdownMenu.Item asChild>
                       <div
-                        onClick={() => handleLoginModalOpen("View Profile")}
+                        onClick={() => navigate.push("/user/profile")}
                         className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
                       >
                         Profile
@@ -221,7 +191,7 @@ export default function NavBar() {
                     </DropdownMenu.Item>
                     <DropdownMenu.Item asChild>
                       <div
-                        onClick={() => handleLoginModalOpen("View Pets")}
+                        onClick={() => navigate.push("/user/profile")}
                         className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
                       >
                         My Pets
@@ -280,7 +250,7 @@ export default function NavBar() {
             ) : (
               <button
                 type="button"
-                onClick={() => handleLoginModalOpen("View Profile")}
+                onClick={() => initiateLogin("book appointments")}
                 className="text-primary-1 text-sm tracking-wider"
               >
                 Login
@@ -388,7 +358,7 @@ export default function NavBar() {
               ) : (
                 <button
                   type="button"
-                  onClick={() => handleLoginModalOpen("View Profile")}
+                  onClick={() => initiateLogin("book appointments")}
                   className="text-primary-1 text-sm tracking-wider"
                 >
                   Login
@@ -413,7 +383,7 @@ export default function NavBar() {
                   <button
                     onClick={() => {
                       setIsOpen(false);
-                      handleLoginModalOpen("View Profile");
+                      navigate.push("/user/profile");
                     }}
                     className="text-primary-1 hover:text-secondary-1 cursor-pointer"
                   >
@@ -424,7 +394,7 @@ export default function NavBar() {
                   <button
                     onClick={() => {
                       setIsOpen(false);
-                      handleLoginModalOpen("View Pets");
+                      navigate.push("/user/profile");
                     }}
                     className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none "
                   >
@@ -496,14 +466,6 @@ export default function NavBar() {
       <ContactInfoModal
         isOpen={isContactModalOpen}
         onRequestClose={() => setContactIsModalOpen(false)}
-      />
-
-      <UserAuthenticationModal
-        isOpen={loginModalOpen}
-        onClose={() => setLoginModalOpen(false)}
-        // initialMobileNumber="9440705361"
-        buttonText={buttonText}
-        onSuccess={onSuccess}
       />
 
       <Toaster />

@@ -1,63 +1,23 @@
 "use client";
 
-import FaqList from "@/components/ui/FaqList";
-import ReviewCard from "@/components/ui/ReviewCard";
-import { reviewData } from "@/model/mockData";
-import DescriptionCardList from "@/components/ui/DescriptionCardList";
+import Image from "next/image";
+import { Toaster } from "react-hot-toast";
+
 import BannerList from "@/components/ui/BannerList";
 import ClinicItemList from "@/components/ui/ClinicItemList";
+import DescriptionCardList from "@/components/ui/DescriptionCardList";
+import FaqList from "@/components/ui/FaqList";
+import ReviewCard from "@/components/ui/ReviewCard";
 import Services from "@/components/ui/Services";
-import Image from "next/image";
-import GreenBackground from "@/public/assets/images/reviewImages/greenBackground.svg";
-import Lady from "@/public/assets/images/reviewImages/Girl.png";
-import YellowAndDocWithDog from "@/public/assets/images/petValues/YellowAndDocWithDog.svg";
-import TickMark from "@/public/assets/images/petValues/TickMark.svg";
-import { useState } from "react";
-import UserAuthenticationModal from "@/components/ui/UserAuthenticationModal";
-import { useRouter } from "next/navigation";
 import { useUserContext } from "@/context/UserContext";
-import toast, { Toaster } from "react-hot-toast";
+import { reviewData } from "@/model/mockData";
+import TickMark from "@/public/assets/images/petValues/TickMark.svg";
+import YellowAndDocWithDog from "@/public/assets/images/petValues/YellowAndDocWithDog.svg";
+import Lady from "@/public/assets/images/reviewImages/Girl.png";
+import GreenBackground from "@/public/assets/images/reviewImages/greenBackground.svg";
 
 export default function Home() {
-  const [loginModalOpen, setLoginModalOpen] = useState<boolean>(false);
-  const [buttonText, setButtonText] = useState<string>("");
-  const navigate = useRouter();
-
-  const { getAuthToken, refresh } = useUserContext();
-
-  const handleLoginModalOpen = (text: string) => {
-    const authToken = getAuthToken();
-    if (authToken) {
-      if (text === "Become a member") {
-        navigate.push("/membership");
-        return;
-      } else if (text === "Book a Visit") {
-        navigate.push("/user/book-appointment");
-        return;
-      }
-      navigate.push("/");
-      return;
-    }
-    setLoginModalOpen(true);
-    setButtonText(text);
-  };
-
-  const onSuccess = (toastMessage: string) => {
-    console.log(buttonText);
-    if (buttonText === "Become a member") {
-      navigate.push("/membership");
-    }
-    if (buttonText === "Book a Visit") {
-      navigate.push("/user/book-appointment");
-    }
-    toast.success(`Successfully ${toastMessage}`, {
-      duration: 3000,
-      position: "bottom-right",
-    });
-    refresh()
-    setLoginModalOpen(false);
-  };
-
+  const { initiateLogin } = useUserContext();
   return (
     <div className="w-full h-full items-center justify-items-center font-roca">
       <main className="w-full flex flex-col gap-8 row-start-2 items-center sm:items-start">
@@ -75,7 +35,7 @@ export default function Home() {
               WHO BRINGS YOU HERE TODAY?
             </p>
             <div className="flex justify-center md:justify-start">
-              <BannerList openLoginModal={handleLoginModalOpen} />
+              <BannerList />
             </div>
           </div>
         </div>
@@ -85,7 +45,7 @@ export default function Home() {
             <h1 className="mt-4 mb-16 text-center text-primary-1 text-xl md:text-4xl px-8">
               Veterinary care, redesigned to be better
             </h1>
-            <DescriptionCardList openLoginModal={handleLoginModalOpen} />
+            <DescriptionCardList openLoginModal={initiateLogin} />
           </div>
           <div className="mx-auto mt-12 lg:mt-32">
             <h1 className="mx-auto text-center text-xl md:text-4xl">
@@ -237,13 +197,6 @@ export default function Home() {
           </div>
 
           <FaqList />
-
-          <UserAuthenticationModal
-            isOpen={loginModalOpen}
-            onClose={() => setLoginModalOpen(false)}
-            buttonText={buttonText}
-            onSuccess={onSuccess}
-          />
         </div>
       </main>
       <Toaster />

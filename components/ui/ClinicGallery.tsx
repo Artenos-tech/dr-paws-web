@@ -1,22 +1,21 @@
 "use client";
 
-import { photos } from "@/model/mockData";
-import React, { useState, useEffect } from "react";
-import ReactModal from "react-modal";
-import { IoIosArrowBack, IoIosArrowForward, IoMdClose } from "react-icons/io";
-import { Clinic } from "@/model/typeDefinitions";
-import CustomButton from "./CustomButton";
-import UserAuthenticationModal from "./UserAuthenticationModal";
-import { useUserContext } from "@/context/UserContext";
 import { useRouter } from "next/navigation";
-import toast, { Toaster } from "react-hot-toast";
+import { useEffect, useState } from "react";
+import { Toaster } from "react-hot-toast";
+import { IoIosArrowBack, IoIosArrowForward, IoMdClose } from "react-icons/io";
+import ReactModal from "react-modal";
+
+import CustomButton from "@/components/ui/CustomButton";
+import { useUserContext } from "@/context/UserContext";
+import { photos } from "@/model/mockData";
+import { Clinic } from "@/model/typeDefinitions";
 
 interface ClinicGalleryProps {
   clinic: Clinic;
 }
 
 function ClinicGallery({ clinic }: ClinicGalleryProps) {
-  const [loginModalOpen, setLoginModalOpen] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const clinicImages = photos.find((clinicInfo) => clinicInfo.id === clinic.id);
@@ -24,28 +23,8 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
     ? clinicImages.photos.slice(0, 7)
     : [];
   const [isMounted, setIsMounted] = useState(false);
-
-  const [buttonText, setButtonText] = useState<string>("");
-  const { getAuthToken, refresh } = useUserContext();
+  const { getAuthToken, initiateLogin } = useUserContext();
   const navigate = useRouter();
-
-  const handleLoginModalOpen = (val: string) => {
-    if (getAuthToken()) {
-      navigate.push("/");
-      return;
-    }
-    setLoginModalOpen(true);
-    setButtonText(val);
-  };
-
-  const onSuccess = (toastMessage: string) => {
-    setLoginModalOpen(false);
-    refresh()
-    toast.success(`Successfully ${toastMessage}`, {
-      duration: 3000,
-      position: "bottom-right",
-    });
-  };
 
   useEffect(() => {
     setIsMounted(true);
@@ -71,7 +50,7 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
     console.log(authToken);
     return authToken
       ?  navigate.push("/user/book-appointment")
-      : handleLoginModalOpen("Book a Visit");
+      : initiateLogin("Book a Visit");
   };
 
   if (!isMounted) {
@@ -181,14 +160,6 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
           </button>
         </div>
       </ReactModal>
-
-      <UserAuthenticationModal
-        isOpen={loginModalOpen}
-        onClose={() => setLoginModalOpen(false)}
-        // initialMobileNumber="9440705361"
-        buttonText={buttonText}
-        onSuccess={onSuccess}
-      />
       <Toaster />
     </div>
   );

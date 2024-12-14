@@ -15,7 +15,6 @@ import {
   CarouselPrevious,
 } from "./carousel";
 
-// import UserAuthenticationModal from "@/components/ui/UserAuthenticationModal";
 import { useAPICall } from "@/hooks/apicall";
 import api from "@/services/api";
 import { Pet, useUserContext } from "@/context/UserContext";
@@ -357,14 +356,6 @@ const SelectVet: React.FC<selectVetProps> = ({
           buttonClickEvent={handleNextClick}
         />
       </div>
-      {/* <UserAuthenticationModal
-        isOpen={authModalOpen}
-        onClose={() => setAuthModalOpen(false)}
-        initialMobileNumber="5133158593"
-        onSuccess={onSuccess}
-        buttonText="Verify OTP"
-        bookingFlow={true}
-      /> */}
       <Toaster />
     </div>
   );

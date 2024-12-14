@@ -1,13 +1,10 @@
-import React, { useState } from "react";
 import { X } from "lucide-react";
 import Image from "next/image";
-import { MembershipPlan } from "./MemberCard";
-import { useRouter } from "next/navigation";
-import UserAuthenticationModal from "./UserAuthenticationModal";
+import React from "react";
+import { Toaster } from "react-hot-toast";
 import Modal from "react-modal";
-import { useUserContext } from "@/context/UserContext";
-import toast, { Toaster } from "react-hot-toast";
-// import CustomButton from "./CustomButton";
+
+import { MembershipPlan } from "./MemberCard";
 
 interface ModalProps {
   isOpen: boolean;
@@ -16,12 +13,6 @@ interface ModalProps {
 }
 
 const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
-  const router = useRouter();
-  const [loginModalOpen, setLoginModalOpen] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // Track authentication state
-
-  const [buttonText, setButtonText] = useState<string>("");
-  const { getAuthToken, refresh } = useUserContext();
 
   // Proceed with the payment route
   const params = new URLSearchParams({
@@ -30,54 +21,7 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
     price: plan.price,
   });
 
-  const handleLoginModalOpen = (val: string) => {
-    const authToken = getAuthToken();
-    if (authToken) {
-      if (val === "Become a Member") {
-        router.push(`/membership/payment?${params.toString()}`);
-        return;
-      }
-    }
-    setLoginModalOpen(true);
-    setButtonText(val);
-  };
-
   if (!isOpen) return null;
-
-  // const yearlyPlans = [
-  //   {
-  //     duration: "1 Year",
-  //     price: "6,999",
-  //   },
-  //   {
-  //     duration: "2 Year",
-  //     price: "6,999",
-  //   },
-  //   {
-  //     duration: "3 Year",
-  //     price: "5,499",
-  //   },
-  // ];
-
-  const handleContinue = () => {
-    if (!isAuthenticated) {
-      handleLoginModalOpen("Become a Member");
-      return;
-    }
-
-    router.push(`/membership/payment?${params.toString()}`);
-  };
-
-  const onSuccess = (toastMessage: string) => {
-    setIsAuthenticated(true);
-    setLoginModalOpen(false);
-    refresh();
-    toast.success(`Successfully ${toastMessage}`, {
-      duration: 3000,
-      position: "bottom-right",
-    });
-    handleContinue();
-  };
 
   return (
     <Modal
@@ -142,14 +86,6 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
           </div>
         </div>
       </div>
-
-      {/* Login Modal */}
-      <UserAuthenticationModal
-        isOpen={loginModalOpen}
-        onClose={() => setLoginModalOpen(false)}
-        onSuccess={onSuccess} // Handle login success
-        buttonText={buttonText}
-      />
       <Toaster />
     </Modal>
   );

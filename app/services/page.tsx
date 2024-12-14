@@ -1,53 +1,29 @@
 "use client";
+
 import Image from "next/image";
-import DescritionImage from "@/public/assets/images/ServicesPage/DescriptionImage.png";
-import ServicePageTab from "@/components/ui/ServicePageTab";
-import { ServiceTabsData } from "@/model/mockData";
-import CustomButton from "@/components/ui/CustomButton";
-import { useState } from "react";
-import ContactInfoModal from "@/components/ui/ContactInfoModal";
-import UserAuthenticationModal from "@/components/ui/UserAuthenticationModal";
-import { useUserContext } from "@/context/UserContext";
 import { useRouter } from "next/navigation";
-import toast, { Toaster } from "react-hot-toast";
+import { useState } from "react";
+import { Toaster } from "react-hot-toast";
+
+import ContactInfoModal from "@/components/ui/ContactInfoModal";
+import CustomButton from "@/components/ui/CustomButton";
+import ServicePageTab from "@/components/ui/ServicePageTab";
+import { useUserContext } from "@/context/UserContext";
+import { ServiceTabsData } from "@/model/mockData";
+import DescritionImage from "@/public/assets/images/ServicesPage/DescriptionImage.png";
+
 
 const Services = () => {
   const [isContactModalOpen, setContactIsModalOpen] = useState(false);
-  const [loginModalOpen, setLoginModalOpen] = useState<boolean>(false);
-  const [buttonText, setButtonText] = useState<string>("");
-  const { getAuthToken, refresh } = useUserContext();
+  const { getAuthToken, initiateLogin } = useUserContext();
   const navigate = useRouter();
-
-  const handleLoginModalOpen = (val: string) => {
-    const authToken = getAuthToken();
-    if (authToken) {
-      navigate.push("/");
-      return;
-    }
-    setLoginModalOpen(true);
-    setButtonText(val);
-  };
-
-  const onSuccess = (toastMessage: string) => {
-    if (buttonText === "View Profile" || buttonText === "View Pets") {
-      navigate.push("/user/profile");
-    }
-
-    if (buttonText === "Book a Visit") handleBookAVisit();
-    setLoginModalOpen(false);
-    refresh()
-    toast.success(`Successfully ${toastMessage}`, {
-      duration: 3000,
-      position: "bottom-right",
-    });
-  };
 
   const handleBookAVisit = () => {
     const authToken = getAuthToken();
     console.log(authToken);
     return authToken
       ?  navigate.push("/user/book-appointment")
-      : handleLoginModalOpen("Book a Visit");
+      : initiateLogin("Book a Visit");
   };
 
   return (
@@ -98,13 +74,6 @@ const Services = () => {
       <ContactInfoModal
         isOpen={isContactModalOpen}
         onRequestClose={() => setContactIsModalOpen(false)}
-      />
-      <UserAuthenticationModal
-        isOpen={loginModalOpen}
-        onClose={() => setLoginModalOpen(false)}
-        // initialMobileNumber="9440705361"
-        buttonText={buttonText}
-        onSuccess={onSuccess}
       />
       <Toaster />
     </div>
