@@ -1,7 +1,7 @@
 import { AppointmentType } from "@/model/typeDefinitions";
 import React from "react";
 
-import NoAppointments from "./NoAppointments";
+
 import AppointmentCard from "./AppointmentCard";
 
 type CancelledAppointmentsProps = {
@@ -18,7 +18,7 @@ const CancelledAppointments: React.FC<CancelledAppointmentsProps> = ({
   return (
     <div className={`w-full  ${sortedCancelledAppointments.length !==0 ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" : "h-full lg:h-screen"} `}>
       {sortedCancelledAppointments.length === 0 ? (
-        <NoAppointments />
+        <h1 className="text-secondary-1 text-lg text-center">No Cancelled Appointments</h1>
       ) : (
         sortedCancelledAppointments.map((appointment: AppointmentType) => (
           <AppointmentCard
