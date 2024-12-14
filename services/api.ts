@@ -297,6 +297,7 @@ export default createAPIClient({
         appt_end: z.string(),
         appt_reason: z.string().nullable(),
         clinic_id: z.number(),
+        appt_type_id: z.number(),
       }),
       responseSchema: z.object({
         status: z.number(),

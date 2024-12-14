@@ -97,8 +97,8 @@ import LP_OneTap from "@/public/assets/images/Landing Page/LP_OneTap.png";
 import LP_OnlyNecessaryTreatment from "@/public/assets/images/Landing Page/LP_OnlyNecessaryTreatments.png";
 import LP_SpaceForCats from "@/public/assets/images/Landing Page/LP_SpaceForCats.png";
 
-import AppointmentPetImage from "@/public/assets/images/Appointments/petImage.png";
-import AppointmentVetImage from "@/public/assets/images/Appointments/vetImage.png";
+// import AppointmentPetImage from "@/public/assets/images/Appointments/petImage.png";
+// import AppointmentVetImage from "@/public/assets/images/Appointments/vetImage.png";
 
 export const FaqData = [
   {

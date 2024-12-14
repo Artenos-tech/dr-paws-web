@@ -18,7 +18,7 @@ export interface AppointmentsContextType {
   loading: boolean;
   fetchAppointments: () => void;
   selectedAppointment: {
-    selectedData: Record<string, Pet | null>;
+    selectedData: Record<number, Pet | null>;
     selectedClinic: string | null;
     selectedDoctor: string | null;
     selectedDate: Date | null;
@@ -40,7 +40,7 @@ export const AppointmentsProvider = ({ children }: AppointmentsProviderProps) =>
   const [loading, setLoading] = useState(false);
 
   const [selectedAppointment, setSelectedAppointmentState] = useState<{
-    selectedData: Record<string, Pet | null>;
+    selectedData: Record<number, Pet | null>;
     selectedClinic: string | null;
     selectedDoctor: string | null;
     selectedDate: Date | null;

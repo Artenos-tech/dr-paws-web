@@ -16,12 +16,12 @@ import { Pet, useUserContext } from "@/context/UserContext";
 import BookingDetails from "@/components/ui/BookingDetails";
 
 const Booking: React.FC = () => {
-  const [selectedData, setSelectedData] = useState<Record<string, Pet | null>>(
+  const [selectedData, setSelectedData] = useState<Record<number, Pet | null>>(
     {}
   );
   const [selectedClinic, setSelectedClinic] = useState<string | null>(null);
 
-  const [openCard, setOpenCard] = useState<string | null>(null); // Persist this state
+  const [openCard, setOpenCard] = useState<number | null>(null); // Persist this state
   const [isDisclaimerModalOpen, setIsDisclaimerModalOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState<number>(1);
   const { userPets } = useUserContext();

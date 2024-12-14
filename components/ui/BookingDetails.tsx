@@ -19,13 +19,13 @@ import { parse, format, addMinutes } from "date-fns";
 import { BsCheckCircleFill } from "react-icons/bs";
 
 import Image from "next/image";
-import { doctors } from "@/model/mockData";
+import { doctors, ServiceTabsData } from "@/model/mockData";
 
 // TO-DO: For testing purpose
 import defaultVetImage from "@/public/assets/images/clinic/doctorFemale.webp";
 
 import defaultPetImage from "@/public/assets/images/Appointments/petImage.png";
-import { petImageByType } from "./PetCard";
+// import { petImageByType } from "./PetCard";
 import { capitalizeFirstLetter } from "@/components/ui/AppointmentCard";
 import { epochToDate } from "@/components/ui/AppointmentCard";
 
@@ -130,8 +130,8 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
   );
 
   console.log(
-    "Object.values(selectedAppointment?.selectedData || {})[0]?.name}",
-    Object.values(selectedAppointment?.selectedData || {})[0]?.name
+    "Object.values(selectedAppointment?.selectedData || {})[0]}",
+    Object.values(selectedAppointment?.selectedData || {})[0]
   );
 
   if (loading) {
@@ -152,6 +152,11 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
       return "";
     }
   };
+
+  console.log("selectedAppointment", Object.keys(selectedAppointment.selectedData));
+
+  const serviceTypeId = selectedAppointment.selectedData && JSON.parse(Object.keys(selectedAppointment.selectedData)[0]);
+  const serviceType = ServiceTabsData.find((service) => service.vetPortId === serviceTypeId)?.title;
 
   return (
     <div className="w-full h-full">
@@ -206,18 +211,16 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
               )}
             </p>
             <p>
-              for
+              for 
               {/* {bookingDetails?.service}  */}
               {appointmentId
-                ? "Service" // TO-DO: Later give booking service
+                ? " Service" // TO-DO: Later give booking service
                 : selectedAppointment.selectedData &&
                   Object.keys(selectedAppointment.selectedData).includes(
                     "Grooming"
                   )
-                ? "Grooming consultation"
-                : selectedAppointment.selectedData &&
-                  Object.keys(selectedAppointment.selectedData) +
-                    " consultation"}
+                ? " Grooming"
+                : ` ${serviceType} consultation`}
             </p>
 
             <div className="flex items-center my-4">
@@ -248,16 +251,17 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                 <>
                   <Image
                     src={
-                      (typeof selectedAppointment.selectedData.profileImage ===
-                        "string" &&
-                        (selectedAppointment.selectedData
-                          .profileImage as string)) ||
-                      petImageByType[
-                        (selectedAppointment.selectedData?.type
-                          ?.toString()
-                          .toLowerCase() as keyof typeof petImageByType) ||
-                          "other"
-                      ]
+                      // (typeof selectedAppointment.selectedData.profileImage ===
+                      //   "string" &&
+                      //   (selectedAppointment.selectedData
+                      //     .profileImage as string)) ||
+                      // petImageByType[
+                      //   (selectedAppointment.selectedData?.type
+                      //     ?.toString()
+                      //     .toLowerCase() as keyof typeof petImageByType) ||
+                      //     "other"
+                      // ]
+                      defaultPetImage
                     }
                     alt="pet-image"
                     width={130}
