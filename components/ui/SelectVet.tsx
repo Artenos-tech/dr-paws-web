@@ -66,8 +66,7 @@ const SelectVet: React.FC<selectVetProps> = ({
     if (
       (selectedDoctor ||
         (selectedData && Object.keys(selectedData).includes("Grooming"))) &&
-      selectedClinic &&
-      staffIdBasedServices
+      selectedClinic && staffIdBasedServices
     ) {
       await getStaffSchedule({
         clinicid: selectedClinic,
