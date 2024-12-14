@@ -131,8 +131,8 @@ const SelectVet: React.FC<selectVetProps> = ({
           pet_id: pet?.id,
           clinic_id: clinicId,
           appt_reason: null,
-          appt_start: convertDateToEpoch(apptStart),
-          appt_end: convertDateToEpoch(apptEnd),
+          appt_start: apptStart,
+          appt_end: apptEnd,
         });
 
         if (response.ok) {

@@ -28,6 +28,9 @@ const AllAppointments: React.FC<AllAppointmentsProps> = ({
     "Confirm",
     "Cancel",
     "Active",
+    "Waiting",
+    "Testing",
+    "Check-out",
   ];
 
   return (
