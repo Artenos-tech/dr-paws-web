@@ -2,6 +2,9 @@ import React from "react";
 import Modal from "react-modal";
 import ProfileForm from "./ProfileForm";
 import { User, useUserContext } from "@/context/UserContext";
+import { useAPICall } from "@/hooks/apicall";
+import api from "@/services/api";
+import Loader from "./Loader";
 
 interface EditProfileModalProps {
   isOpen: boolean;
@@ -16,13 +19,28 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
 }) => {
   const { updateUserDetailsHandler } = useUserContext();
 
-  const handleProfileUpdate = (updatedProfile: User) => {
-    updateUserDetailsHandler(updatedProfile);
-    if (typeof window !== "undefined") {
-      localStorage.setItem("userProfile", JSON.stringify(updatedProfile));
+  const {
+    call: updateUser,
+    loading,
+  } = useAPICall(api.updateUser);
+
+  const handleProfileUpdate = async (updatedProfile: User) => {
+    const response = await updateUser({
+      user: {
+        name: updatedProfile.name,
+        email: updatedProfile.email,
+        mobile: updatedProfile.mobile,
+        current_address: updatedProfile.currentAddress,
+        profile_image: updatedProfile.profileImage,
+      }
+    })
+    if (response.ok) {
+      updateUserDetailsHandler(updatedProfile);
+      onClose();
     }
-    onClose();
   };
+
+  if (loading) return <div><Loader /></div>;
 
   return (
     <Modal

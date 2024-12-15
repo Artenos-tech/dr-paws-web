@@ -27,6 +27,7 @@ export interface User {
   email: string | null;
   currentAddress: string | null;
   profileImage: string | null;
+  vetPortId: number;
 }
 
 export interface Pet {
@@ -101,6 +102,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
           email: data.email || null,
           currentAddress: data.currentAddress || null,
           profileImage: data.profileImage || null,
+          vetPortId: data.vetPortId || 0,
         };
       }
 
