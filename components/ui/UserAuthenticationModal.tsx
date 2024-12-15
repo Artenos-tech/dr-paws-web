@@ -56,11 +56,11 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
 
   const { call: signupCancel } = useAPICall(api.signupCancel);
 
-  useEffect(() => {
-    if (user) {
-      setUserMobileNumber(user.mobile);
-    }
-  }, [user]);
+  // useEffect(() => {
+  //   if (user) {
+  //     setUserMobileNumber(user.mobile);
+  //   }
+  // }, [user]);
 
   const handleIncorrectNumber = () => {
     setUserMobileNumber(undefined);
