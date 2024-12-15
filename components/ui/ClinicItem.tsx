@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
-import toast, { Toaster } from "react-hot-toast";
+import React from "react";
+import { Toaster } from "react-hot-toast";
 
 import { useUserContext } from "@/context/UserContext";
 import { Clinic } from "@/model/typeDefinitions";
@@ -15,26 +15,11 @@ interface ClinicItemProps {
 
 const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
   const { image, clinicName, services, id } = clinic;
-  const [loginModalOpen, setLoginModalOpen] = useState<boolean>(false);
   const router = useRouter();
 
-  const [buttonText, setButtonText] = useState<string>("");
-  const { getAuthToken, refresh, initiateLogin } = useUserContext();
+  const { getAuthToken, initiateLogin } = useUserContext();
   const navigate = useRouter();
 
-  const onSuccess = (toastMessage: string) => {
-    if (buttonText === "View Profile" || buttonText === "View Pets") {
-      navigate.push("/user/profile");
-    }
-
-    if (buttonText === "Book a Visit") handleBookAVisit();
-    setLoginModalOpen(false);
-    refresh()
-    toast.success(`Successfully ${toastMessage}`, {
-      duration: 3000,
-      position: "bottom-right",
-    });
-  };
 
   const handleBookAVisit = () => {
     const authToken = getAuthToken();

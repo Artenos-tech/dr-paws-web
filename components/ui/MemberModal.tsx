@@ -14,13 +14,6 @@ interface ModalProps {
 
 const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
 
-  // Proceed with the payment route
-  const params = new URLSearchParams({
-    title: plan.title,
-    duration: plan.duration,
-    price: plan.price,
-  });
-
   if (!isOpen) return null;
 
   return (
