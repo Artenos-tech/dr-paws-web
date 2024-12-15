@@ -17,14 +17,6 @@ export interface AppointmentsContextType {
   appointments: AppointmentType[] | null;
   loading: boolean;
   fetchAppointments: () => void;
-  selectedAppointment: {
-    selectedData: Record<number, Pet | null>;
-    selectedClinic: string | null;
-    selectedDoctor: string | null;
-    selectedDate: Date | null;
-    selectedSlot: string | null;
-  };
-  setSelectedAppointment: (data: Partial<AppointmentsContextType["selectedAppointment"]>) => void;
 }
 
 export const AppointmentsContext = createContext<AppointmentsContextType | undefined>(
@@ -38,24 +30,6 @@ interface AppointmentsProviderProps {
 export const AppointmentsProvider = ({ children }: AppointmentsProviderProps) => {
   const [appointments, setAppointments] = useState<AppointmentType[] | null>(null);
   const [loading, setLoading] = useState(false);
-
-  const [selectedAppointment, setSelectedAppointmentState] = useState<{
-    selectedData: Record<number, Pet | null>;
-    selectedClinic: string | null;
-    selectedDoctor: string | null;
-    selectedDate: Date | null;
-    selectedSlot: string | null;
-  }>({
-    selectedData: {}, 
-    selectedClinic: null,
-    selectedDoctor: null,
-    selectedDate: null,
-    selectedSlot: null,
-  });
-
-  const setSelectedAppointment = (data: Partial<typeof selectedAppointment>) => {
-    setSelectedAppointmentState((prev) => ({ ...prev, ...data }));
-  };
 
   const { call: getAppointments } = useAPICall(api.getAppointments);
   const { user, refresh } = useUserContext();
@@ -84,7 +58,11 @@ export const AppointmentsProvider = ({ children }: AppointmentsProviderProps) =>
 
   return (
     <AppointmentsContext.Provider
-      value={{ appointments, loading, fetchAppointments, selectedAppointment, setSelectedAppointment }}
+      value={{ 
+        appointments, 
+        loading, 
+        fetchAppointments,
+      }}
     >
       {children}
     </AppointmentsContext.Provider>

@@ -17,9 +17,7 @@ export interface BookingCategory {
 
 interface SelectServiceProps {
   selectedData: Record<number, Pet | null>;
-  setSelectedData: React.Dispatch<
-    React.SetStateAction<Record<number, Pet | null>>
-  >;
+  setSelectedData: (newSelectedData: Record<number, Pet | null>) => void;
   openCard: number | null;
   setOpenCard: React.Dispatch<React.SetStateAction<number | null>>;
   isModalOpen: boolean;
@@ -79,27 +77,18 @@ const SelectService: React.FC<SelectServiceProps> = ({
 
   const toggleCard = (cardId: number) => {
     setOpenCard((prevOpenCard) => {
-      if (prevOpenCard && prevOpenCard !== cardId) {
-        setSelectedData((prevSelectedData) => ({
-          ...prevSelectedData,
+      if (prevOpenCard !== null) {
+        setSelectedData({
           [prevOpenCard]: null,
-        }));
+        });
       }
-      const isClosingCurrentCard = prevOpenCard === cardId;
-
-      if (isClosingCurrentCard) {
-        setSelectedData((prevSelectedData) => ({
-          ...prevSelectedData,
-          [cardId]: null,
-        }));
-      }
+      // show disclaimer modal for surgeries
       const selectedCard = ServiceTabsData.find((category) => category.vetPortId === cardId);
       if (selectedCard && selectedCard.id === "Surgeries" && !hasShownDisclaimerModal) {
         setIsModalOpen(true);
         setHasShownDisclaimerModal(true);
       }
-
-      return isClosingCurrentCard ? null : cardId;
+      return prevOpenCard === cardId ? null : cardId;
     });
   };
 

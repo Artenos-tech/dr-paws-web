@@ -18,7 +18,6 @@ import {
 import { useAPICall } from "@/hooks/apicall";
 import api from "@/services/api";
 import { Pet, useUserContext } from "@/context/UserContext";
-import { useAppointmentsContext } from "@/context/AppointmentsContext";
 import toast, { Toaster } from "react-hot-toast";
 
 export function convertDateToEpoch(date: string) {
@@ -26,18 +25,24 @@ export function convertDateToEpoch(date: string) {
 }
 
 interface selectVetProps {
-  selectedData?: Record<string, Pet | null>;
-  selectedClinic?: string | null;
+  selectedData: Record<string, Pet | null>;
+  selectedClinic: string | null;
+  setFinalAppointmentData: (finalAppData: {
+    selectedData: Record<number, Pet | null>;
+    selectedClinic: string | null;
+    selectedDoctor: string | null;
+    selectedDate: Date | null;
+    selectedSlot: string | null;
+  }) => void;
   onNext?: () => void;
 }
 
 const SelectVet: React.FC<selectVetProps> = ({
   selectedClinic,
   selectedData,
+  setFinalAppointmentData,
   onNext,
 }) => {
-  const { setSelectedAppointment, fetchAppointments } =
-    useAppointmentsContext();
 
   const { user, userPets } = useUserContext();
 
@@ -80,7 +85,7 @@ const SelectVet: React.FC<selectVetProps> = ({
 
   const handleNextClick = async () => {
     if (selectedData) console.log("selectedData", Object.keys(selectedData));
-    setSelectedAppointment({
+    setFinalAppointmentData({
       selectedData,
       selectedClinic,
       selectedDoctor,
@@ -124,8 +129,6 @@ const SelectVet: React.FC<selectVetProps> = ({
             duration: 3000,
             position: "bottom-right",
           });
-
-          fetchAppointments();
 
           if (onNext) {
             onNext(); // Navigate to the next page only if the API succeeds

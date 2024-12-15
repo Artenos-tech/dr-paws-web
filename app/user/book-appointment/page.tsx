@@ -16,10 +16,19 @@ import { Pet, useUserContext } from "@/context/UserContext";
 import BookingDetails from "@/components/ui/BookingDetails";
 
 const Booking: React.FC = () => {
-  const [selectedData, setSelectedData] = useState<Record<number, Pet | null>>(
-    {}
-  );
-  const [selectedClinic, setSelectedClinic] = useState<string | null>(null);
+  const [selectedAppointment, setSelectedAppointmentState] = useState<{
+    selectedData: Record<number, Pet | null>;
+    selectedClinic: string | null;
+    selectedDoctor: string | null;
+    selectedDate: Date | null;
+    selectedSlot: string | null;
+  }>({
+    selectedData: {}, 
+    selectedClinic: null,
+    selectedDoctor: null,
+    selectedDate: null,
+    selectedSlot: null,
+  });
 
   const [openCard, setOpenCard] = useState<number | null>(null); // Persist this state
   const [isDisclaimerModalOpen, setIsDisclaimerModalOpen] = useState(false);
@@ -27,10 +36,13 @@ const Booking: React.FC = () => {
   const { userPets } = useUserContext();
 
   const handleClinicSelection = (clinicId: string) => {
-    // Toggle selection: if the clicked clinic is already selected, deselect it.
-    setSelectedClinic((prevSelected) =>
-      prevSelected === clinicId ? null : clinicId
-    );
+    setSelectedAppointmentState((prev) => {
+      // Toggle selection: if the clicked clinic is already selected, deselect it.
+      if (prev.selectedClinic === clinicId) {
+        return ({ ...prev, selectedClinic: null });
+      }
+      return ({ ...prev, selectedClinic: clinicId })
+    });
   };
 
   const goToNextStep = () => {
@@ -61,8 +73,13 @@ const Booking: React.FC = () => {
 
           {currentStep === 1 && userPets && (
             <SelectService
-              selectedData={selectedData}
-              setSelectedData={setSelectedData}
+              selectedData={selectedAppointment.selectedData}
+              setSelectedData={(newSelectedData) => {
+                setSelectedAppointmentState((prev) => ({ 
+                  ...prev, 
+                  selectedData: newSelectedData 
+                }));
+              }}
               openCard={openCard}
               setOpenCard={setOpenCard}
               isModalOpen={isDisclaimerModalOpen}
@@ -74,13 +91,22 @@ const Booking: React.FC = () => {
           {currentStep === 2 && 
           <SelectClinic 
             onNext={goToNextStep} 
-            selectedClinic={selectedClinic} 
+            selectedClinic={selectedAppointment.selectedClinic} 
             handleClinicSelection={handleClinicSelection}
           />
           }
 
-          {currentStep === 3 && <SelectVet onNext={goToNextStep} selectedClinic={selectedClinic} selectedData={selectedData} />}
-          {currentStep === 4 && <BookingDetails />}
+          {currentStep === 3 && (
+            <SelectVet 
+              onNext={goToNextStep} 
+              selectedClinic={selectedAppointment.selectedClinic} 
+              selectedData={selectedAppointment.selectedData}
+              setFinalAppointmentData={setSelectedAppointmentState}
+            />
+          )}
+          {currentStep === 4 && (
+            <BookingDetails selectedAppointment={selectedAppointment} />
+          )}
         </div>
       </main>
     </div>

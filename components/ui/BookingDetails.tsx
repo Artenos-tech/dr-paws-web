@@ -12,6 +12,7 @@ import CustomButton from "./CustomButton";
 import { useRouter } from "next/navigation";
 
 import { useAppointmentsContext } from "@/context/AppointmentsContext";
+import { Pet, } from "@/context/UserContext";
 import Loader from "@/components/ui/Loader";
 import { formatDate, formatTimeRange } from "@/components/ui/AppointmentCard";
 import { parse, format, addMinutes } from "date-fns";
@@ -47,6 +48,13 @@ export const rescheduleReasons = [
 
 type BookingDetailsProps = {
   appointmentId?: string;
+  selectedAppointment?: {
+    selectedData: Record<number, Pet | null>;
+    selectedClinic: string | null;
+    selectedDoctor: string | null;
+    selectedDate: Date | null;
+    selectedSlot: string | null;
+  } 
   onReschedule?: () => void;
 
 };
@@ -54,7 +62,7 @@ type BookingDetailsProps = {
 const BookingDetails: React.FC<BookingDetailsProps> = ({
   appointmentId,
   onReschedule,
-
+  selectedAppointment,
 }) => {
   const [bookingDetails, setBookingDetails] = useState<AppointmentType | null>(
     null
@@ -70,7 +78,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
   const [cancelFlowEnd, setCancelFlowEnd] = useState(false);
   const [showValidationMessage, setShowValidationMessage] = useState(false);
 
-  const { appointments, loading, selectedAppointment } =
+  const { appointments, loading } =
     useAppointmentsContext();
 
   const navigate = useRouter();
@@ -126,7 +134,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
   );
 
   const foundDoctor = doctors.find(
-    (doctor) => doctor.id === selectedAppointment.selectedDoctor
+    (doctor) => doctor.id === selectedAppointment?.selectedDoctor
   );
 
   console.log(
@@ -153,11 +161,11 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
     }
   };
 
-  console.log("selectedAppointment", Object.keys(selectedAppointment.selectedData));
 
-  const serviceTypeId = selectedAppointment.selectedData && JSON.parse(Object.keys(selectedAppointment.selectedData)[0]);
+  const serviceTypeId = selectedAppointment?.selectedData && JSON.parse(Object.keys(selectedAppointment.selectedData)[0]);
   const serviceType = ServiceTabsData.find((service) => service.vetPortId === serviceTypeId)?.title;
 
+  console.log("selectedAppointment", selectedAppointment)
   return (
     <div className="w-full h-full">
       {appointmentId && <BackButton />}
@@ -195,7 +203,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                   {bookingDetails?.vet_vetport_id !== 0 &&
                     ` with ${matchedDoctor?.name}`}
                 </>
-              ) : selectedAppointment.selectedData &&
+              ) : selectedAppointment?.selectedData &&
                 Object.keys(selectedAppointment.selectedData).includes(
                   "Grooming"
                 ) ? (
@@ -215,7 +223,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
               {/* {bookingDetails?.service}  */}
               {appointmentId
                 ? " Service" // TO-DO: Later give booking service
-                : selectedAppointment.selectedData &&
+                : selectedAppointment?.selectedData &&
                   Object.keys(selectedAppointment.selectedData).includes(
                     "Grooming"
                   )
@@ -247,7 +255,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
               </>
               
               )}
-              {!appointmentId && selectedAppointment.selectedData && (
+              {!appointmentId && selectedAppointment?.selectedData && (
                 <>
                   <Image
                     src={
@@ -311,7 +319,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                 {bookingDetails
                   ? formatDate(epochToDate(bookingDetails.appt_start))
                   : !appointmentId &&
-                    selectedAppointment.selectedDate &&
+                    selectedAppointment?.selectedDate &&
                     formatDate(selectedAppointment.selectedDate.toString())}
               </p>
               <p
@@ -330,8 +338,8 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                   )
                 ) : (
                   <>
-                    {selectedAppointment.selectedSlot} -{" "}
-                    {selectedAppointment.selectedSlot &&
+                    {selectedAppointment?.selectedSlot} -{" "}
+                    {selectedAppointment?.selectedSlot &&
                       addMinutesToTime(
                         selectedAppointment.selectedSlot,
                         selectedAppointment.selectedData &&
