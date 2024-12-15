@@ -6,12 +6,13 @@ import AppointmentCard from "./AppointmentCard";
 
 type AllAppointmentsProps = {
   allAppointments: AppointmentType[];
+  onClick: (app: AppointmentType) => void;
 };
 
 
 
 const AllAppointments: React.FC<AllAppointmentsProps> = ({
-  allAppointments,
+  allAppointments, onClick
 }) => {
 
 
@@ -49,6 +50,7 @@ const AllAppointments: React.FC<AllAppointmentsProps> = ({
             <AppointmentCard
               key={appointment.id}
               appointment={appointment}
+              onClick={() => onClick(appointment)}
             />
           // ) : appointment.appt_status === "Complete" ? (
           //   <PastAppointmentCard

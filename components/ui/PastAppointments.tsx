@@ -4,9 +4,10 @@ import React from "react";
 import AppointmentCard from "./AppointmentCard";
 type PastAppointmentsProps = {
   pastAppointments: AppointmentType[];
+  onClick: (app: AppointmentType) => void;
 };
 const PastAppointments: React.FC<PastAppointmentsProps> = ({
-  pastAppointments,
+  pastAppointments, onClick
 }) => {
   const sortedPastAppointments = [...pastAppointments].sort(
     // (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
@@ -20,6 +21,7 @@ const PastAppointments: React.FC<PastAppointmentsProps> = ({
           <AppointmentCard
             key={appointment.id}
             appointment={appointment}
+            onClick={() => onClick(appointment)}
           />
         ))
       )}

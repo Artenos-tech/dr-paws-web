@@ -75,4 +75,5 @@ export interface AppointmentType {
   | "Check-out";
   appt_reason: string | null;
   appt_type: string | null;
+  appt_type_id: number
 }
