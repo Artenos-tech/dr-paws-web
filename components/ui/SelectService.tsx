@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import BookingCard from "@/components/ui/BookingCard";
 import BookingModal from "@/components/ui/BookingModal";
-import { ServiceTabsData } from "@/model/mockData";
 import CustomButton from "./CustomButton";
 import { Pet, useUserContext } from "@/context/UserContext";
 import { useAPICall } from "@/hooks/apicall";
@@ -41,7 +40,13 @@ const SelectService: React.FC<SelectServiceProps> = ({
     api.getPets
   );
 
+  const {
+    call: callGetAppointmentServices,
+    result: getAppointmentServicesResult,
+  } = useAPICall(api.getAppointmentServices)
+
   useEffect(() => {
+    callGetAppointmentServices({});
     fetchPets();
   }, []);
 
@@ -70,6 +75,10 @@ const SelectService: React.FC<SelectServiceProps> = ({
       profileImage: pet.profile_image,
       vetPortId: pet.vetport_id,
     }));
+
+  const ServiceTabsData = getAppointmentServicesResult?.ok
+    ? getAppointmentServicesResult.value.body.appointmentTypes
+    : [];
 
   const handleCardSelection = (cardId: number, selectedPet: Pet | null) => {
     setSelectedData({ [cardId]: selectedPet });

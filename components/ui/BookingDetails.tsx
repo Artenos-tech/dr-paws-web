@@ -11,16 +11,13 @@ import { HiOutlineCalendar } from "react-icons/hi";
 import CustomButton from "./CustomButton";
 import { useRouter } from "next/navigation";
 
-import { useAppointmentsContext } from "@/context/AppointmentsContext";
-import { Pet, } from "@/context/UserContext";
-import Loader from "@/components/ui/Loader";
 import { formatDate, formatTimeRange } from "@/components/ui/AppointmentCard";
 import { parse, format, addMinutes } from "date-fns";
 
 import { BsCheckCircleFill } from "react-icons/bs";
 
 import Image from "next/image";
-import { doctors, ServiceTabsData } from "@/model/mockData";
+import { doctors } from "@/model/mockData";
 
 // TO-DO: For testing purpose
 import defaultVetImage from "@/public/assets/images/clinic/doctorFemale.webp";
@@ -29,6 +26,8 @@ import defaultPetImage from "@/public/assets/images/Appointments/petImage.png";
 // import { petImageByType } from "./PetCard";
 import { capitalizeFirstLetter } from "@/components/ui/AppointmentCard";
 import { epochToDate } from "@/components/ui/AppointmentCard";
+import { useAPICall } from "@/hooks/apicall";
+import api from "@/services/api";
 
 
 export const cancelReasons = [
@@ -49,7 +48,7 @@ export const rescheduleReasons = [
 type BookingDetailsProps = {
   appointmentId?: string;
   selectedAppointment?: {
-    selectedData: Record<number, Pet | null>;
+    selectedData: Record<number, {name: string} | null>;
     selectedClinic: string | null;
     selectedDoctor: string | null;
     selectedDate: Date | null;
@@ -78,23 +77,21 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
   const [cancelFlowEnd, setCancelFlowEnd] = useState(false);
   const [showValidationMessage, setShowValidationMessage] = useState(false);
 
-  const { appointments, loading } =
-    useAppointmentsContext();
-
   const navigate = useRouter();
 
+  
+  const {
+    call: callGetAppointmentServices,
+    result: getAppointmentServicesResult,
+  } = useAPICall(api.getAppointmentServices)
+
   useEffect(() => {
-    fetchBookingDetails();
+    callGetAppointmentServices({});
   }, []);
 
-  const fetchBookingDetails = () => {
-    const foundAppointment = appointments?.find(
-      (appointment: AppointmentType) => appointment.id === appointmentId
-    );
-    if (foundAppointment) {
-      setBookingDetails(foundAppointment);
-    }
-  };
+  const appointmentServices = getAppointmentServicesResult?.ok
+  ? getAppointmentServicesResult.value.body.appointmentTypes
+  : null;
 
   const handleCancelBooking = () => {
     setCancelFlowEnd(true);
@@ -142,14 +139,6 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
     Object.values(selectedAppointment?.selectedData || {})[0]
   );
 
-  if (loading) {
-    return (
-      <div>
-        <Loader />
-      </div>
-    );
-  }
-
   const addMinutesToTime = (time: string, minutes: number): string => {
     try {
       const parsedTime = parse(time, "HH:mm", new Date());
@@ -163,7 +152,11 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
 
 
   const serviceTypeId = selectedAppointment?.selectedData && JSON.parse(Object.keys(selectedAppointment.selectedData)[0]);
-  const serviceType = ServiceTabsData.find((service) => service.vetPortId === serviceTypeId)?.title;
+
+  if (!appointmentServices) {
+    return "loading services...";
+  }
+  const serviceType = appointmentServices.find((service) => service.vetPortId === serviceTypeId)?.title;
 
   console.log("selectedAppointment", selectedAppointment)
   return (

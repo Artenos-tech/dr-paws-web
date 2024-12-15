@@ -399,5 +399,21 @@ export default createAPIClient({
     //   }),
     //   errorResponseSchema: z.object({}),
     // },
+
+    getAppointmentServices: {
+      method: "GET",
+      path: "/appointmenttypes",
+      pathParamsSchema: z.object({}),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        appointmentTypes: z.array(z.object({
+          id: z.string(),
+          title: z.string(),
+          description: z.string(),
+          vetPortId: z.number(),
+        }))
+      }),
+      errorResponseSchema: z.object({}),
+    },
   },
 });
