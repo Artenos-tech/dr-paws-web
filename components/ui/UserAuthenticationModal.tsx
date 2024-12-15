@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { IoClose } from "react-icons/io5";
 import Modal from "react-modal";
 import LoginForm from "./LoginForm";
@@ -39,7 +39,7 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
   const [otpErr, setOtpErr] = useState("");
 
   // context
-  const { updateUserDetailsHandler, updateUserPetsHandler, user } =
+  const { updateUserDetailsHandler, updateUserPetsHandler } =
     useUserContext();
 
   // API's
