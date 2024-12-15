@@ -16,12 +16,12 @@ export interface BookingCategory {
 }
 
 interface SelectServiceProps {
-  selectedData: Record<string, Pet | null>;
+  selectedData: Record<number, Pet | null>;
   setSelectedData: React.Dispatch<
-    React.SetStateAction<Record<string, Pet | null>>
+    React.SetStateAction<Record<number, Pet | null>>
   >;
-  openCard: string | null;
-  setOpenCard: React.Dispatch<React.SetStateAction<string | null>>;
+  openCard: number | null;
+  setOpenCard: React.Dispatch<React.SetStateAction<number | null>>;
   isModalOpen: boolean;
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   onNext: () => void;
@@ -73,11 +73,11 @@ const SelectService: React.FC<SelectServiceProps> = ({
       vetPortId: pet.vetport_id,
     }));
 
-  const handleCardSelection = (cardId: string, selectedPet: Pet | null) => {
+  const handleCardSelection = (cardId: number, selectedPet: Pet | null) => {
     setSelectedData({ [cardId]: selectedPet });
   };
 
-  const toggleCard = (cardId: string) => {
+  const toggleCard = (cardId: number) => {
     setOpenCard((prevOpenCard) => {
       if (prevOpenCard && prevOpenCard !== cardId) {
         setSelectedData((prevSelectedData) => ({
@@ -93,8 +93,8 @@ const SelectService: React.FC<SelectServiceProps> = ({
           [cardId]: null,
         }));
       }
-
-      if (cardId === "Surgeries" && !hasShownDisclaimerModal) {
+      const selectedCard = ServiceTabsData.find((category) => category.vetPortId === cardId);
+      if (selectedCard && selectedCard.id === "Surgeries" && !hasShownDisclaimerModal) {
         setIsModalOpen(true);
         setHasShownDisclaimerModal(true);
       }
@@ -121,11 +121,11 @@ const SelectService: React.FC<SelectServiceProps> = ({
         {ServiceTabsData.map((category) => (
           <BookingCard
             key={category.id}
-            cardId={category.id}
+            cardId={category.vetPortId}
             title={category.title}
             description={category.description}
             onCardSelection={handleCardSelection}
-            isOpen={openCard === category.id}
+            isOpen={openCard === category.vetPortId}
             toggleCard={toggleCard}
             selectedData={selectedData}
             pets={pets || []}
