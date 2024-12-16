@@ -443,12 +443,13 @@ export default createAPIClient({
       errorResponseSchema: z.object({}),
     },
 
-    updatePets: {
+    updatePet: {
       method: "PUT",
-      path: "/user/pets",
+      path: "/user/pet",
       pathParamsSchema: z.object({}),
       requestSchema: z.object({
         pet: z.object({
+          id: z.string(),
           name: z.string(),
           species: z.object({
             id: z.number(),
@@ -457,12 +458,12 @@ export default createAPIClient({
           breed: z.object({
             id: z.number(),
             name: z.string(),
-          }),
+          }).nullable(),
           weight: z.number().nullable(),
           gender: z.object({
             id: z.number(),
             name: z.string(),
-          }),
+          }).nullable(),
         }),
       }),
       responseSchema: z.object({

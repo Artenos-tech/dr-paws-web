@@ -31,6 +31,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
   const { call: getPetSpecies, result: getPetSpeciesResult } = useAPICall(api.getPetSpecies);
   const { call: getPetBreeds, result: getPetBreedsResult } = useAPICall(api.getPetBreeds);
   const { call: getPetGender, result: getPetGenderResult } = useAPICall(api.getPetGender);
+  const { call: updatePetDetails, result: updatePetDetailsResult } = useAPICall(api.updatePet);
 
   const {
     register,
@@ -142,16 +143,30 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
         ? ""
         : image;
 
-    if (typeof window !== "undefined") {
-      const storedPets = localStorage.getItem("pets");
-      const pets: Pet[] = storedPets ? JSON.parse(storedPets) : [];
+    const petType = petSpecies.find((species) => species.name === data.type)?.id;
+    const petBreed = petBreeds.find((breed) => breed.name === data.breed)?.id;
+    const petGender = petGenders.find((gender) => gender.name === data.gender)?.id;
 
-      const updatedPets = pets.map((pet) =>
-        Number(pet.id) === Number(petProfileId)
-          ? { ...data, petImage: realPetImage }
-          : pet
-      );
-      localStorage.setItem("pets", JSON.stringify(updatedPets));
+    if (petType && petBreed && petGender) {
+      updatePetDetails({
+        pet: {
+          id: petProfileId,
+          name: data.name,
+          species: {
+            id: petType,
+            name: data.type,
+          },
+          breed: {
+            id: petBreed,
+            name: data.breed!,
+          },
+          weight: null,
+          gender: {
+            id: petGender,
+            name: data.gender!,
+          },
+        }
+      });
     }
     setPet({ ...data, profileImage: realPetImage });
     setIsEditing(false);
@@ -169,18 +184,6 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
       reader.readAsDataURL(file);
     }
   };
-
-  // const handleAgeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const { name, value } = e.target;
-  //   const newValue = Math.max(
-  //     0,
-  //     Math.min(parseInt(value) || 0, name === "months" ? 12 : 40)
-  //   );
-
-  //   const updatedAge = { ...age, [name]: newValue };
-  //   setAge(updatedAge);
-  //   setValue("age", updatedAge);
-  // };
 
   const handlePetTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedType = e.target.value.toLowerCase();
@@ -315,7 +318,6 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                         {...register("breed")}
                         className="outline-none border w-full p-1 px-2 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
                         defaultValue={pet?.breed || ""}
-                        onChange={handlePetTypeChange}
                       >
                       <option value="">Type of breed</option>
                       {petBreeds?.map((breed) => (
@@ -349,7 +351,6 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                       {...register("gender")}
                       className="outline-none border w-full px-2 p-1 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
                       defaultValue={pet?.gender || ""}
-                      onChange={(newData) => {console.log(newData)} }
                     >
                       {petGenders?.map((gender) => (
                         <option value={gender.name} key={gender.id}>{gender.name}</option>
