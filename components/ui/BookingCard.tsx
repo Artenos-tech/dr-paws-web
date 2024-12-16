@@ -84,7 +84,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
               pets.map((pet) => {
                 const petImage =
                   pet.profileImage ||
-                  petImageByType[pet.type.toLowerCase()]?.src ||
+                  petImageByType[pet.type?.toLowerCase() || "other"]?.src ||
                   petImageByType["other"].src;
 
                 const isSelected = selectedData[cardId]?.id === pet.id;

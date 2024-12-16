@@ -9,7 +9,6 @@ import { useEffect, useState } from "react";
 import { useAPICall } from "@/hooks/apicall";
 import api from "@/services/api";
 import { PetSpecies, useUserContext } from "@/context/UserContext";
-import { PetType } from "@/app/user/profile/page";
 
 const petSchema = z.object({
   spicesId: z.number(),
@@ -34,7 +33,7 @@ export default function AddPetModal({
 
   const { call: addNewPetAPI } = useAPICall(api.addNewPet);
 
-  const { updateUserPetsHandler, user, updatePetSpeciesHandler, petSpecies } =
+  const { user, updatePetSpeciesHandler, petSpecies } =
     useUserContext();
   const [selectedType, setSelectedType] = useState<string>("");
 
@@ -75,17 +74,17 @@ export default function AddPetModal({
 
       if (response.ok) {
         console.log("Add Pet API response:", response.value.body);
-        const petResponse = response.value.body.pet;
-        const newPet: Partial<PetType> = {
-          id: petResponse.id,
-          spicesId: data.spicesId,
-          name: data.name,
-          type: data.type,
-          profileImage: "",
-          vetPortId: petResponse.vetport_id,
-        };
+        // const petResponse = response.value.body.pet;
+        // const newPet: Partial<PetType> = {
+        //   id: petResponse.id,
+        //   spicesId: data.spicesId,
+        //   name: data.name,
+        //   type: data.type,
+        //   profileImage: "",
+        //   vetPortId: petResponse.vetport_id,
+        // };
 
-        updateUserPetsHandler([newPet]);
+        // updateUserPetsHandler([newPet]);
         onSuccess();
         reset({ name: "", type: "" });
         setSelectedType("");

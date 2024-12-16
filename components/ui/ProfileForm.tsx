@@ -42,11 +42,11 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
     defaultValues: profileData,
   });
 
-  const [image, setImage] = useState(profileData.profileImage);
+  const [image, setImage] = useState(profileData.profile_image);
 
   useEffect(() => {
     reset(profileData);
-    setImage(profileData.profileImage);
+    setImage(profileData.profile_image);
   }, [profileData, reset]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -60,10 +60,11 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
 
   const handleFormSubmit = (data: ProfileFormData) => {
     onSubmit({
-      id: profileData.id,
-      profileImage: image,
-      role: "USER",
       ...data,
+      id: profileData.id,
+      profile_image: image,
+      current_address: data.currentAddress,
+      role: "USER",
     });
   };
 

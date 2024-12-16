@@ -30,8 +30,8 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
         name: updatedProfile.name,
         email: updatedProfile.email,
         mobile: updatedProfile.mobile,
-        current_address: updatedProfile.currentAddress,
-        profile_image: updatedProfile.profileImage,
+        current_address: updatedProfile.current_address,
+        profile_image: updatedProfile.profile_image,
       }
     })
     if (response.ok) {

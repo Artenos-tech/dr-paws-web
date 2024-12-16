@@ -31,7 +31,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
   const { call: getPetSpecies, result: getPetSpeciesResult } = useAPICall(api.getPetSpecies);
   const { call: getPetBreeds, result: getPetBreedsResult } = useAPICall(api.getPetBreeds);
   const { call: getPetGender, result: getPetGenderResult } = useAPICall(api.getPetGender);
-  const { call: updatePetDetails, result: updatePetDetailsResult } = useAPICall(api.updatePet);
+  const { call: updatePetDetails } = useAPICall(api.updatePet);
 
   const {
     register,
@@ -147,24 +147,24 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
     const petBreed = petBreeds.find((breed) => breed.name === data.breed)?.id;
     const petGender = petGenders.find((gender) => gender.name === data.gender)?.id;
 
-    if (petType && petBreed && petGender) {
+    if (petType) {
       updatePetDetails({
         pet: {
           id: petProfileId,
           name: data.name,
           species: {
             id: petType,
-            name: data.type,
+            name: data.type!,
           },
-          breed: {
+          breed: petBreed ? {
             id: petBreed,
             name: data.breed!,
-          },
+          } : null,
           weight: null,
-          gender: {
+          gender: petGender ? {
             id: petGender,
             name: data.gender!,
-          },
+          } : null,
         }
       });
     }
@@ -283,7 +283,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                     <select
                       {...register("type", { required: "Type is required" })}
                       className="outline-none border w-full p-1 px-2 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
-                      defaultValue={pet?.type}
+                      defaultValue={pet?.type || "Unknown"}
                       onChange={handlePetTypeChange}
                     >
                       <option value="">Type of Pet</option>

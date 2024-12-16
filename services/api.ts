@@ -90,12 +90,13 @@ export default createAPIClient({
           .array(
             z.object({
               id: z.string(),
+              vetport_id: z.number().nullable(),
               name: z.string(),
-              type: z.string(),
+              type: z.string().nullable(),
               breed: z.string().nullable(),
-              weight: z.number().nullable(),
+              weight: z.string().nullable(),
               gender: z.string().nullable(),
-              dob: z.date().nullable(),
+              dob: z.string().nullable(),
               profile_image: z.string().nullable(),
             })
           )
@@ -160,16 +161,16 @@ export default createAPIClient({
           .array(
             z.object({
               id: z.string(),
+              vetport_id: z.number().nullable(),
               name: z.string(),
-              type: z.string(),
+              type: z.string().nullable(),
               breed: z.string().nullable(),
               weight: z.string().nullable(),
               gender: z.string().nullable(),
               dob: z.string().nullable(),
               profile_image: z.string().nullable(),
             })
-          )
-          .nullable(),
+          ),
       }),
       errorResponseSchema: z.object({}),
     },
@@ -178,9 +179,7 @@ export default createAPIClient({
       method: "POST",
       path: "/login/logout",
       pathParamsSchema: z.object({}),
-      requestSchema: z.object({
-        id: z.string(),
-      }),
+      requestSchema: z.object({}),
       responseSchema: z.object({
         status: z.number(),
         message: z.string(),
@@ -198,7 +197,7 @@ export default createAPIClient({
         message: z.string(),
         user: z.object({
           id: z.string(),
-          vetport_id: z.number().nullable(),
+          vetport_id: z.number(),
           mobile: z.string(),
           name: z.string(),
           role: z.enum(["ADMIN", "USER"]),
@@ -211,7 +210,7 @@ export default createAPIClient({
             id: z.string(),
             vetport_id: z.number().nullable(),
             name: z.string(),
-            type: z.string(),
+            type: z.string().nullable(),
             breed: z.string().nullable(),
             weight: z.string().nullable(),
             gender: z.string().nullable(),
@@ -407,7 +406,7 @@ export default createAPIClient({
             id: z.string(),
             vetport_id: z.number().nullable(),
             name: z.string(),
-            type: z.string(),
+            type: z.string().nullable(),
             breed: z.string().nullable(),
             weight: z.string().nullable(),
             gender: z.string().nullable(),

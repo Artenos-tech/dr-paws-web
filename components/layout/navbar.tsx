@@ -26,7 +26,7 @@ export default function NavBar() {
   const navigate = useRouter();
   const isMarketingFeatureEnabled = useMarketingFeature();
 
-  const { getAuthToken, refresh, user, initiateLogin } = useUserContext();
+  const { getAuthToken, refresh, initiateLogin } = useUserContext();
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -64,9 +64,7 @@ export default function NavBar() {
   }, [dropdownRef]);
 
   const handleLogout = async () => {
-    if (user) {
-      await logout({ id: user.id });
-    }
+    await logout({});
     clearAuthToken();
     navigate.push("/");
     refresh();

@@ -9,7 +9,6 @@ import {
   useEffect,
   useState,
 } from "react";
-import { z } from "zod";
 
 import UserAuthenticationModal from "@/components/ui/UserAuthenticationModal";
 import { useAPICall } from "@/hooks/apicall";
@@ -23,15 +22,14 @@ export interface User {
   name: string;
   role: UserRole;
   email: string | null;
-  currentAddress: string | null;
-  profileImage: string | null;
-  vetPortId: number;
+  current_address: string | null;
+  profile_image: string | null;
 }
 
 export interface Pet {
   id: string;
   name: string;
-  type: string;
+  type: string | null;
   breed: string | null;
   weight: string | null;
   gender: string | null;
@@ -53,8 +51,9 @@ export interface UserContextType {
   user: User | null;
   userPets: Pet[] | null;
   petSpecies: PetSpecies[] | null;
-  updateUserDetailsHandler: (data: Partial<User>) => void;
-  updateUserPetsHandler: (data: Partial<Pet>[]) => void;
+  isLoggedIn: boolean | null;
+  updateUserDetailsHandler: (data: User) => void;
+  updateUserPetsHandler: (data: Pet[]) => void;
   getAuthToken: () => string | null;
   refresh: () => void;
   updatePetSpeciesHandler: (data: PetSpecies[]) => void;
@@ -75,10 +74,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
   const [petSpecies, setPetSpecies] = useState<PetSpecies[] | null>(null);
 
   const { call: getUser } = useAPICall(api.getuser);
-
-  const JwtPayloadSchema = z.object({
-    id: z.string(),
-  });
+  const { call: getUser2 } = useAPICall(api.getuser);
 
   const getAuthToken = useCallback(() => {
     if (typeof window !== "undefined") {
@@ -88,83 +84,6 @@ export const UserProvider = ({ children }: UserProviderProps) => {
     return null;
   }, []);
 
-  const updateUserDetailsHandler = useCallback((data: Partial<User>) => {
-    setUser((prevDetails) => {
-      if (!prevDetails) {
-        // If no previous details exist, initialize a new user object with defaults
-        return {
-          id: data.id || "",
-          mobile: data.mobile || "",
-          name: data.name || "",
-          role: data.role || "USER",
-          email: data.email || null,
-          currentAddress: data.currentAddress || null,
-          profileImage: data.profileImage || null,
-          vetPortId: data.vetPortId || 0,
-        };
-      }
-
-      // Merge data into existing details
-      return {
-        ...prevDetails,
-        ...data,
-      };
-    });
-  }, []);
-
-  const updateUserPetsHandler = useCallback((updatedPets: Partial<Pet>[]) => {
-    setUserPets((prevPets) => {
-      if (!prevPets || prevPets.length === 0) {
-        return updatedPets.map((updatedPet) => ({
-          id: updatedPet.id || "",
-          name: updatedPet.name || "",
-          type: updatedPet.type || "",
-          breed: updatedPet.breed || null,
-          weight: updatedPet.weight || null,
-          gender: updatedPet.gender || "Male",
-          dob: updatedPet.dob || null,
-          // age: {
-          //   years: updatedPet.age?.years || null,
-          //   months: updatedPet.age?.months || null,
-          // },
-          vetPortId: updatedPet.vetPortId || null,
-          profileImage: updatedPet.profileImage || null,
-        }));
-      }
-
-      return prevPets.map((pet) => {
-        const updatedPet = updatedPets.find((updated) => updated.id === pet.id);
-        return updatedPet ? { ...pet, ...updatedPet } : pet;
-      });
-    });
-  }, []);
-
-  const updatePetSpeciesHandler = (data: Partial<PetSpecies>[]) => {
-  setPetSpecies((prevSpecies) => {
-    if (!prevSpecies || prevSpecies.length === 0) {
-      return data
-        .filter((species) => species.id !== undefined && species.name !== undefined) // Ensure valid data
-        .map((species) => ({
-          id: species.id as number, // Cast since we ensured validity above
-          name: species.name as string,
-        }));
-    }
-
-    return prevSpecies.map((species) => {
-      const updatedPetSpecies = data.find(
-        (updated) => updated.id === species.id
-      );
-      return updatedPetSpecies
-        ? {
-            id: species.id,
-            name: updatedPetSpecies.name ?? species.name, // Fallback to the original name
-          }
-        : species;
-    });
-  });
-};
-
-
   const handleCheckAuthToken = useCallback(async () => {
     const token = getAuthToken();
     if (token) {
@@ -173,15 +92,16 @@ export const UserProvider = ({ children }: UserProviderProps) => {
           const response = await getUser({});
           if (response.ok) {
             const userResponse = response.value.body.user;
-            updateUserDetailsHandler(userResponse);
+            setUser(userResponse);
             const pets = response.value.body.pets?.map((pet) => ({
               ...pet,
+              vetPortId: pet.vetport_id,
               profileImage: pet.profile_image,
               gender: pet.gender,
-            })) as Partial<Pet>[];
+            }));
 
             if (pets) {
-              updateUserPetsHandler(pets);
+              setUserPets(pets);
             }
           }
         } catch (error) {
@@ -190,6 +110,17 @@ export const UserProvider = ({ children }: UserProviderProps) => {
       }
     }
   }, []);
+
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
+
+  async function checkIsLoggedIn() {
+    const response = await getUser2({});
+    if (response.ok) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
+  }
 
   
   const [loginModalOpen, setLoginModalOpen] = useState<boolean>(false);
@@ -201,8 +132,9 @@ export const UserProvider = ({ children }: UserProviderProps) => {
     setLoginText(loginText);
   }
 
-  function handleLoginSuccess(loginSuccessMsg: string) {
+  async function handleLoginSuccess() {
     setLoginModalOpen(false);
+    await checkIsLoggedIn();
     router.push("/user/profile");
     // TODO: toast.success(loginSuccessMsg);
   }
@@ -211,17 +143,22 @@ export const UserProvider = ({ children }: UserProviderProps) => {
     handleCheckAuthToken();
   }, [handleCheckAuthToken]);
 
+  useEffect(() => {
+    checkIsLoggedIn();
+  }, [])
+
   return (
     <UserContext.Provider
       value={{
         user,
         userPets,
         petSpecies,
-        updateUserDetailsHandler,
-        updateUserPetsHandler,
+        isLoggedIn,
+        updateUserDetailsHandler: setUser,
+        updateUserPetsHandler: setUserPets,
+        updatePetSpeciesHandler: setPetSpecies,
         getAuthToken,
         refresh: handleCheckAuthToken,
-        updatePetSpeciesHandler,
         initiateLogin,
       }}
     >
