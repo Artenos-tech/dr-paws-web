@@ -1,7 +1,5 @@
 "use client";
 
-
-import jwt from "jsonwebtoken";
 import { useRouter } from "next/navigation";
 import {
   createContext,
@@ -11,7 +9,6 @@ import {
   useEffect,
   useState,
 } from "react";
-import { z } from "zod";
 
 import UserAuthenticationModal from "@/components/ui/UserAuthenticationModal";
 import { useAPICall } from "@/hooks/apicall";
@@ -135,7 +132,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
     setLoginText(loginText);
   }
 
-  async function handleLoginSuccess(loginSuccessMsg: string) {
+  async function handleLoginSuccess() {
     setLoginModalOpen(false);
     await checkIsLoggedIn();
     router.push("/user/profile");

@@ -8,7 +8,7 @@ import ImageEdit from "@/public/assets/images/Profile/ImageEdit.png";
 import OutlineButton from "./OutlineButton";
 import { FaTrash } from "react-icons/fa6";
 import { petImageByType } from "./PetCard";
-import { Pet, PetSpecies, useUserContext } from "@/context/UserContext";
+import { Pet } from "@/context/UserContext";
 import { useAPICall } from "@/hooks/apicall";
 import api from "@/services/api";
 
@@ -27,9 +27,11 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
   //   years: 0,
   //   months: 0,
   // });
-
-  const { userPets, petSpecies, updatePetSpeciesHandler } = useUserContext();
-  const { call: getPetSpecies } = useAPICall(api.getPetSpecies);
+  const { call: getPets, result: getPetsResult } = useAPICall(api.getPets);
+  const { call: getPetSpecies, result: getPetSpeciesResult } = useAPICall(api.getPetSpecies);
+  const { call: getPetBreeds, result: getPetBreedsResult } = useAPICall(api.getPetBreeds);
+  const { call: getPetGender, result: getPetGenderResult } = useAPICall(api.getPetGender);
+  const { call: updatePetDetails } = useAPICall(api.updatePet);
 
   const {
     register,
@@ -50,30 +52,31 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
   });
 
   useEffect(() => {
+    getPets({});
+  }, []);
+
+  useEffect(() => {
     if (petProfileId) fetchPetSpecies();
   }, [petProfileId]);
 
-  const fetchPetSpecies = async () => {
-    const response = await getPetSpecies({});
-    if (response?.ok) {
-      updatePetSpeciesHandler(
-        response.value.body.species.map((specie: PetSpecies) => ({
-          id: specie.id,
-          name: specie.name,
-        }))
-      );
-    }
-  };
-
   useEffect(() => {
-    const fetchPetDetails = () => {
-      if (!userPets || !petProfileId) return;
-
-      const foundPet = userPets.find((pet) => pet.id === petProfileId);
-
+    if (getPetsResult?.ok) {
+      const foundPet = getPetsResult.value.body.pets.find(
+        (pet) => pet.id === petProfileId
+      );
       if (foundPet) {
-        setPet(foundPet as Pet);
-        setImage(foundPet.profileImage || "");
+        setPet({
+          id: foundPet.id,
+          name: foundPet.name,
+          type: foundPet.type,
+          breed: foundPet.breed,
+          weight: foundPet.weight,
+          gender: foundPet.gender,
+          vetPortId: foundPet.vetport_id,
+          dob: foundPet.dob,
+          profileImage: foundPet.profile_image,
+        });
+        setImage(foundPet.profile_image || "");
         // setAge(foundPet.age || { years: 0, months: 0 });
 
         Object.entries(foundPet).forEach(([key, value]) => {
@@ -82,10 +85,38 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
           }
         });
       }
-    };
+    }
+  }, [petProfileId, getPetsResult])
 
-    fetchPetDetails();
-  }, [petProfileId, setValue, userPets]);
+  useEffect(() => {
+    if (getPetSpeciesResult?.ok) {
+      const speciesId = getPetSpeciesResult.value.body.species.find(
+        (species) => species.name === pet?.type
+      )?.id;
+      if (speciesId) {
+        fetchPetBreedsBySpecies(speciesId);
+        fetchPetGenderBySpecies(speciesId);
+      }
+    }
+  }, [getPetSpeciesResult]);
+
+  const fetchPetSpecies = async () => {
+    await getPetSpecies({});
+  };
+
+  const fetchPetBreedsBySpecies = async (speciesId: number) => {
+    await getPetBreeds({ speciesid: JSON.stringify(speciesId) });
+  };
+
+  const fetchPetGenderBySpecies = async (speciesId: number) => {
+    await getPetGender({ speciesid: JSON.stringify(speciesId) });
+  };
+
+  const petSpecies = getPetSpeciesResult?.ok ? getPetSpeciesResult.value.body.species : [];
+
+  const petBreeds = getPetBreedsResult?.ok ? getPetBreedsResult.value.body.breeds : [];
+
+  const petGenders = getPetGenderResult?.ok ? getPetGenderResult.value.body.gender : [];
 
   const handleEditCancelClick = () => {
     if (pet) {
@@ -112,16 +143,30 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
         ? ""
         : image;
 
-    if (typeof window !== "undefined") {
-      const storedPets = localStorage.getItem("pets");
-      const pets: Pet[] = storedPets ? JSON.parse(storedPets) : [];
+    const petType = petSpecies.find((species) => species.name === data.type)?.id;
+    const petBreed = petBreeds.find((breed) => breed.name === data.breed)?.id;
+    const petGender = petGenders.find((gender) => gender.name === data.gender)?.id;
 
-      const updatedPets = pets.map((pet) =>
-        Number(pet.id) === Number(petProfileId)
-          ? { ...data, petImage: realPetImage }
-          : pet
-      );
-      localStorage.setItem("pets", JSON.stringify(updatedPets));
+    if (petType) {
+      updatePetDetails({
+        pet: {
+          id: petProfileId,
+          name: data.name,
+          species: {
+            id: petType,
+            name: data.type!,
+          },
+          breed: petBreed ? {
+            id: petBreed,
+            name: data.breed!,
+          } : null,
+          weight: null,
+          gender: petGender ? {
+            id: petGender,
+            name: data.gender!,
+          } : null,
+        }
+      });
     }
     setPet({ ...data, profileImage: realPetImage });
     setIsEditing(false);
@@ -140,18 +185,6 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
     }
   };
 
-  // const handleAgeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const { name, value } = e.target;
-  //   const newValue = Math.max(
-  //     0,
-  //     Math.min(parseInt(value) || 0, name === "months" ? 12 : 40)
-  //   );
-
-  //   const updatedAge = { ...age, [name]: newValue };
-  //   setAge(updatedAge);
-  //   setValue("age", updatedAge);
-  // };
-
   const handlePetTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedType = e.target.value.toLowerCase();
     const newImage = petImageByType[selectedType]?.src || "";
@@ -160,7 +193,6 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
 
   const defaultImageOrPetImage =
     image || petImageByType[pet?.type || "other"] || petImageByType.other;
-  console.log(defaultImageOrPetImage);
 
   return (
     <div className="bg-primary-3 rounded-lg p-3 md:p-6 lg:p-8 w-full">
@@ -237,7 +269,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
             )}
 
             <div
-              className={`grid grid-cols-2 grid-rows-3 md:grid-cols-3 md:grid-rows-2  w-full gap-4 md:gap-12 lg:gap-3`}
+              className={`grid grid-cols-2 grid-rows-3 md:grid-cols-2 md:grid-rows-2  w-full gap-4 md:gap-12 lg:gap-3`}
             >
               <div className="">
                 <label
@@ -282,11 +314,18 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                 </label>
                 {isEditing ? (
                   <>
-                    <input
-                      type="text"
-                      {...register("breed")}
-                      className="outline-none border w-full px-2 p-1 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
-                    />
+                    <select
+                        {...register("breed")}
+                        className="outline-none border w-full p-1 px-2 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
+                        defaultValue={pet?.breed || ""}
+                      >
+                      <option value="">Type of breed</option>
+                      {petBreeds?.map((breed) => (
+                        <option key={breed.id} value={breed.name}>
+                          {breed.name}
+                        </option>
+                      ))}
+                    </select>{" "}
                     {errors.breed && (
                       <p className="text-red-500 text-xs">
                         {errors.breed.message}
@@ -311,10 +350,11 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                     <select
                       {...register("gender")}
                       className="outline-none border w-full px-2 p-1 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
-                      defaultValue={pet?.gender || "Male"}
+                      defaultValue={pet?.gender || ""}
                     >
-                      <option value="Male">Male</option>
-                      <option value="Female">Female</option>
+                      {petGenders?.map((gender) => (
+                        <option value={gender.name} key={gender.id}>{gender.name}</option>
+                      ))}
                     </select>
 
                     {errors.gender && (
@@ -330,7 +370,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                 )}
               </div>
 
-              <div className={`${!isEditing && "ml-4"} md:ml-0`}>
+              {/* <div className={`${!isEditing && "ml-4"} md:ml-0`}>
                 <label
                   className="text-secondary-1 text-xs md:text-sm"
                   htmlFor="age"
@@ -374,7 +414,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                 //   {pet?.age?.months ? `${pet.age.months} mths ` : ""}
                 // </p>
                 null}
-              </div>
+              </div> */}
 
               <div className="">
                 <label
@@ -408,7 +448,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                   </p>
                 )}
               </div>
-              <div className={`${!isEditing && "ml-4"} md:ml-0`}>
+              {/* <div className={`${!isEditing && "ml-4"} md:ml-0`}>
                 <label
                   className="text-secondary-1 text-xs md:text-sm"
                   htmlFor="weight"
@@ -438,7 +478,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                     {pet?.weight ? `${pet.weight} kg` : ""}
                   </p>
                 )}
-              </div>
+              </div> */}
             </div>
           </div>
           {isEditing && (

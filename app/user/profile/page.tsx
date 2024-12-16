@@ -28,10 +28,8 @@ const Profile: React.FC = () => {
   const [isAddPetModalOpen, setIsAddPetModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-  const { updateUserPetsHandler, userPets, user, getAuthToken, refresh } =
+  const { user, getAuthToken, refresh } =
     useUserContext();
-
-  // Initialize petIdCounter as a string
 
   const navigate = useRouter();
 
@@ -42,26 +40,11 @@ const Profile: React.FC = () => {
   } = useAPICall(api.getPets);
 
   useEffect(() => {
-    if (user) {
-      fetchPets();
-    }
-  }, [user]);
+    fetchPets();
+  }, []);
 
   const fetchPets = async () => {
-    if (user) {
-      const response = await getPetsAPI({});
-      if (response.ok) {
-        const pets = response.value.body.pets?.map((pet) => ({
-          ...pet,
-          profileImage: pet.profile_image,
-          vetPortId: pet.vetport_id,
-        }));
-
-        if (pets) {
-          updateUserPetsHandler(pets);
-        }
-      }
-    }
+    await getPetsAPI({});
   };
 
   const pets =
@@ -95,7 +78,7 @@ const Profile: React.FC = () => {
         <div className="flex flex-col w-full min-h-[350px] gap-2">
           <div className="flex items-center justify-between">
             <h1 className="text-2xl text-secondary-1">Your Pets</h1>
-            {userPets && userPets.length > 0 && (
+            {pets && pets.length > 0 && (
               <OutlineButton
                 outlineBtnText="Add Pet"
                 outlineBtnLink={() => setIsAddPetModalOpen(true)}
