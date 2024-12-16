@@ -8,7 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import OutlineButton from "@/components/ui/OutlineButton";
 import toast, { Toaster } from "react-hot-toast";
 import EditProfileModal from "@/components/ui/EditProfileModal";
-import { Pet, useUserContext } from "@/context/UserContext";
+import { useUserContext } from "@/context/UserContext";
 import { useRouter } from "next/navigation";
 import Loader from "@/components/ui/Loader";
 import { useAPICall } from "@/hooks/apicall";
@@ -28,7 +28,7 @@ const Profile: React.FC = () => {
   const [isAddPetModalOpen, setIsAddPetModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-  const { updateUserPetsHandler, userPets, user, getAuthToken, refresh } =
+  const { user, getAuthToken, refresh } =
     useUserContext();
 
   const navigate = useRouter();
@@ -40,27 +40,11 @@ const Profile: React.FC = () => {
   } = useAPICall(api.getPets);
 
   useEffect(() => {
-    if (user) {
-      fetchPets();
-    }
-  }, [user]);
+    fetchPets();
+  }, []);
 
   const fetchPets = async () => {
-    if (user) {
-      const response = await getPetsAPI({});
-      if (response.ok) {
-        const pets = response.value.body.pets?.map((pet) => ({
-          ...pet,
-          profileImage: pet.profile_image,
-          vetPortId: pet.vetport_id,
-          gender: pet.gender,
-        })) as Partial<Pet>[];
-
-        if (pets) {
-          updateUserPetsHandler(pets);
-        }
-      }
-    }
+    await getPetsAPI({});
   };
 
   const pets =
@@ -94,7 +78,7 @@ const Profile: React.FC = () => {
         <div className="flex flex-col w-full min-h-[350px] gap-2">
           <div className="flex items-center justify-between">
             <h1 className="text-2xl text-secondary-1">Your Pets</h1>
-            {userPets && userPets.length > 0 && (
+            {pets && pets.length > 0 && (
               <OutlineButton
                 outlineBtnText="Add Pet"
                 outlineBtnLink={() => setIsAddPetModalOpen(true)}
