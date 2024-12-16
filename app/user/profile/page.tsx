@@ -8,7 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import OutlineButton from "@/components/ui/OutlineButton";
 import toast, { Toaster } from "react-hot-toast";
 import EditProfileModal from "@/components/ui/EditProfileModal";
-import { Pet, useUserContext } from "@/context/UserContext";
+import { useUserContext } from "@/context/UserContext";
 import { useRouter } from "next/navigation";
 import Loader from "@/components/ui/Loader";
 import { useAPICall } from "@/hooks/apicall";

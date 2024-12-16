@@ -9,7 +9,7 @@ import OTPForm from "./OTPForm";
 import { useAPICall } from "@/hooks/apicall";
 import api, { setAuthToken } from "@/services/api";
 import toast, { Toaster } from "react-hot-toast";
-import { Pet, useUserContext } from "@/context/UserContext";
+import { useUserContext } from "@/context/UserContext";
 
 interface authenticationProps {
   isOpen: boolean;

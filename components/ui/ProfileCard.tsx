@@ -11,12 +11,12 @@ interface ProfileCardProps {
 }
 
 const ProfileCard: React.FC<ProfileCardProps> = ({ profile, onEdit }) => {
-  const { name, profileImage, mobile, email, currentAddress } = profile;
+  const { name, profile_image, mobile, email, current_address } = profile;
 
   return (
     <div className="w-full flex flex-col lg:flex-row items-start lg:items-center gap-6 md:gap-8 mt-16">
       <div className="relative w-20 h-20 md:w-32 md:h-32 rounded-full overflow-hidden bg-orange-400 flex-shrink-0">
-        <Image src={profileImage || defaultProfileImage} alt={name} fill className="object-cover" priority />
+        <Image src={profile_image || defaultProfileImage} alt={name} fill className="object-cover" priority />
       </div>
 
       <div className="flex-grow space-y-6">
@@ -40,7 +40,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ profile, onEdit }) => {
           </div>
           <div className="space-y-2">
             <h2 className="text-gray-500">Address</h2>
-            <p className="text-lg font-medium text-gray-700">{currentAddress}</p>
+            <p className="text-lg font-medium text-gray-700">{current_address}</p>
           </div>
         </div>
       </div>

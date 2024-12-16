@@ -9,7 +9,6 @@ import { useEffect, useState } from "react";
 import { useAPICall } from "@/hooks/apicall";
 import api from "@/services/api";
 import { PetSpecies, useUserContext } from "@/context/UserContext";
-import { PetType } from "@/app/user/profile/page";
 
 const petSchema = z.object({
   spicesId: z.number(),
@@ -34,7 +33,7 @@ export default function AddPetModal({
 
   const { call: addNewPetAPI } = useAPICall(api.addNewPet);
 
-  const { updateUserPetsHandler, user, updatePetSpeciesHandler, petSpecies } =
+  const { user, updatePetSpeciesHandler, petSpecies } =
     useUserContext();
   const [selectedType, setSelectedType] = useState<string>("");
 
