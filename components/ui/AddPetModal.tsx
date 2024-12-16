@@ -75,17 +75,17 @@ export default function AddPetModal({
 
       if (response.ok) {
         console.log("Add Pet API response:", response.value.body);
-        const petResponse = response.value.body.pet;
-        const newPet: Partial<PetType> = {
-          id: petResponse.id,
-          spicesId: data.spicesId,
-          name: data.name,
-          type: data.type,
-          profileImage: "",
-          vetPortId: petResponse.vetport_id,
-        };
+        // const petResponse = response.value.body.pet;
+        // const newPet: Partial<PetType> = {
+        //   id: petResponse.id,
+        //   spicesId: data.spicesId,
+        //   name: data.name,
+        //   type: data.type,
+        //   profileImage: "",
+        //   vetPortId: petResponse.vetport_id,
+        // };
 
-        updateUserPetsHandler([newPet]);
+        // updateUserPetsHandler([newPet]);
         onSuccess();
         reset({ name: "", type: "" });
         setSelectedType("");

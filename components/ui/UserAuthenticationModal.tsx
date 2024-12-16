@@ -143,16 +143,12 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
           // Storing the token in the localstorage
           setAuthToken(response.value.body.token);
           const user = response.value.body.user;
-          updateUserDetailsHandler({
-            ...user,
-            currentAddress: user.current_address,
-            profileImage: user.profile_image,
-          });
-          const pets = response.value.body.pets?.map((pet) => ({
+          updateUserDetailsHandler(user);
+          const pets = response.value.body.pets.map((pet) => ({
             ...pet,
             profileImage: pet.profile_image,
-            gender: pet.gender ?? undefined,
-          })) as Partial<Pet>[];
+            vetPortId: pet.vetport_id,
+          }));
 
           setOtpErr("");
 
@@ -187,16 +183,12 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
         if (response?.ok) {
           setAuthToken(response.value.body.token);
           const user = response.value.body.user;
-          updateUserDetailsHandler({
-            ...user,
-            currentAddress: user.current_address,
-            profileImage: user.profile_image,
-          });
+          updateUserDetailsHandler(user);
           const pets = response.value.body.pets?.map((pet) => ({
             ...pet,
             profileImage: pet.profile_image,
-            gender: pet.gender ?? undefined,
-          })) as Partial<Pet>[];
+            vetPortId: pet.vetport_id,
+          }));
 
           if (pets) {
             updateUserPetsHandler(pets);

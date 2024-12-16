@@ -55,8 +55,7 @@ const Profile: React.FC = () => {
           ...pet,
           profileImage: pet.profile_image,
           vetPortId: pet.vetport_id,
-          gender: pet.gender,
-        })) as Partial<Pet>[];
+        }));
 
         if (pets) {
           updateUserPetsHandler(pets);

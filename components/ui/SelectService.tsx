@@ -54,12 +54,12 @@ const SelectService: React.FC<SelectServiceProps> = ({
     if (user) {
       const response = await getPetsAPI({});
       if (response.ok) {
-        const pets = response.value.body.pets?.map((pet) => ({
+        const pets = response.value.body.pets.map((pet) => ({
           ...pet,
           profileImage: pet.profile_image,
           vetPortId: pet.vetport_id,
           gender: pet.gender,
-        })) as Partial<Pet>[];
+        }));
 
         if (pets) {
           updateUserPetsHandler(pets);
