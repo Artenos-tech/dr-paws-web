@@ -34,7 +34,7 @@ const PetCard: React.FC<PetCardProps> = ({ pet }) => {
     router.push(`/user/profile/pet-profile/${id}`);
   };
 
-  const defaultImageOrPetImage = profileImage || petImageByType[type.toLowerCase()] || defaultPetImg;
+  const defaultImageOrPetImage = profileImage || petImageByType[type?.toLowerCase() || "other"] || defaultPetImg;
 
 
   return (

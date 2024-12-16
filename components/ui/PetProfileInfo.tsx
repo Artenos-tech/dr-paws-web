@@ -251,7 +251,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                     <select
                       {...register("type", { required: "Type is required" })}
                       className="outline-none border w-full p-1 px-2 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
-                      defaultValue={pet?.type}
+                      defaultValue={pet?.type || "Unknown"}
                       onChange={handlePetTypeChange}
                     >
                       <option value="">Type of Pet</option>
