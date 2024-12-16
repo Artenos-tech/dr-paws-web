@@ -11,8 +11,6 @@ import { HiOutlineCalendar } from "react-icons/hi";
 import CustomButton from "./CustomButton";
 import { useRouter } from "next/navigation";
 
-import { useAppointmentsContext } from "@/context/AppointmentsContext";
-import Loader from "@/components/ui/Loader";
 import { formatDate, formatTimeRange } from "@/components/ui/AppointmentCard";
 import { parse, format, addMinutes } from "date-fns";
 
@@ -25,9 +23,11 @@ import { doctors } from "@/model/mockData";
 import defaultVetImage from "@/public/assets/images/clinic/doctorFemale.webp";
 
 import defaultPetImage from "@/public/assets/images/Appointments/petImage.png";
-import { petImageByType } from "./PetCard";
+// import { petImageByType } from "./PetCard";
 import { capitalizeFirstLetter } from "@/components/ui/AppointmentCard";
 import { epochToDate } from "@/components/ui/AppointmentCard";
+import { useAPICall } from "@/hooks/apicall";
+import api from "@/services/api";
 
 
 export const cancelReasons = [
@@ -47,6 +47,13 @@ export const rescheduleReasons = [
 
 type BookingDetailsProps = {
   appointmentId?: string;
+  selectedAppointment?: {
+    selectedData: Record<number, {name: string} | null>;
+    selectedClinic: string | null;
+    selectedDoctor: string | null;
+    selectedDate: Date | null;
+    selectedSlot: string | null;
+  } 
   onReschedule?: () => void;
 
 };
@@ -54,7 +61,7 @@ type BookingDetailsProps = {
 const BookingDetails: React.FC<BookingDetailsProps> = ({
   appointmentId,
   onReschedule,
-
+  selectedAppointment,
 }) => {
   const [bookingDetails, setBookingDetails] = useState<AppointmentType | null>(
     null
@@ -70,23 +77,21 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
   const [cancelFlowEnd, setCancelFlowEnd] = useState(false);
   const [showValidationMessage, setShowValidationMessage] = useState(false);
 
-  const { appointments, loading, selectedAppointment } =
-    useAppointmentsContext();
-
   const navigate = useRouter();
 
+  
+  const {
+    call: callGetAppointmentServices,
+    result: getAppointmentServicesResult,
+  } = useAPICall(api.getAppointmentServices)
+
   useEffect(() => {
-    fetchBookingDetails();
+    callGetAppointmentServices({});
   }, []);
 
-  const fetchBookingDetails = () => {
-    const foundAppointment = appointments?.find(
-      (appointment: AppointmentType) => appointment.id === appointmentId
-    );
-    if (foundAppointment) {
-      setBookingDetails(foundAppointment);
-    }
-  };
+  const appointmentServices = getAppointmentServicesResult?.ok
+  ? getAppointmentServicesResult.value.body.appointmentTypes
+  : null;
 
   const handleCancelBooking = () => {
     setCancelFlowEnd(true);
@@ -126,21 +131,13 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
   );
 
   const foundDoctor = doctors.find(
-    (doctor) => doctor.id === selectedAppointment.selectedDoctor
+    (doctor) => doctor.id === selectedAppointment?.selectedDoctor
   );
 
   console.log(
-    "Object.values(selectedAppointment?.selectedData || {})[0]?.name}",
-    Object.values(selectedAppointment?.selectedData || {})[0]?.name
+    "Object.values(selectedAppointment?.selectedData || {})[0]}",
+    Object.values(selectedAppointment?.selectedData || {})[0]
   );
-
-  if (loading) {
-    return (
-      <div>
-        <Loader />
-      </div>
-    );
-  }
 
   const addMinutesToTime = (time: string, minutes: number): string => {
     try {
@@ -153,6 +150,15 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
     }
   };
 
+
+  const serviceTypeId = selectedAppointment?.selectedData && JSON.parse(Object.keys(selectedAppointment.selectedData)[0]);
+
+  if (!appointmentServices) {
+    return "loading services...";
+  }
+  const serviceType = appointmentServices.find((service) => service.vetPortId === serviceTypeId)?.title;
+
+  console.log("selectedAppointment", selectedAppointment)
   return (
     <div className="w-full h-full">
       {appointmentId && <BackButton />}
@@ -190,7 +196,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                   {bookingDetails?.vet_vetport_id !== 0 &&
                     ` with ${matchedDoctor?.name}`}
                 </>
-              ) : selectedAppointment.selectedData &&
+              ) : selectedAppointment?.selectedData &&
                 Object.keys(selectedAppointment.selectedData).includes(
                   "Grooming"
                 ) ? (
@@ -206,18 +212,16 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
               )}
             </p>
             <p>
-              for
+              for 
               {/* {bookingDetails?.service}  */}
               {appointmentId
-                ? "Service" // TO-DO: Later give booking service
-                : selectedAppointment.selectedData &&
+                ? " Service" // TO-DO: Later give booking service
+                : selectedAppointment?.selectedData &&
                   Object.keys(selectedAppointment.selectedData).includes(
                     "Grooming"
                   )
-                ? "Grooming consultation"
-                : selectedAppointment.selectedData &&
-                  Object.keys(selectedAppointment.selectedData) +
-                    " consultation"}
+                ? " Grooming"
+                : ` ${serviceType} consultation`}
             </p>
 
             <div className="flex items-center my-4">
@@ -244,20 +248,21 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
               </>
               
               )}
-              {!appointmentId && selectedAppointment.selectedData && (
+              {!appointmentId && selectedAppointment?.selectedData && (
                 <>
                   <Image
                     src={
-                      (typeof selectedAppointment.selectedData.profileImage ===
-                        "string" &&
-                        (selectedAppointment.selectedData
-                          .profileImage as string)) ||
-                      petImageByType[
-                        (selectedAppointment.selectedData?.type
-                          ?.toString()
-                          .toLowerCase() as keyof typeof petImageByType) ||
-                          "other"
-                      ]
+                      // (typeof selectedAppointment.selectedData.profileImage ===
+                      //   "string" &&
+                      //   (selectedAppointment.selectedData
+                      //     .profileImage as string)) ||
+                      // petImageByType[
+                      //   (selectedAppointment.selectedData?.type
+                      //     ?.toString()
+                      //     .toLowerCase() as keyof typeof petImageByType) ||
+                      //     "other"
+                      // ]
+                      defaultPetImage
                     }
                     alt="pet-image"
                     width={130}
@@ -307,7 +312,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                 {bookingDetails
                   ? formatDate(epochToDate(bookingDetails.appt_start))
                   : !appointmentId &&
-                    selectedAppointment.selectedDate &&
+                    selectedAppointment?.selectedDate &&
                     formatDate(selectedAppointment.selectedDate.toString())}
               </p>
               <p
@@ -326,8 +331,8 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                   )
                 ) : (
                   <>
-                    {selectedAppointment.selectedSlot} -{" "}
-                    {selectedAppointment.selectedSlot &&
+                    {selectedAppointment?.selectedSlot} -{" "}
+                    {selectedAppointment?.selectedSlot &&
                       addMinutesToTime(
                         selectedAppointment.selectedSlot,
                         selectedAppointment.selectedData &&

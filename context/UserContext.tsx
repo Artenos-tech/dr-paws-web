@@ -170,8 +170,6 @@ export const UserProvider = ({ children }: UserProviderProps) => {
   const handleCheckAuthToken = useCallback(async () => {
     const token = getAuthToken();
     if (token) {
-      const decodedToken = jwt.decode(token);
-      const payload = JwtPayloadSchema.parse(decodedToken);
       if (!user) {
         try {
           const response = await getUser({});
@@ -229,12 +227,14 @@ export const UserProvider = ({ children }: UserProviderProps) => {
         initiateLogin,
       }}
     >
-      <UserAuthenticationModal
-        isOpen={loginModalOpen}
-        onClose={() => setLoginModalOpen(false)}
-        buttonText={loginText}
-        onSuccess={handleLoginSuccess}
-      />
+      {loginModalOpen && (
+        <UserAuthenticationModal
+          isOpen
+          onClose={() => setLoginModalOpen(false)}
+          buttonText={loginText}
+          onSuccess={handleLoginSuccess}
+        />
+      )}
       {children}
     </UserContext.Provider>
   );

@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import BookingCard from "@/components/ui/BookingCard";
 import BookingModal from "@/components/ui/BookingModal";
-import { ServiceTabsData } from "@/model/mockData";
 import CustomButton from "./CustomButton";
 import { Pet, useUserContext } from "@/context/UserContext";
 import { useAPICall } from "@/hooks/apicall";
@@ -16,12 +15,10 @@ export interface BookingCategory {
 }
 
 interface SelectServiceProps {
-  selectedData: Record<string, Pet | null>;
-  setSelectedData: React.Dispatch<
-    React.SetStateAction<Record<string, Pet | null>>
-  >;
-  openCard: string | null;
-  setOpenCard: React.Dispatch<React.SetStateAction<string | null>>;
+  selectedData: Record<number, Pet | null>;
+  setSelectedData: (newSelectedData: Record<number, Pet | null>) => void;
+  openCard: number | null;
+  setOpenCard: React.Dispatch<React.SetStateAction<number | null>>;
   isModalOpen: boolean;
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   onNext: () => void;
@@ -43,7 +40,13 @@ const SelectService: React.FC<SelectServiceProps> = ({
     api.getPets
   );
 
+  const {
+    call: callGetAppointmentServices,
+    result: getAppointmentServicesResult,
+  } = useAPICall(api.getAppointmentServices)
+
   useEffect(() => {
+    callGetAppointmentServices({});
     fetchPets();
   }, []);
 
@@ -73,33 +76,28 @@ const SelectService: React.FC<SelectServiceProps> = ({
       vetPortId: pet.vetport_id,
     }));
 
-  const handleCardSelection = (cardId: string, selectedPet: Pet | null) => {
+  const ServiceTabsData = getAppointmentServicesResult?.ok
+    ? getAppointmentServicesResult.value.body.appointmentTypes
+    : [];
+
+  const handleCardSelection = (cardId: number, selectedPet: Pet | null) => {
     setSelectedData({ [cardId]: selectedPet });
   };
 
-  const toggleCard = (cardId: string) => {
+  const toggleCard = (cardId: number) => {
     setOpenCard((prevOpenCard) => {
-      if (prevOpenCard && prevOpenCard !== cardId) {
-        setSelectedData((prevSelectedData) => ({
-          ...prevSelectedData,
+      if (prevOpenCard !== null) {
+        setSelectedData({
           [prevOpenCard]: null,
-        }));
+        });
       }
-      const isClosingCurrentCard = prevOpenCard === cardId;
-
-      if (isClosingCurrentCard) {
-        setSelectedData((prevSelectedData) => ({
-          ...prevSelectedData,
-          [cardId]: null,
-        }));
-      }
-
-      if (cardId === "Surgeries" && !hasShownDisclaimerModal) {
+      // show disclaimer modal for surgeries
+      const selectedCard = ServiceTabsData.find((category) => category.vetPortId === cardId);
+      if (selectedCard && selectedCard.id === "Surgeries" && !hasShownDisclaimerModal) {
         setIsModalOpen(true);
         setHasShownDisclaimerModal(true);
       }
-
-      return isClosingCurrentCard ? null : cardId;
+      return prevOpenCard === cardId ? null : cardId;
     });
   };
 
@@ -121,11 +119,11 @@ const SelectService: React.FC<SelectServiceProps> = ({
         {ServiceTabsData.map((category) => (
           <BookingCard
             key={category.id}
-            cardId={category.id}
+            cardId={category.vetPortId}
             title={category.title}
             description={category.description}
             onCardSelection={handleCardSelection}
-            isOpen={openCard === category.id}
+            isOpen={openCard === category.vetPortId}
             toggleCard={toggleCard}
             selectedData={selectedData}
             pets={pets || []}

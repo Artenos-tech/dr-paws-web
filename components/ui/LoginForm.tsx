@@ -56,6 +56,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
             id="mobileNumber"
             required
             autoComplete="off"
+            autoFocus
           />
           <label htmlFor="mobileNumber">Mobile Number</label>
           {errors.mobileNumber && (

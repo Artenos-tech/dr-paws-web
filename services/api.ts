@@ -284,6 +284,8 @@ export default createAPIClient({
               "Check-out",  
             ]),
             appt_reason: z.string().nullable(),
+            appt_type: z.string().nullable(),
+            appt_type_id: z.number(),
           })
         ),
       }),
@@ -326,6 +328,7 @@ export default createAPIClient({
         appt_end: z.string(),
         appt_reason: z.string().nullable(),
         clinic_id: z.number(),
+        appt_type_id: z.number(),
       }),
       responseSchema: z.object({
         status: z.number(),
@@ -428,6 +431,22 @@ export default createAPIClient({
       responseSchema: z.object({
         status: z.number(),
         message: z.string(),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+
+    getAppointmentServices: {
+      method: "GET",
+      path: "/appointmenttypes",
+      pathParamsSchema: z.object({}),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        appointmentTypes: z.array(z.object({
+          id: z.string(),
+          title: z.string(),
+          description: z.string(),
+          vetPortId: z.number(),
+        }))
       }),
       errorResponseSchema: z.object({}),
     },

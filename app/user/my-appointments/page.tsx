@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import AllAppointments from "@/components/ui/AllAppointments";
 import CancelledAppointments from "@/components/ui/CancelledAppointments";
@@ -9,11 +9,14 @@ import PastAppointments from "@/components/ui/PastAppointments";
 import UpcomingAppointments from "@/components/ui/UpcomingAppointments";
 import { AppointmentType } from "@/model/typeDefinitions";
 import Loader from "@/components/ui/Loader";
+import BookingDetails from "@/components/ui/BookingDetails";
 import { useAPICall } from "@/hooks/apicall";
 import api from "@/services/api";
 
 const MyAppointmentsPage = () => {
   const { call: getAppointments, loading, result } = useAPICall(api.getAppointments);
+
+  const [selectedAppointment, setSelectedAppointment] = useState<AppointmentType | null>(null);
 
   useEffect(() => {
     getAppointments({});
@@ -28,7 +31,12 @@ const MyAppointmentsPage = () => {
   const tabs = [
     {
       title: "All",
-      component: <AllAppointments allAppointments={appointments || []} />,
+      component: (
+      <AllAppointments 
+        allAppointments={appointments || []} 
+        onClick={setSelectedAppointment}
+      />
+    ),
     },
     {
       title: "Upcoming",
@@ -40,6 +48,7 @@ const MyAppointmentsPage = () => {
               appointment.appt_status === "Confirm" ||
               appointment.appt_status === "Check In"
           )}
+          onClick={setSelectedAppointment}
         />
       ),
     },
@@ -52,6 +61,7 @@ const MyAppointmentsPage = () => {
               appointment.appt_status === "Complete" ||
               appointment.appt_status === "Check out"
           )}
+          onClick={setSelectedAppointment}
         />
       ),
     },
@@ -63,6 +73,7 @@ const MyAppointmentsPage = () => {
             (appointment: AppointmentType) =>
               appointment.appt_status === "Cancel"
           )}
+          onClick={setSelectedAppointment}
         />
       ),
     },
@@ -71,7 +82,23 @@ const MyAppointmentsPage = () => {
   return (
     <div className="flex flex-col w-full h-full items-center justify-items-center font-roca pb-20 flex-grow px-8 md:px-32 lg:px-20 xl:px-40">
       <main className="w-full h-full  flex flex-col gap-[80px] my-12 row-start-2 items-center">
-        <ClinicTabBar tabs={tabs} />
+        {selectedAppointment ? (
+          <BookingDetails 
+            selectedAppointment={{
+              selectedData: {
+                [selectedAppointment.appt_type_id]: {
+                  name: selectedAppointment.pet_name,
+                }
+              },
+              selectedClinic: selectedAppointment.clinic_id.toString(),
+              selectedDoctor: selectedAppointment.vet_vetport_id.toString(),
+              selectedDate: new Date(selectedAppointment.appt_start * 1000),
+              selectedSlot: new Date(selectedAppointment.appt_start * 1000).getHours().toString(),
+            }} 
+          />
+        ) :
+          <ClinicTabBar tabs={tabs} />
+        }
       </main>
     </div>
   );

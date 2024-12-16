@@ -9,12 +9,12 @@ import { Pet } from "@/context/UserContext";
 import toast, { Toaster } from "react-hot-toast";
 
 interface BookingCardProps {
-  cardId: string;
+  cardId: number;
   title: string;
   description: string;
-  onCardSelection: (cardId: string, selectedPet: Pet | null) => void;
+  onCardSelection: (cardId: number, selectedPet: Pet | null) => void;
   isOpen: boolean;
-  toggleCard: (cardId: string) => void;
+  toggleCard: (cardId: number) => void;
   selectedData: Record<string, Pet | null>;
   pets: Pet[];
   fetchPets: () => void;
@@ -47,28 +47,6 @@ const BookingCard: React.FC<BookingCardProps> = ({
   const handleAddPetModalClose = () => {
     setIsAddPetModalOpen(false);
   };
-
-  // const handleNewPetSubmit = (newPet: { name: string; type: string }) => {
-  //   const petType = newPet.type.toLowerCase();
-  //   const newPetObject: Pet = {
-  //     id: Date.now().toString(),
-  //     vetPortId: null, //TODO: add vetPortId
-  //     name: newPet.name,
-  //     type: petType,
-  //     profileImage: petImageByType[petType]?.src,
-  //     breed: null,
-  //     weight: null,
-  //     gender: null,
-  //     dob: null,
-  //     // age: { years: null, months: null },
-  //   };
-  //   updateUserPetsHandler(
-  //     userPets ? [...userPets, newPetObject] : [newPetObject]
-  //   );
-  //   //auto select newly added pet
-  //   // onCardSelection(cardId, newPetObject);
-  //   handleAddPetModalClose();
-  // };
 
   return (
     <div

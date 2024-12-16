@@ -27,7 +27,7 @@ const OTPForm: React.FC<otpFormProps> = ({
   const [otp, setOtp] = useState<string>("");
   const [err, setErr] = useState<string>("");
 
-  const handleVerify = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleVerify = (e: React.UIEvent<HTMLElement>) => {
     e.preventDefault();
     if (otp.length === 4) {
       handleOTPVerification(otp);
@@ -60,6 +60,12 @@ const OTPForm: React.FC<otpFormProps> = ({
               className="border-2"
               onChange={(value) => setOtp(value)}
               value={otp}
+              autoFocus
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleVerify(e);
+                }
+              }}
             >
               <InputOTPGroup>
                 <InputOTPSlot

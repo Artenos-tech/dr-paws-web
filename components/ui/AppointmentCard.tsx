@@ -3,7 +3,6 @@
 import { AppointmentType } from "@/model/typeDefinitions";
 import React from "react";
 import OutlineButton from "./OutlineButton";
-import { useRouter } from "next/navigation";
 
 // Helper Functions
 export const formatDate = (dateString: string) => {
@@ -59,11 +58,11 @@ export function epochToDate(timestamp: number) {
 // Component Props
 type AppointmentCardProps = {
   appointment: AppointmentType;
+  onClick: () => void;
 };
 
 // Main Component
-const AppointmentCard: React.FC<AppointmentCardProps> = ({ appointment }) => {
-  const router = useRouter();
+const AppointmentCard: React.FC<AppointmentCardProps> = ({ appointment, onClick }) => {
 
   // Styles and labels based on appt_status
   const cardStyles = {
@@ -154,9 +153,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({ appointment }) => {
         <div className="self-end">
           <OutlineButton
             outlineBtnText="View Details"
-            outlineBtnLink={() =>
-              router.push(`/user/my-appointments/${appointment.id}`)
-            }
+            outlineBtnLink={onClick}
           />
         </div>
       )}

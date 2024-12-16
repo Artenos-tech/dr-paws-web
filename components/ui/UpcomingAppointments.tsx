@@ -6,10 +6,11 @@ import AppointmentCard from "./AppointmentCard";
 
 type UpcomingAppointmentsProps = {
   upcomingAppointments: AppointmentType[];
+  onClick: (app: AppointmentType) => void;
 };
 
 const UpcomingAppointments: React.FC<UpcomingAppointmentsProps> = ({
-  upcomingAppointments,
+  upcomingAppointments, onClick
 }) => {
   const sortedUpcomingAppointments = [...upcomingAppointments].sort(
     (a, b) => new Date(b.appt_start).getTime() - new Date(a.appt_start).getTime()
@@ -30,6 +31,7 @@ const UpcomingAppointments: React.FC<UpcomingAppointmentsProps> = ({
           <AppointmentCard
             key={appointment.id}
             appointment={appointment}
+            onClick={() => onClick(appointment)}
           />
         ))
       )}

@@ -70,7 +70,6 @@ export default function NavBar() {
     clearAuthToken();
     navigate.push("/");
     refresh();
-    window.location.reload();
   };
 
   const handleBookAVisit = () => {

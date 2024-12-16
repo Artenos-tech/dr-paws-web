@@ -18,27 +18,31 @@ import {
 import { useAPICall } from "@/hooks/apicall";
 import api from "@/services/api";
 import { Pet, useUserContext } from "@/context/UserContext";
-import { useAppointmentsContext } from "@/context/AppointmentsContext";
 import toast, { Toaster } from "react-hot-toast";
-import { epochToDate } from "./AppointmentCard";
 
 export function convertDateToEpoch(date: string) {
   return Date.parse(date);
 }
 
 interface selectVetProps {
-  selectedData?: Record<string, Pet | null>;
-  selectedClinic?: string | null;
+  selectedData: Record<string, Pet | null>;
+  selectedClinic: string | null;
+  setFinalAppointmentData: (finalAppData: {
+    selectedData: Record<number, Pet | null>;
+    selectedClinic: string | null;
+    selectedDoctor: string | null;
+    selectedDate: Date | null;
+    selectedSlot: string | null;
+  }) => void;
   onNext?: () => void;
 }
 
 const SelectVet: React.FC<selectVetProps> = ({
   selectedClinic,
   selectedData,
+  setFinalAppointmentData,
   onNext,
 }) => {
-  const { setSelectedAppointment, fetchAppointments } =
-    useAppointmentsContext();
 
   const { user, userPets } = useUserContext();
 
@@ -46,30 +50,21 @@ const SelectVet: React.FC<selectVetProps> = ({
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
 
-  // const [authModalOpen, setAuthModalOpen] = useState(false);
-  // const [otpLoading, setOtpLoading] = useState<boolean>(false);
-
-  // const { call: sendOTP } = useAPICall(api.loginOTP);
   const { call: getStaffSchedule, result: staffScheduleResult } = useAPICall(
     api.getStaffSchedule
   );
 
   const { call: createAnAppointment } = useAPICall(api.createAppointment);
 
-  const staffIdBasedServices =
-    selectedData && Object.keys(selectedData).includes("Grooming")
-      ? "0"
-      : selectedDoctor;
-
   const fetchStaffSchedule = useCallback(async () => {
     if (
       (selectedDoctor ||
         (selectedData && Object.keys(selectedData).includes("Grooming"))) &&
-      selectedClinic && staffIdBasedServices
+      selectedClinic
     ) {
       await getStaffSchedule({
         clinicid: selectedClinic,
-        staffid: staffIdBasedServices,
+        staffid: selectedDoctor ? selectedDoctor : "0",
       });
     }
   }, [
@@ -77,7 +72,6 @@ const SelectVet: React.FC<selectVetProps> = ({
     selectedData,
     selectedClinic,
     getStaffSchedule,
-    staffIdBasedServices,
   ]);
 
   useEffect(() => {
@@ -90,7 +84,8 @@ const SelectVet: React.FC<selectVetProps> = ({
   }, [selectedDoctor]);
 
   const handleNextClick = async () => {
-    setSelectedAppointment({
+    if (selectedData) console.log("selectedData", Object.keys(selectedData));
+    setFinalAppointmentData({
       selectedData,
       selectedClinic,
       selectedDoctor,
@@ -98,8 +93,8 @@ const SelectVet: React.FC<selectVetProps> = ({
       selectedSlot,
     });
 
-    if (user && userPets && selectedSlot && selectedDate) {
-      const staffId = Number(staffIdBasedServices);
+    if (user && userPets && selectedSlot && selectedDate && selectedData) {
+      const staffId = Number(selectedDoctor || "0");
       const clinicId = Number(selectedClinic);
       const pet = userPets.find(
         (pet) => pet.id === selectedData?.[Object.keys(selectedData)[0]]?.id
@@ -118,10 +113,6 @@ const SelectVet: React.FC<selectVetProps> = ({
             : 30)
       );
       const apptEnd = selectedDate.toISOString();
-      const epoch = convertDateToEpoch(apptStart);
-      console.log("epoch:", convertDateToEpoch(apptStart));
-      console.log("epoch date:", epochToDate(epoch));
-
       try {
         const response = await createAnAppointment({
           vet_id: staffId,
@@ -130,6 +121,7 @@ const SelectVet: React.FC<selectVetProps> = ({
           appt_reason: null,
           appt_start: apptStart,
           appt_end: apptEnd,
+          appt_type_id: JSON.parse(Object.keys(selectedData)[0]),
         });
 
         if (response.ok) {
@@ -137,8 +129,6 @@ const SelectVet: React.FC<selectVetProps> = ({
             duration: 3000,
             position: "bottom-right",
           });
-
-          fetchAppointments();
 
           if (onNext) {
             onNext(); // Navigate to the next page only if the API succeeds
@@ -168,17 +158,6 @@ const SelectVet: React.FC<selectVetProps> = ({
     setSelectedDate(date);
     setSelectedSlot(null);
   };
-
-  // const onSuccess = (toastMessage: string) => {
-  //   // setAuthModalOpen(false);
-  //   if (onNext) {
-  //     onNext();
-  //   }
-  //   toast.success(`Successfully ${toastMessage}`, {
-  //     duration: 3000,
-  //     position: "bottom-right",
-  //   });
-  // };
 
   const handleSlotSelect = (time: string) => {
     setSelectedSlot(selectedSlot === time ? null : time);
@@ -225,10 +204,6 @@ const SelectVet: React.FC<selectVetProps> = ({
     selectedDay &&
     staffScheduleResult?.ok &&
     staffScheduleResult.value.body.staffschedule.weeks[selectedDay];
-
-  // const timeRange =
-  //   selectedDay &&
-  //   staffSchedule.weeks[selectedDay as keyof typeof staffSchedule.weeks];
 
   const availableSlots =
     typeof timeRange === "string" ? generateHourlySlots(timeRange) : [];
