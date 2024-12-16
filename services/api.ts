@@ -357,6 +357,43 @@ export default createAPIClient({
       errorResponseSchema: z.object({}),
     },
 
+    getPetBreeds: {
+      method: "GET",
+      path: "/pets/breeds/{speciesid}",
+      pathParamsSchema: z.object({ speciesid: z.string() }),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        status: z.number(),
+        message: z.string(),
+        breeds: z.array(
+          z.object({
+            id: z.number(),
+            name: z.string(),
+            speciesid: z.number(),
+          })
+        ),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+
+    getPetGender: {
+      method: "GET",
+      path: "/pets/gender/{speciesid}",
+      pathParamsSchema: z.object({ speciesid: z.string() }),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        status: z.number(),
+        message: z.string(),
+        gender: z.array(
+          z.object({
+            id: z.number(),
+            name: z.string(),
+          })
+        ),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+
     getPets: {
       method: "GET",
       path: "/user/pets",
