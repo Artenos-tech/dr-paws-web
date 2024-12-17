@@ -3,7 +3,6 @@
 import { AppointmentType } from "@/model/typeDefinitions";
 import React, { useEffect, useState } from "react";
 import BackButton from "./BackButton";
-// import Image from "next/image";
 import { MdOutlineAccessTime } from "react-icons/md";
 import { GrLocation } from "react-icons/gr";
 import { HiOutlineCalendar } from "react-icons/hi";

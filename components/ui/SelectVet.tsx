@@ -68,7 +68,7 @@ const SelectVet: React.FC<selectVetProps> = ({
     ) {
       await getStaffSchedule({
         clinicid: JSON.stringify(selectedClinic),
-        staffid: selectedDoctor ? JSON.stringify(selectedDoctor) : "0",
+        staffid: selectedDoctor ? Object.keys(selectedDoctor)[0] : "0",
       });
     }
   }, [
