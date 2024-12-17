@@ -97,35 +97,6 @@ export default function NavBar() {
             </div>
             <div className="hidden lg:block">
               <div className="flex items-center space-x-4 gap-3">
-                {/* <div className="relative group">
-                  <DropdownMenu.Root>
-                    <DropdownMenu.Trigger className="outline-none">
-                      <p className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
-                        Locations
-                      </p>
-                    </DropdownMenu.Trigger>
-                    <DropdownMenu.Portal>
-                      <DropdownMenu.Content
-                        className="bg-[#f7f1de] shadow-lg rounded-lg w-48 p-4 flex flex-col gap-2"
-                        align="start"
-                        sideOffset={5}
-                      >
-                        {clinicItems.map((clinic) => (
-                          <DropdownMenu.Item
-                            asChild
-                            key={clinic.id}
-                            className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
-                          >
-                            <Link href={`/clinics/${clinic.id}`}>
-                              {clinic.clinicName}
-                            </Link>
-                          </DropdownMenu.Item>
-                        ))}
-                        <DropdownMenu.Arrow className="fill-current text-[#f7f1de]" />
-                      </DropdownMenu.Content>
-                    </DropdownMenu.Portal>
-                  </DropdownMenu.Root>
-                </div> */}
                 <Link
                   href="/clinics"
                   className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
@@ -276,33 +247,6 @@ export default function NavBar() {
       {isOpen && (
         <div ref={dropdownRef} className="lg:hidden" id="mobile-menu">
           <div className="px-8 pt-2 pb-3 space-y-1 md:px-32 flex flex-col justify-end">
-            {/* <button
-              onClick={() => setIsLocationOpen(!isLocationOpen)}
-              className="text-primary-1 hover:bg-primary-2 hover:text-white block text-left py-1 px-2 rounded-md text-base font-medium"
-            >
-              Locations
-            </button>
-            <div className="pl-8 flex flex-col text-primary-1">
-              {isLocationOpen && (
-                <div>
-                  {clinicItems.map((clinic) => (
-                    <div
-                      key={clinic.id}
-                      className="my-3 text-sm"
-                      onClick={() => {
-                        setIsOpen(false);
-                        setIsLocationOpen(false);
-                      }}
-                    >
-                      <Link href={`/clinics/${clinic.id}`}>
-                        {clinic.clinicName}
-                      </Link>
-                      <div className="border-t border-primary-2 my-2 w-full" />
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div> */}
             <Link
               onClick={() => setIsOpen(false)}
               href="/clinics"

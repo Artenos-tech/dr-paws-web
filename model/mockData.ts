@@ -96,6 +96,7 @@ import LP_MembershipsCount from "@/public/assets/images/Landing Page/LP_Membersh
 import LP_OneTap from "@/public/assets/images/Landing Page/LP_OneTap.png";
 import LP_OnlyNecessaryTreatment from "@/public/assets/images/Landing Page/LP_OnlyNecessaryTreatments.png";
 import LP_SpaceForCats from "@/public/assets/images/Landing Page/LP_SpaceForCats.png";
+import { StaticImageData } from "next/image";
 
 // import AppointmentPetImage from "@/public/assets/images/Appointments/petImage.png";
 // import AppointmentVetImage from "@/public/assets/images/Appointments/vetImage.png";
@@ -170,6 +171,11 @@ export const reviewData = [
       "The best place to be if you are looking for your pet to be treated as family !! The staff truly treats your pets like family. Their compassionate care and attention to detail create a welcoming environment. From thorough examinations to personalised follow-up, they prioritise your pet's well-being, making every visit a positive experience.",
   },
 ];
+
+export const clinicImagesMap: {[key: string]: StaticImageData} = {
+  indiranagar: IND_Exterior1,
+  rmv: RMV_Exterior1,
+}
 
 export const clinicItems: Clinic[] = [
   {
@@ -300,9 +306,24 @@ export const bannerItems = [
   },
 ];
 
+export const doctorImagesMap: {[key: string]: StaticImageData} = {
+  "dr-girish-kumar": DrGirishImg,
+  "dr-archana-g": DrArchanaImg,
+  "dr-hitesh-bhardhwaj": DrHiteshImg,
+  "dr-shravya-b-l": DrShravyaImg,
+  "dr-prerana-s-j": DrPreranaImg,
+  "dr-kiran-k-s": DrKiranImg,
+  "dr-aarti-goswami": DrAartiImg,
+  "dr-neha-menon": DrNehaImg,
+  "dr-charu-nino": DrNinoImg,
+  "dr-deepak-dhundhwal": DrDeepakImg,
+  "dr-gisha-nair": DrGishaImg,
+  "dr-rajasri-bodepudi": DrRajashreeImg,
+};
+
 export const doctors = [
   {
-    id: "112",
+    id: "164",
     name: "Dr. Girish Kumar V.K.",
     position: "Chief Veterinary Officer",
     experience: "16 Years of Experience",
@@ -321,7 +342,7 @@ export const doctors = [
     favouritePet: "Ozzy",
   },
   {
-    id: "136",
+    id: "227",
 
     name: "Dr. Archana G.",
     // description: "DMV - Veterinary Medicine",
@@ -363,7 +384,7 @@ export const doctors = [
     qualification: "BVSc & AH, Post Graduate Diploma (Animal Welfare)",
   },
   {
-    id: "138",
+    id: "1516",
 
     name: "Dr. Shrayva B.L.",
     // description: "DMV - Exotic Animals",
@@ -385,7 +406,7 @@ export const doctors = [
     qualification: "BVSc & AH, MVSc (Gynaecology & Obstetrics)",
   },
   {
-    id: "140",
+    id: "1730",
 
     name: "Dr. Prerana S.J.",
     // description: "DMV - Animal Dermatology",
@@ -448,7 +469,7 @@ export const doctors = [
     qualification: "BVSc & AH, MVSc (Surgery & Radiology)",
   },
   {
-    id: "143",
+    id: "1743",
 
     name: "Dr. Neha Menon",
     // description: "DMV - Animal Dermatology",
@@ -469,7 +490,7 @@ export const doctors = [
     qualification: "BVSc & AH",
   },
   {
-    id: "144",
+    id: "1733",
 
     name: "Dr. Gisha Nair",
     // description: "DMV - Animal Dermatology",
@@ -490,7 +511,7 @@ export const doctors = [
     qualification: "BVSc & AH",
   },
   {
-    id: "147",
+    id: "1735",
 
     name: "Dr. Rajashri Bodepalli",
     // description: "DMV - Animal Dermatology",

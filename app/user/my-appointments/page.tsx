@@ -90,8 +90,9 @@ const MyAppointmentsPage = () => {
                   name: selectedAppointment.pet_name,
                 }
               },
-              selectedClinic: selectedAppointment.clinic_id.toString(),
-              selectedDoctor: selectedAppointment.vet_vetport_id.toString(),
+              selectedClinic: selectedAppointment.clinic_id,
+              selectedLocation: selectedAppointment.clinic_location,
+              selectedDoctor: selectedAppointment.vet_vetport_id,
               selectedDate: new Date(selectedAppointment.appt_start * 1000),
               selectedSlot: new Date(selectedAppointment.appt_start * 1000).getHours().toString(),
             }} 

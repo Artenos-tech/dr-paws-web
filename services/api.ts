@@ -487,5 +487,60 @@ export default createAPIClient({
       }),
       errorResponseSchema: z.object({}),
     },
+
+    getClinics: {
+      method: "GET",
+      path: "/clinics",
+      pathParamsSchema: z.object({}),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        clinics: z.array(
+          z.object({
+            id: z.number(),
+            name: z.string(),
+            services: z.string(),
+            image: z.string(),
+            location: z.string(),
+          })
+        ),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+
+    getDoctors: {
+      method: "GET",
+      path: "/staff",
+      pathParamsSchema: z.object({}),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        staff: z.array(
+          z.object({
+            id: z.number(),
+            name: z.string(),
+            image: z.string(),
+            clinicids: z.array(z.number()),
+          })
+        ),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+
+    getDoctorsForClinic: {
+      method: "GET",
+      path: "/clinic/{clinicid}/staff",
+      pathParamsSchema: z.object({ clinicid: z.string() }),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        staff: z.array(
+          z.object({
+            id: z.number(),
+            name: z.string(),
+            image: z.string(),
+            clinicids: z.array(z.number()),
+          })
+        ),
+      }),
+      errorResponseSchema: z.object({}),
+    }
   },
 });

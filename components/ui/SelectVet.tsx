@@ -2,7 +2,6 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 import SelectDoctorCard from "./SelectDoctorCard";
-import { doctors } from "@/model/mockData";
 
 import CustomButton from "./CustomButton";
 import SelectCalendar from "./SelectCalendar";
@@ -26,11 +25,13 @@ export function convertDateToEpoch(date: string) {
 
 interface selectVetProps {
   selectedData: Record<string, Pet | null>;
-  selectedClinic: string | null;
+  selectedClinic: number | null;
+  selectedLocation: string | null;
   setFinalAppointmentData: (finalAppData: {
     selectedData: Record<number, Pet | null>;
-    selectedClinic: string | null;
-    selectedDoctor: string | null;
+    selectedClinic: number | null;
+    selectedLocation: string | null;
+    selectedDoctor: number | null;
     selectedDate: Date | null;
     selectedSlot: string | null;
   }) => void;
@@ -40,13 +41,14 @@ interface selectVetProps {
 const SelectVet: React.FC<selectVetProps> = ({
   selectedClinic,
   selectedData,
+  selectedLocation,
   setFinalAppointmentData,
   onNext,
 }) => {
 
   const { user, userPets } = useUserContext();
 
-  const [selectedDoctor, setSelectedDoctor] = useState<string | null>(null);
+  const [selectedDoctor, setSelectedDoctor] = useState<number | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
 
@@ -56,6 +58,8 @@ const SelectVet: React.FC<selectVetProps> = ({
 
   const { call: createAnAppointment } = useAPICall(api.createAppointment);
 
+  const { call: getDoctors, result: doctorsResult} = useAPICall(api.getDoctors);
+
   const fetchStaffSchedule = useCallback(async () => {
     if (
       (selectedDoctor ||
@@ -63,8 +67,8 @@ const SelectVet: React.FC<selectVetProps> = ({
       selectedClinic
     ) {
       await getStaffSchedule({
-        clinicid: selectedClinic,
-        staffid: selectedDoctor ? selectedDoctor : "0",
+        clinicid: JSON.stringify(selectedClinic),
+        staffid: selectedDoctor ? JSON.stringify(selectedDoctor) : "0",
       });
     }
   }, [
@@ -73,6 +77,10 @@ const SelectVet: React.FC<selectVetProps> = ({
     selectedClinic,
     getStaffSchedule,
   ]);
+
+  useEffect(() => {
+    getDoctors({});
+  }, []);
 
   useEffect(() => {
     if (
@@ -88,13 +96,14 @@ const SelectVet: React.FC<selectVetProps> = ({
     setFinalAppointmentData({
       selectedData,
       selectedClinic,
+      selectedLocation,
       selectedDoctor,
       selectedDate,
       selectedSlot,
     });
 
     if (user && userPets && selectedSlot && selectedDate && selectedData) {
-      const staffId = Number(selectedDoctor || "0");
+      const staffId = selectedDoctor || 0;
       const clinicId = Number(selectedClinic);
       const pet = userPets.find(
         (pet) => pet.id === selectedData?.[Object.keys(selectedData)[0]]?.id
@@ -214,10 +223,9 @@ const SelectVet: React.FC<selectVetProps> = ({
       selectedSlot !== null) ||
     (selectedData && Object.keys(selectedData).includes("Grooming"));
 
-  const filteredDoctors =
-    selectedClinic === "221"
-      ? doctors.filter((doctor) => doctor.clinicIds.includes("221"))
-      : doctors.filter((doctor) => doctor.clinicIds.includes("220"));
+  const doctors = doctorsResult?.ok ? doctorsResult.value.body.staff : [];
+
+  const filteredDoctors = selectedClinic ? doctors.filter((doctor) => doctor.clinicids.includes(selectedClinic)) : [];
 
   return (
     <div className="h-full flex flex-col gap-12 px-4 lg:px-0">

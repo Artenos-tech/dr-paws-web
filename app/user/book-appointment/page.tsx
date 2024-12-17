@@ -18,13 +18,15 @@ import BookingDetails from "@/components/ui/BookingDetails";
 const Booking: React.FC = () => {
   const [selectedAppointment, setSelectedAppointmentState] = useState<{
     selectedData: Record<number, Pet | null>;
-    selectedClinic: string | null;
-    selectedDoctor: string | null;
+    selectedClinic: number | null;
+    selectedLocation: string | null;
+    selectedDoctor: number | null;
     selectedDate: Date | null;
     selectedSlot: string | null;
   }>({
     selectedData: {}, 
     selectedClinic: null,
+    selectedLocation: null,
     selectedDoctor: null,
     selectedDate: null,
     selectedSlot: null,
@@ -35,13 +37,13 @@ const Booking: React.FC = () => {
   const [currentStep, setCurrentStep] = useState<number>(1);
   const { userPets } = useUserContext();
 
-  const handleClinicSelection = (clinicId: string) => {
+  const handleClinicSelection = (clinicId: number, location: string) => {
     setSelectedAppointmentState((prev) => {
       // Toggle selection: if the clicked clinic is already selected, deselect it.
       if (prev.selectedClinic === clinicId) {
-        return ({ ...prev, selectedClinic: null });
+        return ({ ...prev, selectedClinic: null, selectedLocation: null });
       }
-      return ({ ...prev, selectedClinic: clinicId })
+      return ({ ...prev, selectedClinic: clinicId, selectedLocation: location });
     });
   };
 
@@ -101,6 +103,7 @@ const Booking: React.FC = () => {
               onNext={goToNextStep} 
               selectedClinic={selectedAppointment.selectedClinic} 
               selectedData={selectedAppointment.selectedData}
+              selectedLocation={selectedAppointment.selectedLocation}
               setFinalAppointmentData={setSelectedAppointmentState}
             />
           )}

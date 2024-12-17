@@ -1,9 +1,16 @@
 import React from "react";
-import { Clinic } from "@/model/typeDefinitions";
 import Image from "next/image";
+import { clinicImagesMap } from "@/model/mockData";
 
+type VetportClinic = {
+  id: number;
+  name: string;
+  services: string;
+  image: string;
+  location: string;
+}
 interface ClinicItemProps {
-  clinic: Clinic;
+  clinic: VetportClinic;
   isSelected: boolean;
   onSelect: () => void;
 }
@@ -13,7 +20,7 @@ const SelectClinicCard: React.FC<ClinicItemProps> = ({
   isSelected,
   onSelect,
 }) => {
-  const { image, clinicName, services } = clinic;
+  const { image, name, services } = clinic;
   return (
     <div
       onClick={onSelect}
@@ -23,14 +30,14 @@ const SelectClinicCard: React.FC<ClinicItemProps> = ({
     >
       <div className="image-container">
           <Image
-            src={image.src}
-            alt={clinicName + " image"}
+            src={clinicImagesMap[image] || ""}
+            alt={name + " image"}
             className="image rounded-t-md"
             layout="fill"
           />
         </div>
       <div className="flex flex-col flex-grow px-6 pt-6 pb-12 bg-primary-3">
-        <h1 className="text-primary-1 text-base">{clinicName}</h1>
+        <h1 className="text-primary-1 text-base">{name}</h1>
         <div className="flex gap-2 text-primary-1 text-xs mt-2">
           <p>{services}</p>
         </div>

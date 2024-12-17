@@ -17,7 +17,6 @@ import { parse, format, addMinutes } from "date-fns";
 import { BsCheckCircleFill } from "react-icons/bs";
 
 import Image from "next/image";
-import { doctors } from "@/model/mockData";
 
 // TO-DO: For testing purpose
 import defaultVetImage from "@/public/assets/images/clinic/doctorFemale.webp";
@@ -28,6 +27,7 @@ import { capitalizeFirstLetter } from "@/components/ui/AppointmentCard";
 import { epochToDate } from "@/components/ui/AppointmentCard";
 import { useAPICall } from "@/hooks/apicall";
 import api from "@/services/api";
+import { doctorImagesMap } from "@/model/mockData";
 
 
 export const cancelReasons = [
@@ -49,8 +49,9 @@ type BookingDetailsProps = {
   appointmentId?: string;
   selectedAppointment?: {
     selectedData: Record<number, {name: string} | null>;
-    selectedClinic: string | null;
-    selectedDoctor: string | null;
+    selectedClinic: number | null;
+    selectedLocation: string | null;
+    selectedDoctor: number | null;
     selectedDate: Date | null;
     selectedSlot: string | null;
   } 
@@ -85,8 +86,11 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
     result: getAppointmentServicesResult,
   } = useAPICall(api.getAppointmentServices)
 
+  const { call: getDoctors, result: getDoctorsResult } = useAPICall(api.getDoctors)
+
   useEffect(() => {
     callGetAppointmentServices({});
+    getDoctors({});
   }, []);
 
   const appointmentServices = getAppointmentServicesResult?.ok
@@ -126,8 +130,9 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
 
   const isCancelled = bookingDetails?.appt_status === "Cancel";
 
+  const doctors = getDoctorsResult?.ok ? getDoctorsResult.value.body.staff : [];
   const matchedDoctor = doctors.find(
-    (doctor) => Number(doctor.id) === bookingDetails?.vet_vetport_id
+    (doctor) => doctor.id === bookingDetails?.vet_vetport_id
   );
 
   const foundDoctor = doctors.find(
@@ -238,7 +243,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                 </div>
                 <div className="bg-white rounded-full w-[130px] h-[130px] p-8 ml-[-30px] border flex justify-center items-center">
                   <Image
-                    src={matchedDoctor?.image ?? defaultVetImage}
+                    src={matchedDoctor? doctorImagesMap[matchedDoctor.image] : defaultVetImage}
                     alt="vet-image"
                     width={100}
                     height={100}
@@ -274,7 +279,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                     ) && (
                       <div className="bg-white rounded-full  w-full p-3 flex justify-center items-center ml-[-30px]">
                         <Image
-                          src={foundDoctor?.image ?? defaultVetImage}
+                          src={foundDoctor? doctorImagesMap[foundDoctor.image] : defaultVetImage}
                           alt="vet-image"
                           width={100}
                           height={100}
@@ -297,8 +302,8 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                 </span>{" "}
                 {/* {bookingDetails?.clinicAddress */}
                 {appointmentId
-                  ? matchedDoctor?.location
-                  : foundDoctor?.location}
+                  ? bookingDetails?.clinic_id
+                  : selectedAppointment?.selectedLocation}
               </p>
 
               <p
@@ -367,7 +372,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
             {bookingDetails?.appt_status && (
               <p className="italic text-gray-400 text-sm w-3/4 text-center">
                 Note: For cancel or reschedule, please contact
-                {matchedDoctor?.location === "RMV (Dollars Colony)"
+                {selectedAppointment?.selectedLocation === "RMV (Dollars Colony)"
                   ? ` +91 7204996899
                 (RMV Dollar Colony)`
                   : ` +91 9606994627 (Indiranagar)`}

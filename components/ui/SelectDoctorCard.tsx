@@ -1,12 +1,17 @@
 // components/ui/DoctorCard.tsx
 import React from "react";
 import Image from "next/image";
-import { Doctor } from "@/model/typeDefinitions";
 
+type VetportDocor = {
+  id: number;
+  name: string;
+  image: string;
+  clinicids: number[];
+}
 interface SelectDoctorCardProps {
-  doctor: Doctor;
+  doctor: VetportDocor;
   isSelected: boolean;
-  onDoctorSelect: (doctorName: string) => void;
+  onDoctorSelect: (doctorId: number) => void;
 }
 
 const SelectDoctorCard: React.FC<SelectDoctorCardProps> = ({
