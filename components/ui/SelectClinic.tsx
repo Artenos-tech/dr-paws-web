@@ -24,13 +24,13 @@ const SelectClinic: React.FC<SelectClinicProps> = ({ onNext, selectedClinic, han
       <h1 className="text-2xl mb-2">Select a Clinic</h1>
       <p className="text-gray-600 mb-12">Book an appointment at our clinic</p>
       <div className="h-full grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-12 ">
-        {clinics.map((item) => (
-          <div key={item.id} className="h-full ">
+        {clinics.map((clinic) => (
+          <div key={clinic.id} className="h-full ">
             <SelectClinicCard
-              key={item.id}
-              clinic={item}
-              isSelected={selectedClinic === item.id}
-              onSelect={() => handleClinicSelection(item.id, item.location)}
+              key={clinic.id}
+              clinic={clinic}
+              isSelected={selectedClinic === clinic.id}
+              onSelect={() => handleClinicSelection(clinic.id, clinic.location)}
             />
           </div>
         ))}

@@ -25,13 +25,13 @@ export function convertDateToEpoch(date: string) {
 
 interface selectVetProps {
   selectedData: Record<string, Pet | null>;
-  selectedClinic: number | null;
-  selectedLocation: string | null;
+  selectedClinic: number;
+  selectedLocation: string;
   setFinalAppointmentData: (finalAppData: {
     selectedData: Record<number, Pet | null>;
     selectedClinic: number | null;
     selectedLocation: string | null;
-    selectedDoctor: number | null;
+    selectedDoctor: Record<number, string> | null;
     selectedDate: Date | null;
     selectedSlot: string | null;
   }) => void;
@@ -48,7 +48,7 @@ const SelectVet: React.FC<selectVetProps> = ({
 
   const { user, userPets } = useUserContext();
 
-  const [selectedDoctor, setSelectedDoctor] = useState<number | null>(null);
+  const [selectedDoctor, setSelectedDoctor] = useState<Record<number, string> | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
 
@@ -58,7 +58,7 @@ const SelectVet: React.FC<selectVetProps> = ({
 
   const { call: createAnAppointment } = useAPICall(api.createAppointment);
 
-  const { call: getDoctors, result: doctorsResult} = useAPICall(api.getDoctors);
+  const { call: getDoctorsForClinic, result: doctorsResult} = useAPICall(api.getDoctorsForClinic);
 
   const fetchStaffSchedule = useCallback(async () => {
     if (
@@ -79,7 +79,7 @@ const SelectVet: React.FC<selectVetProps> = ({
   ]);
 
   useEffect(() => {
-    getDoctors({});
+    getDoctorsForClinic({ clinicid: selectedClinic});
   }, []);
 
   useEffect(() => {
@@ -244,9 +244,9 @@ const SelectVet: React.FC<selectVetProps> = ({
                 >
                   <SelectDoctorCard
                     doctor={doctor}
-                    isSelected={selectedDoctor === doctor.id}
-                    onDoctorSelect={(id) => {
-                      setSelectedDoctor(id);
+                    isSelected={!!selectedDoctor && selectedDoctor.hasOwnProperty(doctor.id)}
+                    onDoctorSelect={(id, name) => {
+                      setSelectedDoctor({ [id]: name });
                       setSelectedDate(null); // Reset date and slot on doctor change
                     }}
                   />

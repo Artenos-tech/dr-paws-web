@@ -528,7 +528,7 @@ export default createAPIClient({
     getDoctorsForClinic: {
       method: "GET",
       path: "/clinic/{clinicid}/staff",
-      pathParamsSchema: z.object({ clinicid: z.string() }),
+      pathParamsSchema: z.object({ clinicid: z.number() }),
       requestSchema: z.object({}),
       responseSchema: z.object({
         staff: z.array(

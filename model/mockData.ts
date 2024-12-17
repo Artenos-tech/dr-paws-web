@@ -309,14 +309,14 @@ export const bannerItems = [
 export const doctorImagesMap: {[key: string]: StaticImageData} = {
   "dr-girish-kumar": DrGirishImg,
   "dr-archana-g": DrArchanaImg,
-  "dr-hitesh-bhardhwaj": DrHiteshImg,
+  "dr-hitesh-bhardwaj": DrHiteshImg,
   "dr-shravya-b-l": DrShravyaImg,
   "dr-prerana-s-j": DrPreranaImg,
   "dr-kiran-k-s": DrKiranImg,
   "dr-aarti-goswami": DrAartiImg,
   "dr-neha-menon": DrNehaImg,
   "dr-charu-nino": DrNinoImg,
-  "dr-deepak-dhundhwal": DrDeepakImg,
+  "dr-deepak-dhindhwal": DrDeepakImg,
   "dr-gisha-nair": DrGishaImg,
   "dr-rajasri-bodepudi": DrRajashreeImg,
 };

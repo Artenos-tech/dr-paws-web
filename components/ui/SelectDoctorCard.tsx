@@ -1,6 +1,7 @@
 // components/ui/DoctorCard.tsx
 import React from "react";
 import Image from "next/image";
+import { doctorImagesMap } from "@/model/mockData";
 
 type VetportDocor = {
   id: number;
@@ -11,7 +12,7 @@ type VetportDocor = {
 interface SelectDoctorCardProps {
   doctor: VetportDocor;
   isSelected: boolean;
-  onDoctorSelect: (doctorId: number) => void;
+  onDoctorSelect: (doctorId: number, doctorName: string) => void;
 }
 
 const SelectDoctorCard: React.FC<SelectDoctorCardProps> = ({
@@ -22,7 +23,7 @@ const SelectDoctorCard: React.FC<SelectDoctorCardProps> = ({
   const { name, image, id } = doctor;
 
   const handleCardClick = () => {
-    onDoctorSelect(id);
+    onDoctorSelect(id, name);
   };
 
   return (
@@ -37,7 +38,7 @@ const SelectDoctorCard: React.FC<SelectDoctorCardProps> = ({
     
   </div> */}
   <Image
-      src={image}
+      src={doctorImagesMap[image]}
       alt={name}
       width={120}
       height={120}
