@@ -72,6 +72,17 @@ const Booking: React.FC = () => {
     return true;
   }
 
+  const validatePetSelection = (value: Record<number, Pet | null>): value is Record<number, Pet> => {
+    if (
+      Object.keys(value).length === 0 ||
+      Object.values(value).some((pet) => pet === null) ||
+      Object.values(value).some((pet) => pet?.name === null) // Check if any pet has a null name
+    ) {
+      throw Error("Pet must be selected.");
+    }
+    return true;
+  }
+
   return (
     <div className="font-roca pb-20 h-full w-full">
       <main className="flex flex-col items-center w-full mt-4 lg:mt-16 px-8 md:px-32 lg:px-20 xl:px-40">
@@ -113,7 +124,7 @@ const Booking: React.FC = () => {
 
           {
             currentStep === 3 &&
-            validateClinicSelection(selectedAppointment.selectedClinic)&&
+            validateClinicSelection(selectedAppointment.selectedClinic) &&
             validateLocationSelection(selectedAppointment.selectedLocation) && (
               <SelectVet 
                 onNext={goToNextStep} 
@@ -124,10 +135,15 @@ const Booking: React.FC = () => {
               />
             )
           }
-          {currentStep === 4 && (
+          {/* {currentStep === 4 && (
             // <BookingDetails selectedAppointment={selectedAppointment} />
-            <BookingConfirmed selectedAppointment={selectedAppointment}/>
-          )}
+            validateClinicSelection(selectedAppointment.selectedClinic) &&
+            validateLocationSelection(selectedAppointment.selectedLocation) &&
+            validatePetSelection(selectedAppointment.selectedData) &&
+            <BookingConfirmed 
+              selectedAppointment={selectedAppointment}
+            />
+          )} */}
         </div>
       </main>
     </div>

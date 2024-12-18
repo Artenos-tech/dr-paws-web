@@ -5,7 +5,7 @@ import SelectDoctorCard from "./SelectDoctorCard";
 
 import CustomButton from "./CustomButton";
 import SelectCalendar from "./SelectCalendar";
-import { addMinutes, format, parse } from "date-fns";
+import { format } from "date-fns";
 import {
   Carousel,
   CarouselContent,
@@ -103,7 +103,7 @@ const SelectVet: React.FC<selectVetProps> = ({
     });
 
     if (user && userPets && selectedSlot && selectedDate && selectedData) {
-      const staffId = selectedDoctor || 0;
+      const staffId = selectedDoctor ? Number(Object.keys(selectedDoctor)[0]) : 0;
       const clinicId = Number(selectedClinic);
       const pet = userPets.find(
         (pet) => pet.id === selectedData?.[Object.keys(selectedData)[0]]?.id
@@ -172,50 +172,8 @@ const SelectVet: React.FC<selectVetProps> = ({
     setSelectedSlot(selectedSlot === time ? null : time);
   };
 
-  const generateHourlySlots = (timeRange: string) => {
-    if (!timeRange) return [];
 
-    const [startTimeStr, endTimeStr] = timeRange.split(" to ");
-    if (!startTimeStr || !endTimeStr) {
-      throw new Error("Invalid time range format");
-    }
-
-    const startTime = parse(startTimeStr, "HH:mm", new Date());
-    let endTime = parse(endTimeStr, "HH:mm", new Date());
-
-    // Normalize 24:00 or beyond to next day
-    if (endTimeStr.startsWith("24") || endTimeStr.startsWith("25")) {
-      endTime = parse("00:02", "HH:mm", addMinutes(new Date(), 1440)); // Add 1 day
-    }
-
-    // Check if parsed dates are valid
-    if (isNaN(startTime.getTime()) || isNaN(endTime.getTime())) {
-      throw new Error("Invalid time range values");
-    }
-
-    const slots = [];
-    let current = startTime;
-
-    while (current <= endTime) {
-      slots.push(format(current, "HH:mm"));
-      current = addMinutes(
-        current,
-        selectedData && Object.keys(selectedData).includes("Grooming") ? 90 : 30
-      );
-    }
-
-    return slots.length > 0 ? slots : [];
-  };
-
-  const selectedDay = selectedDate && format(selectedDate, "EEEE");
-
-  const timeRange =
-    selectedDay &&
-    staffScheduleResult?.ok &&
-    staffScheduleResult.value.body.staffschedule.weeks[selectedDay];
-
-  const availableSlots =
-    typeof timeRange === "string" ? generateHourlySlots(timeRange) : [];
+  const availableSlots = staffScheduleResult?.ok && staffScheduleResult.value.body.staffschedule.slots || [];
 
   const isNextButtonEnabled =
     (selectedDoctor !== null &&
@@ -279,17 +237,12 @@ const SelectVet: React.FC<selectVetProps> = ({
                 : ""
             }`}
           >
-            <SelectCalendar
-              selectedDate={selectedDate}
-              onDateSelect={handleDateSelect}
-              years={
-                staffScheduleResult?.ok
-                  ? (staffScheduleResult.value.body.staffschedule
-                      .year as Record<string, string>)
-                  : {}
-              }
-              // years={staffSchedule.year}
-            />
+            {selectedDoctor && (
+              <SelectCalendar
+                selectedDate={selectedDate}
+                onDateSelect={handleDateSelect}
+              />
+            )}
           </div>
 
           {/* Timeslots Section */}

@@ -303,13 +303,8 @@ export default createAPIClient({
           id: z.number(),
           vet_full_name: z.string(),
           vet_vetport_id: z.number(),
-          weeks: z.record(
-            z.string(),
-            z.union([z.array(z.string()), z.string()])
-          ),
-          year: z.record(
-            z.string(),
-            z.union([z.array(z.string()), z.string()])
+          slots: z.array(
+            z.string()
           ),
         }),
       }),

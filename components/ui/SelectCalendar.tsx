@@ -15,24 +15,25 @@ import {
   isToday,
   isBefore,
   startOfDay,
+  isAfter,
 } from "date-fns";
 
 interface CalendarProps {
   timezone?: string;
   onDateSelect: (date: Date) => void; // Callback for date selection
   selectedDate: Date | null;
-  years: Record<string, string>;
 }
 
 const SelectCalendar: React.FC<CalendarProps> = ({
   timezone = "India Standard Time (2:30pm)",
   onDateSelect,
   selectedDate,
-  years,
 }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
 
   const today = startOfDay(new Date());
+  const twoWeeksLater = addDays(today, 14);
+  
   const startDate = startOfWeek(startOfMonth(currentDate), { weekStartsOn: 1 }); 
   const endDate = endOfWeek(endOfMonth(currentDate), { weekStartsOn: 1 });
 
@@ -48,14 +49,11 @@ const SelectCalendar: React.FC<CalendarProps> = ({
   const nextMonth = () => setCurrentDate(addMonths(currentDate, 1));
 
   const isDateDisabled = (date: Date) => {
-    const monthName = format(date, "MMMM");
-    const dateNumber = date.getDate();
-    const monthDates = years[monthName]?.split(",").map(Number) || [];
-    return !monthDates.includes(dateNumber);
+    return isBefore(date, today) || isAfter(date, twoWeeksLater);
   };
 
   const selectDate = (date: Date) => {
-    if (date.getMonth() === currentDate.getMonth() && !isBefore(date, today)) {
+    if (!isDateDisabled(date)) {
       onDateSelect(date);
     }
   };
@@ -90,16 +88,15 @@ const SelectCalendar: React.FC<CalendarProps> = ({
       {/* Calendar grid */}
       <div className="grid grid-cols-7 text-center gap-1 sm:gap-0.5">
         {days.map((date, index) => {
-          const isCurrentMonth = date.getMonth() === currentDate.getMonth();
           const isSelected = selectedDate && isSameDay(date, selectedDate);
           const isPast = isBefore(date, today);
-          const disabled = isCurrentMonth && isDateDisabled(date);
+          const isDisabled = isDateDisabled(date);
 
           return (
             <div
               key={index}
               onClick={
-                isCurrentMonth && !isPast && !disabled
+                !isPast && !isDisabled
                   ? () => selectDate(date)
                   : undefined
               }
@@ -108,7 +105,7 @@ const SelectCalendar: React.FC<CalendarProps> = ({
                   ? "bg-secondary-1 text-white"
                   : isToday(date)
                   ? "border border-secondary-1 text-black"
-                  : isCurrentMonth && !isPast && !disabled
+                  : !isPast && !isDisabled
                   ? "text-black cursor-pointer"
                   : "text-gray-400 cursor-not-allowed"
               }`}
