@@ -1,7 +1,6 @@
 // components/ui/DoctorCard.tsx
 import React from "react";
 import Image from "next/image";
-import { Doctor } from "@/model/typeDefinitions";
 import { doctorImagesMap } from "@/model/mockData";
 
 type VetportDoctor = {

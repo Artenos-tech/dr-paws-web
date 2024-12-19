@@ -1,7 +1,5 @@
 "use client";
 
-
-import { clinicItems } from "@/model/mockData";
 import SelectClinicCard from "./SelectClinicCard";
 import CustomButton from "./CustomButton";
 import { useEffect } from "react";

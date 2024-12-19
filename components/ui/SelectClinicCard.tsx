@@ -1,5 +1,4 @@
 import React from "react";
-import { Clinic } from "@/model/typeDefinitions";
 import Image from "next/image";
 import { clinicImagesMap } from "@/model/mockData";
 
