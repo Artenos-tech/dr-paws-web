@@ -96,7 +96,8 @@ import LP_MembershipsCount from "@/public/assets/images/Landing Page/LP_Membersh
 import LP_OneTap from "@/public/assets/images/Landing Page/LP_OneTap.png";
 import LP_OnlyNecessaryTreatment from "@/public/assets/images/Landing Page/LP_OnlyNecessaryTreatments.png";
 import LP_SpaceForCats from "@/public/assets/images/Landing Page/LP_SpaceForCats.png";
-
+import { StaticImageData } from "next/image";
+import ClinicImage from "@/public/assets/images/clinic/ClinicImage.png";
 // import AppointmentPetImage from "@/public/assets/images/Appointments/petImage.png";
 // import AppointmentVetImage from "@/public/assets/images/Appointments/vetImage.png";
 
@@ -170,6 +171,12 @@ export const reviewData = [
       "The best place to be if you are looking for your pet to be treated as family !! The staff truly treats your pets like family. Their compassionate care and attention to detail create a welcoming environment. From thorough examinations to personalised follow-up, they prioritise your pet's well-being, making every visit a positive experience.",
   },
 ];
+
+export const clinicImagesMap: {[key: string]: StaticImageData} = {
+  indiranagar: IND_Exterior1,
+  rmv: RMV_Exterior1,
+  unknown: ClinicImage,
+}
 
 export const clinicItems: Clinic[] = [
   {
@@ -299,6 +306,21 @@ export const bannerItems = [
     bannerText: "Other Pets.",
   },
 ];
+
+export const doctorImagesMap: {[key: string]: StaticImageData} = {
+  "dr-girish-kumar": DrGirishImg,
+  "dr-archana-g": DrArchanaImg,
+  "dr-hitesh-bhardwaj": DrHiteshImg,
+  "dr-shravya-b-l": DrShravyaImg,
+  "dr-prerana-s-j": DrPreranaImg,
+  "dr-kiran-k-s": DrKiranImg,
+  "dr-aarti-goswami": DrAartiImg,
+  "dr-neha-menon": DrNehaImg,
+  "dr-charu-nino": DrNinoImg,
+  "dr-deepak-dhindhwal": DrDeepakImg,
+  "dr-gisha-nair": DrGishaImg,
+  "dr-rajasri-bodepudi": DrRajashreeImg,
+};
 
 export const doctors = [
   {

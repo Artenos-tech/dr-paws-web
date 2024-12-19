@@ -2,11 +2,18 @@
 import React from "react";
 import Image from "next/image";
 import { Doctor } from "@/model/typeDefinitions";
+import { doctorImagesMap } from "@/model/mockData";
 
+type VetportDoctor = {
+  id: number;
+  name: string;
+  image: string;
+  clinicids: number[];
+}
 interface SelectDoctorCardProps {
-  doctor: Doctor;
+  doctor: VetportDoctor;
   isSelected: boolean;
-  onDoctorSelect: (doctorName: string) => void;
+  onDoctorSelect: (doctorId: number, doctorName: string) => void;
 }
 
 const SelectDoctorCard: React.FC<SelectDoctorCardProps> = ({
@@ -17,7 +24,7 @@ const SelectDoctorCard: React.FC<SelectDoctorCardProps> = ({
   const { name, image, id } = doctor;
 
   const handleCardClick = () => {
-    onDoctorSelect(id);
+    onDoctorSelect(id, name);
   };
 
   return (
@@ -32,7 +39,7 @@ const SelectDoctorCard: React.FC<SelectDoctorCardProps> = ({
     
   </div> */}
   <Image
-      src={image}
+      src={doctorImagesMap[image]}
       alt={name}
       width={120}
       height={120}

@@ -12,12 +12,13 @@ interface BookingCardProps {
   cardId: number;
   title: string;
   description: string;
-  onCardSelection: (cardId: number, selectedPet: Pet | null) => void;
+  onCardSelection: (cardId: number, selectedPet: Pet | null, isGrooming: boolean) => void;
   isOpen: boolean;
-  toggleCard: (cardId: number) => void;
+  toggleCard: (cardId: number, isGrooming: boolean) => void;
   selectedData: Record<string, Pet | null>;
   pets: Pet[];
   fetchPets: () => void;
+  isGrooming: boolean;
 }
 
 const BookingCard: React.FC<BookingCardProps> = ({
@@ -30,13 +31,14 @@ const BookingCard: React.FC<BookingCardProps> = ({
   selectedData,
   pets,
   fetchPets,
+  isGrooming
 }) => {
   const [isAddPetModalOpen, setIsAddPetModalOpen] = useState(false);
 
   const handlePetClick = (pet: Pet) => {
     const isAlreadySelected = selectedData[cardId]?.id === pet.id;
     const newSelectedPet = isAlreadySelected ? null : pet;
-    onCardSelection(cardId, newSelectedPet);
+    onCardSelection(cardId, newSelectedPet, isGrooming);
   };
 
   const handleAddPetClick = (e: React.MouseEvent) => {
@@ -56,7 +58,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
     >
       <div
         className={`bg-primary-3 p-4 flex flex-col gap-2`}
-        onClick={() => toggleCard(cardId)}
+        onClick={() => toggleCard(cardId, isGrooming)}
       >
         <div className="flex items-center justify-between gap-1">
           <h2 className=" lg:text-xl font-sans font-semibold">{title}</h2>

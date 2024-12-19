@@ -2,11 +2,10 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 import SelectDoctorCard from "./SelectDoctorCard";
-import { doctors } from "@/model/mockData";
 
 import CustomButton from "./CustomButton";
 import SelectCalendar from "./SelectCalendar";
-import { addMinutes, format, parse } from "date-fns";
+import { format } from "date-fns";
 import {
   Carousel,
   CarouselContent,
@@ -19,18 +18,23 @@ import { useAPICall } from "@/hooks/apicall";
 import api from "@/services/api";
 import { Pet, useUserContext } from "@/context/UserContext";
 import toast, { Toaster } from "react-hot-toast";
+import Loader from "./Loader";
 
 export function convertDateToEpoch(date: string) {
   return Date.parse(date);
 }
 
 interface selectVetProps {
-  selectedData: Record<string, Pet | null>;
-  selectedClinic: string | null;
+  selectedData: Record<number, Pet>;
+  selectedClinic: number;
+  selectedLocation: string;
+  isGrooming: boolean;
   setFinalAppointmentData: (finalAppData: {
     selectedData: Record<number, Pet | null>;
-    selectedClinic: string | null;
-    selectedDoctor: string | null;
+    isGrooming: boolean;
+    selectedClinic: number;
+    selectedLocation: string | null;
+    selectedDoctor: Record<number, string> | null;
     selectedDate: Date | null;
     selectedSlot: string | null;
   }) => void;
@@ -40,64 +44,72 @@ interface selectVetProps {
 const SelectVet: React.FC<selectVetProps> = ({
   selectedClinic,
   selectedData,
+  selectedLocation,
   setFinalAppointmentData,
+  isGrooming,
   onNext,
 }) => {
 
   const { user, userPets } = useUserContext();
 
-  const [selectedDoctor, setSelectedDoctor] = useState<string | null>(null);
+  const [selectedDoctor, setSelectedDoctor] = useState<Record<number, string> | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
 
-  const { call: getStaffSchedule, result: staffScheduleResult } = useAPICall(
+  const { call: getStaffSchedule, result: staffScheduleResult, } = useAPICall(
     api.getStaffSchedule
   );
 
   const { call: createAnAppointment } = useAPICall(api.createAppointment);
 
+  const { call: getDoctorsForClinic, result: doctorsResult, loading: loadingDoctors } = useAPICall(api.getDoctorsForClinic);
+
   const fetchStaffSchedule = useCallback(async () => {
     if (
-      (selectedDoctor ||
-        (selectedData && Object.keys(selectedData).includes("Grooming"))) &&
-      selectedClinic
+        (selectedDoctor || isGrooming) &&
+        selectedClinic
     ) {
       await getStaffSchedule({
-        clinicid: selectedClinic,
-        staffid: selectedDoctor ? selectedDoctor : "0",
+        clinicid: JSON.stringify(selectedClinic),
+        staffid: selectedDoctor ? Object.keys(selectedDoctor)[0] : "0",
+        appttypeid: JSON.stringify(Object.keys(selectedData)[0]),
       });
     }
   }, [
-    selectedDoctor,
     selectedData,
+    selectedDoctor,
     selectedClinic,
     getStaffSchedule,
+    isGrooming
   ]);
 
   useEffect(() => {
-    if (
-      selectedDoctor ||
-      (selectedData && Object.keys(selectedData).includes("Grooming"))
-    ) {
+    getDoctorsForClinic({ clinicid: selectedClinic});
+  }, []);
+
+  useEffect(() => {
+    if (selectedDoctor || isGrooming) {
       fetchStaffSchedule();
     }
-  }, [selectedDoctor]);
+  }, [selectedDoctor, isGrooming]);
 
   const handleNextClick = async () => {
-    if (selectedData) console.log("selectedData", Object.keys(selectedData));
     setFinalAppointmentData({
       selectedData,
       selectedClinic,
+      selectedLocation,
       selectedDoctor,
       selectedDate,
       selectedSlot,
+      isGrooming
     });
 
     if (user && userPets && selectedSlot && selectedDate && selectedData) {
-      const staffId = Number(selectedDoctor || "0");
-      const clinicId = Number(selectedClinic);
+      const staffId = selectedDoctor ? Number(Object.keys(selectedDoctor)[0]) : 0;
+      const clinicId = selectedClinic;
+      const selectedPet = Object.values(selectedData)[0];
       const pet = userPets.find(
-        (pet) => pet.id === selectedData?.[Object.keys(selectedData)[0]]?.id
+        (pet) => pet.id === selectedPet.id
       );
 
       if (!pet) return;
@@ -108,9 +120,9 @@ const SelectVet: React.FC<selectVetProps> = ({
 
       selectedDate.setMinutes(
         selectedDate.getMinutes() +
-          (selectedData && Object.keys(selectedData).includes("Grooming")
-            ? 90
-            : 30)
+          (
+            isGrooming ? 90 : 30
+          )
       );
       const apptEnd = selectedDate.toISOString();
       try {
@@ -163,65 +175,38 @@ const SelectVet: React.FC<selectVetProps> = ({
     setSelectedSlot(selectedSlot === time ? null : time);
   };
 
-  const generateHourlySlots = (timeRange: string) => {
-    if (!timeRange) return [];
-
-    const [startTimeStr, endTimeStr] = timeRange.split(" to ");
-    if (!startTimeStr || !endTimeStr) {
-      throw new Error("Invalid time range format");
-    }
-
-    const startTime = parse(startTimeStr, "HH:mm", new Date());
-    let endTime = parse(endTimeStr, "HH:mm", new Date());
-
-    // Normalize 24:00 or beyond to next day
-    if (endTimeStr.startsWith("24") || endTimeStr.startsWith("25")) {
-      endTime = parse("00:02", "HH:mm", addMinutes(new Date(), 1440)); // Add 1 day
-    }
-
-    // Check if parsed dates are valid
-    if (isNaN(startTime.getTime()) || isNaN(endTime.getTime())) {
-      throw new Error("Invalid time range values");
-    }
-
-    const slots = [];
-    let current = startTime;
-
-    while (current <= endTime) {
-      slots.push(format(current, "HH:mm"));
-      current = addMinutes(
-        current,
-        selectedData && Object.keys(selectedData).includes("Grooming") ? 90 : 30
-      );
-    }
-
-    return slots.length > 0 ? slots : [];
+  const normalizeSelectedDate = (date: Date) => {
+    console.log(date);
+    const selectedDay = date.getDate();
+    const selectedMonth = date.getMonth();
+    const selectedYear = date.getFullYear();
+    const normalizedDate = `${selectedYear}/${selectedMonth + 1}/${selectedDay}`;
+    console.log(normalizedDate);
+    return normalizedDate;
   };
-
-  const selectedDay = selectedDate && format(selectedDate, "EEEE");
-
-  const timeRange =
-    selectedDay &&
-    staffScheduleResult?.ok &&
-    staffScheduleResult.value.body.staffschedule.weeks[selectedDay];
-
-  const availableSlots =
-    typeof timeRange === "string" ? generateHourlySlots(timeRange) : [];
+  
+  
+  const allAvailableSlots = staffScheduleResult?.ok && staffScheduleResult.value.body.staffschedule.slots || {};
+  
 
   const isNextButtonEnabled =
-    (selectedDoctor !== null &&
+    (
+      (selectedDoctor !== null || isGrooming) &&
       selectedDate !== null &&
-      selectedSlot !== null) ||
-    (selectedData && Object.keys(selectedData).includes("Grooming"));
+      selectedSlot !== null
+    ) ;
 
-  const filteredDoctors =
-    selectedClinic === "221"
-      ? doctors.filter((doctor) => doctor.clinicIds.includes("221"))
-      : doctors.filter((doctor) => doctor.clinicIds.includes("220"));
+  const doctors = doctorsResult?.ok ? doctorsResult.value.body.staff : [];
+
+  const filteredDoctors = selectedClinic ? doctors.filter((doctor) => doctor.clinicids.includes(selectedClinic)) : [];
+
+  if (loadingDoctors) {
+    return <Loader />;
+  }
 
   return (
     <div className="h-full flex flex-col gap-12 px-4 lg:px-0">
-      {selectedData && !Object.keys(selectedData).includes("Grooming") && (
+      {!isGrooming && (
         <div>
           <h1 className="text-3xl mb-2">Select Vet</h1>
           <p className="text-gray-600 mb-12">Book Spot for your visit</p>
@@ -236,9 +221,9 @@ const SelectVet: React.FC<selectVetProps> = ({
                 >
                   <SelectDoctorCard
                     doctor={doctor}
-                    isSelected={selectedDoctor === doctor.id}
-                    onDoctorSelect={(id) => {
-                      setSelectedDoctor(id);
+                    isSelected={!!selectedDoctor && selectedDoctor.hasOwnProperty(doctor.id)}
+                    onDoctorSelect={(id, name) => {
+                      setSelectedDoctor({ [id]: name });
                       setSelectedDate(null); // Reset date and slot on doctor change
                     }}
                   />
@@ -266,22 +251,17 @@ const SelectVet: React.FC<selectVetProps> = ({
             className={`w-full flex-shrink-0 lg:w-1/2 xl:w-1/3 ${
               !selectedDoctor &&
               selectedData &&
-              !Object.keys(selectedData).includes("Grooming")
+              !isGrooming
                 ? "opacity-100 pointer-events-none"
                 : ""
             }`}
           >
-            <SelectCalendar
-              selectedDate={selectedDate}
-              onDateSelect={handleDateSelect}
-              years={
-                staffScheduleResult?.ok
-                  ? (staffScheduleResult.value.body.staffschedule
-                      .year as Record<string, string>)
-                  : {}
-              }
-              // years={staffSchedule.year}
-            />
+            {(
+              <SelectCalendar
+                selectedDate={selectedDate}
+                onDateSelect={handleDateSelect}
+              />
+            )}
           </div>
 
           {/* Timeslots Section */}
@@ -299,8 +279,12 @@ const SelectVet: React.FC<selectVetProps> = ({
                   gridTemplateColumns: "repeat(auto-fit, minmax(118px, 1fr))",
                 }}
               >
-                {availableSlots.length > 0 ? (
-                  availableSlots.map((time, index) => (
+                {
+                  allAvailableSlots &&
+                  Object.keys(allAvailableSlots).length > 0 &&
+                  allAvailableSlots[normalizeSelectedDate(selectedDate)]
+                ? (
+                  allAvailableSlots[normalizeSelectedDate(selectedDate)].map((time, index) => (
                     <div
                       key={index}
                       className={` text-center bg-primary-3 py-2 px-6 sm:py-1 sm:px-6 lg:py-2 lg:px-8 w-full rounded-md cursor-pointer shadow-md ${
@@ -311,7 +295,8 @@ const SelectVet: React.FC<selectVetProps> = ({
                       {time}
                     </div>
                   ))
-                ) : (
+                ) 
+                : (
                   <p className="text-gray-500 text-sm">
                     No slots available for the selected date.
                   </p>

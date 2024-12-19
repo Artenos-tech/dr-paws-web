@@ -14,17 +14,22 @@ import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
 import SelectVet from "@/components/ui/SelectVet";
 import { Pet, useUserContext } from "@/context/UserContext";
 import BookingDetails from "@/components/ui/BookingDetails";
+import BookingConfirmed from "@/components/ui/BookingConfirmed";
 
 const Booking: React.FC = () => {
   const [selectedAppointment, setSelectedAppointmentState] = useState<{
     selectedData: Record<number, Pet | null>;
-    selectedClinic: string | null;
-    selectedDoctor: string | null;
+    isGrooming: boolean;
+    selectedClinic: number | null;
+    selectedLocation: string | null;
+    selectedDoctor: Record<number, string> | null;
     selectedDate: Date | null;
     selectedSlot: string | null;
   }>({
-    selectedData: {}, 
+    selectedData: {},
+    isGrooming: false,
     selectedClinic: null,
+    selectedLocation: null,
     selectedDoctor: null,
     selectedDate: null,
     selectedSlot: null,
@@ -35,13 +40,13 @@ const Booking: React.FC = () => {
   const [currentStep, setCurrentStep] = useState<number>(1);
   const { userPets } = useUserContext();
 
-  const handleClinicSelection = (clinicId: string) => {
+  const handleClinicSelection = (clinicId: number, location: string) => {
     setSelectedAppointmentState((prev) => {
       // Toggle selection: if the clicked clinic is already selected, deselect it.
       if (prev.selectedClinic === clinicId) {
-        return ({ ...prev, selectedClinic: null });
+        return ({ ...prev, selectedClinic: null, selectedLocation: null });
       }
-      return ({ ...prev, selectedClinic: clinicId })
+      return ({ ...prev, selectedClinic: clinicId, selectedLocation: location })
     });
   };
 
@@ -55,7 +60,54 @@ const Booking: React.FC = () => {
     }
   };
 
+  const validateClinicSelection = (value: number | null): number => {
+    if (value === null) {
+      throw new Error("Clinic must be selected");
+    }
+    return value as number;
+  }
 
+  const validateSelectedData = (value: Record<number, Pet | null>): Record<number, Pet> => {
+    if (
+      value === null ||
+      Object.keys(value).length === 0 ||
+      Object.values(value).find((pet) => pet === null)) {
+      throw new Error("Service and pet must be selected");
+    }
+    return value as Record<number, Pet>;
+  }
+
+  const validateLocationSelection = (value: string | null): string => {
+    if (value === null) {
+      throw new Error("Location must be selected");
+    }
+    return value as string;
+  }
+
+  const validateDoctorSelection = (value: Record<number, string> | null): Record<number, string> => {
+    if (
+      value === null ||
+      Object.keys(value).length === 0 ||
+      Object.values(value).find((doctor) => doctor === null)
+    ) {
+      throw new Error("Doctor must be selected");
+    }
+    return value as Record<number, string>;
+  }
+
+  const validateDateSelection = (value: Date | null): Date => {
+    if (value === null) {
+      throw new Error("Date must be selected");
+    }
+    return value as Date;
+  }
+
+  const validateSlotSelection = (value: string | null): string => {
+    if (value === null) {
+      throw new Error("Slot must be selected");
+    }
+    return value as string;
+  }
 
   return (
     <div className="font-roca pb-20 h-full w-full">
@@ -89,24 +141,41 @@ const Booking: React.FC = () => {
           )}
 
           {currentStep === 2 && 
-          <SelectClinic 
-            onNext={goToNextStep} 
-            selectedClinic={selectedAppointment.selectedClinic} 
-            handleClinicSelection={handleClinicSelection}
-          />
-          }
-
-          {currentStep === 3 && (
-            <SelectVet 
+            <SelectClinic 
               onNext={goToNextStep} 
               selectedClinic={selectedAppointment.selectedClinic} 
-              selectedData={selectedAppointment.selectedData}
-              setFinalAppointmentData={setSelectedAppointmentState}
+              handleClinicSelection={handleClinicSelection}
             />
-          )}
-          {currentStep === 4 && (
-            <BookingDetails selectedAppointment={selectedAppointment} />
-          )}
+          }
+
+          {
+            currentStep === 3 &&
+            (
+              <SelectVet 
+                onNext={goToNextStep} 
+                selectedClinic={validateClinicSelection(selectedAppointment.selectedClinic)} 
+                selectedData={validateSelectedData(selectedAppointment.selectedData)}
+                selectedLocation={validateLocationSelection(selectedAppointment.selectedLocation)}
+                isGrooming={selectedAppointment.isGrooming}
+                setFinalAppointmentData={setSelectedAppointmentState}
+              />
+            )
+          }
+          {
+            currentStep === 4 && 
+            (
+              <BookingConfirmed selectedAppointment={
+                {
+                  selectedData: validateSelectedData(selectedAppointment.selectedData),
+                  selectedClinic: validateClinicSelection(selectedAppointment.selectedClinic),
+                  selectedLocation: validateLocationSelection(selectedAppointment.selectedLocation),
+                  selectedDoctor: validateDoctorSelection(selectedAppointment.selectedDoctor),
+                  selectedDate: validateDateSelection(selectedAppointment.selectedDate),
+                  selectedSlot: validateSlotSelection(selectedAppointment.selectedSlot)
+                }
+              } />
+            )
+          }
         </div>
       </main>
     </div>

@@ -7,6 +7,7 @@ import CustomButton from "./CustomButton";
 import { Pet, useUserContext } from "@/context/UserContext";
 import { useAPICall } from "@/hooks/apicall";
 import api from "@/services/api";
+import Loader from "./Loader";
 
 export interface BookingCategory {
   id: string;
@@ -16,7 +17,7 @@ export interface BookingCategory {
 
 interface SelectServiceProps {
   selectedData: Record<number, Pet | null>;
-  setSelectedData: (newSelectedData: Record<number, Pet | null>) => void;
+  setSelectedData: (newSelectedData: Record<number, Pet | null>, isGrooming: boolean) => void;
   openCard: number | null;
   setOpenCard: React.Dispatch<React.SetStateAction<number | null>>;
   isModalOpen: boolean;
@@ -43,6 +44,7 @@ const SelectService: React.FC<SelectServiceProps> = ({
   const {
     call: callGetAppointmentServices,
     result: getAppointmentServicesResult,
+    loading: loadingServices
   } = useAPICall(api.getAppointmentServices)
 
   useEffect(() => {
@@ -80,16 +82,19 @@ const SelectService: React.FC<SelectServiceProps> = ({
     ? getAppointmentServicesResult.value.body.appointmentTypes
     : [];
 
-  const handleCardSelection = (cardId: number, selectedPet: Pet | null) => {
-    setSelectedData({ [cardId]: selectedPet });
+  const handleCardSelection = (cardId: number, selectedPet: Pet | null, isGrooming: boolean) => {
+    setSelectedData({ [cardId]: selectedPet }, isGrooming);
   };
 
-  const toggleCard = (cardId: number) => {
+  const toggleCard = (cardId: number, isGrooming: boolean) => {
     setOpenCard((prevOpenCard) => {
       if (prevOpenCard !== null) {
-        setSelectedData({
-          [prevOpenCard]: null,
-        });
+        setSelectedData(
+          {
+            [prevOpenCard]: null,
+          },
+          isGrooming
+        );
       }
       // show disclaimer modal for surgeries
       const selectedCard = ServiceTabsData.find((category) => category.vetPortId === cardId);
@@ -110,6 +115,9 @@ const SelectService: React.FC<SelectServiceProps> = ({
     onNext();
   };
 
+  if (loadingServices) {
+    return <div><Loader /></div>;
+  }
   return (
     <div className="w-full h-full">
       <h1 className="text-2xl mb-2">Select Services</h1>
@@ -124,6 +132,7 @@ const SelectService: React.FC<SelectServiceProps> = ({
             description={category.description}
             onCardSelection={handleCardSelection}
             isOpen={openCard === category.vetPortId}
+            isGrooming={category.isGrooming}
             toggleCard={toggleCard}
             selectedData={selectedData}
             pets={pets || []}

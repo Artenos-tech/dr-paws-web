@@ -293,24 +293,17 @@ export default createAPIClient({
 
     getStaffSchedule: {
       method: "GET",
-      path: "/clinic/{clinicid}/staffschedule/{staffid}",
-      pathParamsSchema: z.object({ clinicid: z.string(), staffid: z.string() }),
+      path: "/clinic/{clinicid}/staffschedule/{staffid}/appointment/{appttypeid}",
+      pathParamsSchema: z.object({ clinicid: z.string(), staffid: z.string(), appttypeid: z.string() }),
       requestSchema: z.object({}),
       responseSchema: z.object({
         status: z.number(),
         message: z.string(),
         staffschedule: z.object({
-          id: z.number(),
-          vet_full_name: z.string(),
-          vet_vetport_id: z.number(),
-          weeks: z.record(
-            z.string(),
-            z.union([z.array(z.string()), z.string()])
-          ),
-          year: z.record(
-            z.string(),
-            z.union([z.array(z.string()), z.string()])
-          ),
+          // id: z.number(),
+          // vet_full_name: z.string(),
+          // vet_vetport_id: z.number(),
+          slots: z.record(z.string(), z.array(z.string())),
         }),
       }),
       errorResponseSchema: z.object({}),
@@ -483,9 +476,65 @@ export default createAPIClient({
           title: z.string(),
           description: z.string(),
           vetPortId: z.number(),
+          isGrooming: z.boolean(),
         }))
       }),
       errorResponseSchema: z.object({}),
     },
+
+    getClinics: {
+      method: "GET",
+      path: "/clinics",
+      pathParamsSchema: z.object({}),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        clinics: z.array(
+          z.object({
+            id: z.number(),
+            name: z.string(),
+            services: z.string(),
+            image: z.string(),
+            location: z.string(),
+          })
+        ),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+
+    getDoctors: {
+      method: "GET",
+      path: "/staff",
+      pathParamsSchema: z.object({}),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        staff: z.array(
+          z.object({
+            id: z.number(),
+            name: z.string(),
+            image: z.string(),
+            clinicids: z.array(z.number()),
+          })
+        ),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+
+    getDoctorsForClinic: {
+      method: "GET",
+      path: "/clinic/{clinicid}/staff",
+      pathParamsSchema: z.object({ clinicid: z.number() }),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        staff: z.array(
+          z.object({
+            id: z.number(),
+            name: z.string(),
+            image: z.string(),
+            clinicids: z.array(z.number()),
+          })
+        ),
+      }),
+      errorResponseSchema: z.object({}),
+    }
   },
 });
