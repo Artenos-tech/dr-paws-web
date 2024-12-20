@@ -1,19 +1,11 @@
 "use client";
 
-type BookingDetails = {
-  doctor: string | null;
-  date: Date | null;
-  slot: string | null;
-};
-
-
 import React, { useState } from "react";
 import SelectService from "@/components/ui/SelectService";
 import SelectClinic from "@/components/ui/SelectClinic";
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
 import SelectVet from "@/components/ui/SelectVet";
 import { Pet, useUserContext } from "@/context/UserContext";
-import BookingDetails from "@/components/ui/BookingDetails";
 import BookingConfirmed from "@/components/ui/BookingConfirmed";
 
 const Booking: React.FC = () => {
