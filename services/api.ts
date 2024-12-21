@@ -177,7 +177,7 @@ export default createAPIClient({
 
     logout: {
       method: "POST",
-      path: "/login/logout",
+      path: "/logout",
       pathParamsSchema: z.object({}),
       requestSchema: z.object({}),
       responseSchema: z.object({
