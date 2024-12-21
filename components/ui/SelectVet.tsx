@@ -28,13 +28,16 @@ interface selectVetProps {
   selectedData: Record<number, Pet>;
   selectedClinic: number;
   selectedLocation: string;
+  selectedService: string;
   isGrooming: boolean;
   setFinalAppointmentData: (finalAppData: {
     selectedData: Record<number, Pet | null>;
+    selectedService: string;
     isGrooming: boolean;
     selectedClinic: number;
     selectedLocation: string | null;
     selectedDoctor: Record<number, string> | null;
+    selectedDoctorImage: string | null;
     selectedDate: Date | null;
     selectedSlot: string | null;
   }) => void;
@@ -45,6 +48,7 @@ const SelectVet: React.FC<selectVetProps> = ({
   selectedClinic,
   selectedData,
   selectedLocation,
+  selectedService,
   setFinalAppointmentData,
   isGrooming,
   onNext,
@@ -53,6 +57,7 @@ const SelectVet: React.FC<selectVetProps> = ({
   const { user, userPets } = useUserContext();
 
   const [selectedDoctor, setSelectedDoctor] = useState<Record<number, string> | null>(null);
+  const [selectedDoctorImage, setSelectedDoctorImage] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
 
@@ -96,9 +101,11 @@ const SelectVet: React.FC<selectVetProps> = ({
   const handleNextClick = async () => {
     setFinalAppointmentData({
       selectedData,
+      selectedService,
       selectedClinic,
       selectedLocation,
       selectedDoctor,
+      selectedDoctorImage,
       selectedDate,
       selectedSlot,
       isGrooming
@@ -188,6 +195,7 @@ const SelectVet: React.FC<selectVetProps> = ({
   
   const allAvailableSlots = staffScheduleResult?.ok && staffScheduleResult.value.body.staffschedule.slots || {};
   
+  console.log(Object.keys(allAvailableSlots));
 
   const isNextButtonEnabled =
     (
@@ -222,9 +230,10 @@ const SelectVet: React.FC<selectVetProps> = ({
                   <SelectDoctorCard
                     doctor={doctor}
                     isSelected={!!selectedDoctor && selectedDoctor.hasOwnProperty(doctor.id)}
-                    onDoctorSelect={(id, name) => {
+                    onDoctorSelect={(id, name, image) => {
                       setSelectedDoctor({ [id]: name });
                       setSelectedDate(null); // Reset date and slot on doctor change
+                      setSelectedDoctorImage(image);
                     }}
                   />
                 </CarouselItem>
@@ -282,6 +291,7 @@ const SelectVet: React.FC<selectVetProps> = ({
                 {
                   allAvailableSlots &&
                   Object.keys(allAvailableSlots).length > 0 &&
+                  allAvailableSlots[normalizeSelectedDate(selectedDate)].length > 0 &&
                   allAvailableSlots[normalizeSelectedDate(selectedDate)]
                 ? (
                   allAvailableSlots[normalizeSelectedDate(selectedDate)].map((time, index) => (

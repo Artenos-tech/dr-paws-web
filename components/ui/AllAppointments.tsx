@@ -1,6 +1,7 @@
 import { AppointmentType } from "@/model/typeDefinitions";
 import NoAppointments from "./NoAppointments";
 import AppointmentCard from "./AppointmentCard";
+import { useEffect } from "react";
 
 
 
@@ -32,8 +33,13 @@ const AllAppointments: React.FC<AllAppointmentsProps> = ({
     "Waiting",
     "Testing",
     "Check-out",
+    "Check-in",
+    "Confirmed"
   ];
 
+  useEffect(() => {
+    console.log(allAppointments);
+  }, [allAppointments]);
   return (
     <div
       className={`w-full  ${

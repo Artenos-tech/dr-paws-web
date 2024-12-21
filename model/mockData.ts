@@ -188,7 +188,7 @@ export const clinicItems: Clinic[] = [
     contact: "+91 9606994627",
     parkingInformation:
       "Ample parking available outside clinic, and in surrounding lanes",
-    clinicName: "Dr. Paws - Veterinarian in Indiranagar, Bengaluru",
+    clinicName: "Dr. Paws, Indiranagar",
   },
   {
     id: "221",
@@ -199,7 +199,7 @@ export const clinicItems: Clinic[] = [
     contact: "+91 7204996899",
     parkingInformation:
       "Ample parking available outside clinic, and in surrounding lanes",
-    clinicName: "Dr. Paws - Veterinarian in RMV (Dollars Colony), Bengaluru",
+    clinicName: "Dr. Paws, RMV (Dollars Colony)",
   },
   // {
   //   id: "3",

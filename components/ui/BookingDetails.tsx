@@ -63,6 +63,8 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
   onReschedule,
   selectedAppointment,
 }) => {
+
+  console.log("selectedAppointment", selectedAppointment);
   const [bookingDetails, setBookingDetails] = useState<AppointmentType | null>(
     null
   );
@@ -161,21 +163,21 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
   console.log("selectedAppointment", selectedAppointment)
   return (
     <div className="w-full h-full">
-      {appointmentId && <BackButton />}
+      <BackButton />
 
       {currentView === "default" && (
         <div className="flex flex-col justify-center gap-4 items-center">
           {/* Dynamic heading */}
           <h1 className="text-3xl flex items-center gap-4">
-            {isCancelled ? (
+            {/* {isCancelled ? (
               "Booking Cancelled"
             ) : !appointmentId ? (
               <>
                 Booking Confirmed <BsCheckCircleFill fill="#5281a2" />
               </>
-            ) : (
-              "Your Booking"
-            )}
+            ) : ( */}
+              Your Booking
+            {/* )} */}
           </h1>
 
           <div
@@ -184,9 +186,13 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
               bookingDetails?.appt_status === "Scheduled" ||
               bookingDetails?.appt_status === "Confirm" ||
               bookingDetails?.appt_status === "Check In" ||
-              !appointmentId
+              bookingDetails?.appt_status === "Confirmed" ||
+              bookingDetails?.appt_status === "Check-in"
                 ? "bg-primary-3"
                 : "bg-[#FFFCF3]"
+              // !appointmentId
+              //   ? "bg-primary-3"
+              //   : "bg-[#FFFCF3]"
             }`}
           >
             <p className="text-lg font-semibold mt-4">

@@ -10,19 +10,23 @@ import BookingConfirmed from "@/components/ui/BookingConfirmed";
 
 const Booking: React.FC = () => {
   const [selectedAppointment, setSelectedAppointmentState] = useState<{
+    selectedService: string | null;
     selectedData: Record<number, Pet | null>;
     isGrooming: boolean;
     selectedClinic: number | null;
     selectedLocation: string | null;
     selectedDoctor: Record<number, string> | null;
+    selectedDoctorImage: string | null;
     selectedDate: Date | null;
     selectedSlot: string | null;
   }>({
+    selectedService: null,
     selectedData: {},
     isGrooming: false,
     selectedClinic: null,
     selectedLocation: null,
     selectedDoctor: null,
+    selectedDoctorImage: null,
     selectedDate: null,
     selectedSlot: null,
   });
@@ -69,6 +73,13 @@ const Booking: React.FC = () => {
     return value as Record<number, Pet>;
   }
 
+  const validateServiceSelection = (value: string | null): string => {
+    if (value === null) {
+      throw new Error("Service must be selected");
+    }
+    return value as string;
+  }
+
   const validateLocationSelection = (value: string | null): string => {
     if (value === null) {
       throw new Error("Location must be selected");
@@ -85,6 +96,13 @@ const Booking: React.FC = () => {
       throw new Error("Doctor must be selected");
     }
     return value as Record<number, string>;
+  }
+
+  const validateDoctorImageSelection = (value: string | null): string => {
+    if (value === null) {
+      throw new Error("Doctor image must be selected");
+    }
+    return value as string;
   }
 
   const validateDateSelection = (value: Date | null): Date => {
@@ -118,10 +136,12 @@ const Booking: React.FC = () => {
           {currentStep === 1 && userPets && (
             <SelectService
               selectedData={selectedAppointment.selectedData}
-              setSelectedData={(newSelectedData) => {
+              setSelectedData={(newSelectedData, cardTitle, isGrooming) => {
                 setSelectedAppointmentState((prev) => ({ 
                   ...prev, 
-                  selectedData: newSelectedData 
+                  selectedData: newSelectedData,
+                  selectedService: cardTitle,
+                  isGrooming: isGrooming
                 }));
               }}
               openCard={openCard}
@@ -148,6 +168,7 @@ const Booking: React.FC = () => {
                 selectedClinic={validateClinicSelection(selectedAppointment.selectedClinic)} 
                 selectedData={validateSelectedData(selectedAppointment.selectedData)}
                 selectedLocation={validateLocationSelection(selectedAppointment.selectedLocation)}
+                selectedService={validateServiceSelection(selectedAppointment.selectedService)}
                 isGrooming={selectedAppointment.isGrooming}
                 setFinalAppointmentData={setSelectedAppointmentState}
               />
@@ -161,9 +182,11 @@ const Booking: React.FC = () => {
                   selectedData: validateSelectedData(selectedAppointment.selectedData),
                   selectedClinic: validateClinicSelection(selectedAppointment.selectedClinic),
                   selectedLocation: validateLocationSelection(selectedAppointment.selectedLocation),
+                  selectedService: validateServiceSelection(selectedAppointment.selectedService),
                   selectedDoctor: validateDoctorSelection(selectedAppointment.selectedDoctor),
                   selectedDate: validateDateSelection(selectedAppointment.selectedDate),
-                  selectedSlot: validateSlotSelection(selectedAppointment.selectedSlot)
+                  selectedSlot: validateSlotSelection(selectedAppointment.selectedSlot),
+                  selectedDoctorImage: validateDoctorImageSelection(selectedAppointment.selectedDoctorImage)
                 }
               } />
             )

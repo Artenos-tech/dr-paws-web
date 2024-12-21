@@ -17,7 +17,7 @@ export interface BookingCategory {
 
 interface SelectServiceProps {
   selectedData: Record<number, Pet | null>;
-  setSelectedData: (newSelectedData: Record<number, Pet | null>, isGrooming: boolean) => void;
+  setSelectedData: (newSelectedData: Record<number, Pet | null>, cardTitle: string | null, isGrooming: boolean) => void;
   openCard: number | null;
   setOpenCard: React.Dispatch<React.SetStateAction<number | null>>;
   isModalOpen: boolean;
@@ -82,8 +82,8 @@ const SelectService: React.FC<SelectServiceProps> = ({
     ? getAppointmentServicesResult.value.body.appointmentTypes
     : [];
 
-  const handleCardSelection = (cardId: number, selectedPet: Pet | null, isGrooming: boolean) => {
-    setSelectedData({ [cardId]: selectedPet }, isGrooming);
+  const handleCardSelection = (cardId: number, cardTitle: string, selectedPet: Pet | null, isGrooming: boolean) => {
+    setSelectedData({ [cardId]: selectedPet }, cardTitle, isGrooming);
   };
 
   const toggleCard = (cardId: number, isGrooming: boolean) => {
@@ -93,6 +93,7 @@ const SelectService: React.FC<SelectServiceProps> = ({
           {
             [prevOpenCard]: null,
           },
+          null,
           isGrooming
         );
       }

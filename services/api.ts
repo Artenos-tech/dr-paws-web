@@ -280,7 +280,9 @@ export default createAPIClient({
               "Active",
               "Waiting",
               "Testing",
-              "Check-out",  
+              "Check-out",
+              "Check-in",
+              "Confirmed"  
             ]),
             appt_reason: z.string().nullable(),
             appt_type: z.string().nullable(),

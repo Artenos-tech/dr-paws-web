@@ -12,7 +12,7 @@ interface BookingCardProps {
   cardId: number;
   title: string;
   description: string;
-  onCardSelection: (cardId: number, selectedPet: Pet | null, isGrooming: boolean) => void;
+  onCardSelection: (cardId: number, cardTitle: string, selectedPet: Pet | null, isGrooming: boolean) => void;
   isOpen: boolean;
   toggleCard: (cardId: number, isGrooming: boolean) => void;
   selectedData: Record<string, Pet | null>;
@@ -38,7 +38,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
   const handlePetClick = (pet: Pet) => {
     const isAlreadySelected = selectedData[cardId]?.id === pet.id;
     const newSelectedPet = isAlreadySelected ? null : pet;
-    onCardSelection(cardId, newSelectedPet, isGrooming);
+    onCardSelection(cardId, title, newSelectedPet, isGrooming);
   };
 
   const handleAddPetClick = (e: React.MouseEvent) => {

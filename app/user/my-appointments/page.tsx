@@ -33,7 +33,7 @@ const MyAppointmentsPage = () => {
       title: "All",
       component: (
       <AllAppointments 
-        allAppointments={appointments || []} 
+        allAppointments={result?.ok && result.value.body.appointments || []} 
         onClick={setSelectedAppointment}
       />
     ),
@@ -46,6 +46,8 @@ const MyAppointmentsPage = () => {
             (appointment: AppointmentType) =>
               appointment.appt_status === "Scheduled" ||
               appointment.appt_status === "Confirm" ||
+              appointment.appt_status === "Confirmed" ||
+              appointment.appt_status === "Check-in" ||
               appointment.appt_status === "Check In"
           )}
           onClick={setSelectedAppointment}

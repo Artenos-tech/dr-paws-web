@@ -12,7 +12,7 @@ type VetportDoctor = {
 interface SelectDoctorCardProps {
   doctor: VetportDoctor;
   isSelected: boolean;
-  onDoctorSelect: (doctorId: number, doctorName: string) => void;
+  onDoctorSelect: (doctorId: number, doctorName: string, doctorImage: string) => void;
 }
 
 const SelectDoctorCard: React.FC<SelectDoctorCardProps> = ({
@@ -23,7 +23,7 @@ const SelectDoctorCard: React.FC<SelectDoctorCardProps> = ({
   const { name, image, id } = doctor;
 
   const handleCardClick = () => {
-    onDoctorSelect(id, name);
+    onDoctorSelect(id, name, image);
   };
 
   return (
