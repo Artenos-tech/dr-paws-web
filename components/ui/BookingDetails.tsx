@@ -14,8 +14,6 @@ import { useRouter } from "next/navigation";
 import { formatDate, formatTimeRange } from "@/components/ui/AppointmentCard";
 import { parse, format, addMinutes } from "date-fns";
 
-import { BsCheckCircleFill } from "react-icons/bs";
-
 import Image from "next/image";
 import { doctors } from "@/model/mockData";
 
