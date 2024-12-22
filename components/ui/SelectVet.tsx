@@ -29,12 +29,12 @@ interface selectVetProps {
   selectedClinic: number;
   selectedLocation: string;
   selectedService: string;
-  selectedSubtype: Record<number, string | null>;
+  selectedSubtype: Record<string, string | null>;
   isGrooming: boolean;
   setFinalAppointmentData: (finalAppData: {
     selectedData: Record<number, Pet | null>;
     selectedService: string;
-    selectedSubtype: Record<number, string | null>;
+    selectedSubtype: Record<string, string | null>;
     isGrooming: boolean;
     selectedClinic: number;
     selectedLocation: string | null;
@@ -82,7 +82,7 @@ const SelectVet: React.FC<selectVetProps> = ({
         clinicid: selectedClinic.toString(),
         staffid,
         appttypeid: Object.keys(selectedData)[0],
-        // subtype: selectedSubtype[Object.keys(selectedData)[0]] // Need to pass this as query param
+        subtype: Object.keys(selectedSubtype)[0],
       });
     }
   }, [
@@ -141,7 +141,7 @@ const SelectVet: React.FC<selectVetProps> = ({
           (
             !isGrooming 
               ? 30
-              : selectedSubtype === "Spa Bath"
+              : Object.keys(selectedSubtype)[0] === "spa-bath"
                 ? 60
                 : 90
           )
@@ -198,10 +198,10 @@ const SelectVet: React.FC<selectVetProps> = ({
   };
 
   const normalizeSelectedDate = (date: Date) => {
-    const selectedDay = date.getDate();
-    const selectedMonth = date.getMonth();
-    const selectedYear = date.getFullYear();
-    const normalizedDate = `${selectedYear}/${selectedMonth + 1}/${selectedDay}`;
+    const selectedDay = date.getDate().toString().padStart(2, "0");
+    const selectedMonth = (date.getMonth() + 1).toString().padStart(2, "0");
+    const selectedYear = date.getFullYear().toString();
+    const normalizedDate = `${selectedYear}/${selectedMonth}/${selectedDay}`;
     return normalizedDate;
   };
   

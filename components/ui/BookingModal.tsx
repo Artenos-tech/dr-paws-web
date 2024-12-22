@@ -4,12 +4,12 @@ import { BookingCategory } from './SelectService';
 interface BookingModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelect: (option: Record<number, string | null>) => void;
+  onSelect: (option: Record<string, string | null>) => void;
   subtypes: BookingCategory[];
 }
 
 export default function BookingModal({ isOpen, onClose, onSelect, subtypes }: BookingModalProps) {
-  const [selectedOption, setSelectedOption] = useState<Record<number, string | null>>({});
+  const [selectedOption, setSelectedOption] = useState<Record<string, string | null>>({});
 
   const handleSelect = () => {
     if (selectedOption) {

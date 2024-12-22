@@ -21,7 +21,7 @@ interface SelectServiceProps {
     newSelectedData: Record<number, Pet | null>,
     cardTitle: string | null,
     isGrooming: boolean,
-    selectedSubtype: Record<number, string | null>
+    selectedSubtype: Record<string, string | null>
   ) => void;
   openCard: number | null;
   setOpenCard: React.Dispatch<React.SetStateAction<number | null>>;
@@ -41,7 +41,7 @@ const SelectService: React.FC<SelectServiceProps> = ({
 }) => {
   const {  updateUserPetsHandler, user } = useUserContext();
   const [subtypes, setSubtypes] = useState<BookingCategory[]>([]);
-  const [selectedSubtype, setSelectedSubtype] = useState<Record<number, string | null>>({});
+  const [selectedSubtype, setSelectedSubtype] = useState<Record<string, string | null>>({});
 
   const { call: getPetsAPI, result: getPetsAPIResult} = useAPICall(
     api.getPets
@@ -161,7 +161,7 @@ const SelectService: React.FC<SelectServiceProps> = ({
         isOpen={isModalOpen}
         subtypes={subtypes}
         onClose={() => setIsModalOpen(false)}
-        onSelect={(option: Record<number, string | null>) => setSelectedSubtype(option)}
+        onSelect={(option: Record<string, string | null>) => setSelectedSubtype(option)}
       />
     </div>
   );

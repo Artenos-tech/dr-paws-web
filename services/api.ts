@@ -296,13 +296,11 @@ export default createAPIClient({
 
     getStaffSchedule: {
       method: "GET",
-      path: "/clinic/{clinicid}/staffschedule/{staffid}/appointment/{appttypeid}",
+      path: "/clinic/{clinicid}/staffschedule/{staffid}/appointment/{appttypeid}?subtype={subtype}",
       pathParamsSchema: z.object({
         clinicid: z.string(),
         staffid: z.string(),
-        appttypeid: z.string()
-      }),
-      querySchema: z.object({
+        appttypeid: z.string(),
         subtype: z.string().optional(),
       }),
       requestSchema: z.object({}),
