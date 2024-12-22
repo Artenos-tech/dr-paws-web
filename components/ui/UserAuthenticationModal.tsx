@@ -144,14 +144,7 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
           setAuthToken(response.value.body.token);
           const user = response.value.body.user;
           updateUserDetailsHandler(user);
-          const pets = response.value.body.pets.map((pet) => ({
-            ...pet,
-            profileImage: pet.profile_image,
-            vetPortId: pet.vetport_id,
-          }));
-
           setOtpErr("");
-
           onSuccess("logged in");
         } else {
           const errorMessage =
@@ -181,12 +174,6 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
           setAuthToken(response.value.body.token);
           const user = response.value.body.user;
           updateUserDetailsHandler(user);
-          const pets = response.value.body.pets?.map((pet) => ({
-            ...pet,
-            profileImage: pet.profile_image,
-            vetPortId: pet.vetport_id,
-          }));
-
           setOtpErr("");
           onSuccess("signed up");
         } else {

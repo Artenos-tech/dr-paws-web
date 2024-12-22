@@ -85,22 +85,7 @@ export default createAPIClient({
           email: z.string().nullable(),
           current_address: z.string().nullable(),
           profile_image: z.string().nullable(),
-        }),
-        pets: z
-          .array(
-            z.object({
-              id: z.string(),
-              vetport_id: z.number().nullable(),
-              name: z.string(),
-              type: z.string().nullable(),
-              breed: z.string().nullable(),
-              weight: z.string().nullable(),
-              gender: z.string().nullable(),
-              dob: z.string().nullable(),
-              profile_image: z.string().nullable(),
-            })
-          )
-          .nullable(),
+        })
       }),
       errorResponseSchema: z.object({}),
     },
@@ -156,21 +141,7 @@ export default createAPIClient({
           email: z.string().nullable(),
           current_address: z.string().nullable(),
           profile_image: z.string().nullable(),
-        }),
-        pets: z
-          .array(
-            z.object({
-              id: z.string(),
-              vetport_id: z.number().nullable(),
-              name: z.string(),
-              type: z.string().nullable(),
-              breed: z.string().nullable(),
-              weight: z.string().nullable(),
-              gender: z.string().nullable(),
-              dob: z.string().nullable(),
-              profile_image: z.string().nullable(),
-            })
-          ),
+        })
       }),
       errorResponseSchema: z.object({}),
     },
