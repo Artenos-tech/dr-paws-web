@@ -296,15 +296,19 @@ export default createAPIClient({
     getStaffSchedule: {
       method: "GET",
       path: "/clinic/{clinicid}/staffschedule/{staffid}/appointment/{appttypeid}",
-      pathParamsSchema: z.object({ clinicid: z.string(), staffid: z.string(), appttypeid: z.string() }),
+      pathParamsSchema: z.object({
+        clinicid: z.string(),
+        staffid: z.string(),
+        appttypeid: z.string()
+      }),
+      querySchema: z.object({
+        subtype: z.string().optional(),
+      }),
       requestSchema: z.object({}),
       responseSchema: z.object({
         status: z.number(),
         message: z.string(),
         staffschedule: z.object({
-          // id: z.number(),
-          // vet_full_name: z.string(),
-          // vet_vetport_id: z.number(),
           slots: z.record(z.string(), z.array(z.string())),
         }),
       }),
@@ -479,6 +483,11 @@ export default createAPIClient({
           description: z.string(),
           vetPortId: z.number(),
           isGrooming: z.boolean(),
+          subtypes: z.array(z.object({
+            id: z.string(),
+            title: z.string(),
+            description: z.string(),
+          })).optional(),
         }))
       }),
       errorResponseSchema: z.object({}),

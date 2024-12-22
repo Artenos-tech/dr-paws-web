@@ -11,6 +11,7 @@ import BookingConfirmed from "@/components/ui/BookingConfirmed";
 const Booking: React.FC = () => {
   const [selectedAppointment, setSelectedAppointmentState] = useState<{
     selectedService: string | null;
+    selectedSubtype: Record<number, string | null>;
     selectedData: Record<number, Pet | null>;
     isGrooming: boolean;
     selectedClinic: number | null;
@@ -21,6 +22,7 @@ const Booking: React.FC = () => {
     selectedSlot: string | null;
   }>({
     selectedService: null,
+    selectedSubtype: {},
     selectedData: {},
     isGrooming: false,
     selectedClinic: null,
@@ -136,12 +138,13 @@ const Booking: React.FC = () => {
           {currentStep === 1 && userPets && (
             <SelectService
               selectedData={selectedAppointment.selectedData}
-              setSelectedData={(newSelectedData, cardTitle, isGrooming) => {
+              setSelectedData={(newSelectedData, cardTitle, isGrooming, selectedSubtype) => {
                 setSelectedAppointmentState((prev) => ({ 
                   ...prev, 
                   selectedData: newSelectedData,
                   selectedService: cardTitle,
-                  isGrooming: isGrooming
+                  isGrooming: isGrooming,
+                  selectedSubtype
                 }));
               }}
               openCard={openCard}
@@ -169,6 +172,7 @@ const Booking: React.FC = () => {
                 selectedData={validateSelectedData(selectedAppointment.selectedData)}
                 selectedLocation={validateLocationSelection(selectedAppointment.selectedLocation)}
                 selectedService={validateServiceSelection(selectedAppointment.selectedService)}
+                selectedSubtype={selectedAppointment.selectedSubtype}
                 isGrooming={selectedAppointment.isGrooming}
                 setFinalAppointmentData={setSelectedAppointmentState}
               />

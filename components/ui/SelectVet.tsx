@@ -29,10 +29,12 @@ interface selectVetProps {
   selectedClinic: number;
   selectedLocation: string;
   selectedService: string;
+  selectedSubtype: Record<number, string | null>;
   isGrooming: boolean;
   setFinalAppointmentData: (finalAppData: {
     selectedData: Record<number, Pet | null>;
     selectedService: string;
+    selectedSubtype: Record<number, string | null>;
     isGrooming: boolean;
     selectedClinic: number;
     selectedLocation: string | null;
@@ -49,6 +51,7 @@ const SelectVet: React.FC<selectVetProps> = ({
   selectedData,
   selectedLocation,
   selectedService,
+  selectedSubtype,
   setFinalAppointmentData,
   isGrooming,
   onNext,
@@ -71,13 +74,15 @@ const SelectVet: React.FC<selectVetProps> = ({
 
   const fetchStaffSchedule = useCallback(async () => {
     if (
-        (selectedDoctor || isGrooming) &&
+        (selectedDoctor || groomingStaff) &&
         selectedClinic
     ) {
+      const staffid = selectedDoctor ? Object.keys(selectedDoctor)[0] : groomingStaff ? groomingStaff.id.toString() : "0";
       await getStaffSchedule({
         clinicid: selectedClinic.toString(),
-        staffid: selectedDoctor ? Object.keys(selectedDoctor)[0] : "0",
+        staffid,
         appttypeid: Object.keys(selectedData)[0],
+        // subtype: selectedSubtype[Object.keys(selectedData)[0]] // Need to pass this as query param
       });
     }
   }, [
@@ -88,20 +93,27 @@ const SelectVet: React.FC<selectVetProps> = ({
     isGrooming
   ]);
 
-  useEffect(() => {
-    getDoctorsForClinic({ clinicid: selectedClinic});
-  }, []);
+  const fetchDoctors = useCallback(async () => {
+    await getDoctorsForClinic({ clinicid: selectedClinic });
+  }, [selectedClinic, getDoctorsForClinic]);
 
   useEffect(() => {
-    if (selectedDoctor || isGrooming) {
+    fetchDoctors();
+  }, []);
+
+  const groomingStaff = doctorsResult?.ok && doctorsResult.value.body.staff.filter((doctor) => doctor.name === "Grooming Staff")[0];
+  
+  useEffect(() => {
+    if (selectedDoctor || groomingStaff) {
       fetchStaffSchedule();
     }
-  }, [selectedDoctor, isGrooming]);
+  }, [selectedDoctor, groomingStaff]);
 
   const handleNextClick = async () => {
     setFinalAppointmentData({
       selectedData,
       selectedService,
+      selectedSubtype,
       selectedClinic,
       selectedLocation,
       selectedDoctor,
@@ -112,7 +124,7 @@ const SelectVet: React.FC<selectVetProps> = ({
     });
 
     if (user && userPets && selectedSlot && selectedDate && selectedData) {
-      const staffId = selectedDoctor ? Number(Object.keys(selectedDoctor)[0]) : 0;
+      const staffId = selectedDoctor ? Number(Object.keys(selectedDoctor)[0]) : groomingStaff ? groomingStaff.id : 0;
       const clinicId = selectedClinic;
       const selectedPet = Object.values(selectedData)[0];
       const pet = userPets.find(
@@ -123,12 +135,15 @@ const SelectVet: React.FC<selectVetProps> = ({
       const [hours, minutes] = selectedSlot.split(":").map(Number);
       selectedDate.setHours(hours, minutes, 0, 0);
       const apptStart = selectedDate.toISOString();
-      console.log(selectedDate);
 
       selectedDate.setMinutes(
         selectedDate.getMinutes() +
           (
-            isGrooming ? 90 : 30
+            !isGrooming 
+              ? 30
+              : selectedSubtype === "Spa Bath"
+                ? 60
+                : 90
           )
       );
       const apptEnd = selectedDate.toISOString();
@@ -137,7 +152,7 @@ const SelectVet: React.FC<selectVetProps> = ({
           vet_id: staffId,
           pet_id: pet?.id,
           clinic_id: clinicId,
-          appt_reason: null,
+          appt_reason: Object.values(selectedSubtype)[0] || null,
           appt_start: apptStart,
           appt_end: apptEnd,
           appt_type_id: JSON.parse(Object.keys(selectedData)[0]),
@@ -183,16 +198,17 @@ const SelectVet: React.FC<selectVetProps> = ({
   };
 
   const normalizeSelectedDate = (date: Date) => {
-    console.log(date);
     const selectedDay = date.getDate();
     const selectedMonth = date.getMonth();
     const selectedYear = date.getFullYear();
     const normalizedDate = `${selectedYear}/${selectedMonth + 1}/${selectedDay}`;
-    console.log(normalizedDate);
     return normalizedDate;
   };
   
-  
+  const doctors = doctorsResult?.ok ? doctorsResult.value.body.staff : [];
+
+  const filteredDoctors = selectedClinic ? doctors.filter((doctor) => doctor.clinicids.includes(selectedClinic)) : [];
+
   const allAvailableSlots = staffScheduleResult?.ok && staffScheduleResult.value.body.staffschedule.slots || {};
   
   console.log(Object.keys(allAvailableSlots));
@@ -203,10 +219,6 @@ const SelectVet: React.FC<selectVetProps> = ({
       selectedDate !== null &&
       selectedSlot !== null
     ) ;
-
-  const doctors = doctorsResult?.ok ? doctorsResult.value.body.staff : [];
-
-  const filteredDoctors = selectedClinic ? doctors.filter((doctor) => doctor.clinicids.includes(selectedClinic)) : [];
 
   if (loadingDoctors) {
     return <Loader />;

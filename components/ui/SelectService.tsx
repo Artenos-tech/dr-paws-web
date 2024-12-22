@@ -17,7 +17,12 @@ export interface BookingCategory {
 
 interface SelectServiceProps {
   selectedData: Record<number, Pet | null>;
-  setSelectedData: (newSelectedData: Record<number, Pet | null>, cardTitle: string | null, isGrooming: boolean) => void;
+  setSelectedData: (
+    newSelectedData: Record<number, Pet | null>,
+    cardTitle: string | null,
+    isGrooming: boolean,
+    selectedSubtype: Record<number, string | null>
+  ) => void;
   openCard: number | null;
   setOpenCard: React.Dispatch<React.SetStateAction<number | null>>;
   isModalOpen: boolean;
@@ -34,8 +39,9 @@ const SelectService: React.FC<SelectServiceProps> = ({
   setIsModalOpen,
   onNext,
 }) => {
-  const [hasShownDisclaimerModal, setHasShownDisclaimerModal] = useState(false);
   const {  updateUserPetsHandler, user } = useUserContext();
+  const [subtypes, setSubtypes] = useState<BookingCategory[]>([]);
+  const [selectedSubtype, setSelectedSubtype] = useState<Record<number, string | null>>({});
 
   const { call: getPetsAPI, result: getPetsAPIResult} = useAPICall(
     api.getPets
@@ -83,7 +89,7 @@ const SelectService: React.FC<SelectServiceProps> = ({
     : [];
 
   const handleCardSelection = (cardId: number, cardTitle: string, selectedPet: Pet | null, isGrooming: boolean) => {
-    setSelectedData({ [cardId]: selectedPet }, cardTitle, isGrooming);
+    setSelectedData({ [cardId]: selectedPet }, cardTitle, isGrooming, selectedSubtype);
   };
 
   const toggleCard = (cardId: number, isGrooming: boolean) => {
@@ -94,14 +100,15 @@ const SelectService: React.FC<SelectServiceProps> = ({
             [prevOpenCard]: null,
           },
           null,
-          isGrooming
+          isGrooming,
+          selectedSubtype
         );
       }
-      // show disclaimer modal for surgeries
       const selectedCard = ServiceTabsData.find((category) => category.vetPortId === cardId);
-      if (selectedCard && selectedCard.id === "Surgeries" && !hasShownDisclaimerModal) {
+
+      if (selectedCard && selectedCard.isGrooming && selectedCard.subtypes && prevOpenCard !== cardId) {
+        setSubtypes(selectedCard.subtypes);
         setIsModalOpen(true);
-        setHasShownDisclaimerModal(true);
       }
       return prevOpenCard === cardId ? null : cardId;
     });
@@ -152,8 +159,9 @@ const SelectService: React.FC<SelectServiceProps> = ({
 
       <BookingModal
         isOpen={isModalOpen}
+        subtypes={subtypes}
         onClose={() => setIsModalOpen(false)}
-        onNext={() => console.log("Proceeding to next step")}
+        onSelect={(option: Record<number, string | null>) => setSelectedSubtype(option)}
       />
     </div>
   );

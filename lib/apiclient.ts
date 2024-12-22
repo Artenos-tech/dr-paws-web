@@ -258,6 +258,7 @@ type GenericEndpointConfig = {
     method: Method;
     path: string;
     pathParamsSchema: z.AnyZodObject;
+    querySchema?: z.AnyZodObject;
     requestSchema: z.AnyZodObject | z.ZodEffects<z.AnyZodObject>; // Allow z.ZodEffects type as well to support zod methods like refine
     responseSchema: z.AnyZodObject;
     errorResponseSchema: z.AnyZodObject;
