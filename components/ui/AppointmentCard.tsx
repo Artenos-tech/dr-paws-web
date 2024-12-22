@@ -4,11 +4,6 @@ import { AppointmentType } from "@/model/typeDefinitions";
 import React from "react";
 import OutlineButton from "./OutlineButton";
 
-const capitalizeFirstLetter = (string: string) => {
-  return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
-};
-
-
 // Component Props
 type AppointmentCardProps = {
   appointment: AppointmentType;
@@ -74,9 +69,9 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({ appointment, onClick 
       </div>
       <div className={`space-y-1 ${text}`}>
         <p className="font-semibold">
-          {capitalizeFirstLetter(appointment.pet_name)}
+          {appointment.pet_name}
           {appointment.vet_vetport_id !== 0 &&
-            ` and ${capitalizeFirstLetter(appointment.vet_name)}`}
+            ` and ${appointment.vet_name}`}
         </p>
         <p>{new Date(appointment.appt_start).toLocaleDateString("en-IN")}</p>
         <p>

@@ -49,11 +49,9 @@ export interface PetSpecies {
 
 export interface UserContextType {
   user: User | null;
-  userPets: Pet[] | null;
   petSpecies: PetSpecies[] | null;
   isLoggedIn: boolean | null;
   updateUserDetailsHandler: (data: User) => void;
-  updateUserPetsHandler: (data: Pet[]) => void;
   getAuthToken: () => string | null;
   refresh: () => void;
   updatePetSpeciesHandler: (data: PetSpecies[]) => void;
@@ -70,7 +68,6 @@ interface UserProviderProps {
 
 export const UserProvider = ({ children }: UserProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
-  const [userPets, setUserPets] = useState<Pet[] | null>(null);
   const [petSpecies, setPetSpecies] = useState<PetSpecies[] | null>(null);
 
   const { call: getUser } = useAPICall(api.getuser);
@@ -93,16 +90,6 @@ export const UserProvider = ({ children }: UserProviderProps) => {
           if (response.ok) {
             const userResponse = response.value.body.user;
             setUser(userResponse);
-            const pets = response.value.body.pets?.map((pet) => ({
-              ...pet,
-              vetPortId: pet.vetport_id,
-              profileImage: pet.profile_image,
-              gender: pet.gender,
-            }));
-
-            if (pets) {
-              setUserPets(pets);
-            }
           }
         } catch (error) {
           console.error(error);
@@ -151,11 +138,9 @@ export const UserProvider = ({ children }: UserProviderProps) => {
     <UserContext.Provider
       value={{
         user,
-        userPets,
         petSpecies,
         isLoggedIn,
         updateUserDetailsHandler: setUser,
-        updateUserPetsHandler: setUserPets,
         updatePetSpeciesHandler: setPetSpecies,
         getAuthToken,
         refresh: handleCheckAuthToken,

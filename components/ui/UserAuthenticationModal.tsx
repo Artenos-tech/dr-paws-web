@@ -39,7 +39,7 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
   const [otpErr, setOtpErr] = useState("");
 
   // context
-  const { updateUserDetailsHandler, updateUserPetsHandler } =
+  const { updateUserDetailsHandler } =
     useUserContext();
 
   // API's
@@ -152,9 +152,6 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
 
           setOtpErr("");
 
-          if (pets) {
-            updateUserPetsHandler(pets);
-          }
           onSuccess("logged in");
         } else {
           const errorMessage =
@@ -190,9 +187,6 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
             vetPortId: pet.vetport_id,
           }));
 
-          if (pets) {
-            updateUserPetsHandler(pets);
-          }
           setOtpErr("");
           onSuccess("signed up");
         } else {

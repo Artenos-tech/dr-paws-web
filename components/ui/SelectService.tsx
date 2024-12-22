@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import BookingCard from "@/components/ui/BookingCard";
 import BookingModal from "@/components/ui/BookingModal";
 import CustomButton from "./CustomButton";
-import { Pet, useUserContext } from "@/context/UserContext";
+import { Pet } from "@/context/UserContext";
 import { useAPICall } from "@/hooks/apicall";
 import api from "@/services/api";
 import Loader from "./Loader";
@@ -39,7 +39,6 @@ const SelectService: React.FC<SelectServiceProps> = ({
   setIsModalOpen,
   onNext,
 }) => {
-  const {  updateUserPetsHandler, user } = useUserContext();
   const [subtypes, setSubtypes] = useState<BookingCategory[]>([]);
   const [selectedSubtype, setSelectedSubtype] = useState<Record<string, string | null>>({});
 
@@ -59,21 +58,7 @@ const SelectService: React.FC<SelectServiceProps> = ({
   }, []);
 
   const fetchPets = async () => {
-    if (user) {
-      const response = await getPetsAPI({});
-      if (response.ok) {
-        const pets = response.value.body.pets.map((pet) => ({
-          ...pet,
-          profileImage: pet.profile_image,
-          vetPortId: pet.vetport_id,
-          gender: pet.gender,
-        }));
-
-        if (pets) {
-          updateUserPetsHandler(pets);
-        }
-      }
-    }
+    await getPetsAPI({});
   };
 
   const pets =

@@ -57,7 +57,7 @@ const SelectVet: React.FC<selectVetProps> = ({
   onNext,
 }) => {
 
-  const { user, userPets } = useUserContext();
+  const { user } = useUserContext();
 
   const [selectedDoctor, setSelectedDoctor] = useState<Record<number, string> | null>(null);
   const [selectedDoctorImage, setSelectedDoctorImage] = useState<string | null>(null);
@@ -123,15 +123,11 @@ const SelectVet: React.FC<selectVetProps> = ({
       isGrooming
     });
 
-    if (user && userPets && selectedSlot && selectedDate && selectedData) {
+    if (user && selectedSlot && selectedDate && selectedData) {
       const staffId = selectedDoctor ? Number(Object.keys(selectedDoctor)[0]) : groomingStaff ? groomingStaff.id : 0;
       const clinicId = selectedClinic;
       const selectedPet = Object.values(selectedData)[0];
-      const pet = userPets.find(
-        (pet) => pet.id === selectedPet.id
-      );
 
-      if (!pet) return;
       const [hours, minutes] = selectedSlot.split(":").map(Number);
       selectedDate.setHours(hours, minutes, 0, 0);
       const apptStart = selectedDate.toISOString();
@@ -150,7 +146,7 @@ const SelectVet: React.FC<selectVetProps> = ({
       try {
         const response = await createAnAppointment({
           vet_id: staffId,
-          pet_id: pet?.id,
+          pet_id: selectedPet.id,
           clinic_id: clinicId,
           appt_reason: Object.values(selectedSubtype)[0] || null,
           appt_start: apptStart,

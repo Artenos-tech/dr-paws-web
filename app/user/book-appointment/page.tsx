@@ -36,7 +36,6 @@ const Booking: React.FC = () => {
   const [openCard, setOpenCard] = useState<number | null>(null); // Persist this state
   const [isDisclaimerModalOpen, setIsDisclaimerModalOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState<number>(1);
-  const { userPets } = useUserContext();
 
   const handleClinicSelection = (clinicId: number, location: string) => {
     setSelectedAppointmentState((prev) => {
@@ -135,7 +134,7 @@ const Booking: React.FC = () => {
             </button>
           )}
 
-          {currentStep === 1 && userPets && (
+          {currentStep === 1 && (
             <SelectService
               selectedData={selectedAppointment.selectedData}
               setSelectedData={(newSelectedData, cardTitle, isGrooming, selectedSubtype) => {
@@ -155,7 +154,7 @@ const Booking: React.FC = () => {
             />
           )}
 
-          {currentStep === 2 && 
+          {currentStep === 2 &&
             <SelectClinic 
               onNext={goToNextStep} 
               selectedClinic={selectedAppointment.selectedClinic} 
