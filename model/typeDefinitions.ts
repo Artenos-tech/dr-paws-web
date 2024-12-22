@@ -59,8 +59,8 @@ export interface AppointmentType {
   vet_vetport_id: number;
   vet_name: string;
   clinic_id: number;
-  appt_start: number;
-  appt_end: number;
+  appt_start: string;
+  appt_end: string;
   appt_status:
   | "Check In"
   | "Complete"
@@ -78,4 +78,5 @@ export interface AppointmentType {
   appt_reason: string | null;
   appt_type: string | null;
   appt_type_id: number
+  category: "UPCOMING" | "PAST" | "CANCELLED";
 }
