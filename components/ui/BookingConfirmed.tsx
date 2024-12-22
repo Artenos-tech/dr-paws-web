@@ -16,7 +16,7 @@ type BookingConfirmedProps = {
     selectedClinic: number;
     selectedLocation: string;
     selectedService: string;
-    selectedDoctor: Record<number, string>;
+    selectedDoctor: Record<number, string>  | null;
     selectedDoctorImage: string;
     selectedDate: Date;
     selectedSlot: string;
@@ -60,6 +60,7 @@ const BookingConfirmed: React.FC<BookingConfirmedProps> = ({
               { 
                 selectedAppointment?.selectedData &&
                 !Object.keys(selectedAppointment.selectedData).includes("Grooming") &&
+                selectedAppointment?.selectedDoctor &&
                 ` with ${Object.values(selectedAppointment.selectedDoctor)[0]}`
               }
             </p>

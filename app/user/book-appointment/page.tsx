@@ -187,7 +187,7 @@ const Booking: React.FC = () => {
                   selectedClinic: validateClinicSelection(selectedAppointment.selectedClinic),
                   selectedLocation: validateLocationSelection(selectedAppointment.selectedLocation),
                   selectedService: validateServiceSelection(selectedAppointment.selectedService),
-                  selectedDoctor: validateDoctorSelection(selectedAppointment.selectedDoctor),
+                  selectedDoctor: selectedAppointment.selectedDoctor,
                   selectedDate: validateDateSelection(selectedAppointment.selectedDate),
                   selectedSlot: validateSlotSelection(selectedAppointment.selectedSlot),
                   selectedDoctorImage: validateDoctorImageSelection(selectedAppointment.selectedDoctorImage)
