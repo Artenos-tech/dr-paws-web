@@ -13,7 +13,7 @@ type ClinicTabBarProps<T extends string> = {
 function ClinicTabBar<T extends string>({ tabs, activeTabId, onTabChange }: ClinicTabBarProps<T>) {
 
   const handleTabClick = (tabId: string) => {
-    onTabChange && onTabChange(tabId as T);
+    if (onTabChange) onTabChange(tabId as T);
   }
 
   return (
