@@ -88,24 +88,6 @@ const Booking: React.FC = () => {
     return value as string;
   }
 
-  // const validateDoctorSelection = (value: Record<number, string> | null): Record<number, string> => {
-  //   if (
-  //     value === null ||
-  //     Object.keys(value).length === 0 ||
-  //     Object.values(value).find((doctor) => doctor === null)
-  //   ) {
-  //     throw new Error("Doctor must be selected");
-  //   }
-  //   return value as Record<number, string>;
-  // }
-
-  const validateDoctorImageSelection = (value: string | null): string => {
-    if (value === null) {
-      throw new Error("Doctor image must be selected");
-    }
-    return value as string;
-  }
-
   const validateDateSelection = (value: Date | null): Date => {
     if (value === null) {
       throw new Error("Date must be selected");
@@ -189,7 +171,7 @@ const Booking: React.FC = () => {
                   selectedDoctor: selectedAppointment.selectedDoctor,
                   selectedDate: validateDateSelection(selectedAppointment.selectedDate),
                   selectedSlot: validateSlotSelection(selectedAppointment.selectedSlot),
-                  selectedDoctorImage: validateDoctorImageSelection(selectedAppointment.selectedDoctorImage)
+                  selectedDoctorImage: selectedAppointment.selectedDoctorImage
                 }
               } />
             )

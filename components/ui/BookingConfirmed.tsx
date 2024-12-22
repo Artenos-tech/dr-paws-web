@@ -17,7 +17,7 @@ type BookingConfirmedProps = {
     selectedLocation: string;
     selectedService: string;
     selectedDoctor: Record<number, string>  | null;
-    selectedDoctorImage: string;
+    selectedDoctorImage: string | null;
     selectedDate: Date;
     selectedSlot: string;
   } 
@@ -67,28 +67,30 @@ const BookingConfirmed: React.FC<BookingConfirmedProps> = ({
             <p>
               for {selectedAppointment.selectedService}
             </p>
-            <>
             <div className="flex items-center my-4">
-            <div className="bg-white rounded-full w-[130px] h-[130px] p-3 flex justify-center items-center">
-              <Image
-                src={defaultPetImage}
-                alt="pet-image"
-                width={130}
-                height={130}
-                className="rounded-full"
-              />
+              <div className="bg-white rounded-full w-[130px] h-[130px] p-3 flex justify-center items-center">
+                <Image
+                  src={defaultPetImage}
+                  alt="pet-image"
+                  width={130}
+                  height={130}
+                  className="rounded-full"
+                />
+              </div>
+              {
+                selectedAppointment.selectedDoctorImage && (
+                  <div className="bg-white rounded-full w-[130px] h-[130px] p-8 ml-[-30px] border flex justify-center items-center">
+                    <Image
+                      src={doctorImagesMap[selectedAppointment.selectedDoctorImage]}
+                      alt="vet-image"
+                      width={100}
+                      height={100}
+                      className="rounded-full"
+                    />
+                  </div>
+                )
+              }
             </div>
-            <div className="bg-white rounded-full w-[130px] h-[130px] p-8 ml-[-30px] border flex justify-center items-center">
-              <Image
-                src={doctorImagesMap[selectedAppointment.selectedDoctorImage]}
-                alt="vet-image"
-                width={100}
-                height={100}
-                className="rounded-full"
-              />
-            </div>
-            </div>
-            </>
             <div className="my-4 space-y-3">
               <p
                 className={`flex items-center gap-2`}
