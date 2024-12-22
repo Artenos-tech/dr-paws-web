@@ -267,8 +267,8 @@ export default createAPIClient({
             vet_vetport_id: z.number(),
             vet_name: z.string(),
             clinic_id: z.number(),
-            appt_start: z.number(),
-            appt_end: z.number(),
+            appt_start: z.string(),
+            appt_end: z.string(),
             appt_status: z.enum([
               "Check In",
               "Complete",
@@ -287,6 +287,7 @@ export default createAPIClient({
             appt_reason: z.string().nullable(),
             appt_type: z.string().nullable(),
             appt_type_id: z.number(),
+            category: z.enum(["UPCOMING", "PAST", "CANCELLED"]),
           })
         ),
       }),

@@ -11,7 +11,6 @@ import { HiOutlineCalendar } from "react-icons/hi";
 import CustomButton from "./CustomButton";
 import { useRouter } from "next/navigation";
 
-import { formatDate, formatTimeRange } from "@/components/ui/AppointmentCard";
 import { parse, format, addMinutes } from "date-fns";
 
 import Image from "next/image";
@@ -22,8 +21,6 @@ import defaultVetImage from "@/public/assets/images/clinic/doctorFemale.webp";
 
 import defaultPetImage from "@/public/assets/images/Appointments/petImage.png";
 // import { petImageByType } from "./PetCard";
-import { capitalizeFirstLetter } from "@/components/ui/AppointmentCard";
-import { epochToDate } from "@/components/ui/AppointmentCard";
 import { useAPICall } from "@/hooks/apicall";
 import api from "@/services/api";
 
@@ -54,6 +51,57 @@ type BookingDetailsProps = {
   } 
   onReschedule?: () => void;
 
+};
+
+// Helper Functions
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  const dayNames = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+  const monthNames = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  return `${dayNames[date.getDay()]}, ${date.getDate()} ${
+    monthNames[date.getMonth()]
+  } ${date.getFullYear()}`;
+};
+
+function epochToDate(dateStr: string) {
+  return new Date(dateStr).toLocaleString();
+}
+
+const formatTimeRange = (start: string, end: string) => {
+  const formatTime = (time: string) => {
+    const options: Intl.DateTimeFormatOptions = {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    };
+    return new Date(time).toLocaleTimeString("en-US", options);
+  };
+  return `${formatTime(start)} - ${formatTime(end)}`;
+};
+
+const capitalizeFirstLetter = (string: string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
 };
 
 const BookingDetails: React.FC<BookingDetailsProps> = ({

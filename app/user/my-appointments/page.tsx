@@ -2,21 +2,37 @@
 
 import { useEffect, useState } from "react";
 
-import AllAppointments from "@/components/ui/AllAppointments";
-import CancelledAppointments from "@/components/ui/CancelledAppointments";
-import ClinicTabBar from "@/components/ui/ClinicTabBar";
-import PastAppointments from "@/components/ui/PastAppointments";
-import UpcomingAppointments from "@/components/ui/UpcomingAppointments";
-import { AppointmentType } from "@/model/typeDefinitions";
-import Loader from "@/components/ui/Loader";
+import AppointmentCard from "@/components/ui/AppointmentCard";
 import BookingDetails from "@/components/ui/BookingDetails";
+import ClinicTabBar from "@/components/ui/ClinicTabBar";
+import Loader from "@/components/ui/Loader";
+import NoAppointments from "@/components/ui/NoAppointments";
 import { useAPICall } from "@/hooks/apicall";
+import { AppointmentType } from "@/model/typeDefinitions";
 import api from "@/services/api";
+
+
+const TABS = {
+  "ALL": {
+    label: "All",
+  },
+  "UPCOMING": {
+    label: "Upcoming",
+  },
+  "PAST": {
+    label: "Past",
+  },
+  // "CANCELLED": {
+  //   label: "Cancelled",
+  // },
+} as const;
 
 const MyAppointmentsPage = () => {
   const { call: getAppointments, loading, result } = useAPICall(api.getAppointments);
 
   const [selectedAppointment, setSelectedAppointment] = useState<AppointmentType | null>(null);
+
+  const [activeTab, setActiveTab] = useState<keyof typeof TABS>("ALL");
 
   useEffect(() => {
     getAppointments({});
@@ -28,62 +44,26 @@ const MyAppointmentsPage = () => {
 
   const appointments = result?.ok ? result.value.body.appointments : null;
 
-  const tabs = [
-    {
-      title: "All",
-      component: (
-      <AllAppointments 
-        allAppointments={result?.ok && result.value.body.appointments || []} 
-        onClick={setSelectedAppointment}
-      />
-    ),
-    },
-    {
-      title: "Upcoming",
-      component: (
-        <UpcomingAppointments
-          upcomingAppointments={(appointments || []).filter(
-            (appointment: AppointmentType) =>
-              appointment.appt_status === "Scheduled" ||
-              appointment.appt_status === "Confirm" ||
-              appointment.appt_status === "Confirmed" ||
-              appointment.appt_status === "Check-in" ||
-              appointment.appt_status === "Check In"
-          )}
-          onClick={setSelectedAppointment}
-        />
-      ),
-    },
-    {
-      title: "Past",
-      component: (
-        <PastAppointments
-          pastAppointments={(appointments || []).filter(
-            (appointment: AppointmentType) =>
-              appointment.appt_status === "Complete" ||
-              appointment.appt_status === "Check out"
-          )}
-          onClick={setSelectedAppointment}
-        />
-      ),
-    },
-    {
-      title: "Cancelled",
-      component: (
-        <CancelledAppointments
-          cancelledAppointments={(appointments || []).filter(
-            (appointment: AppointmentType) =>
-              appointment.appt_status === "Cancel"
-          )}
-          onClick={setSelectedAppointment}
-        />
-      ),
-    },
-  ];
+  const filteredAppointments = (
+    appointments || []
+  ).filter((appointment: AppointmentType) => {
+      if (activeTab === "ALL") {
+        return true;
+      }
+      if (activeTab === "UPCOMING") {
+        return appointment.appt_end > new Date().toISOString();
+      }
+      if (activeTab === "PAST") {
+        return appointment.appt_end < new Date().toISOString();
+      }
+      if (activeTab === "CANCELLED") {
+        return appointment.appt_status === "Cancel";
+      }
+  })
 
   return (
     <div className="flex flex-col w-full h-full items-center justify-items-center font-roca pb-20 flex-grow px-8 md:px-32 lg:px-20 xl:px-40">
-      <main className="w-full h-full  flex flex-col gap-[80px] my-12 row-start-2 items-center">
+      <main className="w-full h-full  flex flex-col gap-[40px] my-12 row-start-2 items-center">
         {selectedAppointment ? (
           <BookingDetails 
             selectedAppointment={{
@@ -94,12 +74,41 @@ const MyAppointmentsPage = () => {
               },
               selectedClinic: selectedAppointment.clinic_id.toString(),
               selectedDoctor: selectedAppointment.vet_vetport_id.toString(),
-              selectedDate: new Date(selectedAppointment.appt_start * 1000),
-              selectedSlot: new Date(selectedAppointment.appt_start * 1000).getHours().toString(),
+              selectedDate: new Date(selectedAppointment.appt_start),
+              selectedSlot: new Date(selectedAppointment.appt_start).getHours().toString(),
             }} 
           />
         ) :
-          <ClinicTabBar tabs={tabs} />
+          <>
+            {!result?.ok && (
+              result?.error.apiClientErrorType === "ErrorResponseAPIError" ?
+                <div>{result.error.message}</div>
+              :
+                <div>Something went wrong fetching your appointments</div>
+            )
+
+            }
+            <ClinicTabBar 
+              tabs={TABS} 
+              activeTabId={activeTab} 
+              onTabChange={setActiveTab} 
+            />
+              {filteredAppointments.length === 0 ?
+                <div className="w-full h-full lg:h-screen">
+                  <NoAppointments />
+                </div>
+                :
+                <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {filteredAppointments.map(appointment => (
+                    <AppointmentCard
+                      key={appointment.id}
+                      appointment={appointment}
+                      onClick={() => setSelectedAppointment(appointment)}
+                    />
+                  ))}
+                </div>
+              }
+          </>
         }
       </main>
     </div>
