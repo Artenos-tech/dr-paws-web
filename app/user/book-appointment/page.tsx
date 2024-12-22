@@ -5,7 +5,7 @@ import SelectService from "@/components/ui/SelectService";
 import SelectClinic from "@/components/ui/SelectClinic";
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
 import SelectVet from "@/components/ui/SelectVet";
-import { Pet, useUserContext } from "@/context/UserContext";
+import { Pet } from "@/context/UserContext";
 import BookingConfirmed from "@/components/ui/BookingConfirmed";
 
 const Booking: React.FC = () => {
@@ -88,16 +88,16 @@ const Booking: React.FC = () => {
     return value as string;
   }
 
-  const validateDoctorSelection = (value: Record<number, string> | null): Record<number, string> => {
-    if (
-      value === null ||
-      Object.keys(value).length === 0 ||
-      Object.values(value).find((doctor) => doctor === null)
-    ) {
-      throw new Error("Doctor must be selected");
-    }
-    return value as Record<number, string>;
-  }
+  // const validateDoctorSelection = (value: Record<number, string> | null): Record<number, string> => {
+  //   if (
+  //     value === null ||
+  //     Object.keys(value).length === 0 ||
+  //     Object.values(value).find((doctor) => doctor === null)
+  //   ) {
+  //     throw new Error("Doctor must be selected");
+  //   }
+  //   return value as Record<number, string>;
+  // }
 
   const validateDoctorImageSelection = (value: string | null): string => {
     if (value === null) {
