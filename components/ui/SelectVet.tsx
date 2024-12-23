@@ -19,6 +19,7 @@ import api from "@/services/api";
 import { Pet, useUserContext } from "@/context/UserContext";
 import toast, { Toaster } from "react-hot-toast";
 import Loader from "./Loader";
+import { ClipLoader } from "react-spinners";
 
 export function convertDateToEpoch(date: string) {
   return Date.parse(date);
@@ -64,13 +65,24 @@ const SelectVet: React.FC<selectVetProps> = ({
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
 
-  const { call: getStaffSchedule, result: staffScheduleResult, } = useAPICall(
+  const { 
+    call: getStaffSchedule,
+    result: staffScheduleResult,
+    loading: loadingStaffSchedule
+  } = useAPICall(
     api.getStaffSchedule
   );
 
-  const { call: createAnAppointment } = useAPICall(api.createAppointment);
+  const {
+    call: createAnAppointment,
+    loading: loadingAppointmentCreation
+  } = useAPICall(api.createAppointment);
 
-  const { call: getDoctorsForClinic, result: doctorsResult, loading: loadingDoctors } = useAPICall(api.getDoctorsForClinic);
+  const {
+    call: getDoctorsForClinic,
+    result: doctorsResult,
+    loading: loadingDoctors
+  } = useAPICall(api.getDoctorsForClinic);
 
   const fetchStaffSchedule = useCallback(async () => {
     if (
@@ -101,7 +113,7 @@ const SelectVet: React.FC<selectVetProps> = ({
     fetchDoctors();
   }, []);
 
-  const groomingStaff = doctorsResult?.ok && doctorsResult.value.body.staff.filter((doctor) => doctor.name === "Grooming Staff")[0];
+  const groomingStaff = isGrooming && doctorsResult?.ok && doctorsResult.value.body.staff.filter((doctor) => doctor.name === "Grooming Staff")[0];
   
   useEffect(() => {
     if (selectedDoctor || groomingStaff) {
@@ -216,7 +228,7 @@ const SelectVet: React.FC<selectVetProps> = ({
       selectedSlot !== null
     ) ;
 
-  if (loadingDoctors) {
+  if (loadingDoctors && !isGrooming) {
     return <Loader />;
   }
 
@@ -252,88 +264,102 @@ const SelectVet: React.FC<selectVetProps> = ({
           </Carousel>
         </div>
       )}
-
-      {/* Calendar and Timeslot Selection */}
-      <div className="flex flex-col gap-8">
-        <div className="flex flex-col gap-2">
-          <h1 className="text-3xl font-bold">Select Date and Time</h1>
-          <p className="text-gray-600 mb-4">
-            Choose a date and time for your visit
-          </p>
-        </div>
-
-        <div className="flex flex-col justify-center items-center xl:flex-row gap-8">
-          {/* Calendar Section */}
-          <div
-            className={`w-full flex-shrink-0 lg:w-1/2 xl:w-1/3 ${
-              !selectedDoctor &&
-              selectedData &&
-              !isGrooming
-                ? "opacity-100 pointer-events-none"
-                : ""
-            }`}
-          >
-            {(
-              <SelectCalendar
-                selectedDate={selectedDate}
-                onDateSelect={handleDateSelect}
-              />
-            )}
-          </div>
-
-          {/* Timeslots Section */}
-          {selectedDate && (
-            <div className="w-full">
-              <div className="font-semibold text-xs text-gray-800 lg:text-lg">
-                Available timeslots for{" "}
-                <span className="text-secondary-1">
-                  {format(selectedDate, "EEEE, MMM d")}
-                </span>
+      { (selectedDoctor || isGrooming) && Object.keys(allAvailableSlots).length !== 0 &&
+        (
+          <>
+            {/* Calendar and Timeslot Selection */}
+            <div className="flex flex-col gap-8">
+              <div className="flex flex-col gap-2">
+                <h1 className="text-3xl font-bold">Select Date and Time</h1>
+                <p className="text-gray-600 mb-4">
+                  Choose a date and time for your visit
+                </p>
               </div>
-              <div
-                className=" w-full grid grid-cols-2 gap-2 lg:gap-4 mt-4"
-                style={{
-                  gridTemplateColumns: "repeat(auto-fit, minmax(118px, 1fr))",
-                }}
-              >
-                {
-                  allAvailableSlots &&
-                  Object.keys(allAvailableSlots).length > 0 &&
-                  allAvailableSlots[normalizeSelectedDate(selectedDate)].length > 0 &&
-                  allAvailableSlots[normalizeSelectedDate(selectedDate)]
-                ? (
-                  allAvailableSlots[normalizeSelectedDate(selectedDate)].map((time, index) => (
-                    <div
-                      key={index}
-                      className={` text-center bg-primary-3 py-2 px-6 sm:py-1 sm:px-6 lg:py-2 lg:px-8 w-full rounded-md cursor-pointer shadow-md ${
-                        selectedSlot === time ? "border border-secondary-1" : ""
-                      }`}
-                      onClick={() => handleSlotSelect(time)}
-                    >
-                      {time}
+  
+              <div className="flex flex-col justify-center items-center xl:flex-row gap-8">
+                {/* Calendar Section */}
+                <div
+                  className={`w-full flex-shrink-0 lg:w-1/2 xl:w-1/3 ${
+                    !selectedDoctor &&
+                    selectedData &&
+                    !isGrooming
+                      ? "opacity-100 pointer-events-none"
+                      : ""
+                  }`}
+                >
+                  {(
+                    <SelectCalendar
+                      selectedDate={selectedDate}
+                      onDateSelect={handleDateSelect}
+                    />
+                  )}
+                </div>
+  
+                {/* Timeslots Section */}
+                {selectedDate && (
+                  <div className="w-full">
+                    <div className="font-semibold text-xs text-gray-800 lg:text-lg">
+                      Available timeslots for{" "}
+                      <span className="text-secondary-1">
+                        {format(selectedDate, "EEEE, MMM d")}
+                      </span>
                     </div>
-                  ))
-                ) 
-                : (
-                  <p className="text-gray-500 text-sm">
-                    No slots available for the selected date.
-                  </p>
+                    <div
+                      className=" w-full grid grid-cols-2 gap-2 lg:gap-4 mt-4"
+                      style={{
+                        gridTemplateColumns: "repeat(auto-fit, minmax(118px, 1fr))",
+                      }}
+                    >
+                      {
+                        allAvailableSlots &&
+                        Object.keys(allAvailableSlots).length > 0 &&
+                        allAvailableSlots[normalizeSelectedDate(selectedDate)].length > 0 &&
+                        allAvailableSlots[normalizeSelectedDate(selectedDate)]
+                      ? (
+                        allAvailableSlots[normalizeSelectedDate(selectedDate)].map((time, index) => (
+                          <div
+                            key={index}
+                            className={` text-center bg-primary-3 py-2 px-6 sm:py-1 sm:px-6 lg:py-2 lg:px-8 w-full rounded-md cursor-pointer shadow-md ${
+                              selectedSlot === time ? "border border-secondary-1" : ""
+                            }`}
+                            onClick={() => handleSlotSelect(time)}
+                          >
+                            {time}
+                          </div>
+                        ))
+                      ) 
+                      : (
+                        <p className="text-gray-500 text-sm">
+                          No slots available for the selected date.
+                        </p>
+                      )}
+                    </div>
+                  </div>
                 )}
               </div>
             </div>
-          )}
-        </div>
-      </div>
-
-      {/* Next Button */}
-      <div className="my-4 flex justify-center">
-        <CustomButton
-          buttonText={"Next"}
-          buttonBackground="bg-secondary-1"
-          disabled={!isNextButtonEnabled}
-          buttonClickEvent={handleNextClick}
-        />
-      </div>
+  
+            {/* Next Button */}
+            <div className="my-4 flex justify-center">
+              <CustomButton
+                buttonText={"Next"}
+                buttonBackground="bg-secondary-1"
+                disabled={!isNextButtonEnabled || loadingAppointmentCreation}
+                loading={isNextButtonEnabled && loadingAppointmentCreation}
+                buttonClickEvent={handleNextClick}
+              />
+            </div>
+          </>
+        )
+      }
+      { (selectedDoctor || isGrooming) &&
+        loadingStaffSchedule &&
+        (
+          <div className="flex justify-center">
+            <ClipLoader color="#33495f" />
+          </div>
+        )
+      }
       <Toaster />
     </div>
   );
