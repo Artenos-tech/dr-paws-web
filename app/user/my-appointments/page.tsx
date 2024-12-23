@@ -95,7 +95,14 @@ const MyAppointmentsPage = () => {
             />
               {filteredAppointments.length === 0 ?
                 <div className="w-full h-full lg:h-screen">
-                  <NoAppointments />
+                  <NoAppointments
+                    displayText={
+                      activeTab === "PAST"
+                        ? "No appointments"
+                        : "You haven't booked any visits yet"
+                      }
+                    showButton={activeTab !== "PAST"}
+                  />
                 </div>
                 :
                 <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
