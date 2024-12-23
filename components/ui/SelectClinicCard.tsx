@@ -37,8 +37,8 @@ const SelectClinicCard: React.FC<ClinicItemProps> = ({
           />
         </div>
       <div className="flex flex-col flex-grow px-6 pt-6 pb-12 bg-primary-3">
-        <h1 className="text-primary-1 text-base">{name}</h1>
-        <div className="flex gap-2 text-primary-1 text-xs mt-2">
+        <h1 className="text-primary-1 text-lg">{name}</h1>
+        <div className="flex gap-2 text-primary-1 text-base mt-2">
           <p>{services}</p>
         </div>
       </div>
