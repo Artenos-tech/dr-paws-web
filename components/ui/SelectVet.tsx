@@ -348,7 +348,7 @@ const SelectVet: React.FC<selectVetProps> = ({
           </div>
         )
       }
-      { (selectedDoctor || isGrooming) && !staffScheduleResult?.ok &&
+      { (selectedDoctor || isGrooming) && !loadingStaffSchedule && !staffScheduleResult?.ok &&
         <p className="text-gray-500 text-sm">
           Cannot load the available slots. Please try again later.
         </p>
