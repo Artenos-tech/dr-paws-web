@@ -37,15 +37,15 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
   goBack,
 }) => {
   console.log("selectedAppointment", selectedAppointment);
-  const [currentView, setCurrentView] = useState<
-    "default" | "cancel" | "reschedule"
-  >("default");
+  // const [currentView, setCurrentView] = useState<
+  //   "default" | "cancel" | "reschedule"
+  // >("default");
 
   return (
     <div className="w-full h-full">
       <BackButton navigateBack={goBack} />
 
-      {currentView === "default" && (
+      {/* {currentView === "default" && ( */}
         <div className="flex flex-col justify-center gap-4 items-center">
           <h1 className="text-3xl flex items-center gap-4">Your Booking</h1>
 
@@ -72,7 +72,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                       className="rounded-full"
                     />
                   </div>
-                  <div className="bg-white rounded-full w-[130px] h-[130px] p-8 ml-[-30px] border flex justify-center items-center">
+                  <div className="bg-white rounded-full w-[130px] h-[130px] p-8 ml-[-30px] flex justify-center items-center">
                     <Image
                       src={
                         doctorImagesMap[selectedAppointment.vet_image] ||
@@ -133,7 +133,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
             </div>
           </div>
         </div>
-      )}
+      {/* )} */}
       {/* 
       {currentView === "cancel" && (
         <div className="flex flex-col justify-center items-center gap-4">
