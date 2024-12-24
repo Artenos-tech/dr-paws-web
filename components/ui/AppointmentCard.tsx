@@ -73,7 +73,11 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({ appointment, onClick 
           {appointment.vet_vetport_id !== 0 &&
             ` and ${appointment.vet_name}`}
         </p>
-        <p>{new Date(appointment.appt_start).toLocaleDateString("en-IN")}</p>
+        <p>{new Date(appointment.appt_start).toLocaleDateString("en-IN", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        })}</p>
         <p>
           {new Date(appointment.appt_start).toLocaleTimeString("en-IN", {
             hour: "2-digit",

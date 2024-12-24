@@ -66,17 +66,8 @@ const MyAppointmentsPage = () => {
       <main className="w-full h-full  flex flex-col gap-[40px] my-12 row-start-2 items-center">
         {selectedAppointment ? (
           <BookingDetails 
-            selectedAppointment={{
-              selectedData: {
-                [selectedAppointment.appt_type_id]: {
-                  name: selectedAppointment.pet_name,
-                }
-              },
-              selectedClinic: selectedAppointment.clinic_id.toString(),
-              selectedDoctor: selectedAppointment.vet_vetport_id.toString(),
-              selectedDate: new Date(selectedAppointment.appt_start),
-              selectedSlot: new Date(selectedAppointment.appt_start).getHours().toString(),
-            }} 
+            selectedAppointment={selectedAppointment}
+            goBack={() => setSelectedAppointment(null)}
           />
         ) :
           <>
