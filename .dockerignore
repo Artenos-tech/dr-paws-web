@@ -1,2 +1,5 @@
+Dockerfile
+.env
 node_modules/
 .next/
+.vscode/
