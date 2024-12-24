@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import SelectService from "@/components/ui/SelectService";
+import SelectService, { BookingCategory } from "@/components/ui/SelectService";
 import SelectClinic from "@/components/ui/SelectClinic";
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
 import SelectVet from "@/components/ui/SelectVet";
@@ -11,8 +11,8 @@ import BookingConfirmed from "@/components/ui/BookingConfirmed";
 const Booking: React.FC = () => {
   const [selectedAppointment, setSelectedAppointmentState] = useState<{
     selectedService: string | null;
-    selectedSubtype: Record<number, string | null>;
-    selectedData: Record<number, Pet | null>;
+    selectedSubtype: BookingCategory | null;
+    selectedServiceIdToPet: Record<number, Pet | null>;
     isGrooming: boolean;
     selectedClinic: number | null;
     selectedLocation: string | null;
@@ -22,8 +22,8 @@ const Booking: React.FC = () => {
     selectedSlot: string | null;
   }>({
     selectedService: null,
-    selectedSubtype: {},
-    selectedData: {},
+    selectedSubtype: null,
+    selectedServiceIdToPet: {},
     isGrooming: false,
     selectedClinic: null,
     selectedLocation: null,
@@ -118,12 +118,12 @@ const Booking: React.FC = () => {
 
           {currentStep === 1 && (
             <SelectService
-              selectedData={selectedAppointment.selectedData}
-              setSelectedData={(newSelectedData, cardTitle, isGrooming, selectedSubtype) => {
+              selectedData={selectedAppointment.selectedServiceIdToPet}
+              setServiceOptions={(selectedSvcIdToPet, serviceTitle, isGrooming, selectedSubtype) => {
                 setSelectedAppointmentState((prev) => ({ 
                   ...prev, 
-                  selectedData: newSelectedData,
-                  selectedService: cardTitle,
+                  selectedServiceIdToPet: selectedSvcIdToPet,
+                  selectedService: serviceTitle,
                   isGrooming: isGrooming,
                   selectedSubtype
                 }));
@@ -150,7 +150,7 @@ const Booking: React.FC = () => {
               <SelectVet 
                 onNext={goToNextStep} 
                 selectedClinic={validateClinicSelection(selectedAppointment.selectedClinic)} 
-                selectedData={validateSelectedData(selectedAppointment.selectedData)}
+                selectedServiceIdToPet={validateSelectedData(selectedAppointment.selectedServiceIdToPet)}
                 selectedLocation={validateLocationSelection(selectedAppointment.selectedLocation)}
                 selectedService={validateServiceSelection(selectedAppointment.selectedService)}
                 selectedSubtype={selectedAppointment.selectedSubtype}
@@ -164,7 +164,7 @@ const Booking: React.FC = () => {
             (
               <BookingConfirmed selectedAppointment={
                 {
-                  selectedData: validateSelectedData(selectedAppointment.selectedData),
+                  selectedData: validateSelectedData(selectedAppointment.selectedServiceIdToPet),
                   selectedClinic: validateClinicSelection(selectedAppointment.selectedClinic),
                   selectedLocation: validateLocationSelection(selectedAppointment.selectedLocation),
                   selectedService: validateServiceSelection(selectedAppointment.selectedService),

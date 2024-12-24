@@ -4,12 +4,12 @@ import { BookingCategory } from './SelectService';
 interface BookingModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelect: (option: Record<string, string | null>) => void;
+  onSelect: (option: BookingCategory) => void;
   subtypes: BookingCategory[];
 }
 
 export default function BookingModal({ isOpen, onClose, onSelect, subtypes }: BookingModalProps) {
-  const [selectedOption, setSelectedOption] = useState<Record<string, string | null>>({});
+  const [selectedOption, setSelectedOption] = useState<BookingCategory | null>(null);
 
   const handleSelect = () => {
     if (selectedOption) {
@@ -33,8 +33,8 @@ export default function BookingModal({ isOpen, onClose, onSelect, subtypes }: Bo
                   type="radio"
                   name="service"
                   value={subtype.id}
-                  checked={Object.keys(selectedOption)[0] === subtype.id}
-                  onChange={() => setSelectedOption({ [subtype.id]: subtype.title })}
+                  checked={selectedOption?.id === subtype.id}
+                  onChange={() => setSelectedOption(subtype)}
                   className="form-radio h-4 w-4 sm:h-5 sm:w-5 text-[#5281a2] focus:ring-[#5281a2] cursor-pointer"
                 />
                 <span className="flex-grow">

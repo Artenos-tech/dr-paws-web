@@ -21,21 +21,23 @@ import toast, { Toaster } from "react-hot-toast";
 import Loader from "./Loader";
 import { ClipLoader } from "react-spinners";
 
+import { BookingCategory } from "./SelectService";
+
 export function convertDateToEpoch(date: string) {
   return Date.parse(date);
 }
 
 interface selectVetProps {
-  selectedData: Record<number, Pet>;
+  selectedServiceIdToPet: Record<number, Pet>;
   selectedClinic: number;
   selectedLocation: string;
   selectedService: string;
-  selectedSubtype: Record<string, string | null>;
+  selectedSubtype: BookingCategory | null;
   isGrooming: boolean;
   setFinalAppointmentData: (finalAppData: {
-    selectedData: Record<number, Pet | null>;
+    selectedServiceIdToPet: Record<number, Pet | null>;
     selectedService: string;
-    selectedSubtype: Record<string, string | null>;
+    selectedSubtype: BookingCategory | null;
     isGrooming: boolean;
     selectedClinic: number;
     selectedLocation: string | null;
@@ -49,7 +51,7 @@ interface selectVetProps {
 
 const SelectVet: React.FC<selectVetProps> = ({
   selectedClinic,
-  selectedData,
+  selectedServiceIdToPet,
   selectedLocation,
   selectedService,
   selectedSubtype,
@@ -93,12 +95,12 @@ const SelectVet: React.FC<selectVetProps> = ({
       await getStaffSchedule({
         clinicid: selectedClinic.toString(),
         staffid,
-        appttypeid: Object.keys(selectedData)[0],
-        subtype: Object.keys(selectedSubtype)[0],
+        appttypeid: Object.keys(selectedServiceIdToPet)[0],
+        subtype: selectedSubtype?.id,
       });
     }
   }, [
-    selectedData,
+    selectedServiceIdToPet,
     selectedDoctor,
     selectedClinic,
     getStaffSchedule,
@@ -123,7 +125,7 @@ const SelectVet: React.FC<selectVetProps> = ({
 
   const handleNextClick = async () => {
     setFinalAppointmentData({
-      selectedData,
+      selectedServiceIdToPet,
       selectedService,
       selectedSubtype,
       selectedClinic,
@@ -135,10 +137,10 @@ const SelectVet: React.FC<selectVetProps> = ({
       isGrooming
     });
 
-    if (user && selectedSlot && selectedDate && selectedData) {
+    if (user && selectedSlot && selectedDate && selectedServiceIdToPet) {
       const staffId = selectedDoctor ? Number(Object.keys(selectedDoctor)[0]) : groomingStaff ? groomingStaff.id : 0;
       const clinicId = selectedClinic;
-      const selectedPet = Object.values(selectedData)[0];
+      const selectedPet = Object.values(selectedServiceIdToPet)[0];
 
       const [hours, minutes] = selectedSlot.split(":").map(Number);
       selectedDate.setHours(hours, minutes, 0, 0);
@@ -149,7 +151,7 @@ const SelectVet: React.FC<selectVetProps> = ({
           (
             !isGrooming 
               ? 30
-              : Object.keys(selectedSubtype)[0] === "spa-bath"
+              : selectedSubtype?.id === "spa-bath"
                 ? 60
                 : 90
           )
@@ -160,10 +162,10 @@ const SelectVet: React.FC<selectVetProps> = ({
           vet_id: staffId,
           pet_id: selectedPet.id,
           clinic_id: clinicId,
-          appt_reason: Object.values(selectedSubtype)[0] || null,
+          appt_reason: selectedSubtype?.title || null,
           appt_start: apptStart,
           appt_end: apptEnd,
-          appt_type_id: JSON.parse(Object.keys(selectedData)[0]),
+          appt_type_id: JSON.parse(Object.keys(selectedServiceIdToPet)[0]),
         });
 
         if (response.ok) {
@@ -281,7 +283,7 @@ const SelectVet: React.FC<selectVetProps> = ({
               <div
                 className={`w-full flex-shrink-0 lg:w-1/2 xl:w-1/3 ${
                   !selectedDoctor &&
-                  selectedData &&
+                  selectedServiceIdToPet &&
                   !isGrooming
                     ? "opacity-100 pointer-events-none"
                     : ""

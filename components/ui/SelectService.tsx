@@ -17,11 +17,11 @@ export interface BookingCategory {
 
 interface SelectServiceProps {
   selectedData: Record<number, Pet | null>;
-  setSelectedData: (
-    newSelectedData: Record<number, Pet | null>,
-    cardTitle: string | null,
+  setServiceOptions: (
+    selectedSvcIdToPet: Record<number, Pet | null>,
+    serviceTitle: string | null,
     isGrooming: boolean,
-    selectedSubtype: Record<string, string | null>
+    selectedSubtype: BookingCategory | null
   ) => void;
   openCard: number | null;
   setOpenCard: React.Dispatch<React.SetStateAction<number | null>>;
@@ -32,7 +32,7 @@ interface SelectServiceProps {
 
 const SelectService: React.FC<SelectServiceProps> = ({
   selectedData,
-  setSelectedData,
+  setServiceOptions,
   openCard,
   setOpenCard,
   isModalOpen,
@@ -40,7 +40,7 @@ const SelectService: React.FC<SelectServiceProps> = ({
   onNext,
 }) => {
   const [subtypes, setSubtypes] = useState<BookingCategory[]>([]);
-  const [selectedSubtype, setSelectedSubtype] = useState<Record<string, string | null>>({});
+  const [selectedSubtype, setSelectedSubtype] = useState<BookingCategory | null>(null);
 
   const { call: getPetsAPI, result: getPetsAPIResult} = useAPICall(
     api.getPets
@@ -74,13 +74,13 @@ const SelectService: React.FC<SelectServiceProps> = ({
     : [];
 
   const handleCardSelection = (cardId: number, cardTitle: string, selectedPet: Pet | null, isGrooming: boolean) => {
-    setSelectedData({ [cardId]: selectedPet }, cardTitle, isGrooming, selectedSubtype);
+    setServiceOptions({ [cardId]: selectedPet }, cardTitle, isGrooming, selectedSubtype);
   };
 
   const toggleCard = (cardId: number, isGrooming: boolean) => {
     setOpenCard((prevOpenCard) => {
       if (prevOpenCard !== null) {
-        setSelectedData(
+        setServiceOptions(
           {
             [prevOpenCard]: null,
           },
@@ -146,7 +146,7 @@ const SelectService: React.FC<SelectServiceProps> = ({
         isOpen={isModalOpen}
         subtypes={subtypes}
         onClose={() => setIsModalOpen(false)}
-        onSelect={(option: Record<string, string | null>) => setSelectedSubtype(option)}
+        onSelect={(option) => setSelectedSubtype(option)}
       />
     </div>
   );
