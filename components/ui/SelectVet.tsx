@@ -348,10 +348,12 @@ const SelectVet: React.FC<selectVetProps> = ({
           </div>
         )
       }
-      { (selectedDoctor || isGrooming) && !staffScheduleResult?.ok &&
-        <p className="text-gray-500 text-sm">
-          Cannot load the available slots. Please try again later.
-        </p>
+      { (selectedDoctor || isGrooming) &&
+        !staffScheduleResult?.ok &&
+        !loadingStaffSchedule &&
+          <p className="text-gray-500 text-sm">
+            Cannot load the available slots. Please try again later.
+          </p>
       }
       {/* Next Button */}
       <div className="my-4 flex justify-center">
