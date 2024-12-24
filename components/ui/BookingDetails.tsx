@@ -1,7 +1,7 @@
 "use client";
 
 import { AppointmentType } from "@/model/typeDefinitions";
-import React, { useState } from "react";
+import React from "react";
 import BackButton from "./BackButton";
 import { MdOutlineAccessTime } from "react-icons/md";
 import { GrLocation } from "react-icons/gr";
