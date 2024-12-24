@@ -25,7 +25,7 @@ interface CalendarProps {
 }
 
 const SelectCalendar: React.FC<CalendarProps> = ({
-  timezone = "India Standard Time (2:30pm)",
+  timezone = "Indian Standard Time (IST)",
   onDateSelect,
   selectedDate,
 }) => {
