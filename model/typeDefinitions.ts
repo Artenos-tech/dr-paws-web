@@ -58,7 +58,10 @@ export interface AppointmentType {
   user_vetport_id: number;
   vet_vetport_id: number;
   vet_name: string;
+  vet_image: string;
   clinic_id: number;
+  clinic_name: string;
+  clinic_location: string;
   appt_start: string;
   appt_end: string;
   appt_status:

@@ -237,7 +237,10 @@ export default createAPIClient({
             user_vetport_id: z.number(),
             vet_vetport_id: z.number(),
             vet_name: z.string(),
+            vet_image: z.string(),
             clinic_id: z.number(),
+            clinic_name: z.string(),
+            clinic_location: z.string(),
             appt_start: z.string(),
             appt_end: z.string(),
             appt_status: z.enum([

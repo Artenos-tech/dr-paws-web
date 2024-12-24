@@ -16,7 +16,7 @@ const profileSchema = z.object({
     .length(10, "Contact must be 10 digits")
     .regex(/^\d{10}$/, "Contact must be numeric"),
   email: z.string().email("Invalid email address").nullable(),
-  currentAddress: z.string().nullable(),
+  current_address: z.string().nullable(),
 });
 
 type ProfileFormData = z.infer<typeof profileSchema>;
@@ -63,7 +63,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
       ...data,
       id: profileData.id,
       profile_image: image,
-      current_address: data.currentAddress,
+      current_address: data.current_address,
       role: "USER",
     });
   };
@@ -144,13 +144,13 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
       </div>
       <div className="flex flex-col ">
         <label className="text-sm">Address</label>
-        <input
-          {...register("currentAddress")}
+        <textarea
+          {...register("current_address")}
           className="input rounded-md p-2 border w-full border-[#74A7B3]"
         />
-        {errors.currentAddress && (
+        {errors.current_address && (
           <span className="text-red-500 text-sm">
-            {errors.currentAddress.message}
+            {errors.current_address.message}
           </span>
         )}
       </div>

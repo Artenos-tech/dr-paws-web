@@ -1,29 +1,15 @@
 "use client";
 
 import { AppointmentType } from "@/model/typeDefinitions";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import BackButton from "./BackButton";
-// import Image from "next/image";
 import { MdOutlineAccessTime } from "react-icons/md";
 import { GrLocation } from "react-icons/gr";
 import { HiOutlineCalendar } from "react-icons/hi";
-
-import CustomButton from "./CustomButton";
-import { useRouter } from "next/navigation";
-
-import { parse, format, addMinutes } from "date-fns";
-
 import Image from "next/image";
-import { doctors } from "@/model/mockData";
-
-// TO-DO: For testing purpose
 import defaultVetImage from "@/public/assets/images/clinic/doctorFemale.webp";
-
 import defaultPetImage from "@/public/assets/images/Appointments/petImage.png";
-// import { petImageByType } from "./PetCard";
-import { useAPICall } from "@/hooks/apicall";
-import api from "@/services/api";
-
+import { doctorImagesMap } from "@/model/mockData";
 
 export const cancelReasons = [
   "Another commitment has come up",
@@ -41,406 +27,114 @@ export const rescheduleReasons = [
 ];
 
 type BookingDetailsProps = {
-  appointmentId?: string;
-  selectedAppointment?: {
-    selectedData: Record<number, {name: string} | null>;
-    selectedClinic: string | null;
-    selectedDoctor: string | null;
-    selectedDate: Date | null;
-    selectedSlot: string | null;
-  } 
+  selectedAppointment: AppointmentType;
+  goBack: () => void;
   onReschedule?: () => void;
-
-};
-
-// Helper Functions
-const formatDate = (dateString: string) => {
-  const date = new Date(dateString);
-  const dayNames = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
-  const monthNames = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
-  return `${dayNames[date.getDay()]}, ${date.getDate()} ${
-    monthNames[date.getMonth()]
-  } ${date.getFullYear()}`;
-};
-
-function epochToDate(dateStr: string) {
-  return new Date(dateStr).toLocaleString();
-}
-
-const formatTimeRange = (start: string, end: string) => {
-  const formatTime = (time: string) => {
-    const options: Intl.DateTimeFormatOptions = {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    };
-    return new Date(time).toLocaleTimeString("en-US", options);
-  };
-  return `${formatTime(start)} - ${formatTime(end)}`;
-};
-
-const capitalizeFirstLetter = (string: string) => {
-  return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
 };
 
 const BookingDetails: React.FC<BookingDetailsProps> = ({
-  appointmentId,
-  onReschedule,
   selectedAppointment,
+  goBack,
 }) => {
-
   console.log("selectedAppointment", selectedAppointment);
-  const [bookingDetails, setBookingDetails] = useState<AppointmentType | null>(
-    null
-  );
+  // const [currentView, setCurrentView] = useState<
+  //   "default" | "cancel" | "reschedule"
+  // >("default");
 
-  const [currentView, setCurrentView] = useState<
-    "default" | "cancel" | "reschedule"
-  >("default");
-
-  const [cancelReason, setCancelReason] = useState<string | null>(null);
-  const [rescheduleReason, setRescheduleReason] = useState<string | null>(null);
-
-  const [cancelFlowEnd, setCancelFlowEnd] = useState(false);
-  const [showValidationMessage, setShowValidationMessage] = useState(false);
-
-  const navigate = useRouter();
-
-  
-  const {
-    call: callGetAppointmentServices,
-    result: getAppointmentServicesResult,
-  } = useAPICall(api.getAppointmentServices)
-
-  useEffect(() => {
-    callGetAppointmentServices({});
-  }, []);
-
-  const appointmentServices = getAppointmentServicesResult?.ok
-  ? getAppointmentServicesResult.value.body.appointmentTypes
-  : null;
-
-  const handleCancelBooking = () => {
-    setCancelFlowEnd(true);
-    if (!bookingDetails) return;
-    setBookingDetails({
-      ...bookingDetails,
-      appt_status: "Cancel",
-    });
-    setCurrentView("default");
-    setCurrentView("default");
-  };
-
-  const handleCancelNo = () => {
-    setCurrentView("default");
-    setCancelReason(null);
-    setShowValidationMessage(false);
-  };
-
-  const handleRescheduleNo = () => {
-    setRescheduleReason(null);
-    setCurrentView("default");
-    setShowValidationMessage(false);
-  };
-
-  const handleYesClick = (reason: string | null, onConfirm: () => void) => {
-    if (reason) {
-      onConfirm();
-    } else {
-      setShowValidationMessage(true);
-    }
-  };
-
-  const isCancelled = bookingDetails?.appt_status === "Cancel";
-
-  const matchedDoctor = doctors.find(
-    (doctor) => Number(doctor.id) === bookingDetails?.vet_vetport_id
-  );
-
-  const foundDoctor = doctors.find(
-    (doctor) => doctor.id === selectedAppointment?.selectedDoctor
-  );
-
-  console.log(
-    "Object.values(selectedAppointment?.selectedData || {})[0]}",
-    Object.values(selectedAppointment?.selectedData || {})[0]
-  );
-
-  const addMinutesToTime = (time: string, minutes: number): string => {
-    try {
-      const parsedTime = parse(time, "HH:mm", new Date());
-      const updatedTime = addMinutes(parsedTime, minutes);
-      return format(updatedTime, "HH:mm");
-    } catch (error) {
-      console.error("Error parsing time:", error);
-      return "";
-    }
-  };
-
-
-  const serviceTypeId = selectedAppointment?.selectedData && JSON.parse(Object.keys(selectedAppointment.selectedData)[0]);
-
-  if (!appointmentServices) {
-    return "loading services...";
-  }
-  const serviceType = appointmentServices.find((service) => service.vetPortId === serviceTypeId)?.title;
-
-  console.log("selectedAppointment", selectedAppointment)
   return (
     <div className="w-full h-full">
-      <BackButton />
+      <BackButton navigateBack={goBack} />
 
-      {currentView === "default" && (
+      {/* {currentView === "default" && ( */}
         <div className="flex flex-col justify-center gap-4 items-center">
-          {/* Dynamic heading */}
-          <h1 className="text-3xl flex items-center gap-4">
-            {/* {isCancelled ? (
-              "Booking Cancelled"
-            ) : !appointmentId ? (
-              <>
-                Booking Confirmed <BsCheckCircleFill fill="#5281a2" />
-              </>
-            ) : ( */}
-              Your Booking
-            {/* )} */}
-          </h1>
+          <h1 className="text-3xl flex items-center gap-4">Your Booking</h1>
 
           <div
-            className={`p-4 text-primary-1 w-11/12 md:w-4/5 lg:w-[50%] shadow-md my-5 flex flex-col gap-2 items-center 
-            ${isCancelled ? "bg-gray-200 opacity" : "bg-[#FFFCF3]"} ${
-              bookingDetails?.appt_status === "Scheduled" ||
-              bookingDetails?.appt_status === "Confirm" ||
-              bookingDetails?.appt_status === "Check In" ||
-              bookingDetails?.appt_status === "Confirmed" ||
-              bookingDetails?.appt_status === "Check-in"
-                ? "bg-primary-3"
-                : "bg-[#FFFCF3]"
-              // !appointmentId
-              //   ? "bg-primary-3"
-              //   : "bg-[#FFFCF3]"
-            }`}
+            className={`p-4 text-primary-1 w-11/12 md:w-4/5 lg:w-[50%] shadow-md my-5 flex flex-col gap-2 items-center bg-[#FFFCF3]`}
           >
             <p className="text-lg font-semibold mt-4">
-              {appointmentId ? (
-                <>
-                  {capitalizeFirstLetter(bookingDetails?.pet_name || "")}
-                  {bookingDetails?.vet_vetport_id !== 0 &&
-                    ` with ${matchedDoctor?.name}`}
-                </>
-              ) : selectedAppointment?.selectedData &&
-                Object.keys(selectedAppointment.selectedData).includes(
-                  "Grooming"
-                ) ? (
-                `${
-                  Object.values(selectedAppointment?.selectedData || {})[0]
-                    ?.name
-                } is scheduled`
-              ) : (
-                `${
-                  Object.values(selectedAppointment?.selectedData || {})[0]
-                    ?.name
-                } is scheduled with ${foundDoctor?.name}`
-              )}
+              {selectedAppointment.appt_type &&
+              selectedAppointment.appt_type === "Grooming"
+                ? `${selectedAppointment.pet_name} is scheduled`
+                : `${selectedAppointment.pet_name} is scheduled with ${selectedAppointment.vet_name}`}
             </p>
-            <p>
-              for 
-              {/* {bookingDetails?.service}  */}
-              {appointmentId
-                ? " Service" // TO-DO: Later give booking service
-                : selectedAppointment?.selectedData &&
-                  Object.keys(selectedAppointment.selectedData).includes(
-                    "Grooming"
-                  )
-                ? " Grooming"
-                : ` ${serviceType} consultation`}
-            </p>
+            <p>for {selectedAppointment.appt_type}</p>
 
             <div className="flex items-center my-4">
-              {bookingDetails && (
+              {
                 <>
-                <div className="bg-white rounded-full w-[130px] h-[130px] p-3 flex justify-center items-center">
-                  <Image
-                    src={defaultPetImage}
-                    alt="pet-image"
-                    width={130}
-                    height={130}
-                    className="rounded-full"
-                  />
-                </div>
-                <div className="bg-white rounded-full w-[130px] h-[130px] p-8 ml-[-30px] border flex justify-center items-center">
-                  <Image
-                    src={matchedDoctor?.image ?? defaultVetImage}
-                    alt="vet-image"
-                    width={100}
-                    height={100}
-                    className="rounded-full"
-                  />
-                </div>
-              </>
-              
-              )}
-              {!appointmentId && selectedAppointment?.selectedData && (
-                <>
-                  <Image
-                    src={
-                      // (typeof selectedAppointment.selectedData.profileImage ===
-                      //   "string" &&
-                      //   (selectedAppointment.selectedData
-                      //     .profileImage as string)) ||
-                      // petImageByType[
-                      //   (selectedAppointment.selectedData?.type
-                      //     ?.toString()
-                      //     .toLowerCase() as keyof typeof petImageByType) ||
-                      //     "other"
-                      // ]
-                      defaultPetImage
-                    }
-                    alt="pet-image"
-                    width={130}
-                    height={130}
-                  />
-                  {selectedAppointment.selectedData &&
-                    !Object.keys(selectedAppointment.selectedData).includes(
-                      "Grooming"
-                    ) && (
-                      <div className="bg-white rounded-full  w-full p-3 flex justify-center items-center ml-[-30px]">
-                        <Image
-                          src={foundDoctor?.image ?? defaultVetImage}
-                          alt="vet-image"
-                          width={100}
-                          height={100}
-                          className=" w-full mx-auto"
-                        />
-                      </div>
-                    )}
+                  <div className="bg-white rounded-full w-[130px] h-[130px] p-3 flex justify-center items-center">
+                    <Image
+                      src={defaultPetImage}
+                      alt="pet-image"
+                      width={130}
+                      height={130}
+                      className="rounded-full"
+                    />
+                  </div>
+                  <div className="bg-white rounded-full w-[130px] h-[130px] p-8 ml-[-30px] flex justify-center items-center">
+                    <Image
+                      src={
+                        doctorImagesMap[selectedAppointment.vet_image] ||
+                        defaultVetImage
+                      }
+                      alt="vet-image"
+                      width={100}
+                      height={100}
+                      className="rounded-full"
+                    />
+                  </div>
                 </>
-              )}
+              }
             </div>
-
             <div className="my-4 space-y-3">
-              <p
-                className={`flex items-center gap-2 ${
-                  isCancelled ? "line-through" : ""
-                }`}
-              >
+              <p className={"flex items-center gap-2"}>
                 <span className="text-secondary-1">
                   <GrLocation />
                 </span>{" "}
-                {/* {bookingDetails?.clinicAddress */}
-                {appointmentId
-                  ? matchedDoctor?.location
-                  : foundDoctor?.location}
+                {selectedAppointment.clinic_location}
               </p>
 
-              <p
-                className={`flex items-center gap-2 ${
-                  isCancelled ? "line-through" : ""
-                }`}
-              >
+              <p className={"flex items-center gap-2"}>
                 <span className="text-secondary-1">
                   <HiOutlineCalendar />
                 </span>
-                {bookingDetails
-                  ? formatDate(epochToDate(bookingDetails.appt_start))
-                  : !appointmentId &&
-                    selectedAppointment?.selectedDate &&
-                    formatDate(selectedAppointment.selectedDate.toString())}
+                {new Date(selectedAppointment.appt_start).toLocaleDateString(
+                  "en-IN",
+                  {
+                    weekday: "long",
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  }
+                )}
               </p>
-              <p
-                className={`flex items-center gap-2 ${
-                  isCancelled ? "line-through" : ""
-                }`}
-              >
+              <p className={`flex items-center gap-2`}>
                 <span className="text-secondary-1">
                   <MdOutlineAccessTime />
                 </span>
 
-                {bookingDetails ? (
-                  formatTimeRange(
-                    epochToDate(bookingDetails.appt_start),
-                    epochToDate(bookingDetails.appt_end)
-                  )
-                ) : (
-                  <>
-                    {selectedAppointment?.selectedSlot} -{" "}
-                    {selectedAppointment?.selectedSlot &&
-                      addMinutesToTime(
-                        selectedAppointment.selectedSlot,
-                        selectedAppointment.selectedData &&
-                          Object.keys(
-                            selectedAppointment.selectedData
-                          ).includes("Grooming")
-                          ? 90
-                          : 30
-                      )}
-                  </>
+                {new Date(selectedAppointment.appt_start).toLocaleTimeString(
+                  "en-IN",
+                  {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  }
+                )}
+                {" - "}
+                {new Date(selectedAppointment.appt_end).toLocaleTimeString(
+                  `en-IN`,
+                  {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  }
                 )}
               </p>
             </div>
-            {/* {(!isCancelled && bookingDetails?.appt_status === "Complete") ||
-              (bookingDetails?.appt_status === "Check In" && (
-                <div className="flex justify-center mb-4 mt-2 items-center gap-2 w-full md:w-[75%]">
-                  <button
-                    onClick={() => setCurrentView("cancel")}
-                    className="w-full md:w-1/2 text-xs md:text-sm border-2 border-secondary-1 bg-transparent py-2 text-secondary-1 font-semibold rounded-full"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={() => setCurrentView("reschedule")}
-                    className=" w-full md:w-1/2 text-xs md:text-sm border-2 border-secondary-1 bg-transparent py-2 text-secondary-1 font-semibold rounded-full"
-                  >
-                    Reschedule
-                  </button>
-                </div>
-              ))} */}
-
-            {bookingDetails?.appt_status && (
-              <p className="italic text-gray-400 text-sm w-3/4 text-center">
-                Note: For cancel or reschedule, please contact
-                {matchedDoctor?.location === "RMV (Dollars Colony)"
-                  ? ` +91 7204996899
-                (RMV Dollar Colony)`
-                  : ` +91 9606994627 (Indiranagar)`}
-              </p>
-            )}
-            {cancelFlowEnd ||
-              (!appointmentId && (
-                <div className="flex items-center">
-                  <CustomButton
-                    buttonText="Done"
-                    buttonBackground="bg-secondary-1"
-                    buttonClickEvent={() =>
-                      navigate.push("/user/my-appointments")
-                    }
-                  />
-                </div>
-              ))}
           </div>
         </div>
-      )}
-
+      {/* )} */}
+      {/* 
       {currentView === "cancel" && (
         <div className="flex flex-col justify-center items-center gap-4">
           <h1 className="text-3xl">Cancel Booking</h1>
@@ -466,7 +160,6 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                 </div>
               ))}
             </div>
-            {/* Validation Message */}
             {showValidationMessage && !cancelReason && (
               <p className="text-red-500 text-sm">
                 Please select a reason to proceed.
@@ -490,9 +183,9 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
             </div>
           </div>
         </div>
-      )}
+      )} */}
 
-      {currentView === "reschedule" && (
+      {/* {currentView === "reschedule" && (
         <div className="flex flex-col justify-center items-center gap-4">
           <h1 className="text-3xl">Reschedule Booking</h1>
           <div className="py-6 px-6 md:py-8 md:px-12 text-primary-1 w-11/12 md:w-4/5 lg:w-[50%] shadow-md my-5 flex flex-col gap-8 items-center bg-[#FFFCF3] rounded-lg">
@@ -542,7 +235,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };
