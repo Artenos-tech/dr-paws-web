@@ -72,6 +72,12 @@ export default createAPIClient({
         mobile: z.string(),
         role: z.enum(["ADMIN", "USER"]),
         otp: z.string(),
+        address1: z.string(),
+        address2: z.string(),
+        city: z.string(),
+        pincode: z.string(),
+        state: z.string(),
+        country: z.string(),
       }),
       responseSchema: z.object({
         status: z.number(),

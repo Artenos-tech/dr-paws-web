@@ -9,11 +9,28 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ClipLoader } from "react-spinners";
 
 const signUpSchema = z.object({
-  userName: z.string().trim().min(1, "Provide name."),
+  userName: z.string().trim().min(1, "Provide your full name."),
   mobileNumber: z
     .string()
     .length(10, "Mobile number must be 10 digits")
     .regex(/^\d+$/, "Mobile number must contain only numbers"),
+  address1: z
+    .string()
+    .trim()
+    .min(1, "Provide address details like house number, building name."),
+  address2: z
+    .string()
+    .trim()
+    .min(1, "Provide address details like street name, locality."),
+  city: z.string().trim().min(1, "Provide city name."),
+  pincode: z
+    .string()
+    .trim()
+    .min(1, "Provide pincode.")
+    .max(6, "Pincode must be 6 digits"),
+  state: z.string().trim().min(1, "Provide state name."),
+  country: z.string().trim().min(1, "Provide country name."),
+  profilePicture: z.string().nullable().optional(),
 });
 
 type SignUpFormData = z.infer<typeof signUpSchema>;
@@ -23,6 +40,12 @@ interface SignUpFormProps {
     userName: string;
     mobileNumber: string;
     profilePicture: string | null;
+    address1: string;
+    address2: string;
+    city: string;
+    pincode: string;
+    state: string;
+    country: string;
   }) => void;
   loading: boolean;
   errMsg: string;
@@ -43,7 +66,16 @@ const SignupForm: React.FC<SignUpFormProps> = ({
     formState: { errors },
   } = useForm<SignUpFormData>({
     resolver: zodResolver(signUpSchema),
-    defaultValues: { userName: "", mobileNumber: "" },
+    defaultValues: {
+      userName: "",
+      mobileNumber: "",
+      address1: "",
+      address2: "",
+      city: "",
+      pincode: "",
+      state: "",
+      country: "",
+    },
   });
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -62,7 +94,6 @@ const SignupForm: React.FC<SignUpFormProps> = ({
     const isDefaultImage = userProfileImage.includes("/_next/static/media/")
       ? null
       : userProfileImage;
-
     onSubmit({ ...data, profilePicture: isDefaultImage });
   };
 
@@ -75,7 +106,12 @@ const SignupForm: React.FC<SignUpFormProps> = ({
         Add your phone number. We&apos;ll send you a <br /> verification code.
       </p>
 
-      <form onSubmit={handleSubmit(signUpSubmitHandler)} className="my-6">
+      <form
+        onSubmit={handleSubmit(signUpSubmitHandler, (errors) => {
+          console.log("Form validation errors:", errors);
+        })}
+        className="my-6"
+      >
         <div className="relative flex flex-col w-[40%] sm:w-[35%] md:w-[35%] mb-6 mx-auto">
           <div>
             <Image
@@ -104,7 +140,6 @@ const SignupForm: React.FC<SignUpFormProps> = ({
               className="absolute bottom-0 right-0 w-7 "
             />
           </div>
-
           <div className="px-5">
             <input
               type="file"
@@ -123,7 +158,7 @@ const SignupForm: React.FC<SignUpFormProps> = ({
             required
             autoComplete="off"
           />
-          <label htmlFor="name">Name</label>
+          <label htmlFor="userName">Full Name</label>
           {errors.userName && (
             <p className="text-red-500 text-left text-xs mt-1">
               {errors.userName.message}
@@ -141,6 +176,92 @@ const SignupForm: React.FC<SignUpFormProps> = ({
           {errors.mobileNumber && (
             <p className="text-red-500 text-left text-xs mt-1">
               {errors.mobileNumber.message}
+            </p>
+          )}
+        </div>
+        <div className="inputGroup">
+          <input
+            type="text"
+            {...register("address1")}
+            required
+            autoComplete="off"
+          />
+          <label htmlFor="address1">Address Line 1</label>
+          {errors.address1 && (
+            <p className="text-red-500 text-left text-xs mt-1">
+              {errors.address1.message}
+            </p>
+          )}
+        </div>
+        <div className="inputGroup">
+          <input
+            type="text"
+            {...register("address2")}
+            required
+            autoComplete="off"
+          />
+          <label htmlFor="address2">Address Line 2</label>
+          {errors.address2 && (
+            <p className="text-red-500 text-left text-xs mt-1">
+              {errors.address2.message}
+            </p>
+          )}
+        </div>
+        <div className="flex gap-1">
+          <div className="inputGroup">
+            <input
+              type="text"
+              {...register("city")}
+              required
+              autoComplete="off"
+            />
+            <label htmlFor="city">City</label>
+            {errors.city && (
+              <p className="text-red-500 text-left text-xs mt-1">
+                {errors.city.message}
+              </p>
+            )}
+          </div>
+          <div className="inputGroup">
+            <input
+              type="text"
+              {...register("pincode")}
+              required
+              autoComplete="off"
+            />
+            <label htmlFor="pincode">Pincode</label>
+            {errors.pincode && (
+              <p className="text-red-500 text-left text-xs mt-1">
+                {errors.pincode.message}
+              </p>
+            )}
+          </div>
+        </div>
+        <div className="inputGroup">
+          <input
+            type="text"
+            {...register("state")}
+            required
+            autoComplete="off"
+          />
+          <label htmlFor="state">State</label>
+          {errors.state && (
+            <p className="text-red-500 text-left text-xs mt-1">
+              {errors.state.message}
+            </p>
+          )}
+        </div>
+        <div className="inputGroup">
+          <input
+            type="text"
+            {...register("country")}
+            required
+            autoComplete="off"
+          />
+          <label htmlFor="country">Country</label>
+          {errors.country && (
+            <p className="text-red-500 text-left text-xs mt-1">
+              {errors.country.message}
             </p>
           )}
         </div>
