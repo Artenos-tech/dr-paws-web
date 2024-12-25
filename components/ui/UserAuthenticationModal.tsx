@@ -30,17 +30,29 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
   const [userMobileNumber, setUserMobileNumber] = useState<string | undefined>(
     undefined
   );
-
   const [userName, setUserName] = useState<string>("");
   const [profileImage, setUserPofileImage] = useState<string | null>(null);
-
+  const [signupData, setSignupData] = useState<{
+    address1: string;
+    address2: string;
+    city: string;
+    pincode: string;
+    state: string;
+    country: string;
+  }>({
+    address1: "",
+    address2: "",
+    city: "",
+    pincode: "",
+    state: "",
+    country: "",
+  });
   const [loginErr, setLoginErr] = useState("");
   const [signupErr, setSignupErr] = useState("");
   const [otpErr, setOtpErr] = useState("");
 
   // context
-  const { updateUserDetailsHandler } =
-    useUserContext();
+  const { updateUserDetailsHandler } = useUserContext();
 
   // API's
   const { call: signupOTP, loading: signupOTPLoading } = useAPICall(
@@ -55,12 +67,6 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
   );
 
   const { call: signupCancel } = useAPICall(api.signupCancel);
-
-  // useEffect(() => {
-  //   if (user) {
-  //     setUserMobileNumber(user.mobile);
-  //   }
-  // }, [user]);
 
   const handleIncorrectNumber = () => {
     setUserMobileNumber(undefined);
@@ -99,11 +105,25 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
     userName: string;
     mobileNumber: string;
     profilePicture: string | null;
+    address1: string;
+    address2: string;
+    city: string;
+    pincode: string;
+    state: string;
+    country: string;
   }) => {
     setOtpErr("");
     // Updating state variables for resending OTP
     setUserName(data.userName);
     setUserPofileImage(data.profilePicture);
+    setSignupData({
+      address1: data.address1,
+      address2: data.address2,
+      city: data.city,
+      pincode: data.pincode,
+      state: data.state,
+      country: data.country,
+    });
     const response = await signupOTP({
       name: data.userName,
       mobile: data.mobileNumber,
@@ -169,6 +189,12 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
           mobile: userMobileNumber,
           role: "USER",
           otp,
+          address1: signupData.address1,
+          address2: signupData.address2,
+          city: signupData.city,
+          pincode: signupData.pincode,
+          state: signupData.state,
+          country: signupData.country,
         });
         if (response?.ok) {
           setAuthToken(response.value.body.token);
@@ -221,7 +247,6 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
             ? response.error.body.message
             : (response?.error.message as string);
         if (isLogin) {
-          console.log(errorMessage);
           setOtpErr(errorMessage);
         } else {
           setOtpErr(errorMessage);
@@ -250,8 +275,8 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
     <Modal
       isOpen={isOpen}
       onRequestClose={handleCloseOnRequest}
-      className="relative z-[1000] mt-16 mx-3 px-10 py-5 bg-white rounded-xl shadow-lg overflow-y-auto"
-      overlayClassName="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-[999]"
+      className="relative z-[1000] mx-3 px-10 py-8 bg-white rounded-xl shadow-lg overflow-y-auto max-h-[90vh]"
+      overlayClassName="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-[999] overflow-y-auto"
     >
       <button
         className="text-gray-500 absolute right-2 top-2 hover:text-gray-700 transition-colors"
@@ -287,15 +312,15 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
         )}
 
         {userMobileNumber ? null : (
-          <div className="mt-4">
+          <div>
             {isLogin ? (
               <p className="text-sm md:text-base">
-                Don&apos;t have an Account?{" "}
+                Don&apos;t have an account?{" "}
                 <span
                   onClick={() => {
-                    setSignupErr("")
+                    setSignupErr("");
                     setLoginErr("");
-                    setIsLogin(false)
+                    setIsLogin(false);
                   }}
                   className="font-semibold cursor-pointer"
                 >
