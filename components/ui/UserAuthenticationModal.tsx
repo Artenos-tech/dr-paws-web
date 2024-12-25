@@ -312,10 +312,10 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
         )}
 
         {userMobileNumber ? null : (
-          <div className="mt-4">
+          <div>
             {isLogin ? (
               <p className="text-sm md:text-base">
-                Don&apos;t have an Account?{" "}
+                Don&apos;t have an account?{" "}
                 <span
                   onClick={() => {
                     setSignupErr("");

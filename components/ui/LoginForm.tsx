@@ -45,7 +45,10 @@ const LoginForm: React.FC<LoginFormProps> = ({
         Log in {buttonText ? "to " + buttonText.toLowerCase() : ""}
       </h1>
       <p className="text-xs md:text-base text-primary-1">
-        Add your phone number. We&apos;ll send you a <br /> verification code.
+        Add your phone number & we&apos;ll send you an OTP
+      </p>
+      <p className="text-xs md:text-base text-primary-1 italic pt-2">
+        (If you&apos;ve already visited us, you&apos;ll have an account)
       </p>
 
       <form onSubmit={handleSubmit(loginSubmitHandler)} className="my-10">
