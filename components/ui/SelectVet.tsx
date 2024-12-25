@@ -108,14 +108,20 @@ const SelectVet: React.FC<selectVetProps> = ({
   ]);
 
   const fetchDoctors = useCallback(async () => {
-    await getDoctorsForClinic({ clinicid: selectedClinic });
+    await getDoctorsForClinic({
+      clinicid: selectedClinic,
+      grooming: isGrooming ? "y" : "n",
+    });
   }, [selectedClinic, getDoctorsForClinic]);
 
   useEffect(() => {
     fetchDoctors();
   }, []);
 
-  const groomingStaff = isGrooming && doctorsResult?.ok && doctorsResult.value.body.staff.filter((doctor) => doctor.name === "Grooming Staff")[0];
+  const groomingStaff = isGrooming && doctorsResult?.ok && 
+    doctorsResult.value.body.staff.filter(
+      (doctor) => doctor.name === "Grooming Staff"
+    )[0];
   
   useEffect(() => {
     if (selectedDoctor || groomingStaff) {
