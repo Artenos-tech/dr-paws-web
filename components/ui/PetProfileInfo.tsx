@@ -11,6 +11,7 @@ import { petImageByType } from "./PetCard";
 import { Pet } from "@/context/UserContext";
 import { useAPICall } from "@/hooks/apicall";
 import api from "@/services/api";
+import Loader from "./Loader";
 
 interface PetProfileInfoProps {
   petProfileId: string;
@@ -27,29 +28,57 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
   //   years: 0,
   //   months: 0,
   // });
-  const { call: getPets, result: getPetsResult } = useAPICall(api.getPets);
-  const { call: getPetSpecies, result: getPetSpeciesResult } = useAPICall(api.getPetSpecies);
-  const { call: getPetBreeds, result: getPetBreedsResult } = useAPICall(api.getPetBreeds);
-  const { call: getPetGender, result: getPetGenderResult } = useAPICall(api.getPetGender);
+  const {
+    call: getPets,
+    result: getPetsResult,
+    loading: loadingPets,
+  } = useAPICall(api.getPets);
+  const { call: getPetSpecies, result: getPetSpeciesResult } = useAPICall(
+    api.getPetSpecies
+  );
+  const { call: getPetBreeds, result: getPetBreedsResult } = useAPICall(
+    api.getPetBreeds
+  );
+  const { call: getPetGender, result: getPetGenderResult } = useAPICall(
+    api.getPetGender
+  );
   const { call: updatePetDetails } = useAPICall(api.updatePet);
 
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    formState: { errors },
-  } = useForm<Pet>({
+  const formMethods = useForm<Pet>({
     defaultValues: {
       name: "",
       type: "",
       breed: "",
       gender: "",
-      // age: { years: 0, months: 0 },
       dob: "",
       weight: "",
       profileImage: "",
     },
   });
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = formMethods;
+
+  // const {
+  //   register,
+  //   handleSubmit,
+  //   setValue,
+  //   formState: { errors },
+  // } = useForm<Pet>({
+  //   defaultValues: {
+  //     name: "",
+  //     type: "",
+  //     breed: "",
+  //     gender: "",
+  //     // age: { years: 0, months: 0 },
+  //     dob: "",
+  //     weight: "",
+  //     profileImage: "",
+  //   },
+  // });
 
   useEffect(() => {
     getPets({});
@@ -60,7 +89,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
   }, [petProfileId]);
 
   useEffect(() => {
-    if (getPetsResult?.ok) {
+    if (getPetsResult?.ok && petProfileId) {
       const foundPet = getPetsResult.value.body.pets.find(
         (pet) => pet.id === petProfileId
       );
@@ -69,9 +98,9 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
           id: foundPet.id,
           name: foundPet.name,
           type: foundPet.type,
-          breed: foundPet.breed,
+          breed: foundPet.breed?.trim() || null,
           weight: foundPet.weight,
-          gender: foundPet.gender,
+          gender: foundPet.gender?.trim() || null,
           vetPortId: foundPet.vetport_id,
           dob: foundPet.dob,
           profileImage: foundPet.profile_image,
@@ -80,13 +109,14 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
         // setAge(foundPet.age || { years: 0, months: 0 });
 
         Object.entries(foundPet).forEach(([key, value]) => {
+          console.log(key, value);
           if (key in foundPet) {
             setValue(key as keyof Pet, value);
           }
         });
       }
     }
-  }, [petProfileId, getPetsResult])
+  }, [petProfileId, getPetsResult, setValue]);
 
   useEffect(() => {
     if (getPetSpeciesResult?.ok) {
@@ -112,11 +142,17 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
     await getPetGender({ speciesid: JSON.stringify(speciesId) });
   };
 
-  const petSpecies = getPetSpeciesResult?.ok ? getPetSpeciesResult.value.body.species : [];
+  const petSpecies = getPetSpeciesResult?.ok
+    ? getPetSpeciesResult.value.body.species
+    : [];
 
-  const petBreeds = getPetBreedsResult?.ok ? getPetBreedsResult.value.body.breeds : [];
+  const petBreeds = getPetBreedsResult?.ok
+    ? getPetBreedsResult.value.body.breeds
+    : [];
 
-  const petGenders = getPetGenderResult?.ok ? getPetGenderResult.value.body.gender : [];
+  const petGenders = getPetGenderResult?.ok
+    ? getPetGenderResult.value.body.gender
+    : [];
 
   const handleEditCancelClick = () => {
     if (pet) {
@@ -143,9 +179,13 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
         ? ""
         : image;
 
-    const petType = petSpecies.find((species) => species.name === data.type)?.id;
+    const petType = petSpecies.find(
+      (species) => species.name === data.type
+    )?.id;
     const petBreed = petBreeds.find((breed) => breed.name === data.breed)?.id;
-    const petGender = petGenders.find((gender) => gender.name === data.gender)?.id;
+    const petGender = petGenders.find(
+      (gender) => gender.name === data.gender
+    )?.id;
 
     if (petType) {
       updatePetDetails({
@@ -156,16 +196,20 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
             id: petType,
             name: data.type!,
           },
-          breed: petBreed ? {
-            id: petBreed,
-            name: data.breed!,
-          } : null,
+          breed: petBreed
+            ? {
+                id: petBreed,
+                name: data.breed!,
+              }
+            : null,
           weight: null,
-          gender: petGender ? {
-            id: petGender,
-            name: data.gender!,
-          } : null,
-        }
+          gender: petGender
+            ? {
+                id: petGender,
+                name: data.gender!,
+              }
+            : null,
+        },
       });
     }
     setPet({ ...data, profileImage: realPetImage });
@@ -193,6 +237,13 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
 
   const defaultImageOrPetImage =
     image || petImageByType[pet?.type || "other"] || petImageByType.other;
+
+  if (loadingPets)
+    return (
+      <div>
+        <Loader />
+      </div>
+    );
 
   return (
     <div className="bg-primary-3 rounded-lg p-3 md:p-6 lg:p-8 w-full">
@@ -315,10 +366,10 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                 {isEditing ? (
                   <>
                     <select
-                        {...register("breed")}
-                        className="outline-none border w-full p-1 px-2 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
-                        defaultValue={pet?.breed || ""}
-                      >
+                      {...register("breed")}
+                      className="outline-none border w-full p-1 px-2 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
+                      defaultValue={pet?.breed || ""}
+                    >
                       <option value="">Type of breed</option>
                       {petBreeds?.map((breed) => (
                         <option key={breed.id} value={breed.name}>
@@ -353,7 +404,9 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                       defaultValue={pet?.gender || ""}
                     >
                       {petGenders?.map((gender) => (
-                        <option value={gender.name} key={gender.id}>{gender.name}</option>
+                        <option value={gender.name} key={gender.id}>
+                          {gender.name}
+                        </option>
                       ))}
                     </select>
 
