@@ -196,6 +196,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
               }
             : null,
           dob: data.dob ? new Date(data.dob).toISOString() : null,
+          profileImage: realPetImage
         },
       });
     }
@@ -206,6 +207,11 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      const maxSize = 2 * 1024 * 1024;
+      if (file.size > maxSize) {
+        alert("File size exceeds the 2MB limit. Please upload a smaller file.");
+        return;
+      }
       const reader = new FileReader();
       reader.onload = () => {
         const result = reader.result as string;
