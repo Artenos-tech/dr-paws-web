@@ -442,6 +442,7 @@ export default createAPIClient({
             name: z.string(),
           }).nullable(),
           dob: z.string().nullable(),
+          profileImage: z.string().nullable(),
         }),
       }),
       responseSchema: z.object({
