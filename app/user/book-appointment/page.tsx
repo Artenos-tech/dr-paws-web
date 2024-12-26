@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import SelectService, { BookingCategory } from "@/components/ui/SelectService";
 import SelectClinic from "@/components/ui/SelectClinic";
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
-import SelectVet from "@/components/ui/SelectVet";
+import SelectVet, {SelectedVet} from "@/components/ui/SelectVet";
 import { Pet } from "@/context/UserContext";
 import BookingConfirmed from "@/components/ui/BookingConfirmed";
 
@@ -16,8 +16,7 @@ const Booking: React.FC = () => {
     isGrooming: boolean;
     selectedClinic: number | null;
     selectedLocation: string | null;
-    selectedDoctor: Record<number, string> | null;
-    selectedDoctorImage: string | null;
+    selectedDoctor: SelectedVet | null;
     selectedDate: Date | null;
     selectedSlot: string | null;
   }>({
@@ -28,7 +27,6 @@ const Booking: React.FC = () => {
     selectedClinic: null,
     selectedLocation: null,
     selectedDoctor: null,
-    selectedDoctorImage: null,
     selectedDate: null,
     selectedSlot: null,
   });
@@ -160,7 +158,7 @@ const Booking: React.FC = () => {
             )
           }
           {
-            currentStep === 4 && 
+            currentStep === 4 &&
             (
               <BookingConfirmed selectedAppointment={
                 {
@@ -168,10 +166,14 @@ const Booking: React.FC = () => {
                   selectedClinic: validateClinicSelection(selectedAppointment.selectedClinic),
                   selectedLocation: validateLocationSelection(selectedAppointment.selectedLocation),
                   selectedService: validateServiceSelection(selectedAppointment.selectedService),
-                  selectedDoctor: selectedAppointment.selectedDoctor,
+                  selectedDoctor: selectedAppointment.selectedDoctor ? { 
+                    [selectedAppointment.selectedDoctor.id]: selectedAppointment.selectedDoctor.name
+                  } : null,
                   selectedDate: validateDateSelection(selectedAppointment.selectedDate),
                   selectedSlot: validateSlotSelection(selectedAppointment.selectedSlot),
-                  selectedDoctorImage: selectedAppointment.selectedDoctorImage
+                  selectedDoctorImage: selectedAppointment.selectedDoctor ?
+                    selectedAppointment.selectedDoctor.image
+                    : null
                 }
               } />
             )
