@@ -85,20 +85,12 @@ const SelectVet: React.FC<selectVetProps> = ({
   } = useAPICall(api.getDoctorsForClinic);
 
   const fetchStaffSchedule = useCallback(async () => {
-    let staffId: string
-    if (isGrooming) {
-      if (!groomingStaff) {
-        throw new Error("Grooming appointment but grooming staff is not set")
-      }
-      staffId = groomingStaff.id.toString()
-    } else if (selectedDoctor) {
-      staffId = selectedDoctor.id.toString()
-    } else {
-      throw new Error("Doctor must be selected if not grooming")
+    if (!selectedDoctor) {
+      throw new Error("Doctor must be selected")
     }
     await getStaffSchedule({
       clinicid: selectedClinic.toString(),
-      staffid: staffId,
+      staffid: selectedDoctor.id.toString(),
       appttypeid: selectedSvcId.toString(),
       subtype: selectedSubtype?.id,
     });
@@ -121,21 +113,29 @@ const SelectVet: React.FC<selectVetProps> = ({
     fetchDoctors();
   }, []);
 
-  const groomingStaff = isGrooming ? (
-    doctorsResult ? (
-      doctorsResult.ok ? (
-        doctorsResult.value.body.staff.filter(
-          (doctor) => doctor.name === "Grooming Staff"
-        )[0]
-      ) : null
-    ) : null
-  ) : null
+  const GROOMING_STAFF_NAME = "Grooming Staff";
+
+  useEffect(() => {
+    if (isGrooming && doctorsResult?.ok) {
+      const groomingStaff = doctorsResult.value.body.staff.find(
+        (doctor) => doctor.name === GROOMING_STAFF_NAME
+      );
+      if (groomingStaff) {
+        setSelectedDoctor(groomingStaff);
+      } else {
+        console.error(
+          "Grooming staff not found in the list of doctors", 
+          doctorsResult.value.body.staff,
+        )
+      }
+    }
+  },[doctorsResult, isGrooming]);
   
   useEffect(() => {
-    if (selectedDoctor || groomingStaff) {
+    if (selectedDoctor) {
       fetchStaffSchedule();
     }
-  }, [selectedDoctor, groomingStaff]);
+  }, [selectedDoctor]);
 
   const handleNextClick = async () => {
     if (!(selectedDoctor || isGrooming)) {
@@ -146,25 +146,10 @@ const SelectVet: React.FC<selectVetProps> = ({
       selectedDate,
       selectedSlot,
     });
-
-    if (user && selectedSlot && selectedDate) {
-      let staffId: number
-      if (isGrooming) {
-        if (!groomingStaff) {
-          throw new Error("Grooming appointment but grooming staff is not set")
-        }
-        staffId = groomingStaff.id
-      } else if (selectedDoctor) {
-        staffId = selectedDoctor.id
-      } else {
-        throw new Error("Doctor must be selected if not grooming")
-      }
-      const clinicId = selectedClinic;
-
+    if (user && selectedSlot && selectedDate && selectedDoctor) {
       const [hours, minutes] = selectedSlot.split(":").map(Number);
       selectedDate.setHours(hours, minutes, 0, 0);
       const apptStart = selectedDate.toISOString();
-
       selectedDate.setMinutes(
         selectedDate.getMinutes() +
           (
@@ -178,15 +163,14 @@ const SelectVet: React.FC<selectVetProps> = ({
       const apptEnd = selectedDate.toISOString();
       try {
         const response = await createAnAppointment({
-          vet_id: staffId,
+          vet_id: selectedDoctor.id,
           pet_id: selectedPet.id,
-          clinic_id: clinicId,
+          clinic_id: selectedClinic,
           appt_reason: selectedSubtype?.title || null,
           appt_start: apptStart,
           appt_end: apptEnd,
           appt_type_id: selectedSvcId,
         });
-
         if (response.ok) {
           toast.success("Appointment created successfully!", {
             duration: 3000,
