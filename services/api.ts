@@ -441,6 +441,7 @@ export default createAPIClient({
             id: z.number(),
             name: z.string(),
           }).nullable(),
+          dob: z.string().nullable(),
         }),
       }),
       responseSchema: z.object({

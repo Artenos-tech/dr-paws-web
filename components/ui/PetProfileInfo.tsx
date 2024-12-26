@@ -195,6 +195,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                 name: data.gender!,
               }
             : null,
+          dob: data.dob ? new Date(data.dob).toISOString() : null,
         },
       });
     }
@@ -468,7 +469,6 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                       type="date"
                       {...register("dob")}
                       className="outline-none border px-2 w-full p-1 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
-                      value={pet?.dob?.split("T")[0] || ""}
                     />
                     {errors.dob && (
                       <p className="text-red-500 text-xs">
