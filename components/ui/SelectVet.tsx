@@ -34,19 +34,14 @@ export interface SelectedVet {
 }
 
 interface selectVetProps {
-  selectedServiceIdToPet: Record<number, Pet>;
+  selectedSvcId: number;
+  selectedPet: Pet
   selectedClinic: number;
   selectedLocation: string;
   selectedService: string;
   selectedSubtype: BookingCategory | null;
   isGrooming: boolean;
   setFinalAppointmentData: (finalAppData: {
-    selectedServiceIdToPet: Record<number, Pet | null>;
-    selectedService: string;
-    selectedSubtype: BookingCategory | null;
-    isGrooming: boolean;
-    selectedClinic: number;
-    selectedLocation: string | null;
     selectedDoctor: SelectedVet | null
     selectedDate: Date | null;
     selectedSlot: string | null;
@@ -56,9 +51,8 @@ interface selectVetProps {
 
 const SelectVet: React.FC<selectVetProps> = ({
   selectedClinic,
-  selectedServiceIdToPet,
-  selectedLocation,
-  selectedService,
+  selectedSvcId,
+  selectedPet,
   selectedSubtype,
   setFinalAppointmentData,
   isGrooming,
@@ -105,11 +99,11 @@ const SelectVet: React.FC<selectVetProps> = ({
     await getStaffSchedule({
       clinicid: selectedClinic.toString(),
       staffid: staffId,
-      appttypeid: Object.keys(selectedServiceIdToPet)[0],
+      appttypeid: selectedSvcId.toString(),
       subtype: selectedSubtype?.id,
     });
   }, [
-    selectedServiceIdToPet,
+    selectedSvcId,
     selectedDoctor,
     selectedClinic,
     getStaffSchedule,
@@ -148,18 +142,12 @@ const SelectVet: React.FC<selectVetProps> = ({
       throw new Error("Doctor must be selected or grooming must be selected");
     }
     setFinalAppointmentData({
-      selectedServiceIdToPet,
-      selectedService,
-      selectedSubtype,
-      selectedClinic,
-      selectedLocation,
       selectedDoctor,
       selectedDate,
       selectedSlot,
-      isGrooming
     });
 
-    if (user && selectedSlot && selectedDate && selectedServiceIdToPet) {
+    if (user && selectedSlot && selectedDate) {
       let staffId: number
       if (isGrooming) {
         if (!groomingStaff) {
@@ -172,7 +160,6 @@ const SelectVet: React.FC<selectVetProps> = ({
         throw new Error("Doctor must be selected if not grooming")
       }
       const clinicId = selectedClinic;
-      const selectedPet = Object.values(selectedServiceIdToPet)[0];
 
       const [hours, minutes] = selectedSlot.split(":").map(Number);
       selectedDate.setHours(hours, minutes, 0, 0);
@@ -197,7 +184,7 @@ const SelectVet: React.FC<selectVetProps> = ({
           appt_reason: selectedSubtype?.title || null,
           appt_start: apptStart,
           appt_end: apptEnd,
-          appt_type_id: JSON.parse(Object.keys(selectedServiceIdToPet)[0]),
+          appt_type_id: selectedSvcId,
         });
 
         if (response.ok) {
@@ -286,7 +273,7 @@ const SelectVet: React.FC<selectVetProps> = ({
           ) : staffScheduleResult ? (
             staffScheduleResult.ok ? (
               <AppointmentDateAndTimeSelector
-                show={!selectedDoctor && selectedServiceIdToPet && !isGrooming}
+                show={!selectedDoctor && selectedPet && !isGrooming}
                 selectedDate={selectedDate}
                 onDateSelected={handleDateSelect}
                 availableSlots={staffScheduleResult.value.body.staffschedule.slots}

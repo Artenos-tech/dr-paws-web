@@ -10,9 +10,10 @@ import BookingConfirmed from "@/components/ui/BookingConfirmed";
 
 const Booking: React.FC = () => {
   const [selectedAppointment, setSelectedAppointmentState] = useState<{
+    selectedServiceId: number | null;
     selectedService: string | null;
     selectedSubtype: BookingCategory | null;
-    selectedServiceIdToPet: Record<number, Pet | null>;
+    selectedPet: Pet | null;
     isGrooming: boolean;
     selectedClinic: number | null;
     selectedLocation: string | null;
@@ -20,9 +21,10 @@ const Booking: React.FC = () => {
     selectedDate: Date | null;
     selectedSlot: string | null;
   }>({
+    selectedServiceId: null,
     selectedService: null,
     selectedSubtype: null,
-    selectedServiceIdToPet: {},
+    selectedPet: null,
     isGrooming: false,
     selectedClinic: null,
     selectedLocation: null,
@@ -62,14 +64,18 @@ const Booking: React.FC = () => {
     return value as number;
   }
 
-  const validateSelectedData = (value: Record<number, Pet | null>): Record<number, Pet> => {
-    if (
-      value === null ||
-      Object.keys(value).length === 0 ||
-      Object.values(value).find((pet) => pet === null)) {
-      throw new Error("Service and pet must be selected");
+  const validatePetSelection = (value: Pet | null): Pet => {
+    if (value === null) {
+      throw new Error("Pet must be selected");
     }
-    return value as Record<number, Pet>;
+    return value as Pet;
+  }
+
+  const validateServiceIdSelection = (value: number | null): number => {
+    if (value === null) {
+      throw new Error("Service must be selected");
+    }
+    return value as number;
   }
 
   const validateServiceSelection = (value: string | null): string => {
@@ -116,12 +122,13 @@ const Booking: React.FC = () => {
 
           {currentStep === 1 && (
             <SelectService
-              selectedData={selectedAppointment.selectedServiceIdToPet}
-              setServiceOptions={(selectedSvcIdToPet, serviceTitle, isGrooming, selectedSubtype) => {
+              selectedPet={selectedAppointment.selectedPet}
+              setServiceOptions={(svcId, svcTitle, pet, isGrooming, selectedSubtype) => {
                 setSelectedAppointmentState((prev) => ({ 
                   ...prev, 
-                  selectedServiceIdToPet: selectedSvcIdToPet,
-                  selectedService: serviceTitle,
+                  selectedServiceId: svcId,
+                  selectedService: svcTitle,
+                  selectedPet: pet,
                   isGrooming: isGrooming,
                   selectedSubtype
                 }));
@@ -147,35 +154,38 @@ const Booking: React.FC = () => {
             (
               <SelectVet 
                 onNext={goToNextStep} 
-                selectedClinic={validateClinicSelection(selectedAppointment.selectedClinic)} 
-                selectedServiceIdToPet={validateSelectedData(selectedAppointment.selectedServiceIdToPet)}
+                selectedClinic={validateClinicSelection(selectedAppointment.selectedClinic)}
+                selectedSvcId={validateServiceIdSelection(selectedAppointment.selectedServiceId)}
+                selectedPet={validatePetSelection(selectedAppointment.selectedPet)}
                 selectedLocation={validateLocationSelection(selectedAppointment.selectedLocation)}
                 selectedService={validateServiceSelection(selectedAppointment.selectedService)}
                 selectedSubtype={selectedAppointment.selectedSubtype}
                 isGrooming={selectedAppointment.isGrooming}
-                setFinalAppointmentData={setSelectedAppointmentState}
+                setFinalAppointmentData={appData => {
+                  setSelectedAppointmentState(prev => ({...prev, ...appData}))
+                }}
               />
             )
           }
           {
             currentStep === 4 &&
             (
-              <BookingConfirmed selectedAppointment={
-                {
-                  selectedData: validateSelectedData(selectedAppointment.selectedServiceIdToPet),
+              <BookingConfirmed
+                isGroomingAppointment={selectedAppointment.isGrooming}
+                selectedAppointment={{
+                  selectedSvcId: validateServiceIdSelection(selectedAppointment.selectedServiceId),
+                  selectedService: validateServiceSelection(selectedAppointment.selectedService),
+                  selectedPet: validatePetSelection(selectedAppointment.selectedPet),
                   selectedClinic: validateClinicSelection(selectedAppointment.selectedClinic),
                   selectedLocation: validateLocationSelection(selectedAppointment.selectedLocation),
-                  selectedService: validateServiceSelection(selectedAppointment.selectedService),
-                  selectedDoctor: selectedAppointment.selectedDoctor ? { 
-                    [selectedAppointment.selectedDoctor.id]: selectedAppointment.selectedDoctor.name
-                  } : null,
+                  selectedVet: selectedAppointment.selectedDoctor,
                   selectedDate: validateDateSelection(selectedAppointment.selectedDate),
                   selectedSlot: validateSlotSelection(selectedAppointment.selectedSlot),
                   selectedDoctorImage: selectedAppointment.selectedDoctor ?
                     selectedAppointment.selectedDoctor.image
                     : null
-                }
-              } />
+                }}
+              />
             )
           }
         </div>
