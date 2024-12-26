@@ -16,7 +16,7 @@ const profileSchema = z.object({
     .length(10, "Contact must be 10 digits")
     .regex(/^\d{10}$/, "Contact must be numeric"),
   email: z.string().email("Invalid email address").nullable(),
-  current_address: z.string().nullable(),
+  current_address: z.string().max(69, "Address line reached max characters").nullable(),
 });
 
 type ProfileFormData = z.infer<typeof profileSchema>;
@@ -147,6 +147,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
         <textarea
           {...register("current_address")}
           className="input rounded-md p-2 border w-full border-[#74A7B3]"
+          maxLength={69}
         />
         {errors.current_address && (
           <span className="text-red-500 text-sm">
