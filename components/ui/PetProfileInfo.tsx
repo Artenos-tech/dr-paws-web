@@ -62,24 +62,6 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
     formState: { errors },
   } = formMethods;
 
-  // const {
-  //   register,
-  //   handleSubmit,
-  //   setValue,
-  //   formState: { errors },
-  // } = useForm<Pet>({
-  //   defaultValues: {
-  //     name: "",
-  //     type: "",
-  //     breed: "",
-  //     gender: "",
-  //     // age: { years: 0, months: 0 },
-  //     dob: "",
-  //     weight: "",
-  //     profileImage: "",
-  //   },
-  // });
-
   useEffect(() => {
     getPets({});
   }, []);
@@ -97,21 +79,25 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
         setPet({
           id: foundPet.id,
           name: foundPet.name,
-          type: foundPet.type,
+          type: foundPet.type?.trim() || null,
           breed: foundPet.breed?.trim() || null,
           weight: foundPet.weight,
           gender: foundPet.gender?.trim() || null,
           vetPortId: foundPet.vetport_id,
-          dob: foundPet.dob,
+          dob: foundPet.dob?.split("T")[0] || null,
           profileImage: foundPet.profile_image,
         });
         setImage(foundPet.profile_image || "");
         // setAge(foundPet.age || { years: 0, months: 0 });
 
         Object.entries(foundPet).forEach(([key, value]) => {
-          console.log(key, value);
           if (key in foundPet) {
-            setValue(key as keyof Pet, value);
+            if (key === "dob" && typeof value === "string") {
+              const formattedDate = value.split("T")[0];
+              setValue("dob", formattedDate);
+            } else if (typeof value === "string") {
+              setValue(key as keyof Pet, value?.trim());
+            } else setValue(key as keyof Pet, value);
           }
         });
       }
@@ -482,6 +468,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                       type="date"
                       {...register("dob")}
                       className="outline-none border px-2 w-full p-1 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
+                      value={pet?.dob?.split("T")[0] || ""}
                     />
                     {errors.dob && (
                       <p className="text-red-500 text-xs">
@@ -492,7 +479,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                 ) : (
                   <p className="text-primary-1 font-medium text-xs md:text-base">
                     {pet?.dob
-                      ? new Date(pet?.dob || "").toLocaleDateString("en-GB", {
+                      ? new Date(pet?.dob).toLocaleDateString("en-GB", {
                           day: "numeric",
                           month: "short",
                           year: "numeric",
