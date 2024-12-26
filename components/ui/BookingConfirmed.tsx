@@ -11,21 +11,26 @@ import CustomButton from "./CustomButton";
 import { useRouter } from "next/navigation";
 
 type BookingConfirmedProps = {
+  isGroomingAppointment: boolean;
   selectedAppointment: {
-    selectedData: Record<number, Pet>;
+    selectedSvcId: number;
+    selectedPet: Pet;
     selectedClinic: number;
     selectedLocation: string;
     selectedService: string;
-    selectedDoctor: Record<number, string>  | null;
+    selectedVet: {
+      id: number;
+      name: string;
+    } | null
     selectedDoctorImage: string | null;
     selectedDate: Date;
     selectedSlot: string;
   } 
 }
 const BookingConfirmed: React.FC<BookingConfirmedProps> = ({
+  isGroomingAppointment,
   selectedAppointment,
 }) => {
-  console.log(Object.values(selectedAppointment));
   
   const navigate = useRouter();
   const addMinutesToTime = (time: string, minutes: number): string => {
@@ -51,18 +56,8 @@ const BookingConfirmed: React.FC<BookingConfirmedProps> = ({
               bg-[#FFFCF3]`}
           >
             <p className="text-lg font-semibold mt-4">
-              {
-                Object.values(selectedAppointment.selectedData)[0]?.name
-              }
-              {
-                ` is scheduled`
-              } 
-              { 
-                selectedAppointment?.selectedData &&
-                !Object.keys(selectedAppointment.selectedData).includes("Grooming") &&
-                selectedAppointment?.selectedDoctor &&
-                ` with ${Object.values(selectedAppointment.selectedDoctor)[0]}`
-              }
+              {selectedAppointment.selectedPet.name} is scheduled
+              {isGroomingAppointment ? ""  : ` with ${selectedAppointment.selectedVet!.name}`}
             </p>
             <p>
               for {selectedAppointment.selectedService}
@@ -116,15 +111,7 @@ const BookingConfirmed: React.FC<BookingConfirmedProps> = ({
                 </span>
                 {selectedAppointment?.selectedSlot} -{" "}
                 {selectedAppointment?.selectedSlot &&
-                  addMinutesToTime(
-                    selectedAppointment.selectedSlot,
-                    selectedAppointment.selectedData &&
-                      Object.keys(
-                        selectedAppointment.selectedData
-                      ).includes("Grooming")
-                      ? 90
-                      : 30
-                  )}
+                  addMinutesToTime(selectedAppointment.selectedSlot, 30)}
               </p>
             </div>
             <p className="italic text-gray-400 text-sm w-3/4 text-center">
