@@ -1,7 +1,5 @@
 // components/ui/DoctorCard.tsx
 import React from "react";
-import Image from "next/image";
-import { doctorImagesMap } from "@/model/mockData";
 
 
 interface BestAvailableVetCardProps {
