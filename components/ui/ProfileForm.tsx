@@ -11,12 +11,12 @@ import { User } from "@/context/UserContext";
 
 const profileSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  mobile: z
-    .string()
-    .length(10, "Contact must be 10 digits")
-    .regex(/^\d{10}$/, "Contact must be numeric"),
+  // mobile: z
+  //   .string()
+  //   .length(10, "Contact must be 10 digits")
+  //   .regex(/^\d{10}$/, "Contact must be numeric"),
   email: z.string().email("Invalid email address").nullable(),
-  current_address: z.string().nullable(),
+  current_address: z.string().max(69, "Address line reached max characters").nullable(),
 });
 
 type ProfileFormData = z.infer<typeof profileSchema>;
@@ -42,11 +42,11 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
     defaultValues: profileData,
   });
 
-  const [image, setImage] = useState(profileData.profile_image);
+  const [image, setImage] = useState<string>(profileData.profile_image || "");
 
   useEffect(() => {
     reset(profileData);
-    setImage(profileData.profile_image);
+    setImage(profileData.profile_image || "");
   }, [profileData, reset]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -65,6 +65,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
       profile_image: image,
       current_address: data.current_address,
       role: "USER",
+      mobile: profileData.mobile,
     });
   };
 
@@ -121,7 +122,8 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
       </div>
       <div className="flex flex-col ">
         <label className="text-sm">Contact No</label>
-        <input
+        <p>{profileData.mobile}</p>
+        {/* <input
           {...register("mobile")}
           type="text"
           maxLength={10}
@@ -130,7 +132,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
         />
         {errors.mobile && (
           <span className="text-red-500 text-sm">{errors.mobile.message}</span>
-        )}
+        )} */}
       </div>
       <div className="flex flex-col ">
         <label className="text-sm">Email</label>
@@ -147,6 +149,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
         <textarea
           {...register("current_address")}
           className="input rounded-md p-2 border w-full border-[#74A7B3]"
+          maxLength={69}
         />
         {errors.current_address && (
           <span className="text-red-500 text-sm">
