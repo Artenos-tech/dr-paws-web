@@ -178,7 +178,7 @@ const SelectVet: React.FC<selectVetProps> = ({
     }
     const preferredAvailableVets = preferredVets.filter(({staffId}) =>
       availableVets.find(availableVet => availableVet.staffId === staffId)
-    ).sort((a, b) => a.appCount - b.appCount);
+    ).sort((a, b) => b.appCount - a.appCount);
     if (preferredAvailableVets.length > 0) {
       return preferredAvailableVets[0].staffId;
     }
