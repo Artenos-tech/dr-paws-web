@@ -458,9 +458,11 @@ export default createAPIClient({
             }).nullable(),
           weight: z.number().nullable(),
           gender: z.object({
-              id: z.number(),
-              name: z.string(),
-            }).nullable(),
+            id: z.number(),
+            name: z.string(),
+          }).nullable(),
+          dob: z.string().nullable(),
+          profileImage: z.string().nullable(),
         }),
       }),
       responseSchema: z.object({
