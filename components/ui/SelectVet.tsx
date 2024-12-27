@@ -49,6 +49,8 @@ interface selectVetProps {
   onNext?: () => void;
 }
 
+const BEST_AVAILABLE_VET_ID = 0;
+
 const SelectVet: React.FC<selectVetProps> = ({
   selectedClinic,
   selectedSvcId,
@@ -72,6 +74,12 @@ const SelectVet: React.FC<selectVetProps> = ({
   } = useAPICall(
     api.getStaffSchedule
   );
+
+  const {
+    call: getBestAvailableVetSchedule,
+    result: bestAvailableVetScheduleResult,
+    loading: loadingBestAvailableVetSchedule
+  } = useAPICall(api.getBestAvailableVetSchedule);
 
   const {
     call: createAnAppointment,
@@ -101,6 +109,13 @@ const SelectVet: React.FC<selectVetProps> = ({
     getStaffSchedule,
     isGrooming
   ]);
+
+  const fetchBestAvailableVetSlots = useCallback(async () => {
+    await getBestAvailableVetSchedule({
+      clinicid: selectedClinic.toString(),
+      apptypeid: selectedSvcId.toString(),
+    });
+  }, [selectedClinic, selectedSvcId]);
 
   const fetchDoctors = useCallback(async () => {
     await getDoctorsForClinic({
@@ -133,9 +148,37 @@ const SelectVet: React.FC<selectVetProps> = ({
   
   useEffect(() => {
     if (selectedDoctor) {
-      fetchStaffSchedule();
+      if (selectedDoctor.id === BEST_AVAILABLE_VET_ID) {
+        fetchBestAvailableVetSlots();
+      } else {
+        fetchStaffSchedule();
+      }
     }
   }, [selectedDoctor]);
+
+  function selectRandomAvailableVetId(): number {
+    // if (doctors.length === 0) {
+    //   throw new Error("No doctors available");
+    // }
+    // const randomIndex = Math.floor(Math.random() * doctors.length);
+    // return doctors[randomIndex];
+    if (!bestAvailableVetScheduleResult?.ok) {
+      throw new Error("Best available vet schedule not loaded");
+    }
+    if (!selectedDate) {
+      throw new Error("Date must be selected");
+    }
+    if (!selectedSlot) {
+      throw new Error("Slot must be selected");
+    }
+    const availableVets = 
+      bestAvailableVetScheduleResult.value.body.slots[normalizeSelectedDate(selectedDate)][selectedSlot];
+    if (availableVets.length === 0) {
+      throw new Error("No available vets for the selected slot");
+    }
+    const randomIndex = Math.floor(Math.random() * availableVets.length);
+    return availableVets[randomIndex].staffId
+  }
 
   const handleNextClick = async () => {
     if (!(selectedDoctor || isGrooming)) {
@@ -163,7 +206,9 @@ const SelectVet: React.FC<selectVetProps> = ({
       const apptEnd = selectedDate.toISOString();
       try {
         const response = await createAnAppointment({
-          vet_id: selectedDoctor.id,
+          vet_id: selectedDoctor.id === BEST_AVAILABLE_VET_ID 
+            ? selectRandomAvailableVetId()
+            : selectedDoctor.id,
           pet_id: selectedPet.id,
           clinic_id: selectedClinic,
           appt_reason: selectedSubtype?.title || null,
@@ -214,6 +259,25 @@ const SelectVet: React.FC<selectVetProps> = ({
 
   const filteredDoctors = selectedClinic ? doctors.filter((doctor) => doctor.clinicids.includes(selectedClinic)) : [];
 
+  const availableSlotsLoading = loadingStaffSchedule || loadingBestAvailableVetSchedule;
+
+  const availableSlotsError = staffScheduleResult?.ok === false || bestAvailableVetScheduleResult?.ok === false;
+
+  const availableSlots =
+    selectedDoctor
+      ? selectedDoctor.id === BEST_AVAILABLE_VET_ID
+        ? bestAvailableVetScheduleResult?.ok
+          ? Object.fromEntries(
+              Object.entries(bestAvailableVetScheduleResult.value.body.slots).map(
+                ([date, slots]) => [date, Object.keys(slots)]
+              )
+            )
+          : null
+        : staffScheduleResult?.ok
+          ? staffScheduleResult.value.body.staffschedule.slots
+          : null
+      : null
+
   const isNextButtonEnabled =
     (
       (selectedDoctor !== null || isGrooming) &&
@@ -232,7 +296,14 @@ const SelectVet: React.FC<selectVetProps> = ({
           <h1 className="text-3xl mb-2">Select Vet</h1>
           <p className="text-gray-600 mb-12">Book Spot for your visit</p>
           <DoctorSelectionCarousel
-            options={filteredDoctors}
+            options={[
+              {
+                id: BEST_AVAILABLE_VET_ID,
+                name: "Best Available Vet",
+                image: "",
+              },
+              ...filteredDoctors,
+            ]}
             selectedDoctor={selectedDoctor}
             onDoctorSelected={(doctor) => {
               setSelectedDoctor(doctor);
@@ -250,26 +321,24 @@ const SelectVet: React.FC<selectVetProps> = ({
         </div>
 
         {(selectedDoctor || isGrooming) && (
-          loadingStaffSchedule ? (
+          availableSlotsLoading ? (
             <div className="m-auto my-1">
               <ClipLoader color="#33495f" />
             </div>
-          ) : staffScheduleResult ? (
-            staffScheduleResult.ok ? (
-              <AppointmentDateAndTimeSelector
-                show={!selectedDoctor && selectedPet && !isGrooming}
-                selectedDate={selectedDate}
-                onDateSelected={handleDateSelect}
-                availableSlots={staffScheduleResult.value.body.staffschedule.slots}
-                selectedSlot={selectedSlot}
-                onSlotSelected={handleSlotSelect}
-              />
-            ) : (
-              <p className="text-gray-500 text-sm">
-                Cannot load the available slots. Please try again later.
-              </p>
-            )
-          ) : null // result starts out as undefined before API call is made
+          ) : availableSlotsError ? (
+            <p className="text-gray-500 text-sm">
+              Cannot load the available slots. Please try again later.
+            </p>
+          ) : availableSlots ? (
+            <AppointmentDateAndTimeSelector
+              show={!selectedDoctor && selectedPet && !isGrooming}
+              selectedDate={selectedDate}
+              onDateSelected={handleDateSelect}
+              availableSlots={availableSlots}
+              selectedSlot={selectedSlot}
+              onSlotSelected={handleSlotSelect}
+            />
+          ) : null  // result starts out as undefined before API call is made
         )}
       </div>
       <div className="my-4 flex justify-center">

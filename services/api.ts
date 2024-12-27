@@ -241,8 +241,8 @@ export default createAPIClient({
             pet_vetport_id: z.number(),
             pet_name: z.string(),
             user_vetport_id: z.number(),
-            vet_vetport_id: z.number(),
-            vet_name: z.string(),
+            vet_vetport_id: z.number().nullable(),
+            vet_name: z.string().nullable(),
             vet_image: z.string(),
             clinic_id: z.number(),
             clinic_name: z.string(),
@@ -290,6 +290,26 @@ export default createAPIClient({
         staffschedule: z.object({
           slots: z.record(z.string(), z.array(z.string())),
         }),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+
+    getBestAvailableVetSchedule: {
+      method: "GET",
+      path: "/schedule/best?clinicid={clinicid}&apptypeid={apptypeid}",
+      pathParamsSchema: z.object({
+        clinicid: z.string(),
+        apptypeid: z.string(),
+      }),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        slots: z.record(
+          z.string(), z.record(
+            z.string(), z.array(z.object({
+              staffId: z.number(),
+            }))
+          )
+        ),
       }),
       errorResponseSchema: z.object({}),
     },
