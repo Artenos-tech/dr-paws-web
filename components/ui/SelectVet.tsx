@@ -157,7 +157,7 @@ const SelectVet: React.FC<selectVetProps> = ({
     }
   }, [selectedDoctor]);
 
-  function selectRandomAvailableVetId(): number {
+  function selectPreferredOrRandomAvailableVetId(): number {
     if (!bestAvailableVetScheduleResult?.ok) {
       throw new Error("Best available vet schedule not loaded");
     }
@@ -167,13 +167,23 @@ const SelectVet: React.FC<selectVetProps> = ({
     if (!selectedSlot) {
       throw new Error("Slot must be selected");
     }
-    const availableVets = 
-      bestAvailableVetScheduleResult.value.body.slots[normalizeSelectedDate(selectedDate)][selectedSlot];
+    const availableVets =
+      bestAvailableVetScheduleResult.value.body.slots[
+        normalizeSelectedDate(selectedDate)
+      ][selectedSlot];
+    const preferredVets =
+      bestAvailableVetScheduleResult.value.body.preferredVets;
     if (availableVets.length === 0) {
       throw new Error("No available vets for the selected slot");
     }
+    const preferredAvailableVets = preferredVets.filter(({staffId}) =>
+      availableVets.find(availableVet => availableVet.staffId === staffId)
+    ).sort((a, b) => a.appCount - b.appCount);
+    if (preferredAvailableVets.length > 0) {
+      return preferredAvailableVets[0].staffId;
+    }
     const randomIndex = Math.floor(Math.random() * availableVets.length);
-    return availableVets[randomIndex].staffId
+    return availableVets[randomIndex].staffId;
   }
 
   const handleNextClick = async () => {
@@ -203,7 +213,7 @@ const SelectVet: React.FC<selectVetProps> = ({
       try {
         const response = await createAnAppointment({
           vet_id: selectedDoctor.id === BEST_AVAILABLE_VET_ID 
-            ? selectRandomAvailableVetId()
+            ? selectPreferredOrRandomAvailableVetId()
             : selectedDoctor.id,
           pet_id: selectedPet.id,
           clinic_id: selectedClinic,

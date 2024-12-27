@@ -310,6 +310,10 @@ export default createAPIClient({
             }))
           )
         ),
+        preferredVets: z.array(z.object({
+          staffId: z.number(),
+          appCount: z.number(),
+        })),
       }),
       errorResponseSchema: z.object({}),
     },
