@@ -57,53 +57,11 @@ const Booking: React.FC = () => {
     }
   };
 
-  const validateClinicSelection = (value: number | null): number => {
+  function notNull<T>(value: T | null): Exclude<T, null> {
     if (value === null) {
-      throw new Error("Clinic must be selected");
+      throw new Error(`Value must not be null, got ${value}`);
     }
-    return value as number;
-  }
-
-  const validatePetSelection = (value: Pet | null): Pet => {
-    if (value === null) {
-      throw new Error("Pet must be selected");
-    }
-    return value as Pet;
-  }
-
-  const validateServiceIdSelection = (value: number | null): number => {
-    if (value === null) {
-      throw new Error("Service must be selected");
-    }
-    return value as number;
-  }
-
-  const validateServiceSelection = (value: string | null): string => {
-    if (value === null) {
-      throw new Error("Service must be selected");
-    }
-    return value as string;
-  }
-
-  const validateLocationSelection = (value: string | null): string => {
-    if (value === null) {
-      throw new Error("Location must be selected");
-    }
-    return value as string;
-  }
-
-  const validateDateSelection = (value: Date | null): Date => {
-    if (value === null) {
-      throw new Error("Date must be selected");
-    }
-    return value as Date;
-  }
-
-  const validateSlotSelection = (value: string | null): string => {
-    if (value === null) {
-      throw new Error("Slot must be selected");
-    }
-    return value as string;
+    return value as Exclude<T, null>;
   }
 
   return (
@@ -154,11 +112,11 @@ const Booking: React.FC = () => {
             (
               <SelectVet 
                 onNext={goToNextStep} 
-                selectedClinic={validateClinicSelection(selectedAppointment.selectedClinic)}
-                selectedSvcId={validateServiceIdSelection(selectedAppointment.selectedServiceId)}
-                selectedPet={validatePetSelection(selectedAppointment.selectedPet)}
-                selectedLocation={validateLocationSelection(selectedAppointment.selectedLocation)}
-                selectedService={validateServiceSelection(selectedAppointment.selectedService)}
+                selectedClinic={notNull(selectedAppointment.selectedClinic)}
+                selectedSvcId={notNull(selectedAppointment.selectedServiceId)}
+                selectedPet={notNull(selectedAppointment.selectedPet)}
+                selectedLocation={notNull(selectedAppointment.selectedLocation)}
+                selectedService={notNull(selectedAppointment.selectedService)}
                 selectedSubtype={selectedAppointment.selectedSubtype}
                 isGrooming={selectedAppointment.isGrooming}
                 setFinalAppointmentData={appData => {
@@ -173,14 +131,14 @@ const Booking: React.FC = () => {
               <BookingConfirmed
                 isGroomingAppointment={selectedAppointment.isGrooming}
                 selectedAppointment={{
-                  selectedSvcId: validateServiceIdSelection(selectedAppointment.selectedServiceId),
-                  selectedService: validateServiceSelection(selectedAppointment.selectedService),
-                  selectedPet: validatePetSelection(selectedAppointment.selectedPet),
-                  selectedClinic: validateClinicSelection(selectedAppointment.selectedClinic),
-                  selectedLocation: validateLocationSelection(selectedAppointment.selectedLocation),
+                  selectedSvcId: notNull(selectedAppointment.selectedServiceId),
+                  selectedService: notNull(selectedAppointment.selectedService),
+                  selectedPet: notNull(selectedAppointment.selectedPet),
+                  selectedClinic: notNull(selectedAppointment.selectedClinic),
+                  selectedLocation: notNull(selectedAppointment.selectedLocation),
                   selectedVet: selectedAppointment.selectedDoctor,
-                  selectedDate: validateDateSelection(selectedAppointment.selectedDate),
-                  selectedSlot: validateSlotSelection(selectedAppointment.selectedSlot),
+                  selectedDate: notNull(selectedAppointment.selectedDate),
+                  selectedSlot: notNull(selectedAppointment.selectedSlot),
                   selectedDoctorImage: selectedAppointment.selectedDoctor ?
                     selectedAppointment.selectedDoctor.image
                     : null

@@ -28,8 +28,8 @@ const SelectDoctorCard: React.FC<SelectDoctorCardProps> = ({
   return (
     <div
       onClick={handleCardClick}
-      className={`cursor-pointer min-w-[160px] min-h-[240px]  flex flex-col items-center justify-between rounded-lg px-4 pt-6 gap-4 bg-primary-3 ${
-        isSelected ? `border-2 border-secondary-1` : ``
+      className={`cursor-pointer min-w-[160px] min-h-[260px]  flex flex-col items-center justify-between rounded-lg px-4 pt-6 gap-4 bg-primary-3 border-2 ${
+        isSelected ? `border-secondary-1` : ``
       }`}
     >
       {/* Image Container */}

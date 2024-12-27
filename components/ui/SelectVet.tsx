@@ -22,6 +22,7 @@ import Loader from "./Loader";
 import { ClipLoader } from "react-spinners";
 
 import { BookingCategory } from "./SelectService";
+import BestAvailableVetCard from "./BestAvailableVetCard";
 
 export function convertDateToEpoch(date: string) {
   return Date.parse(date);
@@ -49,6 +50,8 @@ interface selectVetProps {
   onNext?: () => void;
 }
 
+const BEST_AVAILABLE_VET_ID = 0;
+
 const SelectVet: React.FC<selectVetProps> = ({
   selectedClinic,
   selectedSvcId,
@@ -72,6 +75,12 @@ const SelectVet: React.FC<selectVetProps> = ({
   } = useAPICall(
     api.getStaffSchedule
   );
+
+  const {
+    call: getBestAvailableVetSchedule,
+    result: bestAvailableVetScheduleResult,
+    loading: loadingBestAvailableVetSchedule
+  } = useAPICall(api.getBestAvailableVetSchedule);
 
   const {
     call: createAnAppointment,
@@ -101,6 +110,13 @@ const SelectVet: React.FC<selectVetProps> = ({
     getStaffSchedule,
     isGrooming
   ]);
+
+  const fetchBestAvailableVetSlots = useCallback(async () => {
+    await getBestAvailableVetSchedule({
+      clinicid: selectedClinic.toString(),
+      apptypeid: selectedSvcId.toString(),
+    });
+  }, [selectedClinic, selectedSvcId]);
 
   const fetchDoctors = useCallback(async () => {
     await getDoctorsForClinic({
@@ -133,9 +149,42 @@ const SelectVet: React.FC<selectVetProps> = ({
   
   useEffect(() => {
     if (selectedDoctor) {
-      fetchStaffSchedule();
+      if (selectedDoctor.id === BEST_AVAILABLE_VET_ID) {
+        fetchBestAvailableVetSlots();
+      } else {
+        fetchStaffSchedule();
+      }
     }
   }, [selectedDoctor]);
+
+  function selectPreferredOrRandomAvailableVetId(): number {
+    if (!bestAvailableVetScheduleResult?.ok) {
+      throw new Error("Best available vet schedule not loaded");
+    }
+    if (!selectedDate) {
+      throw new Error("Date must be selected");
+    }
+    if (!selectedSlot) {
+      throw new Error("Slot must be selected");
+    }
+    const availableVets =
+      bestAvailableVetScheduleResult.value.body.slots[
+        normalizeSelectedDate(selectedDate)
+      ][selectedSlot];
+    const preferredVets =
+      bestAvailableVetScheduleResult.value.body.preferredVets;
+    if (availableVets.length === 0) {
+      throw new Error("No available vets for the selected slot");
+    }
+    const preferredAvailableVets = preferredVets.filter(({staffId}) =>
+      availableVets.find(availableVet => availableVet.staffId === staffId)
+    ).sort((a, b) => b.appCount - a.appCount);
+    if (preferredAvailableVets.length > 0) {
+      return preferredAvailableVets[0].staffId;
+    }
+    const randomIndex = Math.floor(Math.random() * availableVets.length);
+    return availableVets[randomIndex].staffId;
+  }
 
   const handleNextClick = async () => {
     if (!(selectedDoctor || isGrooming)) {
@@ -163,7 +212,9 @@ const SelectVet: React.FC<selectVetProps> = ({
       const apptEnd = selectedDate.toISOString();
       try {
         const response = await createAnAppointment({
-          vet_id: selectedDoctor.id,
+          vet_id: selectedDoctor.id === BEST_AVAILABLE_VET_ID 
+            ? selectPreferredOrRandomAvailableVetId()
+            : selectedDoctor.id,
           pet_id: selectedPet.id,
           clinic_id: selectedClinic,
           appt_reason: selectedSubtype?.title || null,
@@ -214,6 +265,25 @@ const SelectVet: React.FC<selectVetProps> = ({
 
   const filteredDoctors = selectedClinic ? doctors.filter((doctor) => doctor.clinicids.includes(selectedClinic)) : [];
 
+  const availableSlotsLoading = loadingStaffSchedule || loadingBestAvailableVetSchedule;
+
+  const availableSlotsError = staffScheduleResult?.ok === false || bestAvailableVetScheduleResult?.ok === false;
+
+  const availableSlots =
+    selectedDoctor
+      ? selectedDoctor.id === BEST_AVAILABLE_VET_ID
+        ? bestAvailableVetScheduleResult?.ok
+          ? Object.fromEntries(
+              Object.entries(bestAvailableVetScheduleResult.value.body.slots).map(
+                ([date, slots]) => [date, Object.keys(slots)]
+              )
+            )
+          : null
+        : staffScheduleResult?.ok
+          ? staffScheduleResult.value.body.staffschedule.slots
+          : null
+      : null
+
   const isNextButtonEnabled =
     (
       (selectedDoctor !== null || isGrooming) &&
@@ -250,26 +320,24 @@ const SelectVet: React.FC<selectVetProps> = ({
         </div>
 
         {(selectedDoctor || isGrooming) && (
-          loadingStaffSchedule ? (
+          availableSlotsLoading ? (
             <div className="m-auto my-1">
               <ClipLoader color="#33495f" />
             </div>
-          ) : staffScheduleResult ? (
-            staffScheduleResult.ok ? (
-              <AppointmentDateAndTimeSelector
-                show={!selectedDoctor && selectedPet && !isGrooming}
-                selectedDate={selectedDate}
-                onDateSelected={handleDateSelect}
-                availableSlots={staffScheduleResult.value.body.staffschedule.slots}
-                selectedSlot={selectedSlot}
-                onSlotSelected={handleSlotSelect}
-              />
-            ) : (
-              <p className="text-gray-500 text-sm">
-                Cannot load the available slots. Please try again later.
-              </p>
-            )
-          ) : null // result starts out as undefined before API call is made
+          ) : availableSlotsError ? (
+            <p className="text-gray-500 text-sm">
+              Cannot load the available slots. Please try again later.
+            </p>
+          ) : availableSlots ? (
+            <AppointmentDateAndTimeSelector
+              show={!selectedDoctor && selectedPet && !isGrooming}
+              selectedDate={selectedDate}
+              onDateSelected={handleDateSelect}
+              availableSlots={availableSlots}
+              selectedSlot={selectedSlot}
+              onSlotSelected={handleSlotSelect}
+            />
+          ) : null  // result starts out as undefined before API call is made
         )}
       </div>
       <div className="my-4 flex justify-center">
@@ -298,6 +366,19 @@ const DoctorSelectionCarousel = ({
   return (
     <Carousel className="pr-1 w-[90%] sm:w-full mx-auto">
       <CarouselContent className="-ml-1">
+        <CarouselItem
+          key={"best"}
+          className="basis-full sm:basis-5/12 lg:basis-1/4 xl:basis-1/5"
+        >
+          <BestAvailableVetCard
+            isSelected={selectedDoctor?.id === BEST_AVAILABLE_VET_ID}
+            onSelected={() => onDoctorSelected({
+              id: BEST_AVAILABLE_VET_ID,
+              name: "Best Available Vet",
+              image: "",
+            })}
+          />
+        </CarouselItem>
         {options.map((doctor) => (
           <CarouselItem
             key={doctor.id}
