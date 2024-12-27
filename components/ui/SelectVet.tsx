@@ -22,6 +22,7 @@ import Loader from "./Loader";
 import { ClipLoader } from "react-spinners";
 
 import { BookingCategory } from "./SelectService";
+import BestAvailableVetCard from "./BestAvailableVetCard";
 
 export function convertDateToEpoch(date: string) {
   return Date.parse(date);
@@ -157,11 +158,6 @@ const SelectVet: React.FC<selectVetProps> = ({
   }, [selectedDoctor]);
 
   function selectRandomAvailableVetId(): number {
-    // if (doctors.length === 0) {
-    //   throw new Error("No doctors available");
-    // }
-    // const randomIndex = Math.floor(Math.random() * doctors.length);
-    // return doctors[randomIndex];
     if (!bestAvailableVetScheduleResult?.ok) {
       throw new Error("Best available vet schedule not loaded");
     }
@@ -296,14 +292,7 @@ const SelectVet: React.FC<selectVetProps> = ({
           <h1 className="text-3xl mb-2">Select Vet</h1>
           <p className="text-gray-600 mb-12">Book Spot for your visit</p>
           <DoctorSelectionCarousel
-            options={[
-              {
-                id: BEST_AVAILABLE_VET_ID,
-                name: "Best Available Vet",
-                image: "",
-              },
-              ...filteredDoctors,
-            ]}
+            options={filteredDoctors}
             selectedDoctor={selectedDoctor}
             onDoctorSelected={(doctor) => {
               setSelectedDoctor(doctor);
@@ -367,6 +356,19 @@ const DoctorSelectionCarousel = ({
   return (
     <Carousel className="pr-1 w-[90%] sm:w-full mx-auto">
       <CarouselContent className="-ml-1">
+        <CarouselItem
+          key={"best"}
+          className="basis-full sm:basis-5/12 lg:basis-1/4 xl:basis-1/5"
+        >
+          <BestAvailableVetCard
+            isSelected={selectedDoctor?.id === BEST_AVAILABLE_VET_ID}
+            onSelected={() => onDoctorSelected({
+              id: BEST_AVAILABLE_VET_ID,
+              name: "Best Available Vet",
+              image: "",
+            })}
+          />
+        </CarouselItem>
         {options.map((doctor) => (
           <CarouselItem
             key={doctor.id}
