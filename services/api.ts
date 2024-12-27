@@ -262,7 +262,7 @@ export default createAPIClient({
               "Testing",
               "Check-out",
               "Check-in",
-              "Confirmed"  
+              "Confirmed"
             ]),
             appt_reason: z.string().nullable(),
             appt_type: z.string().nullable(),
@@ -433,9 +433,9 @@ export default createAPIClient({
             name: z.string(),
           }),
           breed: z.object({
-            id: z.number(),
-            name: z.string(),
-          }).nullable(),
+              id: z.number(),
+              name: z.string(),
+            }).nullable(),
           weight: z.number().nullable(),
           gender: z.object({
             id: z.number(),
@@ -459,17 +459,17 @@ export default createAPIClient({
       requestSchema: z.object({}),
       responseSchema: z.object({
         appointmentTypes: z.array(z.object({
-          id: z.string(),
-          title: z.string(),
-          description: z.string(),
-          vetPortId: z.number(),
-          isGrooming: z.boolean(),
-          subtypes: z.array(z.object({
             id: z.string(),
             title: z.string(),
             description: z.string(),
-          })).optional(),
-        }))
+            vetPortId: z.number(),
+            isGrooming: z.boolean(),
+            subtypes: z.array(z.object({
+                  id: z.string(),
+                  title: z.string(),
+                  description: z.string(),
+                })).optional(),
+          }))
       }),
       errorResponseSchema: z.object({}),
     },
@@ -513,8 +513,11 @@ export default createAPIClient({
 
     getDoctorsForClinic: {
       method: "GET",
-      path: "/clinic/{clinicid}/staff",
-      pathParamsSchema: z.object({ clinicid: z.number() }),
+      path: "/clinic/{clinicid}/staff?grooming={grooming}",
+      pathParamsSchema: z.object({
+        clinicid: z.number(),
+        grooming: z.enum(["y", "n"]),
+      }),
       requestSchema: z.object({}),
       responseSchema: z.object({
         staff: z.array(

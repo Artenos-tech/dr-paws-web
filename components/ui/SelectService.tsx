@@ -16,10 +16,11 @@ export interface BookingCategory {
 }
 
 interface SelectServiceProps {
-  selectedData: Record<number, Pet | null>;
+  selectedPet: Pet | null;
   setServiceOptions: (
-    selectedSvcIdToPet: Record<number, Pet | null>,
+    selectedSvcId: number | null,
     serviceTitle: string | null,
+    selectedPet: Pet | null,
     isGrooming: boolean,
     selectedSubtype: BookingCategory | null
   ) => void;
@@ -31,7 +32,7 @@ interface SelectServiceProps {
 }
 
 const SelectService: React.FC<SelectServiceProps> = ({
-  selectedData,
+  selectedPet,
   setServiceOptions,
   openCard,
   setOpenCard,
@@ -74,16 +75,15 @@ const SelectService: React.FC<SelectServiceProps> = ({
     : [];
 
   const handleCardSelection = (cardId: number, cardTitle: string, selectedPet: Pet | null, isGrooming: boolean) => {
-    setServiceOptions({ [cardId]: selectedPet }, cardTitle, isGrooming, selectedSubtype);
+    setServiceOptions(cardId, cardTitle, selectedPet, isGrooming, selectedSubtype);
   };
 
   const toggleCard = (cardId: number, isGrooming: boolean) => {
     setOpenCard((prevOpenCard) => {
       if (prevOpenCard !== null) {
         setServiceOptions(
-          {
-            [prevOpenCard]: null,
-          },
+          null,
+          null,
           null,
           isGrooming,
           selectedSubtype
@@ -99,12 +99,7 @@ const SelectService: React.FC<SelectServiceProps> = ({
     });
   };
 
-  const isButtonDisabled = !Object.values(selectedData).some(
-    (selectedPet) => selectedPet !== null
-  );
-
   const handleNext = () => {
-    console.log("Proceeding to next step with:", selectedData);
     onNext();
   };
 
@@ -127,7 +122,7 @@ const SelectService: React.FC<SelectServiceProps> = ({
             isOpen={openCard === category.vetPortId}
             isGrooming={category.isGrooming}
             toggleCard={toggleCard}
-            selectedData={selectedData}
+            selectedPet={selectedPet}
             pets={pets || []}
             fetchPets={fetchPets}
           />
@@ -138,7 +133,7 @@ const SelectService: React.FC<SelectServiceProps> = ({
           buttonText="Next"
           buttonBackground="bg-secondary-1"
           buttonClickEvent={handleNext}
-          disabled={isButtonDisabled}
+          disabled={!selectedPet}
         />
       </div>
 
