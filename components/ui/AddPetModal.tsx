@@ -33,8 +33,7 @@ export default function AddPetModal({
 
   const { call: addNewPetAPI } = useAPICall(api.addNewPet);
 
-  const { user, updatePetSpeciesHandler, petSpecies } =
-    useUserContext();
+  const { user, updatePetSpeciesHandler, petSpecies } = useUserContext();
   const [selectedType, setSelectedType] = useState<string>("");
 
   const {
@@ -58,6 +57,7 @@ export default function AddPetModal({
         response.value.body.species.map((specie: PetSpecies) => ({
           id: specie.id,
           name: specie.name,
+          displayName: specie.displayName,
         }))
       );
     }
@@ -74,17 +74,6 @@ export default function AddPetModal({
 
       if (response.ok) {
         console.log("Add Pet API response:", response.value.body);
-        // const petResponse = response.value.body.pet;
-        // const newPet: Partial<PetType> = {
-        //   id: petResponse.id,
-        //   spicesId: data.spicesId,
-        //   name: data.name,
-        //   type: data.type,
-        //   profileImage: "",
-        //   vetPortId: petResponse.vetport_id,
-        // };
-
-        // updateUserPetsHandler([newPet]);
         onSuccess();
         reset({ name: "", type: "" });
         setSelectedType("");
@@ -157,7 +146,7 @@ export default function AddPetModal({
                     value={species.name}
                     className="!w-3/4"
                   >
-                    {species.name}
+                    {species.displayName}
                   </option>
                 ))}
               </select>

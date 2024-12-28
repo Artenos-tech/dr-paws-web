@@ -350,6 +350,7 @@ export default createAPIClient({
           z.object({
             id: z.number(),
             name: z.string(),
+            displayName: z.string(),
             status: z.enum(["Active", "Inactive"]),
             uid: z.string(),
           })

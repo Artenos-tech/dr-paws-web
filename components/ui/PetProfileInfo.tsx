@@ -107,7 +107,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
   useEffect(() => {
     if (getPetSpeciesResult?.ok) {
       const speciesId = getPetSpeciesResult.value.body.species.find(
-        (species) => species.name === pet?.type
+        (species) => species.displayName === pet?.type
       )?.id;
       if (speciesId) {
         fetchPetBreedsBySpecies(speciesId);
@@ -166,7 +166,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
         : image;
 
     const petType = petSpecies.find(
-      (species) => species.name === data.type
+      (species) => species.displayName === data.type
     )?.id;
     const petBreed = petBreeds.find((breed) => breed.name === data.breed)?.id;
     const petGender = petGenders.find(
@@ -196,7 +196,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
               }
             : null,
           dob: data.dob ? new Date(data.dob).toISOString() : null,
-          profileImage: realPetImage
+          profileImage: realPetImage,
         },
       });
     }
@@ -229,7 +229,9 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
   };
 
   const defaultImageOrPetImage =
-    image || petImageByType[pet?.type || "other"] || petImageByType.other;
+    image ||
+    petImageByType[pet?.type?.toLowerCase() || "other"] ||
+    petImageByType.other;
 
   if (loadingPets)
     return (
@@ -332,8 +334,8 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                     >
                       <option value="">Type of Pet</option>
                       {petSpecies?.map((species) => (
-                        <option key={species.id} value={species.name}>
-                          {species.name}
+                        <option key={species.id} value={species.displayName}>
+                          {species.displayName}
                         </option>
                       ))}
                     </select>{" "}

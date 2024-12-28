@@ -45,6 +45,7 @@ export interface Pet {
 export interface PetSpecies {
   id: number;
   name: string;
+  displayName: string;
 }
 
 export interface UserContextType {
