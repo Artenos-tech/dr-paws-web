@@ -41,17 +41,18 @@ const SelectService: React.FC<SelectServiceProps> = ({
   onNext,
 }) => {
   const [subtypes, setSubtypes] = useState<BookingCategory[]>([]);
-  const [selectedSubtype, setSelectedSubtype] = useState<BookingCategory | null>(null);
-
-  const { call: getPetsAPI, result: getPetsAPIResult} = useAPICall(
+  const [selectedSubtype, setSelectedSubtype] =
+    useState<BookingCategory | null>(null);
+  const [selectedCardId, setSelectedCardId] = useState<number>();
+  const { call: getPetsAPI, result: getPetsAPIResult } = useAPICall(
     api.getPets
   );
 
   const {
     call: callGetAppointmentServices,
     result: getAppointmentServicesResult,
-    loading: loadingServices
-  } = useAPICall(api.getAppointmentServices)
+    loading: loadingServices,
+  } = useAPICall(api.getAppointmentServices);
 
   useEffect(() => {
     callGetAppointmentServices({});
@@ -74,24 +75,37 @@ const SelectService: React.FC<SelectServiceProps> = ({
     ? getAppointmentServicesResult.value.body.appointmentTypes
     : [];
 
-  const handleCardSelection = (cardId: number, cardTitle: string, selectedPet: Pet | null, isGrooming: boolean) => {
-    setServiceOptions(cardId, cardTitle, selectedPet, isGrooming, selectedSubtype);
+  const handleCardSelection = (
+    cardId: number,
+    cardTitle: string,
+    selectedPet: Pet | null,
+    isGrooming: boolean
+  ) => {
+    setServiceOptions(
+      cardId,
+      cardTitle,
+      selectedPet,
+      isGrooming,
+      selectedSubtype
+    );
   };
 
   const toggleCard = (cardId: number, isGrooming: boolean) => {
+    setSelectedCardId(cardId);
+    setSelectedSubtype(null);
     setOpenCard((prevOpenCard) => {
       if (prevOpenCard !== null) {
-        setServiceOptions(
-          null,
-          null,
-          null,
-          isGrooming,
-          selectedSubtype
-        );
+        setServiceOptions(null, null, null, isGrooming, selectedSubtype);
       }
-      const selectedCard = ServiceTabsData.find((category) => category.vetPortId === cardId);
-
-      if (selectedCard && selectedCard.isGrooming && selectedCard.subtypes && prevOpenCard !== cardId) {
+      const selectedCard = ServiceTabsData.find(
+        (category) => category.vetPortId === cardId
+      );
+      if (
+        selectedCard &&
+        selectedCard.isGrooming &&
+        selectedCard.subtypes &&
+        prevOpenCard !== cardId
+      ) {
         setSubtypes(selectedCard.subtypes);
         setIsModalOpen(true);
       }
@@ -104,7 +118,11 @@ const SelectService: React.FC<SelectServiceProps> = ({
   };
 
   if (loadingServices) {
-    return <div><Loader /></div>;
+    return (
+      <div>
+        <Loader />
+      </div>
+    );
   }
   return (
     <div className="w-full h-full">
@@ -140,8 +158,15 @@ const SelectService: React.FC<SelectServiceProps> = ({
       <BookingModal
         isOpen={isModalOpen}
         subtypes={subtypes}
-        onClose={() => setIsModalOpen(false)}
-        onSelect={(option) => setSelectedSubtype(option)}
+        setSelectedSubtype={setSelectedSubtype}
+        onClose={(subtypeSelected: boolean) => {
+          if (!subtypeSelected) {
+            setSelectedSubtype(null);
+            toggleCard(selectedCardId as number, false);
+          }
+          setIsModalOpen(false);
+        }}
+        selectedSubtype={selectedSubtype}
       />
     </div>
   );
