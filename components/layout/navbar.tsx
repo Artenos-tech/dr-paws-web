@@ -75,7 +75,7 @@ export default function NavBar() {
     if (authToken) {
       navigate.push("/user/book-appointment");
     } else {
-      initiateLogin("Book a Visit");
+      initiateLogin("Book a Visit", "/user/book-appointment");
     }
   };
 
@@ -248,7 +248,7 @@ export default function NavBar() {
               ) : (
                 <button
                   type="button"
-                  onClick={() => initiateLogin("book appointments")}
+                  onClick={() => initiateLogin("book appointments", "/user/profile")}
                   className="text-primary-1 text-sm tracking-wider"
                 >
                   Login
@@ -357,7 +357,7 @@ export default function NavBar() {
               ) : (
                 <button
                   type="button"
-                  onClick={() => initiateLogin("book appointments")}
+                  onClick={() => initiateLogin("book appointments", "/user/book-appointment")}
                   className="text-primary-1 text-sm tracking-wider"
                 >
                   Login

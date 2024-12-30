@@ -45,7 +45,7 @@ export default function Home() {
             <h1 className="mt-4 mb-16 text-center text-primary-1 text-xl md:text-4xl px-8">
               Veterinary care, redesigned to be better
             </h1>
-            <DescriptionCardList openLoginModal={initiateLogin} />
+            <DescriptionCardList openLoginModal={() => initiateLogin("", "/user/profile")} />
           </div>
           <div className="mx-auto mt-12 lg:mt-32">
             <h1 className="mx-auto text-center text-xl md:text-4xl">

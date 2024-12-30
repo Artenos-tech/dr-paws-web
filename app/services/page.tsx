@@ -23,7 +23,7 @@ const Services = () => {
     console.log(authToken);
     return authToken
       ?  navigate.push("/user/book-appointment")
-      : initiateLogin("Book a Visit");
+      : initiateLogin("Book a Visit", "/user/book-appointment");
   };
 
   return (

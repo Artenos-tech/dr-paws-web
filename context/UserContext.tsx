@@ -56,7 +56,7 @@ export interface UserContextType {
   getAuthToken: () => string | null;
   refresh: () => void;
   updatePetSpeciesHandler: (data: PetSpecies[]) => void;
-  initiateLogin: (loginText: string) => void;
+  initiateLogin: (loginText: string, redirectTo: string) => void;
 }
 
 export const UserContext = createContext<UserContextType | undefined>(
@@ -113,17 +113,24 @@ export const UserProvider = ({ children }: UserProviderProps) => {
   
   const [loginModalOpen, setLoginModalOpen] = useState<boolean>(false);
   const [loginText, setLoginText] = useState<string>("");
+  const [redirectTo, setRedirectTo] = useState<string|null>(null);
   const router = useRouter();
 
-  function initiateLogin(loginText: string) {
+  function initiateLogin(loginText: string, redirectToPath: string) {
     setLoginModalOpen(true);
     setLoginText(loginText);
+    setRedirectTo(redirectToPath);
   }
 
   async function handleLoginSuccess() {
     setLoginModalOpen(false);
     await checkIsLoggedIn();
-    router.push("/user/profile");
+    if (redirectTo) {
+      router.push(redirectTo);
+      setRedirectTo(null);
+    } else {
+      router.push("/user/book-appointment");
+    }
     // TODO: toast.success(loginSuccessMsg);
   }
 
