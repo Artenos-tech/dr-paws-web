@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -11,10 +12,6 @@ import { User } from "@/context/UserContext";
 
 const profileSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  // mobile: z
-  //   .string()
-  //   .length(10, "Contact must be 10 digits")
-  //   .regex(/^\d{10}$/, "Contact must be numeric"),
   email: z.string().email("Invalid email address").nullable(),
   current_address: z.string().max(69, "Address line reached max characters").nullable(),
 });
@@ -42,11 +39,11 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
     defaultValues: profileData,
   });
 
-  const [image, setImage] = useState<string>(profileData.profile_image || "");
+  const [image, setImage] = useState<string | null>(profileData.profile_image || null);
 
   useEffect(() => {
     reset(profileData);
-    setImage(profileData.profile_image || "");
+    setImage(profileData.profile_image || null);
   }, [profileData, reset]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -62,7 +59,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
     onSubmit({
       ...data,
       id: profileData.id,
-      profile_image: image,
+      profile_image: image === ProfileLogo.src ? null : image,
       current_address: data.current_address,
       role: "USER",
       mobile: profileData.mobile,
@@ -81,11 +78,11 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
       <div className="flex flex-col items-center mt-2">
         <div className="relative">
           <Image
-            src={image ?? ProfileLogo}
+            src={image || ProfileLogo}
             alt="Profile"
             width={100}
             height={100}
-            className="rounded-full h-[120px] w-[120px]"
+            className="rounded-full h-[120px] w-[120px] object-cover"
           />
           <Image
             src={ImageEdit}
@@ -98,7 +95,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
             onChange={handleImageChange}
             className="absolute bottom-0 right-0 opacity-0 w-1/2 h-1/2 cursor-pointer"
           />
-          {image !== ProfileLogo.src && (
+          {image && image !== ProfileLogo.src && (
             <button
               type="button"
               className="absolute bottom-0 left-0 p-3 bg-red-500 rounded-full z-10"
@@ -123,16 +120,6 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
       <div className="flex flex-col ">
         <label className="text-sm">Contact No</label>
         <p>{profileData.mobile}</p>
-        {/* <input
-          {...register("mobile")}
-          type="text"
-          maxLength={10}
-          pattern="\d*"
-          className="rounded-md p-2 border w-full border-[#74A7B3]"
-        />
-        {errors.mobile && (
-          <span className="text-red-500 text-sm">{errors.mobile.message}</span>
-        )} */}
       </div>
       <div className="flex flex-col ">
         <label className="text-sm">Email</label>
