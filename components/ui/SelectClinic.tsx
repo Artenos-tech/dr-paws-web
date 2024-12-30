@@ -10,7 +10,7 @@ import Loader from "./Loader";
 interface SelectClinicProps {
   onNext: () => void; // Prop for navigation
   selectedClinic: number | null;
- handleClinicSelection: (clinicId: number, location: string) => void; 
+ handleClinicSelection: (clinicId: number, location: string, contact: string) => void; 
 }
 
 const SelectClinic: React.FC<SelectClinicProps> = ({ onNext, selectedClinic, handleClinicSelection }) => {
@@ -37,7 +37,7 @@ const SelectClinic: React.FC<SelectClinicProps> = ({ onNext, selectedClinic, han
               key={item.id}
               clinic={item}
               isSelected={selectedClinic === item.id}
-              onSelect={() => handleClinicSelection(item.id, item.location)}
+              onSelect={() => handleClinicSelection(item.id, item.location, item.contact)}
             />
           </div>
         ))}

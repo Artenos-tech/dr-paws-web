@@ -512,6 +512,7 @@ export default createAPIClient({
             services: z.string(),
             image: z.string(),
             location: z.string(),
+            contact: z.string(),
           })
         ),
       }),

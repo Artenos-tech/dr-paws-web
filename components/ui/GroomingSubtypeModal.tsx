@@ -1,7 +1,7 @@
 import React from "react";
 import { BookingCategory } from "./SelectService";
 
-interface BookingModalProps {
+interface GroomingSubtypeModalProps {
   isOpen: boolean;
   onClose: (subtypeSelected: boolean) => void;
   subtypes: BookingCategory[];
@@ -11,13 +11,13 @@ interface BookingModalProps {
   selectedSubtype: BookingCategory | null;
 }
 
-export default function BookingModal({
+export default function GroomingSubtypeModal({
   isOpen,
   onClose,
   setSelectedSubtype,
   selectedSubtype,
   subtypes,
-}: BookingModalProps) {
+}: GroomingSubtypeModalProps) {
   const handleSelect = () => {
     if (selectedSubtype) {
       setSelectedSubtype(selectedSubtype);

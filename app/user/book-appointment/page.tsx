@@ -17,6 +17,7 @@ const Booking: React.FC = () => {
     isGrooming: boolean;
     selectedClinic: number | null;
     selectedLocation: string | null;
+    selectClinicContact: string | null;
     selectedDoctor: SelectedVet | null;
     selectedDate: Date | null;
     selectedSlot: string | null;
@@ -28,6 +29,7 @@ const Booking: React.FC = () => {
     isGrooming: false,
     selectedClinic: null,
     selectedLocation: null,
+    selectClinicContact: null,
     selectedDoctor: null,
     selectedDate: null,
     selectedSlot: null,
@@ -37,13 +39,13 @@ const Booking: React.FC = () => {
   const [isDisclaimerModalOpen, setIsDisclaimerModalOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState<number>(1);
 
-  const handleClinicSelection = (clinicId: number, location: string) => {
+  const handleClinicSelection = (clinicId: number, location: string, contact: string) => {
     setSelectedAppointmentState((prev) => {
       // Toggle selection: if the clicked clinic is already selected, deselect it.
       if (prev.selectedClinic === clinicId) {
-        return ({ ...prev, selectedClinic: null, selectedLocation: null });
+        return ({ ...prev, selectedClinic: null, selectedLocation: null, selectClinicContact: null });
       }
-      return ({ ...prev, selectedClinic: clinicId, selectedLocation: location })
+      return ({ ...prev, selectedClinic: clinicId, selectedLocation: location, selectClinicContact: contact })
     });
   };
 
@@ -133,9 +135,11 @@ const Booking: React.FC = () => {
                 selectedAppointment={{
                   selectedSvcId: notNull(selectedAppointment.selectedServiceId),
                   selectedService: notNull(selectedAppointment.selectedService),
+                  selectedSubtype: selectedAppointment.selectedSubtype?.title,
                   selectedPet: notNull(selectedAppointment.selectedPet),
                   selectedClinic: notNull(selectedAppointment.selectedClinic),
                   selectedLocation: notNull(selectedAppointment.selectedLocation),
+                  selectedClinicContact: notNull(selectedAppointment.selectClinicContact),
                   selectedVet: selectedAppointment.selectedDoctor,
                   selectedDate: notNull(selectedAppointment.selectedDate),
                   selectedSlot: notNull(selectedAppointment.selectedSlot),

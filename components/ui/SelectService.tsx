@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import BookingCard from "@/components/ui/BookingCard";
-import BookingModal from "@/components/ui/BookingModal";
+import GroomingSubtypeModal from "@/components/ui/GroomingSubtypeModal";
 import CustomButton from "./CustomButton";
 import { Pet } from "@/context/UserContext";
 import { useAPICall } from "@/hooks/apicall";
@@ -155,7 +155,7 @@ const SelectService: React.FC<SelectServiceProps> = ({
         />
       </div>
 
-      <BookingModal
+      <GroomingSubtypeModal
         isOpen={isModalOpen}
         subtypes={subtypes}
         setSelectedSubtype={setSelectedSubtype}

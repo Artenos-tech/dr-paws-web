@@ -23,6 +23,7 @@ import { ClipLoader } from "react-spinners";
 
 import { BookingCategory } from "./SelectService";
 import BestAvailableVetCard from "./BestAvailableVetCard";
+import ConfirmationModal from "./ConfirmationModal";
 
 export function convertDateToEpoch(date: string) {
   return Date.parse(date);
@@ -57,6 +58,8 @@ const SelectVet: React.FC<selectVetProps> = ({
   selectedSvcId,
   selectedPet,
   selectedSubtype,
+  selectedLocation,
+  selectedService,
   setFinalAppointmentData,
   isGrooming,
   onNext,
@@ -68,6 +71,7 @@ const SelectVet: React.FC<selectVetProps> = ({
   );
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
 
   const {
     call: getStaffSchedule,
@@ -194,6 +198,11 @@ const SelectVet: React.FC<selectVetProps> = ({
       selectedDate,
       selectedSlot,
     });
+    setIsConfirmationModalOpen(true);
+  };
+
+  const handleConfirmBooking = async () => {
+    setIsConfirmationModalOpen(false);
     if (user && selectedSlot && selectedDate && selectedDoctor) {
       const [hours, minutes] = selectedSlot.split(":").map(Number);
       selectedDate.setHours(hours, minutes, 0, 0);
@@ -315,36 +324,52 @@ const SelectVet: React.FC<selectVetProps> = ({
           <p className="text-gray-600 mb-4">When would you like to visit us?</p>
         </div>
 
-        {(selectedDoctor || isGrooming) &&
-          (availableSlotsLoading ? (
-            <div className="m-auto my-1">
-              <ClipLoader color="#33495f" />
-            </div>
-          ) : availableSlotsError ? (
-            <p className="text-gray-500 text-sm">
-              Cannot load the available slots. Please try again later.
-            </p>
-          ) : availableSlots ? (
-            <AppointmentDateAndTimeSelector
-              show={!selectedDoctor && selectedPet && !isGrooming}
-              selectedDate={selectedDate}
-              onDateSelected={handleDateSelect}
-              availableSlots={availableSlots}
-              selectedSlot={selectedSlot}
-              onSlotSelected={handleSlotSelect}
-            />
-          ) : null) // result starts out as undefined before API call is made
+        {
+          (selectedDoctor || isGrooming) &&
+            (availableSlotsLoading ? (
+              <div className="m-auto my-1">
+                <ClipLoader color="#33495f" />
+              </div>
+            ) : availableSlotsError ? (
+              <p className="text-gray-500 text-sm">
+                Cannot load the available slots. Please try again later.
+              </p>
+            ) : availableSlots ? (
+              <AppointmentDateAndTimeSelector
+                show={!selectedDoctor && selectedPet && !isGrooming}
+                selectedDate={selectedDate}
+                onDateSelected={handleDateSelect}
+                availableSlots={availableSlots}
+                selectedSlot={selectedSlot}
+                onSlotSelected={handleSlotSelect}
+              />
+            ) : null) // result starts out as undefined before API call is made
         }
       </div>
       <div className="my-4 flex justify-center">
         <CustomButton
-          buttonText={"Next"}
+          buttonText={"Book"}
           buttonBackground="bg-secondary-1"
           disabled={!isNextButtonEnabled || loadingAppointmentCreation}
           loading={isNextButtonEnabled && loadingAppointmentCreation}
           buttonClickEvent={handleNextClick}
         />
       </div>
+      {selectedDate && selectedSlot && (
+        <ConfirmationModal
+          isOpen={isConfirmationModalOpen}
+          onClose={() => setIsConfirmationModalOpen(false)}
+          onConfirm={handleConfirmBooking}
+          bookingDetails={{
+            petName: selectedPet.name,
+            service: selectedSubtype?.title || selectedService,
+            doctorName: selectedDoctor?.name,
+            location: selectedLocation,
+            date: selectedDate,
+            slot: selectedSlot,
+          }}
+        />
+      )}
       <Toaster />
     </div>
   );
