@@ -64,7 +64,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
             onClick={onConfirm}
             className={`px-3 py-2 sm:px-4 sm:py-2 rounded-md text-white text-sm sm:text-base flex-1 bg-[#5281a2] hover:bg-[#3a6d8e] transition-colors`}
           >
-            Next
+            Confirm Booking
           </button>
         </DialogFooter>
       </DialogContent>

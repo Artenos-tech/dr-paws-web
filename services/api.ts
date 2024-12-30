@@ -240,6 +240,7 @@ export default createAPIClient({
             id: z.string(),
             pet_vetport_id: z.number(),
             pet_name: z.string(),
+            pet_type: z.string().optional(),
             user_vetport_id: z.number(),
             vet_vetport_id: z.number(),
             vet_name: z.string(),
@@ -247,6 +248,7 @@ export default createAPIClient({
             clinic_id: z.number(),
             clinic_name: z.string(),
             clinic_location: z.string(),
+            clinic_contact: z.string(),
             appt_start: z.string(),
             appt_end: z.string(),
             appt_status: z.enum([

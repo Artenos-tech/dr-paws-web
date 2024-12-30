@@ -108,7 +108,7 @@ const BookingConfirmed: React.FC<BookingConfirmedProps> = ({
               <span className="text-secondary-1">
                 <HiOutlineCalendar />
               </span>
-              {selectedAppointment.selectedDate.toLocaleDateString("en-US", {
+              {selectedAppointment.selectedDate.toLocaleDateString("en-IN", {
                 weekday: "long",
                 year: "numeric",
                 month: "long",

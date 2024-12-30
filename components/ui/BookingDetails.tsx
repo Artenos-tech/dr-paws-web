@@ -8,8 +8,8 @@ import { GrLocation } from "react-icons/gr";
 import { HiOutlineCalendar } from "react-icons/hi";
 import Image from "next/image";
 import defaultVetImage from "@/public/assets/images/clinic/doctorFemale.webp";
-import defaultPetImage from "@/public/assets/images/Appointments/petImage.png";
 import { doctorImagesMap } from "@/model/mockData";
+import { petImageByType } from "./PetCard";
 
 export const cancelReasons = [
   "Another commitment has come up",
@@ -41,6 +41,11 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
   //   "default" | "cancel" | "reschedule"
   // >("default");
 
+  const defaultPetImageByType =
+    petImageByType[
+      selectedAppointment.pet_type?.toLowerCase() || "other"
+    ] || petImageByType.other;
+
   return (
     <div className="w-full h-full">
       <BackButton navigateBack={goBack} />
@@ -50,28 +55,35 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
         <h1 className="text-3xl flex items-center gap-4">Your Booking</h1>
 
         <div
-          className={`p-4 text-primary-1 w-11/12 md:w-4/5 lg:w-[50%] shadow-md my-5 flex flex-col gap-2 items-center bg-[#FFFCF3]`}
+          className={`p-4 text-primary-1 w-11/12 md:w-4/5 lg:w-[50%] shadow-md my-5 flex flex-col gap-2 items-center ${
+            selectedAppointment.category === "PAST"
+              ? "bg-primary-3"
+              : "bg-[#FFFCF3]"
+          }`}
         >
           <p className="text-lg font-semibold mt-4">
-            {selectedAppointment.pet_name} is scheduled for{" "}
-            {selectedAppointment.appt_type}
-            {selectedAppointment.appt_type &&
-              selectedAppointment.appt_type !== "Grooming" &&
-              `with ${selectedAppointment.vet_name}`}
+            {selectedAppointment.category === "PAST" 
+              ? selectedAppointment.appt_type === "Grooming"
+                ? `${selectedAppointment.pet_name} had a ${selectedAppointment.appt_reason}`
+                : `${selectedAppointment.pet_name} visited ${selectedAppointment.vet_name} for a ${selectedAppointment.appt_type}`
+              : selectedAppointment.appt_type !== "Grooming"
+                ? `${selectedAppointment.pet_name} is scheduled for a ${selectedAppointment.appt_type} with ${selectedAppointment.vet_name}`
+                : `${selectedAppointment.pet_name} is scheduled for a ${selectedAppointment.appt_reason}`
+            }
           </p>
           <div className="flex items-center my-4">
             {
               <>
                 <div className="bg-white rounded-full w-[130px] h-[130px] p-3 flex justify-center items-center">
                   <Image
-                    src={defaultPetImage}
+                    src={defaultPetImageByType}
                     alt="pet-image"
                     width={130}
                     height={130}
                     className="rounded-full"
                   />
                 </div>
-                <div className="bg-white rounded-full w-[130px] h-[130px] p-8 ml-[-30px] flex justify-center items-center">
+                {selectedAppointment.appt_type !== "Grooming" && <div className="bg-white rounded-full w-[130px] h-[130px] p-8 ml-[-30px] flex justify-center items-center">
                   <Image
                     src={
                       doctorImagesMap[selectedAppointment.vet_image] ||
@@ -82,7 +94,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                     height={100}
                     className="rounded-full"
                   />
-                </div>
+                </div>}
               </>
             }
           </div>
@@ -128,6 +140,13 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                   minute: "2-digit",
                 }
               )}
+            </p>
+          </div>
+          <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
+            <p className="italic text-gray-400 text-sm text-center w-full max-w-md">
+              To cancel or reschedule your appointment, please contact our{" "}
+              {selectedAppointment.clinic_location} clinic on{" "}
+              {selectedAppointment.clinic_contact}
             </p>
           </div>
         </div>

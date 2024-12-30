@@ -6,7 +6,7 @@ import OutlineButton from "./OutlineButton";
 import Image from "next/image";
 import { doctorImagesMap } from "@/model/mockData";
 import defaultVetImage from "@/public/assets/images/clinic/doctorFemale.webp";
-import defaultPetImage from "@/public/assets/images/Appointments/petImage.png";
+import { petImageByType } from "./PetCard";
 
 type AppointmentCardProps = {
   appointment: AppointmentType;
@@ -54,6 +54,11 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
   const statusCategory = getStatusCategory(appointment);
   const { border, bg, text } = cardStyles[statusCategory];
 
+  const defaultPetImageByType =
+  petImageByType[
+    appointment.pet_type?.toLowerCase() || "other"
+  ] || petImageByType.other;
+
   return (
     <div
       className={`p-4 ${border} ${bg} flex flex-col gap-3 rounded-lg shadow-md w-full`}
@@ -76,7 +81,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
       <div className="flex items-center my-4">
         <div className="bg-white rounded-full w-[80px] h-[80px] p-3 flex justify-center items-center">
           <Image
-            src={defaultPetImage}
+            src={defaultPetImageByType}
             alt="pet-image"
             width={80}
             height={80}
