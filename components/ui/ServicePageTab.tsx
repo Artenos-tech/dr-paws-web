@@ -94,7 +94,7 @@ const ServiceTab = ({ tabs }: ServiceTabProps) => {
           </p>
 
           {/* Image Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 xl:grid-cols-4 2xl:grid-cols-5 justify-between  md:gap-6 w-full mx-auto">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-10 xl:grid-cols-4 2xl:grid-cols-5 justify-between  md:gap-6 w-full mx-auto">
             {activeTabContent.imageDetails.map((detail, index) => (
               <div
                 key={index}
