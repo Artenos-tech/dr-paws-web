@@ -46,93 +46,92 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
       <BackButton navigateBack={goBack} />
 
       {/* {currentView === "default" && ( */}
-        <div className="flex flex-col justify-center gap-4 items-center">
-          <h1 className="text-3xl flex items-center gap-4">Your Booking</h1>
+      <div className="flex flex-col justify-center gap-4 items-center">
+        <h1 className="text-3xl flex items-center gap-4">Your Booking</h1>
 
-          <div
-            className={`p-4 text-primary-1 w-11/12 md:w-4/5 lg:w-[50%] shadow-md my-5 flex flex-col gap-2 items-center bg-[#FFFCF3]`}
-          >
-            <p className="text-lg font-semibold mt-4">
-              {selectedAppointment.appt_type &&
-              selectedAppointment.appt_type === "Grooming"
-                ? `${selectedAppointment.pet_name} is scheduled`
-                : `${selectedAppointment.pet_name} is scheduled with ${selectedAppointment.vet_name}`}
+        <div
+          className={`p-4 text-primary-1 w-11/12 md:w-4/5 lg:w-[50%] shadow-md my-5 flex flex-col gap-2 items-center bg-[#FFFCF3]`}
+        >
+          <p className="text-lg font-semibold mt-4">
+            {selectedAppointment.pet_name} is scheduled for{" "}
+            {selectedAppointment.appt_type}
+            {selectedAppointment.appt_type &&
+              selectedAppointment.appt_type !== "Grooming" &&
+              `with ${selectedAppointment.vet_name}`}
+          </p>
+          <div className="flex items-center my-4">
+            {
+              <>
+                <div className="bg-white rounded-full w-[130px] h-[130px] p-3 flex justify-center items-center">
+                  <Image
+                    src={defaultPetImage}
+                    alt="pet-image"
+                    width={130}
+                    height={130}
+                    className="rounded-full"
+                  />
+                </div>
+                <div className="bg-white rounded-full w-[130px] h-[130px] p-8 ml-[-30px] flex justify-center items-center">
+                  <Image
+                    src={
+                      doctorImagesMap[selectedAppointment.vet_image] ||
+                      defaultVetImage
+                    }
+                    alt="vet-image"
+                    width={100}
+                    height={100}
+                    className="rounded-full"
+                  />
+                </div>
+              </>
+            }
+          </div>
+          <div className="my-4 space-y-3">
+            <p className={"flex items-center gap-2"}>
+              <span className="text-secondary-1">
+                <GrLocation />
+              </span>{" "}
+              {selectedAppointment.clinic_location}
             </p>
-            <p>for {selectedAppointment.appt_type}</p>
 
-            <div className="flex items-center my-4">
-              {
-                <>
-                  <div className="bg-white rounded-full w-[130px] h-[130px] p-3 flex justify-center items-center">
-                    <Image
-                      src={defaultPetImage}
-                      alt="pet-image"
-                      width={130}
-                      height={130}
-                      className="rounded-full"
-                    />
-                  </div>
-                  <div className="bg-white rounded-full w-[130px] h-[130px] p-8 ml-[-30px] flex justify-center items-center">
-                    <Image
-                      src={
-                        doctorImagesMap[selectedAppointment.vet_image] ||
-                        defaultVetImage
-                      }
-                      alt="vet-image"
-                      width={100}
-                      height={100}
-                      className="rounded-full"
-                    />
-                  </div>
-                </>
-              }
-            </div>
-            <div className="my-4 space-y-3">
-              <p className={"flex items-center gap-2"}>
-                <span className="text-secondary-1">
-                  <GrLocation />
-                </span>{" "}
-                {selectedAppointment.clinic_location}
-              </p>
+            <p className={"flex items-center gap-2"}>
+              <span className="text-secondary-1">
+                <HiOutlineCalendar />
+              </span>
+              {new Date(selectedAppointment.appt_start).toLocaleDateString(
+                "en-IN",
+                {
+                  weekday: "long",
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                }
+              )}
+            </p>
+            <p className={`flex items-center gap-2`}>
+              <span className="text-secondary-1">
+                <MdOutlineAccessTime />
+              </span>
 
-              <p className={"flex items-center gap-2"}>
-                <span className="text-secondary-1">
-                  <HiOutlineCalendar />
-                </span>
-                {new Date(selectedAppointment.appt_start).toLocaleDateString(
-                  "en-IN",
-                  {
-                    weekday: "long",
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  }
-                )}
-              </p>
-              <p className={`flex items-center gap-2`}>
-                <span className="text-secondary-1">
-                  <MdOutlineAccessTime />
-                </span>
-
-                {new Date(selectedAppointment.appt_start).toLocaleTimeString(
-                  "en-IN",
-                  {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  }
-                )}
-                {" - "}
-                {new Date(selectedAppointment.appt_end).toLocaleTimeString(
-                  `en-IN`,
-                  {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  }
-                )}
-              </p>
-            </div>
+              {new Date(selectedAppointment.appt_start).toLocaleTimeString(
+                "en-IN",
+                {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                }
+              )}
+              {" - "}
+              {new Date(selectedAppointment.appt_end).toLocaleTimeString(
+                `en-IN`,
+                {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                }
+              )}
+            </p>
           </div>
         </div>
+      </div>
       {/* )} */}
       {/* 
       {currentView === "cancel" && (

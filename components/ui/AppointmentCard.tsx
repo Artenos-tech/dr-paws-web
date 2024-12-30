@@ -6,15 +6,17 @@ import OutlineButton from "./OutlineButton";
 import Image from "next/image";
 import { doctorImagesMap } from "@/model/mockData";
 import defaultVetImage from "@/public/assets/images/clinic/doctorFemale.webp";
-import defaultPetImage from "@/public/assets/images/Appointments/petImage.png"
+import defaultPetImage from "@/public/assets/images/Appointments/petImage.png";
 
 type AppointmentCardProps = {
   appointment: AppointmentType;
   onClick: () => void;
 };
 
-const AppointmentCard: React.FC<AppointmentCardProps> = ({ appointment, onClick }) => {
-
+const AppointmentCard: React.FC<AppointmentCardProps> = ({
+  appointment,
+  onClick,
+}) => {
   // Styles and labels based on appt_status
   const cardStyles = {
     upcoming: {
@@ -58,7 +60,9 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({ appointment, onClick 
     >
       {/* Status and Reason */}
       <div className="text-xs flex justify-between">
-        <p className={`${text}`}>{getAppointmentCategoryLabel(appointment.category)}</p>
+        <p className={`${text}`}>
+          {getAppointmentCategoryLabel(appointment.category)}
+        </p>
         <p
           className={`px-2 py-1 rounded-md ${
             statusCategory === "cancelled" ? "bg-[#E0E0E0]" : "bg-primary-2"
@@ -79,30 +83,32 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({ appointment, onClick 
             className="rounded-full"
           />
         </div>
-        <div className="bg-white rounded-full w-[80px] h-[80px] p-4 ml-[-30px] flex justify-center items-center">
-          <Image
-            src={
-              doctorImagesMap[appointment.vet_image] ||
-              defaultVetImage
-            }
-            alt="vet-image"
-            className="rounded-full"
-          />
-        </div>
+        {appointment.appt_type !== "Grooming" && (
+          <div className="bg-white rounded-full w-[80px] h-[80px] p-4 ml-[-30px] flex justify-center items-center">
+            <Image
+              src={doctorImagesMap[appointment.vet_image] || defaultVetImage}
+              alt="vet-image"
+              className="rounded-full"
+            />
+          </div>
+        )}
       </div>
       <div className={`space-y-1 ${text}`}>
         <p className="font-semibold">
           {appointment.pet_name}
-          {appointment.vet_vetport_id !== 0 &&
-            ` and ${appointment.vet_name}`}
+          {appointment.vet_vetport_id !== 0 ||
+            (appointment.appt_type !== "Grooming" &&
+              ` and ${appointment.vet_name}`)}
         </p>
         <p>{appointment.clinic_name}</p>
-        <p>{new Date(appointment.appt_start).toLocaleDateString("en-IN", {
-          weekday: "long",
-          day: "2-digit",
-          month: "short",
-          year: "numeric",
-        })}</p>
+        <p>
+          {new Date(appointment.appt_start).toLocaleDateString("en-IN", {
+            weekday: "long",
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+          })}
+        </p>
         <p>
           {new Date(appointment.appt_start).toLocaleTimeString("en-IN", {
             hour: "2-digit",
@@ -116,10 +122,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({ appointment, onClick 
         </p>
       </div>
       <div className="self-end">
-        <OutlineButton
-          outlineBtnText="View Details"
-          outlineBtnLink={onClick}
-        />
+        <OutlineButton outlineBtnText="View Details" outlineBtnLink={onClick} />
       </div>
     </div>
   );
