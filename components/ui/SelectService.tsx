@@ -130,7 +130,9 @@ const SelectService: React.FC<SelectServiceProps> = ({
       <p className="text-gray-600 mb-12">Choose from our services:</p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
-        {ServiceTabsData.map((category) => (
+        {ServiceTabsData
+        .toSorted((a, b) => a.displayOrder - b.displayOrder)
+        .map((category) => (
           <BookingCard
             key={category.id}
             cardId={category.vetPortId}

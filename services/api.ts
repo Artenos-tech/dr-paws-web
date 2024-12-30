@@ -494,6 +494,7 @@ export default createAPIClient({
                   title: z.string(),
                   description: z.string(),
                 })).optional(),
+            displayOrder: z.number(),
           }))
       }),
       errorResponseSchema: z.object({}),
