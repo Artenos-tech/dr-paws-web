@@ -42,9 +42,8 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
   // >("default");
 
   const defaultPetImageByType =
-    petImageByType[
-      selectedAppointment.pet_type?.toLowerCase() || "other"
-    ] || petImageByType.other;
+    petImageByType[selectedAppointment.pet_type?.toLowerCase() || "other"] ||
+    petImageByType.other;
 
   return (
     <div className="w-full h-full">
@@ -62,14 +61,13 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
           }`}
         >
           <p className="text-lg font-semibold mt-4">
-            {selectedAppointment.category === "PAST" 
+            {selectedAppointment.category === "PAST"
               ? selectedAppointment.appt_type === "Grooming"
                 ? `${selectedAppointment.pet_name} had a ${selectedAppointment.appt_reason}`
                 : `${selectedAppointment.pet_name} visited ${selectedAppointment.vet_name} for a ${selectedAppointment.appt_type}`
               : selectedAppointment.appt_type !== "Grooming"
-                ? `${selectedAppointment.pet_name} is scheduled for a ${selectedAppointment.appt_type} with ${selectedAppointment.vet_name}`
-                : `${selectedAppointment.pet_name} is scheduled for a ${selectedAppointment.appt_reason}`
-            }
+              ? `${selectedAppointment.pet_name} is scheduled for a ${selectedAppointment.appt_type} with ${selectedAppointment.vet_name}`
+              : `${selectedAppointment.pet_name} is scheduled for a ${selectedAppointment.appt_reason}`}
           </p>
           <div className="flex items-center my-4">
             {
@@ -83,18 +81,20 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                     className="rounded-full"
                   />
                 </div>
-                {selectedAppointment.appt_type !== "Grooming" && <div className="bg-white rounded-full w-[130px] h-[130px] p-8 ml-[-30px] flex justify-center items-center">
-                  <Image
-                    src={
-                      doctorImagesMap[selectedAppointment.vet_image] ||
-                      defaultVetImage
-                    }
-                    alt="vet-image"
-                    width={100}
-                    height={100}
-                    className="rounded-full"
-                  />
-                </div>}
+                {selectedAppointment.appt_type !== "Grooming" && (
+                  <div className="bg-white rounded-full w-[130px] h-[130px] p-8 ml-[-30px] flex justify-center items-center">
+                    <Image
+                      src={
+                        doctorImagesMap[selectedAppointment.vet_image] ||
+                        defaultVetImage
+                      }
+                      alt="vet-image"
+                      width={100}
+                      height={100}
+                      className="rounded-full"
+                    />
+                  </div>
+                )}
               </>
             }
           </div>
@@ -142,13 +142,15 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
               )}
             </p>
           </div>
-          <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
-            <p className="italic text-gray-400 text-sm text-center w-full max-w-md">
-              To cancel or reschedule your appointment, please contact our{" "}
-              {selectedAppointment.clinic_location} clinic on{" "}
-              {selectedAppointment.clinic_contact}
-            </p>
-          </div>
+          {selectedAppointment.category === "UPCOMING" && (
+            <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
+              <p className="italic text-gray-400 text-sm text-center w-full max-w-md">
+                To cancel or reschedule your appointment, please contact our{" "}
+                {selectedAppointment.clinic_location} clinic on{" "}
+                {selectedAppointment.clinic_contact}
+              </p>
+            </div>
+          )}
         </div>
       </div>
       {/* )} */}
