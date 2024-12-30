@@ -143,7 +143,7 @@ export default function AddPetModal({
                 {petSpecies?.map((species) => (
                   <option
                     key={species.id}
-                    value={species.name}
+                    value={species.displayName}
                     className="!w-3/4"
                   >
                     {species.displayName}
