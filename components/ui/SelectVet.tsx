@@ -193,8 +193,12 @@ const SelectVet: React.FC<selectVetProps> = ({
     if (!(selectedDoctor || isGrooming)) {
       throw new Error("Doctor must be selected or grooming must be selected");
     }
+    const selectedDoc = selectedDoctor?.id === BEST_AVAILABLE_VET_ID
+              && filteredDoctors.find(
+                (doc) => doc.id === selectPreferredOrRandomAvailableVetId()
+              )
     setFinalAppointmentData({
-      selectedDoctor,
+      selectedDoctor: selectedDoc || selectedDoctor,
       selectedDate,
       selectedSlot,
     });
@@ -213,6 +217,7 @@ const SelectVet: React.FC<selectVetProps> = ({
       );
       const apptEnd = selectedDate.toISOString();
       try {
+        
         const response = await createAnAppointment({
           vet_id:
             selectedDoctor.id === BEST_AVAILABLE_VET_ID
@@ -363,7 +368,12 @@ const SelectVet: React.FC<selectVetProps> = ({
           bookingDetails={{
             petName: selectedPet.name,
             service: selectedSubtype?.title || selectedService,
-            doctorName: selectedDoctor?.name,
+            doctorName:
+              selectedDoctor && selectedDoctor.id === BEST_AVAILABLE_VET_ID
+                ? filteredDoctors.find(
+                    (doc) => doc.id === selectPreferredOrRandomAvailableVetId()
+                  )?.name
+                : selectedDoctor?.name,
             location: selectedLocation,
             date: selectedDate,
             slot: selectedSlot,

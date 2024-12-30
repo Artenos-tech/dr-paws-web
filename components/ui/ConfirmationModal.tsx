@@ -44,7 +44,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
             <span className="font-medium">{petName}</span> is scheduled for a{" "}
             <span className="font-medium">{service}</span> with{" "}
             <span className="font-medium">{doctorName}</span> at our{" "}
-            <span className="font-medium">{location}</span>clinic on{" "}
+            <span className="font-medium">{location}</span> clinic on{" "}
             <span className="font-medium">
               {format(date, "MMMM d, yyyy")} at {slot}.
             </span>

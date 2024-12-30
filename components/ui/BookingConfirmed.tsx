@@ -45,8 +45,10 @@ const BookingConfirmed: React.FC<BookingConfirmedProps> = ({
     }
   };
 
-  const defaultPetImageByType = petImageByType[selectedAppointment.selectedPet.type?.toLowerCase() || "other"] ||
-  petImageByType.other;
+  const defaultPetImageByType =
+    petImageByType[
+      selectedAppointment.selectedPet.type?.toLowerCase() || "other"
+    ] || petImageByType.other;
 
   return (
     <div className="w-full h-full">
@@ -55,10 +57,10 @@ const BookingConfirmed: React.FC<BookingConfirmedProps> = ({
           Booking Confirmed <BsCheckCircleFill fill="#5281a2" />
         </h1>
         <div
-          className={`p-4 text-primary-1 w-11/12 md:w-4/5 lg:w-[50%] shadow-md my-5 flex flex-col gap-2 items-center
+          className={`p-4 text-primary-1 shadow-md my-5 flex flex-col gap-2 items-center
               bg-[#FFFCF3]`}
         >
-          <p className="text-lg font-semibold mt-4">
+          <p className="text-lg font-semibold mt-4 text-center">
             {selectedAppointment.selectedPet.name} is scheduled for a{" "}
             {isGroomingAppointment && selectedAppointment.selectedSubtype
               ? `${selectedAppointment.selectedSubtype}!`
@@ -70,7 +72,10 @@ const BookingConfirmed: React.FC<BookingConfirmedProps> = ({
           <div className="flex items-center my-4">
             <div className="bg-white rounded-full w-[130px] h-[130px] p-3 flex justify-center items-center">
               <Image
-                src={selectedAppointment.selectedPet.profileImage || defaultPetImageByType}
+                src={
+                  selectedAppointment.selectedPet.profileImage ||
+                  defaultPetImageByType
+                }
                 alt="pet-image"
                 width={130}
                 height={130}
@@ -119,12 +124,12 @@ const BookingConfirmed: React.FC<BookingConfirmedProps> = ({
                 addMinutesToTime(selectedAppointment.selectedSlot, 30)}
             </p>
           </div>
-          <div className="w-full max-w-md mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
             <p className="italic text-gray-400 text-sm text-center w-full max-w-md">
-              To cancel or reschedule your appointment, please contact our
+              To cancel or reschedule your appointment, please contact our{" "}
+              {selectedAppointment.selectedLocation} clinic on{" "}
+              {selectedAppointment.selectedClinicContact}
             </p>
-            <p className="italic text-gray-400 text-sm text-center w-full max-w-md ">{selectedAppointment.selectedLocation} clinic</p>
-            <p className="italic text-gray-400 text-sm text-center w-full max-w-md">on {selectedAppointment.selectedClinicContact}</p>
           </div>
           <div className="flex items-center">
             <CustomButton
