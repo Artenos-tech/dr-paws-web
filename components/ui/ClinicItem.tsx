@@ -36,7 +36,7 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
   return (
     <div
       className={`bg-[#FFFCF3] ${
-        !enlargedView && "w-full lg:w-[50%] xl:w-[25%] min-h-[270px]"
+        !enlargedView && "w-full lg:w-[50%] xl:w-[25%] min-h-[360px]"
       } flex flex-col justify-between h-full w-full shadow-md rounded-md`}
     >
       <div onClick={goToClinicPage} className="cursor-pointer">
