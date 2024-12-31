@@ -249,54 +249,56 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
         className="flex flex-col lg:flex-row lg:justify-between md:items-start w-full"
       >
         <div className="flex flex-col items-center lg:flex-row lg:justify-between w-full lg:order-none order-1">
-          <div className="relative flex flex-col lg:w-1/3 xl:w-1/6">
-            <Image
-              src={defaultImageOrPetImage}
-              alt="Profile"
-              width={130}
-              height={130}
-              className="rounded-full bg-white w-[130px] h-[130px] md:self-center"
-            />
-            {isEditing && (
-              <>
-                {(image
-                  ? !image.includes("/_next/static/media/")
-                  : typeof defaultImageOrPetImage === "object" &&
-                    !defaultImageOrPetImage.src.includes(
-                      "/_next/static/media/"
-                    )) && (
-                  <button
-                    type="button"
-                    className="absolute bottom-0 left-0 p-3 bg-red-500 rounded-full z-20"
-                    onClick={() => {
-                      const defaultImage =
-                        pet?.type && petImageByType[pet.type.toLowerCase()]
-                          ? petImageByType[pet.type.toLowerCase()].src
-                          : petImageByType.other.src;
-                      setImage(defaultImage);
-                    }}
-                  >
-                    <FaTrash size={10} fill="white" />
-                  </button>
-                )}
-
-                <Image
-                  src={ImageEdit}
-                  alt="Image Edit"
-                  className="absolute bottom-0 right-0"
-                />
-                <div className="px-5">
+          <div className="p-4">
+            <div className="relative w-[130px] h-[130px] flex flex-col overflow-visible bg-transparent">
+              <Image
+                src={defaultImageOrPetImage}
+                alt="Profile"
+                layout="fill"
+                objectFit="cover"
+                className="rounded-full md:self-center"
+              />
+              {isEditing && (
+                <>
+                  {(image
+                    ? !image.includes("/_next/static/media/")
+                    : typeof defaultImageOrPetImage === "object" &&
+                      !defaultImageOrPetImage.src.includes(
+                        "/_next/static/media/"
+                      )) && (
+                    <button
+                      type="button"
+                      className="absolute -bottom-3 -left-2 p-3 bg-red-500 rounded-full z-20"
+                      onClick={() => {
+                        const defaultImage =
+                          pet?.type && petImageByType[pet.type.toLowerCase()]
+                            ? petImageByType[pet.type.toLowerCase()].src
+                            : petImageByType.other.src;
+                        setImage(defaultImage);
+                      }}
+                    >
+                      <FaTrash size={14} fill="white" />
+                    </button>
+                  )}
+                  <Image
+                    src={ImageEdit}
+                    alt="Image Edit"
+                    width={40}
+                    height={40}
+                    objectFit="cover"
+                    className="cursor-pointer absolute -bottom-3 -right-2 rounded-full"
+                  />
                   <input
                     type="file"
                     accept="image/*"
                     {...register("profileImage")}
                     onChange={handleImageChange}
-                    className="absolute bottom-0 right-0 opacity-0 w-full h-full cursor-pointer px-5"
+                    className="absolute -bottom-3 -right-2 opacity-0 w-[40px] h-[40px] cursor-pointer z-30"
                     aria-label="Upload pet profile image"
                   />
-                </div>
-              </>
-            )}
+                </>
+              )}
+            </div>
           </div>
           <div className="flex flex-col flex-grow mx-3 md:mx-10 md:gap-3 w-full lg:w-11/12">
             {isEditing ? (

@@ -36,20 +36,22 @@ const PetCard: React.FC<PetCardProps> = ({ pet }) => {
 
   const defaultImageOrPetImage = profileImage || petImageByType[type?.toLowerCase() || "other"] || defaultPetImg;
 
-
   return (
     <div
-      className="w-[150px] border-2 border-[#E2DBC4] bg-[#E2DBC4] text-center rounded-2xl shadow-md cursor-pointer"
+      className="w-full max-w-[150px] border-2 border-[#E2DBC4] bg-[#E2DBC4] text-center rounded-2xl shadow-md cursor-pointer transition-transform hover:scale-105"
       onClick={handlePetProfileView}
     >
       <div className="bg-primary-3 rounded-2xl p-4 space-y-3">
-        <Image
-          src={defaultImageOrPetImage}
-          alt="pet logo"
-          width={96}
-          height={96}
-          className={`w-24 h-24 mx-auto rounded-full bg-white object-contain`}
-        />
+        <div className="relative w-24 h-24 mx-auto">
+          <Image
+            src={defaultImageOrPetImage}
+            alt={`${name}'s profile picture`}
+            fill
+            sizes="(max-width: 96px) 100vw, 96px"
+            className="rounded-full bg-white object-cover"
+            priority
+          />
+        </div>
         <h2 className="text-xl font-bold text-secondary-1">{name}</h2>
       </div>
       <div className="rounded-b-md pb-6"></div>
