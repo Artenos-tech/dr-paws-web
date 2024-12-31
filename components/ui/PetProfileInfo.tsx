@@ -250,7 +250,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
       >
         <div className="flex flex-col items-center lg:flex-row lg:justify-between w-full lg:order-none order-1">
           <div className="p-4">
-            <div className="relative w-[130px] h-[130px] flex flex-col overflow-visible bg-transparent">
+            <div className="relative w-[130px] h-[130px] flex flex-col overflow-visible bg-white rounded-full">
               <Image
                 src={defaultImageOrPetImage}
                 alt="Profile"
