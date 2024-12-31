@@ -241,6 +241,7 @@ export default createAPIClient({
             pet_vetport_id: z.number(),
             pet_name: z.string(),
             pet_type: z.string().optional(),
+            pet_profile_image: z.string().nullable(),
             user_vetport_id: z.number(),
             vet_vetport_id: z.number(),
             vet_name: z.string(),

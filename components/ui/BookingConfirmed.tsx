@@ -59,30 +59,30 @@ const BookingConfirmed: React.FC<BookingConfirmedProps> = ({
               ? ""
               : ` with ${selectedAppointment.selectedVet!.name}`}
           </p>
-          <div className="flex items-center my-4">
-            <div className="bg-white rounded-full w-[130px] h-[130px] p-3 flex justify-center items-center">
+          <div className="flex items-center my-4 relative">
+            <div className="relative w-32 h-32 rounded-full overflow-hidden bg-whitep-3 flex justify-center items-center">
               <Image
                 src={
                   selectedAppointment.selectedPet.profileImage ||
                   defaultPetImageByType
                 }
-                alt="pet-image"
-                width={130}
-                height={130}
-                className="rounded-full"
+                alt={`${selectedAppointment.selectedPet.name}'s profile`}
+                layout="fill"
+                objectFit="cover"
+                sizes="128px"
+                priority
               />
             </div>
             {selectedAppointment.selectedDoctorImage &&
               doctorImagesMap[selectedAppointment.selectedDoctorImage] && (
-                <div className="bg-white rounded-full w-[130px] h-[130px] p-8 ml-[-30px] border flex justify-center items-center">
+                <div className="relative w-32 h-32 rounded-full overflow-hidden bg-white p-8 ml-[-30px] flex justify-center items-center">
                   <Image
                     src={
                       doctorImagesMap[selectedAppointment.selectedDoctorImage]
                     }
-                    alt="vet-image"
-                    width={100}
-                    height={100}
-                    className="rounded-full"
+                    alt={`Dr. ${selectedAppointment.selectedVet?.name}'s profile`}
+                    objectFit="cover"
+                    sizes="128px"
                   />
                 </div>
               )}

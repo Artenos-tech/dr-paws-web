@@ -67,14 +67,14 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                 : `${selectedAppointment.pet_name} visited ${selectedAppointment.vet_name} for a ${selectedAppointment.appt_type}`
               : selectedAppointment.appt_type !== "Grooming"
               ? `${selectedAppointment.pet_name} is scheduled for a ${selectedAppointment.appt_type} with ${selectedAppointment.vet_name}`
-              : `${selectedAppointment.pet_name} is scheduled for a ${selectedAppointment.appt_type}`}
+              : `${selectedAppointment.pet_name} is scheduled for a ${selectedAppointment.appt_type} session`}
           </p>
           <div className="flex items-center my-4">
             {
               <>
                 <div className="bg-white rounded-full w-[130px] h-[130px] p-3 flex justify-center items-center">
                   <Image
-                    src={defaultPetImageByType}
+                    src={selectedAppointment.pet_profile_image || defaultPetImageByType}
                     alt="pet-image"
                     width={130}
                     height={130}

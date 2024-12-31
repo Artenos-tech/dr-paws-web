@@ -56,6 +56,7 @@ export interface AppointmentType {
   pet_vetport_id: number;
   pet_name: string;
   pet_type?: string;
+  pet_profile_image: string | null;
   user_vetport_id: number;
   vet_vetport_id: number;
   vet_name: string;

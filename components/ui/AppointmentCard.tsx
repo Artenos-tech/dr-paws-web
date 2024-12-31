@@ -79,21 +79,23 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
         </p>
       </div>
       <div className="flex items-center my-4">
-        <div className="bg-white rounded-full w-[80px] h-[80px] p-3 flex justify-center items-center">
+        <div className="relative w-20 h-20 rounded-full overflow-hidden bg-white p-3 flex justify-center items-center">
           <Image
-            src={defaultPetImageByType}
-            alt="pet-image"
-            width={80}
-            height={80}
-            className="rounded-full"
+            src={appointment.pet_profile_image || defaultPetImageByType}
+            alt={`${appointment.pet_name}'s profile`}
+            layout="fill"
+            objectFit="cover"
+            sizes="80px"
+            priority
           />
         </div>
         {appointment.appt_type !== "Grooming" && (
-          <div className="bg-white rounded-full w-[80px] h-[80px] p-4 ml-[-30px] flex justify-center items-center">
+          <div className="relative w-20 h-20 rounded-full overflow-hidden bg-white -ml-6 border-2 border-white">
             <Image
               src={doctorImagesMap[appointment.vet_image] || defaultVetImage}
-              alt="vet-image"
-              className="rounded-full"
+              alt={`Dr. ${appointment.vet_name}'s profile`}
+              objectFit="cover"
+              sizes="80px"
             />
           </div>
         )}

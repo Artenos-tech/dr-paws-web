@@ -81,7 +81,6 @@ const BookingCard: React.FC<BookingCardProps> = ({
         <div className="p-4 ">
           <h3 className="text-lg font-medium mb-2">Select your Pet:</h3>
           <div className="flex gap-3 flex-wrap justify-center items-center">
-            {/* {loading && <ClipLoader color="#33495f" />} */}
             {pets &&
               pets.map((pet) => {
                 const petImage =
@@ -100,25 +99,27 @@ const BookingCard: React.FC<BookingCardProps> = ({
                       handlePetClick(pet);
                     }}
                   >
-                    <Image
-                      src={petImage}
-                      alt={pet.name}
-                      width={70}
-                      height={70}
-                      className={`rounded-full border-2 min-w-[70px] min-h-[70px] ${
-                        isSelected ? "opacity-50 " : "opacity-100"
-                      }`}
-                    />
-                    {isSelected && (
-                      <div className="absolute inset-0 -top-7 flex items-center justify-center text-white font-bold">
-                        <Image
-                          src={tickMark.src}
-                          alt="tick mark"
-                          width={50}
-                          height={50}
-                        />
-                      </div>
-                    )}
+                    <div className="relative w-[70px] h-[70px]">
+                      <Image
+                        src={petImage}
+                        alt={`${pet.name}'s profile picture`}
+                        fill
+                        sizes="70px"
+                        className={`rounded-full border-2 object-cover ${
+                          isSelected ? "opacity-50 " : "opacity-100"
+                        }`}
+                      />
+                      {isSelected && (
+                        <div className="absolute inset-0 flex items-center justify-center text-white font-bold">
+                          <Image
+                            src={tickMark.src}
+                            alt="tick mark"
+                            width={50}
+                            height={50}
+                          />
+                        </div>
+                      )}
+                    </div>
                     <p className="text-center mt-2">{pet.name}</p>
                   </div>
                 );
