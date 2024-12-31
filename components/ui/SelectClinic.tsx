@@ -5,7 +5,7 @@ import CustomButton from "./CustomButton";
 import { useEffect } from "react";
 import { useAPICall } from "@/hooks/apicall";
 import api from "@/services/api";
-import Loader from "./Loader";
+import { ClipLoader } from "react-spinners";
 
 interface SelectClinicProps {
   onNext: () => void; // Prop for navigation
@@ -23,7 +23,11 @@ const SelectClinic: React.FC<SelectClinicProps> = ({ onNext, selectedClinic, han
   const clinics = getClinicsResult?.ok ? getClinicsResult.value.body.clinics : []
 
   if (loadingClinics) {
-    return <Loader />;
+    return (
+      <div className="flex justify-center items-center my-20">
+        <ClipLoader color="#33495f" />
+      </div>
+    )
   }
 
   return (

@@ -18,7 +18,6 @@ import { useAPICall } from "@/hooks/apicall";
 import api from "@/services/api";
 import { Pet, useUserContext } from "@/context/UserContext";
 import toast, { Toaster } from "react-hot-toast";
-import Loader from "./Loader";
 import { ClipLoader } from "react-spinners";
 
 import { BookingCategory } from "./SelectService";
@@ -318,7 +317,11 @@ const SelectVet: React.FC<selectVetProps> = ({
     selectedSlot !== null;
 
   if (loadingDoctors) {
-    return <Loader />;
+    return (
+      <div className="flex justify-center items-center my-20">
+        <ClipLoader color="#33495f" />
+      </div>
+    )
   }
 
   return (
