@@ -207,9 +207,9 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const maxSize = 2 * 1024 * 1024;
+      const maxSize = 1024 * 1024;
       if (file.size > maxSize) {
-        alert("File size exceeds the 2MB limit. Please upload a smaller file.");
+        alert("File size exceeds the 1MB limit. Please upload a smaller file.");
         return;
       }
       const reader = new FileReader();
@@ -227,6 +227,11 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
     if (image && image.includes("/_next/static/media/")) {
       const newImage = petImageByType[selectedType]?.src || "";
       setImage(newImage);
+    }
+    const selectedSpecies= petSpecies.find((type) => type.displayName === e.target.value);
+    if (selectedSpecies) {
+      fetchPetBreedsBySpecies(selectedSpecies?.id)
+      fetchPetGenderBySpecies(selectedSpecies?.id)
     }
   };
 
