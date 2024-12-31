@@ -8,6 +8,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { format } from "date-fns";
+import { CalendarIcon, MapPinIcon, UserIcon } from "lucide-react";
 
 interface ConfirmationModalProps {
   isOpen: boolean;
@@ -33,27 +34,42 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-xl font-semibold">
+          <DialogTitle className="text-xl sm:text-2xl font-semibold text-secondary-1">
             Confirm Booking
           </DialogTitle>
         </DialogHeader>
-        <div className="mt-4 space-y-3">
-          <p className="text-sm text-gray-700">
-            <span className="font-medium">{petName}</span> is scheduled for a{" "}
-            <span className="font-medium">{service}</span> with{" "}
-            <span className="font-medium">{doctorName}</span> at our{" "}
-            <span className="font-medium">{location}</span> clinic on{" "}
-            <span className="font-medium">
-              {format(date, "MMMM d, yyyy")} at {slot}.
-            </span>
-          </p>
+        <div className="mt-4 space-y-4">
+          <div className="bg-primary-3 p-4 rounded-lg">
+            <h3 className="font-medium text-lg mb-2 text-secondary-1">
+              {petName}&apos;s Appointment
+            </h3>
+            <p className="text-sm text-gray-700 mb-2">
+              <span className="font-medium">{service}</span>
+            </p>
+            {doctorName && (
+              <div className="flex items-center text-sm text-gray-600 mb-1">
+                <UserIcon className="w-4 h-4 mr-2" />
+                <span>{doctorName}</span>
+              </div>
+            )}
+            <div className="flex items-center text-sm text-gray-600 mb-1">
+              <MapPinIcon className="w-4 h-4 mr-2" />
+              <span>{location}</span>
+            </div>
+            <div className="flex items-center text-sm text-gray-600">
+              <CalendarIcon className="w-4 h-4 mr-2" />
+              <span>
+                {format(date, "MMMM d, yyyy")} at {slot}
+              </span>
+            </div>
+          </div>
           <DialogDescription className="text-sm font-medium text-gray-900">
-            Are you sure you want to proceed booking this appointment?
+            Are you sure you want to proceed with booking this appointment?
           </DialogDescription>
         </div>
-        <DialogFooter className="mt-6 space-x-2">
+        <DialogFooter className="mt-6 flex flex-col sm:flex-row gap-2">
           <button
             onClick={onClose}
             className="px-3 py-2 sm:px-4 sm:py-2 rounded-md text-[#5281a2] border border-[#5281a2] hover:bg-[#5281a2] hover:text-white transition-colors text-sm sm:text-base flex-1"
@@ -64,7 +80,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
             onClick={onConfirm}
             className={`px-3 py-2 sm:px-4 sm:py-2 rounded-md text-white text-sm sm:text-base flex-1 bg-[#5281a2] hover:bg-[#3a6d8e] transition-colors`}
           >
-            Confirm Booking
+            Confirm
           </button>
         </DialogFooter>
       </DialogContent>

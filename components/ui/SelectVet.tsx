@@ -389,7 +389,9 @@ const SelectVet: React.FC<selectVetProps> = ({
                 ? filteredDoctors.find(
                     (doc) => doc.id === selectPreferredOrRandomAvailableVetId()
                   )?.name
-                : selectedDoctor?.name,
+                : !selectedDoctor?.name.includes("Grooming")
+                  ? selectedDoctor?.name
+                  : undefined,
             location: selectedLocation,
             date: selectedDate,
             slot: selectedSlot,
