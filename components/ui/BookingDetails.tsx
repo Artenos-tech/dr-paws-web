@@ -46,12 +46,12 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
     petImageByType.other;
 
   return (
-    <div className="w-full h-full">
+    <div className="w-full max-w-4xl mx-auto px-4 py-8">
       <BackButton navigateBack={goBack} />
 
       {/* {currentView === "default" && ( */}
       <div className="flex flex-col justify-center gap-4 items-center">
-        <h1 className="text-3xl flex items-center gap-4">Your Booking</h1>
+        <h1 className="text-2xl sm:text-3xl flex items-center gap-4">Your Booking</h1>
 
         <div
           className={`p-4 text-primary-1 w-11/12 md:w-4/5 lg:w-[50%] shadow-md my-5 flex flex-col gap-2 items-center ${
@@ -60,7 +60,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
               : "bg-[#FFFCF3]"
           }`}
         >
-          <p className="text-lg font-semibold mt-4">
+          <p className="text-lg font-semibold mt-4 text-center">
             {selectedAppointment.category === "PAST"
               ? selectedAppointment.appt_type === "Grooming"
                 ? `${selectedAppointment.pet_name} had a ${selectedAppointment.appt_type} session`
@@ -69,29 +69,30 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
               ? `${selectedAppointment.pet_name} is scheduled for a ${selectedAppointment.appt_type} with ${selectedAppointment.vet_name}`
               : `${selectedAppointment.pet_name} is scheduled for a ${selectedAppointment.appt_type} session`}
           </p>
-          <div className="flex items-center my-4">
+          <div className="flex items-center my-4 relative">
             {
               <>
-                <div className="bg-white rounded-full w-[130px] h-[130px] p-3 flex justify-center items-center">
+                <div className="relative w-32 h-32 rounded-full overflow-hidden bg-white p-3 flex justify-center items-center">
                   <Image
                     src={selectedAppointment.pet_profile_image || defaultPetImageByType}
-                    alt="pet-image"
-                    width={130}
-                    height={130}
-                    className="rounded-full"
+                    alt={`${selectedAppointment.pet_name}'s profile`}
+                    layout="fill"
+                    objectFit="cover"
+                    sizes="128px"
+                    priority
                   />
                 </div>
                 {selectedAppointment.appt_type !== "Grooming" && (
-                  <div className="bg-white rounded-full w-[130px] h-[130px] p-8 ml-[-30px] flex justify-center items-center">
+                  <div className="relative w-32 h-32 rounded-full overflow-hidden bg-white -ml-8 border-4 border-white flex justify-center items-center">
                     <Image
                       src={
                         doctorImagesMap[selectedAppointment.vet_image] ||
                         defaultVetImage
                       }
-                      alt="vet-image"
-                      width={100}
-                      height={100}
-                      className="rounded-full"
+                      alt={`Dr. ${selectedAppointment.vet_name}'s profile`}
+                      layout="fill"
+                      objectFit="cover"
+                      sizes="128px"
                     />
                   </div>
                 )}
