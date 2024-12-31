@@ -8,17 +8,16 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
 import { useUserContext } from "@/context/UserContext";
-import Loader from "@/components/ui/Loader";
+import ClipLoader from "react-spinners/ClipLoader";
 
 export default function UserLayout(props: { children: React.ReactNode }) {
   const { isLoggedIn } = useUserContext();
   const router = useRouter();
   if (isLoggedIn === null) {
     return (
-      <>
-        <Loader/>
-        <span>Logging you in...</span>
-      </>
+      <div className="flex justify-center items-center my-20">
+        <ClipLoader color="#33495f" />
+      </div>
     )
   }
   if (isLoggedIn === false) {

@@ -7,7 +7,7 @@ import CustomButton from "./CustomButton";
 import { Pet } from "@/context/UserContext";
 import { useAPICall } from "@/hooks/apicall";
 import api from "@/services/api";
-import Loader from "./Loader";
+import ClipLoader from "react-spinners/ClipLoader";
 
 export interface BookingCategory {
   id: string;
@@ -119,8 +119,8 @@ const SelectService: React.FC<SelectServiceProps> = ({
 
   if (loadingServices) {
     return (
-      <div>
-        <Loader />
+      <div className="flex justify-center items-center my-20">
+        <ClipLoader color="#33495f" />
       </div>
     );
   }
