@@ -336,6 +336,21 @@ export default createAPIClient({
       responseSchema: z.object({
         status: z.number(),
         message: z.string(),
+        appointment: z.object({
+          id: z.number(),
+          clinic_name: z.string(),
+          clinic_location: z.string(),
+          clinic_contact: z.string(),
+          vet_name: z.string(),
+          vet_image: z.string(),
+          appt_start: z.string(),
+          appt_end: z.string(),
+          appt_reason: z.string().nullable(),
+          appt_type: z.string(),
+          pet_name: z.string(),
+          pet_type: z.string().nullable(),
+          pet_profile_image: z.string().nullable(),
+        })
       }),
       errorResponseSchema: z.object({}),
     },

@@ -162,7 +162,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
   const onSubmit = (data: Pet) => {
     const realPetImage =
       typeof image === "string" && image.includes("/_next/static/media/")
-        ? ""
+        ? null
         : image;
 
     const petType = petSpecies.find(
@@ -398,6 +398,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
                       className="outline-none border w-full px-2 p-1 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
                       defaultValue={pet?.gender || ""}
                     >
+                      <option value="">Type of Gender</option>
                       {petGenders?.map((gender) => (
                         <option value={gender.name} key={gender.id}>
                           {gender.name}

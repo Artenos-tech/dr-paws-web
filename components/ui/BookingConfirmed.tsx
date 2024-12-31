@@ -5,7 +5,6 @@ import { doctorImagesMap } from "@/model/mockData";
 import { GrLocation } from "react-icons/gr";
 import { HiOutlineCalendar } from "react-icons/hi";
 import { MdOutlineAccessTime } from "react-icons/md";
-import { addMinutes, format, parse } from "date-fns";
 import CustomButton from "./CustomButton";
 import { useRouter } from "next/navigation";
 import { petImageByType } from "./PetCard";
@@ -27,6 +26,7 @@ type BookingConfirmedProps = {
     selectedDoctorImage: string | null;
     selectedDate: Date;
     selectedSlot: string;
+    selectedSlotEnd: string;
   };
 };
 const BookingConfirmed: React.FC<BookingConfirmedProps> = ({
@@ -34,16 +34,6 @@ const BookingConfirmed: React.FC<BookingConfirmedProps> = ({
   selectedAppointment,
 }) => {
   const navigate = useRouter();
-  const addMinutesToTime = (time: string, minutes: number): string => {
-    try {
-      const parsedTime = parse(time, "HH:mm", new Date());
-      const updatedTime = addMinutes(parsedTime, minutes);
-      return format(updatedTime, "HH:mm");
-    } catch (error) {
-      console.error("Error parsing time:", error);
-      return "";
-    }
-  };
 
   const defaultPetImageByType =
     petImageByType[
@@ -120,8 +110,7 @@ const BookingConfirmed: React.FC<BookingConfirmedProps> = ({
                 <MdOutlineAccessTime />
               </span>
               {selectedAppointment?.selectedSlot} -{" "}
-              {selectedAppointment?.selectedSlot &&
-                addMinutesToTime(selectedAppointment.selectedSlot, 30)}
+              {selectedAppointment?.selectedSlotEnd}
             </p>
           </div>
           <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">

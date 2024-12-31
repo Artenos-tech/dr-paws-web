@@ -63,11 +63,11 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
           <p className="text-lg font-semibold mt-4">
             {selectedAppointment.category === "PAST"
               ? selectedAppointment.appt_type === "Grooming"
-                ? `${selectedAppointment.pet_name} had a ${selectedAppointment.appt_reason}`
+                ? `${selectedAppointment.pet_name} had a ${selectedAppointment.appt_type} session`
                 : `${selectedAppointment.pet_name} visited ${selectedAppointment.vet_name} for a ${selectedAppointment.appt_type}`
               : selectedAppointment.appt_type !== "Grooming"
               ? `${selectedAppointment.pet_name} is scheduled for a ${selectedAppointment.appt_type} with ${selectedAppointment.vet_name}`
-              : `${selectedAppointment.pet_name} is scheduled for a ${selectedAppointment.appt_reason}`}
+              : `${selectedAppointment.pet_name} is scheduled for a ${selectedAppointment.appt_type}`}
           </p>
           <div className="flex items-center my-4">
             {

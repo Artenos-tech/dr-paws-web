@@ -47,6 +47,7 @@ interface selectVetProps {
     selectedDoctor: SelectedVet | null;
     selectedDate: Date | null;
     selectedSlot: string | null;
+    selectedSlotEnd: string | null;
   }) => void;
   onNext?: () => void;
 }
@@ -193,14 +194,31 @@ const SelectVet: React.FC<selectVetProps> = ({
     if (!(selectedDoctor || isGrooming)) {
       throw new Error("Doctor must be selected or grooming must be selected");
     }
-    const selectedDoc = selectedDoctor?.id === BEST_AVAILABLE_VET_ID
-              && filteredDoctors.find(
-                (doc) => doc.id === selectPreferredOrRandomAvailableVetId()
-              )
+    const selectedDoc =
+      selectedDoctor?.id === BEST_AVAILABLE_VET_ID &&
+      filteredDoctors.find(
+        (doc) => doc.id === selectPreferredOrRandomAvailableVetId()
+      );
+
+    const slotEnd = selectedDate;
+    if (slotEnd && selectedSlot) {
+      const [hours, minutes] = selectedSlot.split(":").map(Number);
+      slotEnd.setHours(hours, minutes, 0, 0);
+      slotEnd.setMinutes(
+        slotEnd.getMinutes() +
+          (!isGrooming ? 30 : selectedSubtype?.id === "spa-bath" ? 60 : 90)
+      );
+    }
     setFinalAppointmentData({
       selectedDoctor: selectedDoc || selectedDoctor,
       selectedDate,
       selectedSlot,
+      selectedSlotEnd:
+        slotEnd?.toLocaleTimeString("en-IN", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        }) || null,
     });
     setIsConfirmationModalOpen(true);
   };
@@ -217,7 +235,6 @@ const SelectVet: React.FC<selectVetProps> = ({
       );
       const apptEnd = selectedDate.toISOString();
       try {
-        
         const response = await createAnAppointment({
           vet_id:
             selectedDoctor.id === BEST_AVAILABLE_VET_ID
@@ -235,7 +252,6 @@ const SelectVet: React.FC<selectVetProps> = ({
             duration: 3000,
             position: "bottom-right",
           });
-
           if (onNext) {
             onNext(); // Navigate to the next page only if the API succeeds
           }
