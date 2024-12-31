@@ -207,9 +207,9 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const maxSize = 1024 * 1024;
+      const maxSize = 10 * 1024 * 1024;
       if (file.size > maxSize) {
-        alert("File size exceeds the 1MB limit. Please upload a smaller file.");
+        alert("File size exceeds the 10MB limit. Please upload a smaller file.");
         return;
       }
       const reader = new FileReader();
