@@ -224,8 +224,10 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
 
   const handlePetTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedType = e.target.value.toLowerCase();
-    const newImage = petImageByType[selectedType]?.src || "";
-    setImage(newImage);
+    if (image && image.includes("/_next/static/media/")) {
+      const newImage = petImageByType[selectedType]?.src || "";
+      setImage(newImage);
+    }
   };
 
   const defaultImageOrPetImage =
