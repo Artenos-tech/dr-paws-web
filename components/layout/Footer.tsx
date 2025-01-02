@@ -4,15 +4,12 @@ import Image from "next/image";
 import logo from "@/public/assets/images/logo/logo.svg";
 import instagram from "@/public/assets/images/Footer/instagram.svg";
 import LinkedIn from "@/public/assets/images/Footer/linkedin.svg";
-// import X from "@/public/assets/images/Footer/twitterx.svg";
 import Link from "next/link";
 import ContactInfoModal from "../ui/ContactInfoModal";
 import { useState } from "react";
-import { useMarketingFeature } from "@/hooks/useMarketingFeature";
 
 const Footer = () => {
   const [isContactModalOpen, setContactIsModalOpen] = useState(false);
-  const isMarketingFeatureEnabled = useMarketingFeature();
 
   return (
     <footer className="bg-primary-3 py-10">
@@ -45,14 +42,12 @@ const Footer = () => {
             >
               Team
             </Link>
-            {/* {!isMarketingFeatureEnabled ? ( */}
-            <Link
+            {/* <Link
               href="#"
               className="block mt-1 text-primary-1 hover:text-primary-2"
             >
               Careers
-            </Link>
-            {/* ) : null} */}
+            </Link> */}
           </div>
           <div>
             <h6 className="font-sans text-primary-1 font-semibold mb-2">
@@ -70,14 +65,12 @@ const Footer = () => {
             >
               Locations
             </Link>
-            {!isMarketingFeatureEnabled ? (
-              <Link
+            {/* <Link
                 href="/membership"
                 className="block mt-1 text-primary-1 hover:text-primary-2"
               >
                 Membership
-              </Link>
-            ) : null}
+              </Link> */}
             <Link
               href="#"
               onClick={() => setContactIsModalOpen(true)}
