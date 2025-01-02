@@ -180,7 +180,7 @@ export const clinicImagesMap: {[key: string]: StaticImageData} = {
 
 export const clinicItems: Clinic[] = [
   {
-    id: "220",
+    id: "1",
     image: IND_Exterior1,
     location: "Indiranagar",
     services:
@@ -191,7 +191,7 @@ export const clinicItems: Clinic[] = [
     clinicName: "Dr. Paws, Indiranagar",
   },
   {
-    id: "221",
+    id: "2",
     image: RMV_Exterior1,
     location: "RMV (Dollars Colony)",
     services:
@@ -328,7 +328,7 @@ export const doctors = [
     name: "Dr. Girish Kumar V.K.",
     position: "Chief Veterinary Officer",
     experience: "16 Years of Experience",
-    clinicIds: ["220", "221"],
+    clinicIds: ["1", "2"],
     location: "Indiranagar, RMV (Dollars Colony)",
     image: DrGirishImg,
     qualification: "BVSc & AH, MVSc (Clinical Medicine)",
@@ -349,7 +349,7 @@ export const doctors = [
     // description: "DMV - Veterinary Medicine",
     position: "Lead Veterinarian",
     experience: "6 Years of Experience",
-    clinicIds: ["220"], //
+    clinicIds: ["1"], //
     location: "Indiranagar",
     image: DrArchanaImg,
     specialization: "Surgery, Internal Medicine",
@@ -370,7 +370,7 @@ export const doctors = [
     // description: "DMV - Small Animal Surgery",
     position: "Lead Veterinarian",
     experience: "5 Years of Experience",
-    clinicIds: ["221"],
+    clinicIds: ["2"],
     location: "RMV (Dollars Colony)",
     image: DrHiteshImg,
     specialization: "Critical Care & Soft-Tissue Surgery",
@@ -391,7 +391,7 @@ export const doctors = [
     // description: "DMV - Exotic Animals",
     position: "Veterinarian",
     experience: "3 Years of Experience",
-    clinicIds: ["220"],
+    clinicIds: ["1"],
     location: "Indiranagar",
     image: DrShravyaImg,
     specialization: "Gynaecology & Obstetrics",
@@ -413,7 +413,7 @@ export const doctors = [
     // description: "DMV - Animal Dermatology",
     position: "Veterinarian",
     experience: "3 Years of Experience",
-    clinicIds: ["220"],
+    clinicIds: ["1"],
     location: "Indiranagar",
     image: DrPreranaImg,
     specialization: "Soft Tissue Surgeries, Orthopaedic Surgeries",
@@ -434,7 +434,7 @@ export const doctors = [
     // description: "DMV - Veterinary Medicine",
     position: "Veterinarian",
     experience: "2 Years of Experience",
-    clinicIds: ["221"],
+    clinicIds: ["2"],
     location: "RMV (Dollars Colony)",
     image: DrKiranImg,
     specialization: "Surgery & Veterinary Endoscopy",
@@ -455,7 +455,7 @@ export const doctors = [
     // description: "DMV - Veterinary Medicine",
     position: "Veterinarian",
     experience: "3 Years of Experience",
-    clinicIds: ["221"],
+    clinicIds: ["2"],
     location: "RMV (Dollars Colony), Bangalore",
     image: DrAartiImg,
     specialization: "Surgery & Radiology",
@@ -476,7 +476,7 @@ export const doctors = [
     // description: "DMV - Animal Dermatology",
     position: "Veterinarian",
     experience: "2 Years of Experience",
-    clinicIds: ["220"],
+    clinicIds: ["1"],
     location: "Indiranagar",
     image: DrNehaImg,
     specialization: "Internal Medicine, Alternative Therapies",
@@ -497,7 +497,7 @@ export const doctors = [
     // description: "DMV - Animal Dermatology",
     position: "Veterinarian",
     experience: "5 Years of Experience",
-    clinicIds: ["220"],
+    clinicIds: ["1"],
     location: "Indiranagar",
     image: DrGishaImg,
     specialization: "Ophthalmology and Soft-Tissue Surgery",
@@ -518,7 +518,7 @@ export const doctors = [
     // description: "DMV - Animal Dermatology",
     position: "Veterinarian",
     experience: "3 Years of Experience",
-    clinicIds: ["220"],
+    clinicIds: ["1"],
     location: "Indiranagar",
     image: DrRajashreeImg,
     specialization:
@@ -540,7 +540,7 @@ export const doctors = [
     // description: "DMV - Veterinary Medicine",
     position: "Veterinarian",
     experience: "2 Years of Experience",
-    clinicIds: ["221"],
+    clinicIds: ["2"],
     location: "RMV (Dollars Colony)",
     image: DrNinoImg,
     specialization: "General Medicine & OPD",
@@ -561,7 +561,7 @@ export const doctors = [
     // description: "DMV - Veterinary Medicine",
     position: "Veterinarian",
     experience: "1 Years of Experience",
-    clinicIds: ["221"],
+    clinicIds: ["2"],
     location: "RMV (Dollars Colony)",
     image: DrDeepakImg,
     specialization: "General Medicine",
@@ -579,7 +579,7 @@ export const doctors = [
 
 export const photos = [
   {
-    id: "220",
+    id: "1",
     photos: [
       IND_Exterior1,
       IND_Exterior2,
@@ -592,7 +592,7 @@ export const photos = [
     ],
   },
   {
-    id: "221",
+    id: "2",
     photos: [
       RMV_Exterior1,
       RMV_Exterior2,
@@ -605,14 +605,6 @@ export const photos = [
       RMV_Retail,
     ],
   },
-  // description1,
-  // ClinicDog,
-  // description2,
-  // description3,
-  // description4,
-  // description5,
-  // description6,
-  // ClinicOT,
 ];
 
 export const serviceCategories = [
@@ -1087,44 +1079,6 @@ export const membershipData: MembershipPlan[] = [
   },
 ];
 
-// export const bookingCategories: BookingCategory[] = [
-//   {
-//     id: "Planned Visits",
-//     title: "Planned Visits",
-//     description: "Vaccination, Health Checkup...",
-//   },
-//   {
-//     id: "Sickness & Emergency",
-//     title: "Sickness & Emergency",
-//     description: "Trauma Care, Pain Management...",
-//   },
-//   {
-//     id: "Diagnostics",
-//     title: "Diagnostics",
-//     description: "Blood Tests, Biochemistry Tests...",
-//   },
-//   {
-//     id: "Surgeries",
-//     title: "Surgeries",
-//     description: "Spraying & Neutering, Dental Scaling...",
-//   },
-//   {
-//     id: "Physiotherapy",
-//     title: "Physiotherapy",
-//     description: "Laser Therapy, Water Treadmil Therapy...",
-//   },
-//   {
-//     id: "Grooming",
-//     title: "Grooming",
-//     description: "Spa Baths, Haircuts & Hair Shaping...",
-//   },
-//   {
-//     id: "Pet Services",
-//     title: "Pet Services",
-//     description: "Microchipping, Travel Document Preparation...",
-//   },
-// ];
-
 export const timeSlots = [
   "10:00am",
   "11:00am",
@@ -1135,156 +1089,6 @@ export const timeSlots = [
   "04:00pm",
   "05:00pm",
 ];
-
-// export const mockAppointments: AppointmentType[] = [
-//   {
-//     id: "1",
-//     petName: "Buddy",
-//     vetName: "Dr. Smith",
-//     petImage: AppointmentPetImage.src,
-//     vetImage: AppointmentVetImage.src,
-//     date: "2023-10-15",
-//     time: "10:00 AM",
-//     status: AppointmentStatus.Upcoming,
-//     service: "Vaccination",
-//   },
-//   {
-//     id: "2",
-//     petName: "Whiskers",
-//     vetName: "Dr. Johnson",
-//     petImage: AppointmentPetImage.src,
-//     vetImage: AppointmentVetImage.src,
-//     date: "2023-10-10",
-//     time: "02:30 PM",
-//     status: AppointmentStatus.Past,
-//     service: "Dental Cleaning",
-//   },
-//   {
-//     id: "3",
-//     petName: "Rex",
-//     vetName: "Dr. Lee",
-//     petImage: AppointmentPetImage.src,
-//     vetImage: AppointmentVetImage.src,
-//     date: "2023-10-20",
-//     time: "11:15 AM",
-//     status: AppointmentStatus.Upcoming,
-//     service: "Check-up",
-//   },
-//   {
-//     id: "4",
-//     petName: "Bella",
-//     vetName: "Dr. Wong",
-//     petImage: AppointmentPetImage.src,
-//     vetImage: AppointmentVetImage.src,
-//     date: "2023-09-30",
-//     time: "09:00 AM",
-//     status: AppointmentStatus.Past,
-//     service: "Spay/Neuter",
-//   },
-//   {
-//     id: "5",
-//     petName: "Charlie",
-//     vetName: "Dr. Brown",
-//     petImage: AppointmentPetImage.src,
-//     vetImage: AppointmentVetImage.src,
-//     date: "2023-11-05",
-//     time: "01:00 PM",
-//     status: AppointmentStatus.Upcoming,
-//     service: "Allergy Consultation",
-//   },
-//   {
-//     id: "6",
-//     petName: "Daisy",
-//     vetName: "Dr. Green",
-//     petImage: AppointmentPetImage.src,
-//     vetImage: AppointmentVetImage.src,
-//     date: "2023-10-12",
-//     time: "03:45 PM",
-//     status: AppointmentStatus.Cancelled,
-//     service: "Routine Check-up",
-//   },
-// ];
-
-// export const mockAppointments: AppointmentType[] = [
-//   {
-//     id: "1",
-//     pet_vetport_id: 219,
-//     user_vetport_id: 60,
-//     vet_vetport_id: 1790,
-//     clinic_id: 220,
-//     appt_start: "1970-01-21T01:00:00.000Z",
-//     appt_end: "1970-01-21T02:00:00.000Z",
-//     appt_status: "Complete",
-//     appt_reason: null,
-//   },
-//   {
-//     id: "2",
-//     pet_vetport_id: 219,
-//     user_vetport_id: 60,
-//     vet_vetport_id: 1790,
-//     clinic_id: 220,
-//     appt_start: "2024-12-03T02:00:00.000Z",
-//     appt_end: "2024-12-03T02:30:00.000z",
-//     appt_status: "Check In",
-//     appt_reason: null,
-//   },
-//   {
-//     id: "3",
-//     pet_vetport_id: 219,
-//     user_vetport_id: 60,
-//     vet_vetport_id: 1790,
-//     clinic_id: 220,
-//     appt_start: "1970-01-21T01:26:36.570Z",
-//     appt_end: "1970-01-21T01:26:36.570Z",
-//     appt_status: "Scheduled",
-//     appt_reason: null,
-//   },
-//   {
-//     id: "4",
-//     pet_vetport_id: 219,
-//     user_vetport_id: 60,
-//     vet_vetport_id: 1790,
-//     clinic_id: 220,
-//     appt_start: "1970-01-21T01:26:36.285Z",
-//     appt_end: "1970-01-21T01:26:36.285Z",
-//     appt_status: "Complete",
-//     appt_reason: null,
-//   },
-//   {
-//     id: "5",
-//     pet_vetport_id: 219,
-//     user_vetport_id: 60,
-//     vet_vetport_id: 1790,
-//     clinic_id: 220,
-//     appt_start: "1970-01-21T01:26:36.013Z",
-//     appt_end: "1970-01-21T01:26:36.013Z",
-//     appt_status: "Check out",
-//     appt_reason: null,
-//   },
-//   {
-//     id: "6",
-//     pet_vetport_id: 219,
-//     user_vetport_id: 60,
-//     vet_vetport_id: 1790,
-//     clinic_id: 220,
-//     appt_start: "1970-01-21T01:26:35.360Z",
-//     appt_end: "1970-01-21T01:26:35.360Z",
-//     appt_status: "Cancel",
-//     appt_reason: null,
-//   },
-//   {
-//     id: "7",
-//     pet_vetport_id: 219,
-//     user_vetport_id: 60,
-//     vet_vetport_id: 1790,
-//     clinic_id: 220,
-//     appt_start: "1970-01-21T01:26:35.360Z",
-//     appt_end: "1970-01-21T01:26:35.360Z",
-//     appt_status: "Cancel",
-//     appt_reason: null,
-//   },
-// ];
-
 
 export const staffSchedule = {
   "id": 52,
