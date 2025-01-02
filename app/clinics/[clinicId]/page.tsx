@@ -10,13 +10,6 @@ import Overview from "@/components/ui/OverView";
 
 import { clinicItems, doctors, reviews } from "@/model/mockData";
 
-// export async function generateStaticParams() {
-//   // Return paths in the format expected by Next.js
-//   return clinicItems.map((clinic: Clinic) => ({
-//     clinicId: clinic.id.toString(),
-//   }));
-// }
-
 interface ClinicDetailsProps {
   params: {
     clinicId: string;
@@ -74,17 +67,5 @@ const ClinicDetails: React.FC<ClinicDetailsProps> = ({ params }) => {
     </div>
   );
 };
-
-// Add metadata export for static generation
-// export const generateMetadata = ({
-//   params,
-// }: {
-//   params: { clinicId: string };
-// }) => {
-//   const clinic = clinicItems.find((item) => item.id === params.clinicId);
-//   return {
-//     title: clinic ? `${clinic.clinicName} | Clinics` : "Clinic Not Found",
-//   };
-// };
 
 export default ClinicDetails;

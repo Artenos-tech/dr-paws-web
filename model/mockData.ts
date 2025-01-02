@@ -184,7 +184,7 @@ export const clinicItems: Clinic[] = [
     image: IND_Exterior1,
     location: "Indiranagar",
     services:
-      "Consults | Grooming | Surgery | Dignostics | Ultrasound | Retail",
+      "Consults | Surgeries | Grooming | Diagnostics | X-Ray | Ultrasound | Retail",
     contact: "+91 9606994627",
     parkingInformation:
       "Ample parking available outside clinic, and in surrounding lanes",
@@ -195,7 +195,7 @@ export const clinicItems: Clinic[] = [
     image: RMV_Exterior1,
     location: "RMV (Dollars Colony)",
     services:
-      "Consults | Grooming | Surgery | Dignostics | Ultrasound | Retail",
+      "Consults | Surgeries | Grooming | Diagnostics | X-Ray | Ultrasound | Hydrotherapy | Retail",
     contact: "+91 7204996899",
     parkingInformation:
       "Ample parking available outside clinic, and in surrounding lanes",
