@@ -11,7 +11,7 @@ import api from "@/services/api";
 import { PetSpecies, useUserContext } from "@/context/UserContext";
 
 const petSchema = z.object({
-  spicesId: z.number(),
+  speciesId: z.number(),
   name: z.string().min(1, "Pet name is required"),
   type: z.string().min(1, "Pet type is required"),
 });
@@ -68,7 +68,7 @@ export default function AddPetModal({
       const response = await addNewPetAPI({
         pet: {
           name: data.name,
-          species: { id: data.spicesId, name: data.type },
+          species: { id: data.speciesId, name: data.type },
         },
       });
 
@@ -86,14 +86,12 @@ export default function AddPetModal({
     const selectedName = event.target.value;
     setSelectedType(selectedName);
 
-    // Find the spicesId for the selected type
+    // Find the speciesId for the selected type
     const selectedSpecies = petSpecies?.find(
-      (species) => species.name === selectedName
+      (species) => species.displayName === selectedName
     );
     if (selectedSpecies) {
-      setValue("spicesId", selectedSpecies.id);
-    } else {
-      setValue("spicesId", 0);
+      setValue("speciesId", selectedSpecies.id);
     }
   };
 
