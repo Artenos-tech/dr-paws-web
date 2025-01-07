@@ -55,9 +55,8 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
   const { border, bg, text } = cardStyles[statusCategory];
 
   const defaultPetImageByType =
-  petImageByType[
-    appointment.pet_type?.toLowerCase() || "other"
-  ] || petImageByType.other;
+    petImageByType[appointment.pet_type?.toLowerCase() || "other"] ||
+    petImageByType.other;
 
   return (
     <div
@@ -103,9 +102,9 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
       <div className={`space-y-1 ${text}`}>
         <p className="font-semibold">
           {appointment.pet_name}
-          {appointment.vet_vetport_id !== 0 ||
-            (appointment.appt_type !== "Grooming" &&
-              ` and ${appointment.vet_name}`)}
+          {appointment.vet_vetport_id !== 0 &&
+            appointment.appt_type !== "Grooming" &&
+            ` and ${appointment.vet_name}`}
         </p>
         <p>{appointment.clinic_name}</p>
         <p>
