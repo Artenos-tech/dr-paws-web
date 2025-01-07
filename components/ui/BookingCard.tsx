@@ -36,7 +36,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
   const [isAddPetModalOpen, setIsAddPetModalOpen] = useState(false);
 
   const handlePetClick = (pet: Pet) => {
-    const isAlreadySelected = selectedPet?.id === pet.id;
+    const isAlreadySelected = selectedPet?.vetPortId === pet.vetPortId;
     const newSelectedPet = isAlreadySelected ? null : pet;
     onCardSelection(cardId, title, newSelectedPet, isGrooming);
   };
@@ -88,11 +88,11 @@ const BookingCard: React.FC<BookingCardProps> = ({
                   petImageByType[pet.type?.toLowerCase() || "other"]?.src ||
                   petImageByType["other"].src;
 
-                const isSelected = selectedPet?.id === pet.id;
+                const isSelected = selectedPet?.vetPortId === pet.vetPortId;
 
                 return (
                   <div
-                    key={pet.id}
+                    key={pet.vetPortId}
                     className="relative cursor-pointer m-2"
                     onClick={(e) => {
                       e.stopPropagation();
