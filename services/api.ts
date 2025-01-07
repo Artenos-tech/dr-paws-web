@@ -164,7 +164,7 @@ export default createAPIClient({
       errorResponseSchema: z.object({}),
     },
 
-    getuser: {
+    getUser: {
       method: "GET",
       path: "/user",
       pathParamsSchema: z.object({}),
@@ -184,7 +184,6 @@ export default createAPIClient({
         }),
         pets: z.array(
           z.object({
-            id: z.string(),
             vetport_id: z.number().nullable(),
             name: z.string(),
             type: z.string().nullable(),
@@ -327,7 +326,7 @@ export default createAPIClient({
       pathParamsSchema: z.object({}),
       requestSchema: z.object({
         vet_id: z.number(),
-        pet_id: z.string(),
+        pet_id: z.number(),
         appt_start: z.string(),
         appt_end: z.string(),
         appt_reason: z.string().nullable(),
@@ -424,8 +423,7 @@ export default createAPIClient({
         message: z.string(),
         pets: z.array(
           z.object({
-            id: z.string(),
-            vetport_id: z.number().nullable(),
+            vetport_id: z.number(),
             name: z.string(),
             type: z.string().nullable(),
             breed: z.string().nullable(),
@@ -456,7 +454,6 @@ export default createAPIClient({
         status: z.number(),
         message: z.string(),
         pet: z.object({
-          id: z.string(),
           vetport_id: z.number(),
         }),
       }),
@@ -469,7 +466,6 @@ export default createAPIClient({
       pathParamsSchema: z.object({}),
       requestSchema: z.object({
         pet: z.object({
-          id: z.string(),
           name: z.string(),
           species: z.object({
             id: z.number(),

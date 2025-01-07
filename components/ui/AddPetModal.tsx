@@ -73,7 +73,7 @@ export default function AddPetModal({
       });
 
       if (response.ok) {
-        console.log("Add Pet API response:", response.value.body);
+        // console.log("Add Pet API response:", response.value.body);
         onSuccess();
         reset({ name: "", type: "" });
         setSelectedType("");

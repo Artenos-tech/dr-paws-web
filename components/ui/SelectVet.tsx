@@ -239,7 +239,7 @@ const SelectVet: React.FC<selectVetProps> = ({
             selectedDoctor.id === BEST_AVAILABLE_VET_ID
               ? selectPreferredOrRandomAvailableVetId()
               : selectedDoctor.id,
-          pet_id: selectedPet.id,
+          pet_id: selectedPet.vetPortId,
           clinic_id: selectedClinic,
           appt_reason: selectedSubtype?.title || null,
           appt_start: apptStart,

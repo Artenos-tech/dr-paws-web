@@ -27,7 +27,6 @@ export interface User {
 }
 
 export interface Pet {
-  id: string;
   name: string;
   type: string | null;
   breed: string | null;
@@ -38,7 +37,7 @@ export interface Pet {
   //   years: number | null;
   //   months: number | null;
   // };
-  vetPortId: number | null;
+  vetPortId: number;
   profileImage: string | null; // pet image is optional
 }
 
@@ -71,8 +70,8 @@ export const UserProvider = ({ children }: UserProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [petSpecies, setPetSpecies] = useState<PetSpecies[] | null>(null);
 
-  const { call: getUser } = useAPICall(api.getuser);
-  const { call: getUser2 } = useAPICall(api.getuser);
+  const { call: getUser } = useAPICall(api.getUser);
+  const { call: getUser2 } = useAPICall(api.getUser);
 
   const getAuthToken = useCallback(() => {
     if (typeof window !== "undefined") {
