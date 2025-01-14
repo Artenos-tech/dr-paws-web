@@ -64,6 +64,7 @@ export default createAPIClient({
       }),
       errorResponseSchema: z.object({}),
     },
+
     signupVerify: {
       method: "POST",
       path: "/signup/verify",
@@ -368,7 +369,7 @@ export default createAPIClient({
             id: z.number(),
             name: z.string(),
             displayName: z.string(),
-            status: z.enum(["Active", "Inactive"]),
+            status: z.enum(["Active", "Inactive", "Unknown"]),
             uid: z.string(),
           })
         ),
