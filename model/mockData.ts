@@ -189,6 +189,11 @@ export const clinicItems: Clinic[] = [
     parkingInformation:
       "Ample parking available outside clinic, and in surrounding lanes",
     clinicName: "Dr. Paws, Indiranagar",
+    timings: {
+      "Monday to Friday": "09:00 - 21:00",
+      "Saturday": "09:00 - 21:00",
+      "Sunday": "09:00 - 21:00"
+    }
   },
   {
     id: "2",
@@ -200,6 +205,11 @@ export const clinicItems: Clinic[] = [
     parkingInformation:
       "Ample parking available outside clinic, and in surrounding lanes",
     clinicName: "Dr. Paws, RMV (Dollars Colony)",
+    timings: {
+      "Monday to Friday": "Open 24 hours",
+      "Saturday": "Open 24 hours",
+      "Sunday": "Open 24 hours"
+    }
   },
   // {
   //   id: "3",
@@ -387,7 +397,7 @@ export const doctors = [
   {
     id: "138",
 
-    name: "Dr. Shrayva B.L.",
+    name: "Dr. Shravya B.L.",
     // description: "DMV - Exotic Animals",
     position: "Veterinarian",
     experience: "3 Years of Experience",
@@ -396,7 +406,7 @@ export const doctors = [
     image: DrShravyaImg,
     specialization: "Gynaecology & Obstetrics",
     aboutMe:
-      "I'm a passionate veterinarian who graduated from Veterinary College, Hassan, KVAFSU in 2019. Post this, I completed my post graduation in Veterinary Gynaecology and Obstetrics from Veterinary College, Bengaluru, KVAFSU in 2021. Prior to Dr. Paws, I have worked at small-animal clinics including Cancure & Lucky Paws. ",
+      "I'm a passionate veterinarian who graduated from Veterinary College, Hassan, KVAFSU in 2019. Post this, I completed my post graduation in Veterinary Gynaecology and Obstetrics from Veterinary College, Bengaluru, KVAFSU in 2021. ",
     // tag: "Passionate about animal care and active member of AVMA.",
     vetPassionInfo:
       "I love my job because I can meet numerous innocent animals full of love, and I feel empowered when I help them heal.",
@@ -925,7 +935,7 @@ export const reviews: Review[] = [
     image: Customer1,
     name: "Nikita Rekhy",
     review:
-      "We went to de paws for a full groom. The clinic and grooming space is super clean. The staff is extremely friendly and kind. I had requested them to keep his age in mind as he is old and cannot stand for too long and they obliged us completely. Not once did my dog bark being uncomfortable. Would highly recommend",
+      "We went to dr paws for a full groom. The clinic and grooming space is super clean. The staff is extremely friendly and kind. I had requested them to keep his age in mind as he is old and cannot stand for too long and they obliged us completely. Not once did my dog bark being uncomfortable. Would highly recommend",
     clinicId: "1",
   },
   {
@@ -1078,42 +1088,3 @@ export const membershipData: MembershipPlan[] = [
     petType: "Dog",
   },
 ];
-
-export const timeSlots = [
-  "10:00am",
-  "11:00am",
-  "12:00pm",
-  "01:00pm",
-  "02:00pm",
-  "03:00pm",
-  "04:00pm",
-  "05:00pm",
-];
-
-export const staffSchedule = {
-  "id": 52,
-  "vet_full_name": "Shailesh Shinde",
-  "vet_vetport_id": 146,
-  "weeks": {
-    "Monday": "11:00 to 21:00",
-    "Tuesday": "09:00 to 21:00",
-    "Wednesday": "09:00 to 21:00",
-    "Thursday": "09:00 to 21:00",
-    "Friday": "09:00 to 21:00",
-    "Saturday": "09:00 to 21:00",
-    "Sunday": "09:00 to 21:00"
-  },
-  "year": {
-      "January": "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31",
-      "February": "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29",
-      "April": "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30",
-      "May": "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31",
-      "June": "1,2,3,4,5,6,7,8,9,10,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30",
-      "July": "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31",
-      "August": "1,2,3,4,5,6,7,8,9,10,11,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31",
-      "September": "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30",
-      "October": "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,20,21,22,23,24,25,26,27,28,29,30,31",
-      "November": "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30",
-      "December": "1,2,3,4,5,6,7,8,9,10,12,13,14,15,16,17,18,20,21,22,23,24,25,26,27,28,29,30,31"
-  }
-}

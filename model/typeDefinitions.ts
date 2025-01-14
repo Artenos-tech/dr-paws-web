@@ -12,6 +12,7 @@ export interface Clinic {
   contact: string;
   location: string;
   parkingInformation: string;
+  timings: { [key: string]: string };
 }
 
 export type Gender = "Male" | "Female" | "";

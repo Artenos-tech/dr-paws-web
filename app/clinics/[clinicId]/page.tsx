@@ -37,6 +37,7 @@ const ClinicDetails: React.FC<ClinicDetailsProps> = ({ params }) => {
           clinicDoctors={doctors.filter((doctor) =>
             doctor.clinicIds.includes(clinicId)
           )}
+          clinicTimings={clinic.timings}
         />
       ),
     },

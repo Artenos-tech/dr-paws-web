@@ -14,6 +14,7 @@ interface OverviewProps {
   clinicLocation: string;
   clinicDoctors: Doctor[];
   clinicParking: string;
+  clinicTimings: { [key: string]: string };
 }
 
 const Overview: React.FC<OverviewProps> = ({
@@ -21,6 +22,7 @@ const Overview: React.FC<OverviewProps> = ({
   clinicLocation,
   clinicDoctors,
   clinicParking,
+  clinicTimings
 }) => {
   return (
     <div className="w-full flex flex-col gap-[80px]">
@@ -43,24 +45,16 @@ const Overview: React.FC<OverviewProps> = ({
           <div className="flex flex-col w-full gap-2 md:gap-4">
             <h2 className="text-2xl font-roca mb-3">Timings</h2>
             <div className="text-sm md:text-lg">
-              <p className="flex justify-between mr-4">
-                Monday to Friday{" "}
-                <span className="text-base md:text-xl font-roca ml-4">
-                  09:00 - 20:00
-                </span>
-              </p>
-              <p className="flex justify-between mr-4">
-                Saturday{" "}
-                <span className="text-base md:text-xl font-roca ml-4">
-                  09:00 - 20:00
-                </span>
-              </p>
-              <p className="flex justify-between mr-4">
-                Sunday{" "}
-                <span className="text-base md:text-xl font-roca ml-4">
-                  09:00 - 20:00
-                </span>
-              </p>
+              {Object.keys(clinicTimings).map((key) => {
+                return (
+                  <p className="flex justify-between mr-4" key={key}>
+                    {key}{" "}
+                    <span className="text-base md:text-xl font-roca ml-4">
+                      {clinicTimings[key]}
+                    </span>
+                  </p>
+                )
+              })}
             </div>
           </div>
         </div>
