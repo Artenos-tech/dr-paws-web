@@ -14,10 +14,10 @@ import api from "@/services/api";
 import Loader from "./Loader";
 
 interface PetProfileInfoProps {
-  petProfileId: string;
+  petId: number;
 }
 
-const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
+const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
   const [pet, setPet] = useState<Pet>();
   const [isEditing, setIsEditing] = useState(false);
   const [image, setImage] = useState<string>("");
@@ -67,17 +67,16 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
   }, []);
 
   useEffect(() => {
-    if (petProfileId) fetchPetSpecies();
-  }, [petProfileId]);
+    if (petId) fetchPetSpecies();
+  }, [petId]);
 
   useEffect(() => {
-    if (getPetsResult?.ok && petProfileId) {
+    if (getPetsResult?.ok && petId) {
       const foundPet = getPetsResult.value.body.pets.find(
-        (pet) => pet.id === petProfileId
+        (pet) => pet.vetport_id === petId
       );
       if (foundPet) {
         setPet({
-          id: foundPet.id,
           name: foundPet.name,
           type: foundPet.type?.trim() || null,
           breed: foundPet.breed?.trim() || null,
@@ -102,7 +101,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
         });
       }
     }
-  }, [petProfileId, getPetsResult, setValue]);
+  }, [petId, getPetsResult, setValue]);
 
   useEffect(() => {
     if (getPetSpeciesResult?.ok) {
@@ -176,7 +175,6 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petProfileId }) => {
     if (petType) {
       updatePetDetails({
         pet: {
-          id: petProfileId,
           name: data.name,
           species: {
             id: petType,

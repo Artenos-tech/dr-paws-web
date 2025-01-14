@@ -27,11 +27,11 @@ export const petImageByType: Record<string, StaticImageData> = {
 };
 
 const PetCard: React.FC<PetCardProps> = ({ pet }) => {
-  const { name, id, profileImage, type } = pet;
+  const { name, vetPortId, profileImage, type } = pet;
   const router = useRouter();
 
   const handlePetProfileView = () => {
-    router.push(`/user/profile/pet-profile/${id}`);
+    router.push(`/user/profile/pet-profile/${vetPortId}`);
   };
 
   const defaultImageOrPetImage = profileImage || petImageByType[type?.toLowerCase() || "other"] || defaultPetImg;
