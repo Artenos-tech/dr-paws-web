@@ -509,7 +509,7 @@ const AppointmentDateAndTimeSelector = ({
             Object.keys(availableSlots).length > 0 &&
             availableSlots[normalizeSelectedDate(selectedDate)].length > 0 &&
             availableSlots[normalizeSelectedDate(selectedDate)] ? (
-              availableSlots[normalizeSelectedDate(selectedDate)].map(
+              availableSlots[normalizeSelectedDate(selectedDate)].toSorted().map(
                 (time, index) => (
                   <div
                     key={index}
