@@ -22,9 +22,9 @@ const TABS = {
   "PAST": {
     label: "Past",
   },
-  // "CANCELLED": {
-  //   label: "Cancelled",
-  // },
+  "CANCELLED": {
+    label: "Cancelled",
+  },
 } as const;
 
 const MyAppointmentsPage = () => {
@@ -51,13 +51,13 @@ const MyAppointmentsPage = () => {
         return true;
       }
       if (activeTab === "UPCOMING") {
-        return appointment.appt_end > new Date().toISOString();
+        return appointment.category === "UPCOMING";
       }
       if (activeTab === "PAST") {
-        return appointment.appt_end < new Date().toISOString();
+        return appointment.category === "PAST";
       }
       if (activeTab === "CANCELLED") {
-        return appointment.appt_status === "Cancel";
+        return appointment.category === "CANCELLED";
       }
   })
 

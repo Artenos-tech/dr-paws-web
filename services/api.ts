@@ -266,10 +266,10 @@ export default createAPIClient({
               "Check-out",
               "Check-in",
               "Confirmed"
-            ]),
+            ]).nullable(),
             appt_reason: z.string().nullable(),
             appt_type: z.string().nullable(),
-            appt_type_id: z.number(),
+            appt_type_id: z.number().nullable(),
             category: z.enum(["UPCOMING", "PAST", "CANCELLED"]),
           })
         ),
