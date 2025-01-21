@@ -6,6 +6,8 @@ import api from "@/services/api";
 import { Pet } from "@/context/UserContext";
 import { petImageByType } from "@/components/ui/PetCard";
 import { format } from "date-fns";
+import { Slice } from "lucide-react";
+import Loader from "@/components/ui/Loader";
 
 interface Subscription {
   id: number;
@@ -40,8 +42,8 @@ const benefits = [
 const Page = () => {
   const [pets, setPets] = useState<Pet[]>([]);
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
-  const { call: getPetsAPI } = useAPICall(api.getPets);
-  const { call: getSubscriptionsAPI } = useAPICall(api.getSubscriptions);
+  const { call: getPetsAPI ,loading: PetLoading} = useAPICall(api.getPets);
+  const { call: getSubscriptionsAPI, loading: SubsLoading } = useAPICall(api.getSubscriptions);
 
   const fetchPets = async () => {
     const response = await getPetsAPI({});
@@ -73,14 +75,26 @@ const Page = () => {
     fetchSubscriptions();
   }, []);
 
-  if (!pets.length || !subscriptions.length) {
-    return <div>Loading...</div>;
+
+  if (PetLoading || SubsLoading) {
+    return (
+        <Loader />
+    );
+  }
+
+
+  if (!subscriptions.length) {
+    return (
+      <div className="flex items-center justify-center h-full mt-16">
+        <p className="text-xl text-gray-600">No subscriptions found.</p>
+      </div>
+    );
   }
 
   return (
-    <div className="flex flex-col w-full h-full lg:h-screen items-center font-roca pb-20 flex-grow">
+    <div className="flex flex-col w-full h-full  items-center font-roca pb-20 flex-grow">
       <main className="flex flex-col w-full items-center px-8 md:px-32 lg:px-20 xl:px-40">
-        <h1 className="text-3xl mt-12">Your Memberships</h1>
+        <h1 className="text-3xl m-4 lg:m-12">Your Memberships</h1>
         <div className="flex flex-col gap-6 lg:w-full">
           {subscriptions.map((subscription) => {
             const matchedPet = pets.find(
@@ -92,12 +106,12 @@ const Page = () => {
 
             return (
               <div key={subscription.id} className="flex flex-col w-full">
-                <div className="mb-2 px-4">
-                  <h3 className="text-lg font-semibold text-gray-700">
+                <div className=" bg-secondary-1 py-2 rounded-t-lg">
+                  <h3 className="text-lg px-8  font-semibold text-white">
                     {subscription.plan.name}
                   </h3>
                 </div>
-                <div className="bg-[#f8f4eb] rounded-lg p-6 shadow-sm border border-[#e2d5c3]">
+                <div className="bg-[#F7F1DE] rounded-b-lg p-6 shadow-sm border border-[#e2d5c3]">
                   <div className="flex flex-col lg:flex-row  lg:gap-8">
                     {/* Image and Name Section */}
                     <div className="flex flex-col items-center justify-center mb-6 lg:mb-0">
@@ -117,17 +131,19 @@ const Page = () => {
 
                     {/* Includes Section */}
                     <div className="flex-1 mb-6 lg:mb-0">
-                      <h4 className="text-gray-600 font-medium mb-2">
+                      <h4 className="text-gray-600 text-lg mb-2">
                         Includes:
                       </h4>
-                      <ul className="space-y-2 text-sm text-gray-700">
-                        {benefits.map((benefit, index) => (
-                          <li key={index} className="flex items-start">
-                            <span className="mr-2">•</span>
-                            {benefit.text}
-                          </li>
-                        ))}
-                      </ul>
+                      <div className="lg:columns-2 lg:gap-8">
+                        <ul className="space-y-2 text-sm text-gray-700">
+                          {benefits.map((benefit, index) => (
+                            <li key={index} className="flex items-start break-inside-avoid">
+                              <span className="mr-2">•</span>
+                              {benefit.text}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                     </div>
 
                     {/* Dates Section */}

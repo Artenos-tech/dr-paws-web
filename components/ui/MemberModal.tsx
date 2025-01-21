@@ -20,9 +20,7 @@ interface ModalProps {
 const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
   const [pets, setPets] = useState<Pet[]>([]);
   const [selectedPet, setSelectedPet] = useState<Pet | null>(null);
-  const { call: getPetsAPI, result: getPetsAPIResult } = useAPICall(
-    api.getPets
-  );
+  const { call: getPetsAPI, loading: loading } = useAPICall(api.getPets);
 
   useEffect(() => {
     if (isOpen) {
@@ -88,7 +86,9 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
               Select your Pet:
             </h3>
 
-            {pets.length === 0 ? (
+            {loading ? (
+              <p className="text-center text-gray-500">Loading pets...</p>
+            ) : pets.length === 0 ? (
               <p className="text-center text-gray-500">
                 You haven't added any pets. Please add a pet to purchase a
                 subscription.
@@ -149,6 +149,7 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
               <CustomButton
                 buttonText="Purchase"
                 buttonBackground="bg-accent"
+                disabled={!selectedPet}
               />
             </div>
           </div>
