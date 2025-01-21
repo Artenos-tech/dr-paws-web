@@ -69,7 +69,7 @@ const Footer = () => {
               href="/cancellations"
               className="block mt-1 text-primary-1 hover:text-primary-2"
             >
-              Cancellations
+              Cancellations & Refund Policy
             </Link>
             <Link
               href="/terms"
