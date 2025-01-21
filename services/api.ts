@@ -92,7 +92,7 @@ export default createAPIClient({
           email: z.string().nullable(),
           current_address: z.string().nullable(),
           profile_image: z.string().nullable(),
-        })
+        }),
       }),
       errorResponseSchema: z.object({}),
     },
@@ -148,7 +148,7 @@ export default createAPIClient({
           email: z.string().nullable(),
           current_address: z.string().nullable(),
           profile_image: z.string().nullable(),
-        })
+        }),
       }),
       errorResponseSchema: z.object({}),
     },
@@ -265,7 +265,7 @@ export default createAPIClient({
               "Testing",
               "Check-out",
               "Check-in",
-              "Confirmed"
+              "Confirmed",
             ]),
             appt_reason: z.string().nullable(),
             appt_type: z.string().nullable(),
@@ -307,16 +307,22 @@ export default createAPIClient({
       requestSchema: z.object({}),
       responseSchema: z.object({
         slots: z.record(
-          z.string(), z.record(
-            z.string(), z.array(z.object({
-              staffId: z.number(),
-            }))
+          z.string(),
+          z.record(
+            z.string(),
+            z.array(
+              z.object({
+                staffId: z.number(),
+              })
+            )
           )
         ),
-        preferredVets: z.array(z.object({
-          staffId: z.number(),
-          appCount: z.number(),
-        })),
+        preferredVets: z.array(
+          z.object({
+            staffId: z.number(),
+            appCount: z.number(),
+          })
+        ),
       }),
       errorResponseSchema: z.object({}),
     },
@@ -351,7 +357,7 @@ export default createAPIClient({
           pet_name: z.string(),
           pet_type: z.string().nullable(),
           pet_profile_image: z.string().nullable(),
-        })
+        }),
       }),
       errorResponseSchema: z.object({}),
     },
@@ -472,15 +478,19 @@ export default createAPIClient({
             id: z.number(),
             name: z.string(),
           }),
-          breed: z.object({
+          breed: z
+            .object({
               id: z.number(),
               name: z.string(),
-            }).nullable(),
+            })
+            .nullable(),
           weight: z.number().nullable(),
-          gender: z.object({
-            id: z.number(),
-            name: z.string(),
-          }).nullable(),
+          gender: z
+            .object({
+              id: z.number(),
+              name: z.string(),
+            })
+            .nullable(),
           dob: z.string().nullable(),
           profileImage: z.string().nullable(),
         }),
@@ -498,19 +508,25 @@ export default createAPIClient({
       pathParamsSchema: z.object({}),
       requestSchema: z.object({}),
       responseSchema: z.object({
-        appointmentTypes: z.array(z.object({
+        appointmentTypes: z.array(
+          z.object({
             id: z.string(),
             title: z.string(),
             description: z.string(),
             vetPortId: z.number(),
             isGrooming: z.boolean(),
-            subtypes: z.array(z.object({
+            subtypes: z
+              .array(
+                z.object({
                   id: z.string(),
                   title: z.string(),
                   description: z.string(),
-                })).optional(),
+                })
+              )
+              .optional(),
             displayOrder: z.number(),
-          }))
+          })
+        ),
       }),
       errorResponseSchema: z.object({}),
     },
@@ -572,6 +588,31 @@ export default createAPIClient({
         ),
       }),
       errorResponseSchema: z.object({}),
-    }
+    },
+
+    getSubscriptions: {
+      method: "GET",
+      path: "/user/subscriptions",
+      pathParamsSchema: z.object({}),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        subscriptions: z.array(
+          z.object({
+            id: z.number(),
+            start_date: z.string(),
+            end_date: z.string(),
+            plan: z.object({
+              id: z.number(),
+              name: z.string(),
+            }),
+            pet: z.object({
+              id: z.number(),
+              name: z.string(),
+            }),
+          })
+        ),
+      }),
+      errorResponseSchema: z.object({}),
+    },
   },
 });

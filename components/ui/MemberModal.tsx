@@ -94,7 +94,7 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
                 subscription.
               </p>
             ) : (
-              <div className="flex gap-3 flex-wrap justify-center items-center ">
+              <div className="flex flex-wrap justify-center items-center scrollbar-hide">
                 {pets.map((pet) => {
                   const petImage =
                     pet.profileImage ||
@@ -147,7 +147,7 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
                 {plan.price}
               </h3>
               <CustomButton
-                buttonText="Continue"
+                buttonText="Purchase"
                 buttonBackground="bg-accent"
               />
             </div>
