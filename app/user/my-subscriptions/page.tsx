@@ -9,7 +9,7 @@ import { format } from "date-fns";
 
 import Loader from "@/components/ui/Loader";
 
-interface Subscription {
+export interface Subscription {
   id: number;
   start_date: string;
   end_date: string;

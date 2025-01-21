@@ -614,5 +614,36 @@ export default createAPIClient({
       }),
       errorResponseSchema: z.object({}),
     },
+
+    getPetSubscription: {
+      method: "GET",
+
+      path: "/user/subscriptions/pet/{pet_id}",
+      pathParamsSchema: z.object({
+        pet_id: z.number(),
+      }),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        status: z.number(),
+        message: z.string(),
+        subscription: z
+          .object({
+            id: z.number(),
+            start_date: z.string(),
+            end_date: z.string(),
+            plan: z.object({
+              id: z.number(),
+              name: z.string(),
+            }),
+            pet: z.object({
+              id: z.number(),
+              name: z.string(),
+            }),
+          })
+          .nullable(),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+
   },
 });
