@@ -90,7 +90,7 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
               <p className="text-center text-gray-500">Loading pets...</p>
             ) : pets.length === 0 ? (
               <p className="text-center text-gray-500">
-                You haven't added any pets. Please add a pet to purchase a
+                You haven&apos;t added any pets. Please add a pet to purchase a
                 subscription.
               </p>
             ) : (

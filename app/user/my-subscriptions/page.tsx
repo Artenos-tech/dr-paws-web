@@ -6,7 +6,7 @@ import api from "@/services/api";
 import { Pet } from "@/context/UserContext";
 import { petImageByType } from "@/components/ui/PetCard";
 import { format } from "date-fns";
-import { Slice } from "lucide-react";
+
 import Loader from "@/components/ui/Loader";
 
 interface Subscription {
