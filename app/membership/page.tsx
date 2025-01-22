@@ -2,18 +2,15 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import MembershipDesc from "@/public/assets/images/Membership/MembershipDesc.png";
-import MemberCard from "@/components/ui/MemberCard";
-import MemberModal from "@/components/ui/MemberModal";
-import { membershipData } from "@/model/mockData";
-
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-
 import "swiper/css";
 import "swiper/css/navigation";
-import { MembershipPlan } from "@/components/ui/MemberCard";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import MembershipDesc from "@/public/assets/images/Membership/MembershipDesc.png";
+import MemberCard, { MembershipPlan } from "@/components/ui/MemberCard";
+import MemberModal from "@/components/ui/MemberModal";
+import { membershipData } from "@/model/mockData";
 
 // type PetType = "Dog" | "Cat";
 

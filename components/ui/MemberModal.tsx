@@ -1,4 +1,4 @@
-import { X } from "lucide-react";
+import { Loader2, X } from "lucide-react";
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import { Toaster } from "react-hot-toast";
@@ -9,7 +9,7 @@ import { petImageByType } from "./PetCard";
 import { Pet } from "@/context/UserContext";
 import { useAPICall } from "@/hooks/apicall";
 import api from "@/services/api";
-import CustomButton from "./CustomButton";
+import Payment from "./Payment";
 
 interface ModalProps {
   isOpen: boolean;
@@ -87,7 +87,10 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
             </h3>
 
             {loading ? (
-              <p className="text-center text-gray-500">Loading pets...</p>
+              // <p className="text-center text-gray-500">Loading pets...</p>
+              <div className="flex justify-center items-center my-4">
+                <Loader2 className="h-5 w-5 animate-spin" />
+              </div>
             ) : pets.length === 0 ? (
               <p className="text-center text-gray-500">
                 You haven&apos;t added any pets. Please add a pet to purchase a
@@ -144,13 +147,9 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
 
             <div className="flex flex-row items-center justify-between mt-3 gap-2">
               <h3 className="font-semibold text-xl text-primary-1">
-                {plan.price}
+                ₹ {plan.price}
               </h3>
-              <CustomButton
-                buttonText="Purchase"
-                buttonBackground="bg-accent"
-                disabled={!selectedPet}
-              />
+              <Payment amount={plan.price} disabled={!selectedPet} planId={plan.id} petId={selectedPet?.vetPortId ?? null} />
             </div>
           </div>
         </div>

@@ -977,6 +977,7 @@ export const reviews: Review[] = [
 
 export const membershipData: MembershipPlan[] = [
   {
+    id: 1,
     title: "Puppy Membership",
     icon: CareJunior,
     description:
@@ -996,11 +997,12 @@ export const membershipData: MembershipPlan[] = [
       { text: "10% off on Elective Surgeries" },
       { text: "5% off on Non-Elective Surgeries" },
     ],
-    price: "₹9,499",
+    price: 9499,
     duration: "1 Year",
     petType: "Dog",
   },
   {
+    id: 2,
     title: "Adult Dog Membership",
     icon: CareSenior,
     description:
@@ -1020,11 +1022,12 @@ export const membershipData: MembershipPlan[] = [
       { text: "10% off on Elective Surgeries" },
       { text: "5% off on Non-Elective Surgeries" },
     ],
-    price: "₹4,499",
+    price: 4499,
     duration: "1 Year",
     petType: "Dog",
   },
   {
+    id: 3,
     title: "Senior Dog Membership",
     icon: CareSenior,
     description: "Our plan to keep your pet healthy and happy for life",
@@ -1043,11 +1046,12 @@ export const membershipData: MembershipPlan[] = [
       { text: "10% off on Elective Surgeries" },
       { text: "5% off on Non-Elective Surgeries" },
     ],
-    price: "₹5,499",
+    price: 5499,
     duration: "1 Year",
     petType: "Dog",
   },
   {
+    id: 4,
     title: "Grooming Membership",
     icon: Grooming,
     description: "Our plan to keep your furry friend looking and feeling fab!",
@@ -1057,11 +1061,12 @@ export const membershipData: MembershipPlan[] = [
       { text: "10% off on all Retail products" },
       { text: "10% off on all Pharmacy products" },
     ],
-    price: "₹5,999",
+    price: 5999,
     duration: "1 Year",
     petType: "Dog",
   },
   {
+    id: 5,
     title: "Comprehensive Membership",
     icon: StarCare,
     description:
@@ -1082,7 +1087,7 @@ export const membershipData: MembershipPlan[] = [
       { text: "15% off on Elective Surgeries" },
       { text: "10% off on Non-Elective Surgeries" },
     ],
-    price: "₹9,999",
+    price: 9999,
     isPopular: true,
     duration: "1 Year",
     petType: "Dog",

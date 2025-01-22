@@ -644,6 +644,46 @@ export default createAPIClient({
       }),
       errorResponseSchema: z.object({}),
     },
+  
+    createOrder: {
+      method: "POST",
+      path: "/user/order",
+      pathParamsSchema: z.object({}),
+      requestSchema: z.object({
+        amount: z.number(),
+      }),
+      responseSchema: z.object({
+        status: z.number(),
+        message: z.string(),
+        order: z.object({
+          orderId: z.string(),
+          paymentSessionId: z.string(),
+        }),
+      }),
+      errorResponseSchema: z.object({}),
+    },
 
+    verifyPayment: {
+      method: "GET",
+      path: "/user/order/status/{orderId}/{planId}/{petId}",
+      pathParamsSchema: z.object({
+        orderId: z.string(),
+        planId: z.number(),
+        petId: z.number(),
+      }),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        order_payment: z.object({
+          success: z.boolean(),
+          status: z.enum(["ACTIVE", "PAID", "EXPIRED", "TERMINATED", "TERMINATION_REQUESTED"]),
+        }),
+      }),
+      errorResponseSchema: z.object({
+        // body: z.object({
+          // status: z.number(),
+          // message: z.string(),
+        // }),
+      }),
+    },
   },
 });

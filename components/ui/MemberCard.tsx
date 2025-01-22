@@ -8,12 +8,13 @@ export interface Benefit {
   text: string;
 }
 export interface MembershipPlan {
+  id: number;
   title: string;
   icon: StaticImageData;
   description: string;
   benefits: Benefit[];
   isPopular?: boolean;
-  price: string;
+  price: number;
   duration: string;
   petType: "Dog" | "Cat";
 }
@@ -71,7 +72,7 @@ export default function MemberCard({ plan, onSelect }: MemberCardProps) {
 
       <div className="mt-auto text-base w-full mb-2 md:mb-0">
         <div className="mt-2 text-lg font-bold w-full mb-8 md:mb-0 flex justify-center">
-          <span className="text-primary-1">{plan.price}</span>
+          <span className="text-primary-1">₹ {plan.price}</span>
         </div>
         <div onClick={() => onSelect(plan)}>
           <CustomButton buttonText="Select" buttonBackground="bg-accent" />

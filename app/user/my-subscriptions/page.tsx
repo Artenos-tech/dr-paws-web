@@ -6,8 +6,8 @@ import api from "@/services/api";
 import { Pet } from "@/context/UserContext";
 import { petImageByType } from "@/components/ui/PetCard";
 import { format } from "date-fns";
-
 import Loader from "@/components/ui/Loader";
+import CustomButton from "@/components/ui/CustomButton";
 
 export interface Subscription {
   id: number;
@@ -85,8 +85,13 @@ const Page = () => {
 
   if (!subscriptions.length) {
     return (
-      <div className="flex items-center justify-center h-full mt-16">
-        <p className="text-xl text-gray-600">No subscriptions found.</p>
+      <div className="flex flex-col w-full h-full lg:h-screen items-center font-roca pb-20 flex-grow">
+      <main className="flex flex-col w-full items-center px-8 md:px-32 lg:px-20 xl:px-40">
+        <h1 className="text-3xl m-4 lg:m-12">Your Memberships</h1>
+        <h1 className="text-secondary-1 text-lg text-center">You don&apos;t have any memberships yet.</h1>
+        <h1 className="text-secondary-1 text-md text-center mb-4">Join our membership program to enjoy exclusive benefits and discounts for your pet&apos;s health and wellness.</h1>
+        <CustomButton buttonBackground="bg-accent" buttonText="Join Membership" buttonLink="/membership"/>
+      </main>
       </div>
     );
   }

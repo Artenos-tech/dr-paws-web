@@ -62,7 +62,6 @@ export default function RootLayout({
           <div className="flex-grow flex flex-col w-full overflow-x-hidden ">
             <NavBar />
             <div className="mt-16 flex-grow">{children}</div>
-
             <Footer />
           </div>
         </body>
