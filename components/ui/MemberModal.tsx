@@ -17,14 +17,31 @@ interface ModalProps {
   plan: MembershipPlan;
 }
 
+interface Subscription {
+  id: number;
+  start_date: string;
+  end_date: string;
+  plan: {
+    id: number;
+    name: string;
+  },
+  pet: {
+    id: number;
+    name: string;
+  },
+}
+
 const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
   const [pets, setPets] = useState<Pet[]>([]);
+  const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
   const [selectedPet, setSelectedPet] = useState<Pet | null>(null);
   const { call: getPetsAPI, loading: loading } = useAPICall(api.getPets);
+  const { call: getSubscriptions } = useAPICall(api.getSubscriptions);
 
   useEffect(() => {
     if (isOpen) {
       fetchPets();
+      fetchAllSubscriptions()
     }
   }, [isOpen]);
 
@@ -39,6 +56,14 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
       setPets(fetchedPets);
     }
   };
+
+  const fetchAllSubscriptions = async () => {
+    const response = await getSubscriptions({});
+    if (response.ok) {
+      const fetchedSubscriptions = response.value.body.subscriptions;
+      setSubscriptions(fetchedSubscriptions);
+    }
+  }
 
   const handlePetClick = (pet: Pet, isEligible: boolean) => {
     if (!isEligible) return;
@@ -105,7 +130,7 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
                     petImageByType["other"].src;
 
                   const isEligible =
-                    pet.type?.toLowerCase() === plan.petType.toLowerCase();
+                    pet.type?.toLowerCase() === plan.petType.toLowerCase() && !subscriptions.find(sub => sub.pet.id === pet.vetPortId);
 
                   const isSelected = selectedPet?.vetPortId === pet.vetPortId;
 
