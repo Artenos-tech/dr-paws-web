@@ -43,11 +43,9 @@ const Payment = ({ amount, disabled , planId, petId }: PaymentProps) => {
       const cashfree = await initializeSDK();
       console.log("Payment session ID", paymentSessionId);
       console.log("Order ID", orderId);
-      console.log("CASHFREE INSTANCE", cashfree);
-      console.log(window.location.origin + "/membership/payment/status");
       const result = await cashfree.checkout({
         paymentSessionId,
-        returnUrl: window.location.origin + "/membership/payment/status?order_id=" + orderId + "&plan_id=" + planId + "&pet_id=" + petId,
+        returnUrl: window.location.origin + "/membership/payment?order_id=" + orderId + "&plan_id=" + planId + "&pet_id=" + petId,
         redirectTarget: "_self",
       });
       console.log("Result", result);
