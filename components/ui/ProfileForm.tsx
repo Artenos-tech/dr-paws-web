@@ -13,7 +13,12 @@ import { User } from "@/context/UserContext";
 const profileSchema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.string().email("Invalid email address").nullable(),
-  current_address: z.string().max(69, "Address line reached max characters").nullable(),
+  address1: z.string().max(69, "Address line reached max characters").nullable(),
+  address2: z.string().max(69, "Address line reached max characters").nullable(),
+  city: z.string().nullable(),
+  state: z.string().nullable(),
+  country: z.string().nullable(),
+  pincode: z.string().nullable(),
 });
 
 type ProfileFormData = z.infer<typeof profileSchema>;
@@ -60,7 +65,12 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
       ...data,
       id: profileData.id,
       profile_image: image === ProfileLogo.src ? null : image,
-      current_address: data.current_address,
+      address1: data.address1,
+      address2: data.address2,
+      city: data.city,
+      state: data.state,
+      country: data.country,
+      pincode: data.pincode,
       role: "USER",
       mobile: profileData.mobile,
     });
@@ -132,15 +142,76 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
         )}
       </div>
       <div className="flex flex-col ">
-        <label className="text-sm">Address</label>
+        <label className="text-sm">Address Line 1</label>
         <textarea
-          {...register("current_address")}
+          {...register("address1")}
           className="input rounded-md p-2 border w-full border-[#74A7B3]"
           maxLength={69}
         />
-        {errors.current_address && (
+        {errors.address1 && (
           <span className="text-red-500 text-sm">
-            {errors.current_address.message}
+            {errors.address1.message}
+          </span>
+        )}
+      </div>
+      <div className="flex flex-col ">
+        <label className="text-sm">Address Line 2</label>
+        <textarea
+          {...register("address2")}
+          className="input rounded-md p-2 border w-full border-[#74A7B3]"
+          maxLength={69}
+        />
+        {errors.address2 && (
+          <span className="text-red-500 text-sm">
+            {errors.address2.message}
+          </span>
+        )}
+      </div>
+      <div className="flex flex-col ">
+        <label className="text-sm">City</label>
+        <input
+          {...register("city")}
+          className="input rounded-md p-2 border w-full border-[#74A7B3]"
+        />
+        {errors.city && (
+          <span className="text-red-500 text-sm">
+            {errors.city.message}
+          </span>
+        )}
+      </div>
+      <div className="flex flex-col ">
+        <label className="text-sm">State</label>
+        <input
+          {...register("state")}
+          className="input rounded-md p-2 border w-full border-[#74A7B3]"
+        />
+        {errors.state && (
+          <span className="text-red-500 text-sm">
+            {errors.state.message}
+          </span>
+        )}
+      </div>
+      <div className="flex flex-col ">
+        <label className="text-sm">Country</label>
+        <input
+          {...register("country")}
+          className="input rounded-md p-2 border w-full border-[#74A7B3]"
+        />
+        {errors.country && (
+          <span className="text-red-500 text-sm">
+            {errors.country.message}
+          </span>
+        )}
+      </div>
+      <div className="flex flex-col ">
+        <label className="text-sm">Pincode</label>
+        <input
+          {...register("pincode")}
+          className="input rounded-md p-2 border w-full border-[#74A7B3]"
+        />
+        {errors.pincode && (
+          <span className="text-red-500 text-sm">
+            {errors.pincode.message}
           </span>
         )}
       </div>
