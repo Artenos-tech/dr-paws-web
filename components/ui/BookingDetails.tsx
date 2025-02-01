@@ -44,9 +44,9 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
     "default" | "cancelConfirm" | "rescheduled" | "cancelled" | "rescheduleConfirm"
   >("default");
   const [cancelReason, setCancelReason] = useState<string>("");
-  const [rescheduleReason, setRescheduleReason] = useState<string>("");
+  // const [rescheduleReason, setRescheduleReason] = useState<string>("");
   const [showCancelValidationMessage, setShowCancelValidationMessage] = useState<boolean>(false);
-  const [showRescheduleValidationMessage, setShowRescheduleValidationMessage] = useState<boolean>(false);
+  // const [showRescheduleValidationMessage, setShowRescheduleValidationMessage] = useState<boolean>(false);
   const defaultPetImageByType =
     petImageByType[selectedAppointment.pet_type?.toLowerCase() || "other"] ||
     petImageByType.other;
@@ -56,15 +56,15 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
     setCurrentView("cancelConfirm");
   };
 
-  const handleRescheduleClick = () => {
-    setCurrentView("rescheduleConfirm");
-  };
+  // const handleRescheduleClick = () => {
+  //   setCurrentView("rescheduleConfirm");
+  // };
 
   const resetView = () => {
     setCancelReason("");
     setShowCancelValidationMessage(false);
-    setRescheduleReason("");
-    setShowRescheduleValidationMessage(false);
+    // setRescheduleReason("");
+    // setShowRescheduleValidationMessage(false);
     setCurrentView("default");
   };
 
@@ -88,17 +88,17 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
     setCurrentView("cancelled");
   }
 
-  const rescheduleBooking = async () => {
-    if (!rescheduleReason) {
-      setShowRescheduleValidationMessage(true);
-      return;
-    }
-    console.log("Rescheduling booking");
-    console.log("rescheduleReason", rescheduleReason);
-    // await api.rescheduleBooking(selectedAppointment.id, rescheduleReason);
-    setCurrentView("rescheduled");
-    // navigate.push("/user/book-appointment")
-  }
+  // const rescheduleBooking = async () => {
+  //   if (!rescheduleReason) {
+  //     setShowRescheduleValidationMessage(true);
+  //     return;
+  //   }
+  //   console.log("Rescheduling booking");
+  //   console.log("rescheduleReason", rescheduleReason);
+  //   // await api.rescheduleBooking(selectedAppointment.id, rescheduleReason);
+  //   setCurrentView("rescheduled");
+  //   // navigate.push("/user/book-appointment")
+  // }
 
   return (
     <div className="w-full max-w-4xl mx-auto px-4 py-8">
@@ -212,12 +212,12 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                 >
                   Cancel
                 </button>
-                <button
+                {/* <button
                   onClick={handleRescheduleClick}
                   className="w-full sm:w-auto sm:min-w-[150px] py-3 px-4 sm:px-6 border-2 border-secondary-1 rounded-full text-sm sm:text-base font-bold text-secondary-1"
                 >
                   Reschedule
-                </button>
+                </button> */}
               </div>
 
             </div>
@@ -365,7 +365,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
           </div>
         </div>
       )}
-      {currentView === "rescheduleConfirm" && (
+      {/* {currentView === "rescheduleConfirm" && (
         <div className="flex flex-col justify-center items-center gap-4">
           <h1 className="text-3xl">Reschedule Booking</h1>
           <div className="py-6 px-6 md:py-8 md:px-12 text-primary-1 w-11/12 md:w-4/5 lg:w-[50%] shadow-md my-5 flex flex-col gap-8 items-center bg-[#FFFCF3] rounded-lg">
@@ -411,7 +411,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
             </div>
           </div>
         </div>
-      )}
+      )} */}
       {/* {currentView === "rescheduled" && (
         <SelectVet />
       )} */}
