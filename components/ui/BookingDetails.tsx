@@ -12,7 +12,8 @@ import { doctorImagesMap } from "@/model/mockData";
 import { petImageByType } from "./PetCard";
 import { CircleX } from "lucide-react";
 import CustomButton from "./CustomButton";
-import { useRouter } from "next/navigation";
+import { useAPICall } from "@/hooks/apicall";
+import api from "@/services/api";
 
 export const cancelReasons = [
   "Another commitment has come up",
@@ -39,8 +40,6 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
   selectedAppointment,
   goBack,
 }) => {
-  // console.log("selectedAppointment", selectedAppointment);
-  const navigate = useRouter();
   const [currentView, setCurrentView] = useState<
     "default" | "cancelConfirm" | "rescheduled" | "cancelled" | "rescheduleConfirm"
   >("default");
@@ -51,6 +50,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
   const defaultPetImageByType =
     petImageByType[selectedAppointment.pet_type?.toLowerCase() || "other"] ||
     petImageByType.other;
+  const { call: cancelAppointment } = useAPICall(api.cancelAppointment);
 
   const handleCancelClick = () => {
     setCurrentView("cancelConfirm");
@@ -75,7 +75,16 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
     }
     console.log("Cancelling booking");
     console.log("cancelReason", cancelReason);
-    // await api.cancelBooking(selectedAppointment.id, cancelReason);
+    await cancelAppointment({
+      appointmentid: selectedAppointment.id,
+      clinic_id: selectedAppointment.clinic_id,
+      vet_id: selectedAppointment.vet_vetport_id,
+      pet_id: selectedAppointment.pet_vetport_id,
+      pet_name: selectedAppointment.pet_name,
+      appt_start: selectedAppointment.appt_start,
+      appt_end: selectedAppointment.appt_end,
+      reason: cancelReason,
+    });
     setCurrentView("cancelled");
   }
 

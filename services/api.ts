@@ -597,6 +597,31 @@ export default createAPIClient({
         ),
       }),
       errorResponseSchema: z.object({}),
+    },
+    cancelAppointment: {
+      method: "PUT",
+      path: "/user/appointment/{appointmentid}/cancel",
+      pathParamsSchema: z.object({ appointmentid: z.string() }),
+      requestSchema: z.object({
+        clinic_id: z.number(),
+        vet_id: z.number(),
+        pet_id: z.number(),
+        pet_name: z.string(),
+        appt_start: z.string(),
+        appt_end: z.string(),
+        reason: z.string(),
+      }),
+      responseSchema: z.object({
+        status: z.number(),
+        message: z.string(),
+        appointment: z.object({
+          id: z.number(),
+          clinic_id: z.number(),
+          vet_id: z.number(),
+          pet_id: z.number(),
+        }),
+      }),
+      errorResponseSchema: z.object({}),
     }
   },
 });
