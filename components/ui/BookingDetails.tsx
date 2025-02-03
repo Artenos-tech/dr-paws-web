@@ -124,17 +124,25 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
           className={`p-4 text-primary-1 w-11/12 md:w-4/5 lg:w-[50%] shadow-md my-5 flex flex-col gap-2 items-center ${
             selectedAppointment.category === "PAST"
               ? "bg-primary-3"
-              : "bg-[#FFFCF3]"
-          }`}
+              : selectedAppointment.category === "CANCELLED"
+                ? "bg-[#F1F1F1] text-[#909090]"
+                :"bg-[#FFFCF3]"
+          }`
+        }
         >
           <p className="text-lg font-semibold mt-4 text-center">
             {selectedAppointment.category === "PAST"
               ? selectedAppointment.appt_type === "Grooming"
                 ? `${selectedAppointment.pet_name} had a ${selectedAppointment.appt_type} session`
                 : `${selectedAppointment.pet_name} visited ${selectedAppointment.vet_name} for a ${selectedAppointment.appt_type}`
-              : selectedAppointment.appt_type !== "Grooming"
-              ? `${selectedAppointment.pet_name} is scheduled for a ${selectedAppointment.appt_type} with ${selectedAppointment.vet_name}`
-              : `${selectedAppointment.pet_name} is scheduled for a ${selectedAppointment.appt_type} session`}
+              : selectedAppointment.category === "CANCELLED"
+                ? selectedAppointment.appt_type !== "Grooming"
+                  ? `${selectedAppointment.pet_name}'s ${selectedAppointment.appt_type} with ${selectedAppointment.vet_name} was cancelled`
+                  : `${selectedAppointment.pet_name}'s ${selectedAppointment.appt_type} session was cancelled`
+                : selectedAppointment.appt_type !== "Grooming"
+                    ? `${selectedAppointment.pet_name} is scheduled for a ${selectedAppointment.appt_type} with ${selectedAppointment.vet_name}`
+                    : `${selectedAppointment.pet_name} is scheduled for a ${selectedAppointment.appt_type} session`
+            }
           </p>
           <div className="flex items-center my-4 relative">
             {
