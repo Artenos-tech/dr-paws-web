@@ -293,8 +293,8 @@ export default createAPIClient({
               "Confirmed"
             ]).nullable(),
             appt_reason: z.string().nullable(),
-            appt_type: z.string().nullable(),
-            appt_type_id: z.number().nullable(),
+            appt_type: z.string(),
+            appt_type_id: z.number(),
             category: z.enum(["UPCOMING", "PAST", "CANCELLED"]),
           })
         ),
@@ -609,6 +609,7 @@ export default createAPIClient({
         pet_name: z.string(),
         appt_start: z.string(),
         appt_end: z.string(),
+        appt_type_id: z.number(),
         reason: z.string(),
       }),
       responseSchema: z.object({

@@ -84,7 +84,7 @@ export interface AppointmentType {
   | "Check-in"
   | "Confirmed"
   appt_reason: string | null;
-  appt_type: string | null;
-  appt_type_id: number | null;
+  appt_type: string;
+  appt_type_id: number;
   category: "UPCOMING" | "PAST" | "CANCELLED";
 }

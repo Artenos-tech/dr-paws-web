@@ -1,6 +1,7 @@
 "use client";
 
 import { AppointmentType } from "@/model/typeDefinitions";
+import toast from "react-hot-toast";
 import React, { useState } from "react";
 import BackButton from "./BackButton";
 import { MdOutlineAccessTime } from "react-icons/md";
@@ -21,6 +22,7 @@ export const cancelReasons = [
   "I have to travel out of the city",
   "My pet doesn't need the treatment anymore",
   "I've visited / will visit another clinic",
+  "Other",
 ];
 
 export const rescheduleReasons = [
@@ -32,7 +34,7 @@ export const rescheduleReasons = [
 
 type BookingDetailsProps = {
   selectedAppointment: AppointmentType;
-  goBack: () => void;
+  goBack: (refetch: boolean) => void;
   // onReschedule?: () => void;
 };
 
@@ -73,19 +75,29 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
       setShowCancelValidationMessage(true);
       return;
     }
-    console.log("Cancelling booking");
-    console.log("cancelReason", cancelReason);
-    await cancelAppointment({
-      appointmentid: selectedAppointment.id,
-      clinic_id: selectedAppointment.clinic_id,
-      vet_id: selectedAppointment.vet_vetport_id,
-      pet_id: selectedAppointment.pet_vetport_id,
-      pet_name: selectedAppointment.pet_name,
-      appt_start: selectedAppointment.appt_start,
-      appt_end: selectedAppointment.appt_end,
-      reason: cancelReason,
-    });
-    setCurrentView("cancelled");
+    // console.log("selectedAppointment", selectedAppointment);
+    try {
+      const resp = await cancelAppointment({
+        appointmentid: selectedAppointment.id,
+        clinic_id: selectedAppointment.clinic_id,
+        vet_id: selectedAppointment.vet_vetport_id,
+        pet_id: selectedAppointment.pet_vetport_id,
+        pet_name: selectedAppointment.pet_name,
+        appt_start: selectedAppointment.appt_start,
+        appt_end: selectedAppointment.appt_end,
+        appt_type_id: selectedAppointment.appt_type_id,
+        reason: cancelReason,
+      });
+      if (!resp.ok) {
+        console.error("Error cancelling appointment", resp);
+        toast.error("We couldn't cancel your appointment. Please try again later.");
+        return;
+      }
+      setCurrentView("cancelled");
+    } catch (error) {
+      console.error("Error cancelling appointment", error);
+      toast.error("We couldn't cancel your appointment. Please try again later.");
+    }
   }
 
   // const rescheduleBooking = async () => {
@@ -102,7 +114,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
 
   return (
     <div className="w-full max-w-4xl mx-auto px-4 py-8">
-      <BackButton navigateBack={goBack} />
+      <BackButton navigateBack={() => goBack(false)} />
 
       {currentView === "default" && (
       <div className="flex flex-col justify-center gap-4 items-center">
@@ -232,7 +244,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
             <h1 className="text-center text-2xl font-semibold font-sans">
               Are you sure you want to cancel this booking?
             </h1>
-            <p>You will receive a cancellation email for the booking.</p>
+            <p>Please select a reason for cancelling. You will receive a cancellation email for the booking.</p>
             <div className="space-y-3">
               {cancelReasons.map((reason, index) => (
                 <div className="flex items-start gap-2" key={index}>
@@ -359,7 +371,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
               <CustomButton
                 buttonText="Done"
                 buttonBackground="bg-secondary-1"
-                buttonClickEvent={goBack}
+                buttonClickEvent={() => goBack(true)}
               />
           </div>
           </div>
