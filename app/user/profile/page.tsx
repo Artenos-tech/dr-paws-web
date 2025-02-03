@@ -28,7 +28,7 @@ const Profile: React.FC = () => {
   const [isAddPetModalOpen, setIsAddPetModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-  const { user, getAuthToken, refresh } =
+  const { user, refresh, isLoggedIn } =
     useUserContext();
 
   const navigate = useRouter();
@@ -57,11 +57,10 @@ const Profile: React.FC = () => {
     }));
 
   useEffect(() => {
-    const authToken = getAuthToken();
-    if (!authToken) {
+    if (!isLoggedIn) {
       navigate.push("/");
     }
-  }, [getAuthToken, navigate, refresh]);
+  }, [isLoggedIn, navigate, refresh]);
 
   if (!user) {
     return <Loader />;

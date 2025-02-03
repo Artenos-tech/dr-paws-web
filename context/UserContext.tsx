@@ -100,6 +100,8 @@ export const UserProvider = ({ children }: UserProviderProps) => {
           console.error(error);
         }
       }
+    } else {
+      setIsLoggedIn(false);
     }
   }, []);
 

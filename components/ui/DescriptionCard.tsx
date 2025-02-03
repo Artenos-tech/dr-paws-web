@@ -29,12 +29,11 @@ const DescriptionCard: React.FC<descriptionCardProps> = ({
   openLoginModal,
 }) => {
   const { image, title, button } = description;
-  const { getAuthToken } = useUserContext();
+  const { isLoggedIn } = useUserContext();
   const navigate = useRouter();
 
   const handleBookAVisit = () => {
-    const authToken = getAuthToken();
-    return authToken
+    return isLoggedIn
       ?  navigate.push("/user/book-appointment")
       : openLoginModal && openLoginModal("Book a Visit");
   };

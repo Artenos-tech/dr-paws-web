@@ -17,14 +17,12 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
   const { image, clinicName, services, id } = clinic;
   const router = useRouter();
 
-  const { getAuthToken, initiateLogin } = useUserContext();
+  const { initiateLogin, isLoggedIn } = useUserContext();
   const navigate = useRouter();
 
 
   const handleBookAVisit = () => {
-    const authToken = getAuthToken();
-    console.log(authToken);
-    return authToken
+    return isLoggedIn
       ?  navigate.push("/user/book-appointment")
       : initiateLogin("Book a Visit", "/user/book-appointment");
   };
