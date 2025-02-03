@@ -11,12 +11,6 @@ interface ProfileCardProps {
   onEdit: () => void;
 }
 
-function formatAddress(address1: string | null, address2: string | null, city: string | null, state: string | null, country: string | null, pincode: string | null) {
-  const addressParts = [address1, address2, city, state, country, pincode];  
-  const filteredAddressParts = addressParts.filter(part => part && part.trim() !== "");
-  return filteredAddressParts.join(", ");
-}
-
 const ProfileCard: React.FC<ProfileCardProps> = ({ profile, onEdit }) => {
   const {
     name,
@@ -31,7 +25,21 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ profile, onEdit }) => {
     pincode,
   } = profile;
 
-  const addressString = formatAddress(address1, address2, city, state, country, pincode);
+  function formAddressStr(
+    address1: string | null,
+    address2: string | null,
+    city: string | null,
+    state: string | null,
+    country: string | null,
+    pincode: string | null
+  ) {
+    const address = [address1, address2, city, state, country, pincode];
+    const addressStr = address
+      .filter((addr) => addr !== null && addr.trim() !== "")
+      .join(", ");
+    return addressStr;
+  }
+
   return (
     <div className="w-full flex flex-col lg:flex-row items-start lg:items-center gap-6 md:gap-8 mt-8 lg:mt-16">
       <div className="relative w-20 h-20 md:w-24 md:h-24 lg:w-32 lg:h-32 rounded-full overflow-hidden bg-orange-400 flex-shrink-0">
@@ -71,7 +79,14 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ profile, onEdit }) => {
           <div className="space-y-1 lg:space-y-2 lg:col-span-2">
             <h2 className="text-sm lg:text-base text-gray-500">Address</h2>
             <p className="text-base lg:text-lg font-medium text-gray-700 break-words">
-              {addressString}
+              {formAddressStr(
+                address1,
+                address2,
+                city,
+                state,
+                country,
+                pincode
+              )}
             </p>
           </div>
         </div>
