@@ -23,7 +23,7 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
     ? clinicImages.photos.slice(0, 7)
     : [];
   const [isMounted, setIsMounted] = useState(false);
-  const { getAuthToken, initiateLogin } = useUserContext();
+  const { initiateLogin, isLoggedIn } = useUserContext();
   const navigate = useRouter();
 
   useEffect(() => {
@@ -46,9 +46,7 @@ function ClinicGallery({ clinic }: ClinicGalleryProps) {
   };
 
   const handleBookAVisit = () => {
-    const authToken = getAuthToken();
-    console.log(authToken);
-    return authToken
+    return isLoggedIn
       ?  navigate.push("/user/book-appointment")
       : initiateLogin("Book a Visit", "/user/book-appointment");
   };

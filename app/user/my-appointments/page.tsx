@@ -67,7 +67,12 @@ const MyAppointmentsPage = () => {
         {selectedAppointment ? (
           <BookingDetails 
             selectedAppointment={selectedAppointment}
-            goBack={() => setSelectedAppointment(null)}
+            goBack={(refetch: boolean) => {
+              setSelectedAppointment(null);
+              if (refetch) {
+                getAppointments({});
+              }
+            }}
           />
         ) :
           <>

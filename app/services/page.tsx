@@ -15,13 +15,11 @@ import DescritionImage from "@/public/assets/images/ServicesPage/DescriptionImag
 
 const Services = () => {
   const [isContactModalOpen, setContactIsModalOpen] = useState(false);
-  const { getAuthToken, initiateLogin } = useUserContext();
+  const { initiateLogin, isLoggedIn } = useUserContext();
   const navigate = useRouter();
 
   const handleBookAVisit = () => {
-    const authToken = getAuthToken();
-    console.log(authToken);
-    return authToken
+    return isLoggedIn
       ?  navigate.push("/user/book-appointment")
       : initiateLogin("Book a Visit", "/user/book-appointment");
   };
