@@ -492,6 +492,7 @@ export default createAPIClient({
       pathParamsSchema: z.object({}),
       requestSchema: z.object({
         pet: z.object({
+          vetport_id: z.number(),
           name: z.string(),
           species: z.object({
             id: z.number(),
