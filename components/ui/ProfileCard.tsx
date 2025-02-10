@@ -21,7 +21,6 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ profile, onEdit }) => {
     address2,
     city,
     state,
-    country,
     pincode,
   } = profile;
 
@@ -30,10 +29,9 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ profile, onEdit }) => {
     address2: string | null,
     city: string | null,
     state: string | null,
-    country: string | null,
     pincode: string | null
   ) {
-    const address = [address1, address2, city, state, country, pincode];
+    const address = [address1, address2, city, state, pincode];
     const addressStr = address
       .filter((addr) => addr !== null && addr.trim() !== "")
       .join(", ");
@@ -84,7 +82,6 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ profile, onEdit }) => {
                 address2,
                 city,
                 state,
-                country,
                 pincode
               )}
             </p>
