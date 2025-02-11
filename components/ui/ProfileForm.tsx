@@ -12,12 +12,23 @@ import { User } from "@/context/UserContext";
 
 const profileSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  email: z.string().email("Invalid email address").nullable(),
-  address1: z.string().max(69, "Address line reached max characters").nullable(),
-  address2: z.string().max(69, "Address line reached max characters").nullable(),
+  email: z.preprocess((val) => {
+    if (typeof val === "string") {
+      const trimmed = val.trim();
+      return trimmed === "" ? null : trimmed;
+    }
+    return val;
+  }, z.string().email("Invalid email address").nullable()),
+  address1: z
+    .string()
+    .max(69, "Address line reached max characters")
+    .nullable(),
+  address2: z
+    .string()
+    .max(69, "Address line reached max characters")
+    .nullable(),
   city: z.string().nullable(),
   state: z.string().nullable(),
-  country: z.string().nullable(),
   pincode: z.string().nullable(),
 });
 
@@ -44,7 +55,9 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
     defaultValues: profileData,
   });
 
-  const [image, setImage] = useState<string | null>(profileData.profile_image || null);
+  const [image, setImage] = useState<string | null>(
+    profileData.profile_image || null
+  );
 
   useEffect(() => {
     reset(profileData);
@@ -69,7 +82,6 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
       address2: data.address2,
       city: data.city,
       state: data.state,
-      country: data.country,
       pincode: data.pincode,
       role: "USER",
       mobile: profileData.mobile,
@@ -174,9 +186,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
           className="input rounded-md p-2 border w-full border-[#74A7B3]"
         />
         {errors.city && (
-          <span className="text-red-500 text-sm">
-            {errors.city.message}
-          </span>
+          <span className="text-red-500 text-sm">{errors.city.message}</span>
         )}
       </div>
       <div className="flex flex-col ">
@@ -186,23 +196,10 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
           className="input rounded-md p-2 border w-full border-[#74A7B3]"
         />
         {errors.state && (
-          <span className="text-red-500 text-sm">
-            {errors.state.message}
-          </span>
+          <span className="text-red-500 text-sm">{errors.state.message}</span>
         )}
       </div>
-      <div className="flex flex-col ">
-        <label className="text-sm">Country</label>
-        <input
-          {...register("country")}
-          className="input rounded-md p-2 border w-full border-[#74A7B3]"
-        />
-        {errors.country && (
-          <span className="text-red-500 text-sm">
-            {errors.country.message}
-          </span>
-        )}
-      </div>
+
       <div className="flex flex-col ">
         <label className="text-sm">Pincode</label>
         <input
@@ -210,9 +207,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
           className="input rounded-md p-2 border w-full border-[#74A7B3]"
         />
         {errors.pincode && (
-          <span className="text-red-500 text-sm">
-            {errors.pincode.message}
-          </span>
+          <span className="text-red-500 text-sm">{errors.pincode.message}</span>
         )}
       </div>
       <div className="flex gap-2 pt-2">

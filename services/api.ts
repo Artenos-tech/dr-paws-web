@@ -78,7 +78,7 @@ export default createAPIClient({
         city: z.string(),
         pincode: z.string(),
         state: z.string(),
-        country: z.string(),
+
       }),
       responseSchema: z.object({
         status: z.number(),
@@ -94,7 +94,7 @@ export default createAPIClient({
           address2: z.string().nullable(),
           city: z.string().nullable(),
           state: z.string().nullable(),
-          country: z.string().nullable(),
+
           pincode: z.string().nullable(),
           profile_image: z.string().nullable(),
         })
@@ -155,7 +155,7 @@ export default createAPIClient({
           address2: z.string().nullable(),
           city: z.string().nullable(),
           state: z.string().nullable(),
-          country: z.string().nullable(),
+
           pincode: z.string().nullable(),
           profile_image: z.string().nullable(),
         })
@@ -194,7 +194,6 @@ export default createAPIClient({
           address2: z.string().nullable(),
           city: z.string().nullable(),
           state: z.string().nullable(),
-          country: z.string().nullable(),
           pincode: z.string().nullable(),
           profile_image: z.string().nullable(),
         }),
@@ -227,7 +226,6 @@ export default createAPIClient({
           address2: z.string().nullable(),
           city: z.string().nullable(),
           state: z.string().nullable(),
-          country: z.string().nullable(),
           pincode: z.string().nullable(),
           profile_image: z.string().nullable(),
         }),
@@ -244,7 +242,6 @@ export default createAPIClient({
           address2: z.string().nullable(),
           city: z.string().nullable(),
           state: z.string().nullable(),
-          country: z.string().nullable(),
           pincode: z.string().nullable(),
           profile_image: z.string().nullable(),
         }),
@@ -492,6 +489,7 @@ export default createAPIClient({
       pathParamsSchema: z.object({}),
       requestSchema: z.object({
         pet: z.object({
+          vetport_id: z.number(),
           name: z.string(),
           species: z.object({
             id: z.number(),

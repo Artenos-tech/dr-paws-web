@@ -118,8 +118,21 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
 
       {currentView === "default" && (
       <div className="flex flex-col justify-center gap-4 items-center">
-        <h1 className="text-2xl sm:text-3xl flex items-center gap-4">Your Booking</h1>
-
+        <div className="flex items-center gap-2">
+          <h1 className="text-2xl sm:text-3xl flex items-center gap-4">
+            {selectedAppointment.category === "CANCELLED" 
+              ? "Booking Cancelled" 
+              : "Your Booking"
+            }
+          </h1>
+          {selectedAppointment.category === "CANCELLED" && (
+            <CircleX size={40}
+            fill="#5281a2"
+            stroke="white"
+            strokeWidth={2}
+            />
+          )}
+        </div>
         <div
           className={`p-4 text-primary-1 w-11/12 md:w-4/5 lg:w-[50%] shadow-md my-5 flex flex-col gap-2 items-center ${
             selectedAppointment.category === "PAST"
@@ -137,8 +150,8 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                 : `${selectedAppointment.pet_name} visited ${selectedAppointment.vet_name} for a ${selectedAppointment.appt_type}`
               : selectedAppointment.category === "CANCELLED"
                 ? selectedAppointment.appt_type !== "Grooming"
-                  ? `${selectedAppointment.pet_name}'s ${selectedAppointment.appt_type} with ${selectedAppointment.vet_name} was cancelled`
-                  : `${selectedAppointment.pet_name}'s ${selectedAppointment.appt_type} session was cancelled`
+                  ? `${selectedAppointment.pet_name} was scheduled with ${selectedAppointment.vet_name} for a ${selectedAppointment.appt_type}`
+                  : `${selectedAppointment.pet_name} was scheduled for a ${selectedAppointment.appt_type} session`
                 : selectedAppointment.appt_type !== "Grooming"
                     ? `${selectedAppointment.pet_name} is scheduled for a ${selectedAppointment.appt_type} with ${selectedAppointment.vet_name}`
                     : `${selectedAppointment.pet_name} is scheduled for a ${selectedAppointment.appt_type} session`
@@ -175,14 +188,13 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
             }
           </div>
           <div className="my-4 space-y-3">
-            <p className={"flex items-center gap-2"}>
+            <p className={`flex items-center gap-2 ${selectedAppointment.category === "CANCELLED" && "line-through"}`}>
               <span className="text-secondary-1">
                 <GrLocation />
               </span>{" "}
               {selectedAppointment.clinic_location}
             </p>
-
-            <p className={"flex items-center gap-2"}>
+            <p className={`flex items-center gap-2 ${selectedAppointment.category === "CANCELLED" && "line-through"}`}>
               <span className="text-secondary-1">
                 <HiOutlineCalendar />
               </span>
@@ -196,7 +208,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                 }
               )}
             </p>
-            <p className={`flex items-center gap-2`}>
+            <p className={`flex items-center gap-2 ${selectedAppointment.category === "CANCELLED" && "line-through"}`}>
               <span className="text-secondary-1">
                 <MdOutlineAccessTime />
               </span>

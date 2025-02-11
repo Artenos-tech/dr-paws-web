@@ -35,7 +35,6 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
         city: updatedProfile.city,
         state: updatedProfile.state,
         pincode: updatedProfile.pincode,
-        country: updatedProfile.country,
         profile_image: updatedProfile.profile_image,
       }
     })

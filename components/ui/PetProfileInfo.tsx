@@ -158,47 +158,48 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
     setIsEditing(!isEditing);
   };
 
-  const onSubmit = (data: Pet) => {
+  const onSubmit = (selectedPet: Pet) => {
     const realPetImage =
       typeof image === "string" && image.includes("/_next/static/media/")
         ? null
         : image;
 
     const petType = petSpecies.find(
-      (species) => species.displayName === data.type
+      (species) => species.displayName === selectedPet.type
     )?.id;
-    const petBreed = petBreeds.find((breed) => breed.name === data.breed)?.id;
+    const petBreed = petBreeds.find((breed) => breed.name === selectedPet.breed)?.id;
     const petGender = petGenders.find(
-      (gender) => gender.name === data.gender
+      (gender) => gender.name === selectedPet.gender
     )?.id;
 
     if (petType) {
       updatePetDetails({
         pet: {
-          name: data.name,
+          vetport_id: selectedPet.vetPortId,
+          name: selectedPet.name,
           species: {
             id: petType,
-            name: data.type!,
+            name: selectedPet.type!,
           },
           breed: petBreed
             ? {
                 id: petBreed,
-                name: data.breed!,
+                name: selectedPet.breed!,
               }
             : null,
           weight: null,
           gender: petGender
             ? {
                 id: petGender,
-                name: data.gender!,
+                name: selectedPet.gender!,
               }
             : null,
-          dob: data.dob ? new Date(data.dob).toISOString() : null,
+          dob: selectedPet.dob ? new Date(selectedPet.dob).toISOString() : null,
           profileImage: realPetImage,
         },
       });
     }
-    setPet({ ...data, profileImage: realPetImage });
+    setPet({ ...selectedPet, profileImage: realPetImage });
     setIsEditing(false);
   };
 
@@ -231,6 +232,8 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
       fetchPetBreedsBySpecies(selectedSpecies?.id)
       fetchPetGenderBySpecies(selectedSpecies?.id)
     }
+    setValue("breed", "");
+    setValue("gender", "");
   };
 
   const defaultImageOrPetImage =

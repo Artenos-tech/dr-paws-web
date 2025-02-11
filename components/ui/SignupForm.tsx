@@ -29,7 +29,7 @@ const signUpSchema = z.object({
     .min(1, "Provide pincode.")
     .max(6, "Pincode must be 6 digits"),
   state: z.string().trim().min(1, "Provide state name."),
-  country: z.string().trim().min(1, "Provide country name."),
+
   profilePicture: z.string().nullable().optional(),
 });
 
@@ -45,7 +45,6 @@ interface SignUpFormProps {
     city: string;
     pincode: string;
     state: string;
-    country: string;
   }) => void;
   loading: boolean;
   errMsg: string;
@@ -74,7 +73,6 @@ const SignupForm: React.FC<SignUpFormProps> = ({
       city: "",
       pincode: "",
       state: "",
-      country: "",
     },
   });
 
@@ -119,7 +117,7 @@ const SignupForm: React.FC<SignUpFormProps> = ({
               alt="user-profile"
               width={150}
               height={150}
-              className="rounded-full w-[150px] bg-white border-1 "
+              className="rounded-full w-[150px] bg-white border-1 object-cover"
             />
             {typeof userProfileImage === "string" &&
               !userProfileImage.includes("/_next/static/media/") && (
@@ -248,20 +246,6 @@ const SignupForm: React.FC<SignUpFormProps> = ({
           {errors.state && (
             <p className="text-red-500 text-left text-xs mt-1">
               {errors.state.message}
-            </p>
-          )}
-        </div>
-        <div className="inputGroup">
-          <input
-            type="text"
-            {...register("country")}
-            required
-            autoComplete="off"
-          />
-          <label htmlFor="country">Country</label>
-          {errors.country && (
-            <p className="text-red-500 text-left text-xs mt-1">
-              {errors.country.message}
             </p>
           )}
         </div>
