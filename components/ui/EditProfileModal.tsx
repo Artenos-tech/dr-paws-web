@@ -4,7 +4,6 @@ import ProfileForm from "./ProfileForm";
 import { User, useUserContext } from "@/context/UserContext";
 import { useAPICall } from "@/hooks/apicall";
 import api from "@/services/api";
-import Loader from "./Loader";
 
 interface EditProfileModalProps {
   isOpen: boolean;
@@ -44,7 +43,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
     }
   };
 
-  if (loading) return <div><Loader /></div>;
+  // if (loading) return <div><Loader /></div>;
 
   return (
     <Modal
@@ -62,6 +61,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
         profileData={profileData}
         onSubmit={handleProfileUpdate}
         onCancel={onClose}
+        loading={loading}
       />
     </Modal>
   );

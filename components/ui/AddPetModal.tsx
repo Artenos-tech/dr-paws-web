@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { useAPICall } from "@/hooks/apicall";
 import api from "@/services/api";
 import { PetSpecies, useUserContext } from "@/context/UserContext";
+import { ClipLoader } from "react-spinners";
 
 const petSchema = z.object({
   speciesId: z.number(),
@@ -31,7 +32,7 @@ export default function AddPetModal({
 }: AddPetModalProps) {
   const { call: getPetSpecies } = useAPICall(api.getPetSpecies);
 
-  const { call: addNewPetAPI } = useAPICall(api.addNewPet);
+  const { call: addNewPetAPI, loading } = useAPICall(api.addNewPet);
 
   const { user, updatePetSpeciesHandler, petSpecies } = useUserContext();
   const [selectedType, setSelectedType] = useState<string>("");
@@ -166,7 +167,7 @@ export default function AddPetModal({
                 type="submit"
                 className="flex-1 px-4 py-2 bg-secondary-1 text-white rounded-full"
               >
-                Save
+                {loading ?<ClipLoader color="white" size={18}/> : `Yes`}
               </button>
             </div>
           </form>
