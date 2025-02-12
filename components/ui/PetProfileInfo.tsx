@@ -12,6 +12,7 @@ import { Pet } from "@/context/UserContext";
 import { useAPICall } from "@/hooks/apicall";
 import api from "@/services/api";
 import Loader from "./Loader";
+import { ClipLoader } from "react-spinners";
 
 interface PetProfileInfoProps {
   petId: number;
@@ -36,13 +37,19 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
   const { call: getPetSpecies, result: getPetSpeciesResult } = useAPICall(
     api.getPetSpecies
   );
-  const { call: getPetBreeds, result: getPetBreedsResult } = useAPICall(
-    api.getPetBreeds
+  const {
+    call: getPetBreeds,
+    result: getPetBreedsResult,
+    loading: loadingBreeds,
+  } = useAPICall(api.getPetBreeds);
+  const {
+    call: getPetGender,
+    result: getPetGenderResult,
+    loading: loadingGender,
+  } = useAPICall(api.getPetGender);
+  const { call: updatePetDetails, loading: loadingUpdate } = useAPICall(
+    api.updatePet
   );
-  const { call: getPetGender, result: getPetGenderResult } = useAPICall(
-    api.getPetGender
-  );
-  const { call: updatePetDetails } = useAPICall(api.updatePet);
 
   const formMethods = useForm<Pet>({
     defaultValues: {
@@ -158,7 +165,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
     setIsEditing(!isEditing);
   };
 
-  const onSubmit = (selectedPet: Pet) => {
+  const onSubmit = async (selectedPet: Pet) => {
     const realPetImage =
       typeof image === "string" && image.includes("/_next/static/media/")
         ? null
@@ -167,13 +174,15 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
     const petType = petSpecies.find(
       (species) => species.displayName === selectedPet.type
     )?.id;
-    const petBreed = petBreeds.find((breed) => breed.name === selectedPet.breed)?.id;
+    const petBreed = petBreeds.find(
+      (breed) => breed.name === selectedPet.breed
+    )?.id;
     const petGender = petGenders.find(
       (gender) => gender.name === selectedPet.gender
     )?.id;
 
     if (petType) {
-      updatePetDetails({
+      await updatePetDetails({
         pet: {
           vetport_id: selectedPet.vetPortId,
           name: selectedPet.name,
@@ -208,7 +217,9 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
     if (file) {
       const maxSize = 10 * 1024 * 1024;
       if (file.size > maxSize) {
-        alert("File size exceeds the 10MB limit. Please upload a smaller file.");
+        alert(
+          "File size exceeds the 10MB limit. Please upload a smaller file."
+        );
         return;
       }
       const reader = new FileReader();
@@ -227,10 +238,12 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
       const newImage = petImageByType[selectedType]?.src || "";
       setImage(newImage);
     }
-    const selectedSpecies= petSpecies.find((type) => type.displayName === e.target.value);
+    const selectedSpecies = petSpecies.find(
+      (type) => type.displayName === e.target.value
+    );
     if (selectedSpecies) {
-      fetchPetBreedsBySpecies(selectedSpecies?.id)
-      fetchPetGenderBySpecies(selectedSpecies?.id)
+      fetchPetBreedsBySpecies(selectedSpecies?.id);
+      fetchPetGenderBySpecies(selectedSpecies?.id);
     }
     setValue("breed", "");
     setValue("gender", "");
@@ -370,18 +383,24 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
                 </label>
                 {isEditing ? (
                   <>
-                    <select
-                      {...register("breed")}
-                      className="outline-none border w-full p-1 px-2 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
-                      defaultValue={pet?.breed || ""}
-                    >
-                      <option value="">Type of breed</option>
-                      {petBreeds?.map((breed) => (
-                        <option key={breed.id} value={breed.name}>
-                          {breed.name}
-                        </option>
-                      ))}
-                    </select>{" "}
+                    {loadingBreeds ? (
+                      <div className="flex items-center justify-center w-full h-[50px]">
+                        <ClipLoader size={16} />
+                      </div>
+                    ) : (
+                      <select
+                        {...register("breed")}
+                        className="outline-none border w-full p-1 px-2 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
+                        defaultValue={pet?.breed || ""}
+                      >
+                        <option value="">Type of breed</option>
+                        {petBreeds?.map((breed) => (
+                          <option key={breed.id} value={breed.name}>
+                            {breed.name}
+                          </option>
+                        ))}
+                      </select>
+                    )}
                     {errors.breed && (
                       <p className="text-red-500 text-xs">
                         {errors.breed.message}
@@ -403,18 +422,24 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
                 </label>
                 {isEditing ? (
                   <>
-                    <select
-                      {...register("gender")}
-                      className="outline-none border w-full px-2 p-1 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
-                      defaultValue={pet?.gender || ""}
-                    >
-                      <option value="">Type of Gender</option>
-                      {petGenders?.map((gender) => (
-                        <option value={gender.name} key={gender.id}>
-                          {gender.name}
-                        </option>
-                      ))}
-                    </select>
+                    {loadingGender ? (
+                      <div className="flex items-center justify-center w-full h-[50px]">
+                        <ClipLoader size={16} />
+                      </div>
+                    ) : (
+                      <select
+                        {...register("gender")}
+                        className="outline-none border w-full px-2 p-1 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
+                        defaultValue={pet?.gender || ""}
+                      >
+                        <option value="">Type of Gender</option>
+                        {petGenders?.map((gender) => (
+                          <option value={gender.name} key={gender.id}>
+                            {gender.name}
+                          </option>
+                        ))}
+                      </select>
+                    )}
 
                     {errors.gender && (
                       <p className="text-red-500 text-xs">
@@ -549,9 +574,9 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
                 />
                 <button
                   type="submit"
-                  className="btn border bg-secondary-1 text-white px-4 text-xs font-semibold py-2 rounded-full ml-3"
+                  className="btn border bg-secondary-1 text-white px-4 text-xs font-semibold py-2 rounded-full ml-3 min-w-[80px]"
                 >
-                  Submit
+                  {loadingUpdate ? <ClipLoader color="#white" size={18} /> : "Submit"}
                 </button>
               </div>
             </div>

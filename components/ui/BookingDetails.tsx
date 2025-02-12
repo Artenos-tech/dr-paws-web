@@ -15,6 +15,7 @@ import { CircleX } from "lucide-react";
 import CustomButton from "./CustomButton";
 import { useAPICall } from "@/hooks/apicall";
 import api from "@/services/api";
+import { ClipLoader } from "react-spinners";
 
 export const cancelReasons = [
   "Another commitment has come up",
@@ -52,7 +53,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
   const defaultPetImageByType =
     petImageByType[selectedAppointment.pet_type?.toLowerCase() || "other"] ||
     petImageByType.other;
-  const { call: cancelAppointment } = useAPICall(api.cancelAppointment);
+  const { call: cancelAppointment, loading: cancelAppointmentLoading } = useAPICall(api.cancelAppointment);
 
   const handleCancelClick = () => {
     setCurrentView("cancelConfirm");
@@ -298,7 +299,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                 onClick={() => cancelBooking()}
                 className="w-full py-3 border-2 border-secondary-1 rounded-full text-sm"
               >
-                Yes
+                {cancelAppointmentLoading ?<ClipLoader color="#33495f" size={18}/> : `Yes`}
               </button>
             </div>
           </div>

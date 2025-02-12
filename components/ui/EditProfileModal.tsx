@@ -44,7 +44,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
     }
   };
 
-  if (loading) return <div><Loader /></div>;
+  // if (loading) return <div><Loader /></div>;
 
   return (
     <Modal
@@ -62,6 +62,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
         profileData={profileData}
         onSubmit={handleProfileUpdate}
         onCancel={onClose}
+        loading={loading}
       />
     </Modal>
   );
