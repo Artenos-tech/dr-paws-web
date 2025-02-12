@@ -4,7 +4,6 @@ import ProfileForm from "./ProfileForm";
 import { User, useUserContext } from "@/context/UserContext";
 import { useAPICall } from "@/hooks/apicall";
 import api from "@/services/api";
-import Loader from "./Loader";
 
 interface EditProfileModalProps {
   isOpen: boolean;
