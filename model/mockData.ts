@@ -118,7 +118,7 @@ export const FaqData = [
       {
         question: "What are your timings?",
         answer:
-          "Most of our clinics run from 9am to 8pm, with some offering 24x7 care. Please check information for your local clinic in ‘Our Locations’ or via Google.",
+          "Most of our clinics run from 9am to 8pm, with some offering 24x7 care. Please check information for your local clinic in ‘Locations’ or via Google.",
       },
       {
         question: "How do I buy a membership?",
@@ -630,20 +630,20 @@ export const serviceCategories = [
 export const servicesData = {
   "Planned Visits": [
     { name: "Vaccinations" },
-    { name: "Skin infections" },
+    { name: "Skin Infections" },
     { name: "Master Health Check-ups" },
     { name: "Deworming" },
     { name: "Parasite Control" },
     { name: "Ear & Eye Check-ups" },
   ],
   "Sickness & Emergency": [
-    { name: "Care Traume" },
+    { name: "Trauma Care" },
     { name: "Pain Management" },
-    { name: "Fever and Infectious Disease Treatement" },
+    { name: "Fever and Infectious Disease Treatment" },
     { name: "Injuries" },
     { name: "Limping & Wound Care" },
-    { name: "Vommiting & Diarrhoea Care" },
-    { name: "Loss of Appetite & Lathergry Care" },
+    { name: "Vomiting & Diarrhoea Care" },
+    { name: "Loss of Appetite & Lethargy Care" },
   ],
   Diagnostics: [
     { name: "Blood Tests" },
@@ -666,6 +666,7 @@ export const servicesData = {
     { name: "Tooth Extractions" },
     { name: "Orthopaedic Surgeries" },
     { name: "Soft-Tissue Surgeries" },
+    { name: "Eye Surgeries" },
   ],
   Physiotherapy: [
     { name: "Laser Therapy" },
@@ -760,9 +761,9 @@ export const ServiceTabsData = [
     ],
   },
   {
-    id: "Diagonstics",
+    id: "Diagnostics",
     vetPortId: 12,
-    title: "Diagonstics",
+    title: "Diagnostics",
     description:
       "Our pets don’t always communicate what’s wrong making diagnostic tests a crucial part of our care. With our wide range of tests and expert doctors, we’ll do our best to diagnose exactly what’s going as soon as possible.",
     imageDetails: [
