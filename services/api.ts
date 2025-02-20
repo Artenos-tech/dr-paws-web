@@ -909,5 +909,21 @@ export default createAPIClient({
       }),
       errorResponseSchema: z.object({}),
     },
+
+    rescheduleAppointment: {
+      method: "PUT",
+      path: "/user/appointment/{appointmentid}/reschedule",
+      pathParamsSchema: z.object({ appointmentid: z.string() }),
+      requestSchema: z.object({
+        vet_id: z.number(),
+        appt_start: z.number().int(),
+        appt_end: z.number().int(),
+      }),
+      responseSchema: z.object({
+        status: z.number(),
+        message: z.string()
+      }),
+      errorResponseSchema: z.object({}),
+    }
   },
 });

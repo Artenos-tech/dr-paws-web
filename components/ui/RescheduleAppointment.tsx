@@ -116,6 +116,7 @@ const RescheduleAppointment: React.FC<ReschedulingProps> = ({
                 selectedSubtype={selectedAppointment.selectedSubtype}
                 isGrooming={selectedAppointment.isGrooming}
                 isReschedule={true}
+                existingAppointmentId={existingAppointment.id}
                 setFinalAppointmentData={(appData) => {
                   setSelectedAppointmentState((prev) => ({
                     ...prev,
