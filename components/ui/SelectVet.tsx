@@ -45,6 +45,7 @@ interface selectVetProps {
   selectedService: string;
   selectedSubtype: BookingCategory | null;
   isGrooming: boolean;
+  isReschedule: boolean
   setFinalAppointmentData: (finalAppData: {
     selectedDoctor: SelectedVet | null;
     selectedDate: Date | null;
@@ -66,6 +67,7 @@ const SelectVet: React.FC<selectVetProps> = ({
   setFinalAppointmentData,
   isGrooming,
   onNext,
+  isReschedule
 }) => {
   const { user } = useUserContext();
 
@@ -226,55 +228,62 @@ const SelectVet: React.FC<selectVetProps> = ({
   };
 
   const handleConfirmBooking = async () => {
-    setIsConfirmationModalOpen(false);
-    if (user && selectedSlot && selectedDate && selectedDoctor) {
-      const [hours, minutes] = selectedSlot.split(":").map(Number);
-      selectedDate.setHours(hours, minutes, 0, 0);
-      const apptStart = selectedDate.toISOString();
-      selectedDate.setMinutes(
-        selectedDate.getMinutes() +
-          (!isGrooming ? 30 : selectedSubtype?.id === "spa-bath" ? 60 : 90)
-      );
-      const apptEnd = selectedDate.toISOString();
-      try {
-        const response = await createAnAppointment({
-          vet_id:
-            selectedDoctor.id === BEST_AVAILABLE_VET_ID
-              ? selectPreferredOrRandomAvailableVetId()
-              : selectedDoctor.id,
-          pet_id: selectedPet.vetPortId,
-          clinic_id: selectedClinic,
-          appt_reason: selectedSubtype?.title || null,
-          appt_start: apptStart,
-          appt_end: apptEnd,
-          appt_type_id: selectedSvcId,
-        });
-        if (response.ok) {
-          toast.success("Appointment created successfully!", {
-            duration: 3000,
-            position: "bottom-right",
-          });
-          if (onNext) {
-            onNext(); // Navigate to the next page only if the API succeeds
+    if (!isReschedule) {
+      setIsConfirmationModalOpen(false)
+      if (user && selectedSlot && selectedDate && selectedDoctor) {
+        const [hours, minutes] = selectedSlot.split(":").map(Number)
+        selectedDate.setHours(hours, minutes, 0, 0)
+        const apptStart = selectedDate.toISOString()
+        selectedDate.setMinutes(
+          selectedDate.getMinutes() +
+            (!isGrooming ? 30 : selectedSubtype?.id === "spa-bath" ? 60 : 90)
+        )
+        const apptEnd = selectedDate.toISOString()
+        try {
+          const response = await createAnAppointment({
+            vet_id:
+              selectedDoctor.id === BEST_AVAILABLE_VET_ID
+                ? selectPreferredOrRandomAvailableVetId()
+                : selectedDoctor.id,
+            pet_id: selectedPet.vetPortId,
+            clinic_id: selectedClinic,
+            appt_reason: selectedSubtype?.title || null,
+            appt_start: apptStart,
+            appt_end: apptEnd,
+            appt_type_id: selectedSvcId,
+          })
+          if (response.ok) {
+            toast.success("Appointment created successfully!", {
+              duration: 3000,
+              position: "bottom-right",
+            })
+            if (onNext) {
+              onNext() // Navigate to the next page only if the API succeeds
+            }
+          } else {
+            toast.error("Failed to create appointment. Please try again.", {
+              duration: 3000,
+              position: "bottom-right",
+            })
           }
-        } else {
-          toast.error("Failed to create appointment. Please try again.", {
+        } catch (error) {
+          console.error("Error creating appointment:", error)
+          toast.error("An unexpected error occurred. Please try again.", {
             duration: 3000,
             position: "bottom-right",
-          });
+          })
         }
-      } catch (error) {
-        console.error("Error creating appointment:", error);
-        toast.error("An unexpected error occurred. Please try again.", {
+      } else {
+        toast.error("Please fill out all required fields before proceeding.", {
           duration: 3000,
           position: "bottom-right",
-        });
+        })
       }
-    } else {
-      toast.error("Please fill out all required fields before proceeding.", {
-        duration: 3000,
-        position: "bottom-right",
-      });
+    }
+    if (isReschedule) {
+      if (onNext) {
+        onNext()
+      }
     }
   };
 
@@ -375,7 +384,7 @@ const SelectVet: React.FC<selectVetProps> = ({
       </div>
       <div className="my-4 flex justify-center">
         <CustomButton
-          buttonText={"Book"}
+          buttonText={isReschedule ? "Reschedule" : "Book"}
           buttonBackground="bg-secondary-1"
           disabled={!isNextButtonEnabled || loadingAppointmentCreation}
           loading={isNextButtonEnabled && loadingAppointmentCreation}
