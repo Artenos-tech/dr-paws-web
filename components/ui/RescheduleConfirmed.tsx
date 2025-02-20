@@ -6,7 +6,6 @@ import { GrLocation } from "react-icons/gr"
 import { HiOutlineCalendar } from "react-icons/hi"
 import { MdOutlineAccessTime } from "react-icons/md"
 import CustomButton from "./CustomButton"
-import { useRouter } from "next/navigation"
 import { petImageByType } from "./PetCard"
 
 type RescheduleConfirmedProps = {
@@ -45,8 +44,6 @@ const RescheduleConfirmed: React.FC<RescheduleConfirmedProps> = ({
   oldValues,
   onDone
 }) => {
-  const navigate = useRouter()
-
   const defaultPetImageByType =
     petImageByType[updatedValues.selectedPet.type?.toLowerCase() || "other"] ||
     petImageByType.other
