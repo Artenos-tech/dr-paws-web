@@ -1,7 +1,10 @@
 import Image from "next/image";
 import ClinicItem from "./ClinicItem";
-import { clinicItems } from "@/model/mockData";
+// import { clinicItems } from "@/model/mockData";
 import ClinicThumbnail from "@/public/assets/images/clinic/clinicThumbnail.svg";
+import { useAPICall } from "@/hooks/apicall";
+import api from "@/services/api";
+import { useEffect } from "react";
 
 interface ClinicItemProps {
   showStaticCard: boolean;
@@ -9,15 +12,21 @@ interface ClinicItemProps {
 }
 
 const ClinicItemList = ({ showStaticCard, enlargedView }: ClinicItemProps) => {
+  const {call: getClinicsList, result: clinicList} = useAPICall(api.getClinicsForDisplay);
+  useEffect(() => {
+    getClinicsList({});
+  }, []);
+
+  const clinics = (clinicList && clinicList.ok && clinicList.value.body.clinics) || [];
   return (
     <div
-      className={`${clinicItems.length >= 4 ? "gap-4" : "gap-12"} ${
+      className={`${clinics.length >= 4 ? "gap-4" : "gap-12"} ${
         enlargedView
           ? "grid grid-cols-1 lg:grid-cols-4 "
           : "flex flex-col lg:flex-row lg:flex-wrap lg:items-center lg:justify-center"
       }`}
     >
-      {clinicItems.map((clinic) => (
+      {clinics.map((clinic) => (
         <ClinicItem
           key={clinic.id}
           clinic={clinic}
