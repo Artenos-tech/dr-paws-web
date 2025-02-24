@@ -662,7 +662,6 @@ export default createAPIClient({
       }),
       errorResponseSchema: z.object({}),
     },
-
     verifyPayment: {
       method: "GET",
       path: "/user/order/status/{orderId}/{planId}/{petId}",
@@ -684,6 +683,38 @@ export default createAPIClient({
           // message: z.string(),
         // }),
       }),
+    },
+    getAllPlans: {
+      method: "GET",
+      path: "/plans",
+      pathParamsSchema: z.object({}),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        plans: z.array(
+          z.object({
+            id: z.number(),
+            name: z.string().min(1),
+            description: z.string().nullable(),
+            price: z.number().min(0),
+            duration_months: z.number().min(1),
+            version: z.number(),
+            species: z.array(z.enum(['dog', 'cat'])).min(1),
+            age: z.enum(['CHILD', 'ADULT', 'SENIOR']).nullable(),
+            type: z.enum(['GROOMING', 'MEDICAL', 'COMPREHENSIVE']).nullable(),
+            published: z.boolean(),
+            created_at: z.string(),
+            updated_at: z.string(),
+            features: z.array(z.object({
+              id: z.number(),
+              name: z.string(),
+              description: z.string().nullable(),
+              type: z.enum(['DISCOUNT', 'SESSIONS', 'VACCINATIONS']),
+              value: z.number().nullable(),
+            }))
+          })
+        ),
+      }),
+      errorResponseSchema: z.object({}),
     },
   },
 });
