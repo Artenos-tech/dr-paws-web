@@ -91,7 +91,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
         {appointment.appt_type !== "Grooming" && (
           <div className="relative w-20 h-20 rounded-full overflow-hidden bg-white -ml-6 border-2 border-white">
             <Image
-              src={doctorImagesMap[appointment.vet_image] || defaultVetImage}
+              src={appointment.vet_image.type === "ref" ? doctorImagesMap[appointment.vet_image.value] : appointment.vet_image.value || defaultVetImage}
               alt={`Dr. ${appointment.vet_name}'s profile`}
               objectFit="cover"
               sizes="80px"

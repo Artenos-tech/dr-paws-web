@@ -175,8 +175,10 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                   <div className="relative w-32 h-32 rounded-full overflow-hidden bg-white -ml-8 border-4 border-white flex justify-center items-center">
                     <Image
                       src={
-                        doctorImagesMap[selectedAppointment.vet_image] ||
-                        defaultVetImage
+                        selectedAppointment.vet_image.type === "ref"
+                        ? doctorImagesMap[selectedAppointment.vet_image.value]
+                        : selectedAppointment.vet_image.value
+                        || defaultVetImage
                       }
                       alt={`Dr. ${selectedAppointment.vet_name}'s profile`}
                       layout="fill"
@@ -342,8 +344,10 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                     <div className="relative w-32 h-32 rounded-full overflow-hidden bg-white -ml-8 border-4 border-white flex justify-center items-center">
                       <Image
                         src={
-                          doctorImagesMap[selectedAppointment.vet_image] ||
-                          defaultVetImage
+                          selectedAppointment.vet_image.type === "ref"
+                          ? doctorImagesMap[selectedAppointment.vet_image.value]
+                          : selectedAppointment.vet_image.value
+                          || defaultVetImage
                         }
                         alt={`Dr. ${selectedAppointment.vet_name}'s profile`}
                         layout="fill"
