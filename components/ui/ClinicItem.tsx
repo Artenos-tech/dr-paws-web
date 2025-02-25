@@ -5,17 +5,10 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { Toaster } from "react-hot-toast";
 import { useUserContext } from "@/context/UserContext";
+import { ClinicBase } from "@/model/typeDefinitions";
 
 interface ClinicItemProps {
-  clinic: {
-    image: {
-      type: "url" | "ref";
-      value: string;
-    };
-    name: string;
-    services: string;
-    id: number;
-  };
+  clinic: ClinicBase;
   enlargedView: boolean;
 }
 

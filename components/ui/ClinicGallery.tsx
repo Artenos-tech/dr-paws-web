@@ -8,24 +8,22 @@ import ReactModal from "react-modal";
 
 import CustomButton from "@/components/ui/CustomButton";
 import { useUserContext } from "@/context/UserContext";
-// import { photos } from "@/model/mockData";
+import { photos } from "@/model/mockData";
 import { Clinic } from "@/model/typeDefinitions";
-// import { StaticImageData } from "next/image";
 
 interface ClinicGalleryProps {
   name: string;
   services: string;
-  clinic?: Clinic;
+  clinic: Clinic;
 }
 
-function ClinicGallery({ name, services }: ClinicGalleryProps) {
+function ClinicGallery({ name, services, clinic }: ClinicGalleryProps) {
   const [isOpen, setIsOpen] = useState(false);
-  // const [currentIndex, setCurrentIndex] = useState(0);
-  // const clinicImages = photos.find((clinicInfo) => clinicInfo.id === clinic.id);
-  // const limitedGalleryItems = clinicImages
-  //   ? clinicImages.photos.slice(0, 7)
-  //   : [];
-  // const limitedGalleryItems: StaticImageData[] = [];
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const clinicImages = photos.find((clinicInfo) => clinicInfo.id === clinic.id.toString());
+  const limitedGalleryItems = clinicImages
+    ? clinicImages.photos.slice(0, 7)
+    : [];
   const [isMounted, setIsMounted] = useState(false);
   const { initiateLogin, isLoggedIn } = useUserContext();
   const navigate = useRouter();
@@ -40,10 +38,10 @@ function ClinicGallery({ name, services }: ClinicGalleryProps) {
     }
   }, []);
 
-  // const openModal = (index: number) => {
-  //   setCurrentIndex(index);
-  //   setIsOpen(true);
-  // };
+  const openModal = (index: number) => {
+    setCurrentIndex(index);
+    setIsOpen(true);
+  };
 
   const closeModal = () => {
     setIsOpen(false);
@@ -61,33 +59,35 @@ function ClinicGallery({ name, services }: ClinicGalleryProps) {
 
   return (
     <div className="w-full">
-      {/* <div className="gallery-container grid grid-cols-3 gap-4 max-h-[75vh] relative overflow-y-auto">
-        {limitedGalleryItems.map((image, index) => (
-          <div
-            key={index}
-            className="relative cursor-pointer"
-            onClick={
-              index === limitedGalleryItems.length - 1
-                ? () => openModal(0)
-                : () => openModal(index)
-            }
-          >
-            <img
-              src={image.src}
-              alt="gallery image"
-              className={`w-full h-full object-cover ${
-                index === limitedGalleryItems.length - 1 ? "opacity-60" : ""
-              }`}
-              loading="lazy"
-            />
-            {index === limitedGalleryItems.length - 1 && (
-              <span className="absolute inset-0 flex items-center justify-center !text-gray-600 font-bold text-xl">
-                View Gallery
-              </span>
-            )}
-          </div>
-        ))}
-      </div> */}
+      { limitedGalleryItems && limitedGalleryItems.length > 0 &&
+        <div className="gallery-container grid grid-cols-3 gap-4 max-h-[75vh] relative overflow-y-auto">
+          {limitedGalleryItems.map((image, index) => (
+            <div
+              key={index}
+              className="relative cursor-pointer"
+              onClick={
+                index === limitedGalleryItems.length - 1
+                  ? () => openModal(0)
+                  : () => openModal(index)
+              }
+            >
+              <img
+                src={image.src}
+                alt="gallery image"
+                className={`w-full h-full object-cover ${
+                  index === limitedGalleryItems.length - 1 ? "opacity-60" : ""
+                }`}
+                loading="lazy"
+              />
+              {index === limitedGalleryItems.length - 1 && (
+                <span className="absolute inset-0 flex items-center justify-center !text-gray-600 font-bold text-xl">
+                  View Gallery
+                </span>
+              )}
+            </div>
+          ))}
+        </div>
+      }
       <div className="w-full flex justify-between mt-8">
         <div className="flex flex-col gap-4">
           <h1 className="text-xl md:text-4xl">{name}</h1>
@@ -128,34 +128,36 @@ function ClinicGallery({ name, services }: ClinicGalleryProps) {
           {/* Previous Button */}
           <button
             className="p-2 rounded-full bg-gray-700 text-white hover:bg-gray-600 focus:outline-none"
-            // onClick={() =>
-            //   setCurrentIndex((prev) =>
-            //     prev === 0 ? limitedGalleryItems.length - 1 : prev - 1
-            //   )
-            // }
+            onClick={() =>
+              setCurrentIndex((prev) =>
+                prev === 0 ? limitedGalleryItems.length - 1 : prev - 1
+              )
+            }
             aria-label="Previous Image"
           >
             <IoIosArrowBack size={24} />
           </button>
 
           {/* Current Image */}
-          {/* <div className="w-full">
-            <img
-              src={limitedGalleryItems[currentIndex].src}
-              alt="gallery image"
-              className="overflow-hidden w-full h-[80vh] object-contain"
-              loading="lazy"
-            />
-          </div> */}
+          {limitedGalleryItems && limitedGalleryItems.length > 0 && limitedGalleryItems[currentIndex] &&
+            <div className="w-full">
+              <img
+                src={limitedGalleryItems[currentIndex].src}
+                alt="gallery image"
+                className="overflow-hidden w-full h-[80vh] object-contain"
+                loading="lazy"
+              />
+            </div>
+          }
 
           {/* Next Button */}
           <button
             className="p-2 rounded-full bg-gray-700 text-white hover:bg-gray-600 focus:outline-none"
-            // onClick={() =>
-            //   setCurrentIndex((prev) =>
-            //     prev === limitedGalleryItems.length - 1 ? 0 : prev + 1
-            //   )
-            // }
+            onClick={() =>
+              setCurrentIndex((prev) =>
+                prev === limitedGalleryItems.length - 1 ? 0 : prev + 1
+              )
+            }
             aria-label="Next Image"
           >
             <IoIosArrowForward size={24} />

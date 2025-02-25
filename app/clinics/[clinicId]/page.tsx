@@ -8,7 +8,7 @@ import ClinicReviews from "@/components/ui/ClinicReviews";
 import ClinicTabBar from "@/components/ui/ClinicTabBar";
 import Overview from "@/components/ui/OverView";
 
-import { photos, reviews } from "@/model/mockData";
+import { clinicItems, doctors, photos, reviews } from "@/model/mockData";
 import { useAPICall } from "@/hooks/apicall";
 import api from "@/services/api";
 import Loader from "@/components/ui/Loader";
@@ -38,8 +38,8 @@ const ClinicDetails: React.FC<ClinicDetailsProps> = ({ params }) => {
     getDoctorsForClinic({ clinicid: clinicId });
   }, [clinicId]);
 
-  const clinic = clinicResult?.ok && clinicResult.value.body.clinic;
-  const doctors = doctorsResult?.ok ? doctorsResult.value.body.doctors : [];
+  const clinic = clinicResult?.ok && clinicResult.value.body.clinic || clinicItems.find((clinic) => clinic.id === parseInt(clinicId));
+  const doctorsList = doctorsResult?.ok && doctorsResult.value.body.doctors || doctors;
 
   if (loadingClinic && loadingDoctors) {
     return <Loader />;
@@ -55,9 +55,9 @@ const ClinicDetails: React.FC<ClinicDetailsProps> = ({ params }) => {
       component: (
         <Overview
           clinicContact={clinic.contact}
-          clinicLocation={clinic.displayName}
+          clinicLocation={clinic.name}
           clinicParking={clinic.parkingInfo}
-          clinicDoctors={doctors}
+          clinicDoctors={doctorsList}
           clinicTimings={clinic.timings}
         />
       ),
@@ -102,8 +102,9 @@ const ClinicDetails: React.FC<ClinicDetailsProps> = ({ params }) => {
     <div className="flex flex-col w-full h-full items-center justify-items-center font-roca pb-20 flex-grow px-8 md:px-32 lg:px-20 xl:px-40">
       <main className="w-full flex flex-col gap-[80px] row-start-2 items-center">
         <ClinicGallery
-          name={clinic.displayName}
-          services={clinic.servicesTag}
+          name={clinic.name}
+          services={clinic.services}
+          clinic={clinic}
         />
         <ClinicTabBar
           tabs={getTabs()}

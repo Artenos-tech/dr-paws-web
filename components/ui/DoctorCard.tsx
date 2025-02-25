@@ -6,7 +6,7 @@ import { CiLocationOn } from "react-icons/ci";
 import defaultVetImage from "@/public/assets/images/clinic/doctorFemale.webp";
 import { DoctorBase } from "@/model/typeDefinitions";
 import DoctorDetailsModal from "./DoctorDetailsModal";
-import { doctorImagesMap } from "@/model/mockData";
+import { doctorImagesMap, doctors } from "@/model/mockData";
 import api from "@/services/api";
 import { useAPICall } from "@/hooks/apicall";
 import Loader from "./Loader";
@@ -34,10 +34,10 @@ const DoctorCard: React.FC<DoctorCardProps> = ({ doctor }) => {
     }
   };
 
-  const doctorProfile = doctorProfileResult?.ok
+  const doctorProfile = doctorProfileResult?.ok && doctorProfileResult.value.body.doctor
     ? doctorProfileResult.value.body.doctor
-    : null;
-
+    : doctors.find((doc) => doc.id === doctor.id);
+  
   if (loadingDoctorProfile) {
     return <Loader />;
   }
@@ -49,7 +49,7 @@ const DoctorCard: React.FC<DoctorCardProps> = ({ doctor }) => {
             imageUrl.value === "unknown"
               ? defaultVetImage
               : imageUrl.type === "ref"
-              ? doctorImagesMap[imageUrl.value]
+              ? doctorImagesMap[imageUrl.value as string]
               : imageUrl.value
           }
           alt={displayName}
@@ -59,21 +59,19 @@ const DoctorCard: React.FC<DoctorCardProps> = ({ doctor }) => {
         />
         <h2 className="text-lg sm:text-xl">{displayName}</h2>
         <p className="text-sm sm:text-base">{position}</p>
-        <p className="text-sm sm:text-base">{experience}</p>
+        <p className="text-sm sm:text-base">{experience} of Experience</p>
         <div className="flex items-center space-x-2 text-primary-1 truncate">
           <CiLocationOn size={20} />
           <span className="text-sm sm:text-base">
             {availableToDisplayAt.map((clinic) => clinic.name).join(", ")}
           </span>
         </div>
-        {/* {!isMarketingFeatureEnabled ? ( */}
         <button
           className="mt-4 py-2 px-4 rounded-lg bg-accent text-white text-sm hover:bg-secondary-1"
           onClick={handleViewProfile}
         >
           View Profile
         </button>
-        {/* ) : null} */}
       </div>
       {doctorProfile && (
         <DoctorDetailsModal

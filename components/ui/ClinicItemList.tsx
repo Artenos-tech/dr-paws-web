@@ -1,6 +1,6 @@
 import Image from "next/image";
 import ClinicItem from "./ClinicItem";
-// import { clinicItems } from "@/model/mockData";
+import { clinicItems } from "@/model/mockData";
 import ClinicThumbnail from "@/public/assets/images/clinic/clinicThumbnail.svg";
 import { useAPICall } from "@/hooks/apicall";
 import api from "@/services/api";
@@ -17,7 +17,14 @@ const ClinicItemList = ({ showStaticCard, enlargedView }: ClinicItemProps) => {
     getClinicsList({});
   }, []);
 
-  const clinics = (clinicList && clinicList.ok && clinicList.value.body.clinics) || [];
+  const clinics = (clinicList && clinicList.ok && clinicList.value.body.clinics) || clinicItems.map(
+    (clinic) => ({
+      id: clinic.id,
+      name: clinic.name,
+      services: clinic.services,
+      image: clinic.image
+    })
+  );
   return (
     <div
       className={`${clinics.length >= 4 ? "gap-4" : "gap-12"} ${

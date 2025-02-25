@@ -18,7 +18,7 @@ interface OverviewProps {
     dayOfWeek: string | null;
     openTime: string | null;
     closeTime: string | null;
-    is24Hours: boolean;
+    is24Hours: boolean | null;
   }[];
 }
 

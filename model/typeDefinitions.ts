@@ -4,25 +4,37 @@ export interface Service {
   name: string;
 }
 
-export interface Clinic {
-  id: string;
-  clinicName: string;
-  image: StaticImageData;
+export interface ClinicBase {
+  id: number;
+  name: string;
+  image: {
+    type: "url" | "ref";
+    value: StaticImageData | string
+  };
   services: string;
+}
+export interface Clinic extends ClinicBase{
   contact: string;
-  location: string;
-  parkingInformation: string;
-  timings: { [key: string]: string };
+  gmapsUrl: string;
+  address: string;
+  city: string;
+  parkingInfo: string;
+  timings: { 
+    dayOfWeek: string | null;
+    openTime: string | null;
+    closeTime: string  | null;
+    is24Hours: boolean | null;
+  }[];
 }
 
 export type Gender = "Male" | "Female" | "";
 
-export type DoctorBase = {
+export interface DoctorBase {
   id: number;
   displayName: string;
   imageUrl: {
     type: "url" | "ref";
-    value: string;
+    value: string | StaticImageData;
   };
   position: string;
   experience: string;
@@ -32,14 +44,13 @@ export type DoctorBase = {
   }[];
 }
 
-export type Doctor = DoctorBase & {
+export interface Doctor extends DoctorBase {
   specialization: string;
   qualification: string;
   about: string;
   passionateAbout: string;
   spiritAnimal: string;
   favPetName: string;
-  // clinicIds: string[];
 }
 
 export interface Review {

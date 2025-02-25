@@ -652,7 +652,7 @@ export default createAPIClient({
               value: z.string(),
             }),
           })
-        ),
+        ).nullable(),
       }),
       errorResponseSchema: z.object({}),
     },
@@ -664,16 +664,16 @@ export default createAPIClient({
       responseSchema: z.object({
         clinic: z.object({
           id: z.number(),
-          displayName: z.string(),
+          name: z.string(),
           contact: z.string(),
-          imageUrl: z.object({
+          image: z.object({
             type: z.enum(["url", "ref"]),
             value: z.string(),
           }),
           gmapsUrl: z.string(),
           address: z.string(),
           city: z.string(),
-          servicesTag: z.string(),
+          services: z.string(),
           parkingInfo: z.string(),
           timings: z.array(z.object({
             dayOfWeek: z.string().nullable(),
@@ -681,7 +681,7 @@ export default createAPIClient({
             closeTime: z.string().nullable(),
             is24Hours: z.boolean(),
           })),
-        }),
+        }).nullable(),
       }),
       errorResponseSchema: z.object({}),
     },
@@ -706,7 +706,7 @@ export default createAPIClient({
               value: z.string(),
             }),
           })
-        ),
+        ).nullable(),
       }),
       errorResponseSchema: z.object({}),
     },
@@ -735,7 +735,7 @@ export default createAPIClient({
             type: z.enum(["url", "ref"]),
             value: z.string(),
           }),
-        })
+        }).nullable()
       }),
       errorResponseSchema: z.object({}),
     },
@@ -760,7 +760,7 @@ export default createAPIClient({
               value: z.string(),
             }),
           })
-        ),
+        ).nullable(),
       }),
       errorResponseSchema: z.object({}),
     },

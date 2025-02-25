@@ -7,13 +7,14 @@ import DoctorCard from "@/components/ui/DoctorCard";
 import { DoctorBase } from "@/model/typeDefinitions";
 import { useAPICall } from "@/hooks/apicall";
 import api from "@/services/api";
+import { doctors } from "@/model/mockData";
 
 const TeamPage = () => {
   const { call: getDoctorsForDisplay, result: doctorsResult } = useAPICall(api.getDoctorsForDisplay);
   useEffect(() => {
     getDoctorsForDisplay({});
   }, []);
-  const doctors = doctorsResult?.ok ? doctorsResult.value.body.doctors : [];
+  const doctorsList = doctorsResult && doctorsResult.ok && doctorsResult.value.body.doctors || doctors;
   return (
     <div className="flex flex-col w-full h-full items-center justify-items-center font-roca pb-20">
       <main className="flex flex-col gap-[50px] row-start-2 items-center w-full px-8 md:px-32 lg:px-20 xl:px-40">
@@ -43,7 +44,7 @@ const TeamPage = () => {
           </h1>
 
           <div className="flex justify-center items-center flex-wrap gap-8 lg:gap-14 my-10">
-            {doctors.map((doctor: DoctorBase, index: number) => (
+            {doctorsList.map((doctor: DoctorBase, index: number) => (
               <div key={index}>
                 <DoctorCard doctor={doctor} />
               </div>
