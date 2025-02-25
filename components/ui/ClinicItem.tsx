@@ -4,13 +4,14 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { Toaster } from "react-hot-toast";
-
 import { useUserContext } from "@/context/UserContext";
-// import { Clinic } from "@/model/typeDefinitions";
 
 interface ClinicItemProps {
   clinic: {
-    image: string | null;
+    image: {
+      type: "url" | "ref";
+      value: string;
+    };
     name: string;
     services: string;
     id: number;
@@ -45,7 +46,7 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
       <div onClick={goToClinicPage} className="cursor-pointer">
         <div className="image-container">
           <Image
-            src={image || "/assets/images/clinic/clinicThumbnail.svg"}
+            src={image.type === "url" && image.value || "/assets/images/clinic/clinicThumbnail.svg"}
             alt={name + " image"}
             className="image rounded-t-md"
             layout="fill"

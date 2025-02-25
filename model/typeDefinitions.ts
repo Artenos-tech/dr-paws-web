@@ -17,21 +17,29 @@ export interface Clinic {
 
 export type Gender = "Male" | "Female" | "";
 
+export type DoctorBase = {
+  id: number;
+  displayName: string;
+  imageUrl: {
+    type: "url" | "ref";
+    value: string;
+  };
+  position: string;
+  experience: string;
+  availableToDisplayAt: {
+    id: number;
+    name: string
+  }[];
+}
 
-export interface Doctor {
-  id: string;
-  name: string;
-  position?: string;
-  experience?: string;
-  location: string;
-  image: StaticImageData;
-  specialization?: string;
-  qualification?: string;
-  aboutMe?: string;
-  vetPassionInfo?: string;
-  spiritAnimalInfo?: string;
-  favouritePet?: string;
-  clinicIds: string[];
+export type Doctor = DoctorBase & {
+  specialization: string;
+  qualification: string;
+  about: string;
+  passionateAbout: string;
+  spiritAnimal: string;
+  favPetName: string;
+  // clinicIds: string[];
 }
 
 export interface Review {

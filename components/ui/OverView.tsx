@@ -7,12 +7,12 @@ import "swiper/css/navigation";
 
 import { LocationCard } from "./LocationCard";
 import DoctorCard from "./DoctorCard";
-import { Doctor } from "@/model/typeDefinitions";
+import { DoctorBase } from "@/model/typeDefinitions";
 
 interface OverviewProps {
   clinicContact: string;
   clinicLocation: string;
-  clinicDoctors: Doctor[];
+  clinicDoctors: DoctorBase[];
   clinicParking: string;
   clinicTimings: {
     dayOfWeek: string | null;

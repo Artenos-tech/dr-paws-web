@@ -647,7 +647,10 @@ export default createAPIClient({
             id: z.number(),
             name: z.string(),
             services: z.string(),
-            image: z.string().nullable(),
+            image: z.object({
+              type: z.enum(["url", "ref"]),
+              value: z.string(),
+            }),
           })
         ),
       }),
@@ -663,7 +666,10 @@ export default createAPIClient({
           id: z.number(),
           displayName: z.string(),
           contact: z.string(),
-          imageUrl: z.string().nullable(),
+          imageUrl: z.object({
+            type: z.enum(["url", "ref"]),
+            value: z.string(),
+          }),
           gmapsUrl: z.string(),
           address: z.string(),
           city: z.string(),
@@ -676,6 +682,85 @@ export default createAPIClient({
             is24Hours: z.boolean(),
           })),
         }),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+    getDoctorsForDisplay: {
+      method: "GET",
+      path: "/doctors",
+      pathParamsSchema: z.object({}),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        doctors: z.array(
+          z.object({
+            id: z.number(),
+            displayName: z.string(),
+            position: z.string(),
+            experience: z.string(),
+            availableToDisplayAt: z.array(z.object({
+              id: z.number(),
+              name: z.string(),
+            })),
+            imageUrl: z.object({
+              type: z.enum(["url", "ref"]),
+              value: z.string(),
+            }),
+          })
+        ),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+    getDoctorForDisplay: {
+      method: "GET",
+      path: "/doctor/{doctorid}",
+      pathParamsSchema: z.object({ doctorid: z.string() }),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        doctor: z.object({
+          id: z.number(),
+          displayName: z.string(),
+          position: z.string(),
+          experience: z.string(),
+          qualification: z.string(),
+          specialization: z.string(),
+          about: z.string(),
+          passionateAbout: z.string(),
+          favPetName: z.string(),
+          spiritAnimal: z.string(),
+          availableToDisplayAt: z.array(z.object({
+            id: z.number(),
+            name: z.string(),
+          })),
+          imageUrl: z.object({
+            type: z.enum(["url", "ref"]),
+            value: z.string(),
+          }),
+        })
+      }),
+      errorResponseSchema: z.object({}),
+    },
+    getDoctorsForClinicForDisplay: {
+      method: "GET",
+      path: "/clinic/{clinicid}/doctors",
+      pathParamsSchema: z.object({ clinicid: z.string() }),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        doctors: z.array(
+          z.object({
+            id: z.number(),
+            displayName: z.string(),
+            position: z.string(),
+            experience: z.string(),
+            availableToDisplayAt: z.array(z.object({
+              id: z.number(),
+              name: z.string(),
+            })),
+            imageUrl: z.object({
+              type: z.enum(["url", "ref"]),
+              value: z.string(),
+            }),
+          })
+        ),
       }),
       errorResponseSchema: z.object({}),
     },
