@@ -346,8 +346,9 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                         src={
                           selectedAppointment.vet_image.type === "ref"
                           ? doctorImagesMap[selectedAppointment.vet_image.value]
-                          : selectedAppointment.vet_image.value
-                          || defaultVetImage
+                          : selectedAppointment.vet_image.value === "unknown"
+                            ? defaultVetImage
+                            : selectedAppointment.vet_image.value
                         }
                         alt={`Dr. ${selectedAppointment.vet_name}'s profile`}
                         layout="fill"

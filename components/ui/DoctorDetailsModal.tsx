@@ -6,6 +6,7 @@ import starMedal from "@/public/assets/images/team/star-medal.png";
 import { CiStethoscope, CiLocationOn } from "react-icons/ci";
 import { IoClose } from "react-icons/io5";
 import { doctorImagesMap } from "@/model/mockData";
+import defaultVetImg from "@/public/assets/images/clinic/doctorFemale.webp";  
 
 interface doctorDetailsProps {
   isOpen: boolean;
@@ -229,7 +230,13 @@ const DoctorDetailsModal: React.FC<doctorDetailsProps> = ({
           </div>
           <div className="self-center flex flex-col justify-center items-center gap-3 w-full lg:w-1/2 h-full lg:h-[450px] ">
             <Image
-              src={imageUrl.type === "url" ? imageUrl.value : doctorImagesMap[imageUrl.value]}
+              src={
+                imageUrl.type === "ref" 
+                  ? doctorImagesMap[imageUrl.value]
+                  : imageUrl.value === "unknown" 
+                    ? defaultVetImg
+                    : imageUrl.value
+              }
               alt="doctor with pet"
               width={200}
               height={100}

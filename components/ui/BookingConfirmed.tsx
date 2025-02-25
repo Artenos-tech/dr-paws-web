@@ -2,6 +2,7 @@ import { Pet } from "@/context/UserContext";
 import { BsCheckCircleFill } from "react-icons/bs";
 import Image from "next/image";
 import { doctorImagesMap } from "@/model/mockData";
+import defaultVetImage from "@/public/assets/images/clinic/doctorFemale.webp";
 import { GrLocation } from "react-icons/gr";
 import { HiOutlineCalendar } from "react-icons/hi";
 import { MdOutlineAccessTime } from "react-icons/md";
@@ -89,7 +90,9 @@ const BookingConfirmed: React.FC<BookingConfirmedProps> = ({
                         ? doctorImagesMap[
                             selectedAppointment.selectedDoctorImage.value
                           ]
-                        : selectedAppointment.selectedDoctorImage.value
+                        : selectedAppointment.selectedDoctorImage.value === "unknown"
+                          ? defaultVetImage
+                          : selectedAppointment.selectedDoctorImage.value
                     }
                     alt={`Dr. ${selectedAppointment.selectedVet?.name}'s profile`}
                     objectFit="cover"

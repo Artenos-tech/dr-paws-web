@@ -2,6 +2,7 @@
 import React from "react";
 import Image from "next/image";
 import { doctorImagesMap } from "@/model/mockData";
+import defaultVetImg from "@/public/assets/images/clinic/doctorFemale.webp";
 
 type VetportDoctor = {
   id: number;
@@ -36,7 +37,7 @@ const SelectDoctorCard: React.FC<SelectDoctorCardProps> = ({
       }`}
     >
       <Image
-        src={image.type === "ref" ? doctorImagesMap[image.value] : image.value}
+        src={image.type === "ref" ? doctorImagesMap[image.value] : image.value === "unknown" ? defaultVetImg : image.value}
         alt={name}
         width={120}
         height={120}
