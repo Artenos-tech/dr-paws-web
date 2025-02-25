@@ -3,7 +3,10 @@ import Image from "next/image";
 import { clinicImagesMap } from "@/model/mockData";
 
 type VetportClinic = {
-  image: string;
+  image: {
+    type: "url" | "ref",
+    value: string;  
+  };
   services: string;
   id: number;
   name: string;
@@ -30,7 +33,7 @@ const SelectClinicCard: React.FC<ClinicItemProps> = ({
     >
       <div className="image-container">
           <Image
-            src={clinicImagesMap[image]}
+            src={image.type === "ref" ? clinicImagesMap[image.value] : image.value}
             alt={name + " image"}
             className="image rounded-t-md"
             layout="fill"

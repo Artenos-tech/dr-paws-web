@@ -267,7 +267,10 @@ export default createAPIClient({
             user_vetport_id: z.number(),
             vet_vetport_id: z.number(),
             vet_name: z.string(),
-            vet_image: z.string(),
+            vet_image: z.object({
+              type: z.enum(["url", "ref"]),
+              value: z.string(),
+            }),
             clinic_id: z.number(),
             clinic_name: z.string(),
             clinic_location: z.string(),
@@ -365,7 +368,10 @@ export default createAPIClient({
           clinic_location: z.string(),
           clinic_contact: z.string(),
           vet_name: z.string(),
-          vet_image: z.string(),
+          vet_image: z.object({
+            type: z.enum(["url", "ref"]),
+            value: z.string(),
+          }),
           appt_start: z.string(),
           appt_end: z.string(),
           appt_reason: z.string().nullable(),
@@ -549,7 +555,10 @@ export default createAPIClient({
             id: z.number(),
             name: z.string(),
             services: z.string(),
-            image: z.string().nullable(),
+            image: z.object({
+              type: z.enum(["url", "ref"]),
+              value: z.string(),
+            }),
             location: z.string(),
             contact: z.string(),
           })
@@ -589,7 +598,10 @@ export default createAPIClient({
           z.object({
             id: z.number(),
             name: z.string(),
-            image: z.string(),
+            image: z.object({
+              type: z.enum(["url", "ref"]),
+              value: z.string(),
+            }),
             clinicids: z.array(z.number()),
           })
         ),
