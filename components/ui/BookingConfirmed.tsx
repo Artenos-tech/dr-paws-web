@@ -86,13 +86,14 @@ const BookingConfirmed: React.FC<BookingConfirmedProps> = ({
                 <div className="relative w-32 h-32 rounded-full overflow-hidden bg-white p-8 ml-[-30px] flex justify-center items-center">
                   <Image
                     src={
-                      selectedAppointment.selectedDoctorImage.type === "ref"
+                      selectedAppointment.selectedDoctorImage.value ===
+                      "unknown"
+                        ? defaultVetImage
+                        : selectedAppointment.selectedDoctorImage.type === "ref"
                         ? doctorImagesMap[
                             selectedAppointment.selectedDoctorImage.value
                           ]
-                        : selectedAppointment.selectedDoctorImage.value === "unknown"
-                          ? defaultVetImage
-                          : selectedAppointment.selectedDoctorImage.value
+                        : selectedAppointment.selectedDoctorImage.value
                     }
                     alt={`Dr. ${selectedAppointment.selectedVet?.name}'s profile`}
                     objectFit="cover"

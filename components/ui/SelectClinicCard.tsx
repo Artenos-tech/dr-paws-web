@@ -35,10 +35,10 @@ const SelectClinicCard: React.FC<ClinicItemProps> = ({
       <div className="image-container">
         <Image
           src={
-            image.type === "ref"
-              ? clinicImagesMap[image.value]
-              : image.value === "unknown"
+            image.value === "unknown"
               ? defaultClinicImg
+              : image.type === "ref"
+              ? clinicImagesMap[image.value]
               : image.value
           }
           alt={name + " image"}

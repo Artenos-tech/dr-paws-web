@@ -11,11 +11,15 @@ type VetportDoctor = {
     type: "url" | "ref";
     value: string;
   };
-}
+};
 interface SelectDoctorCardProps {
   doctor: VetportDoctor;
   isSelected: boolean;
-  onDoctorSelect: (doctorId: number, doctorName: string, doctorImage: { type: "url" | "ref", value: string}) => void;
+  onDoctorSelect: (
+    doctorId: number,
+    doctorName: string,
+    doctorImage: { type: "url" | "ref"; value: string }
+  ) => void;
 }
 
 const SelectDoctorCard: React.FC<SelectDoctorCardProps> = ({
@@ -37,7 +41,13 @@ const SelectDoctorCard: React.FC<SelectDoctorCardProps> = ({
       }`}
     >
       <Image
-        src={image.type === "ref" ? doctorImagesMap[image.value] : image.value === "unknown" ? defaultVetImg : image.value}
+        src={
+          image.value === "unknown"
+            ? defaultVetImg
+            : image.type === "ref"
+            ? doctorImagesMap[image.value]
+            : image.value
+        }
         alt={name}
         width={120}
         height={120}

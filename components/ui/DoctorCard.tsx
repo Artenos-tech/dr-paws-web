@@ -46,10 +46,10 @@ const DoctorCard: React.FC<DoctorCardProps> = ({ doctor }) => {
       <div className="rounded-xl border border-primary-3 shadow-md bg-primary-3 text-primary-1 p-4 sm:p-6 w-[260px] md:w-[378px] lg:w-[320px] flex flex-col items-center text-center space-y-4">
         <Image
           src={
-            imageUrl.type === "ref"
-              ? doctorImagesMap[imageUrl.value]
-              : imageUrl.value === "unknown"
+            imageUrl.value === "unknown"
               ? defaultVetImage
+              : imageUrl.type === "ref"
+              ? doctorImagesMap[imageUrl.value]
               : imageUrl.value
           }
           alt={displayName}
