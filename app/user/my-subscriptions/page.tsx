@@ -23,27 +23,11 @@ export interface Subscription {
   };
 }
 
-const benefits = [
-  { text: "50% discount on Vet Consultations" },
-  { text: "20% discount on Grooming Sessions" },
-  {
-    text: "Full Puppy Vaccination Programme Included (DHPPi 9-in-1, Rabies, Kennel Cough) - Worth ₹6,860",
-  },
-  { text: "10% off on all Retail products" },
-  { text: "10% off on all Pharmacy products" },
-  { text: "15% off on in-house Diagnostic Tests" },
-  { text: "10% off on external Diagnostic Tests" },
-  { text: "10% off on Imaging (X-rays, Ultrasound)" },
-  { text: "10% off on Physiotherapy" },
-  { text: "10% off on Elective Surgeries" },
-  { text: "5% off on Non-Elective Surgeries" },
-];
 
 const Page = () => {
   const [pets, setPets] = useState<Pet[]>([]);
-  const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
   const { call: getPetsAPI ,loading: PetLoading} = useAPICall(api.getPets);
-  const { call: getSubscriptionsAPI, loading: SubsLoading } = useAPICall(api.getSubscriptions);
+  const { call: getSubscriptionsAPI, loading: SubsLoading, result: subsResult } = useAPICall(api.getSubscriptions);
 
   const fetchPets = async () => {
     const response = await getPetsAPI({});
@@ -63,11 +47,7 @@ const Page = () => {
   };
 
   const fetchSubscriptions = async () => {
-    const response = await getSubscriptionsAPI({});
-    if (response.ok) {
-      const fetchedSubscriptions = response.value.body.subscriptions;
-      setSubscriptions(fetchedSubscriptions);
-    }
+    getSubscriptionsAPI({});
   };
 
   useEffect(() => {
@@ -82,6 +62,18 @@ const Page = () => {
     );
   }
 
+  if (!subsResult) {
+    return null
+  }
+
+  if (!subsResult.ok) {
+    return (
+      // Error message
+      <div>An error occurred while fetching your subscriptions, please try again later</div>
+    )
+  }
+
+  const subscriptions = subsResult.value.body.subscriptions;
 
   if (!subscriptions.length) {
     return (
@@ -141,10 +133,20 @@ const Page = () => {
                       </h4>
                       <div className="lg:columns-2 lg:gap-8">
                         <ul className="space-y-2 text-sm text-gray-700">
-                          {benefits.map((benefit, index) => (
-                            <li key={index} className="flex items-start break-inside-avoid">
+                          {subscription.plan.features.toSorted((a, b) => {
+                            // sort in order of type: VACCINATIONS > SESSIONS > DISCOUNT > OTHER
+                            const order = ["VACCINATIONS", "SESSIONS", "DISCOUNT"];
+                            return order.indexOf(a.type) - order.indexOf(b.type);
+                          }).map(feature => (
+                            <li key={feature.name} className="flex items-start break-inside-avoid">
                               <span className="mr-2">•</span>
-                              {benefit.text}
+                              {["VACCINATIONS", "SESSIONS"].includes(feature.type)  ? (
+                                `${feature.value} free ${feature.name}`
+                              ): feature.type === "DISCOUNT" ? (
+                                `${feature.value}% discount on ${feature.name}`
+                              ) : (
+                                feature.name
+                              )}
                             </li>
                           ))}
                         </ul>

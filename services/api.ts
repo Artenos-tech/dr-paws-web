@@ -604,6 +604,12 @@ export default createAPIClient({
             plan: z.object({
               id: z.number(),
               name: z.string(),
+              features: z.array(z.object({
+                name: z.string(),
+                description: z.string().nullable(),
+                value: z.number(),
+                type: z.string(),
+              }))
             }),
             pet: z.object({
               id: z.number(),
