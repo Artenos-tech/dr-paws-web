@@ -101,6 +101,8 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
               alt={`Dr. ${appointment.vet_name}'s profile`}
               objectFit="cover"
               sizes="80px"
+              width={80}
+              height={80}
             />
           </div>
         )}

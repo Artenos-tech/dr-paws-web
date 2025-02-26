@@ -98,6 +98,8 @@ const BookingConfirmed: React.FC<BookingConfirmedProps> = ({
                     alt={`Dr. ${selectedAppointment.selectedVet?.name}'s profile`}
                     objectFit="cover"
                     sizes="128px"
+                    width={128}
+                    height={128}
                   />
                 </div>
               )}

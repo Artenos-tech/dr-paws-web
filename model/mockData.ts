@@ -191,7 +191,7 @@ export const clinicItems: Clinic[] = [
     address: "Indiranagar",
     city: "Bangalore",
     contact: "+91 9606994627",
-    gmapsUrl: "https://www.google.com/maps/place/Dr.+Paws+-+Veterinarian+in+Indiranagar,+Bengaluru+%7C+Vet+Consultation,+Pet+Vaccination,+Pet+Grooming,+Pet+Surgery+%7C+Pet+Clinic/@12.9655253,77.6385461,17z/data=!3m1!4b1!4m6!3m5!1s0x3bae150fe803f393:0x5820ed9ef42478d3!8m2!3d12.9655253!4d77.6385461!16s%2Fg%2F11vxxyv2zc?entry=ttu&g_ep=EgoyMDI1MDIxOS4xIKXMDSoJLDEwMjExNDU1SAFQAw%3D%3D",
+    gmapsUrl: "https://maps.app.goo.gl/p3JpKF8ud82urwFt6",
     parkingInfo:
       "Ample parking available outside clinic, and in surrounding lanes",
     timings: [

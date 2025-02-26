@@ -186,17 +186,19 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                     <div className="relative w-32 h-32 rounded-full overflow-hidden bg-white -ml-8 border-4 border-white flex justify-center items-center">
                       <Image
                         src={
-                          selectedAppointment.vet_image.type === "ref"
+                          selectedAppointment.vet_image.value === "unknown"
+                          ? defaultVetImage
+                          : selectedAppointment.vet_image.type === "ref"
                             ? doctorImagesMap[
-                                selectedAppointment.vet_image.value
-                              ]
-                            : selectedAppointment.vet_image.value ||
-                              defaultVetImage
+                              selectedAppointment.vet_image.value
+                            ]
+                            : selectedAppointment.vet_image.value
                         }
                         alt={`Dr. ${selectedAppointment.vet_name}'s profile`}
-                        layout="fill"
                         objectFit="cover"
                         sizes="128px"
+                        width={128}
+                        height={128}
                       />
                     </div>
                   )}
@@ -364,9 +366,10 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                         defaultPetImageByType
                       }
                       alt={`${selectedAppointment.pet_name}'s profile`}
-                      layout="fill"
                       objectFit="cover"
                       sizes="128px"
+                      height={128}
+                      width={128}
                       priority
                     />
                   </div>
@@ -383,9 +386,11 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                             : selectedAppointment.vet_image.value
                         }
                         alt={`Dr. ${selectedAppointment.vet_name}'s profile`}
-                        layout="fill"
+                        // layout="fill"
                         objectFit="cover"
                         sizes="128px"
+                        height={128}
+                        width={128}
                       />
                     </div>
                   )}

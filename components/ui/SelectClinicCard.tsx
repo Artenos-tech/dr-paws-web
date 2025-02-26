@@ -43,7 +43,8 @@ const SelectClinicCard: React.FC<ClinicItemProps> = ({
           }
           alt={name + " image"}
           className="image rounded-t-md"
-          layout="fill"
+          height={200}
+          width={100}
         />
       </div>
       <div className="flex flex-col flex-grow px-6 pt-6 pb-12 bg-primary-3">
