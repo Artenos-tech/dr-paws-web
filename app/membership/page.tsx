@@ -60,6 +60,19 @@ const Membership = () => {
 
   const {call: getAllPlans, loading: getAllPlansLoading} = useAPICall(api.getAllPlans);
 
+  const [ isMobile, setIsMobile ] = useState(false);
+
+  const MOBULE_MAX_WIDTH = 500;
+
+  useEffect(() => {
+    setIsMobile(window.innerWidth <= MOBULE_MAX_WIDTH);
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= MOBULE_MAX_WIDTH);
+    }
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   useEffect(() => {
     const fetchPlans = async () => {
       try {
@@ -307,12 +320,12 @@ const Membership = () => {
                       <div style={{width: '100%'}} className="bg-white p-2 rounded-lg">
                         <h2 className="text-2xl mb-4">Compare Membership Plans</h2>
                         {filteredPlans && filteredPlans?.length > 0 ? (
-                            <Table
+                          <Table
                             columns={columns}
                             dataSource={generateComparisonTable()}
                             pagination={false}
                             bordered
-                            scroll={{ x: true, y: '70vh' }}
+                            scroll={isMobile ? { x: true, y: '70vh' } : undefined}
                           />
                         ) : (
                           <p>No membership plans available for the selected filters.</p>
