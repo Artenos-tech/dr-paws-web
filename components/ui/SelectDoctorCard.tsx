@@ -2,16 +2,24 @@
 import React from "react";
 import Image from "next/image";
 import { doctorImagesMap } from "@/model/mockData";
+import defaultVetImg from "@/public/assets/images/clinic/doctorFemale.webp";
 
 type VetportDoctor = {
   id: number;
   name: string;
-  image: string;
-}
+  image: {
+    type: "url" | "ref";
+    value: string;
+  };
+};
 interface SelectDoctorCardProps {
   doctor: VetportDoctor;
   isSelected: boolean;
-  onDoctorSelect: (doctorId: number, doctorName: string, doctorImage: string) => void;
+  onDoctorSelect: (
+    doctorId: number,
+    doctorName: string,
+    doctorImage: { type: "url" | "ref"; value: string }
+  ) => void;
 }
 
 const SelectDoctorCard: React.FC<SelectDoctorCardProps> = ({
@@ -32,12 +40,14 @@ const SelectDoctorCard: React.FC<SelectDoctorCardProps> = ({
         isSelected ? `border-secondary-1` : ``
       }`}
     >
-      {/* Image Container */}
-      {/* <div className="w-[120px] h-[120px] border flex items-center justify-center overflow-hidden ">
-    
-  </div> */}
       <Image
-        src={doctorImagesMap[image]}
+        src={
+          image.value === "unknown"
+            ? defaultVetImg
+            : image.type === "ref"
+            ? doctorImagesMap[image.value]
+            : image.value
+        }
         alt={name}
         width={120}
         height={120}

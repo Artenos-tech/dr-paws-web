@@ -18,7 +18,7 @@ import RMV_Retail from "../public/assets/images/ClinicDetails/RMV_Retail.png";
 import dogImg from "../public/assets/images/dogimg.webp";
 import catImg from "../public/assets/images/catimg.webp";
 import otherPetsImg from "../public/assets/images/otherpetimg.png";
-import { Clinic, Review } from "@/model/typeDefinitions";
+import { Clinic, Doctor, Review } from "@/model/typeDefinitions";
 // import { BookingCategory } from "@/model/typeDefinitions";
 // import { AppointmentStatus, AppointmentType } from "@/model/typeDefinitions";
 
@@ -180,36 +180,124 @@ export const clinicImagesMap: {[key: string]: StaticImageData} = {
 
 export const clinicItems: Clinic[] = [
   {
-    id: "1",
-    image: IND_Exterior1,
-    location: "Indiranagar",
+    id: 1,
+    name: "Dr. Paws, Indiranagar",
+    image: {
+      type: "url",
+      value: IND_Exterior1
+    },
     services:
       "Consults | Surgeries | Grooming | Diagnostics | X-Ray | Ultrasound | Retail",
+    address: "Indiranagar",
+    city: "Bangalore",
     contact: "+91 9606994627",
-    parkingInformation:
+    gmapsUrl: "https://maps.app.goo.gl/p3JpKF8ud82urwFt6",
+    parkingInfo:
       "Ample parking available outside clinic, and in surrounding lanes",
-    clinicName: "Dr. Paws, Indiranagar",
-    timings: {
-      "Monday to Friday": "09:00 - 21:00",
-      "Saturday": "09:00 - 21:00",
-      "Sunday": "09:00 - 21:00"
-    }
+    timings: [
+      {
+        dayOfWeek: "Monday",
+        openTime: "09:00",
+        closeTime: "21:00",
+        is24Hours: false
+      },
+      {
+        dayOfWeek: "Tuesday",
+        openTime: "09:00",
+        closeTime: "21:00",
+        is24Hours: false
+      },
+      {
+        dayOfWeek: "Wednesday",
+        openTime: "09:00",
+        closeTime: "21:00",
+        is24Hours: false
+      },
+      {
+        dayOfWeek: "Thursday",
+        openTime: "09:00",
+        closeTime: "21:00",
+        is24Hours: false
+      },
+      {
+        dayOfWeek: "Friday",
+        openTime: "09:00",
+        closeTime: "21:00",
+        is24Hours: false
+      },
+      {
+        dayOfWeek: "Saturday",
+        openTime: "09:00",
+        closeTime: "21:00",
+        is24Hours: false
+      },
+      {
+        dayOfWeek: "Sunday",
+        openTime: "09:00",
+        closeTime: "21:00",
+        is24Hours: false
+      }
+    ]
   },
   {
-    id: "2",
-    image: RMV_Exterior1,
-    location: "RMV (Dollars Colony)",
+    id: 2,
+    name: "Dr. Paws, RMV (Dollars Colony)",
+    image: {
+      type: "url",
+      value: RMV_Exterior1
+    },
     services:
       "Consults | Surgeries | Grooming | Diagnostics | X-Ray | Ultrasound | Hydrotherapy | Retail",
     contact: "+91 7204996899",
-    parkingInformation:
+    address: "RMV (Dollars Colony)",
+    city: "Bangalore",
+    gmapsUrl: "https://www.google.com/maps/place/Dr.+Paws+RMV+-+24x7+Pet+Clinic+in+Sanjay+Nagar,+Bengaluru+%7C+Vet+Consultation,+Pet+Vaccination,+Pet+Grooming,+Pet+Surgery/data=!4m2!3m1!1s0x0:0xc9a13342ab7933ac?sa=X&ved=1t:2428&ictx=111",
+    parkingInfo:
       "Ample parking available outside clinic, and in surrounding lanes",
-    clinicName: "Dr. Paws, RMV (Dollars Colony)",
-    timings: {
-      "Monday to Friday": "Open 24 hours",
-      "Saturday": "Open 24 hours",
-      "Sunday": "Open 24 hours"
-    }
+    timings: [
+      {
+        dayOfWeek: "Monday",
+        openTime: "00:00",
+        closeTime: "23:59",
+        is24Hours: true
+      },
+      {
+        dayOfWeek: "Tuesday",
+        openTime: "00:00",
+        closeTime: "23:59",
+        is24Hours: true
+      },
+      {
+        dayOfWeek: "Wednesday",
+        openTime: "00:00",
+        closeTime: "23:59",
+        is24Hours: true
+      },
+      {
+        dayOfWeek: "Thursday",
+        openTime: "00:00",
+        closeTime: "23:59",
+        is24Hours: true
+      },
+      {
+        dayOfWeek: "Friday",
+        openTime: "00:00",
+        closeTime: "23:59",
+        is24Hours: true
+      },
+      {
+        dayOfWeek: "Saturday",
+        openTime: "00:00",
+        closeTime: "23:59",
+        is24Hours: true
+      },
+      {
+        dayOfWeek: "Sunday",
+        openTime: "00:00",
+        closeTime: "23:59",
+        is24Hours: true
+      }
+    ]
   },
   // {
   //   id: "3",
@@ -332,257 +420,286 @@ export const doctorImagesMap: {[key: string]: StaticImageData} = {
   "dr-rajasri-bodepudi": DrRajashreeImg,
 };
 
-export const doctors = [
+export const doctors: Doctor[] = [
   {
-    id: "112",
-    name: "Dr. Girish Kumar V.K.",
+    id: 112,
+    displayName: "Dr. Girish Kumar V.K.",
     position: "Chief Veterinary Officer",
-    experience: "16 Years of Experience",
-    clinicIds: ["1", "2"],
-    location: "Indiranagar, RMV (Dollars Colony)",
-    image: DrGirishImg,
+    experience: "16 Years",
+    availableToDisplayAt: [{
+      id: 1,
+      name: "Indiranagar",
+    }, {
+      id: 2,
+      name: "RMV (Dollars Colony)",
+    }],
+    imageUrl: {
+      type: "url",
+      value: DrGirishImg
+    },
     qualification: "BVSc & AH, MVSc (Clinical Medicine)",
     specialization: "Cardiology, Ultrasonography, Internal Medicine",
-    aboutMe:
+    about:
       "As the Chief Veterinary Officer at Dr. Paws, aside from my daily clinical practice, I am responsible for shaping the medical standards and procedures across all our clinics. I completed my BVSc from Mannuthy Veterinary College, Kerala, before completing my Master's from Madras Veterinary College. I am particularly interested in cardiology and internal medicine, and have spent a lot of time working on ultrasonography and with cats. Prior to joining Dr. Paws, I spent 12 years at Cessna Lifeline where I was a Branch Head, and before this I was a Junior Vet in Malaysia.",
-    // tag: "Passionate about animal care and active member of AVMA.",
-    vetPassionInfo:
+    passionateAbout:
       "I love playing the detective and uncovering the mysteries of what's making a pet sick.",
-    spiritAnimalInfo:
+    spiritAnimal:
       "It's definitely a giant panda, because what's better than sitting around and being goofy?",
-    favouritePet: "Ozzy",
+    favPetName: "Ozzy",
   },
   {
-    id: "136",
-
-    name: "Dr. Archana G.",
-    // description: "DMV - Veterinary Medicine",
+    id: 136,
+    displayName: "Dr. Archana G.",
     position: "Lead Veterinarian",
-    experience: "6 Years of Experience",
-    clinicIds: ["1"], //
-    location: "Indiranagar",
-    image: DrArchanaImg,
+    experience: "6 Years",
+    availableToDisplayAt: [{
+      id: 1,
+      name: "Indiranagar",
+    }],
+    imageUrl: {
+      type: "url",
+      value: DrArchanaImg
+    },
     specialization: "Surgery, Internal Medicine",
-    aboutMe:
+    about:
       "I'm a huge pet-lover firstly, who also happens to be a Dogtor! I particularly love cats and have two of my own called Floki & Quisp. I started my veterinary journey at the Hassan Veterinary College, Karnataka, before completing my Master's in Surgery & Radiology at the Kerala Veterinary & Animal Science University in Wayanad. Post this, I've worked across pet hospitals and establised chains in Kochi, Mumbai and Bangalore.",
-    // tag: "Passionate about animal care and active member of AVMA.",
-    vetPassionInfo:
+    passionateAbout:
       "As a vet, I love having the ability to be able to help animals who cannot speak for themselves, and seeing them get better.",
-    spiritAnimalInfo:
+    spiritAnimal:
       "Definitely a cat! I love the indoors and am very stingy about sharing my space (mentally and physically) with too many people!",
-    favouritePet: "Dost",
+    favPetName: "Dost",
     qualification: "BVSc & AH, MVSc (Surgery & Radiology)",
   },
   {
-    id: "1737",
-
-    name: "Dr. Hitesh Bhardwaj",
-    // description: "DMV - Small Animal Surgery",
+    id: 1737,
+    displayName: "Dr. Hitesh Bhardwaj",
     position: "Lead Veterinarian",
-    experience: "5 Years of Experience",
-    clinicIds: ["2"],
-    location: "RMV (Dollars Colony)",
-    image: DrHiteshImg,
+    experience: "5 Years",
+    availableToDisplayAt: [{
+      id: 2,
+      name: "RMV (Dollars Colony)",
+    }],
+    imageUrl: {
+      type: "url",
+      value: DrHiteshImg
+    },
     specialization: "Critical Care & Soft-Tissue Surgery",
-    aboutMe:
+    about:
       "I'm a Lead Vet at Dr. Paws, having graduated with a BVSc from the Bihar Veterinary College in Patna. Post this I have completed a Post Graduate Diploma in Animal Welfare from the Indira Gandhi National Open University. Prior to Dr. Paws I have worked at established small-animal clinics including Crown Vet, Jeeva Pet Hospital & SKS Veterinary.",
-    // tag: "Passionate about animal care and active member of AVMA.",
-    vetPassionInfo:
+    passionateAbout:
       "I love being able to treat those creatures that can't explain what's going on.",
-    spiritAnimalInfo:
+    spiritAnimal:
       "My spirit anumal is a hawk, as it teaches me how to focus.",
-    favouritePet: "Laddu",
+    favPetName: "Laddu",
     qualification: "BVSc & AH, Post Graduate Diploma (Animal Welfare)",
   },
   {
-    id: "138",
-
-    name: "Dr. Shravya B.L.",
-    // description: "DMV - Exotic Animals",
+    id: 138,
+    displayName: "Dr. Shravya B.L.",
     position: "Veterinarian",
-    experience: "3 Years of Experience",
-    clinicIds: ["1"],
-    location: "Indiranagar",
-    image: DrShravyaImg,
+    experience: "3 Years",
+    availableToDisplayAt: [{
+      id: 1,
+      name: "Indiranagar",
+    }],
+    imageUrl: {
+      type: "url",
+      value: DrShravyaImg
+    },
     specialization: "Gynaecology & Obstetrics",
-    aboutMe:
+    about:
       "I'm a passionate veterinarian who graduated from Veterinary College, Hassan, KVAFSU in 2019. Post this, I completed my post graduation in Veterinary Gynaecology and Obstetrics from Veterinary College, Bengaluru, KVAFSU in 2021. ",
-    // tag: "Passionate about animal care and active member of AVMA.",
-    vetPassionInfo:
+    passionateAbout:
       "I love my job because I can meet numerous innocent animals full of love, and I feel empowered when I help them heal.",
-    spiritAnimalInfo:
+    spiritAnimal:
       "My spirit animal is a bear because deep inside I just want to hibernate (hehe)!",
-    favouritePet:
+    favPetName:
       "My favourite pet name is Shunti, which means ginger in Kannada",
     qualification: "BVSc & AH, MVSc (Gynaecology & Obstetrics)",
   },
   {
-    id: "140",
-
-    name: "Dr. Prerana S.J.",
-    // description: "DMV - Animal Dermatology",
+    id: 140,
+    displayName: "Dr. Prerana S.J.",
     position: "Veterinarian",
-    experience: "3 Years of Experience",
-    clinicIds: ["1"],
-    location: "Indiranagar",
-    image: DrPreranaImg,
+    experience: "3 Years",
+    availableToDisplayAt: [{
+      id: 1,
+      name: "Indiranagar"
+    }],
+    imageUrl: {
+      type: "url",
+      value: DrPreranaImg
+    },
     specialization: "Soft Tissue Surgeries, Orthopaedic Surgeries",
-    aboutMe:
+    about:
       "I completed my Bachelor's at Hassan Veterinary College in 2019, and later specialized in Veterinary Surgery and Radiology at Bangalore Veterinary College. After this, I began my professional journey practicing at private pet hospitals, where I've had the opportunity to work with a wide range of patients. Along the way, I’ve continued to expand my knowledge through many training programs, including workshops in veterinary orthopaedics and emergency critical care. I was also privileged to undertake observerships at the esteemed Queens Veterinary School Hospital in Cambridge, UK, where I gained valuable insights in neurology, soft tissue surgery, and orthopaedics.",
-    // tag: "Passionate about animal care and active member of AVMA.",
-    vetPassionInfo:
+    passionateAbout:
       "I love getting paid to cuddle animals, play detective with their health issues, and celebrating little victories like a wagging tail or a purr of approval. Being a veterinary surgeon allows me to combine precision with compassion as I help animals heal through skilled, life-changing procedures. The thrill of successfully performing surgery and seeing a pet recover is an incredibly rewarding experience every time.",
-    spiritAnimalInfo:
+    spiritAnimal:
       "I love being a veterinary surgeon because it allows me to combine precision with compassion, helping animals heal through skilled, life-changing procedures. The thrill of successfully performing surgery and seeing a pet recover is an incredibly rewarding experience every time.",
-    favouritePet: "",
+    favPetName: "",
     qualification: "BVSc & AH, MVSc (Surgery & Radiology)",
   },
   {
-    id: "236",
-
-    name: "Dr. Kiran K.S.",
-    // description: "DMV - Veterinary Medicine",
+    id: 236,
+    displayName: "Dr. Kiran K.S.",
     position: "Veterinarian",
-    experience: "2 Years of Experience",
-    clinicIds: ["2"],
-    location: "RMV (Dollars Colony)",
-    image: DrKiranImg,
+    experience: "2 Years",
+    availableToDisplayAt: [{
+      id: 2,
+      name: "RMV (Dollars Colony)"
+    }],
+    imageUrl: {
+      type: "url",
+      value: DrKiranImg
+    },
     specialization: "Surgery & Veterinary Endoscopy",
-    aboutMe:
+    about:
       "I graduated from the Veterinary College in Bidar, KVAFSU Karnataka, and pursued M.V.Sc. in Veterinary Surgery and Radiology from Maharashtra Animal and Fisheries Sciences University, MAFSU Nagpur. I specialize in Minimally Invasive Procedures (Veterinary Endoscopy), as well as small animal soft-tissue surgeries and basic orthopedic surgeries. With over two years of clinical experience in small animal practice, I have also handled emergency shifts.",
-    // tag: "Passionate about animal care and active member of AVMA.",
-    vetPassionInfo:
+    passionateAbout:
       "Being a vet, I love the diversity of our profession where you can find and explore yourself, as well as different species of animals. My profession doesn't include only medical services; it also includes animal and public health, welfare and prevention of suffering.",
-    spiritAnimalInfo:
+    spiritAnimal:
       "My spiritual animal is the cat, as it symbolizes curiosity, adventure, independence, and the mastery of patience.",
-    favouritePet: "Jessy",
+    favPetName: "Jessy",
     qualification: "BVSc & AH, MVSc (Surgery & Radiology)",
   },
   {
-    id: "1465",
-
-    name: "Dr Aarti Goswami",
-    // description: "DMV - Veterinary Medicine",
+    id: 1465,
+    displayName: "Dr Aarti Goswami",
     position: "Veterinarian",
-    experience: "3 Years of Experience",
-    clinicIds: ["2"],
-    location: "RMV (Dollars Colony), Bangalore",
-    image: DrAartiImg,
+    experience: "3 Years",
+    availableToDisplayAt: [{
+      id: 2,
+      name: "RMV (Dollars Colony)"
+    }],
+    imageUrl: {
+      type: "url",
+      value: DrAartiImg
+    },
     specialization: "Surgery & Radiology",
-    aboutMe:
+    about:
       "I'm a veterinarian who completed both my Bachelor's and Master's degrees from GBPUAT, Pantnagar, Uttarakhand",
-    // tag: "Passionate about animal care and active member of AVMA.",
-    vetPassionInfo:
+    passionateAbout:
       "Animals do not have a voice. It's our job to identify what's troubling them. And when we send them home after treating them, there's an immense joy in knowing that the pet is healthy and the pet parents are content. This is what I love the most about being a veterinarian.",
-    spiritAnimalInfo:
+    spiritAnimal:
       "An elephant is my spirit animal. He's majestic, mystical, strong and wise. They help me to reconnect with my own positive attributes. It helps me lead a positive and balanced life.",
-    favouritePet: "My favourite pet name is Dexter",
+    favPetName: "My favourite pet name is Dexter",
     qualification: "BVSc & AH, MVSc (Surgery & Radiology)",
   },
   {
-    id: "143",
-
-    name: "Dr. Neha Menon",
-    // description: "DMV - Animal Dermatology",
+    id: 143,
+    displayName: "Dr. Neha Menon",
     position: "Veterinarian",
-    experience: "2 Years of Experience",
-    clinicIds: ["1"],
-    location: "Indiranagar",
-    image: DrNehaImg,
+    experience: "2 Years",
+    availableToDisplayAt: [{
+      id: 1,
+      name: "Indiranagar"
+    }],
+    imageUrl: {
+      type: "url",
+      value: DrNehaImg
+    },
     specialization: "Internal Medicine, Alternative Therapies",
-    aboutMe:
+    about:
       "Meet Dr. Neha Menon, the vet who believes in healing your pets with more than just prescriptions - her secret ingredients include homeopathy, herbal remedies, and a whole lot of tail wags! If your furry friend needs some zen, she's the one to call! She combines holistic medicine and good vibes to make sure your pet feels their best, inside and out, because she's a firm believe that sometimes the best prescription is a little less kibble and a lot more care",
-    // tag: "Passionate about animal care and active member of AVMA.",
-    vetPassionInfo:
+    passionateAbout:
       "I love being a veterinary doctor because where else can you spend your day giving belly rubs, saving lives, and getting kissed by animals who think you're a rock star? It's a pawsome gig!",
-    spiritAnimalInfo:
+    spiritAnimal:
       "The cow, gentle and nurturing, feels like my spirit animal, reminding me to offer compassionate care, soothe pain, and heal with patience. Its steady dedication guides me, inspiring me to serve with love in every act of healing",
-    favouritePet: "Trif, as this was my pup's name",
+    favPetName: "Trif, as this was my pup's name",
     qualification: "BVSc & AH",
   },
   {
-    id: "144",
-
-    name: "Dr. Gisha Nair",
-    // description: "DMV - Animal Dermatology",
+    id: 144,
+    displayName: "Dr. Gisha Nair",
     position: "Veterinarian",
-    experience: "5 Years of Experience",
-    clinicIds: ["1"],
-    location: "Indiranagar",
-    image: DrGishaImg,
+    experience: "5 Years",
+    availableToDisplayAt: [{
+      id: 1,
+      name: "Indiranagar"
+    }],
+    imageUrl: {
+      type: "url",
+      value: DrGishaImg
+    },
     specialization: "Ophthalmology and Soft-Tissue Surgery",
-    aboutMe:
+    about:
       "I'm a dedicated veterinarian who graduated from the College of Veterinary Sciences, Wayanad, Kerala. Post this, I have worked as a Chief Surgeon at a Small Animal Clinic in Kochi, before shifting to Hyderabad to work on Animal Control with the GHMC. I have also completed research work, including on specialised eye-related topics like the transplantation of processed human amniotic membrane for the management of dry melanotic cornea in dogs.",
-    // tag: "Passionate about animal care and active member of AVMA.",
-    vetPassionInfo:
+    passionateAbout:
       "It's not just about working with cute animals (though that's a big plus!). It's about helping them and making a difference. Every day, we get to help animals feel better.",
-    spiritAnimalInfo:
+    spiritAnimal:
       "My spirit animal is a deer because I am gentle and compassionate, introspective and thoughtful, and a bit reserved but with a deep inner strength.",
-    favouritePet: "Luttappi",
+    favPetName: "Luttappi",
     qualification: "BVSc & AH",
   },
   {
-    id: "147",
-
-    name: "Dr. Rajashri Bodepalli",
-    // description: "DMV - Animal Dermatology",
+    id: 147,
+    displayName: "Dr. Rajashri Bodepalli",
     position: "Veterinarian",
-    experience: "3 Years of Experience",
-    clinicIds: ["1"],
-    location: "Indiranagar",
-    image: DrRajashreeImg,
+    experience: "3 Years",
+    availableToDisplayAt: [{
+      id: 1,
+      name: "Indiranagar"
+    }],
+    imageUrl: {
+      type: "url",
+      value: DrRajashreeImg
+    },
     specialization:
       "Critical Care, Preventative Medicine, Radiography, Soft-Tissue Surgery",
-    aboutMe:
+    about:
       "I completed my Bachelor's degree from the College of Veterinary Science, Tirupati before moving into small animal veterinary practice. At my last clinic, I gained significant exposure across a wide-range of surgeries and performed numerous X-Rays and Ultrasounds. I am particularly interested in preventative medicine, so that we can help our furry friends to avoid falling sick, as far as possible.",
-    // tag: "Passionate about animal care and active member of AVMA.",
-    vetPassionInfo:
+    passionateAbout:
       "As a vet, I love being able to interact with furry pets, heping and treating them across all aspects of care so that their quality of life imprives.",
-    spiritAnimalInfo:
+    spiritAnimal:
       "The tiger is my spirit animal. Super strong, elegant, and reserved but confident, I strive to be like one always.",
-    favouritePet: "Paco",
+    favPetName: "Paco",
     qualification: "BVSc & AH",
   },
   {
-    id: "320",
-
-    name: "Dr. Charu Nino",
-    // description: "DMV - Veterinary Medicine",
+    id: 320,
+    displayName: "Dr. Charu Nino",
     position: "Veterinarian",
-    experience: "2 Years of Experience",
-    clinicIds: ["2"],
-    location: "RMV (Dollars Colony)",
-    image: DrNinoImg,
+    experience: "2 Years",
+    availableToDisplayAt: [{
+      id: 2,
+      name: "RMV (Dollars Colony)"
+    }],
+    imageUrl: {
+      type: "url",
+      value: DrNinoImg
+    },
     specialization: "General Medicine & OPD",
-    aboutMe:
+    about:
       "I'm a passionate veterinarian, who graduated from the College of Veterinary Sciences in Guwahati, Assam. Aside from this, I'm a passionate pet lover and pet-parent to two Persian cats.",
-    // tag: "Passionate about animal care and active member of AVMA.",
-    vetPassionInfo:
+    passionateAbout:
       "What I love about being a vet is seeing animals get better. Not every day is the same. Learning all the time, new ways to help animals, new tools, and new medicines.",
-    spiritAnimalInfo:
+    spiritAnimal:
       "My spirit animal is a beaver because I am persistent, diligent and believe in teamwork.",
-    favouritePet: "Sir Don Pedro",
+    favPetName: "Sir Don Pedro",
     qualification: "BVSc & AH",
   },
   {
-    id: "146",
-
-    name: "Dr. Deepak Dhindhwal",
-    // description: "DMV - Veterinary Medicine",
+    id: 146,
+    displayName: "Dr. Deepak Dhindhwal",
     position: "Veterinarian",
-    experience: "1 Years of Experience",
-    clinicIds: ["2"],
-    location: "RMV (Dollars Colony)",
-    image: DrDeepakImg,
+    experience: "1 Year",
+    availableToDisplayAt: [{
+      id: 2,
+      name: "RMV (Dollars Colony)"
+    }],
+    imageUrl: {
+      type: "url",
+      value: DrDeepakImg
+    },
     specialization: "General Medicine",
-    aboutMe:
+    about:
       "I'm an enthusiastic vet who's completed his BVSc from the Veterinary College, Bengaluru (KVAFSU). I have spent 1.5 years in the college hospital and completed a 1 year internship, where I gained exposure across emergency cases, surgeries, and exotic animals.",
-    // tag: "Passionate about animal care and active member of AVMA.",
-    vetPassionInfo:
+    passionateAbout:
       "I love those wagging tails, happy purrs, and joyful woofs. Nothing beats the moment a pet feels their best because of my care!",
-    spiritAnimalInfo:
+    spiritAnimal:
       "My spirit animal is a wolf because they symbolise loyalty, intelligence, and protection. Wolves are known for their strong sense of community, much like how we care for and protect animals and their families. They also represent a deep understanding of nature and instinct, qualities essential in diagnosing and treating animals with empathy and skill.",
-    favouritePet: "Ghost - come meet her (my Husky) at the RMV clinic!",
+    favPetName: "Ghost - come meet her (my Husky) at the RMV clinic!",
     qualification: "BVSc & AH",
   },
 ];

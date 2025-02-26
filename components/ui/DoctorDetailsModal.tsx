@@ -5,7 +5,8 @@ import Image from "next/image";
 import starMedal from "@/public/assets/images/team/star-medal.png";
 import { CiStethoscope, CiLocationOn } from "react-icons/ci";
 import { IoClose } from "react-icons/io5";
-import { clinicItems } from "@/model/mockData";
+import { doctorImagesMap } from "@/model/mockData";
+import defaultVetImg from "@/public/assets/images/clinic/doctorFemale.webp";
 
 interface doctorDetailsProps {
   isOpen: boolean;
@@ -19,16 +20,16 @@ const DoctorDetailsModal: React.FC<doctorDetailsProps> = ({
   doctor,
 }) => {
   const {
-    name,
+    displayName,
     experience,
     specialization,
-    clinicIds,
-    aboutMe,
-    vetPassionInfo,
-    image,
-    spiritAnimalInfo,
+    availableToDisplayAt,
+    about,
+    passionateAbout,
+    imageUrl,
+    spiritAnimal,
     qualification,
-    favouritePet,
+    favPetName,
   } = doctor;
   return (
     <Modal
@@ -49,7 +50,7 @@ const DoctorDetailsModal: React.FC<doctorDetailsProps> = ({
           </button>
           <div className="space-y-4 w-full lg:w-1/2 order-1 lg:order-none mt-5 lg:mt-0">
             <h1 className="text-xl md:text-2xl text-center lg:text-left my-3 lg:my-0">
-              {name}
+              {displayName}
             </h1>
 
             <div className="flex flex-col md:items-center lg:items-start gap-3 md:gap-5 w-full text-center lg:text-left">
@@ -113,15 +114,11 @@ const DoctorDetailsModal: React.FC<doctorDetailsProps> = ({
                       fontWeight={800}
                       className="mt-1 block lg:hidden"
                     />{" "}
-                    Clinic Worked in
+                    Available at Clinics
                   </p>
                   <p className="font-semibold text-sm md:text-base">
-                    {clinicIds
-                      .map(
-                        (id) =>
-                          clinicItems.find((clinic) => clinic.id === id)
-                            ?.clinicName
-                      )
+                    {availableToDisplayAt
+                      .map((availableClinic) => availableClinic.name)
                       .join(", ")}
                   </p>
                 </div>
@@ -180,70 +177,74 @@ const DoctorDetailsModal: React.FC<doctorDetailsProps> = ({
                   </p>
                 </div>
               </div>
-              {favouritePet && (
-                <div className="flex items-start gap-1">
-                  <svg
-                    version="1.1"
-                    viewBox="0 0 1024 1024"
-                    width="22"
-                    height="22"
-                    fill="#33495f"
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="hidden lg:block"
-                  >
-                    <path
-                      transform="translate(214)"
-                      d="m0 0h591l24 7 17 8 13 9 11 9 7 7 10 13 9 16 6 15 4 16 1 7v862l-4 17-6 12-8 10-8 7-14 7-5 2h-25l-17-6-15-8-19-12-48-30-19-12-21-13-24-15-19-12-21-13-24-15-19-12-21-13-24-15-19-12-13-8-6 1-22 14-24 15-21 13-24 15-19 12-21 13-144 90-18 11-16 8-11 4h-26l-16-7-10-8-8-9-8-16-3-13-1-13v-843l3-21 6-19 10-19 8-11 11-12 10-9 15-10 15-7 19-6zm19 61-15 3-15 8-9 8-6 8-7 14-2 8-1 12v839l6-2 22-14 21-13 19-12 96-60 19-12 26-16 38-24 26-16 22-14 21-13 12-5h11l11 4 23 14 22 14 21 13 24 15 19 12 21 13 24 15 19 12 21 13 24 15 19 12 21 13 48 30 10 6h1l1-797-1-54-3-10-6-12-9-11-13-9-12-5-12-2z"
-                    />
-                    <path
-                      transform="translate(408,262)"
-                      d="m0 0h26l16 3 17 6 15 8 12 9 12 11 5 5 4-2 13-13 12-9 12-7 15-6 16-4 7-1h26l17 3 16 6 15 8 12 9 10 9 7 7 11 15 8 15 6 18 3 20v13l-2 18-5 17-8 17-9 13-11 12-5 6-7 6-5 6-7 6-5 6-7 6-5 6-7 6-5 6-7 6-5 6-7 6-5 6-7 6-5 6-7 6-5 6-7 6-5 6-7 6-5 6-7 6-5 6-4 4h-2v2h-2v2h-2l-2 4-11 8-8 3h-13l-9-4-8-7-158-158-11-15-10-21-5-19-1-7v-24l4-20 5-14 9-17 11-14 15-15 17-12 15-7 12-4zm3 62-12 4-10 6-11 10-7 10-5 13-1 6v15l4 13 7 12 135 135 4-2 131-131 7-10 4-10 2-10v-11l-4-16-6-10-9-10-11-8-12-5-5-1h-18l-13 4-11 7-10 9v2h-2v2h-2v2h-2v2h-2l-7 8-5 4-4 4v2l-4 2-8 5-7 2h-11l-10-4-8-7h-2l-2-4h-2l-2-4-20-20-10-8-12-6-8-2z"
-                    />
-                    <path transform="translate(809)" d="m0 0 2 1z" />
-                    <path transform="translate(158,1023)" d="m0 0" />
-                  </svg>
-                  <div className="space-y-1 w-full">
-                    <p className="flex items-center text-sm justify-center lg:justify-start gap-1">
-                      <svg
-                        version="1.1"
-                        viewBox="0 0 1024 1024"
-                        width="18"
-                        height="18"
-                        fill="#33495f"
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="block lg:hidden"
-                      >
-                        <path
-                          transform="translate(214)"
-                          d="m0 0h591l24 7 17 8 13 9 11 9 7 7 10 13 9 16 6 15 4 16 1 7v862l-4 17-6 12-8 10-8 7-14 7-5 2h-25l-17-6-15-8-19-12-48-30-19-12-21-13-24-15-19-12-21-13-24-15-19-12-21-13-24-15-19-12-13-8-6 1-22 14-24 15-21 13-24 15-19 12-21 13-144 90-18 11-16 8-11 4h-26l-16-7-10-8-8-9-8-16-3-13-1-13v-843l3-21 6-19 10-19 8-11 11-12 10-9 15-10 15-7 19-6zm19 61-15 3-15 8-9 8-6 8-7 14-2 8-1 12v839l6-2 22-14 21-13 19-12 96-60 19-12 26-16 38-24 26-16 22-14 21-13 12-5h11l11 4 23 14 22 14 21 13 24 15 19 12 21 13 24 15 19 12 21 13 24 15 19 12 21 13 48 30 10 6h1l1-797-1-54-3-10-6-12-9-11-13-9-12-5-12-2z"
-                        />
-                        <path
-                          transform="translate(408,262)"
-                          d="m0 0h26l16 3 17 6 15 8 12 9 12 11 5 5 4-2 13-13 12-9 12-7 15-6 16-4 7-1h26l17 3 16 6 15 8 12 9 10 9 7 7 11 15 8 15 6 18 3 20v13l-2 18-5 17-8 17-9 13-11 12-5 6-7 6-5 6-7 6-5 6-7 6-5 6-7 6-5 6-7 6-5 6-7 6-5 6-7 6-5 6-7 6-5 6-7 6-5 6-7 6-5 6-7 6-5 6-4 4h-2v2h-2v2h-2l-2 4-11 8-8 3h-13l-9-4-8-7-158-158-11-15-10-21-5-19-1-7v-24l4-20 5-14 9-17 11-14 15-15 17-12 15-7 12-4zm3 62-12 4-10 6-11 10-7 10-5 13-1 6v15l4 13 7 12 135 135 4-2 131-131 7-10 4-10 2-10v-11l-4-16-6-10-9-10-11-8-12-5-5-1h-18l-13 4-11 7-10 9v2h-2v2h-2v2h-2v2h-2l-7 8-5 4-4 4v2l-4 2-8 5-7 2h-11l-10-4-8-7h-2l-2-4h-2l-2-4-20-20-10-8-12-6-8-2z"
-                        />
-                        <path transform="translate(809)" d="m0 0 2 1z" />
-                        <path transform="translate(158,1023)" d="m0 0" />
-                      </svg>
-                      My Favourite Pet Name Is...
-                    </p>
-                    <p className="font-semibold text-sm md:text-base">
-                      {favouritePet}
-                    </p>
-                  </div>
+              <div className="flex items-start gap-1">
+                <svg
+                  version="1.1"
+                  viewBox="0 0 1024 1024"
+                  width="22"
+                  height="22"
+                  fill="#33495f"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="hidden lg:block"
+                >
+                  <path
+                    transform="translate(214)"
+                    d="m0 0h591l24 7 17 8 13 9 11 9 7 7 10 13 9 16 6 15 4 16 1 7v862l-4 17-6 12-8 10-8 7-14 7-5 2h-25l-17-6-15-8-19-12-48-30-19-12-21-13-24-15-19-12-21-13-24-15-19-12-21-13-24-15-19-12-13-8-6 1-22 14-24 15-21 13-24 15-19 12-21 13-144 90-18 11-16 8-11 4h-26l-16-7-10-8-8-9-8-16-3-13-1-13v-843l3-21 6-19 10-19 8-11 11-12 10-9 15-10 15-7 19-6zm19 61-15 3-15 8-9 8-6 8-7 14-2 8-1 12v839l6-2 22-14 21-13 19-12 96-60 19-12 26-16 38-24 26-16 22-14 21-13 12-5h11l11 4 23 14 22 14 21 13 24 15 19 12 21 13 24 15 19 12 21 13 24 15 19 12 21 13 48 30 10 6h1l1-797-1-54-3-10-6-12-9-11-13-9-12-5-12-2z"
+                  />
+                  <path
+                    transform="translate(408,262)"
+                    d="m0 0h26l16 3 17 6 15 8 12 9 12 11 5 5 4-2 13-13 12-9 12-7 15-6 16-4 7-1h26l17 3 16 6 15 8 12 9 10 9 7 7 11 15 8 15 6 18 3 20v13l-2 18-5 17-8 17-9 13-11 12-5 6-7 6-5 6-7 6-5 6-7 6-5 6-7 6-5 6-7 6-5 6-7 6-5 6-7 6-5 6-7 6-5 6-7 6-5 6-7 6-5 6-7 6-5 6-4 4h-2v2h-2v2h-2l-2 4-11 8-8 3h-13l-9-4-8-7-158-158-11-15-10-21-5-19-1-7v-24l4-20 5-14 9-17 11-14 15-15 17-12 15-7 12-4zm3 62-12 4-10 6-11 10-7 10-5 13-1 6v15l4 13 7 12 135 135 4-2 131-131 7-10 4-10 2-10v-11l-4-16-6-10-9-10-11-8-12-5-5-1h-18l-13 4-11 7-10 9v2h-2v2h-2v2h-2v2h-2l-7 8-5 4-4 4v2l-4 2-8 5-7 2h-11l-10-4-8-7h-2l-2-4h-2l-2-4-20-20-10-8-12-6-8-2z"
+                  />
+                  <path transform="translate(809)" d="m0 0 2 1z" />
+                  <path transform="translate(158,1023)" d="m0 0" />
+                </svg>
+                <div className="space-y-1 w-full">
+                  <p className="flex items-center text-sm justify-center lg:justify-start gap-1">
+                    <svg
+                      version="1.1"
+                      viewBox="0 0 1024 1024"
+                      width="18"
+                      height="18"
+                      fill="#33495f"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="block lg:hidden"
+                    >
+                      <path
+                        transform="translate(214)"
+                        d="m0 0h591l24 7 17 8 13 9 11 9 7 7 10 13 9 16 6 15 4 16 1 7v862l-4 17-6 12-8 10-8 7-14 7-5 2h-25l-17-6-15-8-19-12-48-30-19-12-21-13-24-15-19-12-21-13-24-15-19-12-21-13-24-15-19-12-13-8-6 1-22 14-24 15-21 13-24 15-19 12-21 13-144 90-18 11-16 8-11 4h-26l-16-7-10-8-8-9-8-16-3-13-1-13v-843l3-21 6-19 10-19 8-11 11-12 10-9 15-10 15-7 19-6zm19 61-15 3-15 8-9 8-6 8-7 14-2 8-1 12v839l6-2 22-14 21-13 19-12 96-60 19-12 26-16 38-24 26-16 22-14 21-13 12-5h11l11 4 23 14 22 14 21 13 24 15 19 12 21 13 24 15 19 12 21 13 24 15 19 12 21 13 48 30 10 6h1l1-797-1-54-3-10-6-12-9-11-13-9-12-5-12-2z"
+                      />
+                      <path
+                        transform="translate(408,262)"
+                        d="m0 0h26l16 3 17 6 15 8 12 9 12 11 5 5 4-2 13-13 12-9 12-7 15-6 16-4 7-1h26l17 3 16 6 15 8 12 9 10 9 7 7 11 15 8 15 6 18 3 20v13l-2 18-5 17-8 17-9 13-11 12-5 6-7 6-5 6-7 6-5 6-7 6-5 6-7 6-5 6-7 6-5 6-7 6-5 6-7 6-5 6-7 6-5 6-7 6-5 6-7 6-5 6-7 6-5 6-4 4h-2v2h-2v2h-2l-2 4-11 8-8 3h-13l-9-4-8-7-158-158-11-15-10-21-5-19-1-7v-24l4-20 5-14 9-17 11-14 15-15 17-12 15-7 12-4zm3 62-12 4-10 6-11 10-7 10-5 13-1 6v15l4 13 7 12 135 135 4-2 131-131 7-10 4-10 2-10v-11l-4-16-6-10-9-10-11-8-12-5-5-1h-18l-13 4-11 7-10 9v2h-2v2h-2v2h-2v2h-2l-7 8-5 4-4 4v2l-4 2-8 5-7 2h-11l-10-4-8-7h-2l-2-4h-2l-2-4-20-20-10-8-12-6-8-2z"
+                      />
+                      <path transform="translate(809)" d="m0 0 2 1z" />
+                      <path transform="translate(158,1023)" d="m0 0" />
+                    </svg>
+                    My Favourite Pet Name Is...
+                  </p>
+                  <p className="font-semibold text-sm md:text-base">
+                    {favPetName}
+                  </p>
                 </div>
-              )}
+              </div>
             </div>
           </div>
           <div className="self-center flex flex-col justify-center items-center gap-3 w-full lg:w-1/2 h-full lg:h-[450px] ">
             <Image
-              src={image}
+              src={
+                imageUrl.value === "unknown"
+                  ? defaultVetImg
+                  : imageUrl.type === "ref"
+                  ? doctorImagesMap[imageUrl.value as string]
+                  : imageUrl.value
+              }
               alt="doctor with pet"
               width={200}
               height={100}
               className="lg:w-auto self-center mt-5 h-full lg:h-[420px] "
             />
             <p className="text-center lg:text-left block lg:hidden self-start w-full lg:w-[350px] md:mx-auto text-xs md:text-sm z-10 ">
-              {vetPassionInfo}
+              {passionateAbout}
             </p>
           </div>
         </div>
@@ -253,17 +254,17 @@ const DoctorDetailsModal: React.FC<doctorDetailsProps> = ({
               <p className="font-semibold text-base md:text-lg mb-1">
                 What&apos;s My Spirit Animal and Why?
               </p>
-              <p className="w-full text-sm md:text-base">{spiritAnimalInfo}</p>
+              <p className="w-full text-sm md:text-base">{spiritAnimal}</p>
             </div>
             <p className="text-center lg:text-left hidden lg:block self-start w-full lg:w-1/2 md:mx-auto text-xs md:text-sm z-10 ">
-              {vetPassionInfo}
+              {passionateAbout}
             </p>
           </div>
           <div className={`text-center lg:text-left`}>
             <p className="font-semibold text-base md:text-lg mb-1">
               About The Vet
             </p>
-            <p className="w-full text-sm md:text-base">{aboutMe}</p>
+            <p className="w-full text-sm md:text-base">{about}</p>
           </div>
         </div>
       </div>

@@ -15,9 +15,9 @@ interface SelectClinicProps {
 
 const SelectClinic: React.FC<SelectClinicProps> = ({ onNext, selectedClinic, handleClinicSelection }) => {
 
-  const { call: getClinics, result: getClinicsResult, loading: loadingClinics } = useAPICall(api.getClinics)
+  const { call: getClinicsForBooking, result: getClinicsResult, loading: loadingClinics } = useAPICall(api.getClinicsForBooking)
   useEffect(() => {
-    getClinics({})
+    getClinicsForBooking({})
   }, [])
 
   const clinics = getClinicsResult?.ok ? getClinicsResult.value.body.clinics : []

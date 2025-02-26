@@ -7,14 +7,19 @@ import "swiper/css/navigation";
 
 import { LocationCard } from "./LocationCard";
 import DoctorCard from "./DoctorCard";
-import { Doctor } from "@/model/typeDefinitions";
+import { DoctorBase } from "@/model/typeDefinitions";
 
 interface OverviewProps {
   clinicContact: string;
   clinicLocation: string;
-  clinicDoctors: Doctor[];
+  clinicDoctors: DoctorBase[];
   clinicParking: string;
-  clinicTimings: { [key: string]: string };
+  clinicTimings: {
+    dayOfWeek: string | null;
+    openTime: string | null;
+    closeTime: string | null;
+    is24Hours: boolean | null;
+  }[];
 }
 
 const Overview: React.FC<OverviewProps> = ({
@@ -45,12 +50,14 @@ const Overview: React.FC<OverviewProps> = ({
           <div className="flex flex-col w-full gap-2 md:gap-4">
             <h2 className="text-2xl font-roca mb-3">Timings</h2>
             <div className="text-sm md:text-lg">
-              {Object.keys(clinicTimings).map((key) => {
+              {clinicTimings.map((timing, index) => {
                 return (
-                  <p className="flex justify-between mr-4" key={key}>
-                    {key}{" "}
+                  <p className="flex justify-between mr-4" key={index}>
+                    {timing.dayOfWeek}{" "}
                     <span className="text-base md:text-xl font-roca ml-4">
-                      {clinicTimings[key]}
+                      {timing.is24Hours
+                        ? "Open 24 Hours"
+                        : `${timing.openTime} - ${timing.closeTime}`}
                     </span>
                   </p>
                 )

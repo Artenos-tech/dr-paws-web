@@ -4,17 +4,16 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { Toaster } from "react-hot-toast";
-
 import { useUserContext } from "@/context/UserContext";
-import { Clinic } from "@/model/typeDefinitions";
+import { ClinicBase } from "@/model/typeDefinitions";
 
 interface ClinicItemProps {
-  clinic: Clinic;
+  clinic: ClinicBase;
   enlargedView: boolean;
 }
 
 const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
-  const { image, clinicName, services, id } = clinic;
+  const { image, name, services, id } = clinic;
   const router = useRouter();
 
   const { initiateLogin, isLoggedIn } = useUserContext();
@@ -40,14 +39,14 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
       <div onClick={goToClinicPage} className="cursor-pointer">
         <div className="image-container">
           <Image
-            src={image.src}
-            alt={clinicName + " image"}
+            src={image.type === "url" && image.value || "/assets/images/clinic/clinicThumbnail.svg"}
+            alt={name + " image"}
             className="image rounded-t-md"
             layout="fill"
           />
         </div>
         <div className="p-2">
-          <h1 className="text-primary-1 text-base">{clinicName}</h1>
+          <h1 className="text-primary-1 text-base">{name}</h1>
           <div className="flex gap-2 text-primary-1 text-xs mt-2 ">
             <p>{services}</p>
           </div>

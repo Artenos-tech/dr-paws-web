@@ -2,6 +2,7 @@ import { Pet } from "@/context/UserContext";
 import { BsCheckCircleFill } from "react-icons/bs";
 import Image from "next/image";
 import { doctorImagesMap } from "@/model/mockData";
+import defaultVetImage from "@/public/assets/images/clinic/doctorFemale.webp";
 import { GrLocation } from "react-icons/gr";
 import { HiOutlineCalendar } from "react-icons/hi";
 import { MdOutlineAccessTime } from "react-icons/md";
@@ -23,7 +24,10 @@ type BookingConfirmedProps = {
       id: number;
       name: string;
     } | null;
-    selectedDoctorImage: string | null;
+    selectedDoctorImage: {
+      type: "url" | "ref";
+      value: string;
+    } | null;
     selectedDate: Date;
     selectedSlot: string;
     selectedSlotEnd: string;
@@ -74,15 +78,28 @@ const BookingConfirmed: React.FC<BookingConfirmedProps> = ({
               />
             </div>
             {selectedAppointment.selectedDoctorImage &&
-              doctorImagesMap[selectedAppointment.selectedDoctorImage] && (
+              ((selectedAppointment.selectedDoctorImage.type === "ref" &&
+                doctorImagesMap[
+                  selectedAppointment.selectedDoctorImage.value
+                ]) ||
+                selectedAppointment.selectedDoctorImage.value) && (
                 <div className="relative w-32 h-32 rounded-full overflow-hidden bg-white p-8 ml-[-30px] flex justify-center items-center">
                   <Image
                     src={
-                      doctorImagesMap[selectedAppointment.selectedDoctorImage]
+                      selectedAppointment.selectedDoctorImage.value ===
+                      "unknown"
+                        ? defaultVetImage
+                        : selectedAppointment.selectedDoctorImage.type === "ref"
+                        ? doctorImagesMap[
+                            selectedAppointment.selectedDoctorImage.value
+                          ]
+                        : selectedAppointment.selectedDoctorImage.value
                     }
                     alt={`Dr. ${selectedAppointment.selectedVet?.name}'s profile`}
                     objectFit="cover"
                     sizes="128px"
+                    width={128}
+                    height={128}
                   />
                 </div>
               )}
