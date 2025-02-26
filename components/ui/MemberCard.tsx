@@ -10,13 +10,13 @@ export interface Benefit {
 export interface MembershipPlan {
   id: number;
   title: string;
-  icon: StaticImageData;
+  // icon: StaticImageData;
   description: string;
   benefits: Benefit[];
   isPopular?: boolean;
   price: number;
   duration: string;
-  petType: "Dog" | "Cat";
+  petType: "dog" | "cat";
 }
 interface MemberCardProps {
   plan: MembershipPlan;
@@ -39,7 +39,7 @@ export default function MemberCard({ plan, onSelect }: MemberCardProps) {
         </div>
       )}
       <div className="flex self-start flex-col mb-4 ">
-        <div className="w-20 h-20 self-center">
+        {/* <div className="w-20 h-20 self-center">
           <Image
             src={plan.icon}
             alt={`${plan.title} icon`}
@@ -47,7 +47,7 @@ export default function MemberCard({ plan, onSelect }: MemberCardProps) {
             width={80}
             height={80}
           />
-        </div>
+        </div> */}
         <h3 className="text-2xl text-primary-1 w-full text-left mb-2 ">
           {plan.title}
         </h3>

@@ -5,6 +5,8 @@ import Image from "next/image";
 import "swiper/css";
 import "swiper/css/navigation";
 import MembershipDesc from "@/public/assets/images/Membership/MembershipDesc.png";
+import DogImage from '@/public/assets/images/pets/dog.png'
+import CatImage from '@/public/assets/images/pets/cat.png'
 import MemberCard, { MembershipPlan } from "@/components/ui/MemberCard";
 import MemberModal from "@/components/ui/MemberModal";
 import { membershipData } from "@/model/mockData";
@@ -45,7 +47,7 @@ type MembershipType = "GROOMING" | "MEDICAL";
 
 type ComparisonTable = {
   featureName: string;
-  [planName: string]: string | number;
+  [planName: string]: string | number | React.ReactNode;
 }
 
 const Membership = () => {
@@ -98,6 +100,18 @@ const Membership = () => {
     return false;
   });
 
+  const TickMark = () => (
+    <span style={{color: 'green', fontWeight: 'bold', fontSize: '20px'}}>
+      &#x2713;
+    </span>
+  )
+
+  const CrossMark = () => (
+    <span style={{color: 'red', fontWeight: 'bold', fontSize: '20px'}}>
+      &#x2717;
+    </span>
+  )
+
   const generateComparisonTable = (): ComparisonTable[] => {
     if (!filteredPlans) {
         return [];
@@ -131,19 +145,48 @@ const Membership = () => {
             const matchingFeature = plan.features.find((f: any) => f.name === featureName);
             if (matchingFeature) {
                 if (matchingFeature.type === 'DISCOUNT') {
-                    row[plan.name] = `${matchingFeature.value ?? 'X'}%`;
+                    row[plan.name] = `${matchingFeature.value ?? <CrossMark />}%`;
                 } else if (matchingFeature.type === 'VACCINATIONS') {
-                    row[plan.name] = matchingFeature.value === 1 ? '✓' : `${matchingFeature.value}`;
+                    row[plan.name] = matchingFeature.value === 1 ? <TickMark/> : `${matchingFeature.value}`;
                 } else if (matchingFeature.type === 'SESSIONS') {
-                    row[plan.name] = `${matchingFeature.value ?? 'X'} sessions`;
+                    row[plan.name] = `${matchingFeature.value ?? <CrossMark />} sessions`;
                 }
             } else {
-                row[plan.name] = 'X';
+                row[plan.name] = <CrossMark />;
             }
         });
 
         return row;
     });
+
+    comparisonTable.push(...[{
+        featureName: 'Price',
+        ...filteredPlans.reduce((acc, plan) => {
+            acc[plan.name] = plan.price;
+            return acc;
+        }, {} as Partial<ComparisonTable>)
+    }, {
+        featureName: '',
+        ...filteredPlans.reduce((acc, plan) => {
+            acc[plan.name] = <Button variant="solid" onClick={() => {
+              setSelectedPlan({
+                id: plan.id,
+                title: plan.name,
+                // icon: {src: MembershipDesc, height: 0, width: 0},
+                description: plan.description || '',
+                benefits: plan.features.map((feature: any) => ({text: feature.name})),
+                isPopular: false,
+                price: plan.price,
+                duration: plan.duration_months.toString(),
+                petType: petType || 'dog',
+              });
+              setIsModalOpen(true);
+            }}>
+              Buy Now
+            </Button>;
+            return acc;
+        }, {} as Partial<ComparisonTable>)
+    }])
 
     return comparisonTable;
   };
@@ -155,14 +198,15 @@ const Membership = () => {
           dataIndex: 'featureName',
           key: 'featureName',
           width: 300,
-          render: (text: string) => <span className="">{text}</span>
+          render: (text: string) => <span>{text}</span>,
+          fixed: 'left' as 'left',
       },
       ...planNames.map(planName => ({
-          title: <div className="text-center"><Button type="primary">Buy now</Button></div>,
+          title: <div className="text-center">{planName}</div>,
           dataIndex: planName,
           key: planName,
           align: 'center' as 'center',
-          render: (value: string) => <span className="">{value}</span>
+          render: (value: string) => <div style={{minWidth: '100px'}}>{value}</div>
       }))
   ];
 
@@ -193,7 +237,7 @@ const Membership = () => {
           </div>
         </div>
 
-        <div className="bg-primary-3 w-full text-center text-3xl my-16 pb-12 px-8 md:px-32 lg:px-20 xl:px-40">
+        <div className="bg-primary-3 w-full text-center text-3xl my-16 pb-12 md:px-32 lg:px-20 xl:px-40">
           <h1 className="pt-12 pb-8 lg:pb-16">Become A Member</h1>
         
           {getAllPlansLoading && <ClipLoader color="#33495f" />}
@@ -203,67 +247,76 @@ const Membership = () => {
               {plans.length > 0 && (
                 <div className="flex flex-col gap-8 justify-center items-center">
                   <div className="flex gap-4 mb-8">
-                    {['dog', 'cat'].map((type) => (
-                      <div
-                        key={type}
-                        className={`p-4 border-2 rounded-md cursor-pointer ${
-                          petType === type ? 'border-blue-500 bg-blue-100' : 'border-gray-300'
-                        }`}
-                          onClick={() => {
-                            setPetType(type as PetType);
-                          }}
-                        >
-                        {type}
-                      </div>
-                    ))}
+                      <div>
+                        <h2>Is your pet a dog or a cat?</h2>
+                        <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', gap: '20px', marginTop: '20px'}}>
+                          {['dog', 'cat'].map((type) => (
+                            <div
+                              key={type}
+                              className={`p-4 border-2 rounded-md cursor-pointer ${
+                                petType === type ? 'border-blue-500 bg-blue-100' : 'border-gray-300'
+                              }`}
+                                onClick={() => {
+                                  setPetType(type as PetType);
+                                }}
+                              >
+                              <Image alt={type} src={type === "dog" ? DogImage : CatImage} style={{width: '100px'}} /> 
+                            </div>
+                          ))}
+                        </div>
+                    </div>
                   </div>
                   {petType && (
-                      <div className="flex gap-4 mb-8">
-                        {['CHILD', 'ADULT', 'SENIOR'].map((age) => (
-                          <div
-                            key={age}
-                            className={`p-4 border-2 rounded-md cursor-pointer ${
-                              petAge === age ? 'border-green-500 bg-green-100' : 'border-gray-300'
-                            }`}
-                            onClick={() => setPetAge(age as PetAge)}
-                          >
-                            {age}
-                          </div>
-                        ))}
+                      <div>
+                        <h2>How old is your pet?</h2>
+                        <div className="flex gap-4 mb-8" style={{marginTop: '20px'}}>
+                          {['CHILD', 'ADULT', 'SENIOR'].map((age) => (
+                            <div
+                              key={age}
+                              className={`p-4 border-2 rounded-md cursor-pointer ${
+                                petAge === age ? 'border-green-500 bg-green-100' : 'border-gray-300'
+                              }`}
+                              onClick={() => setPetAge(age as PetAge)}
+                            >
+                              {age === "CHILD" ? (petType === "dog" ? "Puppy" : "Kitten") : age.charAt(0).toUpperCase() + age.slice(1).toLowerCase()}
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     )}
                     {petAge && (
-                      <div className="flex gap-4 mb-8">
-                        {['MEDICAL', 'GROOMING'].map((type) => (
-                          <div
-                            key={type}
-                            className={`p-4 border-2 rounded-md cursor-pointer ${
-                              membershipType === type ? 'border-purple-500 bg-purple-100' : 'border-gray-300'
-                            }`}
-                            onClick={() => setMembershipType(type as MembershipType)}
-                          >
-                            {type}
-                          </div>
-                        ))}
+                      <div>
+                        <h2>What type of membership are you looking for?</h2>
+                        <div className="flex gap-4 mb-8" style={{marginTop: '20px', display: 'flex', flexDirection: 'row', justifyContent: 'center', gap: '20px'}}>
+                          {['MEDICAL', 'GROOMING'].map((type) => (
+                            <div
+                              key={type}
+                              className={`p-4 border-2 rounded-md cursor-pointer ${
+                                membershipType === type ? 'border-purple-500 bg-purple-100' : 'border-gray-300'
+                              }`}
+                              onClick={() => setMembershipType(type as MembershipType)}
+                            >
+                              {type}
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     )}
 
                     {petType && petAge && membershipType && (
-                      <div className="bg-white p-8 rounded-lg">
+                      <div style={{width: '100%'}} className="bg-white p-2 rounded-lg">
                         <h2 className="text-2xl mb-4">Compare Membership Plans</h2>
-                        <div className="text-sm">
-                          {filteredPlans && filteredPlans?.length > 0 ? (
-                             <Table
-                              columns={columns}
-                              dataSource={generateComparisonTable()}
-                              pagination={false}
-                              bordered
-                              className="comparison-table"
-                            />
-                          ) : (
-                            <p>No membership plans available for the selected filters.</p>
-                          )}
-                        </div>
+                        {filteredPlans && filteredPlans?.length > 0 ? (
+                            <Table
+                            columns={columns}
+                            dataSource={generateComparisonTable()}
+                            pagination={false}
+                            bordered
+                            scroll={{ x: true, y: '70vh' }}
+                          />
+                        ) : (
+                          <p>No membership plans available for the selected filters.</p>
+                        )}
                       </div>
                     )}
                 </div>

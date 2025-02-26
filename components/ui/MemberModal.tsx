@@ -91,14 +91,14 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
 
         <div className="h-full w-full">
           <div className="p-5 bg-white rounded-2xl">
-            <div className="w-20 h-20 relative mb-2">
+            {/* <div className="w-20 h-20 relative mb-2">
               <Image
                 src={plan.icon}
                 alt={`${plan.title} icon`}
                 fill
                 className="object-contain"
               />
-            </div>
+            </div> */}
             <div className="border-b-2 border-primary-3">
               <h2 className="text-2xl font-semibold text-primary-1 mb-2">
                 {plan.title}
