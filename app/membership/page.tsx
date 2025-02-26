@@ -172,39 +172,32 @@ const Membership = () => {
         return row;
     });
 
-    comparisonTable.push(...[{
-        featureName: 'Price',
-        ...filteredPlans.reduce((acc, plan) => {
-            acc[plan.name] = plan.price;
-            return acc;
-        }, {} as Partial<ComparisonTable>)
-    }, {
-        featureName: '',
-        ...filteredPlans.reduce((acc, plan) => {
-            acc[plan.name] = <Button variant="solid" onClick={() => {
-              setSelectedPlan({
-                id: plan.id,
-                title: plan.name,
-                // icon: {src: MembershipDesc, height: 0, width: 0},
-                description: plan.description || '',
-                benefits: plan.features.map((feature: any) => ({text: feature.name})),
-                isPopular: false,
-                price: plan.price,
-                duration: plan.duration_months.toString(),
-                petType: petType || 'dog',
-              });
-              setIsModalOpen(true);
-            }}>
-              Buy Now
-            </Button>;
-            return acc;
-        }, {} as Partial<ComparisonTable>)
-    }])
+    comparisonTable.push({
+      featureName: '',
+      ...filteredPlans.reduce((acc, plan) => {
+          acc[plan.name] = <Button variant="solid" onClick={() => {
+            setSelectedPlan({
+              id: plan.id,
+              title: plan.name,
+              // icon: {src: MembershipDesc, height: 0, width: 0},
+              description: plan.description || '',
+              benefits: plan.features.map((feature: any) => ({text: feature.name})),
+              isPopular: false,
+              price: plan.price,
+              duration: plan.duration_months.toString(),
+              petType: petType || 'dog',
+            });
+            setIsModalOpen(true);
+          }}>
+            Buy Now
+          </Button>;
+          return acc;
+      }, {} as Partial<ComparisonTable>)
+    })
 
     return comparisonTable;
   };
 
-  const planNames = filteredPlans ? filteredPlans.map(plan => plan.name) : [];
   const columns = [
       {
           title: 'Features',
@@ -214,10 +207,15 @@ const Membership = () => {
           render: (text: string) => <span>{text}</span>,
           fixed: 'left' as 'left',
       },
-      ...planNames.map(planName => ({
-          title: <div className="text-center">{planName}</div>,
-          dataIndex: planName,
-          key: planName,
+      ...(filteredPlans || []).map(plan => ({
+          title: (
+            <div className="text-center">
+              <div>{plan.name}</div>
+              <div>&#8377; {plan.price}</div>
+            </div>
+          ),
+          dataIndex: plan.name,
+          key: plan.name,
           align: 'center' as 'center',
           render: (value: string) => <div style={{minWidth: '100px'}}>{value}</div>
       }))
