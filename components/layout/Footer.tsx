@@ -31,6 +31,10 @@ const Footer = () => {
               <div>RMV Clinic</div>
               <div>+91 7204996899</div>
             </div>
+            <div className="block mt-1 text-primary-1">
+              <div>HSR Clinic</div>
+              <div>+91 7204996902</div>
+            </div>
           </div>
           <div>
             <h6 className="font-sans text-primary-1 font-semibold mb-2">
@@ -64,6 +68,18 @@ const Footer = () => {
               className="block mt-1 text-primary-1 hover:text-primary-2"
             >
               Locations
+            </Link>
+            <Link
+              href="/cancellations"
+              className="block mt-1 text-primary-1 hover:text-primary-2"
+            >
+              Cancellations & Refund Policy
+            </Link>
+            <Link
+              href="/terms"
+              className="block mt-1 text-primary-1 hover:text-primary-2"
+            >
+              Terms & Conditions
             </Link>
             {/* <Link
                 href="/membership"

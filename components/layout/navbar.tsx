@@ -23,7 +23,7 @@ export default function NavBar() {
   const navigate = useRouter();
   // const isMarketingFeatureEnabled = useMarketingFeature();
 
-  const { getAuthToken, refresh, initiateLogin } = useUserContext();
+  const { refresh, initiateLogin, isLoggedIn } = useUserContext();
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -67,8 +67,7 @@ export default function NavBar() {
   };
 
   const handleBookAVisit = () => {
-    const authToken = getAuthToken();
-    if (authToken) {
+    if (isLoggedIn) {
       navigate.push("/user/book-appointment");
     } else {
       initiateLogin("Book a Visit", "/user/book-appointment");
@@ -127,7 +126,7 @@ export default function NavBar() {
               buttonClickEvent={handleBookAVisit}
             />
             <div className="hidden lg:flex items-center space-x-4 text-xs">
-              {getAuthToken() ? (
+              {isLoggedIn ? (
                 <DropdownMenu.Root>
                   <DropdownMenu.Trigger className="outline-none">
                     <Image
@@ -274,7 +273,7 @@ export default function NavBar() {
           </div>
           <div className="pt-4 pb-3 border-t border-primary-2">
             <div className="flex items-center px-8 md:px-32 space-x-4">
-              {getAuthToken() ? (
+              {isLoggedIn ? (
                 <button
                   type="button"
                   ref={profileButtonRef}

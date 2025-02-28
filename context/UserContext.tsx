@@ -22,7 +22,11 @@ export interface User {
   name: string;
   role: UserRole;
   email: string | null;
-  current_address: string | null;
+  address1: string | null;
+  address2: string | null;
+  city: string | null;
+  state: string | null;
+  pincode: string | null;
   profile_image: string | null;
 }
 
@@ -95,6 +99,8 @@ export const UserProvider = ({ children }: UserProviderProps) => {
           console.error(error);
         }
       }
+    } else {
+      setIsLoggedIn(false);
     }
   }, []);
 

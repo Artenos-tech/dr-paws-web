@@ -31,7 +31,10 @@ export function convertDateToEpoch(date: string) {
 export interface SelectedVet {
   id: number;
   name: string;
-  image: string;
+  image: {
+    type: "url" | "ref";
+    value: string;
+  };
 }
 
 interface selectVetProps {
@@ -428,7 +431,10 @@ const DoctorSelectionCarousel = ({
               onDoctorSelected({
                 id: BEST_AVAILABLE_VET_ID,
                 name: "Best Available Vet",
-                image: "",
+                image: {
+                  type: "url",
+                  value: ""
+                },
               })
             }
           />
