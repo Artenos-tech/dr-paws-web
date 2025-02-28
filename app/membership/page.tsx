@@ -7,39 +7,35 @@ import "swiper/css/navigation";
 import MembershipDesc from "@/public/assets/images/Membership/MembershipDesc.png";
 import DogImage from '@/public/assets/images/pets/dog.png'
 import CatImage from '@/public/assets/images/pets/cat.png'
-import MemberCard, { MembershipPlan } from "@/components/ui/MemberCard";
+import { MembershipPlan } from "@/components/ui/MemberCard";
 import MemberModal from "@/components/ui/MemberModal";
-import { membershipData } from "@/model/mockData";
 import { useAPICall } from '@/hooks/apicall';
 import api from '@/services/api';
 import toast, { Toaster } from "react-hot-toast";
-import {z} from 'zod';
 import { ClipLoader } from "react-spinners";
 import { Table, Button } from 'antd';
 
-const planSchema = z.object({
-  id: z.number(),
-  name: z.string().min(1),
-  description: z.string().nullable(),
-  price: z.number().min(0),
-  duration_months: z.number().min(1),
-  version: z.number(),
-  species: z.array(z.enum(['dog', 'cat'])).min(1),
-  age: z.enum(['CHILD', 'ADULT', 'SENIOR']).nullable(),
-  type: z.enum(['GROOMING', 'MEDICAL', 'COMPREHENSIVE']).nullable(),
-  published: z.boolean(),
-  created_at: z.string(),
-  updated_at: z.string(),
-  features: z.array(z.object({
-    id: z.number(),
-    name: z.string(),
-    description: z.string().nullable(),
-    type: z.enum(['DISCOUNT', 'SESSIONS', 'VACCINATIONS']),
-    value: z.number().nullable(),
-  }))
-});
-
-type Plan = z.infer<typeof planSchema>;
+type Plan = {
+  id: number;
+  name: string;
+  description: string | null;
+  price: number;
+  duration_months: number;
+  version: number;
+  species: ('dog' | 'cat')[];
+  age: 'CHILD' | 'ADULT' | 'SENIOR' | null;
+  type: 'GROOMING' | 'MEDICAL' | 'COMPREHENSIVE' | null;
+  published: boolean;
+  created_at: string;
+  updated_at: string;
+  features: {
+    id: number;
+    name: string;
+    description: string | null;
+    type: 'DISCOUNT' | 'SESSIONS' | 'VACCINATIONS';
+    value: number | null;
+  }[];
+}
 
 type PetType = "dog" | "cat";
 type PetAge = "CHILD" | "ADULT" | "SENIOR";
@@ -89,6 +85,7 @@ const Membership = () => {
     };
 
     fetchPlans();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const filteredPlans = plans?.filter(plan => {      
@@ -135,7 +132,7 @@ const Membership = () => {
     const featureGroups: Record<string, string[]> = {};
 
     filteredPlans.forEach(plan => {
-        plan.features.forEach((feature: any) => {
+        plan.features.forEach((feature) => {
             if (!featureGroups[feature.type]) {
                 featureGroups[feature.type] = [];
             }
@@ -155,7 +152,7 @@ const Membership = () => {
         const row: ComparisonTable = { featureName };
 
         filteredPlans.forEach(plan => {
-            const matchingFeature = plan.features.find((f: any) => f.name === featureName);
+            const matchingFeature = plan.features.find((f) => f.name === featureName);
             if (matchingFeature) {
                 if (matchingFeature.type === 'DISCOUNT') {
                     row[plan.name] = `${matchingFeature.value ?? <CrossMark />}%`;
@@ -181,7 +178,7 @@ const Membership = () => {
               title: plan.name,
               // icon: {src: MembershipDesc, height: 0, width: 0},
               description: plan.description || '',
-              benefits: plan.features.map((feature: any) => ({text: feature.name})),
+              benefits: plan.features.map((feature) => ({text: feature.name})),
               isPopular: false,
               price: plan.price,
               duration: plan.duration_months.toString(),
@@ -205,7 +202,7 @@ const Membership = () => {
           key: 'featureName',
           width: 300,
           render: (text: string) => <span>{text}</span>,
-          fixed: 'left' as 'left',
+          fixed: 'left' as const,
       },
       ...(filteredPlans || []).map(plan => ({
           title: (
@@ -216,7 +213,7 @@ const Membership = () => {
           ),
           dataIndex: plan.name,
           key: plan.name,
-          align: 'center' as 'center',
+          align: 'center' as const,
           render: (value: string) => <div style={{minWidth: '100px'}}>{value}</div>
       }))
   ];

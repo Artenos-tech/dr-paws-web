@@ -1,5 +1,3 @@
-import Image from "next/image";
-import { StaticImageData } from "next/image";
 import CustomButton from "./CustomButton";
 import { useState } from "react";
 import ContactInfoModal from "./ContactInfoModal";
