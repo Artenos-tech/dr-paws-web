@@ -25,6 +25,12 @@ export interface Clinic extends ClinicBase{
     closeTime: string  | null;
     is24Hours: boolean | null;
   }[];
+  gallery: {
+    [imageId: string]: {
+      imageUrl: string;
+      imageOrder: number;
+    };
+  }
 }
 
 export type Gender = "Male" | "Female" | "";

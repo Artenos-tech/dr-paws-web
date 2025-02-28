@@ -681,6 +681,10 @@ export default createAPIClient({
             closeTime: z.string().nullable(),
             is24Hours: z.boolean(),
           })),
+          gallery: z.record(z.string(), z.object({
+            imageUrl: z.string(),
+            imageOrder: z.number(),
+          })),
         }).nullable(),
       }),
       errorResponseSchema: z.object({}),

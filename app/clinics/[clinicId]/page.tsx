@@ -64,7 +64,7 @@ const ClinicDetails: React.FC<ClinicDetailsProps> = ({ params }) => {
     },
     PHOTOS: {
       label: "Photos",
-      component: <ClinicPhotos clinicId={clinicId} />,
+      component: <ClinicPhotos clinicId={clinicId} gallery={clinic.gallery ? clinic.gallery : null} />,
     },
     REVIEWS: {
       label: "Reviews",
@@ -84,7 +84,7 @@ const ClinicDetails: React.FC<ClinicDetailsProps> = ({ params }) => {
       const typedTab = tab as keyof typeof tabs;
       if (
         typedTab === "PHOTOS" &&
-        !photos.find((photoGroup) => photoGroup.id === clinicId)
+        (!clinic.gallery && !photos.find((photoGroup) => photoGroup.id === clinicId))
       ) {
         return;
       }
@@ -98,6 +98,7 @@ const ClinicDetails: React.FC<ClinicDetailsProps> = ({ params }) => {
     });
     return availableTabs;
   };
+
   return (
     <div className="flex flex-col w-full h-full items-center justify-items-center font-roca pb-20 flex-grow px-8 md:px-32 lg:px-20 xl:px-40">
       <main className="w-full flex flex-col gap-[80px] row-start-2 items-center">
@@ -105,6 +106,7 @@ const ClinicDetails: React.FC<ClinicDetailsProps> = ({ params }) => {
           name={clinic.name}
           services={clinic.services}
           clinic={clinic}
+          gallery={clinic.gallery ? clinic.gallery : null}
         />
         <ClinicTabBar
           tabs={getTabs()}
