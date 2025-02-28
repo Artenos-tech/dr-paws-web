@@ -12,6 +12,7 @@ import { clinicItems, doctors, photos, reviews } from "@/model/mockData";
 import { useAPICall } from "@/hooks/apicall";
 import api from "@/services/api";
 import Loader from "@/components/ui/Loader";
+import { Clinic } from "@/model/typeDefinitions";
 
 interface ClinicDetailsProps {
   params: {
@@ -32,22 +33,30 @@ const ClinicDetails: React.FC<ClinicDetailsProps> = ({ params }) => {
     loading: loadingDoctors,
   } = useAPICall(api.getDoctorsForClinicForDisplay);
   const [activeTab, setActiveTab] = useState("OVERVIEW");
+  const [clinic, setClinic] = useState<Clinic | null>(null);
 
   useEffect(() => {
-    getClinic({ clinicid: clinicId });
+    const fetchClinic = async () => {
+      const clinic = await getClinic({ clinicid: clinicId });
+      if (clinic.ok && clinic.value.body.clinic) {
+        setClinic(clinic.value.body.clinic);
+      } else {
+        setClinic(clinicItems.find((clinic) => clinic.id === parseInt(clinicId)) || null);
+      }
+    };
+    fetchClinic();
     getDoctorsForClinic({ clinicid: clinicId });
   }, [clinicId]);
 
-  const clinic = clinicResult?.ok && clinicResult.value.body.clinic || clinicItems.find((clinic) => clinic.id === parseInt(clinicId));
   const doctorsList = doctorsResult?.ok && doctorsResult.value.body.doctors || doctors;
 
-  if (loadingClinic && loadingDoctors) {
+  if (loadingClinic || loadingDoctors || !clinic) {
     return <Loader />;
   }
 
-  if (!clinic) {
-    return <div>Clinic not found</div>;
-  }
+  // if (!clinic) {
+  //   return <div>Clinic not found</div>;
+  // }
 
   const tabs = {
     OVERVIEW: {

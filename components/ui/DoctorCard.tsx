@@ -38,9 +38,6 @@ const DoctorCard: React.FC<DoctorCardProps> = ({ doctor }) => {
     ? doctorProfileResult.value.body.doctor
     : doctors.find((doc) => doc.id === doctor.id);
   
-  if (loadingDoctorProfile) {
-    return <Loader />;
-  }
   return (
     <>
       <div className="rounded-xl border border-primary-3 shadow-md bg-primary-3 text-primary-1 p-4 sm:p-6 w-[260px] md:w-[378px] lg:w-[320px] flex flex-col items-center text-center space-y-4">
@@ -66,12 +63,21 @@ const DoctorCard: React.FC<DoctorCardProps> = ({ doctor }) => {
             {availableToDisplayAt.map((clinic) => clinic.name).join(", ")}
           </span>
         </div>
-        <button
-          className="mt-4 py-2 px-4 rounded-lg bg-accent text-white text-sm hover:bg-secondary-1"
-          onClick={handleViewProfile}
-        >
-          View Profile
-        </button>
+        <div className={`relative mt-4 py-2 px-4 rounded-lg text-white text-sm ${loadingDoctorProfile ? "bg-transparent" : "bg-accent"} ${ loadingDoctorProfile ? "" : "hover:bg-secondary-1"}`}>
+        {loadingDoctorProfile
+          ? 
+            <div className="absolute inset-0 flex items-center justify-center">
+              <Loader />
+            </div>
+          : 
+            <button
+              className="w-full h-full"
+              onClick={handleViewProfile}
+            >
+              View Profile
+            </button>
+        }
+        </div>
       </div>
       {doctorProfile && (
         <DoctorDetailsModal

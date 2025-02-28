@@ -8,13 +8,23 @@ import { DoctorBase } from "@/model/typeDefinitions";
 import { useAPICall } from "@/hooks/apicall";
 import api from "@/services/api";
 import { doctors } from "@/model/mockData";
+import Loader from "@/components/ui/Loader";
 
 const TeamPage = () => {
-  const { call: getDoctorsForDisplay, result: doctorsResult } = useAPICall(api.getDoctorsForDisplay);
+  const { call: getDoctorsForDisplay, loading: loadingDoctors } = useAPICall(api.getDoctorsForDisplay);
+  const [doctorsList, setDoctors] = React.useState<DoctorBase[]>([]);
   useEffect(() => {
-    getDoctorsForDisplay({});
+    const fetchDoctors = async () => {
+      const docsResult = await getDoctorsForDisplay({});
+      if (docsResult.ok && docsResult.value.body.doctors) {
+        setDoctors(docsResult.value.body.doctors);
+      } else {
+        setDoctors(doctors);
+      }
+    }
+    fetchDoctors();
   }, []);
-  const doctorsList = doctorsResult && doctorsResult.ok && doctorsResult.value.body.doctors || doctors;
+  // const doctorsList = doctorsResult && doctorsResult.ok && doctorsResult.value.body.doctors || doctors;
   return (
     <div className="flex flex-col w-full h-full items-center justify-items-center font-roca pb-20">
       <main className="flex flex-col gap-[50px] row-start-2 items-center w-full px-8 md:px-32 lg:px-20 xl:px-40">
@@ -38,19 +48,21 @@ const TeamPage = () => {
           </div>
         </div>
 
-        <div className="w-full">
-          <h1 className="text-xl md:text-4xl font-normal text-center">
-            Our Team
-          </h1>
+        { loadingDoctors && doctorsList.length > 0 ? <Loader /> :
+          <div className="w-full">
+            <h1 className="text-xl md:text-4xl font-normal text-center">
+              Our Team
+            </h1>
 
-          <div className="flex justify-center items-center flex-wrap gap-8 lg:gap-14 my-10">
-            {doctorsList.map((doctor: DoctorBase, index: number) => (
-              <div key={index}>
-                <DoctorCard doctor={doctor} />
-              </div>
-            ))}
+            <div className="flex justify-center items-center flex-wrap gap-8 lg:gap-14 my-10">
+              {doctorsList.map((doctor: DoctorBase, index: number) => (
+                <div key={index}>
+                  <DoctorCard doctor={doctor} />
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        }
       </main>
     </div>
   );

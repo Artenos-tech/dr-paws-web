@@ -1,30 +1,50 @@
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 import ClinicItem from "./ClinicItem";
 import { clinicItems } from "@/model/mockData";
 import ClinicThumbnail from "@/public/assets/images/clinic/clinicThumbnail.svg";
 import { useAPICall } from "@/hooks/apicall";
 import api from "@/services/api";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import Loader from "./Loader";
 
 interface ClinicItemProps {
   showStaticCard: boolean;
   enlargedView: boolean;
 }
 
-const ClinicItemList = ({ showStaticCard, enlargedView }: ClinicItemProps) => {
-  const {call: getClinicsList, result: clinicList} = useAPICall(api.getClinicsForDisplay);
+const  ClinicItemList = ({ showStaticCard, enlargedView }: ClinicItemProps) => {
+  const [clinics, setClinics] = useState<{
+    id: number;
+    name: string;
+    services: string;
+    image: {
+      type: "url" | "ref";
+      value: string | StaticImageData;
+    }
+  }[]>([]);
+  const {call: getClinicsList, loading: loadingClinicList} = useAPICall(api.getClinicsForDisplay);
   useEffect(() => {
-    getClinicsList({});
+    const fetchClinics = async () => {
+      const clinics = await getClinicsList({});
+      if (clinics.ok && clinics.value.body.clinics) {
+        setClinics(clinics.value.body.clinics);
+      } else {
+        setClinics(clinicItems.map(
+          (clinic) => ({
+            id: clinic.id,
+            name: clinic.name,
+            services: clinic.services,
+            image: clinic.image
+          })
+        ));
+      }
+    }
+    fetchClinics();
   }, []);
 
-  const clinics = (clinicList && clinicList.ok && clinicList.value.body.clinics) || clinicItems.map(
-    (clinic) => ({
-      id: clinic.id,
-      name: clinic.name,
-      services: clinic.services,
-      image: clinic.image
-    })
-  );
+  if (loadingClinicList) {
+    return <Loader />;
+  }
   return (
     <div
       className={`${clinics.length >= 4 ? "gap-4" : "gap-12"} ${
