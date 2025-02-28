@@ -25,7 +25,7 @@ export interface Clinic extends ClinicBase{
     closeTime: string  | null;
     is24Hours: boolean | null;
   }[];
-  gallery: {
+  gallery?: {
     [imageId: string]: {
       imageUrl: string;
       imageOrder: number;

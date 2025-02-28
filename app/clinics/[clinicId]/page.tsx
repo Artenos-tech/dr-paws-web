@@ -24,7 +24,6 @@ const ClinicDetails: React.FC<ClinicDetailsProps> = ({ params }) => {
   const { clinicId } = params;
   const {
     call: getClinic,
-    result: clinicResult,
     loading: loadingClinic,
   } = useAPICall(api.getClinicForDisplay);
   const {

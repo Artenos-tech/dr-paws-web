@@ -23,6 +23,7 @@ function ClinicPhotos({clinicId, gallery}:ClinicPhotosProps) {
   Object.entries(gallery).map(([imageId, image]) => ({
     src: image.imageUrl,
     order: image.imageOrder,
+    id: imageId,
   }))
   : photos.find((photoGroup) => photoGroup.id === clinicId)?.photos;
 

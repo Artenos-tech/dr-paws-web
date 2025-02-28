@@ -28,6 +28,7 @@ function ClinicGallery({ name, services, clinic, gallery }: ClinicGalleryProps) 
   const [currentIndex, setCurrentIndex] = useState(0);
   const clinicImages = gallery ?
     Object.entries(gallery).map(([imageId, image]) => ({
+      id: imageId,
       src: image.imageUrl,
       order: image.imageOrder,
     })) :

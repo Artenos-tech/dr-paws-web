@@ -178,6 +178,36 @@ export const clinicImagesMap: {[key: string]: StaticImageData} = {
   unknown: ClinicImage,
 }
 
+export const photos = [
+  {
+    id: "1",
+    photos: [
+      IND_Exterior1,
+      IND_Exterior2,
+      IND_2ndFloor1,
+      IND_2ndFloor,
+      IND_WaitingArea,
+      IND_Diagnostics,
+      IND_OPT,
+      IND_Reception,
+    ],
+  },
+  {
+    id: "2",
+    photos: [
+      RMV_Exterior1,
+      RMV_Exterior2,
+      RMV_CatWaiting,
+      RMV_ConsultRoom,
+      RMV_Grooming,
+      RMV_Hallway,
+      RMV_Hydrotherapy,
+      RMV_Reception,
+      RMV_Retail,
+    ],
+  },
+];
+
 export const clinicItems: Clinic[] = [
   {
     id: 1,
@@ -701,36 +731,6 @@ export const doctors: Doctor[] = [
       "My spirit animal is a wolf because they symbolise loyalty, intelligence, and protection. Wolves are known for their strong sense of community, much like how we care for and protect animals and their families. They also represent a deep understanding of nature and instinct, qualities essential in diagnosing and treating animals with empathy and skill.",
     favPetName: "Ghost - come meet her (my Husky) at the RMV clinic!",
     qualification: "BVSc & AH",
-  },
-];
-
-export const photos = [
-  {
-    id: "1",
-    photos: [
-      IND_Exterior1,
-      IND_Exterior2,
-      IND_2ndFloor1,
-      IND_2ndFloor,
-      IND_WaitingArea,
-      IND_Diagnostics,
-      IND_OPT,
-      IND_Reception,
-    ],
-  },
-  {
-    id: "2",
-    photos: [
-      RMV_Exterior1,
-      RMV_Exterior2,
-      RMV_CatWaiting,
-      RMV_ConsultRoom,
-      RMV_Grooming,
-      RMV_Hallway,
-      RMV_Hydrotherapy,
-      RMV_Reception,
-      RMV_Retail,
-    ],
   },
 ];
 
