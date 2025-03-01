@@ -18,7 +18,10 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
 }) => {
   const { updateUserDetailsHandler } = useUserContext();
 
-  const { call: updateUser, loading } = useAPICall(api.updateUser);
+  const {
+    call: updateUser,
+    loading,
+  } = useAPICall(api.updateUser);
 
   const handleProfileUpdate = async (updatedProfile: User) => {
     const response = await updateUser({
@@ -32,8 +35,8 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
         state: updatedProfile.state,
         pincode: updatedProfile.pincode,
         profile_image: updatedProfile.profile_image,
-      },
-    });
+      }
+    })
     if (response.ok) {
       updateUserDetailsHandler(updatedProfile);
       onClose();
@@ -53,6 +56,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
         content: { maxHeight: "70vh", padding: "1rem", marginTop: "90px" },
       }}
     >
+
       <ProfileForm
         profileData={profileData}
         onSubmit={handleProfileUpdate}

@@ -78,6 +78,7 @@ export default createAPIClient({
         city: z.string(),
         pincode: z.string(),
         state: z.string(),
+
       }),
       responseSchema: z.object({
         status: z.number(),
@@ -96,7 +97,7 @@ export default createAPIClient({
 
           pincode: z.string().nullable(),
           profile_image: z.string().nullable(),
-        }),
+        })
       }),
       errorResponseSchema: z.object({}),
     },
@@ -157,7 +158,7 @@ export default createAPIClient({
 
           pincode: z.string().nullable(),
           profile_image: z.string().nullable(),
-        }),
+        })
       }),
       errorResponseSchema: z.object({}),
     },
@@ -206,7 +207,7 @@ export default createAPIClient({
             gender: z.string().nullable(),
             dob: z.string().nullable(),
             profile_image: z.string().nullable(),
-          }),
+          })
         ),
       }),
       errorResponseSchema: z.object({}),
@@ -281,7 +282,7 @@ export default createAPIClient({
             appt_type: z.string(),
             appt_type_id: z.number(),
             category: z.enum(["UPCOMING", "PAST", "CANCELLED"]),
-          }),
+          })
         ),
       }),
       errorResponseSchema: z.object({}),
@@ -317,22 +318,16 @@ export default createAPIClient({
       requestSchema: z.object({}),
       responseSchema: z.object({
         slots: z.record(
-          z.string(),
-          z.record(
-            z.string(),
-            z.array(
-              z.object({
-                staffId: z.number(),
-              }),
-            ),
-          ),
+          z.string(), z.record(
+            z.string(), z.array(z.object({
+              staffId: z.number(),
+            }))
+          )
         ),
-        preferredVets: z.array(
-          z.object({
-            staffId: z.number(),
-            appCount: z.number(),
-          }),
-        ),
+        preferredVets: z.array(z.object({
+          staffId: z.number(),
+          appCount: z.number(),
+        })),
       }),
       errorResponseSchema: z.object({}),
     },
@@ -370,7 +365,7 @@ export default createAPIClient({
           pet_name: z.string(),
           pet_type: z.string().nullable(),
           pet_profile_image: z.string().nullable(),
-        }),
+        })
       }),
       errorResponseSchema: z.object({}),
     },
@@ -390,7 +385,7 @@ export default createAPIClient({
             displayName: z.string(),
             status: z.enum(["Active", "Inactive", "Unknown"]),
             uid: z.string(),
-          }),
+          })
         ),
       }),
       errorResponseSchema: z.object({}),
@@ -409,7 +404,7 @@ export default createAPIClient({
             id: z.number(),
             name: z.string(),
             speciesid: z.number(),
-          }),
+          })
         ),
       }),
       errorResponseSchema: z.object({}),
@@ -427,7 +422,7 @@ export default createAPIClient({
           z.object({
             id: z.number(),
             name: z.string(),
-          }),
+          })
         ),
       }),
       errorResponseSchema: z.object({}),
@@ -451,7 +446,7 @@ export default createAPIClient({
             gender: z.string().nullable(),
             dob: z.string().nullable(),
             profile_image: z.string().nullable(),
-          }),
+          })
         ),
       }),
       errorResponseSchema: z.object({}),
@@ -492,19 +487,15 @@ export default createAPIClient({
             id: z.number(),
             name: z.string(),
           }),
-          breed: z
-            .object({
+          breed: z.object({
               id: z.number(),
               name: z.string(),
-            })
-            .nullable(),
+            }).nullable(),
           weight: z.number().nullable(),
-          gender: z
-            .object({
-              id: z.number(),
-              name: z.string(),
-            })
-            .nullable(),
+          gender: z.object({
+            id: z.number(),
+            name: z.string(),
+          }).nullable(),
           dob: z.string().nullable(),
           profileImage: z.string().nullable(),
         }),
@@ -522,25 +513,19 @@ export default createAPIClient({
       pathParamsSchema: z.object({}),
       requestSchema: z.object({}),
       responseSchema: z.object({
-        appointmentTypes: z.array(
-          z.object({
+        appointmentTypes: z.array(z.object({
             id: z.string(),
             title: z.string(),
             description: z.string(),
             vetPortId: z.number(),
             isGrooming: z.boolean(),
-            subtypes: z
-              .array(
-                z.object({
+            subtypes: z.array(z.object({
                   id: z.string(),
                   title: z.string(),
                   description: z.string(),
-                }),
-              )
-              .optional(),
+                })).optional(),
             displayOrder: z.number(),
-          }),
-        ),
+          }))
       }),
       errorResponseSchema: z.object({}),
     },
@@ -562,7 +547,7 @@ export default createAPIClient({
             }),
             location: z.string(),
             contact: z.string(),
-          }),
+          })
         ),
       }),
       errorResponseSchema: z.object({}),
@@ -580,7 +565,7 @@ export default createAPIClient({
             name: z.string(),
             image: z.string(),
             clinicids: z.array(z.number()),
-          }),
+          })
         ),
       }),
       errorResponseSchema: z.object({}),
@@ -604,7 +589,7 @@ export default createAPIClient({
               value: z.string(),
             }),
             clinicids: z.array(z.number()),
-          }),
+          })
         ),
       }),
       errorResponseSchema: z.object({}),
@@ -636,26 +621,24 @@ export default createAPIClient({
       }),
       errorResponseSchema: z.object({}),
     },
-
+    
     getClinicsForDisplay: {
       method: "GET",
       path: "/clinics",
       pathParamsSchema: z.object({}),
       requestSchema: z.object({}),
       responseSchema: z.object({
-        clinics: z
-          .array(
-            z.object({
-              id: z.number(),
-              name: z.string(),
-              services: z.string(),
-              image: z.object({
-                type: z.enum(["url", "ref"]),
-                value: z.string(),
-              }),
+        clinics: z.array(
+          z.object({
+            id: z.number(),
+            name: z.string(),
+            services: z.string(),
+            image: z.object({
+              type: z.enum(["url", "ref"]),
+              value: z.string(),
             }),
-          )
-          .nullable(),
+          })
+        ).nullable(),
       }),
       errorResponseSchema: z.object({}),
     },
@@ -665,37 +648,30 @@ export default createAPIClient({
       pathParamsSchema: z.object({ clinicid: z.string() }),
       requestSchema: z.object({}),
       responseSchema: z.object({
-        clinic: z
-          .object({
-            id: z.number(),
-            name: z.string(),
-            contact: z.string(),
-            image: z.object({
-              type: z.enum(["url", "ref"]),
-              value: z.string(),
-            }),
-            gmapsUrl: z.string(),
-            address: z.string(),
-            city: z.string(),
-            services: z.string(),
-            parkingInfo: z.string(),
-            timings: z.array(
-              z.object({
-                dayOfWeek: z.string().nullable(),
-                openTime: z.string().nullable(),
-                closeTime: z.string().nullable(),
-                is24Hours: z.boolean(),
-              }),
-            ),
-            gallery: z.record(
-              z.string(),
-              z.object({
-                imageUrl: z.string(),
-                imageOrder: z.number(),
-              }),
-            ),
-          })
-          .nullable(),
+        clinic: z.object({
+          id: z.number(),
+          name: z.string(),
+          contact: z.string(),
+          image: z.object({
+            type: z.enum(["url", "ref"]),
+            value: z.string(),
+          }),
+          gmapsUrl: z.string(),
+          address: z.string(),
+          city: z.string(),
+          services: z.string(),
+          parkingInfo: z.string(),
+          timings: z.array(z.object({
+            dayOfWeek: z.string().nullable(),
+            openTime: z.string().nullable(),
+            closeTime: z.string().nullable(),
+            is24Hours: z.boolean(),
+          })),
+          gallery: z.record(z.string(), z.object({
+            imageUrl: z.string(),
+            imageOrder: z.number(),
+          })),
+        }).nullable(),
       }),
       errorResponseSchema: z.object({}),
     },
@@ -705,26 +681,22 @@ export default createAPIClient({
       pathParamsSchema: z.object({}),
       requestSchema: z.object({}),
       responseSchema: z.object({
-        doctors: z
-          .array(
-            z.object({
+        doctors: z.array(
+          z.object({
+            id: z.number(),
+            displayName: z.string(),
+            position: z.string(),
+            experience: z.string(),
+            availableToDisplayAt: z.array(z.object({
               id: z.number(),
-              displayName: z.string(),
-              position: z.string(),
-              experience: z.string(),
-              availableToDisplayAt: z.array(
-                z.object({
-                  id: z.number(),
-                  name: z.string(),
-                }),
-              ),
-              imageUrl: z.object({
-                type: z.enum(["url", "ref"]),
-                value: z.string(),
-              }),
+              name: z.string(),
+            })),
+            imageUrl: z.object({
+              type: z.enum(["url", "ref"]),
+              value: z.string(),
             }),
-          )
-          .nullable(),
+          })
+        ).nullable(),
       }),
       errorResponseSchema: z.object({}),
     },
@@ -734,30 +706,26 @@ export default createAPIClient({
       pathParamsSchema: z.object({ doctorid: z.string() }),
       requestSchema: z.object({}),
       responseSchema: z.object({
-        doctor: z
-          .object({
+        doctor: z.object({
+          id: z.number(),
+          displayName: z.string(),
+          position: z.string(),
+          experience: z.string(),
+          qualification: z.string(),
+          specialization: z.string(),
+          about: z.string(),
+          passionateAbout: z.string(),
+          favPetName: z.string(),
+          spiritAnimal: z.string(),
+          availableToDisplayAt: z.array(z.object({
             id: z.number(),
-            displayName: z.string(),
-            position: z.string(),
-            experience: z.string(),
-            qualification: z.string(),
-            specialization: z.string(),
-            about: z.string(),
-            passionateAbout: z.string(),
-            favPetName: z.string(),
-            spiritAnimal: z.string(),
-            availableToDisplayAt: z.array(
-              z.object({
-                id: z.number(),
-                name: z.string(),
-              }),
-            ),
-            imageUrl: z.object({
-              type: z.enum(["url", "ref"]),
-              value: z.string(),
-            }),
-          })
-          .nullable(),
+            name: z.string(),
+          })),
+          imageUrl: z.object({
+            type: z.enum(["url", "ref"]),
+            value: z.string(),
+          }),
+        }).nullable()
       }),
       errorResponseSchema: z.object({}),
     },
@@ -767,26 +735,22 @@ export default createAPIClient({
       pathParamsSchema: z.object({ clinicid: z.string() }),
       requestSchema: z.object({}),
       responseSchema: z.object({
-        doctors: z
-          .array(
-            z.object({
+        doctors: z.array(
+          z.object({
+            id: z.number(),
+            displayName: z.string(),
+            position: z.string(),
+            experience: z.string(),
+            availableToDisplayAt: z.array(z.object({
               id: z.number(),
-              displayName: z.string(),
-              position: z.string(),
-              experience: z.string(),
-              availableToDisplayAt: z.array(
-                z.object({
-                  id: z.number(),
-                  name: z.string(),
-                }),
-              ),
-              imageUrl: z.object({
-                type: z.enum(["url", "ref"]),
-                value: z.string(),
-              }),
+              name: z.string(),
+            })),
+            imageUrl: z.object({
+              type: z.enum(["url", "ref"]),
+              value: z.string(),
             }),
-          )
-          .nullable(),
+          })
+        ).nullable(),
       }),
       errorResponseSchema: z.object({}),
     },

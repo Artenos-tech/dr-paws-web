@@ -22,7 +22,7 @@ interface SelectServiceProps {
     serviceTitle: string | null,
     selectedPet: Pet | null,
     isGrooming: boolean,
-    selectedSubtype: BookingCategory | null,
+    selectedSubtype: BookingCategory | null
   ) => void;
   openCard: number | null;
   setOpenCard: React.Dispatch<React.SetStateAction<number | null>>;
@@ -45,7 +45,7 @@ const SelectService: React.FC<SelectServiceProps> = ({
     useState<BookingCategory | null>(null);
   const [selectedCardId, setSelectedCardId] = useState<number>();
   const { call: getPetsAPI, result: getPetsAPIResult } = useAPICall(
-    api.getPets,
+    api.getPets
   );
 
   const {
@@ -79,14 +79,14 @@ const SelectService: React.FC<SelectServiceProps> = ({
     cardId: number,
     cardTitle: string,
     selectedPet: Pet | null,
-    isGrooming: boolean,
+    isGrooming: boolean
   ) => {
     setServiceOptions(
       cardId,
       cardTitle,
       selectedPet,
       isGrooming,
-      selectedSubtype,
+      selectedSubtype
     );
   };
 
@@ -98,7 +98,7 @@ const SelectService: React.FC<SelectServiceProps> = ({
         setServiceOptions(null, null, null, isGrooming, selectedSubtype);
       }
       const selectedCard = ServiceTabsData.find(
-        (category) => category.vetPortId === cardId,
+        (category) => category.vetPortId === cardId
       );
       if (
         selectedCard &&
@@ -130,9 +130,9 @@ const SelectService: React.FC<SelectServiceProps> = ({
       <p className="text-gray-600 mb-12">Choose from our services:</p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
-        {ServiceTabsData.toSorted(
-          (a, b) => a.displayOrder - b.displayOrder,
-        ).map((category) => (
+        {ServiceTabsData
+        .toSorted((a, b) => a.displayOrder - b.displayOrder)
+        .map((category) => (
           <BookingCard
             key={category.id}
             cardId={category.vetPortId}

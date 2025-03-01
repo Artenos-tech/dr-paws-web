@@ -10,14 +10,11 @@ type ClinicTabBarProps<T extends string> = {
   onTabChange?: (tabId: T) => void;
 };
 
-function ClinicTabBar<T extends string>({
-  tabs,
-  activeTabId,
-  onTabChange,
-}: ClinicTabBarProps<T>) {
+function ClinicTabBar<T extends string>({ tabs, activeTabId, onTabChange }: ClinicTabBarProps<T>) {
+
   const handleTabClick = (tabId: string) => {
     if (onTabChange) onTabChange(tabId as T);
-  };
+  }
 
   return (
     <div className="w-full m-auto">
@@ -49,6 +46,6 @@ function ClinicTabBar<T extends string>({
       </div>
     </div>
   );
-}
+};
 
 export default ClinicTabBar;

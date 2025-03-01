@@ -22,9 +22,10 @@ interface ClinicDetailsProps {
 
 const ClinicDetails: React.FC<ClinicDetailsProps> = ({ params }) => {
   const { clinicId } = params;
-  const { call: getClinic, loading: loadingClinic } = useAPICall(
-    api.getClinicForDisplay,
-  );
+  const {
+    call: getClinic,
+    loading: loadingClinic,
+  } = useAPICall(api.getClinicForDisplay);
   const {
     call: getDoctorsForClinic,
     result: doctorsResult,
@@ -39,18 +40,14 @@ const ClinicDetails: React.FC<ClinicDetailsProps> = ({ params }) => {
       if (clinic.ok && clinic.value.body.clinic) {
         setClinic(clinic.value.body.clinic);
       } else {
-        setClinic(
-          clinicItems.find((clinic) => clinic.id === parseInt(clinicId)) ||
-            null,
-        );
+        setClinic(clinicItems.find((clinic) => clinic.id === parseInt(clinicId)) || null);
       }
     };
     fetchClinic();
     getDoctorsForClinic({ clinicid: clinicId });
   }, [clinicId]);
 
-  const doctorsList =
-    (doctorsResult?.ok && doctorsResult.value.body.doctors) || doctors;
+  const doctorsList = doctorsResult?.ok && doctorsResult.value.body.doctors || doctors;
 
   if (loadingClinic || loadingDoctors || !clinic) {
     return <Loader />;
@@ -75,12 +72,7 @@ const ClinicDetails: React.FC<ClinicDetailsProps> = ({ params }) => {
     },
     PHOTOS: {
       label: "Photos",
-      component: (
-        <ClinicPhotos
-          clinicId={clinicId}
-          gallery={clinic.gallery ? clinic.gallery : null}
-        />
-      ),
+      component: <ClinicPhotos clinicId={clinicId} gallery={clinic.gallery ? clinic.gallery : null} />,
     },
     REVIEWS: {
       label: "Reviews",
@@ -100,8 +92,7 @@ const ClinicDetails: React.FC<ClinicDetailsProps> = ({ params }) => {
       const typedTab = tab as keyof typeof tabs;
       if (
         typedTab === "PHOTOS" &&
-        !clinic.gallery &&
-        !photos.find((photoGroup) => photoGroup.id === clinicId)
+        (!clinic.gallery && !photos.find((photoGroup) => photoGroup.id === clinicId))
       ) {
         return;
       }

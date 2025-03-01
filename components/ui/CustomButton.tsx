@@ -18,13 +18,13 @@ const CustomButton: React.FC<ButtonProps> = ({
   buttonBackground,
   buttonLink,
   buttonClickEvent,
-  disabled = false,
+  disabled = false, 
   loading = false,
 }) => {
   const router = useRouter();
 
   const handleClick = () => {
-    if (disabled) return;
+    if (disabled) return; 
 
     if (buttonLink) {
       router.push(buttonLink);
@@ -36,12 +36,15 @@ const CustomButton: React.FC<ButtonProps> = ({
   return (
     <button
       onClick={handleClick}
-      disabled={disabled || loading}
+      disabled={disabled || loading} 
       className={`font-open-sans btn rounded-full text-white px-4 md:px-10 py-2 tracking-wider text-xs md:text-base ${buttonBackground} ${
         disabled ? "opacity-50 cursor-not-allowed" : ""
       }`}
     >
-      {loading ? <ClipLoader size={20} color="white" /> : buttonText}
+      { loading 
+        ? <ClipLoader size={20} color="white" />
+        : buttonText
+      }
     </button>
   );
 };

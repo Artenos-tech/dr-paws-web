@@ -28,7 +28,7 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
 }) => {
   const [isLogin, setIsLogin] = useState<boolean>(true);
   const [userMobileNumber, setUserMobileNumber] = useState<string | undefined>(
-    undefined,
+    undefined
   );
   const [userName, setUserName] = useState<string>("");
   const [profileImage, setUserPofileImage] = useState<string | null>(null);
@@ -54,14 +54,14 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
 
   // API's
   const { call: signupOTP, loading: signupOTPLoading } = useAPICall(
-    api.signupOTP,
+    api.signupOTP
   );
   const { call: signupVerify, loading: signupVerifyLoading } = useAPICall(
-    api.signupVerify,
+    api.signupVerify
   );
   const { call: loginOTP, loading: loginOTPLoading } = useAPICall(api.loginOTP);
   const { call: loginVerify, loading: loginVerifyLoading } = useAPICall(
-    api.loginVerify,
+    api.loginVerify
   );
 
   const { call: signupCancel } = useAPICall(api.signupCancel);
@@ -170,7 +170,7 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
           setOtpErr(
             errorMessage === "Invalid mobile number or OTP"
               ? "Invalid OTP"
-              : errorMessage,
+              : errorMessage
           );
 
           toast.error("Something went wrong. Please try again.", {
@@ -205,7 +205,7 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
           setOtpErr(
             errorMessage === "Invalid mobile number or OTP"
               ? "Invalid OTP"
-              : errorMessage,
+              : errorMessage
           );
 
           toast.error("Something went wrong. Please try again.", {

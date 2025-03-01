@@ -1,6 +1,7 @@
 // components/ui/DoctorCard.tsx
 import React from "react";
 
+
 interface BestAvailableVetCardProps {
   isSelected: boolean;
   onSelected: () => void;
@@ -10,6 +11,7 @@ const BestAvailableVetCard: React.FC<BestAvailableVetCardProps> = ({
   isSelected,
   onSelected,
 }) => {
+
   const handleCardClick = () => {
     onSelected();
   };
@@ -22,8 +24,8 @@ const BestAvailableVetCard: React.FC<BestAvailableVetCardProps> = ({
       }`}
     >
       <p className="text-center text-sm">
-        The best available vet will be assigned based on your previous
-        appointments and the availability of the vets.
+        The best available vet will be assigned based on
+        your previous appointments and the availability of the vets.
       </p>
       <h2 className="flex-1 pt-2 text-center text-lg font-semibold">
         Best Available Vet

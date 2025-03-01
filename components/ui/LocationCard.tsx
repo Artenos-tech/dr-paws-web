@@ -15,7 +15,7 @@ interface LocationCardProps {
 
 export function LocationCard({ locationString }: LocationCardProps) {
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(
-    null,
+    null
   );
   const [address, setAddress] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -31,8 +31,8 @@ export function LocationCard({ locationString }: LocationCardProps) {
       try {
         const response = await fetch(
           `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
-            locationString,
-          )}&key=${apiKey}`,
+            locationString
+          )}&key=${apiKey}`
         );
         const data = await response.json();
 
@@ -63,7 +63,7 @@ export function LocationCard({ locationString }: LocationCardProps) {
   const getDirections = () => {
     if (location) {
       const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-        locationString,
+        locationString
       )}`;
       window.open(url, "_blank", "noopener,noreferrer");
     }

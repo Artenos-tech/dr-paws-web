@@ -297,7 +297,7 @@ div > .inputGroup {
 }
 
 .bg-banner::before {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   left: 0;
@@ -308,6 +308,6 @@ div > .inputGroup {
 }
 
 .bg-banner > * {
-  position: relative;
+  position: relative; 
   z-index: 1;
 }

@@ -13,6 +13,7 @@ interface ModalProps {
 }
 
 const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
+
   if (!isOpen) return null;
 
   return (

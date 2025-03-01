@@ -6,13 +6,13 @@ export async function optimizeImage(
   inputPath: string,
   outputDir: string,
   width: number,
-  quality: number,
+  quality: number
 ): Promise<void> {
   try {
     const { name, ext } = path.parse(inputPath);
     const outputPath = path.join(
       outputDir,
-      `${name}${ext === ".svg" ? ext : ".webp"}`,
+      `${name}${ext === ".svg" ? ext : ".webp"}`
     );
 
     if (ext.toLowerCase() === ".svg") {
@@ -34,7 +34,7 @@ export async function optimizeImage(
 export async function ensureOptimizedImage(
   src: string,
   width: number,
-  quality: number,
+  quality: number
 ): Promise<string> {
   try {
     const inputPath = path.join(process.cwd(), "public", src);
@@ -45,11 +45,11 @@ export async function ensureOptimizedImage(
       ".next",
       "cache",
       "images",
-      dir,
+      dir
     );
     const outputPath = path.join(
       outputDir,
-      `${name}-${width}w-${quality}q${ext === ".svg" ? ext : ".webp"}`,
+      `${name}-${width}w-${quality}q${ext === ".svg" ? ext : ".webp"}`
     );
 
     if (!fs.existsSync(outputPath)) {

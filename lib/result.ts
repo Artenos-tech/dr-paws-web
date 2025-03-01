@@ -37,7 +37,7 @@ export function wrap<T>(fn: () => T): Result<T, unknown> {
  * Utility function for wrapping an async function that may throw an error.
  */
 export async function wrapAsync<T>(
-  fn: () => Promise<T>,
+  fn: () => Promise<T>
 ): Promise<Result<T, unknown>> {
   try {
     return ok(await fn());

@@ -29,7 +29,7 @@ type AsyncResultHookReturn<R extends Result<unknown, unknown>> = {
  */
 
 export function useAsyncResult<
-  R extends Result<unknown, unknown>,
+  R extends Result<unknown, unknown>
 >(): AsyncResultHookReturn<R> {
   const [getResult, setResult] = useRefState<R | undefined>(undefined);
   const [getLoading, setLoading] = useRefState(false);
@@ -40,7 +40,7 @@ export function useAsyncResult<
   }
 
   async function call(
-    fn: (abortSignal?: AbortSignal) => Promise<R>,
+    fn: (abortSignal?: AbortSignal) => Promise<R>
   ): Promise<R> {
     if (getLoading()) {
       abort("new request started");

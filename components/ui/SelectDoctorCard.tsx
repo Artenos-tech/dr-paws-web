@@ -18,7 +18,7 @@ interface SelectDoctorCardProps {
   onDoctorSelect: (
     doctorId: number,
     doctorName: string,
-    doctorImage: { type: "url" | "ref"; value: string },
+    doctorImage: { type: "url" | "ref"; value: string }
   ) => void;
 }
 
@@ -45,8 +45,8 @@ const SelectDoctorCard: React.FC<SelectDoctorCardProps> = ({
           image.value === "unknown"
             ? defaultVetImg
             : image.type === "ref"
-              ? doctorImagesMap[image.value]
-              : image.value
+            ? doctorImagesMap[image.value]
+            : image.value
         }
         alt={name}
         width={120}

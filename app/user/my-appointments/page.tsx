@@ -11,49 +11,42 @@ import { useAPICall } from "@/hooks/apicall";
 import { AppointmentType } from "@/model/typeDefinitions";
 import api from "@/services/api";
 
+
 const TABS = {
-  ALL: {
+  "ALL": {
     label: "All",
   },
-  UPCOMING: {
+  "UPCOMING": {
     label: "Upcoming",
   },
-  PAST: {
+  "PAST": {
     label: "Past",
   },
-  CANCELLED: {
+  "CANCELLED": {
     label: "Cancelled",
   },
 } as const;
 
 const MyAppointmentsPage = () => {
-  const {
-    call: getAppointments,
-    loading,
-    result,
-  } = useAPICall(api.getAppointments);
+  const { call: getAppointments, loading, result } = useAPICall(api.getAppointments);
 
-  const [selectedAppointment, setSelectedAppointment] =
-    useState<AppointmentType | null>(null);
+  const [selectedAppointment, setSelectedAppointment] = useState<AppointmentType | null>(null);
 
   const [activeTab, setActiveTab] = useState<keyof typeof TABS>("ALL");
 
   useEffect(() => {
     getAppointments({});
-  }, []);
+  }, [])
 
   if (loading) {
-    return (
-      <div>
-        <Loader />
-      </div>
-    );
+    return <div><Loader /></div>;
   }
 
   const appointments = result?.ok ? result.value.body.appointments : null;
 
-  const filteredAppointments = (appointments || []).filter(
-    (appointment: AppointmentType) => {
+  const filteredAppointments = (
+    appointments || []
+  ).filter((appointment: AppointmentType) => {
       if (activeTab === "ALL") {
         return true;
       }
@@ -66,14 +59,13 @@ const MyAppointmentsPage = () => {
       if (activeTab === "CANCELLED") {
         return appointment.category === "CANCELLED";
       }
-    },
-  );
+  })
 
   return (
     <div className="flex flex-col w-full h-full items-center justify-items-center font-roca pb-20 flex-grow px-8 md:px-32 lg:px-20 xl:px-40">
       <main className="w-full h-full  flex flex-col gap-[40px] my-12 row-start-2 items-center">
         {selectedAppointment ? (
-          <BookingDetails
+          <BookingDetails 
             selectedAppointment={selectedAppointment}
             goBack={(refetch: boolean) => {
               setSelectedAppointment(null);
@@ -82,49 +74,48 @@ const MyAppointmentsPage = () => {
               }
             }}
           />
-        ) : (
+        ) :
           <>
-            {!result?.ok &&
-              (result?.error.apiClientErrorType === "ErrorResponseAPIError" ? (
+            {!result?.ok && (
+              result?.error.apiClientErrorType === "ErrorResponseAPIError" ?
                 <div>{result.error.message}</div>
-              ) : (
+              :
                 <>
-                  {console.error(
-                    "Error fetching appointments",
-                    result?.error.message,
-                  )}
+                  {console.error("Error fetching appointments", result?.error.message)}
                   <div>Something went wrong fetching your appointments</div>
                 </>
-              ))}
-            <ClinicTabBar
-              tabs={TABS}
-              activeTabId={activeTab}
-              onTabChange={setActiveTab}
+            )
+
+            }
+            <ClinicTabBar 
+              tabs={TABS} 
+              activeTabId={activeTab} 
+              onTabChange={setActiveTab} 
             />
-            {filteredAppointments.length === 0 ? (
-              <div className="w-full h-full lg:h-screen">
-                <NoAppointments
-                  displayText={
-                    activeTab === "PAST"
-                      ? "No appointments"
-                      : "You haven't booked any visits yet"
-                  }
-                  showButton={activeTab !== "PAST"}
-                />
-              </div>
-            ) : (
-              <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredAppointments.map((appointment) => (
-                  <AppointmentCard
-                    key={appointment.id}
-                    appointment={appointment}
-                    onClick={() => setSelectedAppointment(appointment)}
+              {filteredAppointments.length === 0 ?
+                <div className="w-full h-full lg:h-screen">
+                  <NoAppointments
+                    displayText={
+                      activeTab === "PAST"
+                        ? "No appointments"
+                        : "You haven't booked any visits yet"
+                      }
+                    showButton={activeTab !== "PAST"}
                   />
-                ))}
-              </div>
-            )}
+                </div>
+                :
+                <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {filteredAppointments.map(appointment => (
+                    <AppointmentCard
+                      key={appointment.id}
+                      appointment={appointment}
+                      onClick={() => setSelectedAppointment(appointment)}
+                    />
+                  ))}
+                </div>
+              }
           </>
-        )}
+        }
       </main>
     </div>
   );

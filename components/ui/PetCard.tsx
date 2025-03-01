@@ -12,6 +12,7 @@ import defaultRabbitImg from "@/public/assets/images/pets/rabbit.png";
 import defaultOtherPetImage from "@/public/assets/images/pets/petImg.png";
 import { Pet } from "@/context/UserContext";
 
+
 interface PetCardProps {
   pet: Pet;
 }
@@ -22,7 +23,7 @@ export const petImageByType: Record<string, StaticImageData> = {
   bird: defaultBirdImg,
   rabbit: defaultRabbitImg,
   hamster: defaultHamsterImg,
-  other: defaultOtherPetImage,
+  other: defaultOtherPetImage
 };
 
 const PetCard: React.FC<PetCardProps> = ({ pet }) => {
@@ -33,10 +34,7 @@ const PetCard: React.FC<PetCardProps> = ({ pet }) => {
     router.push(`/user/profile/pet-profile/${vetPortId}`);
   };
 
-  const defaultImageOrPetImage =
-    profileImage ||
-    petImageByType[type?.toLowerCase() || "other"] ||
-    defaultPetImg;
+  const defaultImageOrPetImage = profileImage || petImageByType[type?.toLowerCase() || "other"] || defaultPetImg;
 
   return (
     <div

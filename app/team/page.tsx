@@ -11,9 +11,7 @@ import { doctors } from "@/model/mockData";
 import Loader from "@/components/ui/Loader";
 
 const TeamPage = () => {
-  const { call: getDoctorsForDisplay, loading: loadingDoctors } = useAPICall(
-    api.getDoctorsForDisplay,
-  );
+  const { call: getDoctorsForDisplay, loading: loadingDoctors } = useAPICall(api.getDoctorsForDisplay);
   const [doctorsList, setDoctors] = React.useState<DoctorBase[]>([]);
   useEffect(() => {
     const fetchDoctors = async () => {
@@ -23,7 +21,7 @@ const TeamPage = () => {
       } else {
         setDoctors(doctors);
       }
-    };
+    }
     fetchDoctors();
   }, []);
   // const doctorsList = doctorsResult && doctorsResult.ok && doctorsResult.value.body.doctors || doctors;
@@ -50,9 +48,7 @@ const TeamPage = () => {
           </div>
         </div>
 
-        {loadingDoctors && doctorsList.length > 0 ? (
-          <Loader />
-        ) : (
+        { loadingDoctors && doctorsList.length > 0 ? <Loader /> :
           <div className="w-full">
             <h1 className="text-xl md:text-4xl font-normal text-center">
               Our Team
@@ -66,7 +62,7 @@ const TeamPage = () => {
               ))}
             </div>
           </div>
-        )}
+        }
       </main>
     </div>
   );

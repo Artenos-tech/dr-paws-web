@@ -172,11 +172,11 @@ export const reviewData = [
   },
 ];
 
-export const clinicImagesMap: { [key: string]: StaticImageData } = {
+export const clinicImagesMap: {[key: string]: StaticImageData} = {
   indiranagar: IND_Exterior1,
   rmv: RMV_Exterior1,
   unknown: ClinicImage,
-};
+}
 
 export const photos = [
   {
@@ -214,7 +214,7 @@ export const clinicItems: Clinic[] = [
     name: "Dr. Paws, Indiranagar",
     image: {
       type: "url",
-      value: IND_Exterior1,
+      value: IND_Exterior1
     },
     services:
       "Consults | Surgeries | Grooming | Diagnostics | X-Ray | Ultrasound | Retail",
@@ -229,60 +229,59 @@ export const clinicItems: Clinic[] = [
         dayOfWeek: "Monday",
         openTime: "09:00",
         closeTime: "21:00",
-        is24Hours: false,
+        is24Hours: false
       },
       {
         dayOfWeek: "Tuesday",
         openTime: "09:00",
         closeTime: "21:00",
-        is24Hours: false,
+        is24Hours: false
       },
       {
         dayOfWeek: "Wednesday",
         openTime: "09:00",
         closeTime: "21:00",
-        is24Hours: false,
+        is24Hours: false
       },
       {
         dayOfWeek: "Thursday",
         openTime: "09:00",
         closeTime: "21:00",
-        is24Hours: false,
+        is24Hours: false
       },
       {
         dayOfWeek: "Friday",
         openTime: "09:00",
         closeTime: "21:00",
-        is24Hours: false,
+        is24Hours: false
       },
       {
         dayOfWeek: "Saturday",
         openTime: "09:00",
         closeTime: "21:00",
-        is24Hours: false,
+        is24Hours: false
       },
       {
         dayOfWeek: "Sunday",
         openTime: "09:00",
         closeTime: "21:00",
-        is24Hours: false,
-      },
-    ],
+        is24Hours: false
+      }
+    ]
   },
   {
     id: 2,
     name: "Dr. Paws, RMV (Dollars Colony)",
     image: {
       type: "url",
-      value: RMV_Exterior1,
+      value: RMV_Exterior1
     },
     services:
       "Consults | Surgeries | Grooming | Diagnostics | X-Ray | Ultrasound | Hydrotherapy | Retail",
     contact: "+91 7204996899",
     address: "RMV (Dollars Colony)",
     city: "Bangalore",
-    gmapsUrl:
-      "https://www.google.com/maps/place/Dr.+Paws+RMV+-+24x7+Pet+Clinic+in+Sanjay+Nagar,+Bengaluru+%7C+Vet+Consultation,+Pet+Vaccination,+Pet+Grooming,+Pet+Surgery/data=!4m2!3m1!1s0x0:0xc9a13342ab7933ac?sa=X&ved=1t:2428&ictx=111",
+    gmapsUrl: "https://www.google.com/maps/place/Dr.+Paws+RMV+-+24x7+Pet+Clinic+in+Sanjay+Nagar,+Bengaluru+%7C+Vet+Consultation,+Pet+Vaccination,+Pet+Grooming,+Pet+Surgery/data=!4m2!3m1!1s0x0:0xc9a13342ab7933ac?sa=X&ved=1t:2428&ictx=111",
     parkingInfo:
       "Ample parking available outside clinic, and in surrounding lanes",
     timings: [
@@ -290,45 +289,45 @@ export const clinicItems: Clinic[] = [
         dayOfWeek: "Monday",
         openTime: "00:00",
         closeTime: "23:59",
-        is24Hours: true,
+        is24Hours: true
       },
       {
         dayOfWeek: "Tuesday",
         openTime: "00:00",
         closeTime: "23:59",
-        is24Hours: true,
+        is24Hours: true
       },
       {
         dayOfWeek: "Wednesday",
         openTime: "00:00",
         closeTime: "23:59",
-        is24Hours: true,
+        is24Hours: true
       },
       {
         dayOfWeek: "Thursday",
         openTime: "00:00",
         closeTime: "23:59",
-        is24Hours: true,
+        is24Hours: true
       },
       {
         dayOfWeek: "Friday",
         openTime: "00:00",
         closeTime: "23:59",
-        is24Hours: true,
+        is24Hours: true
       },
       {
         dayOfWeek: "Saturday",
         openTime: "00:00",
         closeTime: "23:59",
-        is24Hours: true,
+        is24Hours: true
       },
       {
         dayOfWeek: "Sunday",
         openTime: "00:00",
         closeTime: "23:59",
-        is24Hours: true,
-      },
-    ],
+        is24Hours: true
+      }
+    ]
   },
   // {
   //   id: "3",
@@ -436,7 +435,7 @@ export const bannerItems = [
   },
 ];
 
-export const doctorImagesMap: { [key: string]: StaticImageData } = {
+export const doctorImagesMap: {[key: string]: StaticImageData} = {
   "dr-girish-kumar": DrGirishImg,
   "dr-archana-g": DrArchanaImg,
   "dr-hitesh-bhardwaj": DrHiteshImg,
@@ -457,19 +456,16 @@ export const doctors: Doctor[] = [
     displayName: "Dr. Girish Kumar V.K.",
     position: "Chief Veterinary Officer",
     experience: "16 Years",
-    availableToDisplayAt: [
-      {
-        id: 1,
-        name: "Indiranagar",
-      },
-      {
-        id: 2,
-        name: "RMV (Dollars Colony)",
-      },
-    ],
+    availableToDisplayAt: [{
+      id: 1,
+      name: "Indiranagar",
+    }, {
+      id: 2,
+      name: "RMV (Dollars Colony)",
+    }],
     imageUrl: {
       type: "url",
-      value: DrGirishImg,
+      value: DrGirishImg
     },
     qualification: "BVSc & AH, MVSc (Clinical Medicine)",
     specialization: "Cardiology, Ultrasonography, Internal Medicine",
@@ -486,15 +482,13 @@ export const doctors: Doctor[] = [
     displayName: "Dr. Archana G.",
     position: "Lead Veterinarian",
     experience: "6 Years",
-    availableToDisplayAt: [
-      {
-        id: 1,
-        name: "Indiranagar",
-      },
-    ],
+    availableToDisplayAt: [{
+      id: 1,
+      name: "Indiranagar",
+    }],
     imageUrl: {
       type: "url",
-      value: DrArchanaImg,
+      value: DrArchanaImg
     },
     specialization: "Surgery, Internal Medicine",
     about:
@@ -511,22 +505,21 @@ export const doctors: Doctor[] = [
     displayName: "Dr. Hitesh Bhardwaj",
     position: "Lead Veterinarian",
     experience: "5 Years",
-    availableToDisplayAt: [
-      {
-        id: 2,
-        name: "RMV (Dollars Colony)",
-      },
-    ],
+    availableToDisplayAt: [{
+      id: 2,
+      name: "RMV (Dollars Colony)",
+    }],
     imageUrl: {
       type: "url",
-      value: DrHiteshImg,
+      value: DrHiteshImg
     },
     specialization: "Critical Care & Soft-Tissue Surgery",
     about:
       "I'm a Lead Vet at Dr. Paws, having graduated with a BVSc from the Bihar Veterinary College in Patna. Post this I have completed a Post Graduate Diploma in Animal Welfare from the Indira Gandhi National Open University. Prior to Dr. Paws I have worked at established small-animal clinics including Crown Vet, Jeeva Pet Hospital & SKS Veterinary.",
     passionateAbout:
       "I love being able to treat those creatures that can't explain what's going on.",
-    spiritAnimal: "My spirit anumal is a hawk, as it teaches me how to focus.",
+    spiritAnimal:
+      "My spirit anumal is a hawk, as it teaches me how to focus.",
     favPetName: "Laddu",
     qualification: "BVSc & AH, Post Graduate Diploma (Animal Welfare)",
   },
@@ -535,15 +528,13 @@ export const doctors: Doctor[] = [
     displayName: "Dr. Shravya B.L.",
     position: "Veterinarian",
     experience: "3 Years",
-    availableToDisplayAt: [
-      {
-        id: 1,
-        name: "Indiranagar",
-      },
-    ],
+    availableToDisplayAt: [{
+      id: 1,
+      name: "Indiranagar",
+    }],
     imageUrl: {
       type: "url",
-      value: DrShravyaImg,
+      value: DrShravyaImg
     },
     specialization: "Gynaecology & Obstetrics",
     about:
@@ -561,15 +552,13 @@ export const doctors: Doctor[] = [
     displayName: "Dr. Prerana S.J.",
     position: "Veterinarian",
     experience: "3 Years",
-    availableToDisplayAt: [
-      {
-        id: 1,
-        name: "Indiranagar",
-      },
-    ],
+    availableToDisplayAt: [{
+      id: 1,
+      name: "Indiranagar"
+    }],
     imageUrl: {
       type: "url",
-      value: DrPreranaImg,
+      value: DrPreranaImg
     },
     specialization: "Soft Tissue Surgeries, Orthopaedic Surgeries",
     about:
@@ -586,15 +575,13 @@ export const doctors: Doctor[] = [
     displayName: "Dr. Kiran K.S.",
     position: "Veterinarian",
     experience: "2 Years",
-    availableToDisplayAt: [
-      {
-        id: 2,
-        name: "RMV (Dollars Colony)",
-      },
-    ],
+    availableToDisplayAt: [{
+      id: 2,
+      name: "RMV (Dollars Colony)"
+    }],
     imageUrl: {
       type: "url",
-      value: DrKiranImg,
+      value: DrKiranImg
     },
     specialization: "Surgery & Veterinary Endoscopy",
     about:
@@ -611,15 +598,13 @@ export const doctors: Doctor[] = [
     displayName: "Dr Aarti Goswami",
     position: "Veterinarian",
     experience: "3 Years",
-    availableToDisplayAt: [
-      {
-        id: 2,
-        name: "RMV (Dollars Colony)",
-      },
-    ],
+    availableToDisplayAt: [{
+      id: 2,
+      name: "RMV (Dollars Colony)"
+    }],
     imageUrl: {
       type: "url",
-      value: DrAartiImg,
+      value: DrAartiImg
     },
     specialization: "Surgery & Radiology",
     about:
@@ -636,15 +621,13 @@ export const doctors: Doctor[] = [
     displayName: "Dr. Neha Menon",
     position: "Veterinarian",
     experience: "2 Years",
-    availableToDisplayAt: [
-      {
-        id: 1,
-        name: "Indiranagar",
-      },
-    ],
+    availableToDisplayAt: [{
+      id: 1,
+      name: "Indiranagar"
+    }],
     imageUrl: {
       type: "url",
-      value: DrNehaImg,
+      value: DrNehaImg
     },
     specialization: "Internal Medicine, Alternative Therapies",
     about:
@@ -661,15 +644,13 @@ export const doctors: Doctor[] = [
     displayName: "Dr. Gisha Nair",
     position: "Veterinarian",
     experience: "5 Years",
-    availableToDisplayAt: [
-      {
-        id: 1,
-        name: "Indiranagar",
-      },
-    ],
+    availableToDisplayAt: [{
+      id: 1,
+      name: "Indiranagar"
+    }],
     imageUrl: {
       type: "url",
-      value: DrGishaImg,
+      value: DrGishaImg
     },
     specialization: "Ophthalmology and Soft-Tissue Surgery",
     about:
@@ -686,15 +667,13 @@ export const doctors: Doctor[] = [
     displayName: "Dr. Rajashri Bodepalli",
     position: "Veterinarian",
     experience: "3 Years",
-    availableToDisplayAt: [
-      {
-        id: 1,
-        name: "Indiranagar",
-      },
-    ],
+    availableToDisplayAt: [{
+      id: 1,
+      name: "Indiranagar"
+    }],
     imageUrl: {
       type: "url",
-      value: DrRajashreeImg,
+      value: DrRajashreeImg
     },
     specialization:
       "Critical Care, Preventative Medicine, Radiography, Soft-Tissue Surgery",
@@ -712,15 +691,13 @@ export const doctors: Doctor[] = [
     displayName: "Dr. Charu Nino",
     position: "Veterinarian",
     experience: "2 Years",
-    availableToDisplayAt: [
-      {
-        id: 2,
-        name: "RMV (Dollars Colony)",
-      },
-    ],
+    availableToDisplayAt: [{
+      id: 2,
+      name: "RMV (Dollars Colony)"
+    }],
     imageUrl: {
       type: "url",
-      value: DrNinoImg,
+      value: DrNinoImg
     },
     specialization: "General Medicine & OPD",
     about:
@@ -737,15 +714,13 @@ export const doctors: Doctor[] = [
     displayName: "Dr. Deepak Dhindhwal",
     position: "Veterinarian",
     experience: "1 Year",
-    availableToDisplayAt: [
-      {
-        id: 2,
-        name: "RMV (Dollars Colony)",
-      },
-    ],
+    availableToDisplayAt: [{
+      id: 2,
+      name: "RMV (Dollars Colony)"
+    }],
     imageUrl: {
       type: "url",
-      value: DrDeepakImg,
+      value: DrDeepakImg
     },
     specialization: "General Medicine",
     about:

@@ -235,8 +235,8 @@ const DoctorDetailsModal: React.FC<doctorDetailsProps> = ({
                 imageUrl.value === "unknown"
                   ? defaultVetImg
                   : imageUrl.type === "ref"
-                    ? doctorImagesMap[imageUrl.value as string]
-                    : imageUrl.value
+                  ? doctorImagesMap[imageUrl.value as string]
+                  : imageUrl.value
               }
               alt="doctor with pet"
               width={200}

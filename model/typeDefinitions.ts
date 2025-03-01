@@ -9,20 +9,20 @@ export interface ClinicBase {
   name: string;
   image: {
     type: "url" | "ref";
-    value: StaticImageData | string;
+    value: StaticImageData | string
   };
   services: string;
 }
-export interface Clinic extends ClinicBase {
+export interface Clinic extends ClinicBase{
   contact: string;
   gmapsUrl: string;
   address: string;
   city: string;
   parkingInfo: string;
-  timings: {
+  timings: { 
     dayOfWeek: string | null;
     openTime: string | null;
-    closeTime: string | null;
+    closeTime: string  | null;
     is24Hours: boolean | null;
   }[];
   gallery?: {
@@ -30,7 +30,7 @@ export interface Clinic extends ClinicBase {
       imageUrl: string;
       imageOrder: number;
     };
-  };
+  }
 }
 
 export type Gender = "Male" | "Female" | "";
@@ -46,7 +46,7 @@ export interface DoctorBase {
   experience: string;
   availableToDisplayAt: {
     id: number;
-    name: string;
+    name: string
   }[];
 }
 

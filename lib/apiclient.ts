@@ -32,10 +32,7 @@ abstract class APIClientError extends Error {
  */
 class FetchAPIError extends APIClientError {
   apiClientErrorType = "FetchAPIError" as const;
-  constructor(
-    message: string,
-    public readonly fetchError: Error,
-  ) {
+  constructor(message: string, public readonly fetchError: Error) {
     super(message);
   }
 }
@@ -48,7 +45,7 @@ class ErrorResponseAPIError<B> extends APIClientError {
   constructor(
     message: string,
     public readonly status: number,
-    public readonly body: B,
+    public readonly body: B
   ) {
     super(message);
   }
@@ -62,7 +59,7 @@ class ParseAPIError extends APIClientError {
   constructor(
     message: string,
     public readonly parseError: Error,
-    public readonly bodyText?: string,
+    public readonly bodyText?: string
   ) {
     super(message);
   }
@@ -76,7 +73,7 @@ class SchemaAPIError extends APIClientError {
   constructor(
     message: string,
     public readonly schemaErrors: z.ZodIssue[],
-    public readonly bodyJSON?: unknown,
+    public readonly bodyJSON?: unknown
   ) {
     super(message);
   }
@@ -125,7 +122,7 @@ async function makeApiCall<TParams, TResp, TErrResp, TBaseResp>(
   responseSchema: z.ZodSchema<TResp>,
   errorResponseSchema: z.ZodSchema<TErrResp>,
   requestContext: RequestContext,
-  abortSignal?: AbortSignal,
+  abortSignal?: AbortSignal
 ): Promise<
   Result<APIResponse<TResp & TBaseResp>, APIError<TErrResp & TBaseResp>>
 > {
@@ -133,7 +130,7 @@ async function makeApiCall<TParams, TResp, TErrResp, TBaseResp>(
   // from the params.
   path = path.replace(
     /\{([^}]+)\}/g,
-    (_, paramName) => (params as Record<string, string>)[paramName] || "",
+    (_, paramName) => (params as Record<string, string>)[paramName] || ""
   );
 
   let body: string | FormData;
@@ -149,15 +146,15 @@ async function makeApiCall<TParams, TResp, TErrResp, TBaseResp>(
       ) {
         return err(
           new RequestDataError(
-            `Invalid multipart body data type for param ${key}. Only string and Blob are allowed.`,
-          ),
+            `Invalid multipart body data type for param ${key}. Only string and Blob are allowed.`
+          )
         );
       }
       body.append(key, params[key] as string | Blob);
     }
   } else {
     return err(
-      new RequestDataError(`Invalid body content type ${bodyContentType}`),
+      new RequestDataError(`Invalid body content type ${bodyContentType}`)
     );
   }
 
@@ -181,7 +178,7 @@ async function makeApiCall<TParams, TResp, TErrResp, TBaseResp>(
   } catch (e) {
     const error = e as Error;
     return err(
-      new FetchAPIError(`Error making API call: ${error.message}`, error),
+      new FetchAPIError(`Error making API call: ${error.message}`, error)
     );
   }
   let bodyText: string;
@@ -192,8 +189,8 @@ async function makeApiCall<TParams, TResp, TErrResp, TBaseResp>(
     return err(
       new ParseAPIError(
         `Error reading response body, failed while parsing as text: ${error.message}`,
-        error,
-      ),
+        error
+      )
     );
   }
   let bodyJSON: unknown;
@@ -205,8 +202,8 @@ async function makeApiCall<TParams, TResp, TErrResp, TBaseResp>(
       new ParseAPIError(
         `Error parsing response body as JSON: ${error.message}`,
         error,
-        bodyText,
-      ),
+        bodyText
+      )
     );
   }
   if (!response.ok) {
@@ -220,8 +217,8 @@ async function makeApiCall<TParams, TResp, TErrResp, TBaseResp>(
           new SchemaAPIError(
             `Error validating error response body schema: ${error.message}`,
             error.issues,
-            bodyJSON,
-          ),
+            bodyJSON
+          )
         );
       }
       throw error;
@@ -230,8 +227,8 @@ async function makeApiCall<TParams, TResp, TErrResp, TBaseResp>(
       new ErrorResponseAPIError(
         response.statusText,
         response.status,
-        parsedError,
-      ),
+        parsedError
+      )
     );
   }
   let parsedBody: TResp & TBaseResp;
@@ -244,8 +241,8 @@ async function makeApiCall<TParams, TResp, TErrResp, TBaseResp>(
         new SchemaAPIError(
           `Error validating response body schema: ${error.message}`,
           error.issues,
-          bodyJSON,
-        ),
+          bodyJSON
+        )
       );
     }
     throw error;
@@ -271,28 +268,28 @@ type GenericEndpointConfig = {
 
 type EndpointPathParams<
   C extends GenericEndpointConfig,
-  Endpt extends keyof C,
+  Endpt extends keyof C
 > = z.infer<C[Endpt]["pathParamsSchema"]>;
 
 type EndpointReqParams<
   C extends GenericEndpointConfig,
-  Endpt extends keyof C,
+  Endpt extends keyof C
 > = z.infer<C[Endpt]["requestSchema"]>;
 
 type EndpointResponse<
   C extends GenericEndpointConfig,
-  Endpt extends keyof C,
+  Endpt extends keyof C
 > = z.infer<C[Endpt]["responseSchema"]>;
 
 type EndpointErrorResponse<
   C extends GenericEndpointConfig,
-  Endpt extends keyof C,
+  Endpt extends keyof C
 > = z.infer<C[Endpt]["errorResponseSchema"]>;
 
 type APIClientInstance<C extends GenericEndpointConfig, B> = {
   [Endpt in keyof C]: (
     params: EndpointReqParams<C, Endpt> & EndpointPathParams<C, Endpt>,
-    opts?: { abortSignal?: AbortSignal },
+    opts?: { abortSignal?: AbortSignal }
   ) => Promise<
     Result<
       APIResponse<EndpointResponse<C, Endpt> & B>,
@@ -329,7 +326,7 @@ function createAPIClient<C extends GenericEndpointConfig, B>(opts: {
         async (
           params: z.infer<(typeof config)["requestSchema"]> &
             z.infer<(typeof config)["pathParamsSchema"]>,
-          opts: { abortSignal?: AbortSignal } = {},
+          opts: { abortSignal?: AbortSignal } = {}
         ) => {
           const bodyContentType =
             config.bodyContentType || BodyContentType.json;
@@ -343,11 +340,11 @@ function createAPIClient<C extends GenericEndpointConfig, B>(opts: {
             config.responseSchema,
             config.errorResponseSchema,
             requestContext,
-            opts.abortSignal,
+            opts.abortSignal
           );
         },
       ];
-    }),
+    })
   ) as APIClientInstance<C, B>;
 }
 

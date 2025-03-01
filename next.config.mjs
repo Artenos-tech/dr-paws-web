@@ -23,7 +23,7 @@ const nextConfig = {
     if (!isServer && process.env.NEXT_EXPORT === "true") {
       config.resolve.alias["@/public/assets/images"] = path.resolve(
         __dirname,
-        "public/assets/optimized-images",
+        "public/assets/optimized-images"
       );
     }
     return config;

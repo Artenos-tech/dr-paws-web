@@ -59,7 +59,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
   });
 
   const [image, setImage] = useState<string | null>(
-    profileData.profile_image || null,
+    profileData.profile_image || null
   );
 
   useEffect(() => {
@@ -225,7 +225,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
           type="submit"
           className="bg-secondary-1 text-white rounded-full px-4 py-2 flex-1"
         >
-          {loading ? <ClipLoader color="white" size={18} /> : `Save`}
+          {loading ?<ClipLoader color="white" size={18}/> : `Save`}
         </button>
       </div>
     </form>

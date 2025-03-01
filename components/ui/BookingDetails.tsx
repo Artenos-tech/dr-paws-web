@@ -98,7 +98,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
       if (!resp.ok) {
         console.error("Error cancelling appointment", resp);
         toast.error(
-          "We couldn't cancel your appointment. Please try again later.",
+          "We couldn't cancel your appointment. Please try again later."
         );
         return;
       }
@@ -106,7 +106,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
     } catch (error) {
       console.error("Error cancelling appointment", error);
       toast.error(
-        "We couldn't cancel your appointment. Please try again later.",
+        "We couldn't cancel your appointment. Please try again later."
       );
     }
   };
@@ -149,8 +149,8 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
               selectedAppointment.category === "PAST"
                 ? "bg-primary-3"
                 : selectedAppointment.category === "CANCELLED"
-                  ? "bg-[#F1F1F1] text-[#909090]"
-                  : "bg-[#FFFCF3]"
+                ? "bg-[#F1F1F1] text-[#909090]"
+                : "bg-[#FFFCF3]"
             }`}
           >
             <p className="text-lg font-semibold mt-4 text-center">
@@ -159,12 +159,12 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                   ? `${selectedAppointment.pet_name} had a ${selectedAppointment.appt_type} session`
                   : `${selectedAppointment.pet_name} visited ${selectedAppointment.vet_name} for a ${selectedAppointment.appt_type}`
                 : selectedAppointment.category === "CANCELLED"
-                  ? selectedAppointment.appt_type !== "Grooming"
-                    ? `${selectedAppointment.pet_name} was scheduled with ${selectedAppointment.vet_name} for a ${selectedAppointment.appt_type}`
-                    : `${selectedAppointment.pet_name} was scheduled for a ${selectedAppointment.appt_type} session`
-                  : selectedAppointment.appt_type !== "Grooming"
-                    ? `${selectedAppointment.pet_name} is scheduled for a ${selectedAppointment.appt_type} with ${selectedAppointment.vet_name}`
-                    : `${selectedAppointment.pet_name} is scheduled for a ${selectedAppointment.appt_type} session`}
+                ? selectedAppointment.appt_type !== "Grooming"
+                  ? `${selectedAppointment.pet_name} was scheduled with ${selectedAppointment.vet_name} for a ${selectedAppointment.appt_type}`
+                  : `${selectedAppointment.pet_name} was scheduled for a ${selectedAppointment.appt_type} session`
+                : selectedAppointment.appt_type !== "Grooming"
+                ? `${selectedAppointment.pet_name} is scheduled for a ${selectedAppointment.appt_type} with ${selectedAppointment.vet_name}`
+                : `${selectedAppointment.pet_name} is scheduled for a ${selectedAppointment.appt_type} session`}
             </p>
             <div className="flex items-center my-4 relative">
               {
@@ -187,12 +187,12 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                       <Image
                         src={
                           selectedAppointment.vet_image.value === "unknown"
-                            ? defaultVetImage
-                            : selectedAppointment.vet_image.type === "ref"
-                              ? doctorImagesMap[
-                                  selectedAppointment.vet_image.value
-                                ]
-                              : selectedAppointment.vet_image.value
+                          ? defaultVetImage
+                          : selectedAppointment.vet_image.type === "ref"
+                            ? doctorImagesMap[
+                              selectedAppointment.vet_image.value
+                            ]
+                            : selectedAppointment.vet_image.value
                         }
                         alt={`Dr. ${selectedAppointment.vet_name}'s profile`}
                         objectFit="cover"
@@ -231,7 +231,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                     year: "numeric",
                     month: "long",
                     day: "numeric",
-                  },
+                  }
                 )}
               </p>
               <p
@@ -248,7 +248,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                   {
                     hour: "2-digit",
                     minute: "2-digit",
-                  },
+                  }
                 )}
                 {" - "}
                 {new Date(selectedAppointment.appt_end).toLocaleTimeString(
@@ -256,7 +256,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                   {
                     hour: "2-digit",
                     minute: "2-digit",
-                  },
+                  }
                 )}
               </p>
             </div>
@@ -380,10 +380,10 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                           selectedAppointment.vet_image.value === "unknown"
                             ? defaultVetImage
                             : selectedAppointment.vet_image.type === "ref"
-                              ? doctorImagesMap[
-                                  selectedAppointment.vet_image.value
-                                ]
-                              : selectedAppointment.vet_image.value
+                            ? doctorImagesMap[
+                                selectedAppointment.vet_image.value
+                              ]
+                            : selectedAppointment.vet_image.value
                         }
                         alt={`Dr. ${selectedAppointment.vet_name}'s profile`}
                         // layout="fill"
@@ -415,7 +415,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                     year: "numeric",
                     month: "long",
                     day: "numeric",
-                  },
+                  }
                 )}
               </p>
               <p className="flex items-center gap-2 line-through">
@@ -427,7 +427,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                   {
                     hour: "2-digit",
                     minute: "2-digit",
-                  },
+                  }
                 )}
                 {" - "}
                 {new Date(selectedAppointment.appt_end).toLocaleTimeString(
@@ -435,7 +435,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                   {
                     hour: "2-digit",
                     minute: "2-digit",
-                  },
+                  }
                 )}
               </p>
             </div>
