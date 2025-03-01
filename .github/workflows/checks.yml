@@ -19,4 +19,4 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Run Prettier check on TypeScript files
-        run: npx prettier --check ./src/
+        run: npx prettier --check .
