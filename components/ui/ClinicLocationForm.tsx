@@ -18,7 +18,7 @@ const formSchema = z.object({
     .preprocess((val) => val === "on" || val === true, z.boolean())
     .refine(
       (val) => val === true,
-      "Please tick the box to give consent for WhatsApp chat"
+      "Please tick the box to give consent for WhatsApp chat",
     ),
 });
 

@@ -3,11 +3,11 @@ const config = {
   plugins: {
     tailwindcss: {},
     autoprefixer: {},
-    'postcss-preset-env': {
+    "postcss-preset-env": {
       stage: 1,
       features: {
-        'custom-properties': true,
-        'color-functional-notation': true,
+        "custom-properties": true,
+        "color-functional-notation": true,
       },
     },
   },

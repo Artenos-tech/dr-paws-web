@@ -63,7 +63,7 @@ export interface UserContextType {
 }
 
 export const UserContext = createContext<UserContextType | undefined>(
-  undefined
+  undefined,
 );
 
 interface UserProviderProps {
@@ -115,10 +115,9 @@ export const UserProvider = ({ children }: UserProviderProps) => {
     }
   }
 
-  
   const [loginModalOpen, setLoginModalOpen] = useState<boolean>(false);
   const [loginText, setLoginText] = useState<string>("");
-  const [redirectTo, setRedirectTo] = useState<string|null>(null);
+  const [redirectTo, setRedirectTo] = useState<string | null>(null);
   const router = useRouter();
 
   function initiateLogin(loginText: string, redirectToPath: string) {
@@ -145,7 +144,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
 
   useEffect(() => {
     checkIsLoggedIn();
-  }, [])
+  }, []);
 
   return (
     <UserContext.Provider

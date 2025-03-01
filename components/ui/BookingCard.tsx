@@ -12,7 +12,12 @@ interface BookingCardProps {
   cardId: number;
   title: string;
   description: string;
-  onCardSelection: (cardId: number, cardTitle: string, selectedPet: Pet | null, isGrooming: boolean) => void;
+  onCardSelection: (
+    cardId: number,
+    cardTitle: string,
+    selectedPet: Pet | null,
+    isGrooming: boolean,
+  ) => void;
   isOpen: boolean;
   toggleCard: (cardId: number, isGrooming: boolean) => void;
   selectedPet: Pet | null;
@@ -31,7 +36,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
   selectedPet,
   pets,
   fetchPets,
-  isGrooming
+  isGrooming,
 }) => {
   const [isAddPetModalOpen, setIsAddPetModalOpen] = useState(false);
 

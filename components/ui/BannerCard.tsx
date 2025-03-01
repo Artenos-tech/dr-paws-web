@@ -22,17 +22,15 @@ const BannerCard: React.FC<bannerCardProps> = ({ banItem }) => {
         // w-[40px] h-[50px] md:w-[50px] md:h-[60px] lg:w-[60px] lg:h-[70px]
       />
       <div className="flex flex-col w-full ">
-      <div className="rounded-t-3xl w-full bg-primary-1 min-h-[90px]">
-
-      </div>
-      <div  className="w-full  py-2 bg-[#ffcb77] z-20 rounded-b-3xl">
-        <h1
-          className=" mt-0  text-primary-1 text-center font-semibold rounded-b-3xl text-xs md:text-base tracking-wider"
-          // onClick={handleBookAVisit}
-        >
-          {bannerText}
-        </h1>
-      </div>
+        <div className="rounded-t-3xl w-full bg-primary-1 min-h-[90px]"></div>
+        <div className="w-full  py-2 bg-[#ffcb77] z-20 rounded-b-3xl">
+          <h1
+            className=" mt-0  text-primary-1 text-center font-semibold rounded-b-3xl text-xs md:text-base tracking-wider"
+            // onClick={handleBookAVisit}
+          >
+            {bannerText}
+          </h1>
+        </div>
       </div>
     </div>
   );

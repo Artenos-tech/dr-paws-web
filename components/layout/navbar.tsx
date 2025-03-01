@@ -247,7 +247,9 @@ export default function NavBar() {
               ) : (
                 <button
                   type="button"
-                  onClick={() => initiateLogin("book appointments", "/user/profile")}
+                  onClick={() =>
+                    initiateLogin("book appointments", "/user/profile")
+                  }
                   className="text-primary-1 text-sm tracking-wider"
                 >
                   Login
@@ -356,7 +358,9 @@ export default function NavBar() {
               ) : (
                 <button
                   type="button"
-                  onClick={() => initiateLogin("book appointments", "/user/book-appointment")}
+                  onClick={() =>
+                    initiateLogin("book appointments", "/user/book-appointment")
+                  }
                   className="text-primary-1 text-sm tracking-wider"
                 >
                   Login
