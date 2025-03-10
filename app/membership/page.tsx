@@ -13,7 +13,7 @@ import { useAPICall } from '@/hooks/apicall';
 import api from '@/services/api';
 import toast, { Toaster } from "react-hot-toast";
 import { ClipLoader } from "react-spinners";
-import { Table, Button } from 'antd';
+import { Table } from 'antd';
 
 type Plan = {
   id: number;
