@@ -25,6 +25,12 @@ export interface Clinic extends ClinicBase{
     closeTime: string  | null;
     is24Hours: boolean | null;
   }[];
+  gallery?: {
+    [imageId: string]: {
+      imageUrl: string;
+      imageOrder: number;
+    };
+  }
 }
 
 export type Gender = "Male" | "Female" | "";
@@ -90,21 +96,7 @@ export interface AppointmentType {
   clinic_contact: string;
   appt_start: string;
   appt_end: string;
-  appt_status:
-  | null
-  | "Check In"
-  | "Complete"
-  | "Scheduled"
-  | "Check out"
-  | "Attending"
-  | "Confirm"
-  | "Cancel"
-  | "Active"
-  | "Waiting"
-  | "Testing"
-  | "Check-out"
-  | "Check-in"
-  | "Confirmed"
+  appt_status: string | null;
   appt_reason: string | null;
   appt_type: string;
   appt_type_id: number;

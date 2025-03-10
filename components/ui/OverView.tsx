@@ -72,45 +72,47 @@ const Overview: React.FC<OverviewProps> = ({
         </div>
       </div>
 
-      <div className="flex flex-col items-center overflow-hidden">
-        <h1 className="text-2xl font-roca text-primary-1 font-[400] mb-6">
-          Meet the Superheroes
-        </h1>
+      { clinicDoctors.length > 0 &&
+        <div className="flex flex-col items-center overflow-hidden">
+          <h1 className="text-2xl font-roca text-primary-1 font-[400] mb-6">
+            Meet the Superheroes
+          </h1>
 
-        <div className="relative px-8 max-w-screen-xl w-full mx-auto">
-          <button className="custom-swiper-button-prev absolute -left-[18px] top-1/2 -translate-y-1/2 rounded-full p-2 transition-colors">
-            <ChevronLeft size={42} className="text-[#5281A2]" />
-          </button>
-          <button className="custom-swiper-button-next absolute -right-[18px] top-1/2 -translate-y-1/2 rounded-full p-2  transition-colors">
-            <ChevronRight size={42} className="text-[#5281A2]" />
-          </button>
+          <div className="relative px-8 max-w-screen-xl w-full mx-auto">
+            <button className="custom-swiper-button-prev absolute -left-[18px] top-1/2 -translate-y-1/2 rounded-full p-2 transition-colors">
+              <ChevronLeft size={42} className="text-[#5281A2]" />
+            </button>
+            <button className="custom-swiper-button-next absolute -right-[18px] top-1/2 -translate-y-1/2 rounded-full p-2  transition-colors">
+              <ChevronRight size={42} className="text-[#5281A2]" />
+            </button>
 
-          <Swiper
-            modules={[Navigation]}
-            navigation={{
-              prevEl: ".custom-swiper-button-prev",
-              nextEl: ".custom-swiper-button-next",
-            }}
-            spaceBetween={30}
-            slidesPerView={1}
-            breakpoints={{
-              640: { slidesPerView: 1 },
-              972: { slidesPerView: 2 },
-              1280: { slidesPerView: 3 },
-            }}
-            className="w-full"
-            style={{ zIndex: 0 }}
-          >
-            {clinicDoctors.map((doctor, index) => (
-              <SwiperSlide key={index}>
-                <div className="flex justify-center">
-                  <DoctorCard doctor={doctor} />
-                </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
+            <Swiper
+              modules={[Navigation]}
+              navigation={{
+                prevEl: ".custom-swiper-button-prev",
+                nextEl: ".custom-swiper-button-next",
+              }}
+              spaceBetween={30}
+              slidesPerView={1}
+              breakpoints={{
+                640: { slidesPerView: 1 },
+                972: { slidesPerView: 2 },
+                1280: { slidesPerView: 3 },
+              }}
+              className="w-full"
+              style={{ zIndex: 0 }}
+            >
+              {clinicDoctors.map((doctor, index) => (
+                <SwiperSlide key={index}>
+                  <div className="flex justify-center">
+                    <DoctorCard doctor={doctor} />
+                  </div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </div>
         </div>
-      </div>
+      }
     </div>
   );
 };

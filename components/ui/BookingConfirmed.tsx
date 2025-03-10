@@ -77,7 +77,7 @@ const BookingConfirmed: React.FC<BookingConfirmedProps> = ({
                 priority
               />
             </div>
-            {selectedAppointment.selectedDoctorImage &&
+            {!isGroomingAppointment && selectedAppointment.selectedDoctorImage &&
               ((selectedAppointment.selectedDoctorImage.type === "ref" &&
                 doctorImagesMap[
                   selectedAppointment.selectedDoctorImage.value

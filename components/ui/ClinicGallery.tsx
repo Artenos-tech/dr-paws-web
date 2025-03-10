@@ -15,15 +15,25 @@ interface ClinicGalleryProps {
   name: string;
   services: string;
   clinic: Clinic;
+  gallery: {
+    [imageId: string]: {
+      imageUrl: string;
+      imageOrder: number;
+    };
+  } | null;
 }
 
-function ClinicGallery({ name, services, clinic }: ClinicGalleryProps) {
+function ClinicGallery({ name, services, clinic, gallery }: ClinicGalleryProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const clinicImages = photos.find((clinicInfo) => clinicInfo.id === clinic.id.toString());
-  const limitedGalleryItems = clinicImages
-    ? clinicImages.photos.slice(0, 7)
-    : [];
+  const clinicImages = gallery ?
+    Object.entries(gallery).map(([imageId, image]) => ({
+      id: imageId,
+      src: image.imageUrl,
+      order: image.imageOrder,
+    })) :
+    photos.find((clinicInfo) => clinicInfo.id === clinic.id.toString())?.photos;
+  const limitedGalleryItems = clinicImages ? clinicImages.slice(0, 7) : [];
   const [isMounted, setIsMounted] = useState(false);
   const { initiateLogin, isLoggedIn } = useUserContext();
   const navigate = useRouter();

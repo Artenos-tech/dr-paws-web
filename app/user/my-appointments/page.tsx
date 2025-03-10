@@ -80,7 +80,10 @@ const MyAppointmentsPage = () => {
               result?.error.apiClientErrorType === "ErrorResponseAPIError" ?
                 <div>{result.error.message}</div>
               :
-                <div>Something went wrong fetching your appointments</div>
+                <>
+                  {console.error("Error fetching appointments", result?.error.message)}
+                  <div>Something went wrong fetching your appointments</div>
+                </>
             )
 
             }
