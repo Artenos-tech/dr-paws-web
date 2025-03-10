@@ -178,14 +178,14 @@ export default function NavBar() {
                       </DropdownMenu.Item>
                       {/* <div className="border-t border-gray-300 my-2" /> */}
                       {/* {!isMarketingFeatureEnabled ? ( */}
-                        <DropdownMenu.Item asChild>
+                        {/* <DropdownMenu.Item asChild>
                           <div
                             onClick={() => navigate.push("/user/my-subscriptions")}
                             className="text-secondary-1 flex justify-between items-center hover:text-primary-1 cursor-pointer outline-none"
                           >
                             My Memberships
                           </div>
-                        </DropdownMenu.Item>
+                        </DropdownMenu.Item> */}
                       {/* ) : null} */}
                       {/* <div className="border-t border-gray-300 my-2" /> */}
 
