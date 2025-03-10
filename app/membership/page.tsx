@@ -162,53 +162,60 @@ const Membership = () => {
         return row;
     });
 
-    comparisonTable.push({
-      featureName: '',
-      ...filteredPlans.reduce((acc, plan) => {
-          acc[plan.name] = <Button variant="solid" onClick={() => {
-            setSelectedPlan({
-              id: plan.id,
-              title: plan.name,
-              // icon: {src: MembershipDesc, height: 0, width: 0},
-              description: plan.description || '',
-              benefits: plan.features.map((feature) => ({text: feature.name})),
-              isPopular: false,
-              price: plan.price,
-              duration: plan.duration_months.toString(),
-              petType: petType || 'dog',
-            });
-            setIsModalOpen(true);
-          }}>
-            Buy Now
-          </Button>;
-          return acc;
-      }, {} as Partial<ComparisonTable>)
-    })
-
     return comparisonTable;
   };
 
   const columns = [
-      {
-          title: 'Features',
-          dataIndex: 'featureName',
-          key: 'featureName',
-          width: 300,
-          render: (text: string) => <span>{text}</span>,
-          fixed: 'left' as const,
-      },
-      ...(filteredPlans || []).map(plan => ({
-          title: (
-            <div className="text-center">
-              <div>{plan.name}</div>
-              <div>&#8377; {plan.price}</div>
-            </div>
-          ),
-          dataIndex: plan.name,
-          key: plan.name,
-          align: 'center' as const,
-          render: (value: string) => <div style={{minWidth: '100px'}}>{value}</div>
-      }))
+    {
+      title: "Features",
+      dataIndex: "featureName",
+      key: "featureName",
+      width: 300,
+      render: (text: string) => <span>{text}</span>,
+      fixed: "left" as const,
+    },
+    ...(filteredPlans || []).map((plan) => ({
+      title: (
+        <div
+          style={{
+            height: 150,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <div style={{ flex: 1 }}>{plan.name}</div>
+          <div>&#8377; {plan.price}</div>
+          <button
+            style={{ marginTop: 10, backgroundColor: "rgb(82, 129, 162)", padding: 10, borderRadius: 10, color: 'white' }}
+            onClick={() => {
+              setSelectedPlan({
+                id: plan.id,
+                title: plan.name,
+                description: plan.description || "",
+                benefits: plan.features.map((feature) => ({
+                  text: feature.name,
+                })),
+                isPopular: false,
+                price: plan.price,
+                duration: plan.duration_months.toString(),
+                petType: petType || "dog",
+              });
+              setIsModalOpen(true);
+            }}
+          >
+            Buy Now
+          </button>
+        </div>
+      ),
+      dataIndex: plan.name,
+      key: plan.name,
+      align: "center" as const,
+      render: (value: string) => (
+        <div style={{ minWidth: "100px" }}>{value}</div>
+      ),
+    })),
   ];
 
   return (
