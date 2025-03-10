@@ -110,12 +110,12 @@ export default function NavBar() {
                 >
                   Our Team
                 </Link>
-                <Link
+                {/* <Link
                   href="/membership"
                   className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                 >
                   Membership
-                </Link>
+                </Link> */}
               </div>
             </div>
           </div>
