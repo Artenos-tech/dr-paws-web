@@ -233,10 +233,10 @@ const Membership = () => {
           </div>
           <div className="flex items-center justify-center w-full lg:items-start lg:justify-center xl:w-full">
             <div className="text-center lg:text-left w-full lg:w-[377px] h-auto xl:w-3/4">
-              <h1 className="text-3xl lg:text-[48px] mb-4 leading-tight">
+              <h1 className="text-3xl mb-4 leading-tight">
                 Great value care, whatever your pet needs
               </h1>
-              <p className="text-sm lg:text-[14px] text-gray-700 px-1 xl:text-xl">
+              <p className="text-md text-gray-700 px-1">
                 Our memberships are designed to provide the convenience,
                 security, and value pet-parents of today expect. Explore our
                 plans to discover the one that fits your pet&apos;s needs.
@@ -245,8 +245,8 @@ const Membership = () => {
           </div>
         </div>
 
-        <div className="bg-primary-3 w-full text-center text-3xl my-16 pb-12 md:px-32 lg:px-20 xl:px-40">
-          <h1 className="pt-12 pb-8 lg:pb-16">Become A Member</h1>
+        <div className="bg-primary-3 w-full text-center my-16 pb-12 md:px-32 lg:px-20 xl:px-40">
+          <h1 className="pt-12 pb-8 lg:pb-16 text-3xl">Become A Member</h1>
         
           {getAllPlansLoading && <ClipLoader color="#33495f" />}
           {!getAllPlansLoading && plans != null &&  
@@ -254,9 +254,11 @@ const Membership = () => {
               {plans.length == 0 && <h3 className="text-xl"> No plans available</h3>}
               {plans.length > 0 && (
                 <div className="flex flex-col gap-8 justify-center items-center">
-                  <div className="flex gap-4 mb-8">
+                  <div className="flex flex-col gap-8 justify-center items-center px-8">
+
+                    <div className="flex gap-4 mb-8">
                       <div>
-                        <h2>Is your pet a dog or a cat?</h2>
+                        <h2 className="text-xl">Is your pet a dog or a cat?</h2>
                         <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', gap: '20px', marginTop: '20px'}}>
                           {['dog', 'cat'].map((type) => (
                             <div
@@ -272,11 +274,11 @@ const Membership = () => {
                             </div>
                           ))}
                         </div>
+                      </div>
                     </div>
-                  </div>
-                  {petType && (
+                    {petType && (
                       <div>
-                        <h2>How old is your pet?</h2>
+                        <h2 className="text-xl">How old is your pet?</h2>
                         <div className="flex gap-4 mb-8" style={{marginTop: '20px'}}>
                           {['CHILD', 'ADULT', 'SENIOR'].map((age) => (
                             <div
@@ -294,7 +296,7 @@ const Membership = () => {
                     )}
                     {petAge && (
                       <div>
-                        <h2>What type of membership are you looking for?</h2>
+                        <h2 className="text-xl">What type of membership are you looking for?</h2>
                         <div className="flex gap-4 mb-8" style={{marginTop: '20px', display: 'flex', flexDirection: 'row', justifyContent: 'center', gap: '20px'}}>
                           {['MEDICAL', 'GROOMING'].map((type) => (
                             <div
@@ -310,23 +312,24 @@ const Membership = () => {
                         </div>
                       </div>
                     )}
+                  </div>
 
-                    {petType && petAge && membershipType && (
-                      <div style={{width: '100%'}} className="p-2 rounded-lg">
-                        <h2 className="text-2xl mb-4">Compare Membership Plans</h2>
-                        {filteredPlans && filteredPlans?.length > 0 ? (
-                          <Table
-                            columns={columns}
-                            dataSource={generateComparisonTable()}
-                            pagination={false}
-                            bordered
-                            scroll={isMobile ? { x: true, y: '70vh' } : undefined}
-                          />
-                        ) : (
-                          <p>No membership plans available for the selected filters.</p>
-                        )}
-                      </div>
-                    )}
+                  {petType && petAge && membershipType && (
+                    <div style={{width: '100%'}} className="p-2 rounded-lg">
+                      <h2 className="text-2xl mb-4">Compare Membership Plans</h2>
+                      {filteredPlans && filteredPlans?.length > 0 ? (
+                        <Table
+                          columns={columns}
+                          dataSource={generateComparisonTable()}
+                          pagination={false}
+                          bordered
+                          scroll={isMobile ? { x: true, y: '70vh' } : undefined}
+                        />
+                      ) : (
+                        <p>No membership plans available for the selected filters.</p>
+                      )}
+                    </div>
+                  )}
                 </div>
               )}
             </div>}
