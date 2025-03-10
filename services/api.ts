@@ -768,7 +768,7 @@ export default createAPIClient({
             price: z.number().min(0),
             duration_months: z.number().min(1),
             version: z.number(),
-            species: z.array(z.enum(['dog', 'cat'])).min(1),
+            species: z.array(z.enum(['dog', 'cat'])),
             age: z.enum(['CHILD', 'ADULT', 'SENIOR']).nullable(),
             type: z.enum(['GROOMING', 'MEDICAL', 'COMPREHENSIVE']).nullable(),
             published: z.boolean(),
