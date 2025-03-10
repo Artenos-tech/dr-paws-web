@@ -76,6 +76,7 @@ const Membership = () => {
         if(plansResp.ok){
           setPlans(plansResp.value.body.plans);
         }else{
+          console.error("Failed to fetch plans:", plansResp.error);
           toast.error('Failed to fetch plans. Please refresh the page to try again.');
         }
       } catch (error) {
