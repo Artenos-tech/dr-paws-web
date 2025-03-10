@@ -89,26 +89,18 @@ const Membership = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const filteredPlans = plans?.filter(plan => {      
-    if (!petType || !petAge || !membershipType) {
-      return false;
-    }
-    const speciesMatches = petType && plan.species.includes(petType);
-    if (membershipType === "GROOMING") {
-      return (
-        (speciesMatches && plan.type === "GROOMING") ||
-        (speciesMatches && plan.type === "COMPREHENSIVE")
-      );
-    }
-    if (membershipType === "MEDICAL") {
-      return (
-        (speciesMatches &&
-            plan.age === petAge &&
-            plan.type === "MEDICAL") ||
-        (speciesMatches && plan.type === "COMPREHENSIVE")
-      );
-    }
-    return false;
+  const filteredPlans = plans?.filter(plan => {
+    const shouldShow =
+      petType &&
+      (plan.species.includes(petType) || plan.species.length === 0) &&
+      petAge &&
+      (plan.age === petAge || plan.age === null) &&
+      membershipType &&
+      (plan.type === membershipType ||
+        plan.type === "COMPREHENSIVE" ||
+        plan.type === null);
+    console.log(plan, shouldShow);
+    return shouldShow;
   });
 
   const TickMark = () => (
@@ -313,7 +305,7 @@ const Membership = () => {
                     )}
 
                     {petType && petAge && membershipType && (
-                      <div style={{width: '100%'}} className="bg-white p-2 rounded-lg">
+                      <div style={{width: '100%'}} className="p-2 rounded-lg">
                         <h2 className="text-2xl mb-4">Compare Membership Plans</h2>
                         {filteredPlans && filteredPlans?.length > 0 ? (
                           <Table
