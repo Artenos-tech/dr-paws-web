@@ -1,5 +1,3 @@
-import Image from "next/image";
-import { StaticImageData } from "next/image";
 import CustomButton from "./CustomButton";
 import { useState } from "react";
 import ContactInfoModal from "./ContactInfoModal";
@@ -8,14 +6,15 @@ export interface Benefit {
   text: string;
 }
 export interface MembershipPlan {
+  id: number;
   title: string;
-  icon: StaticImageData;
+  // icon: StaticImageData;
   description: string;
   benefits: Benefit[];
   isPopular?: boolean;
-  price: string;
+  price: number;
   duration: string;
-  petType: "Dog" | "Cat";
+  petType: "dog" | "cat";
 }
 interface MemberCardProps {
   plan: MembershipPlan;
@@ -38,7 +37,7 @@ export default function MemberCard({ plan, onSelect }: MemberCardProps) {
         </div>
       )}
       <div className="flex self-start flex-col mb-4 ">
-        <div className="w-20 h-20 self-center">
+        {/* <div className="w-20 h-20 self-center">
           <Image
             src={plan.icon}
             alt={`${plan.title} icon`}
@@ -46,7 +45,7 @@ export default function MemberCard({ plan, onSelect }: MemberCardProps) {
             width={80}
             height={80}
           />
-        </div>
+        </div> */}
         <h3 className="text-2xl text-primary-1 w-full text-left mb-2 ">
           {plan.title}
         </h3>
@@ -71,7 +70,7 @@ export default function MemberCard({ plan, onSelect }: MemberCardProps) {
 
       <div className="mt-auto text-base w-full mb-2 md:mb-0">
         <div className="mt-2 text-lg font-bold w-full mb-8 md:mb-0 flex justify-center">
-          <span className="text-primary-1">{plan.price}</span>
+          <span className="text-primary-1">₹ {plan.price}</span>
         </div>
         <div onClick={() => onSelect(plan)}>
           <CustomButton buttonText="Select" buttonBackground="bg-accent" />

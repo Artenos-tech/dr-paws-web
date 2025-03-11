@@ -5,13 +5,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Toaster } from "react-hot-toast";
-import { MdChevronRight } from "react-icons/md";
-
 import ContactInfoModal from "@/components/ui/ContactInfoModal";
 import CustomButton from "@/components/ui/CustomButton";
 import { useUserContext } from "@/context/UserContext";
 import { useAPICall } from "@/hooks/apicall";
-import { useMarketingFeature } from "@/hooks/useMarketingFeature";
+// import { useMarketingFeature } from "@/hooks/useMarketingFeature";
 import logo from "@/public/assets/images/logo/logo.svg";
 import Profile from "@/public/assets/images/profileThumnail.svg";
 import api, { clearAuthToken } from "@/services/api";
@@ -21,10 +19,9 @@ import { useEffect, useRef, useState } from "react";
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  // const [isLocationOpen, setIsLocationOpen] = useState(false);
   const [isContactModalOpen, setContactIsModalOpen] = useState(false);
   const navigate = useRouter();
-  const isMarketingFeatureEnabled = useMarketingFeature();
+  // const isMarketingFeatureEnabled = useMarketingFeature();
 
   const { refresh, initiateLogin, isLoggedIn } = useUserContext();
 
@@ -33,7 +30,6 @@ export default function NavBar() {
   const profileDropdownRef = useRef<HTMLDivElement>(null);
   const profileButtonRef = useRef<HTMLButtonElement>(null);
 
-  // API
   const { call: logout } = useAPICall(api.logout);
 
   useEffect(() => {
@@ -96,35 +92,6 @@ export default function NavBar() {
             </div>
             <div className="hidden lg:block">
               <div className="flex items-center space-x-4 gap-3">
-                {/* <div className="relative group">
-                  <DropdownMenu.Root>
-                    <DropdownMenu.Trigger className="outline-none">
-                      <p className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
-                        Locations
-                      </p>
-                    </DropdownMenu.Trigger>
-                    <DropdownMenu.Portal>
-                      <DropdownMenu.Content
-                        className="bg-[#f7f1de] shadow-lg rounded-lg w-48 p-4 flex flex-col gap-2"
-                        align="start"
-                        sideOffset={5}
-                      >
-                        {clinicItems.map((clinic) => (
-                          <DropdownMenu.Item
-                            asChild
-                            key={clinic.id}
-                            className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
-                          >
-                            <Link href={`/clinics/${clinic.id}`}>
-                              {clinic.clinicName}
-                            </Link>
-                          </DropdownMenu.Item>
-                        ))}
-                        <DropdownMenu.Arrow className="fill-current text-[#f7f1de]" />
-                      </DropdownMenu.Content>
-                    </DropdownMenu.Portal>
-                  </DropdownMenu.Root>
-                </div> */}
                 <Link
                   href="/clinics"
                   className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
@@ -143,14 +110,12 @@ export default function NavBar() {
                 >
                   Our Team
                 </Link>
-                {!isMarketingFeatureEnabled ? (
-                  <Link
-                    href="/membership"
-                    className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-                  >
-                    Membership
-                  </Link>
-                ) : null}
+                {/* <Link
+                  href="/membership"
+                  className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                >
+                  Membership
+                </Link> */}
               </div>
             </div>
           </div>
@@ -212,16 +177,16 @@ export default function NavBar() {
                         </div>
                       </DropdownMenu.Item>
                       {/* <div className="border-t border-gray-300 my-2" /> */}
-                      {!isMarketingFeatureEnabled ? (
-                        <DropdownMenu.Item asChild>
+                      {/* {!isMarketingFeatureEnabled ? ( */}
+                        {/* <DropdownMenu.Item asChild>
                           <div
-                            onClick={() => navigate.push("/membership")}
+                            onClick={() => navigate.push("/user/my-subscriptions")}
                             className="text-secondary-1 flex justify-between items-center hover:text-primary-1 cursor-pointer outline-none"
                           >
-                            Become a Member <MdChevronRight />
+                            My Memberships
                           </div>
-                        </DropdownMenu.Item>
-                      ) : null}
+                        </DropdownMenu.Item> */}
+                      {/* ) : null} */}
                       {/* <div className="border-t border-gray-300 my-2" /> */}
 
                       {/* <DropdownMenu.Item asChild>
@@ -277,33 +242,6 @@ export default function NavBar() {
       {isOpen && (
         <div ref={dropdownRef} className="lg:hidden" id="mobile-menu">
           <div className="px-8 pt-2 pb-3 space-y-1 md:px-32 flex flex-col justify-end">
-            {/* <button
-              onClick={() => setIsLocationOpen(!isLocationOpen)}
-              className="text-primary-1 hover:bg-primary-2 hover:text-white block text-left py-1 px-2 rounded-md text-base font-medium"
-            >
-              Locations
-            </button>
-            <div className="pl-8 flex flex-col text-primary-1">
-              {isLocationOpen && (
-                <div>
-                  {clinicItems.map((clinic) => (
-                    <div
-                      key={clinic.id}
-                      className="my-3 text-sm"
-                      onClick={() => {
-                        setIsOpen(false);
-                        setIsLocationOpen(false);
-                      }}
-                    >
-                      <Link href={`/clinics/${clinic.id}`}>
-                        {clinic.clinicName}
-                      </Link>
-                      <div className="border-t border-primary-2 my-2 w-full" />
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div> */}
             <Link
               onClick={() => setIsOpen(false)}
               href="/clinics"
@@ -325,15 +263,13 @@ export default function NavBar() {
             >
               Our Team
             </Link>
-            {!isMarketingFeatureEnabled ? (
-              <Link
-                onClick={() => setIsOpen(false)}
-                href="/membership"
-                className="text-primary-1 hover:bg-primary-2 hover:text-white block py-2 px-2 rounded-md text-base font-medium"
-              >
-                Membership
-              </Link>
-            ) : null}
+            <Link
+              onClick={() => setIsOpen(false)}
+              href="/membership"
+              className="text-primary-1 hover:bg-primary-2 hover:text-white block py-2 px-2 rounded-md text-base font-medium"
+            >
+              Membership
+            </Link>
           </div>
           <div className="pt-4 pb-3 border-t border-primary-2">
             <div className="flex items-center px-8 md:px-32 space-x-4">
@@ -362,13 +298,6 @@ export default function NavBar() {
                   Login
                 </button>
               )}
-              {/* <div onClick={() => setIsOpen(false)}>
-                <CustomButton
-                  buttonText="Book a visit"
-                  buttonBackground="bg-secondary-1"
-                  buttonClickEvent={handleBookAVisit}
-                />
-              </div> */}
             </div>
             {isProfileOpen && (
               <div
@@ -420,22 +349,17 @@ export default function NavBar() {
                       >
                         Medical History
                       </button> */}
-
-                {!isMarketingFeatureEnabled ? (
-                  <>
-                    <div className="border-t border-gray-300 my-2" />
-                    <button
-                      onClick={() => {
-                        setIsOpen(false);
-                        navigate.push("/membership");
-                      }}
-                      className="text-secondary-1 flex justify-between items-center hover:text-primary-1 cursor-pointer"
-                    >
-                      Become a Member <MdChevronRight />
-                    </button>
-                    <div className="border-t border-gray-300 my-2" />
-                  </>
-                ) : null}
+                  <li>
+                  <button
+                    onClick={() => {
+                      setIsOpen(false);
+                      navigate.push("/user/my-subscriptions");
+                    }}
+                    className="text-primary-1 hover:text-secondary-1 cursor-pointer"
+                  >
+                    My Memberships
+                  </button>
+                </li>
 
                 {/* <button
                         onClick={() => {
@@ -454,8 +378,6 @@ export default function NavBar() {
                     Log Out
                   </button>
                 </li>
-
-                {/* <DropdownMenu.Arrow className="fill-current text-[#f7f1de]" /> */}
               </div>
             )}
           </div>
