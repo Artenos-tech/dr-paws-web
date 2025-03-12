@@ -7,6 +7,7 @@ import { Pet } from "@/context/UserContext"
 import RescheduleConfirmed from "@/components/ui/RescheduleConfirmed"
 import { AppointmentType } from "@/model/typeDefinitions"
 import BackButton from "./BackButton"
+import { doctorImagesMap } from "@/model/mockData"
 
 function convertToSlots(appt_start: string, appt_end: string) {
   const startDate = new Date(appt_start)
@@ -142,7 +143,9 @@ const RescheduleAppointment: React.FC<ReschedulingProps> = ({
                 selectedSlot: notNull(selectedAppointment.selectedSlot),
                 selectedSlotEnd: notNull(selectedAppointment.selectedSlotEnd),
                 selectedDoctorImage: selectedAppointment.selectedDoctor
-                  ? selectedAppointment.selectedDoctor.image
+                  ? selectedAppointment.selectedDoctor.image.type === "url"
+                    ? selectedAppointment.selectedDoctor.image.value
+                    : doctorImagesMap[selectedAppointment.selectedDoctor.image.value]
                   : null,
               }}
               oldValues={{
@@ -150,7 +153,11 @@ const RescheduleAppointment: React.FC<ReschedulingProps> = ({
                   id: existingAppointment.vet_vetport_id,
                   name: existingAppointment.vet_name,
                 },
-                oldDoctorImage: existingAppointment.vet_image,
+                oldDoctorImage: existingAppointment.vet_image
+                ? existingAppointment.vet_image.type === "url"
+                  ? existingAppointment.vet_image.value
+                  : doctorImagesMap[existingAppointment.vet_image.value]
+                : null,
                 oldDate: new Date(oldSlotDetails.date),
                 oldSlot: oldSlotDetails.slot,
                 oldSlotEnd: oldSlotDetails.slotEnd,

@@ -1,7 +1,6 @@
 import { Pet } from "@/context/UserContext"
 import { BsCheckCircleFill } from "react-icons/bs"
-import Image from "next/image"
-import { doctorImagesMap } from "@/model/mockData"
+import Image, { StaticImageData } from "next/image"
 import { GrLocation } from "react-icons/gr"
 import { HiOutlineCalendar } from "react-icons/hi"
 import { MdOutlineAccessTime } from "react-icons/md"
@@ -21,7 +20,7 @@ type RescheduleConfirmedProps = {
       id: number
       name: string
     } | null
-    selectedDoctorImage: string | null
+    selectedDoctorImage: string | StaticImageData | null
     selectedDate: Date
     selectedSlot: string
     selectedSlotEnd: string
@@ -31,7 +30,7 @@ type RescheduleConfirmedProps = {
       id: number
       name: string
     }
-    oldDoctorImage: string | null
+    oldDoctorImage: string | StaticImageData | null
     oldDate: Date
     oldSlot: string
     oldSlotEnd: string
@@ -81,11 +80,10 @@ const RescheduleConfirmed: React.FC<RescheduleConfirmedProps> = ({
                 priority
               />
             </div>
-            {updatedValues.selectedDoctorImage &&
-              doctorImagesMap[updatedValues.selectedDoctorImage] && (
+            {updatedValues.selectedDoctorImage && (
                 <div className="relative w-32 h-32 rounded-full overflow-hidden bg-white p-8 ml-[-30px] flex justify-center items-center">
                   <Image
-                    src={doctorImagesMap[updatedValues.selectedDoctorImage]}
+                    src={updatedValues.selectedDoctorImage}
                     alt={`Dr. ${updatedValues.selectedVet?.name}'s profile`}
                     objectFit="cover"
                     sizes="128px"
