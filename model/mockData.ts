@@ -70,11 +70,11 @@ import Microchipping from "@/public/assets/images/ServicesPage/Pet Services/Micr
 import Customer1 from "../public/assets/images/clinic/customer1.png";
 import Customer2 from "../public/assets/images/clinic/customer2.png";
 import Customer3 from "../public/assets/images/clinic/customer3.png";
-import CareJunior from "@/public/assets/images/Membership/Care Junior.png";
-import CareSenior from "@/public/assets/images/Membership/Care Senior.png";
-import Grooming from "@/public/assets/images/Membership/Grooming.png";
-import StarCare from "@/public/assets/images/Membership/Star Care and Grooming.png";
-import { MembershipPlan } from "@/components/ui/MemberCard";
+// import CareJunior from "@/public/assets/images/Membership/Care Junior.png";
+// import CareSenior from "@/public/assets/images/Membership/Care Senior.png";
+// import Grooming from "@/public/assets/images/Membership/Grooming.png";
+// import StarCare from "@/public/assets/images/Membership/Star Care and Grooming.png";
+// import { MembershipPlan } from "@/components/ui/MemberCard";
 
 import DrAartiImg from "@/public/assets/images/vets/dr_aarti.png";
 import DrArchanaImg from "@/public/assets/images/vets/dr_archana.png";
@@ -882,7 +882,7 @@ export const ServiceTabsData = [
     vetPortId: 12,
     title: "Diagnostics",
     description:
-      "Our pets don’t always communicate what’s wrong making diagnostic tests a crucial part of our care. With our wide range of tests and expert doctors, we’ll do our best to diagnose exactly what’s going as soon as possible.",
+      "Our pets don’t always communicate what’s wrong making diagnostic tests a crucial part of our care. With our wide range of tests and expert doctors, we’ll do our best to diagnose exactly what’s going on as soon as possible.",
     imageDetails: [
       {
         img: BloodTests,
@@ -989,7 +989,7 @@ export const ServiceTabsData = [
     vetPortId: 8,
     title: "Grooming",
     description:
-      "Our state-of-the-art grooming studios help to keep you pet looking and feeling great.",
+      "Our state-of-the-art grooming studios help to keep your pet looking and feeling great.",
     imageDetails: [
       {
         img: SpaBath,
