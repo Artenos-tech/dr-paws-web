@@ -24,9 +24,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
   const [pet, setPet] = useState<Pet>();
   const [isEditing, setIsEditing] = useState(false);
   const [image, setImage] = useState<string>("");
-  const [subscription, setSubscription] = useState<Subscription | null>(
-    null
-  );
+  const [subscription, setSubscription] = useState<Subscription | null>(null);
   // const [age, setAge] = useState<{
   //   years: number | null;
   //   months: number | null;
@@ -40,7 +38,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
     loading: loadingPets,
   } = useAPICall(api.getPets);
   const { call: getPetSpecies, result: getPetSpeciesResult } = useAPICall(
-    api.getPetSpecies
+    api.getPetSpecies,
   );
   const {
     call: getPetBreeds,
@@ -53,10 +51,8 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
     loading: loadingGender,
   } = useAPICall(api.getPetGender);
   const { call: updatePetDetails, loading: loadingUpdate } = useAPICall(
-    api.updatePet
+    api.updatePet,
   );
-
-  
 
   // Setup API call for getPetSubscription
   const { call: getPetSubscription } = useAPICall(api.getPetSubscription);
@@ -90,7 +86,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
   useEffect(() => {
     if (getPetsResult?.ok && petId) {
       const foundPet = getPetsResult.value.body.pets.find(
-        (pet) => pet.vetport_id === petId
+        (pet) => pet.vetport_id === petId,
       );
       if (foundPet) {
         setPet({
@@ -132,7 +128,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
   useEffect(() => {
     if (getPetSpeciesResult?.ok) {
       const speciesId = getPetSpeciesResult.value.body.species.find(
-        (species) => species.displayName === pet?.type
+        (species) => species.displayName === pet?.type,
       )?.id;
       if (speciesId) {
         fetchPetBreedsBySpecies(speciesId);
@@ -191,13 +187,13 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
         : image;
 
     const petType = petSpecies.find(
-      (species) => species.displayName === selectedPet.type
+      (species) => species.displayName === selectedPet.type,
     )?.id;
     const petBreed = petBreeds.find(
-      (breed) => breed.name === selectedPet.breed
+      (breed) => breed.name === selectedPet.breed,
     )?.id;
     const petGender = petGenders.find(
-      (gender) => gender.name === selectedPet.gender
+      (gender) => gender.name === selectedPet.gender,
     )?.id;
 
     if (petType) {
@@ -237,7 +233,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
       const maxSize = 10 * 1024 * 1024;
       if (file.size > maxSize) {
         alert(
-          "File size exceeds the 10MB limit. Please upload a smaller file."
+          "File size exceeds the 10MB limit. Please upload a smaller file.",
         );
         return;
       }
@@ -258,7 +254,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
       setImage(newImage);
     }
     const selectedSpecies = petSpecies.find(
-      (type) => type.displayName === e.target.value
+      (type) => type.displayName === e.target.value,
     );
     if (selectedSpecies) {
       fetchPetBreedsBySpecies(selectedSpecies?.id);
@@ -316,7 +312,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
                     ? !image.includes("/_next/static/media/")
                     : typeof defaultImageOrPetImage === "object" &&
                       !defaultImageOrPetImage.src.includes(
-                        "/_next/static/media/"
+                        "/_next/static/media/",
                       )) && (
                     <button
                       type="button"
@@ -609,7 +605,11 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
                   type="submit"
                   className="btn border bg-secondary-1 text-white px-4 text-xs font-semibold py-2 rounded-full ml-3 min-w-[80px]"
                 >
-                  {loadingUpdate ? <ClipLoader color="#white" size={18} /> : "Submit"}
+                  {loadingUpdate ? (
+                    <ClipLoader color="#white" size={18} />
+                  ) : (
+                    "Submit"
+                  )}
                 </button>
               </div>
             </div>

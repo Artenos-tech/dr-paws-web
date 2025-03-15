@@ -77,7 +77,8 @@ const BookingConfirmed: React.FC<BookingConfirmedProps> = ({
                 priority
               />
             </div>
-            {!isGroomingAppointment && selectedAppointment.selectedDoctorImage &&
+            {!isGroomingAppointment &&
+              selectedAppointment.selectedDoctorImage &&
               ((selectedAppointment.selectedDoctorImage.type === "ref" &&
                 doctorImagesMap[
                   selectedAppointment.selectedDoctorImage.value
@@ -90,10 +91,10 @@ const BookingConfirmed: React.FC<BookingConfirmedProps> = ({
                       "unknown"
                         ? defaultVetImage
                         : selectedAppointment.selectedDoctorImage.type === "ref"
-                        ? doctorImagesMap[
-                            selectedAppointment.selectedDoctorImage.value
-                          ]
-                        : selectedAppointment.selectedDoctorImage.value
+                          ? doctorImagesMap[
+                              selectedAppointment.selectedDoctorImage.value
+                            ]
+                          : selectedAppointment.selectedDoctorImage.value
                     }
                     alt={`Dr. ${selectedAppointment.selectedVet?.name}'s profile`}
                     objectFit="cover"

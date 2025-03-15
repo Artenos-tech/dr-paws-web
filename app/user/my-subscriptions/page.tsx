@@ -23,11 +23,14 @@ export interface Subscription {
   };
 }
 
-
 const Page = () => {
   const [pets, setPets] = useState<Pet[]>([]);
-  const { call: getPetsAPI ,loading: PetLoading} = useAPICall(api.getPets);
-  const { call: getSubscriptionsAPI, loading: SubsLoading, result: subsResult } = useAPICall(api.getSubscriptions);
+  const { call: getPetsAPI, loading: PetLoading } = useAPICall(api.getPets);
+  const {
+    call: getSubscriptionsAPI,
+    loading: SubsLoading,
+    result: subsResult,
+  } = useAPICall(api.getSubscriptions);
 
   const fetchPets = async () => {
     const response = await getPetsAPI({});
@@ -55,22 +58,22 @@ const Page = () => {
     fetchSubscriptions();
   }, []);
 
-
   if (PetLoading || SubsLoading) {
-    return (
-        <Loader />
-    );
+    return <Loader />;
   }
 
   if (!subsResult) {
-    return null
+    return null;
   }
 
   if (!subsResult.ok) {
     return (
       // Error message
-      <div>An error occurred while fetching your subscriptions, please try again later</div>
-    )
+      <div>
+        An error occurred while fetching your subscriptions, please try again
+        later
+      </div>
+    );
   }
 
   const subscriptions = subsResult.value.body.subscriptions;
@@ -78,12 +81,21 @@ const Page = () => {
   if (!subscriptions.length) {
     return (
       <div className="flex flex-col w-full h-full lg:h-screen items-center font-roca pb-20 flex-grow">
-      <main className="flex flex-col w-full items-center px-8 md:px-32 lg:px-20 xl:px-40">
-        <h1 className="text-3xl m-4 lg:m-12">Your Memberships</h1>
-        <h1 className="text-secondary-1 text-lg text-center">You don&apos;t have any memberships yet.</h1>
-        <h1 className="text-secondary-1 text-md text-center mb-4">Join our membership program to enjoy exclusive benefits and discounts for your pet&apos;s health and wellness.</h1>
-        <CustomButton buttonBackground="bg-accent" buttonText="Join Membership" buttonLink="/membership"/>
-      </main>
+        <main className="flex flex-col w-full items-center px-8 md:px-32 lg:px-20 xl:px-40">
+          <h1 className="text-3xl m-4 lg:m-12">Your Memberships</h1>
+          <h1 className="text-secondary-1 text-lg text-center">
+            You don&apos;t have any memberships yet.
+          </h1>
+          <h1 className="text-secondary-1 text-md text-center mb-4">
+            Join our membership program to enjoy exclusive benefits and
+            discounts for your pet&apos;s health and wellness.
+          </h1>
+          <CustomButton
+            buttonBackground="bg-accent"
+            buttonText="Join Membership"
+            buttonLink="/membership"
+          />
+        </main>
       </div>
     );
   }
@@ -95,7 +107,7 @@ const Page = () => {
         <div className="flex flex-col gap-6 lg:w-full">
           {subscriptions.map((subscription) => {
             const matchedPet = pets.find(
-              (pet) => pet.vetPortId === subscription.pet.id
+              (pet) => pet.vetPortId === subscription.pet.id,
             );
             const petImage =
               (matchedPet && matchedPet.profileImage) ||
@@ -128,39 +140,48 @@ const Page = () => {
 
                     {/* Includes Section */}
                     <div className="flex-1 mb-6 lg:mb-0">
-                      <h4 className="text-gray-600 text-lg mb-2">
-                        Includes:
-                      </h4>
+                      <h4 className="text-gray-600 text-lg mb-2">Includes:</h4>
                       <div className="lg:columns-2 lg:gap-8">
                         <ul className="space-y-2 text-sm text-gray-700">
-                          {subscription.plan.features.toSorted((a, b) => {
-                            // sort in order of type: VACCINATIONS > SESSIONS > DISCOUNT > OTHER
-                            const order = ["VACCINATIONS", "SESSIONS", "DISCOUNT"];
-                            return order.indexOf(a.type) - order.indexOf(b.type);
-                          }).map(feature => (
-                            <li key={feature.name} className="flex items-start break-inside-avoid">
-                              <span className="mr-2">•</span>
-                              {["VACCINATIONS", "SESSIONS"].includes(feature.type)  ? (
-                                `${feature.value} free ${feature.name}`
-                              ): feature.type === "DISCOUNT" ? (
-                                `${feature.value}% discount on ${feature.name}`
-                              ) : (
-                                feature.name
-                              )}
-                            </li>
-                          ))}
+                          {subscription.plan.features
+                            .toSorted((a, b) => {
+                              // sort in order of type: VACCINATIONS > SESSIONS > DISCOUNT > OTHER
+                              const order = [
+                                "VACCINATIONS",
+                                "SESSIONS",
+                                "DISCOUNT",
+                              ];
+                              return (
+                                order.indexOf(a.type) - order.indexOf(b.type)
+                              );
+                            })
+                            .map((feature) => (
+                              <li
+                                key={feature.name}
+                                className="flex items-start break-inside-avoid"
+                              >
+                                <span className="mr-2">•</span>
+                                {["VACCINATIONS", "SESSIONS"].includes(
+                                  feature.type,
+                                )
+                                  ? `${feature.value} free ${feature.name}`
+                                  : feature.type === "DISCOUNT"
+                                    ? `${feature.value}% discount on ${feature.name}`
+                                    : feature.name}
+                              </li>
+                            ))}
                         </ul>
                       </div>
                     </div>
 
                     {/* Dates Section */}
                     <div className="flex lg:flex-col justify-between items-center lg:justify-start lg:gap-4 lg:min-w-[200px]">
-                    <div className=" text-gray-600">
+                      <div className=" text-gray-600">
                         <p>Start Date:</p>
                         <p className="text-lg font-semibold text-gray-800">
                           {format(
                             new Date(subscription.start_date),
-                            "MMMM d, yyyy"
+                            "MMMM d, yyyy",
                           )}
                         </p>
                       </div>
@@ -169,11 +190,10 @@ const Page = () => {
                         <p className="text-lg font-semibold text-gray-800">
                           {format(
                             new Date(subscription.end_date),
-                            "MMMM d, yyyy"
+                            "MMMM d, yyyy",
                           )}
                         </p>
                       </div>
-                      
                     </div>
                   </div>
                 </div>

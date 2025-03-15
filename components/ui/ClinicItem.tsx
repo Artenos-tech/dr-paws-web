@@ -19,10 +19,9 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
   const { initiateLogin, isLoggedIn } = useUserContext();
   const navigate = useRouter();
 
-
   const handleBookAVisit = () => {
     return isLoggedIn
-      ?  navigate.push("/user/book-appointment")
+      ? navigate.push("/user/book-appointment")
       : initiateLogin("Book a Visit", "/user/book-appointment");
   };
 
@@ -39,7 +38,10 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
       <div onClick={goToClinicPage} className="cursor-pointer">
         <div className="image-container">
           <Image
-            src={image.type === "url" && image.value || "/assets/images/clinic/clinicThumbnail.svg"}
+            src={
+              (image.type === "url" && image.value) ||
+              "/assets/images/clinic/clinicThumbnail.svg"
+            }
             alt={name + " image"}
             className="image rounded-t-md"
             layout="fill"

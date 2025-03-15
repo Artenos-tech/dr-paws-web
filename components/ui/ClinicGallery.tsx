@@ -23,16 +23,22 @@ interface ClinicGalleryProps {
   } | null;
 }
 
-function ClinicGallery({ name, services, clinic, gallery }: ClinicGalleryProps) {
+function ClinicGallery({
+  name,
+  services,
+  clinic,
+  gallery,
+}: ClinicGalleryProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const clinicImages = gallery ?
-    Object.entries(gallery).map(([imageId, image]) => ({
-      id: imageId,
-      src: image.imageUrl,
-      order: image.imageOrder,
-    })) :
-    photos.find((clinicInfo) => clinicInfo.id === clinic.id.toString())?.photos;
+  const clinicImages = gallery
+    ? Object.entries(gallery).map(([imageId, image]) => ({
+        id: imageId,
+        src: image.imageUrl,
+        order: image.imageOrder,
+      }))
+    : photos.find((clinicInfo) => clinicInfo.id === clinic.id.toString())
+        ?.photos;
   const limitedGalleryItems = clinicImages ? clinicImages.slice(0, 7) : [];
   const [isMounted, setIsMounted] = useState(false);
   const { initiateLogin, isLoggedIn } = useUserContext();
@@ -59,7 +65,7 @@ function ClinicGallery({ name, services, clinic, gallery }: ClinicGalleryProps) 
 
   const handleBookAVisit = () => {
     return isLoggedIn
-      ?  navigate.push("/user/book-appointment")
+      ? navigate.push("/user/book-appointment")
       : initiateLogin("Book a Visit", "/user/book-appointment");
   };
 
@@ -69,7 +75,7 @@ function ClinicGallery({ name, services, clinic, gallery }: ClinicGalleryProps) 
 
   return (
     <div className="w-full">
-      { limitedGalleryItems && limitedGalleryItems.length > 0 &&
+      {limitedGalleryItems && limitedGalleryItems.length > 0 && (
         <div className="gallery-container grid grid-cols-3 gap-4 max-h-[75vh] relative overflow-y-auto">
           {limitedGalleryItems.map((image, index) => (
             <div
@@ -97,7 +103,7 @@ function ClinicGallery({ name, services, clinic, gallery }: ClinicGalleryProps) 
             </div>
           ))}
         </div>
-      }
+      )}
       <div className="w-full flex justify-between mt-8">
         <div className="flex flex-col gap-4">
           <h1 className="text-xl md:text-4xl">{name}</h1>
@@ -140,7 +146,7 @@ function ClinicGallery({ name, services, clinic, gallery }: ClinicGalleryProps) 
             className="p-2 rounded-full bg-gray-700 text-white hover:bg-gray-600 focus:outline-none"
             onClick={() =>
               setCurrentIndex((prev) =>
-                prev === 0 ? limitedGalleryItems.length - 1 : prev - 1
+                prev === 0 ? limitedGalleryItems.length - 1 : prev - 1,
               )
             }
             aria-label="Previous Image"
@@ -149,23 +155,25 @@ function ClinicGallery({ name, services, clinic, gallery }: ClinicGalleryProps) 
           </button>
 
           {/* Current Image */}
-          {limitedGalleryItems && limitedGalleryItems.length > 0 && limitedGalleryItems[currentIndex] &&
-            <div className="w-full">
-              <img
-                src={limitedGalleryItems[currentIndex].src}
-                alt="gallery image"
-                className="overflow-hidden w-full h-[80vh] object-contain"
-                loading="lazy"
-              />
-            </div>
-          }
+          {limitedGalleryItems &&
+            limitedGalleryItems.length > 0 &&
+            limitedGalleryItems[currentIndex] && (
+              <div className="w-full">
+                <img
+                  src={limitedGalleryItems[currentIndex].src}
+                  alt="gallery image"
+                  className="overflow-hidden w-full h-[80vh] object-contain"
+                  loading="lazy"
+                />
+              </div>
+            )}
 
           {/* Next Button */}
           <button
             className="p-2 rounded-full bg-gray-700 text-white hover:bg-gray-600 focus:outline-none"
             onClick={() =>
               setCurrentIndex((prev) =>
-                prev === limitedGalleryItems.length - 1 ? 0 : prev + 1
+                prev === limitedGalleryItems.length - 1 ? 0 : prev + 1,
               )
             }
             aria-label="Next Image"

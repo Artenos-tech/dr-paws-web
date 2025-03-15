@@ -28,8 +28,7 @@ const Profile: React.FC = () => {
   const [isAddPetModalOpen, setIsAddPetModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-  const { user, refresh, isLoggedIn } =
-    useUserContext();
+  const { user, refresh, isLoggedIn } = useUserContext();
 
   const navigate = useRouter();
 
@@ -105,7 +104,8 @@ const Profile: React.FC = () => {
               }  flex-wrap gap-4 my-8 md:my-4`}
             >
               {loading && <ClipLoader color="#33495f" />}
-              {pets && pets.map((pet) => <PetCard key={pet.vetPortId} pet={pet} />)}
+              {pets &&
+                pets.map((pet) => <PetCard key={pet.vetPortId} pet={pet} />)}
             </div>
           )}
         </div>

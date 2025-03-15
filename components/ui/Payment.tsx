@@ -3,7 +3,7 @@
 import { useState } from "react";
 import api from "@/services/api";
 import { useAPICall } from "@/hooks/apicall";
-import { load } from '@cashfreepayments/cashfree-js';
+import { load } from "@cashfreepayments/cashfree-js";
 
 interface PaymentProps {
   amount: number;
@@ -12,20 +12,24 @@ interface PaymentProps {
   petId: number | null;
 }
 
-const Payment = ({ amount, disabled , planId, petId }: PaymentProps) => {
+const Payment = ({ amount, disabled, planId, petId }: PaymentProps) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const {
-    call: createOrder,
-  } = useAPICall(api.createOrder);
-  
-  const initializeSDK = async function () {  
-    const cashfreeEnv = process.env.NEXT_PUBLIC_CASHFREE_ENVIRONMENT as 'sandbox' | 'production';
+  const { call: createOrder } = useAPICall(api.createOrder);
+
+  const initializeSDK = async function () {
+    const cashfreeEnv = process.env.NEXT_PUBLIC_CASHFREE_ENVIRONMENT as
+      | "sandbox"
+      | "production";
     if (!cashfreeEnv) {
-      throw new Error('Cashfree environment is not set. Cannot proceed with payment');
-    } else {        
+      throw new Error(
+        "Cashfree environment is not set. Cannot proceed with payment",
+      );
+    } else {
       const cashfree = await load({
-          mode: process.env.NEXT_PUBLIC_CASHFREE_ENVIRONMENT as 'sandbox' | 'production',
+        mode: process.env.NEXT_PUBLIC_CASHFREE_ENVIRONMENT as
+          | "sandbox"
+          | "production",
       });
       return cashfree;
     }
@@ -37,7 +41,7 @@ const Payment = ({ amount, disabled , planId, petId }: PaymentProps) => {
       setError(null);
       const response = await createOrder({ amount });
       if (!response.ok) {
-        throw new Error('Failed to create order');
+        throw new Error("Failed to create order");
       }
       const { paymentSessionId, orderId } = response.value.body.order;
       const cashfree = await initializeSDK();
@@ -45,7 +49,14 @@ const Payment = ({ amount, disabled , planId, petId }: PaymentProps) => {
       console.log("Order ID", orderId);
       const result = await cashfree.checkout({
         paymentSessionId,
-        returnUrl: window.location.origin + "/membership/payment?order_id=" + orderId + "&plan_id=" + planId + "&pet_id=" + petId,
+        returnUrl:
+          window.location.origin +
+          "/membership/payment?order_id=" +
+          orderId +
+          "&plan_id=" +
+          planId +
+          "&pet_id=" +
+          petId,
         redirectTarget: "_self",
       });
       console.log("Result", result);
@@ -54,7 +65,7 @@ const Payment = ({ amount, disabled , planId, petId }: PaymentProps) => {
       if (err instanceof Error) {
         setError(err.message);
       } else {
-        setError('An unknown error occurred');
+        setError("An unknown error occurred");
       }
     } finally {
       setLoading(false);
@@ -73,11 +84,7 @@ const Payment = ({ amount, disabled , planId, petId }: PaymentProps) => {
         {loading ? "Processing..." : "Purchase"}
       </button>
 
-      {error && (
-        <div className="mt-4 text-red-500">
-          Error: {error}
-        </div>
-      )}
+      {error && <div className="mt-4 text-red-500">Error: {error}</div>}
     </div>
   );
 };

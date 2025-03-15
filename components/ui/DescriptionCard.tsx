@@ -4,7 +4,6 @@ import React from "react";
 import CustomButton from "./CustomButton";
 import { useRouter } from "next/navigation";
 
-
 interface descriptionCardProps {
   index: number;
   description: {
@@ -34,15 +33,14 @@ const DescriptionCard: React.FC<descriptionCardProps> = ({
 
   const handleBookAVisit = () => {
     return isLoggedIn
-      ?  navigate.push("/user/book-appointment")
+      ? navigate.push("/user/book-appointment")
       : openLoginModal && openLoginModal("Book a Visit");
   };
 
   const handleModalByButtonText = () => {
     if (button.buttonText.includes("Download")) {
       return <CustomButton {...button} buttonClickEvent={openContactModal} />;
-    }
-    else if(button.buttonText=== "Book a Visit"){
+    } else if (button.buttonText === "Book a Visit") {
       return <CustomButton {...button} buttonClickEvent={handleBookAVisit} />;
     }
     return (

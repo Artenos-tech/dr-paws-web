@@ -16,9 +16,7 @@ import YellowAndDocWithDog from "@/public/assets/images/petValues/YellowAndDocWi
 import Lady from "@/public/assets/images/reviewImages/Girl.png";
 import GreenBackground from "@/public/assets/images/reviewImages/greenBackground.svg";
 
-
 export default function Home() {
-
   const { initiateLogin } = useUserContext();
   return (
     <div className="w-full h-full items-center justify-items-center font-roca">
@@ -30,7 +28,8 @@ export default function Home() {
                 INDIA&apos;S FRIENDLIEST VET CLINICS
               </p>
               <h1 className="lg:w-full text-[28px] md:w-[80%] md:text-[40px] lg:text-[60px] text-primary-1 leading-tight md:leading-snug lg:leading-none">
-                Where pets bring <br />their people.
+                Where pets bring <br />
+                their people.
               </h1>
             </div>
             <p className="text-primary-1 w-full md:w-[80%] lg:w-[70%] text-[12px] md:text-[14px] lg:text-[16px] px-10 md:px-0 mt-2 font-openSans tracking-wider font-semibold">
@@ -47,7 +46,9 @@ export default function Home() {
             <h1 className="mt-4 mb-16 text-center text-primary-1 text-xl md:text-4xl px-8">
               Veterinary care, redesigned to be better
             </h1>
-            <DescriptionCardList openLoginModal={() => initiateLogin("", "/user/profile")} />
+            <DescriptionCardList
+              openLoginModal={() => initiateLogin("", "/user/profile")}
+            />
           </div>
           <div className="mx-auto mt-12 lg:mt-32">
             <h1 className="mx-auto text-center text-xl md:text-4xl">

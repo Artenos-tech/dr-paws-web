@@ -95,8 +95,8 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
                 appointment.vet_image.value === "unknown"
                   ? defaultVetImage
                   : appointment.vet_image.type === "ref"
-                  ? doctorImagesMap[appointment.vet_image.value]
-                  : appointment.vet_image.value
+                    ? doctorImagesMap[appointment.vet_image.value]
+                    : appointment.vet_image.value
               }
               alt={`Dr. ${appointment.vet_name}'s profile`}
               objectFit="cover"

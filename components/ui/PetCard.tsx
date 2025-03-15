@@ -31,9 +31,7 @@ export const petImageByType: Record<string, StaticImageData> = {
 const PetCard: React.FC<PetCardProps> = ({ pet }) => {
   const { name, vetPortId, profileImage, type } = pet;
   const router = useRouter();
-  const [subscription, setSubscription] = useState<Subscription | null>(
-    null
-  );
+  const [subscription, setSubscription] = useState<Subscription | null>(null);
 
   // Setup API call for getPetSubscription
   const { call: getPetSubscription } = useAPICall(api.getPetSubscription);
@@ -86,11 +84,9 @@ const PetCard: React.FC<PetCardProps> = ({ pet }) => {
         <div className={`bg-secondary-1 rounded-b-xl`}>
           <p className="text-xs text-white p-2">{subscription.plan.name}</p>
         </div>
-      ): (
+      ) : (
         <div className="rounded-b-xl pb-6"></div>
-      )
-    
-    }
+      )}
     </div>
   );
 };
