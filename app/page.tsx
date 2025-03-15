@@ -16,7 +16,9 @@ import YellowAndDocWithDog from "@/public/assets/images/petValues/YellowAndDocWi
 import Lady from "@/public/assets/images/reviewImages/Girl.png";
 import GreenBackground from "@/public/assets/images/reviewImages/greenBackground.svg";
 
+
 export default function Home() {
+
   const { initiateLogin } = useUserContext();
   return (
     <div className="w-full h-full items-center justify-items-center font-roca">

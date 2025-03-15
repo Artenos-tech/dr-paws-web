@@ -70,11 +70,11 @@ import Microchipping from "@/public/assets/images/ServicesPage/Pet Services/Micr
 import Customer1 from "../public/assets/images/clinic/customer1.png";
 import Customer2 from "../public/assets/images/clinic/customer2.png";
 import Customer3 from "../public/assets/images/clinic/customer3.png";
-import CareJunior from "@/public/assets/images/Membership/Care Junior.png";
-import CareSenior from "@/public/assets/images/Membership/Care Senior.png";
-import Grooming from "@/public/assets/images/Membership/Grooming.png";
-import StarCare from "@/public/assets/images/Membership/Star Care and Grooming.png";
-import { MembershipPlan } from "@/components/ui/MemberCard";
+// import CareJunior from "@/public/assets/images/Membership/Care Junior.png";
+// import CareSenior from "@/public/assets/images/Membership/Care Senior.png";
+// import Grooming from "@/public/assets/images/Membership/Grooming.png";
+// import StarCare from "@/public/assets/images/Membership/Star Care and Grooming.png";
+// import { MembershipPlan } from "@/components/ui/MemberCard";
 
 import DrAartiImg from "@/public/assets/images/vets/dr_aarti.png";
 import DrArchanaImg from "@/public/assets/images/vets/dr_archana.png";
@@ -882,7 +882,7 @@ export const ServiceTabsData = [
     vetPortId: 12,
     title: "Diagnostics",
     description:
-      "Our pets don’t always communicate what’s wrong making diagnostic tests a crucial part of our care. With our wide range of tests and expert doctors, we’ll do our best to diagnose exactly what’s going as soon as possible.",
+      "Our pets don’t always communicate what’s wrong making diagnostic tests a crucial part of our care. With our wide range of tests and expert doctors, we’ll do our best to diagnose exactly what’s going on as soon as possible.",
     imageDetails: [
       {
         img: BloodTests,
@@ -989,7 +989,7 @@ export const ServiceTabsData = [
     vetPortId: 8,
     title: "Grooming",
     description:
-      "Our state-of-the-art grooming studios help to keep you pet looking and feeling great.",
+      "Our state-of-the-art grooming studios help to keep your pet looking and feeling great.",
     imageDetails: [
       {
         img: SpaBath,
@@ -1090,119 +1090,5 @@ export const reviews: Review[] = [
     review:
       "Very thoughtfully put together keeping in mind the comfort of all pets owners, with separate floors for cats and dogs. Very spacious, spread across four floors accommodating all the required services like x-ray, ultrasound, path lab, grooming areas, OT for surgeries & IPD and a huge pet store on the ground floor. And most importantly, a wonderful team of doctors, ably led by Dr. Girish and brought together by the passionate founders.",
     clinicId: "2",
-  },
-];
-
-export const membershipData: MembershipPlan[] = [
-  {
-    title: "Puppy Membership",
-    icon: CareJunior,
-    description:
-      "Our plan that helps prepare you and your puppy for a lifetime together",
-    benefits: [
-      { text: "50% discount on Vet Consultations" },
-      { text: "20% discount on Grooming Sessions" },
-      {
-        text: "Full Puppy Vaccination Programme Included (DHPPi 9-in-1, Rabies, Kennel Cough) - Worth ₹6,860",
-      },
-      { text: "10% off on all Retail products" },
-      { text: "10% off on all Pharmacy products" },
-      { text: "15% off on in-house Diagnostic Tests" },
-      { text: "10% off on external Diagnostic Tests" },
-      { text: "10% off on Imaging (X-rays, Ultrasound)" },
-      { text: "10% off on Physiotherapy" },
-      { text: "10% off on Elective Surgeries" },
-      { text: "5% off on Non-Elective Surgeries" },
-    ],
-    price: "₹9,499",
-    duration: "1 Year",
-    petType: "Dog",
-  },
-  {
-    title: "Adult Dog Membership",
-    icon: CareSenior,
-    description:
-      "Our plan that helps keep you and your dog healthy and happy for life",
-    benefits: [
-      { text: "50% discount on Vet Consultations" },
-      { text: "20% discount on Grooming Sessions" },
-      {
-        text: "Full Annual Vaccination Programme Included (DHPPi 9-in-1, Rabies, Kennel Cough) - Worth ₹2,540",
-      },
-      { text: "10% off on all Retail products" },
-      { text: "10% off on all Pharmacy products" },
-      { text: "15% off on in-house Diagnostic Tests" },
-      { text: "10% off on external Diagnostic Tests" },
-      { text: "10% off on Imaging (X-rays, Ultrasound)" },
-      { text: "10% off on Physiotherapy" },
-      { text: "10% off on Elective Surgeries" },
-      { text: "5% off on Non-Elective Surgeries" },
-    ],
-    price: "₹4,499",
-    duration: "1 Year",
-    petType: "Dog",
-  },
-  {
-    title: "Senior Dog Membership",
-    icon: CareSenior,
-    description: "Our plan to keep your pet healthy and happy for life",
-    benefits: [
-      { text: "50% discount on Vet Consultations" },
-      { text: "20% discount on Grooming Sessions" },
-      {
-        text: "Full Annual Vaccination Programme Included (DHPPi 9-in-1, Rabies, Kennel Cough) - Worth ₹2,540",
-      },
-      { text: "10% off on all Retail products" },
-      { text: "15% off on all Pharmacy products" },
-      { text: "15% off on in-house Diagnostic Tests" },
-      { text: "10% off on external Diagnostic Tests" },
-      { text: "10% off on Imaging (X-rays, Ultrasound)" },
-      { text: "15% off on Physiotherapy" },
-      { text: "10% off on Elective Surgeries" },
-      { text: "5% off on Non-Elective Surgeries" },
-    ],
-    price: "₹5,499",
-    duration: "1 Year",
-    petType: "Dog",
-  },
-  {
-    title: "Grooming Membership",
-    icon: Grooming,
-    description: "Our plan to keep your furry friend looking and feeling fab!",
-    benefits: [
-      { text: "6 free Spa Sessions included (Worth ₹7200)" },
-      { text: "30% off any other Grooming Services" },
-      { text: "10% off on all Retail products" },
-      { text: "10% off on all Pharmacy products" },
-    ],
-    price: "₹5,999",
-    duration: "1 Year",
-    petType: "Dog",
-  },
-  {
-    title: "Comprehensive Membership",
-    icon: StarCare,
-    description:
-      "Our best value plan that keeps your pet healthy and looking great",
-    benefits: [
-      { text: "50% discount on Vet Consultations" },
-      { text: "6 Spa Sessions included (Worth ₹7200)" },
-      { text: "50% off on any other Grooming Services" },
-      {
-        text: "Full Annual Vaccination Programme Included (DHPPi 9-in-1, Rabies, Kennel Cough) - Worth ₹2,540",
-      },
-      { text: "15% off on all Retail products" },
-      { text: "15% off on all Pharmacy products" },
-      { text: "20% off on in-house Diagnostic Tests" },
-      { text: "15% off on external Diagnostic Tests" },
-      { text: "15% off on Imaging (X-rays, Ultrasound)" },
-      { text: "15% off on Physiotherapy" },
-      { text: "15% off on Elective Surgeries" },
-      { text: "10% off on Non-Elective Surgeries" },
-    ],
-    price: "₹9,999",
-    isPopular: true,
-    duration: "1 Year",
-    petType: "Dog",
   },
 ];

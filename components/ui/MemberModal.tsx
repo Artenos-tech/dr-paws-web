@@ -1,10 +1,15 @@
-import { X } from "lucide-react";
+import { Loader2, X } from "lucide-react";
 import Image from "next/image";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import Modal from "react-modal";
-
 import { MembershipPlan } from "./MemberCard";
+import tickMark from "@/public/assets/images/Booking/tick-svgrepo-com.svg";
+import { petImageByType } from "./PetCard";
+import { Pet } from "@/context/UserContext";
+import { useAPICall } from "@/hooks/apicall";
+import api from "@/services/api";
+import Payment from "./Payment";
 
 interface ModalProps {
   isOpen: boolean;
@@ -12,7 +17,60 @@ interface ModalProps {
   plan: MembershipPlan;
 }
 
+interface Subscription {
+  id: number;
+  start_date: string;
+  end_date: string;
+  plan: {
+    id: number;
+    name: string;
+  },
+  pet: {
+    id: number;
+    name: string;
+  },
+}
+
 const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
+  const [pets, setPets] = useState<Pet[]>([]);
+  const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
+  const [selectedPet, setSelectedPet] = useState<Pet | null>(null);
+  const { call: getPetsAPI, loading: loading } = useAPICall(api.getPets);
+  const { call: getSubscriptions } = useAPICall(api.getSubscriptions);
+
+  useEffect(() => {
+    if (isOpen) {
+      fetchPets();
+      fetchAllSubscriptions()
+    }
+  }, [isOpen]);
+
+  const fetchPets = async () => {
+    const response = await getPetsAPI({});
+    if (response.ok) {
+      const fetchedPets = response.value.body.pets.map((pet) => ({
+        ...pet,
+        profileImage: pet.profile_image,
+        vetPortId: pet.vetport_id,
+      }));
+      setPets(fetchedPets);
+    }
+  };
+
+  const fetchAllSubscriptions = async () => {
+    const response = await getSubscriptions({});
+    if (response.ok) {
+      const fetchedSubscriptions = response.value.body.subscriptions;
+      setSubscriptions(fetchedSubscriptions);
+    }
+  }
+
+  const handlePetClick = (pet: Pet, isEligible: boolean) => {
+    if (!isEligible) return;
+    const isAlreadySelected = selectedPet?.vetPortId === pet.vetPortId;
+    const newSelectedPet = isAlreadySelected ? null : pet;
+    setSelectedPet(newSelectedPet);
+  };
 
   if (!isOpen) return null;
 
@@ -23,7 +81,7 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
       className="flex relative z-[999] items-center justify-center"
       overlayClassName="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-[899]"
     >
-      <div className="relative bg-white rounded-2xl w-11/12 md:w-3/5 max-h-[92vh] overflow-y-auto lg:overflow-y-hidden">
+      <div className="relative bg-white rounded-2xl w-11/12 max-h-[92vh] overflow-y-auto">
         <button
           onClick={onClose}
           className="absolute right-4 top-4 text-gray-500 hover:text-gray-700"
@@ -33,14 +91,14 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
 
         <div className="h-full w-full">
           <div className="p-5 bg-white rounded-2xl">
-            <div className="w-20 h-20 relative mb-2">
+            {/* <div className="w-20 h-20 relative mb-2">
               <Image
                 src={plan.icon}
                 alt={`${plan.title} icon`}
                 fill
                 className="object-contain"
               />
-            </div>
+            </div> */}
             <div className="border-b-2 border-primary-3">
               <h2 className="text-2xl font-semibold text-primary-1 mb-2">
                 {plan.title}
@@ -48,33 +106,75 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
               <p className="text-gray-600 text-sm mb-4">{plan.description}</p>
             </div>
 
-            <div>
-              <h3 className="font-semibold text-lg text-primary-1 mb-1 mt-4">
-                Includes:
-              </h3>
-              <ul className="space-y-2">
-                {plan.benefits.map((benefit, index) => (
-                  <li
-                    key={index}
-                    className="flex items-start gap-2 text-primary-1 text-sm"
-                  >
-                    <span className="">•</span>
-                    <span>{benefit.text}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            {/* Pet selection section */}
+            <h3 className="text-xl font-semibold mt-4 mb-2">
+              Select your Pet:
+            </h3>
 
-            <div className="flex mt-3 gap-2">
+            {loading ? (
+              // <p className="text-center text-gray-500">Loading pets...</p>
+              <div className="flex justify-center items-center my-4">
+                <Loader2 className="h-5 w-5 animate-spin" />
+              </div>
+            ) : pets.length === 0 ? (
+              <p className="text-center text-gray-500">
+                You haven&apos;t added any pets. Please add a pet to purchase a
+                subscription.
+              </p>
+            ) : (
+              <div className="flex flex-wrap justify-center items-center scrollbar-hide">
+                {pets.map((pet) => {
+                  const petImage =
+                    pet.profileImage ||
+                    petImageByType[pet.type?.toLowerCase() || "other"]?.src ||
+                    petImageByType["other"].src;
+
+                  const isEligible =
+                    pet.type?.toLowerCase() === plan.petType.toLowerCase() && !subscriptions.find(sub => sub.pet.id === pet.vetPortId);
+
+                  const isSelected = selectedPet?.vetPortId === pet.vetPortId;
+
+                  return (
+                    <div
+                      key={pet.vetPortId}
+                      className={`relative cursor-pointer m-2 ${
+                        !isEligible ? "opacity-40 pointer-events-none" : ""
+                      }`}
+                      onClick={() => handlePetClick(pet, isEligible)}
+                    >
+                      <div className="relative w-[70px] h-[70px]">
+                        <Image
+                          src={petImage}
+                          alt={`${pet.name}'s profile picture`}
+                          fill
+                          sizes="70px"
+                          className={`rounded-full border-2 object-cover ${
+                            isSelected ? "opacity-50" : "opacity-100"
+                          }`}
+                        />
+                        {isSelected && (
+                          <div className="absolute inset-0 flex items-center justify-center text-white font-bold">
+                            <Image
+                              src={tickMark.src}
+                              alt="Selected"
+                              width={50}
+                              height={50}
+                            />
+                          </div>
+                        )}
+                      </div>
+                      <p className="text-center mt-2">{pet.name}</p>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            <div className="flex flex-row items-center justify-between mt-3 gap-2">
               <h3 className="font-semibold text-xl text-primary-1">
-                {plan.price}
+                ₹ {plan.price}
               </h3>
-              {/* <div onClick={handleContinue}>
-                <CustomButton
-                  buttonText="Continue"
-                  buttonBackground="bg-accent"
-                />
-              </div> */}
+              <Payment amount={plan.price} disabled={!selectedPet} planId={plan.id} petId={selectedPet?.vetPortId ?? null} />
             </div>
           </div>
         </div>

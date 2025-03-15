@@ -123,6 +123,8 @@ const Booking: React.FC = () => {
                 selectedService={notNull(selectedAppointment.selectedService)}
                 selectedSubtype={selectedAppointment.selectedSubtype}
                 isGrooming={selectedAppointment.isGrooming}
+                isReschedule={false}
+                existingAppointmentId={null}
                 setFinalAppointmentData={appData => {
                   setSelectedAppointmentState(prev => ({...prev, ...appData}))
                 }}

@@ -12,6 +12,8 @@ import { Pet } from "@/context/UserContext";
 import { useAPICall } from "@/hooks/apicall";
 import api from "@/services/api";
 import Loader from "./Loader";
+import { Subscription } from "@/app/user/my-subscriptions/page";
+
 import { ClipLoader } from "react-spinners";
 
 interface PetProfileInfoProps {
@@ -22,6 +24,9 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
   const [pet, setPet] = useState<Pet>();
   const [isEditing, setIsEditing] = useState(false);
   const [image, setImage] = useState<string>("");
+  const [subscription, setSubscription] = useState<Subscription | null>(
+    null
+  );
   // const [age, setAge] = useState<{
   //   years: number | null;
   //   months: number | null;
@@ -50,6 +55,11 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
   const { call: updatePetDetails, loading: loadingUpdate } = useAPICall(
     api.updatePet
   );
+
+  
+
+  // Setup API call for getPetSubscription
+  const { call: getPetSubscription } = useAPICall(api.getPetSubscription);
 
   const formMethods = useForm<Pet>({
     defaultValues: {
@@ -107,6 +117,15 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
           }
         });
       }
+    }
+    if (petId) {
+      const fetchSubscription = async () => {
+        const response = await getPetSubscription({ pet_id: petId });
+        if (response?.ok) {
+          setSubscription(response.value.body.subscription);
+        }
+      };
+      fetchSubscription();
     }
   }, [petId, getPetsResult, setValue]);
 
@@ -263,6 +282,20 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
 
   return (
     <div className="bg-primary-3 rounded-lg p-3 md:p-6 lg:p-8 w-full">
+      {subscription && subscription.plan && (
+        <div className=" bg-secondary-1 text-white px-8 py-6 mb-4 rounded">
+          <p className="text-xl"> {subscription.plan.name}</p>
+          <p className="text-xs text-[#F7F1DE]">
+            Expires On:{" "}
+            {new Date(subscription.end_date).toLocaleDateString("en-GB", {
+              day: "numeric",
+              month: "short",
+              year: "numeric",
+            })}
+          </p>
+        </div>
+      )}
+
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col lg:flex-row lg:justify-between md:items-start w-full"
