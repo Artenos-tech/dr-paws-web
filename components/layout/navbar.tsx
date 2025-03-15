@@ -178,7 +178,7 @@ export default function NavBar() {
                       </DropdownMenu.Item>
                       {/* <div className="border-t border-gray-300 my-2" /> */}
                       {/* {!isMarketingFeatureEnabled ? ( */}
-                        {/* <DropdownMenu.Item asChild>
+                      {/* <DropdownMenu.Item asChild>
                           <div
                             onClick={() => navigate.push("/user/my-subscriptions")}
                             className="text-secondary-1 flex justify-between items-center hover:text-primary-1 cursor-pointer outline-none"
@@ -212,7 +212,9 @@ export default function NavBar() {
               ) : (
                 <button
                   type="button"
-                  onClick={() => initiateLogin("book appointments", "/user/profile")}
+                  onClick={() =>
+                    initiateLogin("book appointments", "/user/profile")
+                  }
                   className="text-primary-1 text-sm tracking-wider"
                 >
                   Login
@@ -292,7 +294,9 @@ export default function NavBar() {
               ) : (
                 <button
                   type="button"
-                  onClick={() => initiateLogin("book appointments", "/user/book-appointment")}
+                  onClick={() =>
+                    initiateLogin("book appointments", "/user/book-appointment")
+                  }
                   className="text-primary-1 text-sm tracking-wider"
                 >
                   Login
@@ -349,7 +353,7 @@ export default function NavBar() {
                       >
                         Medical History
                       </button> */}
-                  <li>
+                <li>
                   <button
                     onClick={() => {
                       setIsOpen(false);

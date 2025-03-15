@@ -24,11 +24,11 @@ interface Subscription {
   plan: {
     id: number;
     name: string;
-  },
+  };
   pet: {
     id: number;
     name: string;
-  },
+  };
 }
 
 const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
@@ -41,7 +41,7 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
   useEffect(() => {
     if (isOpen) {
       fetchPets();
-      fetchAllSubscriptions()
+      fetchAllSubscriptions();
     }
   }, [isOpen]);
 
@@ -63,7 +63,7 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
       const fetchedSubscriptions = response.value.body.subscriptions;
       setSubscriptions(fetchedSubscriptions);
     }
-  }
+  };
 
   const handlePetClick = (pet: Pet, isEligible: boolean) => {
     if (!isEligible) return;
@@ -130,7 +130,8 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
                     petImageByType["other"].src;
 
                   const isEligible =
-                    pet.type?.toLowerCase() === plan.petType.toLowerCase() && !subscriptions.find(sub => sub.pet.id === pet.vetPortId);
+                    pet.type?.toLowerCase() === plan.petType.toLowerCase() &&
+                    !subscriptions.find((sub) => sub.pet.id === pet.vetPortId);
 
                   const isSelected = selectedPet?.vetPortId === pet.vetPortId;
 
@@ -174,7 +175,12 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
               <h3 className="font-semibold text-xl text-primary-1">
                 ₹ {plan.price}
               </h3>
-              <Payment amount={plan.price} disabled={!selectedPet} planId={plan.id} petId={selectedPet?.vetPortId ?? null} />
+              <Payment
+                amount={plan.price}
+                disabled={!selectedPet}
+                planId={plan.id}
+                petId={selectedPet?.vetPortId ?? null}
+              />
             </div>
           </div>
         </div>

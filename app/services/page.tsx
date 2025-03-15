@@ -12,7 +12,6 @@ import { useUserContext } from "@/context/UserContext";
 import { ServiceTabsData } from "@/model/mockData";
 import DescritionImage from "@/public/assets/images/ServicesPage/DescriptionImage.png";
 
-
 const Services = () => {
   const [isContactModalOpen, setContactIsModalOpen] = useState(false);
   const { initiateLogin, isLoggedIn } = useUserContext();
@@ -20,7 +19,7 @@ const Services = () => {
 
   const handleBookAVisit = () => {
     return isLoggedIn
-      ?  navigate.push("/user/book-appointment")
+      ? navigate.push("/user/book-appointment")
       : initiateLogin("Book a Visit", "/user/book-appointment");
   };
 

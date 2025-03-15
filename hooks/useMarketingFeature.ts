@@ -5,7 +5,7 @@ export function useMarketingFeature() {
 
   useEffect(() => {
     setIsFeatureEnabled(
-      process.env.NEXT_PUBLIC_MARKETING_FEATURE_ENABLED === "true"
+      process.env.NEXT_PUBLIC_MARKETING_FEATURE_ENABLED === "true",
     );
   }, []);
 

@@ -14,7 +14,7 @@ const ReviewCard: React.FC<ReviewProps> = ({ name, review, className }) => {
         `w-full bg-primary-3 p-[16px] md:p-[20px] lg:p-[24px] 
     gap-[16px] rounded-[15px] shadow-md opacity-100 flex items-center space-x-4 
     italic my-5`,
-        className
+        className,
       )}
     >
       <div>

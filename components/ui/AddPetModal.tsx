@@ -59,7 +59,7 @@ export default function AddPetModal({
           id: specie.id,
           name: specie.name,
           displayName: specie.displayName,
-        }))
+        })),
       );
     }
   };
@@ -89,7 +89,7 @@ export default function AddPetModal({
 
     // Find the speciesId for the selected type
     const selectedSpecies = petSpecies?.find(
-      (species) => species.displayName === selectedName
+      (species) => species.displayName === selectedName,
     );
     if (selectedSpecies) {
       setValue("speciesId", selectedSpecies.id);
@@ -167,7 +167,7 @@ export default function AddPetModal({
                 type="submit"
                 className="flex-1 px-4 py-2 bg-secondary-1 text-white rounded-full"
               >
-                {loading ?<ClipLoader color="white" size={18}/> : `Yes`}
+                {loading ? <ClipLoader color="white" size={18} /> : `Yes`}
               </button>
             </div>
           </form>

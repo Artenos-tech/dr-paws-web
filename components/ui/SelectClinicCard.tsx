@@ -38,8 +38,8 @@ const SelectClinicCard: React.FC<ClinicItemProps> = ({
             image.value === "unknown"
               ? defaultClinicImg
               : image.type === "ref"
-              ? clinicImagesMap[image.value]
-              : image.value
+                ? clinicImagesMap[image.value]
+                : image.value
           }
           alt={name + " image"}
           className="image rounded-t-md"

@@ -5,15 +5,15 @@ import Image from "next/image";
 import "swiper/css";
 import "swiper/css/navigation";
 import MembershipDesc from "@/public/assets/images/Membership/MembershipDesc.png";
-import DogImage from '@/public/assets/images/pets/dog.png'
-import CatImage from '@/public/assets/images/pets/cat.png'
+import DogImage from "@/public/assets/images/pets/dog.png";
+import CatImage from "@/public/assets/images/pets/cat.png";
 import { MembershipPlan } from "@/components/ui/MemberCard";
 import MemberModal from "@/components/ui/MemberModal";
-import { useAPICall } from '@/hooks/apicall';
-import api from '@/services/api';
+import { useAPICall } from "@/hooks/apicall";
+import api from "@/services/api";
 import toast, { Toaster } from "react-hot-toast";
 import { ClipLoader } from "react-spinners";
-import { Table } from 'antd';
+import { Table } from "antd";
 
 type Plan = {
   id: number;
@@ -22,9 +22,9 @@ type Plan = {
   price: number;
   duration_months: number;
   version: number;
-  species: ('dog' | 'cat')[];
-  age: 'CHILD' | 'ADULT' | 'SENIOR' | null;
-  type: 'GROOMING' | 'MEDICAL' | 'COMPREHENSIVE' | null;
+  species: ("dog" | "cat")[];
+  age: "CHILD" | "ADULT" | "SENIOR" | null;
+  type: "GROOMING" | "MEDICAL" | "COMPREHENSIVE" | null;
   published: boolean;
   created_at: string;
   updated_at: string;
@@ -32,10 +32,10 @@ type Plan = {
     id: number;
     name: string;
     description: string | null;
-    type: 'DISCOUNT' | 'SESSIONS' | 'VACCINATIONS';
+    type: "DISCOUNT" | "SESSIONS" | "VACCINATIONS";
     value: number | null;
   }[];
-}
+};
 
 type PetType = "dog" | "cat";
 type PetAge = "CHILD" | "ADULT" | "SENIOR";
@@ -44,19 +44,23 @@ type MembershipType = "GROOMING" | "MEDICAL";
 type ComparisonTable = {
   featureName: string;
   [planName: string]: string | number | React.ReactNode;
-}
+};
 
 const Membership = () => {
   const [selectedPlan, setSelectedPlan] = useState<MembershipPlan | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [petType, setPetType] = useState<PetType | null>(null);
   const [petAge, setPetAge] = useState<PetAge | null>(null);
-  const [membershipType, setMembershipType] = useState<MembershipType | null>(null);
+  const [membershipType, setMembershipType] = useState<MembershipType | null>(
+    null,
+  );
   const [plans, setPlans] = useState<Plan[] | null>(null);
 
-  const {call: getAllPlans, loading: getAllPlansLoading} = useAPICall(api.getAllPlans);
+  const { call: getAllPlans, loading: getAllPlansLoading } = useAPICall(
+    api.getAllPlans,
+  );
 
-  const [ isMobile, setIsMobile ] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   const MOBULE_MAX_WIDTH = 500;
 
@@ -64,24 +68,26 @@ const Membership = () => {
     setIsMobile(window.innerWidth <= MOBULE_MAX_WIDTH);
     const handleResize = () => {
       setIsMobile(window.innerWidth <= MOBULE_MAX_WIDTH);
-    }
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   useEffect(() => {
     const fetchPlans = async () => {
       try {
         const plansResp = await getAllPlans({});
-        if(plansResp.ok){
+        if (plansResp.ok) {
           setPlans(plansResp.value.body.plans);
-        }else{
+        } else {
           console.error("Failed to fetch plans:", plansResp.error);
-          toast.error('Failed to fetch plans. Please refresh the page to try again.');
+          toast.error(
+            "Failed to fetch plans. Please refresh the page to try again.",
+          );
         }
       } catch (error) {
         console.error("Failed to fetch plans:", error);
-        toast.error('Failed to fetch plans');
+        toast.error("Failed to fetch plans");
       }
     };
 
@@ -89,7 +95,7 @@ const Membership = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const filteredPlans = plans?.filter(plan => {
+  const filteredPlans = plans?.filter((plan) => {
     const shouldShow =
       petType &&
       (plan.species.includes(petType) || plan.species.length === 0) &&
@@ -104,63 +110,75 @@ const Membership = () => {
   });
 
   const TickMark = () => (
-    <span style={{color: 'green', fontWeight: 'bold', fontSize: '20px'}}>
+    <span style={{ color: "green", fontWeight: "bold", fontSize: "20px" }}>
       &#x2713;
     </span>
-  )
+  );
 
   const CrossMark = () => (
-    <span style={{color: 'red', fontWeight: 'bold', fontSize: '20px'}}>
+    <span style={{ color: "red", fontWeight: "bold", fontSize: "20px" }}>
       &#x2717;
     </span>
-  )
+  );
 
   const generateComparisonTable = (): ComparisonTable[] => {
     if (!filteredPlans) {
-        return [];
+      return [];
     }
 
-    const featureTypeOrder = ['VACCINATIONS', 'SESSIONS', 'DISCOUNT'];
+    const featureTypeOrder = ["VACCINATIONS", "SESSIONS", "DISCOUNT"];
 
     const featureGroups: Record<string, string[]> = {};
 
-    filteredPlans.forEach(plan => {
-        plan.features.forEach((feature) => {
-            if (!featureGroups[feature.type]) {
-                featureGroups[feature.type] = [];
-            }
-            if (!featureGroups[feature.type].includes(feature.name)) {
-                featureGroups[feature.type].push(feature.name);
-            }
-        });
+    filteredPlans.forEach((plan) => {
+      plan.features.forEach((feature) => {
+        if (!featureGroups[feature.type]) {
+          featureGroups[feature.type] = [];
+        }
+        if (!featureGroups[feature.type].includes(feature.name)) {
+          featureGroups[feature.type].push(feature.name);
+        }
+      });
     });
 
-    Object.keys(featureGroups).forEach(type => {
-        featureGroups[type].sort((a, b) => a.localeCompare(b));
+    Object.keys(featureGroups).forEach((type) => {
+      featureGroups[type].sort((a, b) => a.localeCompare(b));
     });
 
-    const allFeatureNames = featureTypeOrder.flatMap(type => featureGroups[type] ?? []);
+    const allFeatureNames = featureTypeOrder.flatMap(
+      (type) => featureGroups[type] ?? [],
+    );
 
-    const comparisonTable: ComparisonTable[] = allFeatureNames.map(featureName => {
+    const comparisonTable: ComparisonTable[] = allFeatureNames.map(
+      (featureName) => {
         const row: ComparisonTable = { featureName };
 
-        filteredPlans.forEach(plan => {
-            const matchingFeature = plan.features.find((f) => f.name === featureName);
-            if (matchingFeature) {
-                if (matchingFeature.type === 'DISCOUNT') {
-                    row[plan.name] = `${matchingFeature.value ?? <CrossMark />}%`;
-                } else if (matchingFeature.type === 'VACCINATIONS') {
-                    row[plan.name] = matchingFeature.value === 1 ? <TickMark/> : `${matchingFeature.value}`;
-                } else if (matchingFeature.type === 'SESSIONS') {
-                    row[plan.name] = `${matchingFeature.value ?? <CrossMark />} sessions`;
-                }
-            } else {
-                row[plan.name] = <CrossMark />;
+        filteredPlans.forEach((plan) => {
+          const matchingFeature = plan.features.find(
+            (f) => f.name === featureName,
+          );
+          if (matchingFeature) {
+            if (matchingFeature.type === "DISCOUNT") {
+              row[plan.name] = `${matchingFeature.value ?? <CrossMark />}%`;
+            } else if (matchingFeature.type === "VACCINATIONS") {
+              row[plan.name] =
+                matchingFeature.value === 1 ? (
+                  <TickMark />
+                ) : (
+                  `${matchingFeature.value}`
+                );
+            } else if (matchingFeature.type === "SESSIONS") {
+              row[plan.name] =
+                `${matchingFeature.value ?? <CrossMark />} sessions`;
             }
+          } else {
+            row[plan.name] = <CrossMark />;
+          }
         });
 
         return row;
-    });
+      },
+    );
 
     return comparisonTable;
   };
@@ -188,7 +206,13 @@ const Membership = () => {
           <div style={{ flex: 1 }}>{plan.name}</div>
           <div>&#8377; {plan.price}</div>
           <button
-            style={{ marginTop: 10, backgroundColor: "rgb(82, 129, 162)", padding: 10, borderRadius: 10, color: 'white' }}
+            style={{
+              marginTop: 10,
+              backgroundColor: "rgb(82, 129, 162)",
+              padding: 10,
+              borderRadius: 10,
+              color: "white",
+            }}
             onClick={() => {
               setSelectedPlan({
                 id: plan.id,
@@ -247,30 +271,45 @@ const Membership = () => {
 
         <div className="bg-primary-3 w-full text-center my-16 pb-12 md:px-32 lg:px-20 xl:px-40">
           <h1 className="pt-12 pb-8 lg:pb-16 text-3xl">Become A Member</h1>
-        
+
           {getAllPlansLoading && <ClipLoader color="#33495f" />}
-          {!getAllPlansLoading && plans != null &&  
+          {!getAllPlansLoading && plans != null && (
             <div>
-              {plans.length == 0 && <h3 className="text-xl"> No plans available</h3>}
+              {plans.length == 0 && (
+                <h3 className="text-xl"> No plans available</h3>
+              )}
               {plans.length > 0 && (
                 <div className="flex flex-col gap-8 justify-center items-center">
                   <div className="flex flex-col gap-8 justify-center items-center px-8">
-
                     <div className="flex gap-4 mb-8">
                       <div>
                         <h2 className="text-xl">Is your pet a dog or a cat?</h2>
-                        <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', gap: '20px', marginTop: '20px'}}>
-                          {['dog', 'cat'].map((type) => (
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            justifyContent: "center",
+                            gap: "20px",
+                            marginTop: "20px",
+                          }}
+                        >
+                          {["dog", "cat"].map((type) => (
                             <div
                               key={type}
                               className={`p-4 border-2 rounded-md cursor-pointer ${
-                                petType === type ? 'border-blue-500 bg-blue-100' : 'border-gray-300'
+                                petType === type
+                                  ? "border-blue-500 bg-blue-100"
+                                  : "border-gray-300"
                               }`}
-                                onClick={() => {
-                                  setPetType(type as PetType);
-                                }}
-                              >
-                              <Image alt={type} src={type === "dog" ? DogImage : CatImage} style={{width: '100px'}} /> 
+                              onClick={() => {
+                                setPetType(type as PetType);
+                              }}
+                            >
+                              <Image
+                                alt={type}
+                                src={type === "dog" ? DogImage : CatImage}
+                                style={{ width: "100px" }}
+                              />
                             </div>
                           ))}
                         </div>
@@ -279,16 +318,26 @@ const Membership = () => {
                     {petType && (
                       <div>
                         <h2 className="text-xl">How old is your pet?</h2>
-                        <div className="flex gap-4 mb-8" style={{marginTop: '20px'}}>
-                          {['CHILD', 'ADULT', 'SENIOR'].map((age) => (
+                        <div
+                          className="flex gap-4 mb-8"
+                          style={{ marginTop: "20px" }}
+                        >
+                          {["CHILD", "ADULT", "SENIOR"].map((age) => (
                             <div
                               key={age}
                               className={`p-4 border-2 rounded-md cursor-pointer ${
-                                petAge === age ? 'border-green-500 bg-green-100' : 'border-gray-300'
+                                petAge === age
+                                  ? "border-green-500 bg-green-100"
+                                  : "border-gray-300"
                               }`}
                               onClick={() => setPetAge(age as PetAge)}
                             >
-                              {age === "CHILD" ? (petType === "dog" ? "Puppy" : "Kitten") : age.charAt(0).toUpperCase() + age.slice(1).toLowerCase()}
+                              {age === "CHILD"
+                                ? petType === "dog"
+                                  ? "Puppy"
+                                  : "Kitten"
+                                : age.charAt(0).toUpperCase() +
+                                  age.slice(1).toLowerCase()}
                             </div>
                           ))}
                         </div>
@@ -296,15 +345,30 @@ const Membership = () => {
                     )}
                     {petAge && (
                       <div>
-                        <h2 className="text-xl">What type of membership are you looking for?</h2>
-                        <div className="flex gap-4 mb-8" style={{marginTop: '20px', display: 'flex', flexDirection: 'row', justifyContent: 'center', gap: '20px'}}>
-                          {['MEDICAL', 'GROOMING'].map((type) => (
+                        <h2 className="text-xl">
+                          What type of membership are you looking for?
+                        </h2>
+                        <div
+                          className="flex gap-4 mb-8"
+                          style={{
+                            marginTop: "20px",
+                            display: "flex",
+                            flexDirection: "row",
+                            justifyContent: "center",
+                            gap: "20px",
+                          }}
+                        >
+                          {["MEDICAL", "GROOMING"].map((type) => (
                             <div
                               key={type}
                               className={`p-4 border-2 rounded-md cursor-pointer ${
-                                membershipType === type ? 'border-purple-500 bg-purple-100' : 'border-gray-300'
+                                membershipType === type
+                                  ? "border-purple-500 bg-purple-100"
+                                  : "border-gray-300"
                               }`}
-                              onClick={() => setMembershipType(type as MembershipType)}
+                              onClick={() =>
+                                setMembershipType(type as MembershipType)
+                              }
                             >
                               {type}
                             </div>
@@ -315,24 +379,30 @@ const Membership = () => {
                   </div>
 
                   {petType && petAge && membershipType && (
-                    <div style={{width: '100%'}} className="p-2 rounded-lg">
-                      <h2 className="text-2xl mb-4">Compare Membership Plans</h2>
+                    <div style={{ width: "100%" }} className="p-2 rounded-lg">
+                      <h2 className="text-2xl mb-4">
+                        Compare Membership Plans
+                      </h2>
                       {filteredPlans && filteredPlans?.length > 0 ? (
                         <Table
                           columns={columns}
                           dataSource={generateComparisonTable()}
                           pagination={false}
                           bordered
-                          scroll={isMobile ? { x: true, y: '70vh' } : undefined}
+                          scroll={isMobile ? { x: true, y: "70vh" } : undefined}
                         />
                       ) : (
-                        <p>No membership plans available for the selected filters.</p>
+                        <p>
+                          No membership plans available for the selected
+                          filters.
+                        </p>
                       )}
                     </div>
                   )}
                 </div>
               )}
-            </div>}
+            </div>
+          )}
         </div>
       </main>
 

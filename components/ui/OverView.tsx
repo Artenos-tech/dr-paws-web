@@ -27,7 +27,7 @@ const Overview: React.FC<OverviewProps> = ({
   clinicLocation,
   clinicDoctors,
   clinicParking,
-  clinicTimings
+  clinicTimings,
 }) => {
   return (
     <div className="w-full flex flex-col gap-[80px]">
@@ -60,7 +60,7 @@ const Overview: React.FC<OverviewProps> = ({
                         : `${timing.openTime} - ${timing.closeTime}`}
                     </span>
                   </p>
-                )
+                );
               })}
             </div>
           </div>
@@ -72,7 +72,7 @@ const Overview: React.FC<OverviewProps> = ({
         </div>
       </div>
 
-      { clinicDoctors.length > 0 &&
+      {clinicDoctors.length > 0 && (
         <div className="flex flex-col items-center overflow-hidden">
           <h1 className="text-2xl font-roca text-primary-1 font-[400] mb-6">
             Meet the Superheroes
@@ -112,7 +112,7 @@ const Overview: React.FC<OverviewProps> = ({
             </Swiper>
           </div>
         </div>
-      }
+      )}
     </div>
   );
 };

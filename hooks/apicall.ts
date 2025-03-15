@@ -3,7 +3,7 @@ import { useAsyncResult } from "../lib/asyncresult";
 
 type Method = (
   params: any,
-  opts?: { abortSignal?: AbortSignal }
+  opts?: { abortSignal?: AbortSignal },
 ) => Promise<any>;
 
 /**
@@ -21,7 +21,7 @@ function useAPICall<M extends Method>(method: M) {
   } = useAsyncResult<Awaited<ReturnType<M>>>();
 
   async function call(
-    params: Parameters<M>[0]
+    params: Parameters<M>[0],
   ): Promise<Awaited<ReturnType<M>>> {
     return await _call(async (abortSignal) => {
       return await method(params, { abortSignal });
@@ -52,7 +52,7 @@ function useAPICall<M extends Method>(method: M) {
  */
 function useAPICallOnMount<M extends Method>(
   method: M,
-  params: Parameters<M>[0]
+  params: Parameters<M>[0],
 ) {
   const { result, call } = useAPICall(method);
 

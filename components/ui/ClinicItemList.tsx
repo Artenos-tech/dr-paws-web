@@ -12,33 +12,37 @@ interface ClinicItemProps {
   enlargedView: boolean;
 }
 
-const  ClinicItemList = ({ showStaticCard, enlargedView }: ClinicItemProps) => {
-  const [clinics, setClinics] = useState<{
-    id: number;
-    name: string;
-    services: string;
-    image: {
-      type: "url" | "ref";
-      value: string | StaticImageData;
-    }
-  }[]>([]);
-  const {call: getClinicsList, loading: loadingClinicList} = useAPICall(api.getClinicsForDisplay);
+const ClinicItemList = ({ showStaticCard, enlargedView }: ClinicItemProps) => {
+  const [clinics, setClinics] = useState<
+    {
+      id: number;
+      name: string;
+      services: string;
+      image: {
+        type: "url" | "ref";
+        value: string | StaticImageData;
+      };
+    }[]
+  >([]);
+  const { call: getClinicsList, loading: loadingClinicList } = useAPICall(
+    api.getClinicsForDisplay,
+  );
   useEffect(() => {
     const fetchClinics = async () => {
       const clinics = await getClinicsList({});
       if (clinics.ok && clinics.value.body.clinics) {
         setClinics(clinics.value.body.clinics);
       } else {
-        setClinics(clinicItems.map(
-          (clinic) => ({
+        setClinics(
+          clinicItems.map((clinic) => ({
             id: clinic.id,
             name: clinic.name,
             services: clinic.services,
-            image: clinic.image
-          })
-        ));
+            image: clinic.image,
+          })),
+        );
       }
-    }
+    };
     fetchClinics();
   }, []);
 

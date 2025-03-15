@@ -16,7 +16,7 @@ import CustomButton from "./CustomButton";
 import { useAPICall } from "@/hooks/apicall";
 import api from "@/services/api";
 import { ClipLoader } from "react-spinners";
-import RescheduleAppointment from "@/components/ui/RescheduleAppointment"
+import RescheduleAppointment from "@/components/ui/RescheduleAppointment";
 
 export const cancelReasons = [
   "Another commitment has come up",
@@ -44,12 +44,18 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
   goBack,
 }) => {
   const [currentView, setCurrentView] = useState<
-    "default" | "cancelConfirm" | "reschedule" | "cancelled" | "rescheduleConfirm"
+    | "default"
+    | "cancelConfirm"
+    | "reschedule"
+    | "cancelled"
+    | "rescheduleConfirm"
   >("default");
   const [cancelReason, setCancelReason] = useState<string>("");
   const [rescheduleReason, setRescheduleReason] = useState<string>("");
-  const [showCancelValidationMessage, setShowCancelValidationMessage] = useState<boolean>(false);
-  const [showRescheduleValidationMessage, setShowRescheduleValidationMessage] = useState<boolean>(false);
+  const [showCancelValidationMessage, setShowCancelValidationMessage] =
+    useState<boolean>(false);
+  const [showRescheduleValidationMessage, setShowRescheduleValidationMessage] =
+    useState<boolean>(false);
   const defaultPetImageByType =
     petImageByType[selectedAppointment.pet_type?.toLowerCase() || "other"] ||
     petImageByType.other;
@@ -93,7 +99,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
       if (!resp.ok) {
         console.error("Error cancelling appointment", resp);
         toast.error(
-          "We couldn't cancel your appointment. Please try again later."
+          "We couldn't cancel your appointment. Please try again later.",
         );
         return;
       }
@@ -101,19 +107,19 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
     } catch (error) {
       console.error("Error cancelling appointment", error);
       toast.error(
-        "We couldn't cancel your appointment. Please try again later."
+        "We couldn't cancel your appointment. Please try again later.",
       );
     }
   };
 
   const rescheduleBooking = async () => {
     if (!rescheduleReason) {
-      setShowRescheduleValidationMessage(true)
-      return
+      setShowRescheduleValidationMessage(true);
+      return;
     }
 
-    setCurrentView("reschedule")
-  }
+    setCurrentView("reschedule");
+  };
 
   return (
     <div className="w-full px-4 py-8">
@@ -122,141 +128,147 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
           <BackButton navigateBack={() => goBack(false)} />
 
           {currentView === "default" && (
-          <div className="flex flex-col justify-center gap-4 items-center">
-            <div className="flex items-center gap-2">
-              <h1 className="text-2xl sm:text-3xl flex items-center gap-4">
-                {selectedAppointment.category === "CANCELLED" 
-                  ? "Booking Cancelled" 
-                  : "Your Booking"
-                }
-              </h1>
-              {selectedAppointment.category === "CANCELLED" && (
-                <CircleX size={40}
-                fill="#5281a2"
-                stroke="white"
-                strokeWidth={2}
-                />
-              )}
-            </div>
-            <div
-              className={`p-4 text-primary-1 w-11/12 md:w-4/5 lg:w-[50%] shadow-md my-5 flex flex-col gap-2 items-center ${
-                selectedAppointment.category === "PAST"
-                  ? "bg-primary-3"
-                  : selectedAppointment.category === "CANCELLED"
-                    ? "bg-[#F1F1F1] text-[#909090]"
-                    :"bg-[#FFFCF3]"
-              }`
-            }
-            >
-              <p className="text-lg font-semibold mt-4 text-center">
-                {selectedAppointment.category === "PAST"
-                  ? selectedAppointment.appt_type === "Grooming"
-                    ? `${selectedAppointment.pet_name} had a ${selectedAppointment.appt_type} session`
-                    : `${selectedAppointment.pet_name} visited ${selectedAppointment.vet_name} for a ${selectedAppointment.appt_type}`
-                  : selectedAppointment.category === "CANCELLED"
-                    ? selectedAppointment.appt_type !== "Grooming"
-                      ? `${selectedAppointment.pet_name} was scheduled with ${selectedAppointment.vet_name} for a ${selectedAppointment.appt_type}`
-                      : `${selectedAppointment.pet_name} was scheduled for a ${selectedAppointment.appt_type} session`
-                    : selectedAppointment.appt_type !== "Grooming"
+            <div className="flex flex-col justify-center gap-4 items-center">
+              <div className="flex items-center gap-2">
+                <h1 className="text-2xl sm:text-3xl flex items-center gap-4">
+                  {selectedAppointment.category === "CANCELLED"
+                    ? "Booking Cancelled"
+                    : "Your Booking"}
+                </h1>
+                {selectedAppointment.category === "CANCELLED" && (
+                  <CircleX
+                    size={40}
+                    fill="#5281a2"
+                    stroke="white"
+                    strokeWidth={2}
+                  />
+                )}
+              </div>
+              <div
+                className={`p-4 text-primary-1 w-11/12 md:w-4/5 lg:w-[50%] shadow-md my-5 flex flex-col gap-2 items-center ${
+                  selectedAppointment.category === "PAST"
+                    ? "bg-primary-3"
+                    : selectedAppointment.category === "CANCELLED"
+                      ? "bg-[#F1F1F1] text-[#909090]"
+                      : "bg-[#FFFCF3]"
+                }`}
+              >
+                <p className="text-lg font-semibold mt-4 text-center">
+                  {selectedAppointment.category === "PAST"
+                    ? selectedAppointment.appt_type === "Grooming"
+                      ? `${selectedAppointment.pet_name} had a ${selectedAppointment.appt_type} session`
+                      : `${selectedAppointment.pet_name} visited ${selectedAppointment.vet_name} for a ${selectedAppointment.appt_type}`
+                    : selectedAppointment.category === "CANCELLED"
+                      ? selectedAppointment.appt_type !== "Grooming"
+                        ? `${selectedAppointment.pet_name} was scheduled with ${selectedAppointment.vet_name} for a ${selectedAppointment.appt_type}`
+                        : `${selectedAppointment.pet_name} was scheduled for a ${selectedAppointment.appt_type} session`
+                      : selectedAppointment.appt_type !== "Grooming"
                         ? `${selectedAppointment.pet_name} is scheduled for a ${selectedAppointment.appt_type} with ${selectedAppointment.vet_name}`
-                        : `${selectedAppointment.pet_name} is scheduled for a ${selectedAppointment.appt_type} session`
-                }
-              </p>
-              <div className="flex items-center my-4 relative">
-                {
-                  <>
-                    <div className="relative w-32 h-32 rounded-full overflow-hidden bg-white p-3 flex justify-center items-center">
-                      <Image
-                        src={selectedAppointment.pet_profile_image || defaultPetImageByType}
-                        alt={`${selectedAppointment.pet_name}'s profile`}
-                        layout="fill"
-                        objectFit="cover"
-                        sizes="128px"
-                        priority
-                      />
-                    </div>
-                    {selectedAppointment.appt_type !== "Grooming" && (
-                      <div className="relative w-32 h-32 rounded-full overflow-hidden bg-white -ml-8 border-4 border-white flex justify-center items-center">
+                        : `${selectedAppointment.pet_name} is scheduled for a ${selectedAppointment.appt_type} session`}
+                </p>
+                <div className="flex items-center my-4 relative">
+                  {
+                    <>
+                      <div className="relative w-32 h-32 rounded-full overflow-hidden bg-white p-3 flex justify-center items-center">
                         <Image
                           src={
-                            selectedAppointment.vet_image.type === "url"
-                            ? selectedAppointment.vet_image.value
-                            : doctorImagesMap[selectedAppointment.vet_image.value] || defaultVetImage
+                            selectedAppointment.pet_profile_image ||
+                            defaultPetImageByType
                           }
-                          alt={`Dr. ${selectedAppointment.vet_name}'s profile`}
+                          alt={`${selectedAppointment.pet_name}'s profile`}
                           layout="fill"
                           objectFit="cover"
                           sizes="128px"
+                          priority
                         />
                       </div>
-                    )}
-                  </>
-                }
-              </div>
-              <div className="my-4 space-y-3">
-                <p className={`flex items-center gap-2 ${selectedAppointment.category === "CANCELLED" && "line-through"}`}>
-                  <span className="text-secondary-1">
-                    <GrLocation />
-                  </span>{" "}
-                  {selectedAppointment.clinic_location}
-                </p>
-                <p className={`flex items-center gap-2 ${selectedAppointment.category === "CANCELLED" && "line-through"}`}>
-                  <span className="text-secondary-1">
-                    <HiOutlineCalendar />
-                  </span>
-                  {new Date(selectedAppointment.appt_start).toLocaleDateString(
-                    "en-IN",
-                    {
+                      {selectedAppointment.appt_type !== "Grooming" && (
+                        <div className="relative w-32 h-32 rounded-full overflow-hidden bg-white -ml-8 border-4 border-white flex justify-center items-center">
+                          <Image
+                            src={
+                              selectedAppointment.vet_image.type === "url"
+                                ? selectedAppointment.vet_image.value
+                                : doctorImagesMap[
+                                    selectedAppointment.vet_image.value
+                                  ] || defaultVetImage
+                            }
+                            alt={`Dr. ${selectedAppointment.vet_name}'s profile`}
+                            layout="fill"
+                            objectFit="cover"
+                            sizes="128px"
+                          />
+                        </div>
+                      )}
+                    </>
+                  }
+                </div>
+                <div className="my-4 space-y-3">
+                  <p
+                    className={`flex items-center gap-2 ${selectedAppointment.category === "CANCELLED" && "line-through"}`}
+                  >
+                    <span className="text-secondary-1">
+                      <GrLocation />
+                    </span>{" "}
+                    {selectedAppointment.clinic_location}
+                  </p>
+                  <p
+                    className={`flex items-center gap-2 ${selectedAppointment.category === "CANCELLED" && "line-through"}`}
+                  >
+                    <span className="text-secondary-1">
+                      <HiOutlineCalendar />
+                    </span>
+                    {new Date(
+                      selectedAppointment.appt_start,
+                    ).toLocaleDateString("en-IN", {
                       weekday: "long",
                       year: "numeric",
                       month: "long",
                       day: "numeric",
-                    }
-                  )}
-                </p>
-                <p className={`flex items-center gap-2 ${selectedAppointment.category === "CANCELLED" && "line-through"}`}>
-                  <span className="text-secondary-1">
-                    <MdOutlineAccessTime />
-                  </span>
+                    })}
+                  </p>
+                  <p
+                    className={`flex items-center gap-2 ${selectedAppointment.category === "CANCELLED" && "line-through"}`}
+                  >
+                    <span className="text-secondary-1">
+                      <MdOutlineAccessTime />
+                    </span>
 
-                  {new Date(selectedAppointment.appt_start).toLocaleTimeString(
-                    "en-IN",
-                    {
+                    {new Date(
+                      selectedAppointment.appt_start,
+                    ).toLocaleTimeString("en-IN", {
                       hour: "2-digit",
                       minute: "2-digit",
-                    }
-                  )}
-                  {" - "}
-                  {new Date(selectedAppointment.appt_end).toLocaleTimeString(
-                    `en-IN`,
-                    {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    }
-                  )}
-                </p>
-              </div>
-              {selectedAppointment.category === "UPCOMING" && (
-                <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
-                  <div className="flex flex-col sm:flex-row sm:justify-center gap-4 mt-6">
-                    <button
-                      onClick={handleCancelClick}
-                      className="w-full sm:w-auto sm:min-w-[150px] py-3 px-4 sm:px-6 border-2 border-secondary-1 rounded-full text-sm sm:text-base font-bold text-secondary-1"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      onClick={handleRescheduleClick}
-                      className="w-full sm:w-auto sm:min-w-[150px] py-3 px-4 sm:px-6 border-2 border-secondary-1 rounded-full text-sm sm:text-base font-bold text-secondary-1"
-                    >
-                      Reschedule
-                    </button>
-                  </div>
-
+                    })}
+                    {" - "}
+                    {new Date(selectedAppointment.appt_end).toLocaleTimeString(
+                      `en-IN`,
+                      {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      },
+                    )}
+                  </p>
                 </div>
-              )}
+                {selectedAppointment.category === "UPCOMING" && (
+                  <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex flex-col sm:flex-row sm:justify-center gap-4 mt-6">
+                      <button
+                        onClick={handleCancelClick}
+                        className="w-full sm:w-auto sm:min-w-[150px] py-3 px-4 sm:px-6 border-2 border-secondary-1 rounded-full text-sm sm:text-base font-bold text-secondary-1"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={handleRescheduleClick}
+                        className="w-full sm:w-auto sm:min-w-[150px] py-3 px-4 sm:px-6 border-2 border-secondary-1 rounded-full text-sm sm:text-base font-bold text-secondary-1"
+                      >
+                        Reschedule
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
           )}
           {currentView === "cancelConfirm" && (
             <div className="flex flex-col justify-center items-center gap-4">
@@ -265,7 +277,10 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                 <h1 className="text-center text-2xl font-semibold font-sans">
                   Are you sure you want to cancel this booking?
                 </h1>
-                <p>Please select a reason for cancelling. You will receive a cancellation email for the booking.</p>
+                <p>
+                  Please select a reason for cancelling. You will receive a
+                  cancellation email for the booking.
+                </p>
                 <div className="space-y-3">
                   {cancelReasons.map((reason, index) => (
                     <div className="flex items-start gap-2" key={index}>
@@ -299,7 +314,11 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                     onClick={() => cancelBooking()}
                     className="w-full py-3 border-2 border-secondary-1 rounded-full text-sm"
                   >
-                    {cancelAppointmentLoading ?<ClipLoader color="#33495f" size={18}/> : `Yes`}
+                    {cancelAppointmentLoading ? (
+                      <ClipLoader color="#33495f" size={18} />
+                    ) : (
+                      `Yes`
+                    )}
                   </button>
                 </div>
               </div>
@@ -308,8 +327,11 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
           {currentView === "cancelled" && (
             <div className="flex flex-col justify-center gap-4 items-center">
               <div className="flex items-center gap-2">
-                <h1 className="text-2xl sm:text-3xl flex items-center gap-4">Booking Cancelled</h1>
-                <CircleX size={40}
+                <h1 className="text-2xl sm:text-3xl flex items-center gap-4">
+                  Booking Cancelled
+                </h1>
+                <CircleX
+                  size={40}
                   fill="#5281a2"
                   stroke="white"
                   strokeWidth={2}
@@ -319,18 +341,19 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                 className={`p-4 text-primary-1 w-11/12 md:w-4/5 lg:w-[50%] shadow-md my-5 flex flex-col gap-2 items-center bg-primary-3`}
               >
                 <p className="text-lg font-semibold mt-4 text-center">
-                  {
-                    selectedAppointment.appt_type === "Grooming"
-                      ? `${selectedAppointment.pet_name} was scheduled for a ${selectedAppointment.appt_type} session`
-                      : `${selectedAppointment.pet_name} was scheduled with ${selectedAppointment.vet_name} for a ${selectedAppointment.appt_type}`
-                  }
+                  {selectedAppointment.appt_type === "Grooming"
+                    ? `${selectedAppointment.pet_name} was scheduled for a ${selectedAppointment.appt_type} session`
+                    : `${selectedAppointment.pet_name} was scheduled with ${selectedAppointment.vet_name} for a ${selectedAppointment.appt_type}`}
                 </p>
                 <div className="flex items-center my-4 relative">
                   {
                     <>
                       <div className="relative w-32 h-32 rounded-full overflow-hidden bg-white p-3 flex justify-center items-center">
                         <Image
-                          src={selectedAppointment.pet_profile_image || defaultPetImageByType}
+                          src={
+                            selectedAppointment.pet_profile_image ||
+                            defaultPetImageByType
+                          }
                           alt={`${selectedAppointment.pet_name}'s profile`}
                           layout="fill"
                           objectFit="cover"
@@ -343,8 +366,10 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                           <Image
                             src={
                               selectedAppointment.vet_image.type === "url"
-                              ? selectedAppointment.vet_image.value
-                              : doctorImagesMap[selectedAppointment.vet_image.value] || defaultVetImage
+                                ? selectedAppointment.vet_image.value
+                                : doctorImagesMap[
+                                    selectedAppointment.vet_image.value
+                                  ] || defaultVetImage
                             }
                             alt={`Dr. ${selectedAppointment.vet_name}'s profile`}
                             layout="fill"
@@ -367,7 +392,9 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                     <span className="text-secondary-1">
                       <HiOutlineCalendar />
                     </span>
-                    {new Date(selectedAppointment.appt_start).toLocaleDateString("en-IN", {
+                    {new Date(
+                      selectedAppointment.appt_start,
+                    ).toLocaleDateString("en-IN", {
                       weekday: "long",
                       year: "numeric",
                       month: "long",
@@ -378,15 +405,20 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                     <span className="text-secondary-1">
                       <MdOutlineAccessTime />
                     </span>
-                    {new Date(selectedAppointment.appt_start).toLocaleTimeString("en-IN", {
+                    {new Date(
+                      selectedAppointment.appt_start,
+                    ).toLocaleTimeString("en-IN", {
                       hour: "2-digit",
                       minute: "2-digit",
                     })}
                     {" - "}
-                    {new Date(selectedAppointment.appt_end).toLocaleTimeString("en-IN", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
+                    {new Date(selectedAppointment.appt_end).toLocaleTimeString(
+                      "en-IN",
+                      {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      },
+                    )}
                   </p>
                 </div>
                 <div className="flex items-center">
@@ -395,7 +427,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                     buttonBackground="bg-secondary-1"
                     buttonClickEvent={() => goBack(true)}
                   />
-              </div>
+                </div>
               </div>
             </div>
           )}
@@ -441,7 +473,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                     className="w-full py-3 border-2 border-secondary-1 rounded-full text-sm"
                   >
                     Yes
-                </button>
+                  </button>
                 </div>
               </div>
             </div>

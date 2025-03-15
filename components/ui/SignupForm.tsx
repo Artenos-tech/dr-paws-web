@@ -56,7 +56,7 @@ const SignupForm: React.FC<SignUpFormProps> = ({
   errMsg,
 }) => {
   const [userProfileImage, setUserPofileImage] = useState<string>(
-    defaultUserProfile.src
+    defaultUserProfile.src,
   );
 
   const {
