@@ -1,42 +1,42 @@
-import { Pet } from "@/context/UserContext";
-import { BsCheckCircleFill } from "react-icons/bs";
-import Image, { StaticImageData } from "next/image";
-import { GrLocation } from "react-icons/gr";
-import { HiOutlineCalendar } from "react-icons/hi";
-import { MdOutlineAccessTime } from "react-icons/md";
-import CustomButton from "./CustomButton";
-import { petImageByType } from "./PetCard";
+import { Pet } from "@/context/UserContext"
+import { BsCheckCircleFill } from "react-icons/bs"
+import Image, { StaticImageData } from "next/image"
+import { GrLocation } from "react-icons/gr"
+import { HiOutlineCalendar } from "react-icons/hi"
+import { MdOutlineAccessTime } from "react-icons/md"
+import CustomButton from "./CustomButton"
+import { petImageByType } from "./PetCard"
 
 type RescheduleConfirmedProps = {
-  isGroomingAppointment: boolean;
+  isGroomingAppointment: boolean
   updatedValues: {
-    selectedSvcId: number;
-    selectedPet: Pet;
-    selectedClinic: number;
-    selectedLocation: string;
-    selectedService: string;
-    selectedSubtype?: string;
+    selectedSvcId: number
+    selectedPet: Pet
+    selectedClinic: number
+    selectedLocation: string
+    selectedService: string
+    selectedSubtype?: string
     selectedVet: {
-      id: number;
-      name: string;
-    } | null;
-    selectedDoctorImage: string | StaticImageData | null;
-    selectedDate: Date;
-    selectedSlot: string;
-    selectedSlotEnd: string;
-  };
+      id: number
+      name: string
+    } | null
+    selectedDoctorImage: string | StaticImageData | null
+    selectedDate: Date
+    selectedSlot: string
+    selectedSlotEnd: string
+  }
   oldValues: {
     oldVet: {
-      id: number;
-      name: string;
-    };
-    oldDoctorImage: string | StaticImageData | null;
-    oldDate: Date;
-    oldSlot: string;
-    oldSlotEnd: string;
-  };
-  onDone: () => void;
-};
+      id: number
+      name: string
+    }
+    oldDoctorImage: string | StaticImageData | null
+    oldDate: Date
+    oldSlot: string
+    oldSlotEnd: string
+  }
+  onDone: () => void
+}
 const RescheduleConfirmed: React.FC<RescheduleConfirmedProps> = ({
   isGroomingAppointment,
   updatedValues,
@@ -45,7 +45,7 @@ const RescheduleConfirmed: React.FC<RescheduleConfirmedProps> = ({
 }) => {
   const defaultPetImageByType =
     petImageByType[updatedValues.selectedPet.type?.toLowerCase() || "other"] ||
-    petImageByType.other;
+    petImageByType.other
 
   return (
     <div className="w-full h-full">
@@ -144,7 +144,7 @@ const RescheduleConfirmed: React.FC<RescheduleConfirmedProps> = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default RescheduleConfirmed;
+export default RescheduleConfirmed

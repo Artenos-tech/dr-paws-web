@@ -1,15 +1,15 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react"
 
-import { Result, ok, err, wrap, wrapAsync, unwrap } from "./result";
+import { Result, ok, err, wrap, wrapAsync, unwrap } from "./result"
 
-export { type Result, ok, err, wrap, wrapAsync, unwrap };
+export { type Result, ok, err, wrap, wrapAsync, unwrap }
 
 type AsyncResultHookReturn<R extends Result<unknown, unknown>> = {
-  call: (fn: (abortSignal?: AbortSignal) => Promise<R>) => Promise<R>;
-  abort: () => void;
-  loading: boolean;
-  result: R | undefined;
-};
+  call: (fn: (abortSignal?: AbortSignal) => Promise<R>) => Promise<R>
+  abort: () => void
+  loading: boolean
+  result: R | undefined
+}
 
 /**
  * A hook that manages result and loading states and cancellation for
@@ -31,51 +31,51 @@ type AsyncResultHookReturn<R extends Result<unknown, unknown>> = {
 export function useAsyncResult<
   R extends Result<unknown, unknown>,
 >(): AsyncResultHookReturn<R> {
-  const [getResult, setResult] = useRefState<R | undefined>(undefined);
-  const [getLoading, setLoading] = useRefState(false);
-  const abortControllerRef = useRef<AbortController | null>(null);
+  const [getResult, setResult] = useRefState<R | undefined>(undefined)
+  const [getLoading, setLoading] = useRefState(false)
+  const abortControllerRef = useRef<AbortController | null>(null)
 
   function abort(reason?: string) {
-    abortControllerRef.current?.abort(reason);
+    abortControllerRef.current?.abort(reason)
   }
 
   async function call(
     fn: (abortSignal?: AbortSignal) => Promise<R>,
   ): Promise<R> {
     if (getLoading()) {
-      abort("new request started");
+      abort("new request started")
       // HACK:
       // wait one tick for the abort error to be thrown,
       // so loading and result states are set correctly
-      await new Promise((resolve) => setTimeout(resolve));
+      await new Promise((resolve) => setTimeout(resolve))
       if (getLoading()) {
-        throw new Error("abort still not completed after one tick");
+        throw new Error("abort still not completed after one tick")
       }
     }
-    abortControllerRef.current = new AbortController();
-    setResult(undefined);
-    setLoading(true);
+    abortControllerRef.current = new AbortController()
+    setResult(undefined)
+    setLoading(true)
     try {
-      const result = await fn(abortControllerRef.current.signal);
-      setResult(result);
-      return result;
+      const result = await fn(abortControllerRef.current.signal)
+      setResult(result)
+      return result
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
   }
 
   useEffect(() => {
     return () => {
-      abort("component unmounted");
-    };
-  }, []);
+      abort("component unmounted")
+    }
+  }, [])
 
   return {
     call,
     abort,
     loading: getLoading(),
     result: getResult(),
-  };
+  }
 }
 
 /**
@@ -83,16 +83,16 @@ export function useAsyncResult<
  * in closures.
  */
 function useRefState<T>(initialValue: T) {
-  const ref = useRef(initialValue);
+  const ref = useRef(initialValue)
   // keep a state variable so we can trigger a re-render
-  const [, setState] = useState(0);
+  const [, setState] = useState(0)
   function getRefState() {
-    return ref.current;
+    return ref.current
   }
   function setRefState(value: T) {
-    ref.current = value;
+    ref.current = value
     // trigger a re-render
-    setState((s) => s + 1);
+    setState((s) => s + 1)
   }
-  return [getRefState, setRefState] as const;
+  return [getRefState, setRefState] as const
 }

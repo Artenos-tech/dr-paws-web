@@ -1,14 +1,14 @@
-import React from "react";
-import { BookingCategory } from "./SelectService";
+import React from "react"
+import { BookingCategory } from "./SelectService"
 
 interface GroomingSubtypeModalProps {
-  isOpen: boolean;
-  onClose: (subtypeSelected: boolean) => void;
-  subtypes: BookingCategory[];
+  isOpen: boolean
+  onClose: (subtypeSelected: boolean) => void
+  subtypes: BookingCategory[]
   setSelectedSubtype: React.Dispatch<
     React.SetStateAction<BookingCategory | null>
-  >;
-  selectedSubtype: BookingCategory | null;
+  >
+  selectedSubtype: BookingCategory | null
 }
 
 export default function GroomingSubtypeModal({
@@ -20,12 +20,12 @@ export default function GroomingSubtypeModal({
 }: GroomingSubtypeModalProps) {
   const handleSelect = () => {
     if (selectedSubtype) {
-      setSelectedSubtype(selectedSubtype);
-      onClose(true);
+      setSelectedSubtype(selectedSubtype)
+      onClose(true)
     }
-  };
+  }
 
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
@@ -48,7 +48,7 @@ export default function GroomingSubtypeModal({
                     value={subtype.id}
                     checked={selectedSubtype?.id === subtype.id}
                     onChange={() => {
-                      setSelectedSubtype(subtype);
+                      setSelectedSubtype(subtype)
                     }}
                     className="appearance-none h-4 w-4 sm:h-5 sm:w-5 border border-gray-300 rounded-full cursor-pointer checked:border-[#5281a2] checked:border-4 focus:outline-none"
                   />
@@ -68,8 +68,8 @@ export default function GroomingSubtypeModal({
           <div className="flex justify-between w-full mt-4 sm:mt-6 space-x-3">
             <button
               onClick={() => {
-                setSelectedSubtype(null);
-                onClose(false);
+                setSelectedSubtype(null)
+                onClose(false)
               }}
               className="px-3 py-2 sm:px-4 sm:py-2 rounded-md text-[#5281a2] border border-[#5281a2] hover:bg-[#5281a2] hover:text-white transition-colors text-sm sm:text-base flex-1"
             >
@@ -90,5 +90,5 @@ export default function GroomingSubtypeModal({
         </div>
       </div>
     </div>
-  );
+  )
 }

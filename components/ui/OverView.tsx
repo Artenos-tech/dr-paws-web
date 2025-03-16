@@ -1,25 +1,25 @@
-"use client";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { ChevronLeft, ChevronRight, Phone } from "lucide-react";
-import { Navigation } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/navigation";
+"use client"
+import { Swiper, SwiperSlide } from "swiper/react"
+import { ChevronLeft, ChevronRight, Phone } from "lucide-react"
+import { Navigation } from "swiper/modules"
+import "swiper/css"
+import "swiper/css/navigation"
 
-import { LocationCard } from "./LocationCard";
-import DoctorCard from "./DoctorCard";
-import { DoctorBase } from "@/model/typeDefinitions";
+import { LocationCard } from "./LocationCard"
+import DoctorCard from "./DoctorCard"
+import { DoctorBase } from "@/model/typeDefinitions"
 
 interface OverviewProps {
-  clinicContact: string;
-  clinicLocation: string;
-  clinicDoctors: DoctorBase[];
-  clinicParking: string;
+  clinicContact: string
+  clinicLocation: string
+  clinicDoctors: DoctorBase[]
+  clinicParking: string
   clinicTimings: {
-    dayOfWeek: string | null;
-    openTime: string | null;
-    closeTime: string | null;
-    is24Hours: boolean | null;
-  }[];
+    dayOfWeek: string | null
+    openTime: string | null
+    closeTime: string | null
+    is24Hours: boolean | null
+  }[]
 }
 
 const Overview: React.FC<OverviewProps> = ({
@@ -60,7 +60,7 @@ const Overview: React.FC<OverviewProps> = ({
                         : `${timing.openTime} - ${timing.closeTime}`}
                     </span>
                   </p>
-                );
+                )
               })}
             </div>
           </div>
@@ -114,7 +114,7 @@ const Overview: React.FC<OverviewProps> = ({
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default Overview;
+export default Overview

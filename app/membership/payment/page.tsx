@@ -1,15 +1,15 @@
-"use client";
-import { Suspense, useEffect, useState } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
-import { useAPICall } from "@/hooks/apicall";
-import api from "@/services/api";
-import { Loader2, AlertCircle } from "lucide-react";
+"use client"
+import { Suspense, useEffect, useState } from "react"
+import { useSearchParams, useRouter } from "next/navigation"
+import { useAPICall } from "@/hooks/apicall"
+import api from "@/services/api"
+import { Loader2, AlertCircle } from "lucide-react"
 
 function PaymentStatus() {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const [status, setStatus] = useState("loading");
-  const { call: verifyPayment } = useAPICall(api.verifyPayment);
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const [status, setStatus] = useState("loading")
+  const { call: verifyPayment } = useAPICall(api.verifyPayment)
 
   useEffect(() => {
     const verifyPaymentForOrder = async (
@@ -18,36 +18,36 @@ function PaymentStatus() {
       petId: number,
     ) => {
       try {
-        const result = await verifyPayment({ orderId, planId, petId });
-        console.log("Payment verification result", result);
+        const result = await verifyPayment({ orderId, planId, petId })
+        console.log("Payment verification result", result)
         if (!result.ok) {
-          console.log("Error message from API", result.error);
-          setStatus("error");
-          return;
+          console.log("Error message from API", result.error)
+          setStatus("error")
+          return
         }
-        const paymentStatus = result.value.body.order_payment.status;
-        setStatus(paymentStatus);
+        const paymentStatus = result.value.body.order_payment.status
+        setStatus(paymentStatus)
         if (paymentStatus === "PAID") {
           // Add a small delay before redirect for better UX
           setTimeout(() => {
-            router.push("/user/my-subscriptions");
-          }, 1500);
+            router.push("/user/my-subscriptions")
+          }, 1500)
         }
       } catch {
-        console.error("Failed to verify payment");
-        setStatus("error");
+        console.error("Failed to verify payment")
+        setStatus("error")
       }
-    };
-    const orderId = searchParams.get("order_id");
-    const planId = searchParams.get("plan_id");
-    const petId = searchParams.get("pet_id");
-    console.log("Payment status page", orderId, planId, petId);
-    if (orderId && planId && petId) {
-      verifyPaymentForOrder(orderId, parseInt(planId), parseInt(petId));
-    } else {
-      setStatus("error");
     }
-  }, []);
+    const orderId = searchParams.get("order_id")
+    const planId = searchParams.get("plan_id")
+    const petId = searchParams.get("pet_id")
+    console.log("Payment status page", orderId, planId, petId)
+    if (orderId && planId && petId) {
+      verifyPaymentForOrder(orderId, parseInt(planId), parseInt(petId))
+    } else {
+      setStatus("error")
+    }
+  }, [])
 
   const renderContent = () => {
     switch (status) {
@@ -57,7 +57,7 @@ function PaymentStatus() {
             <Loader2 className="h-5 w-5 animate-spin" />
             <p className="text-center text-primary-1">Verifying your payment</p>
           </div>
-        );
+        )
 
       case "PAID":
         return (
@@ -67,7 +67,7 @@ function PaymentStatus() {
               Payment successful! Redirecting to your memberships...
             </p>
           </div>
-        );
+        )
 
       case "EXPIRED":
         return (
@@ -77,7 +77,7 @@ function PaymentStatus() {
               Payment session expired. Please try again.
             </p>
           </div>
-        );
+        )
 
       case "ACTIVE":
         return (
@@ -88,7 +88,7 @@ function PaymentStatus() {
               contact support if you need assistance.
             </p>
           </div>
-        );
+        )
 
       case "error":
         return (
@@ -99,7 +99,7 @@ function PaymentStatus() {
               support for assistance.
             </p>
           </div>
-        );
+        )
 
       default:
         return (
@@ -107,16 +107,16 @@ function PaymentStatus() {
             <AlertCircle />
             <p>Payment status: ${status}</p>
           </div>
-        );
+        )
     }
-  };
+  }
 
   return (
     <div className="container mx-auto py-8 max-w-md">
       <h1 className="text-2xl font-bold mb-6 text-center">Payment Status</h1>
       {renderContent()}
     </div>
-  );
+  )
 }
 
 export default function PaymentStatusPage() {
@@ -124,5 +124,5 @@ export default function PaymentStatusPage() {
     <Suspense>
       <PaymentStatus />
     </Suspense>
-  );
+  )
 }

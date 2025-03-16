@@ -1,29 +1,29 @@
-"use client";
+"use client"
 
-import React, { useState } from "react";
-import Image from "next/image";
-import AddPetModal from "./AddPetModal";
-import { petImageByType } from "./PetCard";
-import tickMark from "@/public/assets/images/Booking/tick-svgrepo-com.svg";
-import { Pet } from "@/context/UserContext";
-import toast, { Toaster } from "react-hot-toast";
+import React, { useState } from "react"
+import Image from "next/image"
+import AddPetModal from "./AddPetModal"
+import { petImageByType } from "./PetCard"
+import tickMark from "@/public/assets/images/Booking/tick-svgrepo-com.svg"
+import { Pet } from "@/context/UserContext"
+import toast, { Toaster } from "react-hot-toast"
 
 interface BookingCardProps {
-  cardId: number;
-  title: string;
-  description: string;
+  cardId: number
+  title: string
+  description: string
   onCardSelection: (
     cardId: number,
     cardTitle: string,
     selectedPet: Pet | null,
     isGrooming: boolean,
-  ) => void;
-  isOpen: boolean;
-  toggleCard: (cardId: number, isGrooming: boolean) => void;
-  selectedPet: Pet | null;
-  pets: Pet[];
-  fetchPets: () => void;
-  isGrooming: boolean;
+  ) => void
+  isOpen: boolean
+  toggleCard: (cardId: number, isGrooming: boolean) => void
+  selectedPet: Pet | null
+  pets: Pet[]
+  fetchPets: () => void
+  isGrooming: boolean
 }
 
 const BookingCard: React.FC<BookingCardProps> = ({
@@ -38,22 +38,22 @@ const BookingCard: React.FC<BookingCardProps> = ({
   fetchPets,
   isGrooming,
 }) => {
-  const [isAddPetModalOpen, setIsAddPetModalOpen] = useState(false);
+  const [isAddPetModalOpen, setIsAddPetModalOpen] = useState(false)
 
   const handlePetClick = (pet: Pet) => {
-    const isAlreadySelected = selectedPet?.vetPortId === pet.vetPortId;
-    const newSelectedPet = isAlreadySelected ? null : pet;
-    onCardSelection(cardId, title, newSelectedPet, isGrooming);
-  };
+    const isAlreadySelected = selectedPet?.vetPortId === pet.vetPortId
+    const newSelectedPet = isAlreadySelected ? null : pet
+    onCardSelection(cardId, title, newSelectedPet, isGrooming)
+  }
 
   const handleAddPetClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setIsAddPetModalOpen(true);
-  };
+    e.stopPropagation()
+    setIsAddPetModalOpen(true)
+  }
 
   const handleAddPetModalClose = () => {
-    setIsAddPetModalOpen(false);
-  };
+    setIsAddPetModalOpen(false)
+  }
 
   return (
     <div
@@ -91,17 +91,17 @@ const BookingCard: React.FC<BookingCardProps> = ({
                 const petImage =
                   pet.profileImage ||
                   petImageByType[pet.type?.toLowerCase() || "other"]?.src ||
-                  petImageByType["other"].src;
+                  petImageByType["other"].src
 
-                const isSelected = selectedPet?.vetPortId === pet.vetPortId;
+                const isSelected = selectedPet?.vetPortId === pet.vetPortId
 
                 return (
                   <div
                     key={pet.vetPortId}
                     className="relative cursor-pointer m-2"
                     onClick={(e) => {
-                      e.stopPropagation();
-                      handlePetClick(pet);
+                      e.stopPropagation()
+                      handlePetClick(pet)
                     }}
                   >
                     <div className="relative w-[70px] h-[70px]">
@@ -127,7 +127,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
                     </div>
                     <p className="text-center mt-2">{pet.name}</p>
                   </div>
-                );
+                )
               })}
             <div className="flex flex-col items-center justify-center gap-3">
               <div
@@ -146,8 +146,8 @@ const BookingCard: React.FC<BookingCardProps> = ({
         isOpen={isAddPetModalOpen}
         onClose={handleAddPetModalClose}
         onSuccess={() => {
-          setIsAddPetModalOpen(false);
-          fetchPets();
+          setIsAddPetModalOpen(false)
+          fetchPets()
           toast.success("Added pet successfully", {
             duration: 3000,
             position: "bottom-right",
@@ -156,12 +156,12 @@ const BookingCard: React.FC<BookingCardProps> = ({
               color: "#fff",
               fontWeight: 700,
             },
-          });
+          })
         }}
       />
       <Toaster />
     </div>
-  );
-};
+  )
+}
 
-export default BookingCard;
+export default BookingCard

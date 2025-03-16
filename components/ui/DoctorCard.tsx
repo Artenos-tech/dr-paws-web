@@ -1,43 +1,43 @@
-"use client";
+"use client"
 
-import React, { useState } from "react";
-import Image from "next/image";
-import { CiLocationOn } from "react-icons/ci";
-import defaultVetImage from "@/public/assets/images/clinic/doctorFemale.webp";
-import { DoctorBase } from "@/model/typeDefinitions";
-import DoctorDetailsModal from "./DoctorDetailsModal";
-import { doctorImagesMap, doctors } from "@/model/mockData";
-import api from "@/services/api";
-import { useAPICall } from "@/hooks/apicall";
-import Loader from "./Loader";
+import React, { useState } from "react"
+import Image from "next/image"
+import { CiLocationOn } from "react-icons/ci"
+import defaultVetImage from "@/public/assets/images/clinic/doctorFemale.webp"
+import { DoctorBase } from "@/model/typeDefinitions"
+import DoctorDetailsModal from "./DoctorDetailsModal"
+import { doctorImagesMap, doctors } from "@/model/mockData"
+import api from "@/services/api"
+import { useAPICall } from "@/hooks/apicall"
+import Loader from "./Loader"
 
 interface DoctorCardProps {
-  doctor: DoctorBase;
+  doctor: DoctorBase
 }
 
 const DoctorCard: React.FC<DoctorCardProps> = ({ doctor }) => {
   const { displayName, position, experience, availableToDisplayAt, imageUrl } =
-    doctor;
-  const [modalOpen, setModalOpen] = useState<boolean>(false);
+    doctor
+  const [modalOpen, setModalOpen] = useState<boolean>(false)
   const {
     call: getDoctorProfile,
     result: doctorProfileResult,
     loading: loadingDoctorProfile,
-  } = useAPICall(api.getDoctorForDisplay);
+  } = useAPICall(api.getDoctorForDisplay)
 
   const handleViewProfile = async () => {
     const doctorDetails = await getDoctorProfile({
       doctorid: doctor.id.toString(),
-    });
+    })
     if (doctorDetails.ok) {
-      setModalOpen(true);
+      setModalOpen(true)
     }
-  };
+  }
 
   const doctorProfile =
     doctorProfileResult?.ok && doctorProfileResult.value.body.doctor
       ? doctorProfileResult.value.body.doctor
-      : doctors.find((doc) => doc.id === doctor.id);
+      : doctors.find((doc) => doc.id === doctor.id)
 
   return (
     <>
@@ -86,7 +86,7 @@ const DoctorCard: React.FC<DoctorCardProps> = ({ doctor }) => {
         />
       )}
     </>
-  );
-};
+  )
+}
 
-export default DoctorCard;
+export default DoctorCard

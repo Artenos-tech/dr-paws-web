@@ -1,48 +1,48 @@
-import { Pet } from "@/context/UserContext";
-import { BsCheckCircleFill } from "react-icons/bs";
-import Image from "next/image";
-import { doctorImagesMap } from "@/model/mockData";
-import defaultVetImage from "@/public/assets/images/clinic/doctorFemale.webp";
-import { GrLocation } from "react-icons/gr";
-import { HiOutlineCalendar } from "react-icons/hi";
-import { MdOutlineAccessTime } from "react-icons/md";
-import CustomButton from "./CustomButton";
-import { useRouter } from "next/navigation";
-import { petImageByType } from "./PetCard";
+import { Pet } from "@/context/UserContext"
+import { BsCheckCircleFill } from "react-icons/bs"
+import Image from "next/image"
+import { doctorImagesMap } from "@/model/mockData"
+import defaultVetImage from "@/public/assets/images/clinic/doctorFemale.webp"
+import { GrLocation } from "react-icons/gr"
+import { HiOutlineCalendar } from "react-icons/hi"
+import { MdOutlineAccessTime } from "react-icons/md"
+import CustomButton from "./CustomButton"
+import { useRouter } from "next/navigation"
+import { petImageByType } from "./PetCard"
 
 type BookingConfirmedProps = {
-  isGroomingAppointment: boolean;
+  isGroomingAppointment: boolean
   selectedAppointment: {
-    selectedSvcId: number;
-    selectedPet: Pet;
-    selectedClinic: number;
-    selectedLocation: string;
-    selectedClinicContact: string;
-    selectedService: string;
-    selectedSubtype?: string;
+    selectedSvcId: number
+    selectedPet: Pet
+    selectedClinic: number
+    selectedLocation: string
+    selectedClinicContact: string
+    selectedService: string
+    selectedSubtype?: string
     selectedVet: {
-      id: number;
-      name: string;
-    } | null;
+      id: number
+      name: string
+    } | null
     selectedDoctorImage: {
-      type: "url" | "ref";
-      value: string;
-    } | null;
-    selectedDate: Date;
-    selectedSlot: string;
-    selectedSlotEnd: string;
-  };
-};
+      type: "url" | "ref"
+      value: string
+    } | null
+    selectedDate: Date
+    selectedSlot: string
+    selectedSlotEnd: string
+  }
+}
 const BookingConfirmed: React.FC<BookingConfirmedProps> = ({
   isGroomingAppointment,
   selectedAppointment,
 }) => {
-  const navigate = useRouter();
+  const navigate = useRouter()
 
   const defaultPetImageByType =
     petImageByType[
       selectedAppointment.selectedPet.type?.toLowerCase() || "other"
-    ] || petImageByType.other;
+    ] || petImageByType.other
 
   return (
     <div className="w-full h-full">
@@ -148,7 +148,7 @@ const BookingConfirmed: React.FC<BookingConfirmedProps> = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default BookingConfirmed;
+export default BookingConfirmed

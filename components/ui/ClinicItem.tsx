@@ -1,33 +1,33 @@
-"use client";
+"use client"
 
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import React from "react";
-import { Toaster } from "react-hot-toast";
-import { useUserContext } from "@/context/UserContext";
-import { ClinicBase } from "@/model/typeDefinitions";
+import Image from "next/image"
+import { useRouter } from "next/navigation"
+import React from "react"
+import { Toaster } from "react-hot-toast"
+import { useUserContext } from "@/context/UserContext"
+import { ClinicBase } from "@/model/typeDefinitions"
 
 interface ClinicItemProps {
-  clinic: ClinicBase;
-  enlargedView: boolean;
+  clinic: ClinicBase
+  enlargedView: boolean
 }
 
 const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
-  const { image, name, services, id } = clinic;
-  const router = useRouter();
+  const { image, name, services, id } = clinic
+  const router = useRouter()
 
-  const { initiateLogin, isLoggedIn } = useUserContext();
-  const navigate = useRouter();
+  const { initiateLogin, isLoggedIn } = useUserContext()
+  const navigate = useRouter()
 
   const handleBookAVisit = () => {
     return isLoggedIn
       ? navigate.push("/user/book-appointment")
-      : initiateLogin("Book a Visit", "/user/book-appointment");
-  };
+      : initiateLogin("Book a Visit", "/user/book-appointment")
+  }
 
   const goToClinicPage = () => {
-    router.push(`/clinics/${id}`);
-  };
+    router.push(`/clinics/${id}`)
+  }
 
   return (
     <div
@@ -62,7 +62,7 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
       </button>
       <Toaster />
     </div>
-  );
-};
+  )
+}
 
-export default ClinicItem;
+export default ClinicItem

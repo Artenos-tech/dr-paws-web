@@ -1,14 +1,14 @@
-"use client";
+"use client"
 
-import Image from "next/image";
-import React from "react";
-import OutlineButton from "./OutlineButton";
-import { User } from "@/context/UserContext";
-import defaultProfileImage from "@/public/assets/images/Profile/profileLogo.jpg";
+import Image from "next/image"
+import React from "react"
+import OutlineButton from "./OutlineButton"
+import { User } from "@/context/UserContext"
+import defaultProfileImage from "@/public/assets/images/Profile/profileLogo.jpg"
 
 interface ProfileCardProps {
-  profile: User;
-  onEdit: () => void;
+  profile: User
+  onEdit: () => void
 }
 
 const ProfileCard: React.FC<ProfileCardProps> = ({ profile, onEdit }) => {
@@ -22,7 +22,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ profile, onEdit }) => {
     city,
     state,
     pincode,
-  } = profile;
+  } = profile
 
   function formAddressStr(
     address1: string | null,
@@ -31,11 +31,11 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ profile, onEdit }) => {
     state: string | null,
     pincode: string | null,
   ) {
-    const address = [address1, address2, city, state, pincode];
+    const address = [address1, address2, city, state, pincode]
     const addressStr = address
       .filter((addr) => addr !== null && addr.trim() !== "")
-      .join(", ");
-    return addressStr;
+      .join(", ")
+    return addressStr
   }
 
   return (
@@ -83,7 +83,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ profile, onEdit }) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ProfileCard;
+export default ProfileCard

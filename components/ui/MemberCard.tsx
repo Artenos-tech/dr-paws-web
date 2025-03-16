@@ -1,28 +1,28 @@
-import CustomButton from "./CustomButton";
-import { useState } from "react";
-import ContactInfoModal from "./ContactInfoModal";
+import CustomButton from "./CustomButton"
+import { useState } from "react"
+import ContactInfoModal from "./ContactInfoModal"
 
 export interface Benefit {
-  text: string;
+  text: string
 }
 export interface MembershipPlan {
-  id: number;
-  title: string;
+  id: number
+  title: string
   // icon: StaticImageData;
-  description: string;
-  benefits: Benefit[];
-  isPopular?: boolean;
-  price: number;
-  duration: string;
-  petType: "dog" | "cat";
+  description: string
+  benefits: Benefit[]
+  isPopular?: boolean
+  price: number
+  duration: string
+  petType: "dog" | "cat"
 }
 interface MemberCardProps {
-  plan: MembershipPlan;
-  onSelect: (plan: MembershipPlan) => void;
+  plan: MembershipPlan
+  onSelect: (plan: MembershipPlan) => void
 }
 
 export default function MemberCard({ plan, onSelect }: MemberCardProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false)
   return (
     <div
       className={`relative bg-white rounded-2xl p-3 lg:p-6 shadow-lg flex flex-col items-center h-full w-full max-w-sm lg:max-w-lg xl:max-w-xl 2xl:max-w-2xl ${
@@ -81,5 +81,5 @@ export default function MemberCard({ plan, onSelect }: MemberCardProps) {
         onRequestClose={() => setIsModalOpen(false)}
       />
     </div>
-  );
+  )
 }

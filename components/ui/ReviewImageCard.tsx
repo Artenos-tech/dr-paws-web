@@ -1,18 +1,18 @@
-import Image, { StaticImageData } from "next/image";
-import React from "react";
+import Image, { StaticImageData } from "next/image"
+import React from "react"
 
 interface ReviewData {
-  image: string | StaticImageData;
-  name: string;
-  review: string;
+  image: string | StaticImageData
+  name: string
+  review: string
 }
 
 interface ReviewImageCardProps {
-  data: ReviewData;
+  data: ReviewData
 }
 
 const ReviewImageCard: React.FC<ReviewImageCardProps> = ({ data }) => {
-  const { image, name, review } = data;
+  const { image, name, review } = data
 
   return (
     <div className="max-w-sm bg-primary-3 rounded-lg overflow-hidden shadow-lg">
@@ -36,7 +36,7 @@ const ReviewImageCard: React.FC<ReviewImageCardProps> = ({ data }) => {
         <p className="text-base italic text-gray-600">{review}</p>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ReviewImageCard;
+export default ReviewImageCard

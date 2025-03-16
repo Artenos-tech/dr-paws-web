@@ -1,24 +1,24 @@
-import { useUserContext } from "@/context/UserContext";
-import Image, { StaticImageData } from "next/image";
-import React from "react";
-import CustomButton from "./CustomButton";
-import { useRouter } from "next/navigation";
+import { useUserContext } from "@/context/UserContext"
+import Image, { StaticImageData } from "next/image"
+import React from "react"
+import CustomButton from "./CustomButton"
+import { useRouter } from "next/navigation"
 
 interface descriptionCardProps {
-  index: number;
+  index: number
   description: {
-    image: StaticImageData;
-    title: string;
-    desciption: string;
+    image: StaticImageData
+    title: string
+    desciption: string
     button: {
-      buttonText: string;
-      buttonBackground: string;
-      buttonLink?: string;
-      buttonClickEvent?: () => void;
-    };
-  };
-  openContactModal?: () => void;
-  openLoginModal?: ((val: string) => void) | undefined;
+      buttonText: string
+      buttonBackground: string
+      buttonLink?: string
+      buttonClickEvent?: () => void
+    }
+  }
+  openContactModal?: () => void
+  openLoginModal?: ((val: string) => void) | undefined
 }
 
 const DescriptionCard: React.FC<descriptionCardProps> = ({
@@ -27,33 +27,33 @@ const DescriptionCard: React.FC<descriptionCardProps> = ({
   openContactModal,
   openLoginModal,
 }) => {
-  const { image, title, button } = description;
-  const { isLoggedIn } = useUserContext();
-  const navigate = useRouter();
+  const { image, title, button } = description
+  const { isLoggedIn } = useUserContext()
+  const navigate = useRouter()
 
   const handleBookAVisit = () => {
     return isLoggedIn
       ? navigate.push("/user/book-appointment")
-      : openLoginModal && openLoginModal("Book a Visit");
-  };
+      : openLoginModal && openLoginModal("Book a Visit")
+  }
 
   const handleModalByButtonText = () => {
     if (button.buttonText.includes("Download")) {
-      return <CustomButton {...button} buttonClickEvent={openContactModal} />;
+      return <CustomButton {...button} buttonClickEvent={openContactModal} />
     } else if (button.buttonText === "Book a Visit") {
-      return <CustomButton {...button} buttonClickEvent={handleBookAVisit} />;
+      return <CustomButton {...button} buttonClickEvent={handleBookAVisit} />
     }
     return (
       <CustomButton
         {...button}
         buttonClickEvent={() => {
           if (openLoginModal) {
-            openLoginModal(button.buttonText);
+            openLoginModal(button.buttonText)
           }
         }}
       />
-    );
-  };
+    )
+  }
 
   return (
     <div className="w-full flex flex-col lg:flex-row lg:justify-between lg:items-center lg:gap-20">
@@ -72,7 +72,7 @@ const DescriptionCard: React.FC<descriptionCardProps> = ({
         {handleModalByButtonText()}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default DescriptionCard;
+export default DescriptionCard

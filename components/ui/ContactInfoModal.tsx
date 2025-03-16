@@ -1,16 +1,16 @@
-import Image from "next/image";
-import Link from "next/link";
-import React from "react";
-import Modal from "react-modal";
+import Image from "next/image"
+import Link from "next/link"
+import React from "react"
+import Modal from "react-modal"
 
-import whatsapp from "@/public/assets/images/ContactInfo/whatsappIcon.svg";
-import Call from "@/public/assets/images/ContactInfo/telephone-icon.svg";
-import Map from "@/public/assets/images/ContactInfo/location-icon.svg";
-import { Construction } from "lucide-react";
+import whatsapp from "@/public/assets/images/ContactInfo/whatsappIcon.svg"
+import Call from "@/public/assets/images/ContactInfo/telephone-icon.svg"
+import Map from "@/public/assets/images/ContactInfo/location-icon.svg"
+import { Construction } from "lucide-react"
 
 interface ContactInfoModalProps {
-  isOpen: boolean;
-  onRequestClose: () => void;
+  isOpen: boolean
+  onRequestClose: () => void
 }
 
 const ContactInfoModal: React.FC<ContactInfoModalProps> = ({
@@ -128,7 +128,7 @@ const ContactInfoModal: React.FC<ContactInfoModalProps> = ({
         Close
       </button>
     </Modal>
-  );
-};
+  )
+}
 
-export default ContactInfoModal;
+export default ContactInfoModal

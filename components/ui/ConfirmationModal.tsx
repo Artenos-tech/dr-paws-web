@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 import {
   Dialog,
   DialogContent,
@@ -6,22 +6,22 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from "@/components/ui/dialog";
-import { format } from "date-fns";
-import { CalendarIcon, MapPinIcon, UserIcon } from "lucide-react";
+} from "@/components/ui/dialog"
+import { format } from "date-fns"
+import { CalendarIcon, MapPinIcon, UserIcon } from "lucide-react"
 
 interface ConfirmationModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
+  isOpen: boolean
+  onClose: () => void
+  onConfirm: () => void
   bookingDetails: {
-    petName: string;
-    service: string;
-    doctorName?: string;
-    location: string;
-    date: Date;
-    slot: string;
-  };
+    petName: string
+    service: string
+    doctorName?: string
+    location: string
+    date: Date
+    slot: string
+  }
 }
 
 const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
@@ -30,7 +30,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   onConfirm,
   bookingDetails,
 }) => {
-  const { petName, service, doctorName, location, date, slot } = bookingDetails;
+  const { petName, service, doctorName, location, date, slot } = bookingDetails
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -85,7 +85,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  );
-};
+  )
+}
 
-export default ConfirmationModal;
+export default ConfirmationModal

@@ -1,17 +1,17 @@
-import type { Metadata } from "next";
-import localFont from "next/font/local";
-import { Open_Sans } from "next/font/google";
-import "./globals.css";
-import NavBar from "@/components/layout/navbar";
-import Footer from "@/components/layout/Footer";
-import { UserProvider } from "@/context/UserContext";
+import type { Metadata } from "next"
+import localFont from "next/font/local"
+import { Open_Sans } from "next/font/google"
+import "./globals.css"
+import NavBar from "@/components/layout/navbar"
+import Footer from "@/components/layout/Footer"
+import { UserProvider } from "@/context/UserContext"
 
 // Load Open Sans from Google Fonts
 const openSans = Open_Sans({
   subsets: ["latin"],
   variable: "--font-open-sans",
   display: "swap",
-});
+})
 
 // Load Roca from local font files
 const roca = localFont({
@@ -24,7 +24,7 @@ const roca = localFont({
   ],
   variable: "--font-roca",
   display: "swap",
-});
+})
 
 export const metadata: Metadata = {
   title: "Dr. Paws",
@@ -48,12 +48,12 @@ export const metadata: Metadata = {
       url: "/custom-logo.png",
     },
   ],
-};
+}
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
     <UserProvider>
@@ -67,5 +67,5 @@ export default function RootLayout({
         </body>
       </html>
     </UserProvider>
-  );
+  )
 }

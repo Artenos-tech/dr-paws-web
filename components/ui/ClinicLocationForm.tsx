@@ -1,11 +1,11 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import "react-toastify/dist/ReactToastify.css";
-import { Toaster, toast } from "react-hot-toast";
+import { useState } from "react"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import * as z from "zod"
+import "react-toastify/dist/ReactToastify.css"
+import { Toaster, toast } from "react-hot-toast"
 
 const formSchema = z.object({
   firstName: z.string().min(2, "First name must be at least 2 characters"),
@@ -20,12 +20,12 @@ const formSchema = z.object({
       (val) => val === true,
       "Please tick the box to give consent for WhatsApp chat",
     ),
-});
+})
 
-type FormValues = z.infer<typeof formSchema>;
+type FormValues = z.infer<typeof formSchema>
 
 export default function ClinicLocationForm() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const {
     register,
@@ -41,25 +41,25 @@ export default function ClinicLocationForm() {
       pincode: "",
       whatsappConsent: false,
     },
-  });
+  })
 
   const onSubmit = async (data: FormValues) => {
-    setIsSubmitting(true);
+    setIsSubmitting(true)
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      console.log(data);
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+      console.log(data)
       toast.success("Successfully submitted. Our team will get back to you.", {
         duration: 3000,
-      });
-      reset();
+      })
+      reset()
     } catch {
       toast.error("Something went wrong. Please try again.", {
         duration: 3000,
-      });
+      })
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false)
     }
-  };
+  }
 
   return (
     <div className="w-full bg-[#f7f1de] rounded-md  shadow-lg overflow-hidden">
@@ -165,5 +165,5 @@ export default function ClinicLocationForm() {
       </form>
       <Toaster position="bottom-right" />
     </div>
-  );
+  )
 }

@@ -1,50 +1,50 @@
-"use client";
+"use client"
 
-import React, { useState, useEffect } from "react";
-import ProfileCard from "@/components/ui/ProfileCard";
-import AddPetModal from "@/components/ui/AddPetModal";
-import PetCard from "@/components/ui/PetCard";
-import "react-toastify/dist/ReactToastify.css";
-import OutlineButton from "@/components/ui/OutlineButton";
-import toast, { Toaster } from "react-hot-toast";
-import EditProfileModal from "@/components/ui/EditProfileModal";
-import { useUserContext } from "@/context/UserContext";
-import { useRouter } from "next/navigation";
-import Loader from "@/components/ui/Loader";
-import { useAPICall } from "@/hooks/apicall";
-import api from "@/services/api";
-import { ClipLoader } from "react-spinners";
+import React, { useState, useEffect } from "react"
+import ProfileCard from "@/components/ui/ProfileCard"
+import AddPetModal from "@/components/ui/AddPetModal"
+import PetCard from "@/components/ui/PetCard"
+import "react-toastify/dist/ReactToastify.css"
+import OutlineButton from "@/components/ui/OutlineButton"
+import toast, { Toaster } from "react-hot-toast"
+import EditProfileModal from "@/components/ui/EditProfileModal"
+import { useUserContext } from "@/context/UserContext"
+import { useRouter } from "next/navigation"
+import Loader from "@/components/ui/Loader"
+import { useAPICall } from "@/hooks/apicall"
+import api from "@/services/api"
+import { ClipLoader } from "react-spinners"
 
 export interface PetType {
-  id: string;
-  spicesId: number;
-  name: string;
-  type: string;
-  profileImage: string;
-  vetPortId: number | null;
+  id: string
+  spicesId: number
+  name: string
+  type: string
+  profileImage: string
+  vetPortId: number | null
 }
 
 const Profile: React.FC = () => {
-  const [isAddPetModalOpen, setIsAddPetModalOpen] = useState<boolean>(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isAddPetModalOpen, setIsAddPetModalOpen] = useState<boolean>(false)
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
 
-  const { user, refresh, isLoggedIn } = useUserContext();
+  const { user, refresh, isLoggedIn } = useUserContext()
 
-  const navigate = useRouter();
+  const navigate = useRouter()
 
   const {
     call: getPetsAPI,
     loading,
     result: getPetsAPIResult,
-  } = useAPICall(api.getPets);
+  } = useAPICall(api.getPets)
 
   useEffect(() => {
-    fetchPets();
-  }, []);
+    fetchPets()
+  }, [])
 
   const fetchPets = async () => {
-    await getPetsAPI({});
-  };
+    await getPetsAPI({})
+  }
 
   const pets =
     getPetsAPIResult?.ok &&
@@ -53,16 +53,16 @@ const Profile: React.FC = () => {
       profileImage: pet.profile_image,
       vetPortId: pet.vetport_id,
       gender: pet.gender,
-    }));
+    }))
 
   useEffect(() => {
     if (!isLoggedIn) {
-      navigate.push("/");
+      navigate.push("/")
     }
-  }, [isLoggedIn, navigate, refresh]);
+  }, [isLoggedIn, navigate, refresh])
 
   if (!user) {
-    return <Loader />;
+    return <Loader />
   }
 
   return (
@@ -114,8 +114,8 @@ const Profile: React.FC = () => {
           isOpen={isAddPetModalOpen}
           onClose={() => setIsAddPetModalOpen(false)}
           onSuccess={() => {
-            fetchPets();
-            setIsAddPetModalOpen(false);
+            fetchPets()
+            setIsAddPetModalOpen(false)
             toast.success("Added pet successfully", {
               duration: 3000,
               position: "bottom-right",
@@ -124,7 +124,7 @@ const Profile: React.FC = () => {
                 color: "#fff",
                 fontWeight: 700,
               },
-            });
+            })
           }}
         />
       </main>
@@ -138,7 +138,7 @@ const Profile: React.FC = () => {
       )}
       <Toaster />
     </div>
-  );
-};
+  )
+}
 
-export default Profile;
+export default Profile

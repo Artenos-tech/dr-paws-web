@@ -1,15 +1,15 @@
-import React from "react";
-import Image, { StaticImageData } from "next/image";
+import React from "react"
+import Image, { StaticImageData } from "next/image"
 
 type circleImageProps = {
   cirImg: {
-    image: StaticImageData;
-    circleText: string;
-  };
-};
+    image: StaticImageData
+    circleText: string
+  }
+}
 
 const CircleImageCard: React.FC<circleImageProps> = ({ cirImg }) => {
-  const { image, circleText } = cirImg;
+  const { image, circleText } = cirImg
   return (
     <div className="flex flex-col items-center gap-3 w-[245px] h-[296px]">
       {/* Add object-cover and set width/height to maintain aspect ratio */}
@@ -22,7 +22,7 @@ const CircleImageCard: React.FC<circleImageProps> = ({ cirImg }) => {
       />
       <p className="text-primary-1">{circleText}</p>
     </div>
-  );
-};
+  )
+}
 
-export default CircleImageCard;
+export default CircleImageCard

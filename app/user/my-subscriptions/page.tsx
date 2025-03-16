@@ -1,39 +1,39 @@
-"use client";
-import React, { useEffect, useState } from "react";
-import Image from "next/image";
-import { useAPICall } from "@/hooks/apicall";
-import api from "@/services/api";
-import { Pet } from "@/context/UserContext";
-import { petImageByType } from "@/components/ui/PetCard";
-import { format } from "date-fns";
-import Loader from "@/components/ui/Loader";
-import CustomButton from "@/components/ui/CustomButton";
+"use client"
+import React, { useEffect, useState } from "react"
+import Image from "next/image"
+import { useAPICall } from "@/hooks/apicall"
+import api from "@/services/api"
+import { Pet } from "@/context/UserContext"
+import { petImageByType } from "@/components/ui/PetCard"
+import { format } from "date-fns"
+import Loader from "@/components/ui/Loader"
+import CustomButton from "@/components/ui/CustomButton"
 
 export interface Subscription {
-  id: number;
-  start_date: string;
-  end_date: string;
+  id: number
+  start_date: string
+  end_date: string
   plan: {
-    id: number;
-    name: string;
-  };
+    id: number
+    name: string
+  }
   pet: {
-    id: number;
-    name: string;
-  };
+    id: number
+    name: string
+  }
 }
 
 const Page = () => {
-  const [pets, setPets] = useState<Pet[]>([]);
-  const { call: getPetsAPI, loading: PetLoading } = useAPICall(api.getPets);
+  const [pets, setPets] = useState<Pet[]>([])
+  const { call: getPetsAPI, loading: PetLoading } = useAPICall(api.getPets)
   const {
     call: getSubscriptionsAPI,
     loading: SubsLoading,
     result: subsResult,
-  } = useAPICall(api.getSubscriptions);
+  } = useAPICall(api.getSubscriptions)
 
   const fetchPets = async () => {
-    const response = await getPetsAPI({});
+    const response = await getPetsAPI({})
     if (response.ok) {
       const fetchedPets = response.value.body.pets.map((pet) => ({
         name: pet.name,
@@ -44,26 +44,26 @@ const Page = () => {
         weight: pet.weight,
         profileImage: pet.profile_image,
         vetPortId: pet.vetport_id,
-      }));
-      setPets(fetchedPets);
+      }))
+      setPets(fetchedPets)
     }
-  };
+  }
 
   const fetchSubscriptions = async () => {
-    getSubscriptionsAPI({});
-  };
+    getSubscriptionsAPI({})
+  }
 
   useEffect(() => {
-    fetchPets();
-    fetchSubscriptions();
-  }, []);
+    fetchPets()
+    fetchSubscriptions()
+  }, [])
 
   if (PetLoading || SubsLoading) {
-    return <Loader />;
+    return <Loader />
   }
 
   if (!subsResult) {
-    return null;
+    return null
   }
 
   if (!subsResult.ok) {
@@ -73,10 +73,10 @@ const Page = () => {
         An error occurred while fetching your subscriptions, please try again
         later
       </div>
-    );
+    )
   }
 
-  const subscriptions = subsResult.value.body.subscriptions;
+  const subscriptions = subsResult.value.body.subscriptions
 
   if (!subscriptions.length) {
     return (
@@ -97,7 +97,7 @@ const Page = () => {
           />
         </main>
       </div>
-    );
+    )
   }
 
   return (
@@ -108,10 +108,10 @@ const Page = () => {
           {subscriptions.map((subscription) => {
             const matchedPet = pets.find(
               (pet) => pet.vetPortId === subscription.pet.id,
-            );
+            )
             const petImage =
               (matchedPet && matchedPet.profileImage) ||
-              petImageByType[matchedPet?.type?.toLowerCase() || "other"]?.src;
+              petImageByType[matchedPet?.type?.toLowerCase() || "other"]?.src
 
             return (
               <div key={subscription.id} className="flex flex-col w-full">
@@ -150,10 +150,10 @@ const Page = () => {
                                 "VACCINATIONS",
                                 "SESSIONS",
                                 "DISCOUNT",
-                              ];
+                              ]
                               return (
                                 order.indexOf(a.type) - order.indexOf(b.type)
-                              );
+                              )
                             })
                             .map((feature) => (
                               <li
@@ -198,12 +198,12 @@ const Page = () => {
                   </div>
                 </div>
               </div>
-            );
+            )
           })}
         </div>
       </main>
     </div>
-  );
-};
+  )
+}
 
-export default Page;
+export default Page

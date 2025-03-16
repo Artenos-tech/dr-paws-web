@@ -115,5 +115,5 @@ export default function TermsAndConditions() {
         </li>
       </ul>
     </div>
-  );
+  )
 }

@@ -2,23 +2,23 @@
  * Wraps all authenticated routes.
  */
 
-"use client";
+"use client"
 
-import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
+import { useRouter } from "next/navigation"
+import toast from "react-hot-toast"
 
-import { useUserContext } from "@/context/UserContext";
-import ClipLoader from "react-spinners/ClipLoader";
+import { useUserContext } from "@/context/UserContext"
+import ClipLoader from "react-spinners/ClipLoader"
 
 export default function UserLayout(props: { children: React.ReactNode }) {
-  const { isLoggedIn } = useUserContext();
-  const router = useRouter();
+  const { isLoggedIn } = useUserContext()
+  const router = useRouter()
   if (isLoggedIn === null) {
     return (
       <div className="flex justify-center items-center my-20">
         <ClipLoader color="#33495f" />
       </div>
-    );
+    )
   }
   if (isLoggedIn === false) {
     toast.error(
@@ -26,9 +26,9 @@ export default function UserLayout(props: { children: React.ReactNode }) {
       {
         duration: 5000,
       },
-    );
-    router.push("/");
-    return;
+    )
+    router.push("/")
+    return
   }
-  return props.children;
+  return props.children
 }

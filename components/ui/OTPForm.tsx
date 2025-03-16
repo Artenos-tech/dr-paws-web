@@ -1,18 +1,18 @@
-"use client";
+"use client"
 
-import React, { useState } from "react";
-import { InputOTP, InputOTPGroup, InputOTPSlot } from "./input-otp";
-import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
-import { ClipLoader } from "react-spinners";
+import React, { useState } from "react"
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "./input-otp"
+import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp"
+import { ClipLoader } from "react-spinners"
 
 interface otpFormProps {
-  userMobileNumber?: string;
-  viewLoginForm: () => void;
-  handleOTPVerification: (otp: string) => void;
-  loading: boolean;
-  resendOTPHandler: () => void;
-  errMsg: string;
-  bookingFlow?: boolean;
+  userMobileNumber?: string
+  viewLoginForm: () => void
+  handleOTPVerification: (otp: string) => void
+  loading: boolean
+  resendOTPHandler: () => void
+  errMsg: string
+  bookingFlow?: boolean
 }
 
 const OTPForm: React.FC<otpFormProps> = ({
@@ -24,18 +24,18 @@ const OTPForm: React.FC<otpFormProps> = ({
   errMsg,
   bookingFlow,
 }) => {
-  const [otp, setOtp] = useState<string>("");
-  const [err, setErr] = useState<string>("");
+  const [otp, setOtp] = useState<string>("")
+  const [err, setErr] = useState<string>("")
 
   const handleVerify = (e: React.UIEvent<HTMLElement>) => {
-    e.preventDefault();
+    e.preventDefault()
     if (otp.length === 4) {
-      handleOTPVerification(otp);
-      setErr("");
+      handleOTPVerification(otp)
+      setErr("")
     } else {
-      setErr("Please enter valid 4-digit OTP");
+      setErr("Please enter valid 4-digit OTP")
     }
-  };
+  }
   return (
     <div className="text-center w-full">
       <h1 className="text-lg md:text-2xl my-3">Verify your Phone Number</h1>
@@ -63,7 +63,7 @@ const OTPForm: React.FC<otpFormProps> = ({
               autoFocus
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
-                  handleVerify(e);
+                  handleVerify(e)
                 }
               }}
             >
@@ -114,9 +114,9 @@ const OTPForm: React.FC<otpFormProps> = ({
             type="button"
             className="font-semibold cursor-pointer"
             onClick={() => {
-              setOtp("");
-              setErr("");
-              resendOTPHandler();
+              setOtp("")
+              setErr("")
+              resendOTPHandler()
             }}
           >
             Resend Code
@@ -124,7 +124,7 @@ const OTPForm: React.FC<otpFormProps> = ({
         </div>
       </form>
     </div>
-  );
-};
+  )
+}
 
-export default OTPForm;
+export default OTPForm

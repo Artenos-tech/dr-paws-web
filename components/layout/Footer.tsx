@@ -1,15 +1,15 @@
-"use client";
+"use client"
 
-import Image from "next/image";
-import logo from "@/public/assets/images/logo/logo.svg";
-import instagram from "@/public/assets/images/Footer/instagram.svg";
-import LinkedIn from "@/public/assets/images/Footer/linkedin.svg";
-import Link from "next/link";
-import ContactInfoModal from "../ui/ContactInfoModal";
-import { useState } from "react";
+import Image from "next/image"
+import logo from "@/public/assets/images/logo/logo.svg"
+import instagram from "@/public/assets/images/Footer/instagram.svg"
+import LinkedIn from "@/public/assets/images/Footer/linkedin.svg"
+import Link from "next/link"
+import ContactInfoModal from "../ui/ContactInfoModal"
+import { useState } from "react"
 
 const Footer = () => {
-  const [isContactModalOpen, setContactIsModalOpen] = useState(false);
+  const [isContactModalOpen, setContactIsModalOpen] = useState(false)
 
   return (
     <footer className="bg-primary-3 py-10">
@@ -138,7 +138,7 @@ const Footer = () => {
         onRequestClose={() => setContactIsModalOpen(false)}
       />
     </footer>
-  );
-};
+  )
+}
 
-export default Footer;
+export default Footer

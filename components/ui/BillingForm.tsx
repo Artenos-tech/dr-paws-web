@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+import React, { useEffect } from "react"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
 
 const billingSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -13,13 +13,13 @@ const billingSchema = z.object({
   cvv: z.string().length(3, "CVV must be 3 digits"),
   cardName: z.string().min(1, "Name on card is required"),
   billingAddress: z.string().min(1, "Billing address is required"),
-});
+})
 
-export type BillingFormData = z.infer<typeof billingSchema>;
+export type BillingFormData = z.infer<typeof billingSchema>
 
 interface BillingFormProps {
-  onSubmit: (data: BillingFormData) => void;
-  onCancel: () => void;
+  onSubmit: (data: BillingFormData) => void
+  onCancel: () => void
 }
 
 const BillingForm: React.FC<BillingFormProps> = ({ onSubmit, onCancel }) => {
@@ -39,7 +39,7 @@ const BillingForm: React.FC<BillingFormProps> = ({ onSubmit, onCancel }) => {
       cardName: "",
       billingAddress: "",
     },
-  });
+  })
 
   useEffect(() => {
     reset({
@@ -50,8 +50,8 @@ const BillingForm: React.FC<BillingFormProps> = ({ onSubmit, onCancel }) => {
       cvv: "",
       cardName: "",
       billingAddress: "",
-    });
-  }, [reset]);
+    })
+  }, [reset])
 
   return (
     <form
@@ -172,7 +172,7 @@ const BillingForm: React.FC<BillingFormProps> = ({ onSubmit, onCancel }) => {
         </button>
       </div>
     </form>
-  );
-};
+  )
+}
 
-export default BillingForm;
+export default BillingForm

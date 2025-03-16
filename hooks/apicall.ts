@@ -1,10 +1,10 @@
-import { useEffect } from "react";
-import { useAsyncResult } from "../lib/asyncresult";
+import { useEffect } from "react"
+import { useAsyncResult } from "../lib/asyncresult"
 
 type Method = (
   params: any,
   opts?: { abortSignal?: AbortSignal },
-) => Promise<any>;
+) => Promise<any>
 
 /**
  * Convenience wrapper around `useAsyncResult` for making API calls.
@@ -18,17 +18,17 @@ function useAPICall<M extends Method>(method: M) {
     loading,
     call: _call,
     abort,
-  } = useAsyncResult<Awaited<ReturnType<M>>>();
+  } = useAsyncResult<Awaited<ReturnType<M>>>()
 
   async function call(
     params: Parameters<M>[0],
   ): Promise<Awaited<ReturnType<M>>> {
     return await _call(async (abortSignal) => {
-      return await method(params, { abortSignal });
-    });
+      return await method(params, { abortSignal })
+    })
   }
 
-  return { loading, result, call, abort };
+  return { loading, result, call, abort }
 }
 
 /**
@@ -54,24 +54,24 @@ function useAPICallOnMount<M extends Method>(
   method: M,
   params: Parameters<M>[0],
 ) {
-  const { result, call } = useAPICall(method);
+  const { result, call } = useAPICall(method)
 
   useEffect(() => {
-    call(params);
-  }, []);
+    call(params)
+  }, [])
 
-  return result;
+  return result
 }
 
 async function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
-type AnyFunc = (...args: any[]) => any;
+type AnyFunc = (...args: any[]) => any
 
 type MockOpts = {
-  delayMs?: number;
-};
+  delayMs?: number
+}
 
 /**
  * Mock an async function.
@@ -88,11 +88,11 @@ type MockOpts = {
  */
 function mock<F extends AnyFunc>(_fn: F, mockFn: F, opts?: MockOpts): F {
   return (async (...args: any[]) => {
-    await sleep(opts?.delayMs || 0);
-    return await mockFn(...args);
-  }) as F;
+    await sleep(opts?.delayMs || 0)
+    return await mockFn(...args)
+  }) as F
 }
 
-export { useAPICall, useAPICallOnMount, mock };
+export { useAPICall, useAPICallOnMount, mock }
 
-export { ok, err, type Result } from "../lib/asyncresult";
+export { ok, err, type Result } from "../lib/asyncresult"

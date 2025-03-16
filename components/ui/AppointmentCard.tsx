@@ -1,17 +1,17 @@
-"use client";
+"use client"
 
-import { AppointmentType } from "@/model/typeDefinitions";
-import React from "react";
-import OutlineButton from "./OutlineButton";
-import Image from "next/image";
-import { doctorImagesMap } from "@/model/mockData";
-import defaultVetImage from "@/public/assets/images/clinic/doctorFemale.webp";
-import { petImageByType } from "./PetCard";
+import { AppointmentType } from "@/model/typeDefinitions"
+import React from "react"
+import OutlineButton from "./OutlineButton"
+import Image from "next/image"
+import { doctorImagesMap } from "@/model/mockData"
+import defaultVetImage from "@/public/assets/images/clinic/doctorFemale.webp"
+import { petImageByType } from "./PetCard"
 
 type AppointmentCardProps = {
-  appointment: AppointmentType;
-  onClick: () => void;
-};
+  appointment: AppointmentType
+  onClick: () => void
+}
 
 const AppointmentCard: React.FC<AppointmentCardProps> = ({
   appointment,
@@ -34,29 +34,29 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
       bg: "bg-[#F1F1F1]",
       text: "text-[#909090]",
     },
-  };
+  }
 
   // Mapping appt_status to style categories
   const getStatusCategory = (appt: AppointmentType) => {
-    if (appt.category === "UPCOMING") return "upcoming";
-    if (appt.category === "PAST") return "past";
-    if (appt.category === "CANCELLED") return "cancelled";
-    throw new Error(`No status category defined for ${appt.category}`);
-  };
-
-  function getAppointmentCategoryLabel(category: string) {
-    if (category === "UPCOMING") return "Upcoming";
-    if (category === "PAST") return "Visited";
-    if (category === "CANCELLED") return "Cancelled";
-    throw new Error(`No category label defined for ${category}`);
+    if (appt.category === "UPCOMING") return "upcoming"
+    if (appt.category === "PAST") return "past"
+    if (appt.category === "CANCELLED") return "cancelled"
+    throw new Error(`No status category defined for ${appt.category}`)
   }
 
-  const statusCategory = getStatusCategory(appointment);
-  const { border, bg, text } = cardStyles[statusCategory];
+  function getAppointmentCategoryLabel(category: string) {
+    if (category === "UPCOMING") return "Upcoming"
+    if (category === "PAST") return "Visited"
+    if (category === "CANCELLED") return "Cancelled"
+    throw new Error(`No category label defined for ${category}`)
+  }
+
+  const statusCategory = getStatusCategory(appointment)
+  const { border, bg, text } = cardStyles[statusCategory]
 
   const defaultPetImageByType =
     petImageByType[appointment.pet_type?.toLowerCase() || "other"] ||
-    petImageByType.other;
+    petImageByType.other
 
   return (
     <div
@@ -139,7 +139,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
         <OutlineButton outlineBtnText="View Details" outlineBtnLink={onClick} />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default AppointmentCard;
+export default AppointmentCard

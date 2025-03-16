@@ -1,27 +1,27 @@
-"use client";
+"use client"
 
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { Toaster } from "react-hot-toast";
+import Image from "next/image"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
+import { Toaster } from "react-hot-toast"
 
-import ContactInfoModal from "@/components/ui/ContactInfoModal";
-import CustomButton from "@/components/ui/CustomButton";
-import ServicePageTab from "@/components/ui/ServicePageTab";
-import { useUserContext } from "@/context/UserContext";
-import { ServiceTabsData } from "@/model/mockData";
-import DescritionImage from "@/public/assets/images/ServicesPage/DescriptionImage.png";
+import ContactInfoModal from "@/components/ui/ContactInfoModal"
+import CustomButton from "@/components/ui/CustomButton"
+import ServicePageTab from "@/components/ui/ServicePageTab"
+import { useUserContext } from "@/context/UserContext"
+import { ServiceTabsData } from "@/model/mockData"
+import DescritionImage from "@/public/assets/images/ServicesPage/DescriptionImage.png"
 
 const Services = () => {
-  const [isContactModalOpen, setContactIsModalOpen] = useState(false);
-  const { initiateLogin, isLoggedIn } = useUserContext();
-  const navigate = useRouter();
+  const [isContactModalOpen, setContactIsModalOpen] = useState(false)
+  const { initiateLogin, isLoggedIn } = useUserContext()
+  const navigate = useRouter()
 
   const handleBookAVisit = () => {
     return isLoggedIn
       ? navigate.push("/user/book-appointment")
-      : initiateLogin("Book a Visit", "/user/book-appointment");
-  };
+      : initiateLogin("Book a Visit", "/user/book-appointment")
+  }
 
   return (
     <div className="flex flex-col w-full h-full items-center justify-items-center font-roca pb-20">
@@ -74,7 +74,7 @@ const Services = () => {
       />
       <Toaster />
     </div>
-  );
-};
+  )
+}
 
-export default Services;
+export default Services

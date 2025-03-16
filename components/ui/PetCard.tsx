@@ -1,22 +1,22 @@
-"use client";
+"use client"
 
-import Image, { StaticImageData } from "next/image";
-import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import defaultPetImg from "@/public/assets/images/pets/petImg.png";
-import defaultdogImg from "@/public/assets/images/pets/dog.png";
-import defaultCatImg from "@/public/assets/images/pets/cat.png";
-import defaultHamsterImg from "@/public/assets/images/pets/hamster.png";
-import defaultBirdImg from "@/public/assets/images/pets/bird.png";
-import defaultRabbitImg from "@/public/assets/images/pets/rabbit.png";
-import defaultOtherPetImage from "@/public/assets/images/pets/petImg.png";
-import { Pet } from "@/context/UserContext";
-import { useAPICall } from "@/hooks/apicall";
-import api from "@/services/api";
-import { Subscription } from "@/app/user/my-subscriptions/page";
+import Image, { StaticImageData } from "next/image"
+import { useRouter } from "next/navigation"
+import React, { useEffect, useState } from "react"
+import defaultPetImg from "@/public/assets/images/pets/petImg.png"
+import defaultdogImg from "@/public/assets/images/pets/dog.png"
+import defaultCatImg from "@/public/assets/images/pets/cat.png"
+import defaultHamsterImg from "@/public/assets/images/pets/hamster.png"
+import defaultBirdImg from "@/public/assets/images/pets/bird.png"
+import defaultRabbitImg from "@/public/assets/images/pets/rabbit.png"
+import defaultOtherPetImage from "@/public/assets/images/pets/petImg.png"
+import { Pet } from "@/context/UserContext"
+import { useAPICall } from "@/hooks/apicall"
+import api from "@/services/api"
+import { Subscription } from "@/app/user/my-subscriptions/page"
 
 interface PetCardProps {
-  pet: Pet;
+  pet: Pet
 }
 
 export const petImageByType: Record<string, StaticImageData> = {
@@ -26,41 +26,41 @@ export const petImageByType: Record<string, StaticImageData> = {
   rabbit: defaultRabbitImg,
   hamster: defaultHamsterImg,
   other: defaultOtherPetImage,
-};
+}
 
 const PetCard: React.FC<PetCardProps> = ({ pet }) => {
-  const { name, vetPortId, profileImage, type } = pet;
-  const router = useRouter();
-  const [subscription, setSubscription] = useState<Subscription | null>(null);
+  const { name, vetPortId, profileImage, type } = pet
+  const router = useRouter()
+  const [subscription, setSubscription] = useState<Subscription | null>(null)
 
   // Setup API call for getPetSubscription
-  const { call: getPetSubscription } = useAPICall(api.getPetSubscription);
+  const { call: getPetSubscription } = useAPICall(api.getPetSubscription)
 
   useEffect(() => {
     // If pet has a vetPortId, fetch subscription
     if (vetPortId) {
       const fetchSubscription = async () => {
-        const response = await getPetSubscription({ pet_id: vetPortId });
+        const response = await getPetSubscription({ pet_id: vetPortId })
         if (response?.ok) {
-          setSubscription(response.value.body.subscription);
+          setSubscription(response.value.body.subscription)
         }
-      };
-      fetchSubscription();
+      }
+      fetchSubscription()
     }
-  }, []);
+  }, [])
 
   const handlePetProfileView = () => {
-    router.push(`/user/profile/pet-profile/${vetPortId}`);
-  };
+    router.push(`/user/profile/pet-profile/${vetPortId}`)
+  }
 
   const defaultImageOrPetImage =
     profileImage ||
     petImageByType[type?.toLowerCase() || "other"] ||
-    defaultPetImg;
+    defaultPetImg
 
   const borderStyle = subscription
     ? "border-2 border-secondary-1 bg-secondary-1" // Example: Green border if subscription exists
-    : "border-2 border-[#E2DBC4] bg-[#E2DBC4]";
+    : "border-2 border-[#E2DBC4] bg-[#E2DBC4]"
 
   return (
     <div
@@ -88,7 +88,7 @@ const PetCard: React.FC<PetCardProps> = ({ pet }) => {
         <div className="rounded-b-xl pb-6"></div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default PetCard;
+export default PetCard

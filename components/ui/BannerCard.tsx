@@ -1,15 +1,15 @@
-import Image, { StaticImageData } from "next/image";
-import React from "react";
+import Image, { StaticImageData } from "next/image"
+import React from "react"
 
 interface bannerCardProps {
   banItem: {
-    bannerImage: StaticImageData;
-    bannerText: string;
-  };
+    bannerImage: StaticImageData
+    bannerText: string
+  }
 }
 
 const BannerCard: React.FC<bannerCardProps> = ({ banItem }) => {
-  const { bannerImage, bannerText } = banItem;
+  const { bannerImage, bannerText } = banItem
 
   return (
     <div className="relative w-[100px] md:w-[130px] lg:w-[150px] min-h-[100px] rounded-t-3xl flex flex-col justify-end items-center">
@@ -33,7 +33,7 @@ const BannerCard: React.FC<bannerCardProps> = ({ banItem }) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default BannerCard;
+export default BannerCard

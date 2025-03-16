@@ -1,24 +1,24 @@
-"use client";
+"use client"
 
-import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import Image from "next/image";
-import ImageEdit from "@/public/assets/images/Profile/ImageEdit.png";
-import { FaTrash } from "react-icons/fa6";
-import ProfileLogo from "@/public/assets/images/Profile/profileLogo.jpg";
-import { User } from "@/context/UserContext";
-import { ClipLoader } from "react-spinners";
+import React, { useEffect, useState } from "react"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
+import Image from "next/image"
+import ImageEdit from "@/public/assets/images/Profile/ImageEdit.png"
+import { FaTrash } from "react-icons/fa6"
+import ProfileLogo from "@/public/assets/images/Profile/profileLogo.jpg"
+import { User } from "@/context/UserContext"
+import { ClipLoader } from "react-spinners"
 
 const profileSchema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.preprocess((val) => {
     if (typeof val === "string") {
-      const trimmed = val.trim();
-      return trimmed === "" ? null : trimmed;
+      const trimmed = val.trim()
+      return trimmed === "" ? null : trimmed
     }
-    return val;
+    return val
   }, z.string().email("Invalid email address").nullable()),
   address1: z
     .string()
@@ -31,15 +31,15 @@ const profileSchema = z.object({
   city: z.string().nullable(),
   state: z.string().nullable(),
   pincode: z.string().nullable(),
-});
+})
 
-type ProfileFormData = z.infer<typeof profileSchema>;
+type ProfileFormData = z.infer<typeof profileSchema>
 
 interface ProfileFormProps {
-  profileData: User;
-  onSubmit: (data: User) => void;
-  onCancel: () => void;
-  loading: boolean;
+  profileData: User
+  onSubmit: (data: User) => void
+  onCancel: () => void
+  loading: boolean
 }
 
 const ProfileForm: React.FC<ProfileFormProps> = ({
@@ -56,25 +56,25 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
   } = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
     defaultValues: profileData,
-  });
+  })
 
   const [image, setImage] = useState<string | null>(
     profileData.profile_image || null,
-  );
+  )
 
   useEffect(() => {
-    reset(profileData);
-    setImage(profileData.profile_image || null);
-  }, [profileData, reset]);
+    reset(profileData)
+    setImage(profileData.profile_image || null)
+  }, [profileData, reset])
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+    const file = e.target.files?.[0]
     if (file) {
-      const reader = new FileReader();
-      reader.onload = () => setImage(reader.result as string);
-      reader.readAsDataURL(file);
+      const reader = new FileReader()
+      reader.onload = () => setImage(reader.result as string)
+      reader.readAsDataURL(file)
     }
-  };
+  }
 
   const handleFormSubmit = (data: ProfileFormData) => {
     onSubmit({
@@ -88,12 +88,12 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
       pincode: data.pincode,
       role: "USER",
       mobile: profileData.mobile,
-    });
-  };
+    })
+  }
 
   const handleDeleteImage = () => {
-    setImage(ProfileLogo.src);
-  };
+    setImage(ProfileLogo.src)
+  }
 
   return (
     <form
@@ -229,7 +229,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
         </button>
       </div>
     </form>
-  );
-};
+  )
+}
 
-export default ProfileForm;
+export default ProfileForm

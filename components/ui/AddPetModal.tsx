@@ -1,28 +1,28 @@
-"use client";
+"use client"
 
-import { X } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import "react-dropdown/style.css";
-import { useEffect, useState } from "react";
-import { useAPICall } from "@/hooks/apicall";
-import api from "@/services/api";
-import { PetSpecies, useUserContext } from "@/context/UserContext";
-import { ClipLoader } from "react-spinners";
+import { X } from "lucide-react"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
+import "react-dropdown/style.css"
+import { useEffect, useState } from "react"
+import { useAPICall } from "@/hooks/apicall"
+import api from "@/services/api"
+import { PetSpecies, useUserContext } from "@/context/UserContext"
+import { ClipLoader } from "react-spinners"
 
 const petSchema = z.object({
   speciesId: z.number(),
   name: z.string().min(1, "Pet name is required"),
   type: z.string().min(1, "Pet type is required"),
-});
+})
 
-type PetFormData = z.infer<typeof petSchema>;
+type PetFormData = z.infer<typeof petSchema>
 
 interface AddPetModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSuccess: () => void;
+  isOpen: boolean
+  onClose: () => void
+  onSuccess: () => void
 }
 
 export default function AddPetModal({
@@ -30,12 +30,12 @@ export default function AddPetModal({
   onClose,
   onSuccess,
 }: AddPetModalProps) {
-  const { call: getPetSpecies } = useAPICall(api.getPetSpecies);
+  const { call: getPetSpecies } = useAPICall(api.getPetSpecies)
 
-  const { call: addNewPetAPI, loading } = useAPICall(api.addNewPet);
+  const { call: addNewPetAPI, loading } = useAPICall(api.addNewPet)
 
-  const { user, updatePetSpeciesHandler, petSpecies } = useUserContext();
-  const [selectedType, setSelectedType] = useState<string>("");
+  const { user, updatePetSpeciesHandler, petSpecies } = useUserContext()
+  const [selectedType, setSelectedType] = useState<string>("")
 
   const {
     register,
@@ -45,14 +45,14 @@ export default function AddPetModal({
     setValue,
   } = useForm<PetFormData>({
     resolver: zodResolver(petSchema),
-  });
+  })
 
   useEffect(() => {
-    if (isOpen) fetchPetSpecies();
-  }, [isOpen]);
+    if (isOpen) fetchPetSpecies()
+  }, [isOpen])
 
   const fetchPetSpecies = async () => {
-    const response = await getPetSpecies({});
+    const response = await getPetSpecies({})
     if (response?.ok) {
       updatePetSpeciesHandler(
         response.value.body.species.map((specie: PetSpecies) => ({
@@ -60,9 +60,9 @@ export default function AddPetModal({
           name: specie.name,
           displayName: specie.displayName,
         })),
-      );
+      )
     }
-  };
+  }
 
   const handleFormSubmit = async (data: PetFormData) => {
     if (user) {
@@ -71,32 +71,32 @@ export default function AddPetModal({
           name: data.name,
           species: { id: data.speciesId, name: data.type },
         },
-      });
+      })
 
       if (response.ok) {
         // console.log("Add Pet API response:", response.value.body);
-        onSuccess();
-        reset({ name: "", type: "" });
-        setSelectedType("");
-        onClose();
+        onSuccess()
+        reset({ name: "", type: "" })
+        setSelectedType("")
+        onClose()
       }
     }
-  };
+  }
 
   const handleTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedName = event.target.value;
-    setSelectedType(selectedName);
+    const selectedName = event.target.value
+    setSelectedType(selectedName)
 
     // Find the speciesId for the selected type
     const selectedSpecies = petSpecies?.find(
       (species) => species.displayName === selectedName,
-    );
+    )
     if (selectedSpecies) {
-      setValue("speciesId", selectedSpecies.id);
+      setValue("speciesId", selectedSpecies.id)
     }
-  };
+  }
 
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
   return (
     <div
@@ -174,5 +174,5 @@ export default function AddPetModal({
         </div>
       </div>
     </div>
-  );
+  )
 }

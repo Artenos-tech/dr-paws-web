@@ -1,16 +1,16 @@
-import Image from "next/image";
-import { StaticImageData } from "next/image";
+import Image from "next/image"
+import { StaticImageData } from "next/image"
 
 interface PetCardProps {
   petData: {
-    name: string;
-    title: string;
-    image: StaticImageData;
-  };
+    name: string
+    title: string
+    image: StaticImageData
+  }
 }
 
 const PetCard: React.FC<PetCardProps> = ({ petData }) => {
-  const { name, title, image } = petData;
+  const { name, title, image } = petData
 
   return (
     <div className="rounded-3xl w-[140px] h-[200px] flex flex-col items-center justify-between bg-[#F6F0E8] border border-gray-300 shadow-lg">
@@ -29,7 +29,7 @@ const PetCard: React.FC<PetCardProps> = ({ petData }) => {
         <span className="text-sm">{title}</span>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default PetCard;
+export default PetCard

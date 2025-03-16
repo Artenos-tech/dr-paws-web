@@ -1,8 +1,8 @@
-import path from "path";
-import { fileURLToPath } from "url";
+import path from "path"
+import { fileURLToPath } from "url"
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -24,11 +24,11 @@ const nextConfig = {
       config.resolve.alias["@/public/assets/images"] = path.resolve(
         __dirname,
         "public/assets/optimized-images",
-      );
+      )
     }
-    return config;
+    return config
   },
   reactStrictMode: false,
-};
+}
 
-export default nextConfig;
+export default nextConfig

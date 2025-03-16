@@ -1,78 +1,78 @@
-import { Loader2, X } from "lucide-react";
-import Image from "next/image";
-import React, { useState, useEffect } from "react";
-import { Toaster } from "react-hot-toast";
-import Modal from "react-modal";
-import { MembershipPlan } from "./MemberCard";
-import tickMark from "@/public/assets/images/Booking/tick-svgrepo-com.svg";
-import { petImageByType } from "./PetCard";
-import { Pet } from "@/context/UserContext";
-import { useAPICall } from "@/hooks/apicall";
-import api from "@/services/api";
-import Payment from "./Payment";
+import { Loader2, X } from "lucide-react"
+import Image from "next/image"
+import React, { useState, useEffect } from "react"
+import { Toaster } from "react-hot-toast"
+import Modal from "react-modal"
+import { MembershipPlan } from "./MemberCard"
+import tickMark from "@/public/assets/images/Booking/tick-svgrepo-com.svg"
+import { petImageByType } from "./PetCard"
+import { Pet } from "@/context/UserContext"
+import { useAPICall } from "@/hooks/apicall"
+import api from "@/services/api"
+import Payment from "./Payment"
 
 interface ModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  plan: MembershipPlan;
+  isOpen: boolean
+  onClose: () => void
+  plan: MembershipPlan
 }
 
 interface Subscription {
-  id: number;
-  start_date: string;
-  end_date: string;
+  id: number
+  start_date: string
+  end_date: string
   plan: {
-    id: number;
-    name: string;
-  };
+    id: number
+    name: string
+  }
   pet: {
-    id: number;
-    name: string;
-  };
+    id: number
+    name: string
+  }
 }
 
 const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
-  const [pets, setPets] = useState<Pet[]>([]);
-  const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
-  const [selectedPet, setSelectedPet] = useState<Pet | null>(null);
-  const { call: getPetsAPI, loading: loading } = useAPICall(api.getPets);
-  const { call: getSubscriptions } = useAPICall(api.getSubscriptions);
+  const [pets, setPets] = useState<Pet[]>([])
+  const [subscriptions, setSubscriptions] = useState<Subscription[]>([])
+  const [selectedPet, setSelectedPet] = useState<Pet | null>(null)
+  const { call: getPetsAPI, loading: loading } = useAPICall(api.getPets)
+  const { call: getSubscriptions } = useAPICall(api.getSubscriptions)
 
   useEffect(() => {
     if (isOpen) {
-      fetchPets();
-      fetchAllSubscriptions();
+      fetchPets()
+      fetchAllSubscriptions()
     }
-  }, [isOpen]);
+  }, [isOpen])
 
   const fetchPets = async () => {
-    const response = await getPetsAPI({});
+    const response = await getPetsAPI({})
     if (response.ok) {
       const fetchedPets = response.value.body.pets.map((pet) => ({
         ...pet,
         profileImage: pet.profile_image,
         vetPortId: pet.vetport_id,
-      }));
-      setPets(fetchedPets);
+      }))
+      setPets(fetchedPets)
     }
-  };
+  }
 
   const fetchAllSubscriptions = async () => {
-    const response = await getSubscriptions({});
+    const response = await getSubscriptions({})
     if (response.ok) {
-      const fetchedSubscriptions = response.value.body.subscriptions;
-      setSubscriptions(fetchedSubscriptions);
+      const fetchedSubscriptions = response.value.body.subscriptions
+      setSubscriptions(fetchedSubscriptions)
     }
-  };
+  }
 
   const handlePetClick = (pet: Pet, isEligible: boolean) => {
-    if (!isEligible) return;
-    const isAlreadySelected = selectedPet?.vetPortId === pet.vetPortId;
-    const newSelectedPet = isAlreadySelected ? null : pet;
-    setSelectedPet(newSelectedPet);
-  };
+    if (!isEligible) return
+    const isAlreadySelected = selectedPet?.vetPortId === pet.vetPortId
+    const newSelectedPet = isAlreadySelected ? null : pet
+    setSelectedPet(newSelectedPet)
+  }
 
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
   return (
     <Modal
@@ -127,13 +127,13 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
                   const petImage =
                     pet.profileImage ||
                     petImageByType[pet.type?.toLowerCase() || "other"]?.src ||
-                    petImageByType["other"].src;
+                    petImageByType["other"].src
 
                   const isEligible =
                     pet.type?.toLowerCase() === plan.petType.toLowerCase() &&
-                    !subscriptions.find((sub) => sub.pet.id === pet.vetPortId);
+                    !subscriptions.find((sub) => sub.pet.id === pet.vetPortId)
 
-                  const isSelected = selectedPet?.vetPortId === pet.vetPortId;
+                  const isSelected = selectedPet?.vetPortId === pet.vetPortId
 
                   return (
                     <div
@@ -166,7 +166,7 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
                       </div>
                       <p className="text-center mt-2">{pet.name}</p>
                     </div>
-                  );
+                  )
                 })}
               </div>
             )}
@@ -187,7 +187,7 @@ const MemberModal: React.FC<ModalProps> = ({ isOpen, onClose, plan }) => {
       </div>
       <Toaster />
     </Modal>
-  );
-};
+  )
+}
 
-export default MemberModal;
+export default MemberModal

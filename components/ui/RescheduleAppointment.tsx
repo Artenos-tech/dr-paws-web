@@ -1,46 +1,46 @@
-"use client";
+"use client"
 
-import React, { useState } from "react";
-import { BookingCategory } from "@/components/ui/SelectService";
-import SelectVet, { SelectedVet } from "@/components/ui/SelectVet";
-import { Pet } from "@/context/UserContext";
-import RescheduleConfirmed from "@/components/ui/RescheduleConfirmed";
-import { AppointmentType } from "@/model/typeDefinitions";
-import BackButton from "./BackButton";
-import { doctorImagesMap } from "@/model/mockData";
+import React, { useState } from "react"
+import { BookingCategory } from "@/components/ui/SelectService"
+import SelectVet, { SelectedVet } from "@/components/ui/SelectVet"
+import { Pet } from "@/context/UserContext"
+import RescheduleConfirmed from "@/components/ui/RescheduleConfirmed"
+import { AppointmentType } from "@/model/typeDefinitions"
+import BackButton from "./BackButton"
+import { doctorImagesMap } from "@/model/mockData"
 
 function convertToSlots(appt_start: string, appt_end: string) {
-  const startDate = new Date(appt_start);
-  const endDate = new Date(appt_end);
+  const startDate = new Date(appt_start)
+  const endDate = new Date(appt_end)
 
   // Convert to +5:30 timezone
-  const timeZoneOffset = 5.5 * 60 * 60 * 1000;
+  const timeZoneOffset = 5.5 * 60 * 60 * 1000
 
   const date =
     new Date(startDate.getTime() + timeZoneOffset).toISOString().split("T")[0] +
-    "T12:30:00.000Z";
+    "T12:30:00.000Z"
 
   const formatTime = (date: Date): string => {
-    const hours = date.getUTCHours().toString().padStart(2, "0");
-    const minutes = date.getUTCMinutes().toString().padStart(2, "0");
-    return `${hours}:${minutes}`;
-  };
+    const hours = date.getUTCHours().toString().padStart(2, "0")
+    const minutes = date.getUTCMinutes().toString().padStart(2, "0")
+    return `${hours}:${minutes}`
+  }
 
-  const slot = formatTime(new Date(startDate.getTime() + timeZoneOffset));
-  const slotEnd = formatTime(new Date(endDate.getTime() + timeZoneOffset));
+  const slot = formatTime(new Date(startDate.getTime() + timeZoneOffset))
+  const slotEnd = formatTime(new Date(endDate.getTime() + timeZoneOffset))
 
   return {
     date,
     slot,
     slotEnd,
-  };
+  }
 }
 
 type ReschedulingProps = {
-  existingAppointment: AppointmentType;
-  onBack: () => void;
-  onDone: () => void;
-};
+  existingAppointment: AppointmentType
+  onBack: () => void
+  onDone: () => void
+}
 
 const RescheduleAppointment: React.FC<ReschedulingProps> = ({
   existingAppointment,
@@ -48,18 +48,18 @@ const RescheduleAppointment: React.FC<ReschedulingProps> = ({
   onDone,
 }) => {
   const [selectedAppointment, setSelectedAppointmentState] = useState<{
-    selectedServiceId: number | null;
-    selectedService: string | null;
-    selectedSubtype: BookingCategory | null;
-    selectedPet: Pet | null;
-    isGrooming: boolean;
-    selectedClinic: number | null;
-    selectedLocation: string | null;
-    selectClinicContact: string | null;
-    selectedDoctor: SelectedVet | null;
-    selectedDate: Date | null;
-    selectedSlot: string | null;
-    selectedSlotEnd: string | null;
+    selectedServiceId: number | null
+    selectedService: string | null
+    selectedSubtype: BookingCategory | null
+    selectedPet: Pet | null
+    isGrooming: boolean
+    selectedClinic: number | null
+    selectedLocation: string | null
+    selectClinicContact: string | null
+    selectedDoctor: SelectedVet | null
+    selectedDate: Date | null
+    selectedSlot: string | null
+    selectedSlotEnd: string | null
   }>({
     selectedServiceId: existingAppointment.appt_type_id,
     selectedService: existingAppointment.appt_type,
@@ -82,20 +82,20 @@ const RescheduleAppointment: React.FC<ReschedulingProps> = ({
     selectedDate: null,
     selectedSlot: null,
     selectedSlotEnd: null,
-  });
+  })
 
   const oldSlotDetails = convertToSlots(
     existingAppointment.appt_start,
     existingAppointment.appt_end,
-  );
+  )
 
-  const [done, setDone] = useState(false);
+  const [done, setDone] = useState(false)
 
   function notNull<T>(value: T | null): Exclude<T, null> {
     if (value === null) {
-      throw new Error(`Value must not be null, got ${value}`);
+      throw new Error(`Value must not be null, got ${value}`)
     }
-    return value as Exclude<T, null>;
+    return value as Exclude<T, null>
   }
 
   return (
@@ -107,7 +107,7 @@ const RescheduleAppointment: React.FC<ReschedulingProps> = ({
               <BackButton navigateBack={onBack} />
               <SelectVet
                 onNext={() => {
-                  setDone(true);
+                  setDone(true)
                 }}
                 selectedClinic={notNull(selectedAppointment.selectedClinic)}
                 selectedSvcId={notNull(selectedAppointment.selectedServiceId)}
@@ -122,7 +122,7 @@ const RescheduleAppointment: React.FC<ReschedulingProps> = ({
                   setSelectedAppointmentState((prev) => ({
                     ...prev,
                     ...appData,
-                  }));
+                  }))
                 }}
               />
             </>
@@ -170,7 +170,7 @@ const RescheduleAppointment: React.FC<ReschedulingProps> = ({
         </div>
       </main>
     </div>
-  );
-};
+  )
+}
 
-export default RescheduleAppointment;
+export default RescheduleAppointment

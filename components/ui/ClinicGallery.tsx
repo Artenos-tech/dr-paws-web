@@ -1,26 +1,26 @@
-"use client";
+"use client"
 
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { Toaster } from "react-hot-toast";
-import { IoIosArrowBack, IoIosArrowForward, IoMdClose } from "react-icons/io";
-import ReactModal from "react-modal";
+import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
+import { Toaster } from "react-hot-toast"
+import { IoIosArrowBack, IoIosArrowForward, IoMdClose } from "react-icons/io"
+import ReactModal from "react-modal"
 
-import CustomButton from "@/components/ui/CustomButton";
-import { useUserContext } from "@/context/UserContext";
-import { photos } from "@/model/mockData";
-import { Clinic } from "@/model/typeDefinitions";
+import CustomButton from "@/components/ui/CustomButton"
+import { useUserContext } from "@/context/UserContext"
+import { photos } from "@/model/mockData"
+import { Clinic } from "@/model/typeDefinitions"
 
 interface ClinicGalleryProps {
-  name: string;
-  services: string;
-  clinic: Clinic;
+  name: string
+  services: string
+  clinic: Clinic
   gallery: {
     [imageId: string]: {
-      imageUrl: string;
-      imageOrder: number;
-    };
-  } | null;
+      imageUrl: string
+      imageOrder: number
+    }
+  } | null
 }
 
 function ClinicGallery({
@@ -29,8 +29,8 @@ function ClinicGallery({
   clinic,
   gallery,
 }: ClinicGalleryProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isOpen, setIsOpen] = useState(false)
+  const [currentIndex, setCurrentIndex] = useState(0)
   const clinicImages = gallery
     ? Object.entries(gallery).map(([imageId, image]) => ({
         id: imageId,
@@ -38,39 +38,39 @@ function ClinicGallery({
         order: image.imageOrder,
       }))
     : photos.find((clinicInfo) => clinicInfo.id === clinic.id.toString())
-        ?.photos;
-  const limitedGalleryItems = clinicImages ? clinicImages.slice(0, 7) : [];
-  const [isMounted, setIsMounted] = useState(false);
-  const { initiateLogin, isLoggedIn } = useUserContext();
-  const navigate = useRouter();
+        ?.photos
+  const limitedGalleryItems = clinicImages ? clinicImages.slice(0, 7) : []
+  const [isMounted, setIsMounted] = useState(false)
+  const { initiateLogin, isLoggedIn } = useUserContext()
+  const navigate = useRouter()
 
   useEffect(() => {
-    setIsMounted(true);
-    const appElement = document.getElementById("__next");
+    setIsMounted(true)
+    const appElement = document.getElementById("__next")
     if (appElement) {
-      ReactModal.setAppElement(appElement);
+      ReactModal.setAppElement(appElement)
     } else {
-      console.warn("ReactModal: App element with id '__next' not found.");
+      console.warn("ReactModal: App element with id '__next' not found.")
     }
-  }, []);
+  }, [])
 
   const openModal = (index: number) => {
-    setCurrentIndex(index);
-    setIsOpen(true);
-  };
+    setCurrentIndex(index)
+    setIsOpen(true)
+  }
 
   const closeModal = () => {
-    setIsOpen(false);
-  };
+    setIsOpen(false)
+  }
 
   const handleBookAVisit = () => {
     return isLoggedIn
       ? navigate.push("/user/book-appointment")
-      : initiateLogin("Book a Visit", "/user/book-appointment");
-  };
+      : initiateLogin("Book a Visit", "/user/book-appointment")
+  }
 
   if (!isMounted) {
-    return null;
+    return null
   }
 
   return (
@@ -184,7 +184,7 @@ function ClinicGallery({
       </ReactModal>
       <Toaster />
     </div>
-  );
+  )
 }
 
-export default ClinicGallery;
+export default ClinicGallery

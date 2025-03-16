@@ -1,17 +1,17 @@
-"use client";
+"use client"
 
-import React from "react";
-import { useRouter } from "next/navigation";
-import { ClipLoader } from "react-spinners";
+import React from "react"
+import { useRouter } from "next/navigation"
+import { ClipLoader } from "react-spinners"
 
 type ButtonProps = {
-  buttonText: string;
-  buttonBackground: string;
-  buttonLink?: string;
-  buttonClickEvent?: () => void;
-  disabled?: boolean; // Optional prop to disable the button
-  loading?: boolean;
-};
+  buttonText: string
+  buttonBackground: string
+  buttonLink?: string
+  buttonClickEvent?: () => void
+  disabled?: boolean // Optional prop to disable the button
+  loading?: boolean
+}
 
 const CustomButton: React.FC<ButtonProps> = ({
   buttonText,
@@ -21,17 +21,17 @@ const CustomButton: React.FC<ButtonProps> = ({
   disabled = false,
   loading = false,
 }) => {
-  const router = useRouter();
+  const router = useRouter()
 
   const handleClick = () => {
-    if (disabled) return;
+    if (disabled) return
 
     if (buttonLink) {
-      router.push(buttonLink);
+      router.push(buttonLink)
     } else if (buttonClickEvent) {
-      buttonClickEvent();
+      buttonClickEvent()
     }
-  };
+  }
 
   return (
     <button
@@ -43,7 +43,7 @@ const CustomButton: React.FC<ButtonProps> = ({
     >
       {loading ? <ClipLoader size={20} color="white" /> : buttonText}
     </button>
-  );
-};
+  )
+}
 
-export default CustomButton;
+export default CustomButton

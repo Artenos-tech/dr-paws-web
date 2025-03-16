@@ -1,25 +1,25 @@
 // components/ui/DoctorCard.tsx
-import React from "react";
-import Image from "next/image";
-import { doctorImagesMap } from "@/model/mockData";
-import defaultVetImg from "@/public/assets/images/clinic/doctorFemale.webp";
+import React from "react"
+import Image from "next/image"
+import { doctorImagesMap } from "@/model/mockData"
+import defaultVetImg from "@/public/assets/images/clinic/doctorFemale.webp"
 
 type VetportDoctor = {
-  id: number;
-  name: string;
+  id: number
+  name: string
   image: {
-    type: "url" | "ref";
-    value: string;
-  };
-};
+    type: "url" | "ref"
+    value: string
+  }
+}
 interface SelectDoctorCardProps {
-  doctor: VetportDoctor;
-  isSelected: boolean;
+  doctor: VetportDoctor
+  isSelected: boolean
   onDoctorSelect: (
     doctorId: number,
     doctorName: string,
     doctorImage: { type: "url" | "ref"; value: string },
-  ) => void;
+  ) => void
 }
 
 const SelectDoctorCard: React.FC<SelectDoctorCardProps> = ({
@@ -27,11 +27,11 @@ const SelectDoctorCard: React.FC<SelectDoctorCardProps> = ({
   isSelected,
   onDoctorSelect,
 }) => {
-  const { name, image, id } = doctor;
+  const { name, image, id } = doctor
 
   const handleCardClick = () => {
-    onDoctorSelect(id, name, image);
-  };
+    onDoctorSelect(id, name, image)
+  }
 
   return (
     <div
@@ -57,7 +57,7 @@ const SelectDoctorCard: React.FC<SelectDoctorCardProps> = ({
       {/* Name */}
       <h2 className="flex-1 pt-2 text-center text-lg font-semibold">{name}</h2>
     </div>
-  );
-};
+  )
+}
 
-export default SelectDoctorCard;
+export default SelectDoctorCard

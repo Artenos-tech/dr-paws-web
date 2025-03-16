@@ -1,26 +1,26 @@
-import { AvatarIcon } from "@radix-ui/react-icons";
-import { CameraIcon } from "lucide-react";
-import { useEffect, useState } from "react";
-import { Accept, useDropzone } from "react-dropzone";
-import Image from "next/image";
+import { AvatarIcon } from "@radix-ui/react-icons"
+import { CameraIcon } from "lucide-react"
+import { useEffect, useState } from "react"
+import { Accept, useDropzone } from "react-dropzone"
+import Image from "next/image"
 
 type TFileUploadProps = {
-  onChange: (value: File[]) => void;
-  value: File[];
-  url?: string;
-};
+  onChange: (value: File[]) => void
+  value: File[]
+  url?: string
+}
 
 export default function FileUpload({ onChange, value, url }: TFileUploadProps) {
   const { getRootProps, getInputProps } = useDropzone({
     accept: "image/*" as unknown as Accept,
     onDrop: (acceptedFiles: File[]) => {
-      onUpdateFile(acceptedFiles);
+      onUpdateFile(acceptedFiles)
     },
-  });
+  })
 
   const onUpdateFile = (newFiles: File[]) => {
-    onChange(newFiles);
-  };
+    onChange(newFiles)
+  }
 
   return (
     <div className="flex items-center justify-center">
@@ -42,25 +42,25 @@ export default function FileUpload({ onChange, value, url }: TFileUploadProps) {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 function ImagePreview({ file, url }: { file?: File; url?: string }) {
-  const [objectUrl, setObjectUrl] = useState<string | null>(null);
+  const [objectUrl, setObjectUrl] = useState<string | null>(null)
 
   useEffect(() => {
     if (file) {
-      const url = URL.createObjectURL(file);
-      setObjectUrl(url);
+      const url = URL.createObjectURL(file)
+      setObjectUrl(url)
       return () => {
-        URL.revokeObjectURL(url);
-      };
+        URL.revokeObjectURL(url)
+      }
     } else if (url) {
-      setObjectUrl(url);
+      setObjectUrl(url)
     } else {
-      setObjectUrl(null);
+      setObjectUrl(null)
     }
-  }, [file, url]);
+  }, [file, url])
 
   return objectUrl ? (
     <Image
@@ -69,5 +69,5 @@ function ImagePreview({ file, url }: { file?: File; url?: string }) {
       layout="fill"
       className="rounded-full object-cover"
     />
-  ) : null;
+  ) : null
 }

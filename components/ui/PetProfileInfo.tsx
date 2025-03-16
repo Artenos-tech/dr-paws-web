@@ -1,30 +1,30 @@
-"use client";
+"use client"
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react"
 
-import Image from "next/image";
-import { useForm } from "react-hook-form";
-import ImageEdit from "@/public/assets/images/Profile/ImageEdit.png";
-import OutlineButton from "./OutlineButton";
-import { FaTrash } from "react-icons/fa6";
-import { petImageByType } from "./PetCard";
-import { Pet } from "@/context/UserContext";
-import { useAPICall } from "@/hooks/apicall";
-import api from "@/services/api";
-import Loader from "./Loader";
-import { Subscription } from "@/app/user/my-subscriptions/page";
+import Image from "next/image"
+import { useForm } from "react-hook-form"
+import ImageEdit from "@/public/assets/images/Profile/ImageEdit.png"
+import OutlineButton from "./OutlineButton"
+import { FaTrash } from "react-icons/fa6"
+import { petImageByType } from "./PetCard"
+import { Pet } from "@/context/UserContext"
+import { useAPICall } from "@/hooks/apicall"
+import api from "@/services/api"
+import Loader from "./Loader"
+import { Subscription } from "@/app/user/my-subscriptions/page"
 
-import { ClipLoader } from "react-spinners";
+import { ClipLoader } from "react-spinners"
 
 interface PetProfileInfoProps {
-  petId: number;
+  petId: number
 }
 
 const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
-  const [pet, setPet] = useState<Pet>();
-  const [isEditing, setIsEditing] = useState(false);
-  const [image, setImage] = useState<string>("");
-  const [subscription, setSubscription] = useState<Subscription | null>(null);
+  const [pet, setPet] = useState<Pet>()
+  const [isEditing, setIsEditing] = useState(false)
+  const [image, setImage] = useState<string>("")
+  const [subscription, setSubscription] = useState<Subscription | null>(null)
   // const [age, setAge] = useState<{
   //   years: number | null;
   //   months: number | null;
@@ -36,26 +36,26 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
     call: getPets,
     result: getPetsResult,
     loading: loadingPets,
-  } = useAPICall(api.getPets);
+  } = useAPICall(api.getPets)
   const { call: getPetSpecies, result: getPetSpeciesResult } = useAPICall(
     api.getPetSpecies,
-  );
+  )
   const {
     call: getPetBreeds,
     result: getPetBreedsResult,
     loading: loadingBreeds,
-  } = useAPICall(api.getPetBreeds);
+  } = useAPICall(api.getPetBreeds)
   const {
     call: getPetGender,
     result: getPetGenderResult,
     loading: loadingGender,
-  } = useAPICall(api.getPetGender);
+  } = useAPICall(api.getPetGender)
   const { call: updatePetDetails, loading: loadingUpdate } = useAPICall(
     api.updatePet,
-  );
+  )
 
   // Setup API call for getPetSubscription
-  const { call: getPetSubscription } = useAPICall(api.getPetSubscription);
+  const { call: getPetSubscription } = useAPICall(api.getPetSubscription)
 
   const formMethods = useForm<Pet>({
     defaultValues: {
@@ -67,27 +67,27 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
       weight: "",
       profileImage: "",
     },
-  });
+  })
   const {
     register,
     handleSubmit,
     setValue,
     formState: { errors },
-  } = formMethods;
+  } = formMethods
 
   useEffect(() => {
-    getPets({});
-  }, []);
+    getPets({})
+  }, [])
 
   useEffect(() => {
-    if (petId) fetchPetSpecies();
-  }, [petId]);
+    if (petId) fetchPetSpecies()
+  }, [petId])
 
   useEffect(() => {
     if (getPetsResult?.ok && petId) {
       const foundPet = getPetsResult.value.body.pets.find(
         (pet) => pet.vetport_id === petId,
-      );
+      )
       if (foundPet) {
         setPet({
           name: foundPet.name,
@@ -98,103 +98,103 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
           vetPortId: foundPet.vetport_id,
           dob: foundPet.dob?.split("T")[0] || null,
           profileImage: foundPet.profile_image,
-        });
-        setImage(foundPet.profile_image || "");
+        })
+        setImage(foundPet.profile_image || "")
         // setAge(foundPet.age || { years: 0, months: 0 });
 
         Object.entries(foundPet).forEach(([key, value]) => {
           if (key in foundPet) {
             if (key === "dob" && typeof value === "string") {
-              const formattedDate = value.split("T")[0];
-              setValue("dob", formattedDate);
+              const formattedDate = value.split("T")[0]
+              setValue("dob", formattedDate)
             } else if (typeof value === "string") {
-              setValue(key as keyof Pet, value?.trim());
-            } else setValue(key as keyof Pet, value);
+              setValue(key as keyof Pet, value?.trim())
+            } else setValue(key as keyof Pet, value)
           }
-        });
+        })
       }
     }
     if (petId) {
       const fetchSubscription = async () => {
-        const response = await getPetSubscription({ pet_id: petId });
+        const response = await getPetSubscription({ pet_id: petId })
         if (response?.ok) {
-          setSubscription(response.value.body.subscription);
+          setSubscription(response.value.body.subscription)
         }
-      };
-      fetchSubscription();
+      }
+      fetchSubscription()
     }
-  }, [petId, getPetsResult, setValue]);
+  }, [petId, getPetsResult, setValue])
 
   useEffect(() => {
     if (getPetSpeciesResult?.ok) {
       const speciesId = getPetSpeciesResult.value.body.species.find(
         (species) => species.displayName === pet?.type,
-      )?.id;
+      )?.id
       if (speciesId) {
-        fetchPetBreedsBySpecies(speciesId);
-        fetchPetGenderBySpecies(speciesId);
+        fetchPetBreedsBySpecies(speciesId)
+        fetchPetGenderBySpecies(speciesId)
       }
     }
-  }, [getPetSpeciesResult]);
+  }, [getPetSpeciesResult])
 
   const fetchPetSpecies = async () => {
-    await getPetSpecies({});
-  };
+    await getPetSpecies({})
+  }
 
   const fetchPetBreedsBySpecies = async (speciesId: number) => {
-    await getPetBreeds({ speciesid: JSON.stringify(speciesId) });
-  };
+    await getPetBreeds({ speciesid: JSON.stringify(speciesId) })
+  }
 
   const fetchPetGenderBySpecies = async (speciesId: number) => {
-    await getPetGender({ speciesid: JSON.stringify(speciesId) });
-  };
+    await getPetGender({ speciesid: JSON.stringify(speciesId) })
+  }
 
   const petSpecies = getPetSpeciesResult?.ok
     ? getPetSpeciesResult.value.body.species
-    : [];
+    : []
 
   const petBreeds = getPetBreedsResult?.ok
     ? getPetBreedsResult.value.body.breeds
-    : [];
+    : []
 
   const petGenders = getPetGenderResult?.ok
     ? getPetGenderResult.value.body.gender
-    : [];
+    : []
 
   const handleEditCancelClick = () => {
     if (pet) {
       for (const key in pet) {
         if (Object.prototype.hasOwnProperty.call(pet, key)) {
-          const typedKey = key as keyof Pet;
-          setValue(typedKey, pet[typedKey]);
+          const typedKey = key as keyof Pet
+          setValue(typedKey, pet[typedKey])
         }
       }
 
-      const typeKey = pet?.type?.toLowerCase() || "other";
-      const defaultImage = petImageByType[typeKey]?.src || "";
+      const typeKey = pet?.type?.toLowerCase() || "other"
+      const defaultImage = petImageByType[typeKey]?.src || ""
       if (image !== (pet?.profileImage || defaultImage)) {
-        setImage(pet?.profileImage || defaultImage);
+        setImage(pet?.profileImage || defaultImage)
       }
     }
 
-    setIsEditing(!isEditing);
-  };
+    setIsEditing(!isEditing)
+  }
 
   const onSubmit = async (selectedPet: Pet) => {
     const realPetImage =
       typeof image === "string" && image.includes("/_next/static/media/")
         ? null
-        : image;
+        : image
 
     const petType = petSpecies.find(
       (species) => species.displayName === selectedPet.type,
-    )?.id;
+    )?.id
     const petBreed = petBreeds.find(
       (breed) => breed.name === selectedPet.breed,
-    )?.id;
+    )?.id
     const petGender = petGenders.find(
       (gender) => gender.name === selectedPet.gender,
-    )?.id;
+    )?.id
 
     if (petType) {
       await updatePetDetails({
@@ -221,60 +221,58 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
           dob: selectedPet.dob ? new Date(selectedPet.dob).toISOString() : null,
           profileImage: realPetImage,
         },
-      });
+      })
     }
-    setPet({ ...selectedPet, profileImage: realPetImage });
-    setIsEditing(false);
-  };
+    setPet({ ...selectedPet, profileImage: realPetImage })
+    setIsEditing(false)
+  }
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+    const file = e.target.files?.[0]
     if (file) {
-      const maxSize = 10 * 1024 * 1024;
+      const maxSize = 10 * 1024 * 1024
       if (file.size > maxSize) {
-        alert(
-          "File size exceeds the 10MB limit. Please upload a smaller file.",
-        );
-        return;
+        alert("File size exceeds the 10MB limit. Please upload a smaller file.")
+        return
       }
-      const reader = new FileReader();
+      const reader = new FileReader()
       reader.onload = () => {
-        const result = reader.result as string;
-        setImage(result);
-        setValue("profileImage", result);
-      };
-      reader.readAsDataURL(file);
+        const result = reader.result as string
+        setImage(result)
+        setValue("profileImage", result)
+      }
+      reader.readAsDataURL(file)
     }
-  };
+  }
 
   const handlePetTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedType = e.target.value.toLowerCase();
+    const selectedType = e.target.value.toLowerCase()
     if (image && image.includes("/_next/static/media/")) {
-      const newImage = petImageByType[selectedType]?.src || "";
-      setImage(newImage);
+      const newImage = petImageByType[selectedType]?.src || ""
+      setImage(newImage)
     }
     const selectedSpecies = petSpecies.find(
       (type) => type.displayName === e.target.value,
-    );
+    )
     if (selectedSpecies) {
-      fetchPetBreedsBySpecies(selectedSpecies?.id);
-      fetchPetGenderBySpecies(selectedSpecies?.id);
+      fetchPetBreedsBySpecies(selectedSpecies?.id)
+      fetchPetGenderBySpecies(selectedSpecies?.id)
     }
-    setValue("breed", "");
-    setValue("gender", "");
-  };
+    setValue("breed", "")
+    setValue("gender", "")
+  }
 
   const defaultImageOrPetImage =
     image ||
     petImageByType[pet?.type?.toLowerCase() || "other"] ||
-    petImageByType.other;
+    petImageByType.other
 
   if (loadingPets)
     return (
       <div>
         <Loader />
       </div>
-    );
+    )
 
   return (
     <div className="bg-primary-3 rounded-lg p-3 md:p-6 lg:p-8 w-full">
@@ -321,8 +319,8 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
                         const defaultImage =
                           pet?.type && petImageByType[pet.type.toLowerCase()]
                             ? petImageByType[pet.type.toLowerCase()].src
-                            : petImageByType.other.src;
-                        setImage(defaultImage);
+                            : petImageByType.other.src
+                        setImage(defaultImage)
                       }}
                     >
                       <FaTrash size={14} fill="white" />
@@ -626,7 +624,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
         </div>
       </form>
     </div>
-  );
-};
+  )
+}
 
-export default PetProfileInfo;
+export default PetProfileInfo

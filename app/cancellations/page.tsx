@@ -44,5 +44,5 @@ export default function Cancellations() {
         </li>
       </ul>
     </div>
-  );
+  )
 }

@@ -1,5 +1,5 @@
-import type { Config } from "tailwindcss";
-import * as tailwindcssAnimate from "tailwindcss-animate";
+import type { Config } from "tailwindcss"
+import * as tailwindcssAnimate from "tailwindcss-animate"
 
 const config: Config = {
   darkMode: ["class"],
@@ -81,6 +81,6 @@ const config: Config = {
     },
   },
   plugins: [tailwindcssAnimate],
-};
+}
 
-export default config;
+export default config

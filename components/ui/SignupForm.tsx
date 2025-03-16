@@ -1,12 +1,12 @@
-import React, { useState } from "react";
-import defaultUserProfile from "@/public/assets/images/Profile/profileLogo.jpg";
-import editIcon from "@/public/assets/images/Profile/ImageEdit.png";
-import Image from "next/image";
-import { FaTrash } from "react-icons/fa6";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { ClipLoader } from "react-spinners";
+import React, { useState } from "react"
+import defaultUserProfile from "@/public/assets/images/Profile/profileLogo.jpg"
+import editIcon from "@/public/assets/images/Profile/ImageEdit.png"
+import Image from "next/image"
+import { FaTrash } from "react-icons/fa6"
+import { z } from "zod"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { ClipLoader } from "react-spinners"
 
 const signUpSchema = z.object({
   userName: z.string().trim().min(1, "Provide your full name."),
@@ -31,23 +31,23 @@ const signUpSchema = z.object({
   state: z.string().trim().min(1, "Provide state name."),
 
   profilePicture: z.string().nullable().optional(),
-});
+})
 
-type SignUpFormData = z.infer<typeof signUpSchema>;
+type SignUpFormData = z.infer<typeof signUpSchema>
 
 interface SignUpFormProps {
   onSubmit: (data: {
-    userName: string;
-    mobileNumber: string;
-    profilePicture: string | null;
-    address1: string;
-    address2: string;
-    city: string;
-    pincode: string;
-    state: string;
-  }) => void;
-  loading: boolean;
-  errMsg: string;
+    userName: string
+    mobileNumber: string
+    profilePicture: string | null
+    address1: string
+    address2: string
+    city: string
+    pincode: string
+    state: string
+  }) => void
+  loading: boolean
+  errMsg: string
 }
 
 const SignupForm: React.FC<SignUpFormProps> = ({
@@ -57,7 +57,7 @@ const SignupForm: React.FC<SignUpFormProps> = ({
 }) => {
   const [userProfileImage, setUserPofileImage] = useState<string>(
     defaultUserProfile.src,
-  );
+  )
 
   const {
     register,
@@ -74,26 +74,26 @@ const SignupForm: React.FC<SignUpFormProps> = ({
       pincode: "",
       state: "",
     },
-  });
+  })
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+    const file = e.target.files?.[0]
     if (file) {
-      const reader = new FileReader();
+      const reader = new FileReader()
       reader.onload = () => {
-        const result = reader.result as string;
-        setUserPofileImage(result);
-      };
-      reader.readAsDataURL(file);
+        const result = reader.result as string
+        setUserPofileImage(result)
+      }
+      reader.readAsDataURL(file)
     }
-  };
+  }
 
   const signUpSubmitHandler = (data: SignUpFormData) => {
     const isDefaultImage = userProfileImage.includes("/_next/static/media/")
       ? null
-      : userProfileImage;
-    onSubmit({ ...data, profilePicture: isDefaultImage });
-  };
+      : userProfileImage
+    onSubmit({ ...data, profilePicture: isDefaultImage })
+  }
 
   return (
     <div className="text-center">
@@ -106,7 +106,7 @@ const SignupForm: React.FC<SignUpFormProps> = ({
 
       <form
         onSubmit={handleSubmit(signUpSubmitHandler, (errors) => {
-          console.log("Form validation errors:", errors);
+          console.log("Form validation errors:", errors)
         })}
         className="my-6"
       >
@@ -125,7 +125,7 @@ const SignupForm: React.FC<SignUpFormProps> = ({
                   type="button"
                   className="absolute bottom-0 left-0 p-2.5 bg-red-500 rounded-full z-10"
                   onClick={() => {
-                    setUserPofileImage(defaultUserProfile.src);
+                    setUserPofileImage(defaultUserProfile.src)
                   }}
                 >
                   <FaTrash size={8} fill="white" />
@@ -260,7 +260,7 @@ const SignupForm: React.FC<SignUpFormProps> = ({
         )}
       </form>
     </div>
-  );
-};
+  )
+}
 
-export default SignupForm;
+export default SignupForm

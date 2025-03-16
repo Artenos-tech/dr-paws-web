@@ -1,22 +1,22 @@
-"use client";
+"use client"
 
-import { AppointmentType } from "@/model/typeDefinitions";
-import toast from "react-hot-toast";
-import React, { useState } from "react";
-import BackButton from "./BackButton";
-import { MdOutlineAccessTime } from "react-icons/md";
-import { GrLocation } from "react-icons/gr";
-import { HiOutlineCalendar } from "react-icons/hi";
-import Image from "next/image";
-import defaultVetImage from "@/public/assets/images/clinic/doctorFemale.webp";
-import { doctorImagesMap } from "@/model/mockData";
-import { petImageByType } from "./PetCard";
-import { CircleX } from "lucide-react";
-import CustomButton from "./CustomButton";
-import { useAPICall } from "@/hooks/apicall";
-import api from "@/services/api";
-import { ClipLoader } from "react-spinners";
-import RescheduleAppointment from "@/components/ui/RescheduleAppointment";
+import { AppointmentType } from "@/model/typeDefinitions"
+import toast from "react-hot-toast"
+import React, { useState } from "react"
+import BackButton from "./BackButton"
+import { MdOutlineAccessTime } from "react-icons/md"
+import { GrLocation } from "react-icons/gr"
+import { HiOutlineCalendar } from "react-icons/hi"
+import Image from "next/image"
+import defaultVetImage from "@/public/assets/images/clinic/doctorFemale.webp"
+import { doctorImagesMap } from "@/model/mockData"
+import { petImageByType } from "./PetCard"
+import { CircleX } from "lucide-react"
+import CustomButton from "./CustomButton"
+import { useAPICall } from "@/hooks/apicall"
+import api from "@/services/api"
+import { ClipLoader } from "react-spinners"
+import RescheduleAppointment from "@/components/ui/RescheduleAppointment"
 
 export const cancelReasons = [
   "Another commitment has come up",
@@ -25,19 +25,19 @@ export const cancelReasons = [
   "My pet doesn't need the treatment anymore",
   "I've visited / will visit another clinic",
   "Other",
-];
+]
 
 export const rescheduleReasons = [
   "Another commitment has come up",
   "I'm sick / unwell",
   "I have to travel out of the city",
   "My pet needs the treatment later",
-];
+]
 
 type BookingDetailsProps = {
-  selectedAppointment: AppointmentType;
-  goBack: (refetch: boolean) => void;
-};
+  selectedAppointment: AppointmentType
+  goBack: (refetch: boolean) => void
+}
 
 const BookingDetails: React.FC<BookingDetailsProps> = ({
   selectedAppointment,
@@ -49,39 +49,39 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
     | "reschedule"
     | "cancelled"
     | "rescheduleConfirm"
-  >("default");
-  const [cancelReason, setCancelReason] = useState<string>("");
-  const [rescheduleReason, setRescheduleReason] = useState<string>("");
+  >("default")
+  const [cancelReason, setCancelReason] = useState<string>("")
+  const [rescheduleReason, setRescheduleReason] = useState<string>("")
   const [showCancelValidationMessage, setShowCancelValidationMessage] =
-    useState<boolean>(false);
+    useState<boolean>(false)
   const [showRescheduleValidationMessage, setShowRescheduleValidationMessage] =
-    useState<boolean>(false);
+    useState<boolean>(false)
   const defaultPetImageByType =
     petImageByType[selectedAppointment.pet_type?.toLowerCase() || "other"] ||
-    petImageByType.other;
+    petImageByType.other
   const { call: cancelAppointment, loading: cancelAppointmentLoading } =
-    useAPICall(api.cancelAppointment);
+    useAPICall(api.cancelAppointment)
 
   const handleCancelClick = () => {
-    setCurrentView("cancelConfirm");
-  };
+    setCurrentView("cancelConfirm")
+  }
 
   const handleRescheduleClick = () => {
-    setCurrentView("rescheduleConfirm");
-  };
+    setCurrentView("rescheduleConfirm")
+  }
 
   const resetView = () => {
-    setCancelReason("");
-    setShowCancelValidationMessage(false);
-    setRescheduleReason("");
-    setShowRescheduleValidationMessage(false);
-    setCurrentView("default");
-  };
+    setCancelReason("")
+    setShowCancelValidationMessage(false)
+    setRescheduleReason("")
+    setShowRescheduleValidationMessage(false)
+    setCurrentView("default")
+  }
 
   const cancelBooking = async () => {
     if (!cancelReason) {
-      setShowCancelValidationMessage(true);
-      return;
+      setShowCancelValidationMessage(true)
+      return
     }
     // console.log("selectedAppointment", selectedAppointment);
     try {
@@ -95,31 +95,31 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
         appt_end: selectedAppointment.appt_end,
         appt_type_id: selectedAppointment.appt_type_id,
         reason: cancelReason,
-      });
+      })
       if (!resp.ok) {
-        console.error("Error cancelling appointment", resp);
+        console.error("Error cancelling appointment", resp)
         toast.error(
           "We couldn't cancel your appointment. Please try again later.",
-        );
-        return;
+        )
+        return
       }
-      setCurrentView("cancelled");
+      setCurrentView("cancelled")
     } catch (error) {
-      console.error("Error cancelling appointment", error);
+      console.error("Error cancelling appointment", error)
       toast.error(
         "We couldn't cancel your appointment. Please try again later.",
-      );
+      )
     }
-  };
+  }
 
   const rescheduleBooking = async () => {
     if (!rescheduleReason) {
-      setShowRescheduleValidationMessage(true);
-      return;
+      setShowRescheduleValidationMessage(true)
+      return
     }
 
-    setCurrentView("reschedule");
-  };
+    setCurrentView("reschedule")
+  }
 
   return (
     <div className="w-full px-4 py-8">
@@ -489,7 +489,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
         />
       )}
     </div>
-  );
-};
+  )
+}
 
-export default BookingDetails;
+export default BookingDetails

@@ -1,18 +1,18 @@
-"use client";
+"use client"
 
-import { useState } from "react";
+import { useState } from "react"
 
-import UpSyringe from "@/public/assets/images/services/UpSyringe.svg";
-import Image from "next/image";
+import UpSyringe from "@/public/assets/images/services/UpSyringe.svg"
+import Image from "next/image"
 
-import { serviceCategories, servicesData } from "@/model/mockData";
-import CustomButton from "./CustomButton";
+import { serviceCategories, servicesData } from "@/model/mockData"
+import CustomButton from "./CustomButton"
 
-type ServiceCategory = keyof typeof servicesData;
+type ServiceCategory = keyof typeof servicesData
 
 const Services: React.FC = () => {
   const [selectedCategory, setSelectedCategory] =
-    useState<ServiceCategory>("Planned Visits");
+    useState<ServiceCategory>("Planned Visits")
 
   return (
     <div className="flex">
@@ -58,7 +58,7 @@ const Services: React.FC = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Services;
+export default Services

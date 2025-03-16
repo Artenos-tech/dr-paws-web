@@ -1,17 +1,17 @@
-import { Doctor } from "@/model/typeDefinitions";
-import Modal from "react-modal";
-import React from "react";
-import Image from "next/image";
-import starMedal from "@/public/assets/images/team/star-medal.png";
-import { CiStethoscope, CiLocationOn } from "react-icons/ci";
-import { IoClose } from "react-icons/io5";
-import { doctorImagesMap } from "@/model/mockData";
-import defaultVetImg from "@/public/assets/images/clinic/doctorFemale.webp";
+import { Doctor } from "@/model/typeDefinitions"
+import Modal from "react-modal"
+import React from "react"
+import Image from "next/image"
+import starMedal from "@/public/assets/images/team/star-medal.png"
+import { CiStethoscope, CiLocationOn } from "react-icons/ci"
+import { IoClose } from "react-icons/io5"
+import { doctorImagesMap } from "@/model/mockData"
+import defaultVetImg from "@/public/assets/images/clinic/doctorFemale.webp"
 
 interface doctorDetailsProps {
-  isOpen: boolean;
-  onClose: () => void;
-  doctor: Doctor;
+  isOpen: boolean
+  onClose: () => void
+  doctor: Doctor
 }
 
 const DoctorDetailsModal: React.FC<doctorDetailsProps> = ({
@@ -30,7 +30,7 @@ const DoctorDetailsModal: React.FC<doctorDetailsProps> = ({
     spiritAnimal,
     qualification,
     favPetName,
-  } = doctor;
+  } = doctor
   return (
     <Modal
       isOpen={isOpen}
@@ -269,7 +269,7 @@ const DoctorDetailsModal: React.FC<doctorDetailsProps> = ({
         </div>
       </div>
     </Modal>
-  );
-};
+  )
+}
 
-export default DoctorDetailsModal;
+export default DoctorDetailsModal

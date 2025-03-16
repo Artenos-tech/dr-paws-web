@@ -1,103 +1,103 @@
-import IND_2ndFloor from "../public/assets/images/ClinicDetails/IND_2ndFloor.jpg";
-import IND_2ndFloor1 from "../public/assets/images/ClinicDetails/IND_2ndfloor1.jpg";
-import IND_Diagnostics from "../public/assets/images/ClinicDetails/IND_Diagnostics.jpg";
-import IND_OPT from "../public/assets/images/ClinicDetails/IND_OPT.jpg";
-import IND_Reception from "../public/assets/images/ClinicDetails/IND_Reception.jpg";
-import IND_WaitingArea from "../public/assets/images/ClinicDetails/IND_WaitingArea.jpg";
-import IND_Exterior1 from "../public/assets/images/ClinicDetails/IND_Exterior1.jpg";
-import IND_Exterior2 from "../public/assets/images/ClinicDetails/IND_Exterior2.jpg";
-import RMV_Exterior1 from "../public/assets/images/ClinicDetails/RMV_Exterior1.jpg";
-import RMV_Exterior2 from "../public/assets/images/ClinicDetails/RMV_Exterior2.jpg";
-import RMV_CatWaiting from "../public/assets/images/ClinicDetails/RMV_CatWaiting.png";
-import RMV_ConsultRoom from "../public/assets/images/ClinicDetails/RMV_ConsultRoom.png";
-import RMV_Grooming from "../public/assets/images/ClinicDetails/RMV_Grooming.png";
-import RMV_Hallway from "../public/assets/images/ClinicDetails/RMV_Hallway.png";
-import RMV_Hydrotherapy from "../public/assets/images/ClinicDetails/RMV_Hydrotherapy.png";
-import RMV_Reception from "../public/assets/images/ClinicDetails/RMV_Reception.png";
-import RMV_Retail from "../public/assets/images/ClinicDetails/RMV_Retail.png";
-import dogImg from "../public/assets/images/dogimg.webp";
-import catImg from "../public/assets/images/catimg.webp";
-import otherPetsImg from "../public/assets/images/otherpetimg.png";
-import { Clinic, Doctor, Review } from "@/model/typeDefinitions";
+import IND_2ndFloor from "../public/assets/images/ClinicDetails/IND_2ndFloor.jpg"
+import IND_2ndFloor1 from "../public/assets/images/ClinicDetails/IND_2ndfloor1.jpg"
+import IND_Diagnostics from "../public/assets/images/ClinicDetails/IND_Diagnostics.jpg"
+import IND_OPT from "../public/assets/images/ClinicDetails/IND_OPT.jpg"
+import IND_Reception from "../public/assets/images/ClinicDetails/IND_Reception.jpg"
+import IND_WaitingArea from "../public/assets/images/ClinicDetails/IND_WaitingArea.jpg"
+import IND_Exterior1 from "../public/assets/images/ClinicDetails/IND_Exterior1.jpg"
+import IND_Exterior2 from "../public/assets/images/ClinicDetails/IND_Exterior2.jpg"
+import RMV_Exterior1 from "../public/assets/images/ClinicDetails/RMV_Exterior1.jpg"
+import RMV_Exterior2 from "../public/assets/images/ClinicDetails/RMV_Exterior2.jpg"
+import RMV_CatWaiting from "../public/assets/images/ClinicDetails/RMV_CatWaiting.png"
+import RMV_ConsultRoom from "../public/assets/images/ClinicDetails/RMV_ConsultRoom.png"
+import RMV_Grooming from "../public/assets/images/ClinicDetails/RMV_Grooming.png"
+import RMV_Hallway from "../public/assets/images/ClinicDetails/RMV_Hallway.png"
+import RMV_Hydrotherapy from "../public/assets/images/ClinicDetails/RMV_Hydrotherapy.png"
+import RMV_Reception from "../public/assets/images/ClinicDetails/RMV_Reception.png"
+import RMV_Retail from "../public/assets/images/ClinicDetails/RMV_Retail.png"
+import dogImg from "../public/assets/images/dogimg.webp"
+import catImg from "../public/assets/images/catimg.webp"
+import otherPetsImg from "../public/assets/images/otherpetimg.png"
+import { Clinic, Doctor, Review } from "@/model/typeDefinitions"
 // import { BookingCategory } from "@/model/typeDefinitions";
 // import { AppointmentStatus, AppointmentType } from "@/model/typeDefinitions";
 
-import ParasiteControl from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/ParasiteControl.png";
-import SkinInfections from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/SkinInfections.jpeg";
-import Vaccination from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/Vaccinations.png";
-import Deworming from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/Deworming.png";
-import EarEyeCheckUp from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/EarEyeCheckup.png";
-import GeneralCheckUp from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/General check up.png";
-import NutritionalCounceling from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/NutritionalCounceling.png";
-import TraumaCare from "@/public/assets/images/ServicesPage/Sickness and Emergency/TraumaCare.webp";
-import PainManagement from "@/public/assets/images/ServicesPage/Sickness and Emergency/PainManagement.png";
-import AllergiesAndRashes from "@/public/assets/images/ServicesPage/Sickness and Emergency/Allergies and rashes.png";
-import Limping from "@/public/assets/images/ServicesPage/Sickness and Emergency/Limping.png";
-import AnimalBites from "@/public/assets/images/ServicesPage/Sickness and Emergency/Animal Bites.png";
-import FeverInfection from "@/public/assets/images/ServicesPage/Sickness and Emergency/FeverInfection.png";
-import VomittingDiarrhoeaCare from "@/public/assets/images/ServicesPage/Sickness and Emergency/VomittingDiarrhoeaCare.png";
-import AppetiteLoss from "@/public/assets/images/ServicesPage/Sickness and Emergency/AppetiteLoss.png";
-import BloodTests from "@/public/assets/images/ServicesPage/Dignostics/BloodTests.png";
-import Ultrasound from "@/public/assets/images/ServicesPage/Dignostics/Ultrasound.png";
-import Microscopy from "@/public/assets/images/ServicesPage/Dignostics/Microscopy.png";
-import UrineAnalysis from "@/public/assets/images/ServicesPage/Dignostics/UrineAnalysis.png";
-import Biochemistry from "@/public/assets/images/ServicesPage/Dignostics/Biochemistry.png";
-import KidneyLiverFunction from "@/public/assets/images/ServicesPage/Dignostics/KidneyLiverFunction.png";
-import StoolAnalysis from "@/public/assets/images/ServicesPage/Dignostics/StoolAnalysis.png";
-import HormoneAnalysis from "@/public/assets/images/ServicesPage/Dignostics/HormoneAnalysis.png";
-import Xray from "@/public/assets/images/ServicesPage/Dignostics/XRay.png";
-import FeverInfectionTests from "@/public/assets/images/ServicesPage/Sickness and Emergency/FeverInfection.png";
-import SpayingNeutering from "@/public/assets/images/ServicesPage/Planned Surgeries/SpayingNeutering.png";
-import DentalScaling from "@/public/assets/images/ServicesPage/Planned Surgeries/DentalScaling.png";
-import Tumorremoval from "@/public/assets/images/ServicesPage/Planned Surgeries/Tumourremoval.png";
-import ForeignBodyRemoval from "@/public/assets/images/ServicesPage/Planned Surgeries/ForeignBodyRemoval.png";
-import Orthopaedic from "@/public/assets/images/ServicesPage/Planned Surgeries/Orthopaedic.png";
-import SoftTissue from "@/public/assets/images/ServicesPage/Planned Surgeries/SoftTissue.png";
-import ToothExtraction from "@/public/assets/images/ServicesPage/Planned Surgeries/ToothExtraction.png";
-import ToothRes from "@/public/assets/images/ServicesPage/Dental/ToothRes.png";
-import LaserTherapy from "@/public/assets/images/ServicesPage/Physiotherapy/LaserTherapy.png";
-import Hydrotherapy from "@/public/assets/images/ServicesPage/Physiotherapy/Hydrotherapy.png";
-import Trimming from "@/public/assets/images/ServicesPage/Grooming/Trimming.png";
-import EarClean from "@/public/assets/images/ServicesPage/Grooming/EarClean.png";
-import SpaBath from "@/public/assets/images/ServicesPage/Grooming/SpaBath.png";
-import OilMassage from "@/public/assets/images/ServicesPage/Grooming/OilMassage.png";
-import HairColoring from "@/public/assets/images/ServicesPage/Grooming/HairColoring.jpg";
-import AnalGlandExpression from "@/public/assets/images/ServicesPage/Grooming/AnalGlandExpression.png";
-import NewPetCounselling from "@/public/assets/images/ServicesPage/Pet Services/NewPetCounselling.png";
-import TravelDocs from "@/public/assets/images/ServicesPage/Pet Services/TravelDocs.png";
-import Microchipping from "@/public/assets/images/ServicesPage/Pet Services/Microchipping.png";
+import ParasiteControl from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/ParasiteControl.png"
+import SkinInfections from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/SkinInfections.jpeg"
+import Vaccination from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/Vaccinations.png"
+import Deworming from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/Deworming.png"
+import EarEyeCheckUp from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/EarEyeCheckup.png"
+import GeneralCheckUp from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/General check up.png"
+import NutritionalCounceling from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/NutritionalCounceling.png"
+import TraumaCare from "@/public/assets/images/ServicesPage/Sickness and Emergency/TraumaCare.webp"
+import PainManagement from "@/public/assets/images/ServicesPage/Sickness and Emergency/PainManagement.png"
+import AllergiesAndRashes from "@/public/assets/images/ServicesPage/Sickness and Emergency/Allergies and rashes.png"
+import Limping from "@/public/assets/images/ServicesPage/Sickness and Emergency/Limping.png"
+import AnimalBites from "@/public/assets/images/ServicesPage/Sickness and Emergency/Animal Bites.png"
+import FeverInfection from "@/public/assets/images/ServicesPage/Sickness and Emergency/FeverInfection.png"
+import VomittingDiarrhoeaCare from "@/public/assets/images/ServicesPage/Sickness and Emergency/VomittingDiarrhoeaCare.png"
+import AppetiteLoss from "@/public/assets/images/ServicesPage/Sickness and Emergency/AppetiteLoss.png"
+import BloodTests from "@/public/assets/images/ServicesPage/Dignostics/BloodTests.png"
+import Ultrasound from "@/public/assets/images/ServicesPage/Dignostics/Ultrasound.png"
+import Microscopy from "@/public/assets/images/ServicesPage/Dignostics/Microscopy.png"
+import UrineAnalysis from "@/public/assets/images/ServicesPage/Dignostics/UrineAnalysis.png"
+import Biochemistry from "@/public/assets/images/ServicesPage/Dignostics/Biochemistry.png"
+import KidneyLiverFunction from "@/public/assets/images/ServicesPage/Dignostics/KidneyLiverFunction.png"
+import StoolAnalysis from "@/public/assets/images/ServicesPage/Dignostics/StoolAnalysis.png"
+import HormoneAnalysis from "@/public/assets/images/ServicesPage/Dignostics/HormoneAnalysis.png"
+import Xray from "@/public/assets/images/ServicesPage/Dignostics/XRay.png"
+import FeverInfectionTests from "@/public/assets/images/ServicesPage/Sickness and Emergency/FeverInfection.png"
+import SpayingNeutering from "@/public/assets/images/ServicesPage/Planned Surgeries/SpayingNeutering.png"
+import DentalScaling from "@/public/assets/images/ServicesPage/Planned Surgeries/DentalScaling.png"
+import Tumorremoval from "@/public/assets/images/ServicesPage/Planned Surgeries/Tumourremoval.png"
+import ForeignBodyRemoval from "@/public/assets/images/ServicesPage/Planned Surgeries/ForeignBodyRemoval.png"
+import Orthopaedic from "@/public/assets/images/ServicesPage/Planned Surgeries/Orthopaedic.png"
+import SoftTissue from "@/public/assets/images/ServicesPage/Planned Surgeries/SoftTissue.png"
+import ToothExtraction from "@/public/assets/images/ServicesPage/Planned Surgeries/ToothExtraction.png"
+import ToothRes from "@/public/assets/images/ServicesPage/Dental/ToothRes.png"
+import LaserTherapy from "@/public/assets/images/ServicesPage/Physiotherapy/LaserTherapy.png"
+import Hydrotherapy from "@/public/assets/images/ServicesPage/Physiotherapy/Hydrotherapy.png"
+import Trimming from "@/public/assets/images/ServicesPage/Grooming/Trimming.png"
+import EarClean from "@/public/assets/images/ServicesPage/Grooming/EarClean.png"
+import SpaBath from "@/public/assets/images/ServicesPage/Grooming/SpaBath.png"
+import OilMassage from "@/public/assets/images/ServicesPage/Grooming/OilMassage.png"
+import HairColoring from "@/public/assets/images/ServicesPage/Grooming/HairColoring.jpg"
+import AnalGlandExpression from "@/public/assets/images/ServicesPage/Grooming/AnalGlandExpression.png"
+import NewPetCounselling from "@/public/assets/images/ServicesPage/Pet Services/NewPetCounselling.png"
+import TravelDocs from "@/public/assets/images/ServicesPage/Pet Services/TravelDocs.png"
+import Microchipping from "@/public/assets/images/ServicesPage/Pet Services/Microchipping.png"
 
-import Customer1 from "../public/assets/images/clinic/customer1.png";
-import Customer2 from "../public/assets/images/clinic/customer2.png";
-import Customer3 from "../public/assets/images/clinic/customer3.png";
+import Customer1 from "../public/assets/images/clinic/customer1.png"
+import Customer2 from "../public/assets/images/clinic/customer2.png"
+import Customer3 from "../public/assets/images/clinic/customer3.png"
 // import CareJunior from "@/public/assets/images/Membership/Care Junior.png";
 // import CareSenior from "@/public/assets/images/Membership/Care Senior.png";
 // import Grooming from "@/public/assets/images/Membership/Grooming.png";
 // import StarCare from "@/public/assets/images/Membership/Star Care and Grooming.png";
 // import { MembershipPlan } from "@/components/ui/MemberCard";
 
-import DrAartiImg from "@/public/assets/images/vets/dr_aarti.png";
-import DrArchanaImg from "@/public/assets/images/vets/dr_archana.png";
-import DrDeepakImg from "@/public/assets/images/vets/dr_deepak.png";
-import DrGirishImg from "@/public/assets/images/vets/dr_girish.png";
-import DrGishaImg from "@/public/assets/images/vets/dr_gisha.png";
-import DrHiteshImg from "@/public/assets/images/vets/dr_hitesh.png";
-import DrKiranImg from "@/public/assets/images/vets/dr_kiran.png";
-import DrNehaImg from "@/public/assets/images/vets/dr_neha.png";
-import DrNinoImg from "@/public/assets/images/vets/dr_nino.png";
-import DrPreranaImg from "@/public/assets/images/vets/dr_prerana.png";
-import DrRajashreeImg from "@/public/assets/images/vets/dr_rajashree.png";
-import DrShravyaImg from "@/public/assets/images/vets/dr_shravya.png";
+import DrAartiImg from "@/public/assets/images/vets/dr_aarti.png"
+import DrArchanaImg from "@/public/assets/images/vets/dr_archana.png"
+import DrDeepakImg from "@/public/assets/images/vets/dr_deepak.png"
+import DrGirishImg from "@/public/assets/images/vets/dr_girish.png"
+import DrGishaImg from "@/public/assets/images/vets/dr_gisha.png"
+import DrHiteshImg from "@/public/assets/images/vets/dr_hitesh.png"
+import DrKiranImg from "@/public/assets/images/vets/dr_kiran.png"
+import DrNehaImg from "@/public/assets/images/vets/dr_neha.png"
+import DrNinoImg from "@/public/assets/images/vets/dr_nino.png"
+import DrPreranaImg from "@/public/assets/images/vets/dr_prerana.png"
+import DrRajashreeImg from "@/public/assets/images/vets/dr_rajashree.png"
+import DrShravyaImg from "@/public/assets/images/vets/dr_shravya.png"
 
-import LP_DocsThatCare from "@/public/assets/images/Landing Page/LP_DocsThatCare.png";
-import LP_EverythingUnderRoof from "@/public/assets/images/Landing Page/LP_EverythingUnderRoof.png";
-import LP_FeelsLikeHome from "@/public/assets/images/Landing Page/LP_FeelsLikeHome.png";
-import LP_MembershipsCount from "@/public/assets/images/Landing Page/LP_MembershipsCount.png";
-import LP_OneTap from "@/public/assets/images/Landing Page/LP_OneTap.png";
-import LP_OnlyNecessaryTreatment from "@/public/assets/images/Landing Page/LP_OnlyNecessaryTreatments.png";
-import LP_SpaceForCats from "@/public/assets/images/Landing Page/LP_SpaceForCats.png";
-import { StaticImageData } from "next/image";
-import ClinicImage from "@/public/assets/images/clinic/ClinicImage.png";
+import LP_DocsThatCare from "@/public/assets/images/Landing Page/LP_DocsThatCare.png"
+import LP_EverythingUnderRoof from "@/public/assets/images/Landing Page/LP_EverythingUnderRoof.png"
+import LP_FeelsLikeHome from "@/public/assets/images/Landing Page/LP_FeelsLikeHome.png"
+import LP_MembershipsCount from "@/public/assets/images/Landing Page/LP_MembershipsCount.png"
+import LP_OneTap from "@/public/assets/images/Landing Page/LP_OneTap.png"
+import LP_OnlyNecessaryTreatment from "@/public/assets/images/Landing Page/LP_OnlyNecessaryTreatments.png"
+import LP_SpaceForCats from "@/public/assets/images/Landing Page/LP_SpaceForCats.png"
+import { StaticImageData } from "next/image"
+import ClinicImage from "@/public/assets/images/clinic/ClinicImage.png"
 // import AppointmentPetImage from "@/public/assets/images/Appointments/petImage.png";
 // import AppointmentVetImage from "@/public/assets/images/Appointments/vetImage.png";
 
@@ -152,7 +152,7 @@ export const FaqData = [
       },
     ],
   },
-];
+]
 
 export const reviewData = [
   {
@@ -170,13 +170,13 @@ export const reviewData = [
     review:
       "The best place to be if you are looking for your pet to be treated as family !! The staff truly treats your pets like family. Their compassionate care and attention to detail create a welcoming environment. From thorough examinations to personalised follow-up, they prioritise your pet's well-being, making every visit a positive experience.",
   },
-];
+]
 
 export const clinicImagesMap: { [key: string]: StaticImageData } = {
   indiranagar: IND_Exterior1,
   rmv: RMV_Exterior1,
   unknown: ClinicImage,
-};
+}
 
 export const photos = [
   {
@@ -206,7 +206,7 @@ export const photos = [
       RMV_Retail,
     ],
   },
-];
+]
 
 export const clinicItems: Clinic[] = [
   {
@@ -339,7 +339,7 @@ export const clinicItems: Clinic[] = [
   //   contact: "Coming soon!",
   //   location: "",
   // },
-];
+]
 
 export const descriptionItems = [
   {
@@ -419,7 +419,7 @@ export const descriptionItems = [
       buttonLink: "",
     },
   },
-];
+]
 
 export const bannerItems = [
   {
@@ -434,7 +434,7 @@ export const bannerItems = [
     bannerImage: otherPetsImg,
     bannerText: "Other Pets.",
   },
-];
+]
 
 export const doctorImagesMap: { [key: string]: StaticImageData } = {
   "dr-girish-kumar": DrGirishImg,
@@ -449,7 +449,7 @@ export const doctorImagesMap: { [key: string]: StaticImageData } = {
   "dr-deepak-dhindhwal": DrDeepakImg,
   "dr-gisha-nair": DrGishaImg,
   "dr-rajasri-bodepudi": DrRajashreeImg,
-};
+}
 
 export const doctors: Doctor[] = [
   {
@@ -757,7 +757,7 @@ export const doctors: Doctor[] = [
     favPetName: "Ghost - come meet her (my Husky) at the RMV clinic!",
     qualification: "BVSc & AH",
   },
-];
+]
 
 export const serviceCategories = [
   "Planned Visits",
@@ -767,7 +767,7 @@ export const serviceCategories = [
   "Physiotherapy",
   "Grooming",
   "Pet Services",
-];
+]
 
 export const servicesData = {
   "Planned Visits": [
@@ -829,7 +829,7 @@ export const servicesData = {
     { name: "Nutritional Counselling" },
     { name: "New-Pet Preparation & Counselling" },
   ],
-};
+}
 
 export const ServiceTabsData = [
   {
@@ -1071,7 +1071,7 @@ export const ServiceTabsData = [
       },
     ],
   },
-];
+]
 
 export const reviews: Review[] = [
   {
@@ -1116,4 +1116,4 @@ export const reviews: Review[] = [
       "Very thoughtfully put together keeping in mind the comfort of all pets owners, with separate floors for cats and dogs. Very spacious, spread across four floors accommodating all the required services like x-ray, ultrasound, path lab, grooming areas, OT for surgeries & IPD and a huge pet store on the ground floor. And most importantly, a wonderful team of doctors, ably led by Dr. Girish and brought together by the passionate founders.",
     clinicId: "2",
   },
-];
+]

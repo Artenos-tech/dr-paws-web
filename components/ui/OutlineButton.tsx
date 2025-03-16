@@ -1,10 +1,10 @@
-import React from "react";
-import { FiEdit2, FiPlus } from "react-icons/fi";
+import React from "react"
+import { FiEdit2, FiPlus } from "react-icons/fi"
 
 type outlineProps = {
-  outlineBtnText: string;
-  outlineBtnLink?: () => void;
-};
+  outlineBtnText: string
+  outlineBtnLink?: () => void
+}
 
 const OutlineButton: React.FC<outlineProps> = ({
   outlineBtnText,
@@ -18,7 +18,7 @@ const OutlineButton: React.FC<outlineProps> = ({
     ""
   ) : (
     <FiPlus />
-  );
+  )
   return (
     <button
       type="button"
@@ -29,7 +29,7 @@ const OutlineButton: React.FC<outlineProps> = ({
       {icon}
       {outlineBtnText}
     </button>
-  );
-};
+  )
+}
 
-export default OutlineButton;
+export default OutlineButton

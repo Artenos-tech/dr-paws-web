@@ -1,37 +1,37 @@
-import Image, { StaticImageData } from "next/image";
-import ClinicItem from "./ClinicItem";
-import { clinicItems } from "@/model/mockData";
-import ClinicThumbnail from "@/public/assets/images/clinic/clinicThumbnail.svg";
-import { useAPICall } from "@/hooks/apicall";
-import api from "@/services/api";
-import { useEffect, useState } from "react";
-import Loader from "./Loader";
+import Image, { StaticImageData } from "next/image"
+import ClinicItem from "./ClinicItem"
+import { clinicItems } from "@/model/mockData"
+import ClinicThumbnail from "@/public/assets/images/clinic/clinicThumbnail.svg"
+import { useAPICall } from "@/hooks/apicall"
+import api from "@/services/api"
+import { useEffect, useState } from "react"
+import Loader from "./Loader"
 
 interface ClinicItemProps {
-  showStaticCard: boolean;
-  enlargedView: boolean;
+  showStaticCard: boolean
+  enlargedView: boolean
 }
 
 const ClinicItemList = ({ showStaticCard, enlargedView }: ClinicItemProps) => {
   const [clinics, setClinics] = useState<
     {
-      id: number;
-      name: string;
-      services: string;
+      id: number
+      name: string
+      services: string
       image: {
-        type: "url" | "ref";
-        value: string | StaticImageData;
-      };
+        type: "url" | "ref"
+        value: string | StaticImageData
+      }
     }[]
-  >([]);
+  >([])
   const { call: getClinicsList, loading: loadingClinicList } = useAPICall(
     api.getClinicsForDisplay,
-  );
+  )
   useEffect(() => {
     const fetchClinics = async () => {
-      const clinics = await getClinicsList({});
+      const clinics = await getClinicsList({})
       if (clinics.ok && clinics.value.body.clinics) {
-        setClinics(clinics.value.body.clinics);
+        setClinics(clinics.value.body.clinics)
       } else {
         setClinics(
           clinicItems.map((clinic) => ({
@@ -40,14 +40,14 @@ const ClinicItemList = ({ showStaticCard, enlargedView }: ClinicItemProps) => {
             services: clinic.services,
             image: clinic.image,
           })),
-        );
+        )
       }
-    };
-    fetchClinics();
-  }, []);
+    }
+    fetchClinics()
+  }, [])
 
   if (loadingClinicList) {
-    return <Loader />;
+    return <Loader />
   }
   return (
     <div
@@ -80,7 +80,7 @@ const ClinicItemList = ({ showStaticCard, enlargedView }: ClinicItemProps) => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default ClinicItemList;
+export default ClinicItemList

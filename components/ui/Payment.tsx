@@ -1,52 +1,52 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import api from "@/services/api";
-import { useAPICall } from "@/hooks/apicall";
-import { load } from "@cashfreepayments/cashfree-js";
+import { useState } from "react"
+import api from "@/services/api"
+import { useAPICall } from "@/hooks/apicall"
+import { load } from "@cashfreepayments/cashfree-js"
 
 interface PaymentProps {
-  amount: number;
-  disabled?: boolean;
-  planId: number;
-  petId: number | null;
+  amount: number
+  disabled?: boolean
+  planId: number
+  petId: number | null
 }
 
 const Payment = ({ amount, disabled, planId, petId }: PaymentProps) => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const { call: createOrder } = useAPICall(api.createOrder);
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const { call: createOrder } = useAPICall(api.createOrder)
 
   const initializeSDK = async function () {
     const cashfreeEnv = process.env.NEXT_PUBLIC_CASHFREE_ENVIRONMENT as
       | "sandbox"
-      | "production";
+      | "production"
     if (!cashfreeEnv) {
       throw new Error(
         "Cashfree environment is not set. Cannot proceed with payment",
-      );
+      )
     } else {
       const cashfree = await load({
         mode: process.env.NEXT_PUBLIC_CASHFREE_ENVIRONMENT as
           | "sandbox"
           | "production",
-      });
-      return cashfree;
+      })
+      return cashfree
     }
-  };
+  }
 
   const handlePayment = async () => {
     try {
-      setLoading(true);
-      setError(null);
-      const response = await createOrder({ amount });
+      setLoading(true)
+      setError(null)
+      const response = await createOrder({ amount })
       if (!response.ok) {
-        throw new Error("Failed to create order");
+        throw new Error("Failed to create order")
       }
-      const { paymentSessionId, orderId } = response.value.body.order;
-      const cashfree = await initializeSDK();
-      console.log("Payment session ID", paymentSessionId);
-      console.log("Order ID", orderId);
+      const { paymentSessionId, orderId } = response.value.body.order
+      const cashfree = await initializeSDK()
+      console.log("Payment session ID", paymentSessionId)
+      console.log("Order ID", orderId)
       const result = await cashfree.checkout({
         paymentSessionId,
         returnUrl:
@@ -58,19 +58,19 @@ const Payment = ({ amount, disabled, planId, petId }: PaymentProps) => {
           "&pet_id=" +
           petId,
         redirectTarget: "_self",
-      });
-      console.log("Result", result);
+      })
+      console.log("Result", result)
     } catch (err) {
-      console.log("Payment error", err);
+      console.log("Payment error", err)
       if (err instanceof Error) {
-        setError(err.message);
+        setError(err.message)
       } else {
-        setError("An unknown error occurred");
+        setError("An unknown error occurred")
       }
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
     <div className="p-4">
@@ -86,7 +86,7 @@ const Payment = ({ amount, disabled, planId, petId }: PaymentProps) => {
 
       {error && <div className="mt-4 text-red-500">Error: {error}</div>}
     </div>
-  );
-};
+  )
+}
 
-export default Payment;
+export default Payment

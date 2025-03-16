@@ -1,31 +1,31 @@
-"use client";
-import React, { useEffect } from "react";
-import Image from "next/image";
-import teamImg from "@/public/assets/images/team/teamImg.png";
+"use client"
+import React, { useEffect } from "react"
+import Image from "next/image"
+import teamImg from "@/public/assets/images/team/teamImg.png"
 // import { doctors } from "@/model/mockData";
-import DoctorCard from "@/components/ui/DoctorCard";
-import { DoctorBase } from "@/model/typeDefinitions";
-import { useAPICall } from "@/hooks/apicall";
-import api from "@/services/api";
-import { doctors } from "@/model/mockData";
-import Loader from "@/components/ui/Loader";
+import DoctorCard from "@/components/ui/DoctorCard"
+import { DoctorBase } from "@/model/typeDefinitions"
+import { useAPICall } from "@/hooks/apicall"
+import api from "@/services/api"
+import { doctors } from "@/model/mockData"
+import Loader from "@/components/ui/Loader"
 
 const TeamPage = () => {
   const { call: getDoctorsForDisplay, loading: loadingDoctors } = useAPICall(
     api.getDoctorsForDisplay,
-  );
-  const [doctorsList, setDoctors] = React.useState<DoctorBase[]>([]);
+  )
+  const [doctorsList, setDoctors] = React.useState<DoctorBase[]>([])
   useEffect(() => {
     const fetchDoctors = async () => {
-      const docsResult = await getDoctorsForDisplay({});
+      const docsResult = await getDoctorsForDisplay({})
       if (docsResult.ok && docsResult.value.body.doctors) {
-        setDoctors(docsResult.value.body.doctors);
+        setDoctors(docsResult.value.body.doctors)
       } else {
-        setDoctors(doctors);
+        setDoctors(doctors)
       }
-    };
-    fetchDoctors();
-  }, []);
+    }
+    fetchDoctors()
+  }, [])
   // const doctorsList = doctorsResult && doctorsResult.ok && doctorsResult.value.body.doctors || doctors;
   return (
     <div className="flex flex-col w-full h-full items-center justify-items-center font-roca pb-20">
@@ -69,7 +69,7 @@ const TeamPage = () => {
         )}
       </main>
     </div>
-  );
-};
+  )
+}
 
-export default TeamPage;
+export default TeamPage

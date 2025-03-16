@@ -1,40 +1,40 @@
-import Image, { StaticImageData } from "next/image";
-import { FaPlus } from "react-icons/fa6";
-import React from "react";
-import RenewBtn from "./RenewBtn";
+import Image, { StaticImageData } from "next/image"
+import { FaPlus } from "react-icons/fa6"
+import React from "react"
+import RenewBtn from "./RenewBtn"
 
 type membershipDataProps = {
   membershipData: {
-    planName: string;
-    planLogo: StaticImageData;
+    planName: string
+    planLogo: StaticImageData
     pet: {
-      name: string;
-      image: StaticImageData;
-    };
-    benefits: string[];
+      name: string
+      image: StaticImageData
+    }
+    benefits: string[]
     planInfo: {
-      expiresOn: string;
-      nextPaymentOn: string;
-    };
-  };
-  index: number;
-};
+      expiresOn: string
+      nextPaymentOn: string
+    }
+  }
+  index: number
+}
 
 const MembershipCard: React.FC<membershipDataProps> = ({
   membershipData,
   index,
 }) => {
-  const { planName, planLogo, planInfo, pet, benefits } = membershipData;
+  const { planName, planLogo, planInfo, pet, benefits } = membershipData
 
   const bgClasses = [
     "bg-primary-1",
     "bg-secondary-1",
     "bg-secondary-2",
     "bg-accent",
-  ];
+  ]
 
   // Determine which background class to apply based on the index
-  const backgroundClass = bgClasses[index % bgClasses.length]; // Cycle through classes
+  const backgroundClass = bgClasses[index % bgClasses.length] // Cycle through classes
   return (
     <div className="w-full text-sm my-5">
       <div
@@ -86,7 +86,7 @@ const MembershipCard: React.FC<membershipDataProps> = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default MembershipCard;
+export default MembershipCard

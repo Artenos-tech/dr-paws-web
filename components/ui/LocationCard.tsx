@@ -1,31 +1,31 @@
-"use client";
+"use client"
 
-import React, { useEffect, useState } from "react";
-import { MapPin } from "lucide-react";
-import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
+import React, { useEffect, useState } from "react"
+import { MapPin } from "lucide-react"
+import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api"
 
 const mapContainerStyle = {
   width: "100%",
   height: "100%",
-};
+}
 
 interface LocationCardProps {
-  locationString: string;
+  locationString: string
 }
 
 export function LocationCard({ locationString }: LocationCardProps) {
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(
     null,
-  );
-  const [address, setAddress] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  )
+  const [address, setAddress] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     const fetchPlaceDetails = async () => {
-      const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+      const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
       if (!apiKey) {
-        setError("Google Maps API key is not set");
-        return;
+        setError("Google Maps API key is not set")
+        return
       }
 
       try {
@@ -33,41 +33,41 @@ export function LocationCard({ locationString }: LocationCardProps) {
           `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
             locationString,
           )}&key=${apiKey}`,
-        );
-        const data = await response.json();
+        )
+        const data = await response.json()
 
         if (data.status === "OK" && data.results.length > 0) {
-          const result = data.results[0];
+          const result = data.results[0]
           setLocation({
             lat: result.geometry.location.lat,
             lng: result.geometry.location.lng,
-          });
-          setAddress(result.formatted_address);
-          setError(null);
+          })
+          setAddress(result.formatted_address)
+          setError(null)
         } else {
-          throw new Error("Place not found");
+          throw new Error("Place not found")
         }
       } catch (error) {
-        console.error("Error fetching place details:", error);
-        setError("Failed to fetch location details. Please try again.");
-        setLocation(null);
-        setAddress(null);
+        console.error("Error fetching place details:", error)
+        setError("Failed to fetch location details. Please try again.")
+        setLocation(null)
+        setAddress(null)
       }
-    };
+    }
 
     if (locationString) {
-      fetchPlaceDetails();
+      fetchPlaceDetails()
     }
-  }, [locationString]);
+  }, [locationString])
 
   const getDirections = () => {
     if (location) {
       const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
         locationString,
-      )}`;
-      window.open(url, "_blank", "noopener,noreferrer");
+      )}`
+      window.open(url, "_blank", "noopener,noreferrer")
     }
-  };
+  }
 
   return (
     <div className="rounded-lg p-[35px] w-full lg:w-[400px] lg:h-[440px] flex flex-col border border-[#74A7B3]">
@@ -116,5 +116,5 @@ export function LocationCard({ locationString }: LocationCardProps) {
         Get Directions
       </button>
     </div>
-  );
+  )
 }

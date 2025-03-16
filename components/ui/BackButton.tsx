@@ -1,13 +1,13 @@
-"use client";
-import { useRouter } from "next/navigation";
-import React from "react";
-import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
+"use client"
+import { useRouter } from "next/navigation"
+import React from "react"
+import { MdOutlineKeyboardArrowLeft } from "react-icons/md"
 
 interface BackButtonProps {
-  navigateBack?: () => void;
+  navigateBack?: () => void
 }
 const BackButton = ({ navigateBack }: BackButtonProps) => {
-  const navigate = useRouter();
+  const navigate = useRouter()
   return (
     <button
       type="button"
@@ -16,7 +16,7 @@ const BackButton = ({ navigateBack }: BackButtonProps) => {
     >
       <MdOutlineKeyboardArrowLeft /> Back
     </button>
-  );
-};
+  )
+}
 
-export default BackButton;
+export default BackButton

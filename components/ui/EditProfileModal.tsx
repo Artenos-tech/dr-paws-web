@@ -1,14 +1,14 @@
-import React from "react";
-import Modal from "react-modal";
-import ProfileForm from "./ProfileForm";
-import { User, useUserContext } from "@/context/UserContext";
-import { useAPICall } from "@/hooks/apicall";
-import api from "@/services/api";
+import React from "react"
+import Modal from "react-modal"
+import ProfileForm from "./ProfileForm"
+import { User, useUserContext } from "@/context/UserContext"
+import { useAPICall } from "@/hooks/apicall"
+import api from "@/services/api"
 
 interface EditProfileModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  profileData: User;
+  isOpen: boolean
+  onClose: () => void
+  profileData: User
 }
 
 const EditProfileModal: React.FC<EditProfileModalProps> = ({
@@ -16,9 +16,9 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
   onClose,
   profileData,
 }) => {
-  const { updateUserDetailsHandler } = useUserContext();
+  const { updateUserDetailsHandler } = useUserContext()
 
-  const { call: updateUser, loading } = useAPICall(api.updateUser);
+  const { call: updateUser, loading } = useAPICall(api.updateUser)
 
   const handleProfileUpdate = async (updatedProfile: User) => {
     const response = await updateUser({
@@ -33,12 +33,12 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
         pincode: updatedProfile.pincode,
         profile_image: updatedProfile.profile_image,
       },
-    });
+    })
     if (response.ok) {
-      updateUserDetailsHandler(updatedProfile);
-      onClose();
+      updateUserDetailsHandler(updatedProfile)
+      onClose()
     }
-  };
+  }
 
   // if (loading) return <div><Loader /></div>;
 
@@ -60,7 +60,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
         loading={loading}
       />
     </Modal>
-  );
-};
+  )
+}
 
-export default EditProfileModal;
+export default EditProfileModal

@@ -1,99 +1,99 @@
-"use client";
+"use client"
 
-import React, { useState, useEffect } from "react";
-import Image from "next/image";
-import "swiper/css";
-import "swiper/css/navigation";
-import MembershipDesc from "@/public/assets/images/Membership/MembershipDesc.png";
-import DogImage from "@/public/assets/images/pets/dog.png";
-import CatImage from "@/public/assets/images/pets/cat.png";
-import { MembershipPlan } from "@/components/ui/MemberCard";
-import MemberModal from "@/components/ui/MemberModal";
-import { useAPICall } from "@/hooks/apicall";
-import api from "@/services/api";
-import toast, { Toaster } from "react-hot-toast";
-import { ClipLoader } from "react-spinners";
-import { Table } from "antd";
+import React, { useState, useEffect } from "react"
+import Image from "next/image"
+import "swiper/css"
+import "swiper/css/navigation"
+import MembershipDesc from "@/public/assets/images/Membership/MembershipDesc.png"
+import DogImage from "@/public/assets/images/pets/dog.png"
+import CatImage from "@/public/assets/images/pets/cat.png"
+import { MembershipPlan } from "@/components/ui/MemberCard"
+import MemberModal from "@/components/ui/MemberModal"
+import { useAPICall } from "@/hooks/apicall"
+import api from "@/services/api"
+import toast, { Toaster } from "react-hot-toast"
+import { ClipLoader } from "react-spinners"
+import { Table } from "antd"
 
 type Plan = {
-  id: number;
-  name: string;
-  description: string | null;
-  price: number;
-  duration_months: number;
-  version: number;
-  species: ("dog" | "cat")[];
-  age: "CHILD" | "ADULT" | "SENIOR" | null;
-  type: "GROOMING" | "MEDICAL" | "COMPREHENSIVE" | null;
-  published: boolean;
-  created_at: string;
-  updated_at: string;
+  id: number
+  name: string
+  description: string | null
+  price: number
+  duration_months: number
+  version: number
+  species: ("dog" | "cat")[]
+  age: "CHILD" | "ADULT" | "SENIOR" | null
+  type: "GROOMING" | "MEDICAL" | "COMPREHENSIVE" | null
+  published: boolean
+  created_at: string
+  updated_at: string
   features: {
-    id: number;
-    name: string;
-    description: string | null;
-    type: "DISCOUNT" | "SESSIONS" | "VACCINATIONS";
-    value: number | null;
-  }[];
-};
+    id: number
+    name: string
+    description: string | null
+    type: "DISCOUNT" | "SESSIONS" | "VACCINATIONS"
+    value: number | null
+  }[]
+}
 
-type PetType = "dog" | "cat";
-type PetAge = "CHILD" | "ADULT" | "SENIOR";
-type MembershipType = "GROOMING" | "MEDICAL";
+type PetType = "dog" | "cat"
+type PetAge = "CHILD" | "ADULT" | "SENIOR"
+type MembershipType = "GROOMING" | "MEDICAL"
 
 type ComparisonTable = {
-  featureName: string;
-  [planName: string]: string | number | React.ReactNode;
-};
+  featureName: string
+  [planName: string]: string | number | React.ReactNode
+}
 
 const Membership = () => {
-  const [selectedPlan, setSelectedPlan] = useState<MembershipPlan | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [petType, setPetType] = useState<PetType | null>(null);
-  const [petAge, setPetAge] = useState<PetAge | null>(null);
+  const [selectedPlan, setSelectedPlan] = useState<MembershipPlan | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [petType, setPetType] = useState<PetType | null>(null)
+  const [petAge, setPetAge] = useState<PetAge | null>(null)
   const [membershipType, setMembershipType] = useState<MembershipType | null>(
     null,
-  );
-  const [plans, setPlans] = useState<Plan[] | null>(null);
+  )
+  const [plans, setPlans] = useState<Plan[] | null>(null)
 
   const { call: getAllPlans, loading: getAllPlansLoading } = useAPICall(
     api.getAllPlans,
-  );
+  )
 
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(false)
 
-  const MOBULE_MAX_WIDTH = 500;
+  const MOBULE_MAX_WIDTH = 500
 
   useEffect(() => {
-    setIsMobile(window.innerWidth <= MOBULE_MAX_WIDTH);
+    setIsMobile(window.innerWidth <= MOBULE_MAX_WIDTH)
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= MOBULE_MAX_WIDTH);
-    };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+      setIsMobile(window.innerWidth <= MOBULE_MAX_WIDTH)
+    }
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
+  }, [])
 
   useEffect(() => {
     const fetchPlans = async () => {
       try {
-        const plansResp = await getAllPlans({});
+        const plansResp = await getAllPlans({})
         if (plansResp.ok) {
-          setPlans(plansResp.value.body.plans);
+          setPlans(plansResp.value.body.plans)
         } else {
-          console.error("Failed to fetch plans:", plansResp.error);
+          console.error("Failed to fetch plans:", plansResp.error)
           toast.error(
             "Failed to fetch plans. Please refresh the page to try again.",
-          );
+          )
         }
       } catch (error) {
-        console.error("Failed to fetch plans:", error);
-        toast.error("Failed to fetch plans");
+        console.error("Failed to fetch plans:", error)
+        toast.error("Failed to fetch plans")
       }
-    };
+    }
 
-    fetchPlans();
+    fetchPlans()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [])
 
   const filteredPlans = plans?.filter((plan) => {
     const shouldShow =
@@ -104,84 +104,84 @@ const Membership = () => {
       membershipType &&
       (plan.type === membershipType ||
         plan.type === "COMPREHENSIVE" ||
-        plan.type === null);
-    console.log(plan, shouldShow);
-    return shouldShow;
-  });
+        plan.type === null)
+    console.log(plan, shouldShow)
+    return shouldShow
+  })
 
   const TickMark = () => (
     <span style={{ color: "green", fontWeight: "bold", fontSize: "20px" }}>
       &#x2713;
     </span>
-  );
+  )
 
   const CrossMark = () => (
     <span style={{ color: "red", fontWeight: "bold", fontSize: "20px" }}>
       &#x2717;
     </span>
-  );
+  )
 
   const generateComparisonTable = (): ComparisonTable[] => {
     if (!filteredPlans) {
-      return [];
+      return []
     }
 
-    const featureTypeOrder = ["VACCINATIONS", "SESSIONS", "DISCOUNT"];
+    const featureTypeOrder = ["VACCINATIONS", "SESSIONS", "DISCOUNT"]
 
-    const featureGroups: Record<string, string[]> = {};
+    const featureGroups: Record<string, string[]> = {}
 
     filteredPlans.forEach((plan) => {
       plan.features.forEach((feature) => {
         if (!featureGroups[feature.type]) {
-          featureGroups[feature.type] = [];
+          featureGroups[feature.type] = []
         }
         if (!featureGroups[feature.type].includes(feature.name)) {
-          featureGroups[feature.type].push(feature.name);
+          featureGroups[feature.type].push(feature.name)
         }
-      });
-    });
+      })
+    })
 
     Object.keys(featureGroups).forEach((type) => {
-      featureGroups[type].sort((a, b) => a.localeCompare(b));
-    });
+      featureGroups[type].sort((a, b) => a.localeCompare(b))
+    })
 
     const allFeatureNames = featureTypeOrder.flatMap(
       (type) => featureGroups[type] ?? [],
-    );
+    )
 
     const comparisonTable: ComparisonTable[] = allFeatureNames.map(
       (featureName) => {
-        const row: ComparisonTable = { featureName };
+        const row: ComparisonTable = { featureName }
 
         filteredPlans.forEach((plan) => {
           const matchingFeature = plan.features.find(
             (f) => f.name === featureName,
-          );
+          )
           if (matchingFeature) {
             if (matchingFeature.type === "DISCOUNT") {
-              row[plan.name] = `${matchingFeature.value ?? <CrossMark />}%`;
+              row[plan.name] = `${matchingFeature.value ?? <CrossMark />}%`
             } else if (matchingFeature.type === "VACCINATIONS") {
               row[plan.name] =
                 matchingFeature.value === 1 ? (
                   <TickMark />
                 ) : (
                   `${matchingFeature.value}`
-                );
+                )
             } else if (matchingFeature.type === "SESSIONS") {
               row[plan.name] =
-                `${matchingFeature.value ?? <CrossMark />} sessions`;
+                `${matchingFeature.value ?? <CrossMark />} sessions`
             }
           } else {
-            row[plan.name] = <CrossMark />;
+            row[plan.name] = <CrossMark />
           }
-        });
+        })
 
-        return row;
+        return row
       },
-    );
+    )
 
-    return comparisonTable;
-  };
+    return comparisonTable
+  }
 
   const columns = [
     {
@@ -225,8 +225,8 @@ const Membership = () => {
                 price: plan.price,
                 duration: plan.duration_months.toString(),
                 petType: petType || "dog",
-              });
-              setIsModalOpen(true);
+              })
+              setIsModalOpen(true)
             }}
           >
             Buy Now
@@ -240,7 +240,7 @@ const Membership = () => {
         <div style={{ minWidth: "100px" }}>{value}</div>
       ),
     })),
-  ];
+  ]
 
   return (
     <div className="w-full h-full items-center justify-items-center font-roca">
@@ -302,7 +302,7 @@ const Membership = () => {
                                   : "border-gray-300"
                               }`}
                               onClick={() => {
-                                setPetType(type as PetType);
+                                setPetType(type as PetType)
                               }}
                             >
                               <Image
@@ -415,7 +415,7 @@ const Membership = () => {
       )}
       <Toaster />
     </div>
-  );
-};
+  )
+}
 
-export default Membership;
+export default Membership

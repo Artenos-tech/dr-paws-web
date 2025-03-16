@@ -1,22 +1,22 @@
-"use client";
+"use client"
 
-import React, { useState } from "react";
-import { IoClose } from "react-icons/io5";
-import Modal from "react-modal";
-import LoginForm from "./LoginForm";
-import SignupForm from "./SignupForm";
-import OTPForm from "./OTPForm";
-import { useAPICall } from "@/hooks/apicall";
-import api, { setAuthToken } from "@/services/api";
-import toast, { Toaster } from "react-hot-toast";
-import { useUserContext } from "@/context/UserContext";
+import React, { useState } from "react"
+import { IoClose } from "react-icons/io5"
+import Modal from "react-modal"
+import LoginForm from "./LoginForm"
+import SignupForm from "./SignupForm"
+import OTPForm from "./OTPForm"
+import { useAPICall } from "@/hooks/apicall"
+import api, { setAuthToken } from "@/services/api"
+import toast, { Toaster } from "react-hot-toast"
+import { useUserContext } from "@/context/UserContext"
 
 interface authenticationProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSuccess: (toastMessage: string) => void;
-  buttonText?: string;
-  bookingFlow?: boolean;
+  isOpen: boolean
+  onClose: () => void
+  onSuccess: (toastMessage: string) => void
+  buttonText?: string
+  bookingFlow?: boolean
 }
 
 const UserAuthenticationModal: React.FC<authenticationProps> = ({
@@ -26,127 +26,127 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
   buttonText,
   bookingFlow = false,
 }) => {
-  const [isLogin, setIsLogin] = useState<boolean>(true);
+  const [isLogin, setIsLogin] = useState<boolean>(true)
   const [userMobileNumber, setUserMobileNumber] = useState<string | undefined>(
     undefined,
-  );
-  const [userName, setUserName] = useState<string>("");
-  const [profileImage, setUserPofileImage] = useState<string | null>(null);
+  )
+  const [userName, setUserName] = useState<string>("")
+  const [profileImage, setUserPofileImage] = useState<string | null>(null)
   const [signupData, setSignupData] = useState<{
-    address1: string;
-    address2: string;
-    city: string;
-    pincode: string;
-    state: string;
+    address1: string
+    address2: string
+    city: string
+    pincode: string
+    state: string
   }>({
     address1: "",
     address2: "",
     city: "",
     pincode: "",
     state: "",
-  });
-  const [loginErr, setLoginErr] = useState("");
-  const [signupErr, setSignupErr] = useState("");
-  const [otpErr, setOtpErr] = useState("");
+  })
+  const [loginErr, setLoginErr] = useState("")
+  const [signupErr, setSignupErr] = useState("")
+  const [otpErr, setOtpErr] = useState("")
 
   // context
-  const { updateUserDetailsHandler } = useUserContext();
+  const { updateUserDetailsHandler } = useUserContext()
 
   // API's
   const { call: signupOTP, loading: signupOTPLoading } = useAPICall(
     api.signupOTP,
-  );
+  )
   const { call: signupVerify, loading: signupVerifyLoading } = useAPICall(
     api.signupVerify,
-  );
-  const { call: loginOTP, loading: loginOTPLoading } = useAPICall(api.loginOTP);
+  )
+  const { call: loginOTP, loading: loginOTPLoading } = useAPICall(api.loginOTP)
   const { call: loginVerify, loading: loginVerifyLoading } = useAPICall(
     api.loginVerify,
-  );
+  )
 
-  const { call: signupCancel } = useAPICall(api.signupCancel);
+  const { call: signupCancel } = useAPICall(api.signupCancel)
 
   const handleIncorrectNumber = () => {
-    setUserMobileNumber(undefined);
-    setLoginErr("");
-    setIsLogin(true);
-  };
+    setUserMobileNumber(undefined)
+    setLoginErr("")
+    setIsLogin(true)
+  }
 
   const handleLoginSubmit = async (mobileNumber: string) => {
-    setOtpErr("");
-    const response = await loginOTP({ mobile: mobileNumber, role: "USER" });
+    setOtpErr("")
+    const response = await loginOTP({ mobile: mobileNumber, role: "USER" })
 
     if (response.ok) {
-      setUserMobileNumber(mobileNumber);
+      setUserMobileNumber(mobileNumber)
       toast.success("OTP sent to your mobile number", {
         duration: 3000,
         position: "bottom-right",
-      });
-      setLoginErr("");
+      })
+      setLoginErr("")
     } else {
       const errorMessage =
         response?.error.apiClientErrorType === "ErrorResponseAPIError"
           ? response.error.body.message
-          : (response?.error.message as string);
+          : (response?.error.message as string)
 
-      setLoginErr(errorMessage);
+      setLoginErr(errorMessage)
 
       toast.error("Something went wrong. Please try again.", {
         duration: 3000,
         position: "bottom-right",
-      });
+      })
     }
-  };
+  }
 
   // Sign up OTP
   const handleSignupSubmit = async (data: {
-    userName: string;
-    mobileNumber: string;
-    profilePicture: string | null;
-    address1: string;
-    address2: string;
-    city: string;
-    pincode: string;
-    state: string;
+    userName: string
+    mobileNumber: string
+    profilePicture: string | null
+    address1: string
+    address2: string
+    city: string
+    pincode: string
+    state: string
   }) => {
-    setOtpErr("");
+    setOtpErr("")
     // Updating state variables for resending OTP
-    setUserName(data.userName);
-    setUserPofileImage(data.profilePicture);
+    setUserName(data.userName)
+    setUserPofileImage(data.profilePicture)
     setSignupData({
       address1: data.address1,
       address2: data.address2,
       city: data.city,
       pincode: data.pincode,
       state: data.state,
-    });
+    })
     const response = await signupOTP({
       name: data.userName,
       mobile: data.mobileNumber,
       role: "USER",
       profile_image: data.profilePicture || null,
-    });
+    })
     if (response?.ok) {
-      setUserMobileNumber(data.mobileNumber);
+      setUserMobileNumber(data.mobileNumber)
       toast.success("OTP sent to your mobile number", {
         duration: 3000,
         position: "bottom-right",
-      });
-      setSignupErr("");
+      })
+      setSignupErr("")
     } else {
       const errorMessage =
         response?.error.apiClientErrorType === "ErrorResponseAPIError"
           ? response.error.body.message
-          : (response?.error.message as string);
+          : (response?.error.message as string)
 
-      setSignupErr(errorMessage);
+      setSignupErr(errorMessage)
 
       toast.error("Something went wrong. Please try again.", {
         duration: 3000,
         position: "bottom-right",
-      });
+      })
     }
-  };
+  }
   const handleOTPVerification = async (otp: string) => {
     if (isLogin) {
       if (userMobileNumber) {
@@ -154,29 +154,29 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
           mobile: userMobileNumber,
           role: "USER",
           otp,
-        });
+        })
         if (response?.ok) {
           // Storing the token in the localstorage
-          setAuthToken(response.value.body.token);
-          const user = response.value.body.user;
-          updateUserDetailsHandler(user);
-          setOtpErr("");
-          onSuccess("logged in");
+          setAuthToken(response.value.body.token)
+          const user = response.value.body.user
+          updateUserDetailsHandler(user)
+          setOtpErr("")
+          onSuccess("logged in")
         } else {
           const errorMessage =
             response?.error.apiClientErrorType === "ErrorResponseAPIError"
               ? response.error.body.message
-              : (response?.error.message as string);
+              : (response?.error.message as string)
           setOtpErr(
             errorMessage === "Invalid mobile number or OTP"
               ? "Invalid OTP"
               : errorMessage,
-          );
+          )
 
           toast.error("Something went wrong. Please try again.", {
             duration: 3000,
             position: "bottom-right",
-          });
+          })
         }
       }
     } else {
@@ -190,35 +190,35 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
           city: signupData.city,
           pincode: signupData.pincode,
           state: signupData.state,
-        });
+        })
         if (response?.ok) {
-          setAuthToken(response.value.body.token);
-          const user = response.value.body.user;
-          updateUserDetailsHandler(user);
-          setOtpErr("");
-          onSuccess("signed up");
+          setAuthToken(response.value.body.token)
+          const user = response.value.body.user
+          updateUserDetailsHandler(user)
+          setOtpErr("")
+          onSuccess("signed up")
         } else {
           const errorMessage =
             response?.error.apiClientErrorType === "ErrorResponseAPIError"
               ? response.error.body.message
-              : (response?.error.message as string);
+              : (response?.error.message as string)
           setOtpErr(
             errorMessage === "Invalid mobile number or OTP"
               ? "Invalid OTP"
               : errorMessage,
-          );
+          )
 
           toast.error("Something went wrong. Please try again.", {
             duration: 3000,
             position: "bottom-right",
-          });
+          })
         }
       }
     }
-  };
+  }
 
   const handleResendOTP = async () => {
-    setOtpErr("");
+    setOtpErr("")
     if (userMobileNumber) {
       const response = isLogin
         ? await loginOTP({ mobile: userMobileNumber, role: "USER" })
@@ -227,44 +227,44 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
             role: "USER",
             name: userName,
             profile_image: profileImage,
-          });
+          })
 
       if (response.ok) {
         toast.success("OTP resent to your mobile number", {
           duration: 3000,
           position: "bottom-right",
-        });
-        setLoginErr("");
-        setSignupErr("");
+        })
+        setLoginErr("")
+        setSignupErr("")
       } else {
         const errorMessage =
           response?.error.apiClientErrorType === "ErrorResponseAPIError"
             ? response.error.body.message
-            : (response?.error.message as string);
+            : (response?.error.message as string)
         if (isLogin) {
-          setOtpErr(errorMessage);
+          setOtpErr(errorMessage)
         } else {
-          setOtpErr(errorMessage);
+          setOtpErr(errorMessage)
         }
         toast.error("Something went wrong. Please try again.", {
           duration: 3000,
           position: "bottom-right",
-        });
+        })
       }
     }
-  };
+  }
 
   const handleCloseOnRequest = async () => {
     if (userMobileNumber) {
-      await signupCancel({ mobile: userMobileNumber, role: "USER" });
+      await signupCancel({ mobile: userMobileNumber, role: "USER" })
     }
-    setIsLogin(true);
-    onClose();
-    setOtpErr("");
-    setLoginErr("");
-    setSignupErr("");
-    setUserMobileNumber(undefined);
-  };
+    setIsLogin(true)
+    onClose()
+    setOtpErr("")
+    setLoginErr("")
+    setSignupErr("")
+    setUserMobileNumber(undefined)
+  }
 
   return (
     <Modal
@@ -313,9 +313,9 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
                 Don&apos;t have an account?{" "}
                 <span
                   onClick={() => {
-                    setSignupErr("");
-                    setLoginErr("");
-                    setIsLogin(false);
+                    setSignupErr("")
+                    setLoginErr("")
+                    setIsLogin(false)
                   }}
                   className="font-semibold cursor-pointer"
                 >
@@ -327,9 +327,9 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
                 Already have an Account?{" "}
                 <span
                   onClick={() => {
-                    setLoginErr("");
-                    setSignupErr("");
-                    setIsLogin(true);
+                    setLoginErr("")
+                    setSignupErr("")
+                    setIsLogin(true)
                   }}
                   className="font-semibold cursor-pointer text-sm md:text-base"
                 >
@@ -342,7 +342,7 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
       </div>
       <Toaster />
     </Modal>
-  );
-};
+  )
+}
 
-export default UserAuthenticationModal;
+export default UserAuthenticationModal

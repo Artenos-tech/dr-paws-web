@@ -1,10 +1,10 @@
-import { BsFillCircleFill } from "react-icons/bs";
-import { cn } from "@/lib/utils";
+import { BsFillCircleFill } from "react-icons/bs"
+import { cn } from "@/lib/utils"
 
 interface ReviewProps {
-  name: string;
-  review: string;
-  className?: string;
+  name: string
+  review: string
+  className?: string
 }
 
 const ReviewCard: React.FC<ReviewProps> = ({ name, review, className }) => {
@@ -33,7 +33,7 @@ const ReviewCard: React.FC<ReviewProps> = ({ name, review, className }) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ReviewCard;
+export default ReviewCard

@@ -1,23 +1,23 @@
-"use client";
+"use client"
 
-import Image from "next/image";
-import { Toaster } from "react-hot-toast";
+import Image from "next/image"
+import { Toaster } from "react-hot-toast"
 
-import BannerList from "@/components/ui/BannerList";
-import ClinicItemList from "@/components/ui/ClinicItemList";
-import DescriptionCardList from "@/components/ui/DescriptionCardList";
-import FaqList from "@/components/ui/FaqList";
-import ReviewCard from "@/components/ui/ReviewCard";
-import Services from "@/components/ui/Services";
-import { useUserContext } from "@/context/UserContext";
-import { reviewData } from "@/model/mockData";
-import TickMark from "@/public/assets/images/petValues/TickMark.svg";
-import YellowAndDocWithDog from "@/public/assets/images/petValues/YellowAndDocWithDog.svg";
-import Lady from "@/public/assets/images/reviewImages/Girl.png";
-import GreenBackground from "@/public/assets/images/reviewImages/greenBackground.svg";
+import BannerList from "@/components/ui/BannerList"
+import ClinicItemList from "@/components/ui/ClinicItemList"
+import DescriptionCardList from "@/components/ui/DescriptionCardList"
+import FaqList from "@/components/ui/FaqList"
+import ReviewCard from "@/components/ui/ReviewCard"
+import Services from "@/components/ui/Services"
+import { useUserContext } from "@/context/UserContext"
+import { reviewData } from "@/model/mockData"
+import TickMark from "@/public/assets/images/petValues/TickMark.svg"
+import YellowAndDocWithDog from "@/public/assets/images/petValues/YellowAndDocWithDog.svg"
+import Lady from "@/public/assets/images/reviewImages/Girl.png"
+import GreenBackground from "@/public/assets/images/reviewImages/greenBackground.svg"
 
 export default function Home() {
-  const { initiateLogin } = useUserContext();
+  const { initiateLogin } = useUserContext()
   return (
     <div className="w-full h-full items-center justify-items-center font-roca">
       <main className="w-full flex flex-col gap-8 row-start-2 items-center sm:items-start">
@@ -204,5 +204,5 @@ export default function Home() {
       </main>
       <Toaster />
     </div>
-  );
+  )
 }

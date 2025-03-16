@@ -1,34 +1,34 @@
-"use client";
+"use client"
 
-import React, { useEffect, useState } from "react";
-import BookingCard from "@/components/ui/BookingCard";
-import GroomingSubtypeModal from "@/components/ui/GroomingSubtypeModal";
-import CustomButton from "./CustomButton";
-import { Pet } from "@/context/UserContext";
-import { useAPICall } from "@/hooks/apicall";
-import api from "@/services/api";
-import ClipLoader from "react-spinners/ClipLoader";
+import React, { useEffect, useState } from "react"
+import BookingCard from "@/components/ui/BookingCard"
+import GroomingSubtypeModal from "@/components/ui/GroomingSubtypeModal"
+import CustomButton from "./CustomButton"
+import { Pet } from "@/context/UserContext"
+import { useAPICall } from "@/hooks/apicall"
+import api from "@/services/api"
+import ClipLoader from "react-spinners/ClipLoader"
 
 export interface BookingCategory {
-  id: string;
-  title: string;
-  description: string;
+  id: string
+  title: string
+  description: string
 }
 
 interface SelectServiceProps {
-  selectedPet: Pet | null;
+  selectedPet: Pet | null
   setServiceOptions: (
     selectedSvcId: number | null,
     serviceTitle: string | null,
     selectedPet: Pet | null,
     isGrooming: boolean,
     selectedSubtype: BookingCategory | null,
-  ) => void;
-  openCard: number | null;
-  setOpenCard: React.Dispatch<React.SetStateAction<number | null>>;
-  isModalOpen: boolean;
-  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  onNext: () => void;
+  ) => void
+  openCard: number | null
+  setOpenCard: React.Dispatch<React.SetStateAction<number | null>>
+  isModalOpen: boolean
+  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+  onNext: () => void
 }
 
 const SelectService: React.FC<SelectServiceProps> = ({
@@ -40,28 +40,26 @@ const SelectService: React.FC<SelectServiceProps> = ({
   setIsModalOpen,
   onNext,
 }) => {
-  const [subtypes, setSubtypes] = useState<BookingCategory[]>([]);
+  const [subtypes, setSubtypes] = useState<BookingCategory[]>([])
   const [selectedSubtype, setSelectedSubtype] =
-    useState<BookingCategory | null>(null);
-  const [selectedCardId, setSelectedCardId] = useState<number>();
-  const { call: getPetsAPI, result: getPetsAPIResult } = useAPICall(
-    api.getPets,
-  );
+    useState<BookingCategory | null>(null)
+  const [selectedCardId, setSelectedCardId] = useState<number>()
+  const { call: getPetsAPI, result: getPetsAPIResult } = useAPICall(api.getPets)
 
   const {
     call: callGetAppointmentServices,
     result: getAppointmentServicesResult,
     loading: loadingServices,
-  } = useAPICall(api.getAppointmentServices);
+  } = useAPICall(api.getAppointmentServices)
 
   useEffect(() => {
-    callGetAppointmentServices({});
-    fetchPets();
-  }, []);
+    callGetAppointmentServices({})
+    fetchPets()
+  }, [])
 
   const fetchPets = async () => {
-    await getPetsAPI({});
-  };
+    await getPetsAPI({})
+  }
 
   const pets =
     getPetsAPIResult?.ok &&
@@ -69,11 +67,11 @@ const SelectService: React.FC<SelectServiceProps> = ({
       ...pet,
       profileImage: pet.profile_image,
       vetPortId: pet.vetport_id,
-    }));
+    }))
 
   const ServiceTabsData = getAppointmentServicesResult?.ok
     ? getAppointmentServicesResult.value.body.appointmentTypes
-    : [];
+    : []
 
   const handleCardSelection = (
     cardId: number,
@@ -87,42 +85,42 @@ const SelectService: React.FC<SelectServiceProps> = ({
       selectedPet,
       isGrooming,
       selectedSubtype,
-    );
-  };
+    )
+  }
 
   const toggleCard = (cardId: number, isGrooming: boolean) => {
-    setSelectedCardId(cardId);
-    setSelectedSubtype(null);
+    setSelectedCardId(cardId)
+    setSelectedSubtype(null)
     setOpenCard((prevOpenCard) => {
       if (prevOpenCard !== null) {
-        setServiceOptions(null, null, null, isGrooming, selectedSubtype);
+        setServiceOptions(null, null, null, isGrooming, selectedSubtype)
       }
       const selectedCard = ServiceTabsData.find(
         (category) => category.vetPortId === cardId,
-      );
+      )
       if (
         selectedCard &&
         selectedCard.isGrooming &&
         selectedCard.subtypes &&
         prevOpenCard !== cardId
       ) {
-        setSubtypes(selectedCard.subtypes);
-        setIsModalOpen(true);
+        setSubtypes(selectedCard.subtypes)
+        setIsModalOpen(true)
       }
-      return prevOpenCard === cardId ? null : cardId;
-    });
-  };
+      return prevOpenCard === cardId ? null : cardId
+    })
+  }
 
   const handleNext = () => {
-    onNext();
-  };
+    onNext()
+  }
 
   if (loadingServices) {
     return (
       <div className="flex justify-center items-center my-20">
         <ClipLoader color="#33495f" />
       </div>
-    );
+    )
   }
   return (
     <div className="w-full h-full">
@@ -163,15 +161,15 @@ const SelectService: React.FC<SelectServiceProps> = ({
         setSelectedSubtype={setSelectedSubtype}
         onClose={(subtypeSelected: boolean) => {
           if (!subtypeSelected) {
-            setSelectedSubtype(null);
-            toggleCard(selectedCardId as number, false);
+            setSelectedSubtype(null)
+            toggleCard(selectedCardId as number, false)
           }
-          setIsModalOpen(false);
+          setIsModalOpen(false)
         }}
         selectedSubtype={selectedSubtype}
       />
     </div>
-  );
-};
+  )
+}
 
-export default SelectService;
+export default SelectService

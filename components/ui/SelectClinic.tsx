@@ -1,20 +1,20 @@
-"use client";
+"use client"
 
-import SelectClinicCard from "./SelectClinicCard";
-import CustomButton from "./CustomButton";
-import { useEffect } from "react";
-import { useAPICall } from "@/hooks/apicall";
-import api from "@/services/api";
-import { ClipLoader } from "react-spinners";
+import SelectClinicCard from "./SelectClinicCard"
+import CustomButton from "./CustomButton"
+import { useEffect } from "react"
+import { useAPICall } from "@/hooks/apicall"
+import api from "@/services/api"
+import { ClipLoader } from "react-spinners"
 
 interface SelectClinicProps {
-  onNext: () => void; // Prop for navigation
-  selectedClinic: number | null;
+  onNext: () => void // Prop for navigation
+  selectedClinic: number | null
   handleClinicSelection: (
     clinicId: number,
     location: string,
     contact: string,
-  ) => void;
+  ) => void
 }
 
 const SelectClinic: React.FC<SelectClinicProps> = ({
@@ -26,21 +26,21 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
     call: getClinicsForBooking,
     result: getClinicsResult,
     loading: loadingClinics,
-  } = useAPICall(api.getClinicsForBooking);
+  } = useAPICall(api.getClinicsForBooking)
   useEffect(() => {
-    getClinicsForBooking({});
-  }, []);
+    getClinicsForBooking({})
+  }, [])
 
   const clinics = getClinicsResult?.ok
     ? getClinicsResult.value.body.clinics
-    : [];
+    : []
 
   if (loadingClinics) {
     return (
       <div className="flex justify-center items-center my-20">
         <ClipLoader color="#33495f" />
       </div>
-    );
+    )
   }
 
   return (
@@ -72,7 +72,7 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
         />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default SelectClinic;
+export default SelectClinic

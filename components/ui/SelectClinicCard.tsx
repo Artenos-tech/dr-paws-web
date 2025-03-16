@@ -1,22 +1,22 @@
-import React from "react";
-import Image from "next/image";
-import { clinicImagesMap } from "@/model/mockData";
-import defaultClinicImg from "@/public/assets/images/clinic/ClinicImage.png";
+import React from "react"
+import Image from "next/image"
+import { clinicImagesMap } from "@/model/mockData"
+import defaultClinicImg from "@/public/assets/images/clinic/ClinicImage.png"
 
 type VetportClinic = {
   image: {
-    type: "url" | "ref";
-    value: string;
-  };
-  services: string;
-  id: number;
-  name: string;
-  location: string;
-};
+    type: "url" | "ref"
+    value: string
+  }
+  services: string
+  id: number
+  name: string
+  location: string
+}
 interface ClinicItemProps {
-  clinic: VetportClinic;
-  isSelected: boolean;
-  onSelect: () => void;
+  clinic: VetportClinic
+  isSelected: boolean
+  onSelect: () => void
 }
 
 const SelectClinicCard: React.FC<ClinicItemProps> = ({
@@ -24,7 +24,7 @@ const SelectClinicCard: React.FC<ClinicItemProps> = ({
   isSelected,
   onSelect,
 }) => {
-  const { image, name, services } = clinic;
+  const { image, name, services } = clinic
   return (
     <div
       onClick={onSelect}
@@ -54,7 +54,7 @@ const SelectClinicCard: React.FC<ClinicItemProps> = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default SelectClinicCard;
+export default SelectClinicCard

@@ -1,9 +1,9 @@
 // components/ui/DoctorCard.tsx
-import React from "react";
+import React from "react"
 
 interface BestAvailableVetCardProps {
-  isSelected: boolean;
-  onSelected: () => void;
+  isSelected: boolean
+  onSelected: () => void
 }
 
 const BestAvailableVetCard: React.FC<BestAvailableVetCardProps> = ({
@@ -11,8 +11,8 @@ const BestAvailableVetCard: React.FC<BestAvailableVetCardProps> = ({
   onSelected,
 }) => {
   const handleCardClick = () => {
-    onSelected();
-  };
+    onSelected()
+  }
 
   return (
     <div
@@ -29,7 +29,7 @@ const BestAvailableVetCard: React.FC<BestAvailableVetCardProps> = ({
         Best Available Vet
       </h2>
     </div>
-  );
-};
+  )
+}
 
-export default BestAvailableVetCard;
+export default BestAvailableVetCard

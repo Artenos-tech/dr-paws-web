@@ -1,24 +1,24 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import { AiOutlineDown, AiOutlineRight } from "react-icons/ai";
+import { useState } from "react"
+import { AiOutlineDown, AiOutlineRight } from "react-icons/ai"
 
 interface FaqItem {
-  question: string;
-  answer: string;
+  question: string
+  answer: string
 }
 
 interface FaqProps {
-  items: FaqItem[];
-  heading: string;
+  items: FaqItem[]
+  heading: string
 }
 
 const FaqItem: React.FC<FaqProps> = ({ items = [], heading }) => {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [openIndex, setOpenIndex] = useState<number | null>(null)
 
   const toggleCollapse = (index: number) => {
-    setOpenIndex(index === openIndex ? null : index);
-  };
+    setOpenIndex(index === openIndex ? null : index)
+  }
 
   return (
     <div className="mx-auto mt-8">
@@ -46,7 +46,7 @@ const FaqItem: React.FC<FaqProps> = ({ items = [], heading }) => {
         ))}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default FaqItem;
+export default FaqItem

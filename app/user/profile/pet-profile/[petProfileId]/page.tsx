@@ -1,15 +1,15 @@
-import React from "react";
-import PetProfileInfo from "@/components/ui/PetProfileInfo";
-import BackButton from "@/components/ui/BackButton";
+import React from "react"
+import PetProfileInfo from "@/components/ui/PetProfileInfo"
+import BackButton from "@/components/ui/BackButton"
 
 interface PetProfileProps {
   params: {
-    petProfileId: string;
-  };
+    petProfileId: string
+  }
 }
 
 const PetProfile: React.FC<PetProfileProps> = ({ params }) => {
-  const { petProfileId } = params;
+  const { petProfileId } = params
 
   return (
     <div className="flex flex-col w-full h-full lg:h-screen items-center font-roca pb-20 flex-grow">
@@ -18,8 +18,8 @@ const PetProfile: React.FC<PetProfileProps> = ({ params }) => {
         <PetProfileInfo petId={parseInt(petProfileId)} />
       </main>
     </div>
-  );
-};
+  )
+}
 
 export async function generateStaticParams() {
   const pets = [
@@ -33,10 +33,10 @@ export async function generateStaticParams() {
     { petId: "8" },
     { petId: "9" },
     { petId: "10" },
-  ];
+  ]
   return pets.map((pet) => ({
     petProfileId: pet.petId,
-  }));
+  }))
 }
 
-export default PetProfile;
+export default PetProfile

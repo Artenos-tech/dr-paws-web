@@ -1,42 +1,42 @@
-import { createAPIClient, RequestContext, z } from "../lib/apiclient";
+import { createAPIClient, RequestContext, z } from "../lib/apiclient"
 
 export {
   FetchAPIError,
   ParseAPIError,
   SchemaAPIError,
   ErrorResponseAPIError,
-} from "../lib/apiclient";
+} from "../lib/apiclient"
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL as string;
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL as string
 
-const AUTH_TOKEN_HEADER_NAME = "X-Auth-Token";
+const AUTH_TOKEN_HEADER_NAME = "X-Auth-Token"
 
-const AUTH_TOKEN_LOCALSTORAGE_KEY = "authToken";
+const AUTH_TOKEN_LOCALSTORAGE_KEY = "authToken"
 
 function initRequestContext() {
-  const ctx = new RequestContext();
+  const ctx = new RequestContext()
   if (typeof window !== "undefined") {
-    const authToken = localStorage.getItem(AUTH_TOKEN_LOCALSTORAGE_KEY);
+    const authToken = localStorage.getItem(AUTH_TOKEN_LOCALSTORAGE_KEY)
     if (authToken) {
-      ctx.addHeader(AUTH_TOKEN_HEADER_NAME, authToken);
+      ctx.addHeader(AUTH_TOKEN_HEADER_NAME, authToken)
     }
   }
-  return ctx;
+  return ctx
 }
 
-const requestContext = initRequestContext();
+const requestContext = initRequestContext()
 
 export function setAuthToken(token: string) {
   if (typeof window !== "undefined") {
-    localStorage.setItem(AUTH_TOKEN_LOCALSTORAGE_KEY, token);
-    requestContext.addHeader(AUTH_TOKEN_HEADER_NAME, token);
+    localStorage.setItem(AUTH_TOKEN_LOCALSTORAGE_KEY, token)
+    requestContext.addHeader(AUTH_TOKEN_HEADER_NAME, token)
   }
 }
 
 export function clearAuthToken() {
   if (typeof window !== "undefined") {
-    localStorage.removeItem(AUTH_TOKEN_LOCALSTORAGE_KEY);
-    requestContext.removeHeader(AUTH_TOKEN_HEADER_NAME);
+    localStorage.removeItem(AUTH_TOKEN_LOCALSTORAGE_KEY)
+    requestContext.removeHeader(AUTH_TOKEN_HEADER_NAME)
   }
 }
 
@@ -956,4 +956,4 @@ export default createAPIClient({
       errorResponseSchema: z.object({}),
     },
   },
-});
+})

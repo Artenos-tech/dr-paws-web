@@ -1,31 +1,31 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import Image, { StaticImageData } from "next/image";
-import { ChevronDown } from "lucide-react";
+import { useState } from "react"
+import Image, { StaticImageData } from "next/image"
+import { ChevronDown } from "lucide-react"
 
 interface ImageDetail {
-  img: StaticImageData | string;
-  imgText: string;
+  img: StaticImageData | string
+  imgText: string
 }
 
 interface Tab {
-  id: string;
-  title: string;
-  description: string;
-  imageDetails: ImageDetail[];
+  id: string
+  title: string
+  description: string
+  imageDetails: ImageDetail[]
 }
 
 type ServiceTabProps = {
-  tabs: Tab[];
-};
+  tabs: Tab[]
+}
 
 const ServiceTab = ({ tabs }: ServiceTabProps) => {
-  const [activeTab, setActiveTab] = useState<string>(tabs[0].id);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<string>(tabs[0].id)
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 
-  const activeTabContent = tabs.find((tab) => tab.id === activeTab);
-  const activeTabTitle = tabs.find((tab) => tab.id === activeTab)?.title;
+  const activeTabContent = tabs.find((tab) => tab.id === activeTab)
+  const activeTabTitle = tabs.find((tab) => tab.id === activeTab)?.title
 
   return (
     <div className="w-full mx-auto">
@@ -75,8 +75,8 @@ const ServiceTab = ({ tabs }: ServiceTabProps) => {
                   activeTab === tab.id ? "font-semibold bg-gray-50" : ""
                 }`}
                 onClick={() => {
-                  setActiveTab(tab.id);
-                  setIsDropdownOpen(false);
+                  setActiveTab(tab.id)
+                  setIsDropdownOpen(false)
                 }}
               >
                 {tab.title}
@@ -119,7 +119,7 @@ const ServiceTab = ({ tabs }: ServiceTabProps) => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default ServiceTab;
+export default ServiceTab

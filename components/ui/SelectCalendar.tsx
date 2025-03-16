@@ -1,7 +1,7 @@
-"use client";
+"use client"
 
-import React, { useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import React, { useState } from "react"
+import { ChevronLeft, ChevronRight } from "lucide-react"
 import {
   format,
   addMonths,
@@ -16,12 +16,12 @@ import {
   isBefore,
   startOfDay,
   isAfter,
-} from "date-fns";
+} from "date-fns"
 
 interface CalendarProps {
-  timezone?: string;
-  onDateSelect: (date: Date) => void; // Callback for date selection
-  selectedDate: Date | null;
+  timezone?: string
+  onDateSelect: (date: Date) => void // Callback for date selection
+  selectedDate: Date | null
 }
 
 const SelectCalendar: React.FC<CalendarProps> = ({
@@ -29,34 +29,34 @@ const SelectCalendar: React.FC<CalendarProps> = ({
   onDateSelect,
   selectedDate,
 }) => {
-  const [currentDate, setCurrentDate] = useState(new Date());
+  const [currentDate, setCurrentDate] = useState(new Date())
 
-  const today = startOfDay(new Date());
-  const twoWeeksLater = addDays(today, 19);
+  const today = startOfDay(new Date())
+  const twoWeeksLater = addDays(today, 19)
 
-  const startDate = startOfWeek(startOfMonth(currentDate), { weekStartsOn: 1 });
-  const endDate = endOfWeek(endOfMonth(currentDate), { weekStartsOn: 1 });
+  const startDate = startOfWeek(startOfMonth(currentDate), { weekStartsOn: 1 })
+  const endDate = endOfWeek(endOfMonth(currentDate), { weekStartsOn: 1 })
 
-  const days = [];
-  let day = startDate;
+  const days = []
+  let day = startDate
 
   while (day <= endDate) {
-    days.push(day);
-    day = addDays(day, 1);
+    days.push(day)
+    day = addDays(day, 1)
   }
 
-  const prevMonth = () => setCurrentDate(subMonths(currentDate, 1));
-  const nextMonth = () => setCurrentDate(addMonths(currentDate, 1));
+  const prevMonth = () => setCurrentDate(subMonths(currentDate, 1))
+  const nextMonth = () => setCurrentDate(addMonths(currentDate, 1))
 
   const isDateDisabled = (date: Date) => {
-    return isBefore(date, today) || isAfter(date, twoWeeksLater);
-  };
+    return isBefore(date, today) || isAfter(date, twoWeeksLater)
+  }
 
   const selectDate = (date: Date) => {
     if (!isDateDisabled(date)) {
-      onDateSelect(date);
+      onDateSelect(date)
     }
-  };
+  }
 
   return (
     <div className="bg-primary-3 rounded-lg shadow-md p-4 md:p-8 max-w-full mx-auto">
@@ -88,9 +88,9 @@ const SelectCalendar: React.FC<CalendarProps> = ({
       {/* Calendar grid */}
       <div className="grid grid-cols-7 text-center gap-1 sm:gap-0.5">
         {days.map((date, index) => {
-          const isSelected = selectedDate && isSameDay(date, selectedDate);
-          const isPast = isBefore(date, today);
-          const isDisabled = isDateDisabled(date);
+          const isSelected = selectedDate && isSameDay(date, selectedDate)
+          const isPast = isBefore(date, today)
+          const isDisabled = isDateDisabled(date)
 
           return (
             <div
@@ -110,7 +110,7 @@ const SelectCalendar: React.FC<CalendarProps> = ({
             >
               {date.getDate()}
             </div>
-          );
+          )
         })}
       </div>
 
@@ -120,7 +120,7 @@ const SelectCalendar: React.FC<CalendarProps> = ({
         <div className="flex gap-1">🌍 {timezone}</div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default SelectCalendar;
+export default SelectCalendar

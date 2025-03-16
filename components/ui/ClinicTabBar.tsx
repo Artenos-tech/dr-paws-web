@@ -1,14 +1,14 @@
-"use client";
+"use client"
 
 interface Tab {
-  label: string;
+  label: string
 }
 
 type ClinicTabBarProps<T extends string> = {
-  tabs: Record<T, Tab>;
-  activeTabId: T;
-  onTabChange?: (tabId: T) => void;
-};
+  tabs: Record<T, Tab>
+  activeTabId: T
+  onTabChange?: (tabId: T) => void
+}
 
 function ClinicTabBar<T extends string>({
   tabs,
@@ -16,8 +16,8 @@ function ClinicTabBar<T extends string>({
   onTabChange,
 }: ClinicTabBarProps<T>) {
   const handleTabClick = (tabId: string) => {
-    if (onTabChange) onTabChange(tabId as T);
-  };
+    if (onTabChange) onTabChange(tabId as T)
+  }
 
   return (
     <div className="w-full m-auto">
@@ -48,7 +48,7 @@ function ClinicTabBar<T extends string>({
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default ClinicTabBar;
+export default ClinicTabBar

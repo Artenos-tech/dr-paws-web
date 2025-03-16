@@ -1,27 +1,27 @@
-"use client";
+"use client"
 
-import React, { useState } from "react";
-import SelectService, { BookingCategory } from "@/components/ui/SelectService";
-import SelectClinic from "@/components/ui/SelectClinic";
-import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
-import SelectVet, { SelectedVet } from "@/components/ui/SelectVet";
-import { Pet } from "@/context/UserContext";
-import BookingConfirmed from "@/components/ui/BookingConfirmed";
+import React, { useState } from "react"
+import SelectService, { BookingCategory } from "@/components/ui/SelectService"
+import SelectClinic from "@/components/ui/SelectClinic"
+import { MdOutlineKeyboardArrowLeft } from "react-icons/md"
+import SelectVet, { SelectedVet } from "@/components/ui/SelectVet"
+import { Pet } from "@/context/UserContext"
+import BookingConfirmed from "@/components/ui/BookingConfirmed"
 
 const Booking: React.FC = () => {
   const [selectedAppointment, setSelectedAppointmentState] = useState<{
-    selectedServiceId: number | null;
-    selectedService: string | null;
-    selectedSubtype: BookingCategory | null;
-    selectedPet: Pet | null;
-    isGrooming: boolean;
-    selectedClinic: number | null;
-    selectedLocation: string | null;
-    selectClinicContact: string | null;
-    selectedDoctor: SelectedVet | null;
-    selectedDate: Date | null;
-    selectedSlot: string | null;
-    selectedSlotEnd: string | null;
+    selectedServiceId: number | null
+    selectedService: string | null
+    selectedSubtype: BookingCategory | null
+    selectedPet: Pet | null
+    isGrooming: boolean
+    selectedClinic: number | null
+    selectedLocation: string | null
+    selectClinicContact: string | null
+    selectedDoctor: SelectedVet | null
+    selectedDate: Date | null
+    selectedSlot: string | null
+    selectedSlotEnd: string | null
   }>({
     selectedServiceId: null,
     selectedService: null,
@@ -35,11 +35,11 @@ const Booking: React.FC = () => {
     selectedDate: null,
     selectedSlot: null,
     selectedSlotEnd: null,
-  });
+  })
 
-  const [openCard, setOpenCard] = useState<number | null>(null); // Persist this state
-  const [isDisclaimerModalOpen, setIsDisclaimerModalOpen] = useState(false);
-  const [currentStep, setCurrentStep] = useState<number>(1);
+  const [openCard, setOpenCard] = useState<number | null>(null) // Persist this state
+  const [isDisclaimerModalOpen, setIsDisclaimerModalOpen] = useState(false)
+  const [currentStep, setCurrentStep] = useState<number>(1)
 
   const handleClinicSelection = (
     clinicId: number,
@@ -54,32 +54,32 @@ const Booking: React.FC = () => {
           selectedClinic: null,
           selectedLocation: null,
           selectClinicContact: null,
-        };
+        }
       }
       return {
         ...prev,
         selectedClinic: clinicId,
         selectedLocation: location,
         selectClinicContact: contact,
-      };
-    });
-  };
+      }
+    })
+  }
 
   const goToNextStep = () => {
-    setCurrentStep((prevStep) => prevStep + 1);
-  };
+    setCurrentStep((prevStep) => prevStep + 1)
+  }
 
   const goToPrevStep = () => {
     if (currentStep > 1) {
-      setCurrentStep((prevStep) => prevStep - 1);
+      setCurrentStep((prevStep) => prevStep - 1)
     }
-  };
+  }
 
   function notNull<T>(value: T | null): Exclude<T, null> {
     if (value === null) {
-      throw new Error(`Value must not be null, got ${value}`);
+      throw new Error(`Value must not be null, got ${value}`)
     }
-    return value as Exclude<T, null>;
+    return value as Exclude<T, null>
   }
 
   return (
@@ -113,7 +113,7 @@ const Booking: React.FC = () => {
                   selectedPet: pet,
                   isGrooming: isGrooming,
                   selectedSubtype,
-                }));
+                }))
               }}
               openCard={openCard}
               setOpenCard={setOpenCard}
@@ -147,7 +147,7 @@ const Booking: React.FC = () => {
                 setSelectedAppointmentState((prev) => ({
                   ...prev,
                   ...appData,
-                }));
+                }))
               }}
             />
           )}
@@ -177,7 +177,7 @@ const Booking: React.FC = () => {
         </div>
       </main>
     </div>
-  );
-};
+  )
+}
 
-export default Booking;
+export default Booking

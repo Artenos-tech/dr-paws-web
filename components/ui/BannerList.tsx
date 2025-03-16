@@ -1,5 +1,5 @@
-import { bannerItems } from "@/model/mockData";
-import BannerCard from "./BannerCard";
+import { bannerItems } from "@/model/mockData"
+import BannerCard from "./BannerCard"
 
 const BannerList: React.FC = () => {
   return (
@@ -8,7 +8,7 @@ const BannerList: React.FC = () => {
         <BannerCard key={banIndex} banItem={banItem} />
       ))}
     </div>
-  );
-};
+  )
+}
 
-export default BannerList;
+export default BannerList

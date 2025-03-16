@@ -1,36 +1,36 @@
-"use client";
+"use client"
 
-import { Menu } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Toaster } from "react-hot-toast";
-import ContactInfoModal from "@/components/ui/ContactInfoModal";
-import CustomButton from "@/components/ui/CustomButton";
-import { useUserContext } from "@/context/UserContext";
-import { useAPICall } from "@/hooks/apicall";
+import { Menu } from "lucide-react"
+import Image from "next/image"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { Toaster } from "react-hot-toast"
+import ContactInfoModal from "@/components/ui/ContactInfoModal"
+import CustomButton from "@/components/ui/CustomButton"
+import { useUserContext } from "@/context/UserContext"
+import { useAPICall } from "@/hooks/apicall"
 // import { useMarketingFeature } from "@/hooks/useMarketingFeature";
-import logo from "@/public/assets/images/logo/logo.svg";
-import Profile from "@/public/assets/images/profileThumnail.svg";
-import api, { clearAuthToken } from "@/services/api";
-import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { useEffect, useRef, useState } from "react";
+import logo from "@/public/assets/images/logo/logo.svg"
+import Profile from "@/public/assets/images/profileThumnail.svg"
+import api, { clearAuthToken } from "@/services/api"
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
+import { useEffect, useRef, useState } from "react"
 
 export default function NavBar() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [isContactModalOpen, setContactIsModalOpen] = useState(false);
-  const navigate = useRouter();
+  const [isOpen, setIsOpen] = useState(false)
+  const [isProfileOpen, setIsProfileOpen] = useState(false)
+  const [isContactModalOpen, setContactIsModalOpen] = useState(false)
+  const navigate = useRouter()
   // const isMarketingFeatureEnabled = useMarketingFeature();
 
-  const { refresh, initiateLogin, isLoggedIn } = useUserContext();
+  const { refresh, initiateLogin, isLoggedIn } = useUserContext()
 
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const buttonRef = useRef<HTMLButtonElement>(null);
-  const profileDropdownRef = useRef<HTMLDivElement>(null);
-  const profileButtonRef = useRef<HTMLButtonElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null)
+  const buttonRef = useRef<HTMLButtonElement>(null)
+  const profileDropdownRef = useRef<HTMLDivElement>(null)
+  const profileButtonRef = useRef<HTMLButtonElement>(null)
 
-  const { call: logout } = useAPICall(api.logout);
+  const { call: logout } = useAPICall(api.logout)
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -41,7 +41,7 @@ export default function NavBar() {
         buttonRef.current &&
         !buttonRef.current.contains(event.target as Node)
       ) {
-        setIsOpen(false);
+        setIsOpen(false)
       }
       if (
         profileDropdownRef.current &&
@@ -49,30 +49,30 @@ export default function NavBar() {
         profileButtonRef.current &&
         !profileButtonRef.current.contains(event.target as Node)
       ) {
-        setIsProfileOpen(false);
+        setIsProfileOpen(false)
       }
-    };
+    }
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside)
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [dropdownRef]);
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [dropdownRef])
 
   const handleLogout = async () => {
-    await logout({});
-    clearAuthToken();
-    navigate.push("/");
-    refresh();
-  };
+    await logout({})
+    clearAuthToken()
+    navigate.push("/")
+    refresh()
+  }
 
   const handleBookAVisit = () => {
     if (isLoggedIn) {
-      navigate.push("/user/book-appointment");
+      navigate.push("/user/book-appointment")
     } else {
-      initiateLogin("Book a Visit", "/user/book-appointment");
+      initiateLogin("Book a Visit", "/user/book-appointment")
     }
-  };
+  }
 
   return (
     <div className="fixed left-0 top-0 z-30 bg-primary-3 w-full drop-shadow-lg">
@@ -225,8 +225,8 @@ export default function NavBar() {
               <button
                 ref={buttonRef}
                 onClick={() => {
-                  setIsOpen(!isOpen);
-                  setIsProfileOpen(false);
+                  setIsOpen(!isOpen)
+                  setIsProfileOpen(false)
                 }}
                 type="button"
                 className="bg-primary-3 inline-flex items-center justify-center p-2 rounded-md text-primary-1 hover:text-white hover:bg-primary-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-primary-3 focus:ring-white"
@@ -280,7 +280,7 @@ export default function NavBar() {
                   type="button"
                   ref={profileButtonRef}
                   onClick={() => {
-                    setIsProfileOpen(!isProfileOpen);
+                    setIsProfileOpen(!isProfileOpen)
                   }}
                 >
                   <Image
@@ -313,8 +313,8 @@ export default function NavBar() {
                 <li>
                   <button
                     onClick={() => {
-                      setIsOpen(false);
-                      navigate.push("/user/profile");
+                      setIsOpen(false)
+                      navigate.push("/user/profile")
                     }}
                     className="text-primary-1 hover:text-secondary-1 cursor-pointer"
                   >
@@ -324,8 +324,8 @@ export default function NavBar() {
                 <li>
                   <button
                     onClick={() => {
-                      setIsOpen(false);
-                      navigate.push("/user/profile");
+                      setIsOpen(false)
+                      navigate.push("/user/profile")
                     }}
                     className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none "
                   >
@@ -335,8 +335,8 @@ export default function NavBar() {
                 <li>
                   <button
                     onClick={() => {
-                      setIsOpen(false);
-                      navigate.push("/user/my-appointments");
+                      setIsOpen(false)
+                      navigate.push("/user/my-appointments")
                     }}
                     className="text-primary-1 hover:text-secondary-1 cursor-pointer"
                   >
@@ -356,8 +356,8 @@ export default function NavBar() {
                 <li>
                   <button
                     onClick={() => {
-                      setIsOpen(false);
-                      navigate.push("/user/my-subscriptions");
+                      setIsOpen(false)
+                      navigate.push("/user/my-subscriptions")
                     }}
                     className="text-primary-1 hover:text-secondary-1 cursor-pointer"
                   >
@@ -394,5 +394,5 @@ export default function NavBar() {
 
       <Toaster />
     </div>
-  );
+  )
 }

@@ -1,14 +1,14 @@
-"use client";
+"use client"
 
-import React, { useEffect } from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import L from "leaflet";
+import React, { useEffect } from "react"
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet"
+import L from "leaflet"
 
 interface MapProps {
   location: {
-    lat: number;
-    lng: number;
-  };
+    lat: number
+    lng: number
+  }
 }
 
 export const MapWrapper: React.FC<MapProps> = ({ location }) => {
@@ -21,8 +21,8 @@ export const MapWrapper: React.FC<MapProps> = ({ location }) => {
         "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
       shadowUrl:
         "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
-    });
-  }, []);
+    })
+  }, [])
 
   return (
     <MapContainer
@@ -35,5 +35,5 @@ export const MapWrapper: React.FC<MapProps> = ({ location }) => {
         <Popup>Om Heera Panna Mall</Popup>
       </Marker>
     </MapContainer>
-  );
-};
+  )
+}

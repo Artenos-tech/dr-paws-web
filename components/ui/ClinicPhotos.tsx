@@ -1,23 +1,23 @@
-"use client";
-import { photos } from "@/model/mockData";
-import Image from "next/image";
-import React, { useState, useEffect } from "react";
-import ReactModal from "react-modal";
+"use client"
+import { photos } from "@/model/mockData"
+import Image from "next/image"
+import React, { useState, useEffect } from "react"
+import ReactModal from "react-modal"
 
 interface ClinicPhotosProps {
-  clinicId: string;
+  clinicId: string
   gallery: {
     [imageId: string]: {
-      imageUrl: string;
-      imageOrder: number;
-    };
-  } | null;
+      imageUrl: string
+      imageOrder: number
+    }
+  } | null
 }
 
 function ClinicPhotos({ clinicId, gallery }: ClinicPhotosProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [currentImage, setCurrentImage] = useState<string>("");
-  const [isMounted, setIsMounted] = useState(false);
+  const [isOpen, setIsOpen] = useState(false)
+  const [currentImage, setCurrentImage] = useState<string>("")
+  const [isMounted, setIsMounted] = useState(false)
 
   const clinicImages = gallery
     ? Object.entries(gallery).map(([imageId, image]) => ({
@@ -25,31 +25,31 @@ function ClinicPhotos({ clinicId, gallery }: ClinicPhotosProps) {
         order: image.imageOrder,
         id: imageId,
       }))
-    : photos.find((photoGroup) => photoGroup.id === clinicId)?.photos;
+    : photos.find((photoGroup) => photoGroup.id === clinicId)?.photos
 
   // Ensure ReactModal can find the root app element for accessibility
   useEffect(() => {
-    setIsMounted(true);
-    const appElement = document.getElementById("__next");
+    setIsMounted(true)
+    const appElement = document.getElementById("__next")
     if (appElement) {
-      ReactModal.setAppElement(appElement);
+      ReactModal.setAppElement(appElement)
     } else {
-      console.warn("ReactModal: App element with id '__next' not found.");
+      console.warn("ReactModal: App element with id '__next' not found.")
     }
-  }, []);
+  }, [])
 
   const openModal = (imageSrc: string) => {
-    setCurrentImage(imageSrc);
-    setIsOpen(true);
-  };
+    setCurrentImage(imageSrc)
+    setIsOpen(true)
+  }
 
   const closeModal = () => {
-    setIsOpen(false);
-    setCurrentImage("");
-  };
+    setIsOpen(false)
+    setCurrentImage("")
+  }
 
   if (!isMounted) {
-    return null;
+    return null
   }
 
   return (
@@ -92,7 +92,7 @@ function ClinicPhotos({ clinicId, gallery }: ClinicPhotosProps) {
         </div>
       </ReactModal>
     </div>
-  );
+  )
 }
 
-export default ClinicPhotos;
+export default ClinicPhotos

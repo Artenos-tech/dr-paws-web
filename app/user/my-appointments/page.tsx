@@ -1,15 +1,15 @@
-"use client";
+"use client"
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from "react"
 
-import AppointmentCard from "@/components/ui/AppointmentCard";
-import BookingDetails from "@/components/ui/BookingDetails";
-import ClinicTabBar from "@/components/ui/ClinicTabBar";
-import Loader from "@/components/ui/Loader";
-import NoAppointments from "@/components/ui/NoAppointments";
-import { useAPICall } from "@/hooks/apicall";
-import { AppointmentType } from "@/model/typeDefinitions";
-import api from "@/services/api";
+import AppointmentCard from "@/components/ui/AppointmentCard"
+import BookingDetails from "@/components/ui/BookingDetails"
+import ClinicTabBar from "@/components/ui/ClinicTabBar"
+import Loader from "@/components/ui/Loader"
+import NoAppointments from "@/components/ui/NoAppointments"
+import { useAPICall } from "@/hooks/apicall"
+import { AppointmentType } from "@/model/typeDefinitions"
+import api from "@/services/api"
 
 const TABS = {
   ALL: {
@@ -24,50 +24,50 @@ const TABS = {
   CANCELLED: {
     label: "Cancelled",
   },
-} as const;
+} as const
 
 const MyAppointmentsPage = () => {
   const {
     call: getAppointments,
     loading,
     result,
-  } = useAPICall(api.getAppointments);
+  } = useAPICall(api.getAppointments)
 
   const [selectedAppointment, setSelectedAppointment] =
-    useState<AppointmentType | null>(null);
+    useState<AppointmentType | null>(null)
 
-  const [activeTab, setActiveTab] = useState<keyof typeof TABS>("ALL");
+  const [activeTab, setActiveTab] = useState<keyof typeof TABS>("ALL")
 
   useEffect(() => {
-    getAppointments({});
-  }, []);
+    getAppointments({})
+  }, [])
 
   if (loading) {
     return (
       <div>
         <Loader />
       </div>
-    );
+    )
   }
 
-  const appointments = result?.ok ? result.value.body.appointments : null;
+  const appointments = result?.ok ? result.value.body.appointments : null
 
   const filteredAppointments = (appointments || []).filter(
     (appointment: AppointmentType) => {
       if (activeTab === "ALL") {
-        return true;
+        return true
       }
       if (activeTab === "UPCOMING") {
-        return appointment.category === "UPCOMING";
+        return appointment.category === "UPCOMING"
       }
       if (activeTab === "PAST") {
-        return appointment.category === "PAST";
+        return appointment.category === "PAST"
       }
       if (activeTab === "CANCELLED") {
-        return appointment.category === "CANCELLED";
+        return appointment.category === "CANCELLED"
       }
     },
-  );
+  )
 
   return (
     <div className="flex flex-col w-full h-full items-center justify-items-center font-roca pb-20 flex-grow px-8 md:px-32 lg:px-20 xl:px-40">
@@ -76,9 +76,9 @@ const MyAppointmentsPage = () => {
           <BookingDetails
             selectedAppointment={selectedAppointment}
             goBack={(refetch: boolean) => {
-              setSelectedAppointment(null);
+              setSelectedAppointment(null)
               if (refetch) {
-                getAppointments({});
+                getAppointments({})
               }
             }}
           />
@@ -127,7 +127,7 @@ const MyAppointmentsPage = () => {
         )}
       </main>
     </div>
-  );
-};
+  )
+}
 
-export default MyAppointmentsPage;
+export default MyAppointmentsPage
