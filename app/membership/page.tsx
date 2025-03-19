@@ -26,6 +26,7 @@ type Plan = {
   age: "CHILD" | "ADULT" | "SENIOR" | null
   type: "GROOMING" | "MEDICAL" | "COMPREHENSIVE" | null
   published: boolean
+  display_order: number
   created_at: string
   updated_at: string
   features: {
@@ -95,7 +96,9 @@ const Membership = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const filteredPlans = plans?.filter((plan) => {
+  const sortedPlans = plans?.sort((a, b) => a.display_order - b.display_order)
+
+  const filteredPlans = sortedPlans?.filter((plan) => {
     const shouldShow =
       petType &&
       (plan.species.includes(petType) || plan.species.length === 0) &&

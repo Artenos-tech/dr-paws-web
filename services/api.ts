@@ -765,6 +765,7 @@ export default createAPIClient({
             age: z.enum(["CHILD", "ADULT", "SENIOR"]).nullable(),
             type: z.enum(["GROOMING", "MEDICAL", "COMPREHENSIVE"]).nullable(),
             published: z.boolean(),
+            display_order: z.number(),
             created_at: z.string(),
             updated_at: z.string(),
             features: z.array(
