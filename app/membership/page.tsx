@@ -14,6 +14,7 @@ import api from "@/services/api"
 import toast, { Toaster } from "react-hot-toast"
 import { ClipLoader } from "react-spinners"
 import { Table } from "antd"
+import { useUserContext } from "@/context/UserContext"
 
 type Plan = {
   id: number
@@ -56,12 +57,14 @@ const Membership = () => {
     null,
   )
   const [plans, setPlans] = useState<Plan[] | null>(null)
+  const [isMobile, setIsMobile] = useState(false)
+
+  const { initiateLogin, isLoggedIn } = useUserContext()
 
   const { call: getAllPlans, loading: getAllPlansLoading } = useAPICall(
     api.getAllPlans,
   )
 
-  const [isMobile, setIsMobile] = useState(false)
 
   const MOBULE_MAX_WIDTH = 500
 
@@ -72,6 +75,18 @@ const Membership = () => {
     }
     window.addEventListener("resize", handleResize)
     return () => window.removeEventListener("resize", handleResize)
+  }, [])
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(window.location.search);
+      const pettype = urlParams.get("pettype");
+      const petage = urlParams.get("petage");
+      const membershiptype = urlParams.get("membershiptype");
+      if (pettype) setPetType(pettype as PetType);
+      if (petage) setPetAge(petage as PetAge);
+      if (membershiptype) setMembershipType(membershiptype as MembershipType);
+    }
   }, [])
 
   useEffect(() => {
@@ -217,19 +232,23 @@ const Membership = () => {
               color: "white",
             }}
             onClick={() => {
-              setSelectedPlan({
-                id: plan.id,
-                title: plan.name,
-                description: plan.description || "",
-                benefits: plan.features.map((feature) => ({
-                  text: feature.name,
-                })),
-                isPopular: false,
-                price: plan.price,
-                duration: plan.duration_months.toString(),
-                petType: petType || "dog",
-              })
-              setIsModalOpen(true)
+              if (isLoggedIn) {
+                setSelectedPlan({
+                  id: plan.id,
+                  title: plan.name,
+                  description: plan.description || "",
+                  benefits: plan.features.map((feature) => ({
+                    text: feature.name,
+                  })),
+                  isPopular: false,
+                  price: plan.price,
+                  duration: plan.duration_months.toString(),
+                  petType: petType || "dog",
+                })
+                setIsModalOpen(true)
+              } else {
+                initiateLogin("Become a Member", `/membership?pettype=${petType}&petage=${petAge}&membershiptype=${membershipType}`)
+              }
             }}
           >
             Buy Now
