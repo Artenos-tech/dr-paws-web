@@ -1,6 +1,8 @@
 "use client"
+import { Progress } from "antd"
 import React, { useEffect, useState } from "react"
 import Image from "next/image"
+
 import { useAPICall } from "@/hooks/apicall"
 import api from "@/services/api"
 import { Pet } from "@/context/UserContext"
@@ -123,7 +125,7 @@ const Page = () => {
                 <div className="bg-[#F7F1DE] rounded-b-lg p-6 shadow-sm border border-[#e2d5c3]">
                   <div className="flex flex-col lg:flex-row  lg:gap-8">
                     {/* Image and Name Section */}
-                    <div className="flex flex-col items-center justify-center mb-6 lg:mb-0">
+                    <div className="flex flex-col items-center mb-6 lg:mb-0">
                       <div className="relative w-32 h-32 mb-4">
                         <Image
                           src={petImage}
@@ -136,63 +138,89 @@ const Page = () => {
                       <h2 className="text-2xl font-semibold text-gray-800">
                         {subscription.pet.name}
                       </h2>
+                      <div>
+                        <div className="flex flex-col gap-3 text-gray-600 text-sm mt-8">
+                          <div>
+                            <p>Start Date:</p>
+                            <p className="font-semibold text-gray-800">
+                              {format(
+                                new Date(subscription.start_date),
+                                "MMMM d, yyyy",
+                              )}
+                            </p>
+                          </div>
+                          <div>
+                            <p>End Date:</p>
+                            <p className="font-semibold text-gray-800">
+                              {format(
+                                new Date(subscription.end_date),
+                                "MMMM d, yyyy",
+                              )}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
                     </div>
 
                     {/* Includes Section */}
-                    <div className="flex-1 mb-6 lg:mb-0">
-                      <h4 className="text-gray-600 text-lg mb-2">Includes:</h4>
-                      <div className="lg:columns-2 lg:gap-8">
-                        <ul className="space-y-2 text-sm text-gray-700">
+                    <div className="flex flex-col md:flex-row flex-1 gap-8 mb-6 lg:mb-0">
+                      <div className="flex-1">
+                        <h4 className="text-gray-600 text-xl mb-2">Sessions</h4>
+                        <div className="flex flex-col gap-6 mt-6">
                           {subscription.plan.features
-                            .toSorted((a, b) => {
-                              // sort in order of type: VACCINATIONS > SESSIONS > DISCOUNT > OTHER
-                              const order = [
-                                "VACCINATIONS",
-                                "SESSIONS",
-                                "DISCOUNT",
-                              ]
-                              return (
-                                order.indexOf(a.type) - order.indexOf(b.type)
-                              )
-                            })
+                            .filter(
+                              (feature) =>
+                                feature.type === "SESSIONS" ||
+                                feature.type === "VACCINATIONS",
+                            )
                             .map((feature) => (
-                              <li
+                              <div
                                 key={feature.name}
-                                className="flex items-start break-inside-avoid"
+                                className="flex flex-col items-start"
                               >
-                                <span className="mr-2">•</span>
-                                {["VACCINATIONS", "SESSIONS"].includes(
-                                  feature.type,
-                                )
-                                  ? `${feature.value} free ${feature.name}`
-                                  : feature.type === "DISCOUNT"
-                                    ? `${feature.value}% discount on ${feature.name}`
-                                    : feature.name}
-                              </li>
+                                <div className="flex justify-between self-stretch">
+                                  <div className="text-base">
+                                    {feature.name}
+                                  </div>
+                                  <div className="text-gray-600 text-sm">
+                                    {feature.used} of {feature.value} used
+                                  </div>
+                                </div>
+                                <Progress
+                                  percent={Math.round(
+                                    (feature.used / feature.value) * 100,
+                                  )}
+                                  showInfo={false}
+                                  strokeColor={"green"}
+                                />
+                              </div>
                             ))}
-                        </ul>
+                        </div>
                       </div>
-                    </div>
-
-                    {/* Dates Section */}
-                    <div className="flex lg:flex-col justify-between items-center lg:justify-start lg:gap-4 lg:min-w-[200px]">
-                      <div className=" text-gray-600">
-                        <p>Start Date:</p>
-                        <p className="text-lg font-semibold text-gray-800">
-                          {format(
-                            new Date(subscription.start_date),
-                            "MMMM d, yyyy",
-                          )}
-                        </p>
-                      </div>
-                      <div className=" text-gray-600">
-                        <p>End Date:</p>
-                        <p className="text-lg font-semibold text-gray-800">
-                          {format(
-                            new Date(subscription.end_date),
-                            "MMMM d, yyyy",
-                          )}
-                        </p>
+                      <div>
+                        <h4 className="text-gray-600 text-xl mb-2">
+                          Discounts
+                        </h4>
+                        <div className="flex flex-col gap-6 mt-6 text-sm">
+                          {subscription.plan.features
+                            .filter((feature) => feature.type === "DISCOUNT")
+                            .map((feature) => (
+                              <div
+                                key={feature.name}
+                                className="flex flex-col items-start"
+                              >
+                                <div>
+                                  <span className="text-blue-400">
+                                    {feature.value}%
+                                  </span>
+                                  <span className="text-gray-600">
+                                    {" "}
+                                    {feature.name}
+                                  </span>
+                                </div>
+                              </div>
+                            ))}
+                        </div>
                       </div>
                     </div>
                   </div>

@@ -629,6 +629,7 @@ export default createAPIClient({
                   name: z.string(),
                   description: z.string().nullable(),
                   value: z.number(),
+                  used: z.number(),
                   type: z.string(),
                 }),
               ),
