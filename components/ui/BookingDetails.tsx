@@ -278,8 +278,8 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                   Are you sure you want to cancel this booking?
                 </h1>
                 <p>
-                  Please select a reason for cancelling. You will receive a
-                  cancellation email for the booking.
+                  Please select a reason for cancelling. You will receive a Whatsapp notification confirming the
+                  cancellation for this booking.
                 </p>
                 <div className="space-y-3">
                   {cancelReasons.map((reason, index) => (
@@ -438,7 +438,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                 <h1 className="text-center text-2xl font-semibold font-sans">
                   Are you sure you want to reschedule this booking?
                 </h1>
-                <p>You will receive an email for the rescheduled booking</p>
+                <p>You will receive a Whatsapp notification confirming the rescheduled booking</p>
                 <div className="space-y-3">
                   {rescheduleReasons.map((reason, index) => (
                     <div className="flex items-start gap-2" key={index}>

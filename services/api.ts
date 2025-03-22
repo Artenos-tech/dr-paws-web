@@ -766,6 +766,7 @@ export default createAPIClient({
             age: z.enum(["CHILD", "ADULT", "SENIOR"]).nullable(),
             type: z.enum(["GROOMING", "MEDICAL", "COMPREHENSIVE"]).nullable(),
             published: z.boolean(),
+            display_order: z.number(),
             created_at: z.string(),
             updated_at: z.string(),
             features: z.array(
@@ -956,5 +957,31 @@ export default createAPIClient({
       }),
       errorResponseSchema: z.object({}),
     },
+
+    getInvoices: {
+      method: "GET",
+      path: "/user/invoices",
+      pathParamsSchema: z.object({}),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        invoices: z.array(z.object({
+          id: z.number(),
+          clinicname: z.string(),
+          invoiceno: z.number(),
+          createdon: z.string(),
+          amount: z.number(),
+          invoiceline: z.array(z.object({
+            planitemid: z.number(),
+            planitem: z.string().optional(),
+            quantity: z.number(),
+            cliniccost: z.number(),
+            tax: z.number(),
+            discount: z.number(),
+            total: z.number(),
+          }))
+        }))
+      }),
+      errorResponseSchema: z.object({}),
+    }
   },
 })
