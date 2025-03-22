@@ -65,7 +65,6 @@ const Membership = () => {
     api.getAllPlans,
   )
 
-
   const MOBULE_MAX_WIDTH = 500
 
   useEffect(() => {
@@ -79,13 +78,13 @@ const Membership = () => {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const urlParams = new URLSearchParams(window.location.search);
-      const pettype = urlParams.get("pettype");
-      const petage = urlParams.get("petage");
-      const membershiptype = urlParams.get("membershiptype");
-      if (pettype) setPetType(pettype as PetType);
-      if (petage) setPetAge(petage as PetAge);
-      if (membershiptype) setMembershipType(membershiptype as MembershipType);
+      const urlParams = new URLSearchParams(window.location.search)
+      const pettype = urlParams.get("pettype")
+      const petage = urlParams.get("petage")
+      const membershiptype = urlParams.get("membershiptype")
+      if (pettype) setPetType(pettype as PetType)
+      if (petage) setPetAge(petage as PetAge)
+      if (membershiptype) setMembershipType(membershiptype as MembershipType)
     }
   }, [])
 
@@ -247,7 +246,10 @@ const Membership = () => {
                 })
                 setIsModalOpen(true)
               } else {
-                initiateLogin("Become a Member", `/membership?pettype=${petType}&petage=${petAge}&membershiptype=${membershipType}`)
+                initiateLogin(
+                  "Become a Member",
+                  `/membership?pettype=${petType}&petage=${petAge}&membershiptype=${membershipType}`,
+                )
               }
             }}
           >

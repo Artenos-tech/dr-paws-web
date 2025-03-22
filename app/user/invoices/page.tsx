@@ -6,8 +6,8 @@ import api from "@/services/api"
 import { useEffect } from "react"
 import { ClipLoader } from "react-spinners"
 import { FileDown } from "lucide-react"
-import pdfMake from 'pdfmake/build/pdfmake'
-import pdfFonts from 'pdfmake/build/vfs_fonts'
+import pdfMake from "pdfmake/build/pdfmake"
+import pdfFonts from "pdfmake/build/vfs_fonts"
 pdfMake.vfs = pdfFonts.vfs
 
 const gridStyle: React.CSSProperties = {
@@ -102,28 +102,28 @@ const Invoices = () => {
       content: [
         {
           text: `Invoice No: ${invoice.invoiceno}`,
-          style: 'header',
+          style: "header",
         },
         {
           text: `Issue Date: ${invoice.createdon}`,
-          style: 'subHeader',
+          style: "subHeader",
         },
         {
           text: `Clinic: ${invoice.clinicname}`,
-          style: 'subHeader',
+          style: "subHeader",
         },
         {
           text: `Total Amount: $${invoice.amount.toFixed(2)}`,
-          style: 'subHeader',
+          style: "subHeader",
         },
         {
-          text: '\n',
+          text: "\n",
         },
         {
           table: {
             headerRows: 1,
             body: [
-              ['Description', 'Quantity', 'Unit Price', 'Discount', 'Amount'],
+              ["Description", "Quantity", "Unit Price", "Discount", "Amount"],
               ...invoice.invoiceline.map((item) => [
                 item.planitem ?? item.planitemid.toString(),
                 item.quantity.toString(),
@@ -133,7 +133,7 @@ const Invoices = () => {
               ]),
             ],
           },
-          layout: 'lightHorizontalLines',
+          layout: "lightHorizontalLines",
         },
       ],
       styles: {
@@ -147,8 +147,8 @@ const Invoices = () => {
           marginBottom: 5,
         },
       },
-    };
-    pdfMake.createPdf(docDefinition).open();
+    }
+    pdfMake.createPdf(docDefinition).open()
   }
   const invoices =
     (invoicesResult?.ok && invoicesResult.value.body.invoices) || []
@@ -258,8 +258,18 @@ const Invoices = () => {
                               style={{ width: "100%" }}
                               pagination={false}
                             />
-                            <Card style={{width: "100%"}} onClick={() => generatePDF(invoice)}>
-                              <Card.Grid style={{width: "100%", display: "flex", justifyContent: "center", gap: "1em"}}>
+                            <Card
+                              style={{ width: "100%" }}
+                              onClick={() => generatePDF(invoice)}
+                            >
+                              <Card.Grid
+                                style={{
+                                  width: "100%",
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  gap: "1em",
+                                }}
+                              >
                                 <p>Download Invoice as PDF</p>
                                 <FileDown />
                               </Card.Grid>
