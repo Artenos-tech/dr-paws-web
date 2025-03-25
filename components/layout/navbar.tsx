@@ -151,14 +151,14 @@ export default function NavBar() {
                           Profile
                         </div>
                       </DropdownMenu.Item>
-                      <DropdownMenu.Item asChild>
+                      {/* <DropdownMenu.Item asChild>
                         <div
                           onClick={() => navigate.push("/user/profile")}
                           className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
                         >
                           My Pets
                         </div>
-                      </DropdownMenu.Item>
+                      </DropdownMenu.Item> */}
 
                       {/* <DropdownMenu.Item asChild>
                         <div
@@ -178,17 +178,26 @@ export default function NavBar() {
                       </DropdownMenu.Item>
                       {/* <div className="border-t border-gray-300 my-2" /> */}
                       {/* {!isMarketingFeatureEnabled ? ( */}
-                      {/* <DropdownMenu.Item asChild>
-                          <div
-                            onClick={() => navigate.push("/user/my-subscriptions")}
-                            className="text-secondary-1 flex justify-between items-center hover:text-primary-1 cursor-pointer outline-none"
-                          >
-                            My Memberships
-                          </div>
-                        </DropdownMenu.Item> */}
+                      <DropdownMenu.Item asChild>
+                        <div
+                          onClick={() =>
+                            navigate.push("/user/my-subscriptions")
+                          }
+                          className="text-secondary-1 flex justify-between items-center hover:text-primary-1 cursor-pointer outline-none"
+                        >
+                          My Memberships
+                        </div>
+                      </DropdownMenu.Item>
                       {/* ) : null} */}
                       {/* <div className="border-t border-gray-300 my-2" /> */}
-
+                      <DropdownMenu.Item asChild>
+                        <div
+                          onClick={() => navigate.push("/user/invoices")}
+                          className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
+                        >
+                          My Invoices
+                        </div>
+                      </DropdownMenu.Item>
                       {/* <DropdownMenu.Item asChild>
                         <div
                           onClick={() => setContactIsModalOpen(true)}
@@ -321,7 +330,7 @@ export default function NavBar() {
                     Profile
                   </button>
                 </li>
-                <li>
+                {/* <li>
                   <button
                     onClick={() => {
                       setIsOpen(false)
@@ -331,7 +340,7 @@ export default function NavBar() {
                   >
                     My Pets
                   </button>
-                </li>
+                </li> */}
                 <li>
                   <button
                     onClick={() => {
@@ -362,6 +371,17 @@ export default function NavBar() {
                     className="text-primary-1 hover:text-secondary-1 cursor-pointer"
                   >
                     My Memberships
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => {
+                      setIsOpen(false)
+                      navigate.push("/user/invoices")
+                    }}
+                    className="text-primary-1 hover:text-secondary-1 cursor-pointer"
+                  >
+                    My Invoices
                   </button>
                 </li>
 

@@ -966,6 +966,11 @@ export default createAPIClient({
         invoices: z.array(z.object({
           id: z.number(),
           clinicname: z.string(),
+          cliniccontact: z.string(),
+          clinicaddress: z.string(),
+          username: z.string(),
+          usercontact: z.string(),
+          useraddress: z.string(),
           invoiceno: z.number(),
           createdon: z.string(),
           amount: z.number(),
