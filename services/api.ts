@@ -986,6 +986,16 @@ export default createAPIClient({
         }))
       }),
       errorResponseSchema: z.object({}),
+    },
+    getMedicalRecordsForPet: {
+      method: "GET",
+      path: "/user/medicalrecords/pet/{pet_id}",
+      pathParamsSchema: z.object({ pet_id: z.string() }),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        records: z.array(z.string()),
+      }),
+      errorResponseSchema: z.object({}),
     }
   },
 })

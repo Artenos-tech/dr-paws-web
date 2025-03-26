@@ -17,6 +17,7 @@ import { Subscription } from "@/app/user/my-subscriptions/page"
 
 interface PetCardProps {
   pet: Pet
+  fetchMedicalRecords?: (pet: Pet) => void
 }
 
 export const petImageByType: Record<string, StaticImageData> = {
@@ -28,7 +29,7 @@ export const petImageByType: Record<string, StaticImageData> = {
   other: defaultOtherPetImage,
 }
 
-const PetCard: React.FC<PetCardProps> = ({ pet }) => {
+const PetCard: React.FC<PetCardProps> = ({ pet, fetchMedicalRecords }) => {
   const { name, vetPortId, profileImage, type } = pet
   const router = useRouter()
   const [subscription, setSubscription] = useState<Subscription | null>(null)
@@ -50,7 +51,8 @@ const PetCard: React.FC<PetCardProps> = ({ pet }) => {
   }, [])
 
   const handlePetProfileView = () => {
-    router.push(`/user/profile/pet-profile/${vetPortId}`)
+    if (!fetchMedicalRecords) router.push(`/user/profile/pet-profile/${vetPortId}`)
+    else fetchMedicalRecords(pet)
   }
 
   const defaultImageOrPetImage =
