@@ -51,7 +51,8 @@ const PetCard: React.FC<PetCardProps> = ({ pet, fetchMedicalRecords }) => {
   }, [])
 
   const handlePetProfileView = () => {
-    if (!fetchMedicalRecords) router.push(`/user/profile/pet-profile/${vetPortId}`)
+    if (!fetchMedicalRecords)
+      router.push(`/user/profile/pet-profile/${vetPortId}`)
     else fetchMedicalRecords(pet)
   }
 

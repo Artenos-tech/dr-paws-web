@@ -66,7 +66,7 @@ const Reports = () => {
               <h2 className="text-2xl font-semibold mb-4">
                 Reports for {selectedPet.name}
               </h2>
-              
+
               {reportsLoading ? (
                 <div className="flex justify-center">
                   <ClipLoader color="#33495f" />
@@ -74,21 +74,21 @@ const Reports = () => {
               ) : reports && reports.length > 0 ? (
                 <ul className="space-y-3">
                   {reports.map((report: string, index: number) => (
-                    <li 
-                      key={index} 
+                    <li
+                      key={index}
                       className="flex items-center justify-between bg-gray-100 p-3 rounded-md hover:bg-gray-200 transition-colors"
                     >
-                      <a 
-                        href={report} 
-                        target="_blank" 
-                        rel="noopener noreferrer" 
+                      <a
+                        href={report}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="text-blue-600 hover:text-blue-800 flex-grow truncate mr-4"
                       >
-                        {decodeURIComponent(report.split('/').pop() || report)}
+                        {decodeURIComponent(report.split("/").pop() || report)}
                       </a>
-                      <ExternalLink 
-                        className="text-gray-500 hover:text-blue-600" 
-                        size={20} 
+                      <ExternalLink
+                        className="text-gray-500 hover:text-blue-600"
+                        size={20}
                       />
                     </li>
                   ))}

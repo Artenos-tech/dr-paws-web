@@ -963,27 +963,31 @@ export default createAPIClient({
       pathParamsSchema: z.object({}),
       requestSchema: z.object({}),
       responseSchema: z.object({
-        invoices: z.array(z.object({
-          id: z.number(),
-          clinicname: z.string(),
-          cliniccontact: z.string(),
-          clinicaddress: z.string(),
-          username: z.string(),
-          usercontact: z.string(),
-          useraddress: z.string(),
-          invoiceno: z.number(),
-          createdon: z.string(),
-          amount: z.number(),
-          invoiceline: z.array(z.object({
-            planitemid: z.number(),
-            planitem: z.string().optional(),
-            quantity: z.number(),
-            cliniccost: z.number(),
-            tax: z.number(),
-            discount: z.number(),
-            total: z.number(),
-          }))
-        }))
+        invoices: z.array(
+          z.object({
+            id: z.number(),
+            clinicname: z.string(),
+            cliniccontact: z.string(),
+            clinicaddress: z.string(),
+            username: z.string(),
+            usercontact: z.string(),
+            useraddress: z.string(),
+            invoiceno: z.number(),
+            createdon: z.string(),
+            amount: z.number(),
+            invoiceline: z.array(
+              z.object({
+                planitemid: z.number(),
+                planitem: z.string().optional(),
+                quantity: z.number(),
+                cliniccost: z.number(),
+                tax: z.number(),
+                discount: z.number(),
+                total: z.number(),
+              }),
+            ),
+          }),
+        ),
       }),
       errorResponseSchema: z.object({}),
     },
@@ -996,6 +1000,6 @@ export default createAPIClient({
         records: z.array(z.string()),
       }),
       errorResponseSchema: z.object({}),
-    }
+    },
   },
 })
