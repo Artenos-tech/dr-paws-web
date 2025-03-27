@@ -3,7 +3,7 @@
 import { Card, Table } from "antd"
 import { useAPICall } from "@/hooks/apicall"
 import api from "@/services/api"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { ClipLoader } from "react-spinners"
 import { FileDown } from "lucide-react"
 import pdfMake from "pdfmake/build/pdfmake"
@@ -15,6 +15,8 @@ import {
   TDocumentDefinitions,
   TableCell,
 } from "pdfmake/interfaces"
+import logo from "@/public/assets/images/logo/logo.svg"
+
 pdfMake.vfs = pdfFonts.vfs
 
 const gridStyle: React.CSSProperties = {
@@ -54,6 +56,10 @@ interface LineItemTable {
 }
 
 const Invoices = () => {
+  const [expandedInvoiceId, setExpandedInvoiceId] = useState<number | null>(
+    null,
+  )
+
   const {
     call: getAllInvoices,
     result: invoicesResult,
@@ -63,6 +69,10 @@ const Invoices = () => {
   useEffect(() => {
     getAllInvoices({})
   }, [])
+
+  const toggleTableExpansion = (invoiceId: number) => {
+    setExpandedInvoiceId(expandedInvoiceId === invoiceId ? null : invoiceId)
+  }
 
   const columns = [
     {
@@ -109,7 +119,36 @@ const Invoices = () => {
     })
   }
 
-  const generatePDF = (invoice: Invoice) => {
+  /* Workaround to convert the image to a pdfMake supported format 
+  Reference - https://github.com/bpampuch/pdfmake/blob/master/examples/images.js */
+  const convertToSupportedFormat = async (src: string): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image()
+      img.src = src
+      img.onload = () => {
+        const canvas = document.createElement("canvas")
+        canvas.width = 300
+        canvas.height = 100
+        const ctx = canvas.getContext("2d")
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, 300, 100)
+          const pngDataURL = canvas.toDataURL("image/png")
+          resolve(pngDataURL)
+        }
+      }
+
+      img.onerror = reject
+    })
+  }
+
+  const generatePDF = async (invoice: Invoice) => {
+    const logoPNGDataUrl = await convertToSupportedFormat(logo.src)
+    const logoContent: Content = {
+      image: logoPNGDataUrl,
+      alignment: "center",
+      width: 150,
+      margin: [0, 0, 0, 10],
+    }
     const titleContent: ContentText = {
       text: "INVOICE",
       style: "title",
@@ -121,6 +160,15 @@ const Invoices = () => {
         {
           stack: [
             {
+              text: `GSTIN`,
+              style: "headerLabel",
+              margin: [0, 0, 0, 5],
+            },
+            {
+              text: `27AAHCS1234C1ZV`,
+              style: "entityName",
+            },
+            {
               text: `Invoice No`,
               style: "headerLabel",
               margin: [0, 0, 0, 5],
@@ -129,12 +177,8 @@ const Invoices = () => {
               text: `${invoice.invoiceno}`,
               style: "entityName",
             },
-          ],
-        },
-        {
-          stack: [
             {
-              text: `Date`,
+              text: `Issue Date`,
               style: "headerLabel",
               margin: [0, 0, 0, 5],
             },
@@ -187,14 +231,10 @@ const Invoices = () => {
             { text: `₹${item.total.toFixed(2)}`, alignment: "right" },
           ]),
           [
-            { text: "Total", colSpan: 3, style: "totalRow" },
+            { text: "Total", colSpan: 4, style: "totalRow", alignment: "left" },
             {},
             {},
-            {
-              text: `₹${invoice.invoiceline.reduce((sum, item) => sum + item.discount, 0).toFixed(2)}`,
-              style: "totalRow",
-              alignment: "right",
-            },
+            {},
             {
               text: `₹${invoice.amount.toFixed(2)}`,
               style: "totalRow",
@@ -212,7 +252,6 @@ const Invoices = () => {
         { text: `+91 ${invoice.cliniccontact}`, bold: true },
         " or email us at ",
         { text: "admin@drpaws.care", bold: true },
-        ".",
       ],
       alignment: "center",
       margin: [0, 20, 0, 0],
@@ -261,6 +300,7 @@ const Invoices = () => {
 
     const docDefinition: TDocumentDefinitions = {
       content: [
+        logoContent,
         titleContent,
         invoiceDetailsContent,
         { columns: headerColumns, margin: [0, 20, 0, 20] },
@@ -295,11 +335,23 @@ const Invoices = () => {
                   {invoices.length > 0 &&
                     invoices.map((invoice) => {
                       return (
-                        <div
-                          className="bg-primary-3 w-full flex flex-col gap-8 justify-center items-center p-8 rounded-lg"
+                        <Card
+                          style={{
+                            width: "100%",
+                            backgroundColor: "#f7f1de",
+                            marginBottom: "1.5em",
+                          }}
                           key={invoice.id}
                         >
-                          <Card style={{ width: "100%" }}>
+                          <div
+                            style={{
+                              display: "flex",
+                              width: "100%",
+                              padding: "0",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => toggleTableExpansion(invoice.id)}
+                          >
                             <Card.Grid
                               hoverable={false}
                               style={{
@@ -378,30 +430,41 @@ const Invoices = () => {
                                 </p>
                               </div>
                             </Card.Grid>
-                            <Table<LineItemTable>
-                              columns={columns}
-                              dataSource={getInvoiceLines(invoice.invoiceline)}
-                              style={{ width: "100%" }}
-                              pagination={false}
-                            />
-                            <Card
-                              style={{ width: "100%" }}
-                              onClick={() => generatePDF(invoice)}
-                            >
-                              <Card.Grid
+                          </div>
+                          {expandedInvoiceId === invoice.id && (
+                            <>
+                              <Table<LineItemTable>
+                                columns={columns}
+                                dataSource={getInvoiceLines(
+                                  invoice.invoiceline,
+                                )}
+                                style={{ width: "100%" }}
+                                pagination={false}
+                              />
+                              <Card
                                 style={{
                                   width: "100%",
-                                  display: "flex",
-                                  justifyContent: "center",
-                                  gap: "1em",
+                                  cursor: "pointer",
+                                  border: "none",
                                 }}
+                                onClick={() => generatePDF(invoice)}
                               >
-                                <p>Download Invoice as PDF</p>
-                                <FileDown />
-                              </Card.Grid>
-                            </Card>
-                          </Card>
-                        </div>
+                                <Card.Grid
+                                  hoverable={false}
+                                  style={{
+                                    width: "100%",
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    gap: "0.5em",
+                                  }}
+                                >
+                                  <p>Download Invoice as PDF</p>
+                                  <FileDown />
+                                </Card.Grid>
+                              </Card>
+                            </>
+                          )}
+                        </Card>
                       )
                     })}
                 </>
