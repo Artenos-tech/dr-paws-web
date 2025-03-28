@@ -367,7 +367,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
             <div
               className={`grid grid-cols-2 grid-rows-3 md:grid-cols-2 md:grid-rows-2  w-full gap-4 md:gap-12 lg:gap-3`}
             >
-              <div className="">
+              <div className={`${!isEditing && "ml-4"} md:ml-0`}>
                 <label
                   className="text-secondary-1 text-xs md:text-sm"
                   htmlFor="type"
@@ -440,7 +440,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
                   </p>
                 )}
               </div>
-              <div className="">
+              <div className={`${!isEditing && "ml-4"} md:ml-0`}>
                 <label
                   className="text-secondary-1 text-xs md:text-sm"
                   htmlFor="gender"
@@ -527,7 +527,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
                 null}
               </div> */}
 
-              <div className="">
+              <div className={`${!isEditing && "ml-4"} md:ml-0`}>
                 <label
                   className="text-secondary-1 text-xs md:text-sm"
                   htmlFor="birthday"
