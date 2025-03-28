@@ -5,7 +5,7 @@ import { useAPICall } from "@/hooks/apicall"
 import api from "@/services/api"
 import { useEffect, useState } from "react"
 import { ClipLoader } from "react-spinners"
-import { FileDown } from "lucide-react"
+import { ChevronDown, ChevronUp, FileDown } from "lucide-react"
 import pdfMake from "pdfmake/build/pdfmake"
 import pdfFonts from "pdfmake/build/vfs_fonts"
 import {
@@ -159,15 +159,15 @@ const Invoices = () => {
       columns: [
         {
           stack: [
-            {
-              text: `GSTIN`,
-              style: "headerLabel",
-              margin: [0, 0, 0, 5],
-            },
-            {
-              text: `27AAHCS1234C1ZV`,
-              style: "entityName",
-            },
+            // {
+            //   text: `GSTIN`,
+            //   style: "headerLabel",
+            //   margin: [0, 0, 0, 5],
+            // },
+            // {
+            //   text: `27AAHCS1234C1ZV`,
+            //   style: "entityName",
+            // },
             {
               text: `Invoice No`,
               style: "headerLabel",
@@ -416,18 +416,21 @@ const Invoices = () => {
                                 backgroundColor: "#33495f",
                               }}
                             >
-                              <div
-                                style={{
-                                  display: "flex",
-                                  flexDirection: "column",
-                                }}
-                              >
-                                <p style={{ fontSize: "small" }}>
-                                  Total Amount (₹)
-                                </p>
-                                <p style={{ fontSize: "large" }}>
-                                  ₹{invoice.amount}
-                                </p>
+                              <div style={{ display: "flex", gap: "0.5em", justifyContent: "center" }}>
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                  }}
+                                >
+                                  <p style={{ fontSize: "small" }}>
+                                    Total Amount (₹)
+                                  </p>
+                                  <p style={{ fontSize: "large" }}>
+                                    ₹{invoice.amount}
+                                  </p>
+                                </div>
+                                {expandedInvoiceId === invoice.id ? (<ChevronUp />) : (<ChevronDown />)}
                               </div>
                             </Card.Grid>
                           </div>
