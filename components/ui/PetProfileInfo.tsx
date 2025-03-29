@@ -15,6 +15,7 @@ import Loader from "./Loader"
 import { Subscription } from "@/app/user/my-subscriptions/page"
 
 import { ClipLoader } from "react-spinners"
+import MedicalHistory from "./MedicalHistory"
 
 interface PetProfileInfoProps {
   petId: number
@@ -275,355 +276,363 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
     )
 
   return (
-    <div className="bg-primary-3 rounded-lg p-3 md:p-6 lg:p-8 w-full">
-      {subscription && subscription.plan && (
-        <div className=" bg-secondary-1 text-white px-8 py-6 mb-4 rounded">
-          <p className="text-xl"> {subscription.plan.name}</p>
-          <p className="text-xs text-[#F7F1DE]">
-            Expires On:{" "}
-            {new Date(subscription.end_date).toLocaleDateString("en-GB", {
-              day: "numeric",
-              month: "short",
-              year: "numeric",
-            })}
-          </p>
-        </div>
-      )}
+    <>
+      <div className="bg-primary-3 rounded-lg p-3 md:p-6 lg:p-8 w-full">
+        {subscription && subscription.plan && (
+          <div className=" bg-secondary-1 text-white px-8 py-6 mb-4 rounded">
+            <p className="text-xl"> {subscription.plan.name}</p>
+            <p className="text-xs text-[#F7F1DE]">
+              Expires On:{" "}
+              {new Date(subscription.end_date).toLocaleDateString("en-GB", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+              })}
+            </p>
+          </div>
+        )}
 
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col lg:flex-row lg:justify-between md:items-start w-full"
-      >
-        <div className="flex flex-col items-center lg:flex-row lg:justify-between w-full lg:order-none order-1">
-          <div className="p-4">
-            <div className="relative w-[130px] h-[130px] flex flex-col overflow-visible bg-white rounded-full">
-              <Image
-                src={defaultImageOrPetImage}
-                alt="Profile"
-                layout="fill"
-                objectFit="cover"
-                className="rounded-full md:self-center"
-              />
-              {isEditing && (
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="flex flex-col lg:flex-row lg:justify-between md:items-start w-full"
+        >
+          <div className="flex flex-col items-center lg:flex-row lg:justify-between w-full lg:order-none order-1">
+            <div className="p-4">
+              <div className="relative w-[130px] h-[130px] flex flex-col overflow-visible bg-white rounded-full">
+                <Image
+                  src={defaultImageOrPetImage}
+                  alt="Profile"
+                  layout="fill"
+                  objectFit="cover"
+                  className="rounded-full md:self-center"
+                />
+                {isEditing && (
+                  <>
+                    {(image
+                      ? !image.includes("/_next/static/media/")
+                      : typeof defaultImageOrPetImage === "object" &&
+                        !defaultImageOrPetImage.src.includes(
+                          "/_next/static/media/",
+                        )) && (
+                      <button
+                        type="button"
+                        className="absolute -bottom-3 -left-2 p-3 bg-red-500 rounded-full z-20"
+                        onClick={() => {
+                          const defaultImage =
+                            pet?.type && petImageByType[pet.type.toLowerCase()]
+                              ? petImageByType[pet.type.toLowerCase()].src
+                              : petImageByType.other.src
+                          setImage(defaultImage)
+                        }}
+                      >
+                        <FaTrash size={14} fill="white" />
+                      </button>
+                    )}
+                    <Image
+                      src={ImageEdit}
+                      alt="Image Edit"
+                      width={40}
+                      height={40}
+                      objectFit="cover"
+                      className="cursor-pointer absolute -bottom-3 -right-2 rounded-full"
+                    />
+                    <input
+                      type="file"
+                      accept="image/*"
+                      {...register("profileImage")}
+                      onChange={handleImageChange}
+                      className="absolute -bottom-3 -right-2 opacity-0 w-[40px] h-[40px] cursor-pointer z-30"
+                      aria-label="Upload pet profile image"
+                    />
+                  </>
+                )}
+              </div>
+            </div>
+            <div className="flex flex-col flex-grow mx-3 md:mx-10 md:gap-3 w-full lg:w-11/12">
+              {isEditing ? (
                 <>
-                  {(image
-                    ? !image.includes("/_next/static/media/")
-                    : typeof defaultImageOrPetImage === "object" &&
-                      !defaultImageOrPetImage.src.includes(
-                        "/_next/static/media/",
-                      )) && (
-                    <button
-                      type="button"
-                      className="absolute -bottom-3 -left-2 p-3 bg-red-500 rounded-full z-20"
-                      onClick={() => {
-                        const defaultImage =
-                          pet?.type && petImageByType[pet.type.toLowerCase()]
-                            ? petImageByType[pet.type.toLowerCase()].src
-                            : petImageByType.other.src
-                        setImage(defaultImage)
-                      }}
-                    >
-                      <FaTrash size={14} fill="white" />
-                    </button>
-                  )}
-                  <Image
-                    src={ImageEdit}
-                    alt="Image Edit"
-                    width={40}
-                    height={40}
-                    objectFit="cover"
-                    className="cursor-pointer absolute -bottom-3 -right-2 rounded-full"
-                  />
                   <input
-                    type="file"
-                    accept="image/*"
-                    {...register("profileImage")}
-                    onChange={handleImageChange}
-                    className="absolute -bottom-3 -right-2 opacity-0 w-[40px] h-[40px] cursor-pointer z-30"
-                    aria-label="Upload pet profile image"
+                    type="text"
+                    {...register("name", { required: "Pet name is required" })}
+                    className="outline-none border w-full p-1 px-2 text-xs  md:text-sm rounded my-5 mb:my-2 bg-transparent border-secondary-1"
                   />
-                </>
-              )}
-            </div>
-          </div>
-          <div className="flex flex-col flex-grow mx-3 md:mx-10 md:gap-3 w-full lg:w-11/12">
-            {isEditing ? (
-              <>
-                <input
-                  type="text"
-                  {...register("name", { required: "Pet name is required" })}
-                  className="outline-none border w-full p-1 px-2 text-xs  md:text-sm rounded my-5 mb:my-2 bg-transparent border-secondary-1"
-                />
-                {errors.name && (
-                  <p className="text-red-500 text-xs">{errors.name.message}</p>
-                )}
-              </>
-            ) : (
-              <h1 className="text-secondary-1 text-lg text-center lg:text-left my-5 md:my-3 lg:my-0">
-                {pet?.name}
-              </h1>
-            )}
-
-            <div
-              className={`grid grid-cols-2 grid-rows-3 md:grid-cols-2 md:grid-rows-2  w-full gap-4 md:gap-12 lg:gap-3`}
-            >
-              <div className={`${!isEditing && "ml-4"} md:ml-0`}>
-                <label
-                  className="text-secondary-1 text-xs md:text-sm"
-                  htmlFor="type"
-                >
-                  Type of Pet
-                </label>
-                {isEditing ? (
-                  <>
-                    <select
-                      {...register("type", { required: "Type is required" })}
-                      className="outline-none border w-full p-1 px-2 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
-                      defaultValue={pet?.type || "Unknown"}
-                      onChange={handlePetTypeChange}
-                    >
-                      <option value="">Type of Pet</option>
-                      {petSpecies?.map((species) => (
-                        <option key={species.id} value={species.displayName}>
-                          {species.displayName}
-                        </option>
-                      ))}
-                    </select>{" "}
-                    {errors.type && (
-                      <p className="text-red-500 text-xs">
-                        {errors.type.message}
-                      </p>
-                    )}
-                  </>
-                ) : (
-                  <p className="text-primary-1 font-medium text-xs md:text-base">
-                    {pet?.type}
-                  </p>
-                )}
-              </div>
-              <div className={`${!isEditing && "ml-4"} md:ml-0`}>
-                <label
-                  className="text-secondary-1 text-xs md:text-sm"
-                  htmlFor="breed"
-                >
-                  Breed
-                </label>
-                {isEditing ? (
-                  <>
-                    {loadingBreeds ? (
-                      <div className="flex items-center justify-center w-full h-[50px]">
-                        <ClipLoader size={16} />
-                      </div>
-                    ) : (
-                      <select
-                        {...register("breed")}
-                        className="outline-none border w-full p-1 px-2 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
-                        defaultValue={pet?.breed || ""}
-                      >
-                        <option value="">Type of breed</option>
-                        {petBreeds?.map((breed) => (
-                          <option key={breed.id} value={breed.name}>
-                            {breed.name}
-                          </option>
-                        ))}
-                      </select>
-                    )}
-                    {errors.breed && (
-                      <p className="text-red-500 text-xs">
-                        {errors.breed.message}
-                      </p>
-                    )}
-                  </>
-                ) : (
-                  <p className="text-primary-1 font-medium text-xs md:text-base">
-                    {pet?.breed || ""}
-                  </p>
-                )}
-              </div>
-              <div className={`${!isEditing && "ml-4"} md:ml-0`}>
-                <label
-                  className="text-secondary-1 text-xs md:text-sm"
-                  htmlFor="gender"
-                >
-                  Gender
-                </label>
-                {isEditing ? (
-                  <>
-                    {loadingGender ? (
-                      <div className="flex items-center justify-center w-full h-[50px]">
-                        <ClipLoader size={16} />
-                      </div>
-                    ) : (
-                      <select
-                        {...register("gender")}
-                        className="outline-none border w-full px-2 p-1 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
-                        defaultValue={pet?.gender || ""}
-                      >
-                        <option value="">Type of Gender</option>
-                        {petGenders?.map((gender) => (
-                          <option value={gender.name} key={gender.id}>
-                            {gender.name}
-                          </option>
-                        ))}
-                      </select>
-                    )}
-
-                    {errors.gender && (
-                      <p className="text-red-500 text-xs">
-                        {errors.gender.message}
-                      </p>
-                    )}
-                  </>
-                ) : (
-                  <p className="text-primary-1 font-medium text-xs md:text-base">
-                    {pet?.gender || ""}
-                  </p>
-                )}
-              </div>
-
-              {/* <div className={`${!isEditing && "ml-4"} md:ml-0`}>
-                <label
-                  className="text-secondary-1 text-xs md:text-sm"
-                  htmlFor="age"
-                >
-                  Age
-                </label>
-                {isEditing ? (
-                  <div className="flex gap-1">
-                    <div className="w-full flex flex-col">
-                      <input
-                        type="number"
-                        // value={age.years ?? ""}
-                        placeholder="0 years"
-                        min="0"
-                        max="40"
-                        // onChange={handleAgeChange}
-                        name="years"
-                        className="outline-none border w-full p-[5px] px-2 text-xs md:text-sm  mt-2 rounded bg-transparent border-secondary-1"
-                      />
-                      <label className="text-secondary-1 w-full text-left text-[10px]">
-                        Years
-                      </label>
-                    </div>
-                    <div className="w-full flex flex-col">
-                      <input
-                        type="number"
-                        // value={age.months ?? ""}
-                        min="0"
-                        max="12"
-                        // onChange={handleAgeChange}
-                        name="months"
-                        className="outline-none border w-full p-[5px] px-2 text-xs md:text-sm mt-2 rounded bg-transparent border-secondary-1"
-                      />
-                      <label className="text-secondary-1 w-full text-left text-[10px]">
-                        Months
-                      </label>
-                    </div>
-                  </div>
-                ) : // <p className="text-primary-1 font-medium text-xs md:text-base">
-                //   {pet?.age?.years ? `${pet.age.years} yrs ` : ""}
-                //   {pet?.age?.months ? `${pet.age.months} mths ` : ""}
-                // </p>
-                null}
-              </div> */}
-
-              <div className={`${!isEditing && "ml-4"} md:ml-0`}>
-                <label
-                  className="text-secondary-1 text-xs md:text-sm"
-                  htmlFor="birthday"
-                >
-                  Birthday
-                </label>
-                {isEditing ? (
-                  <>
-                    <input
-                      type="date"
-                      {...register("dob")}
-                      className="outline-none border px-2 w-full p-1 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
-                    />
-                    {errors.dob && (
-                      <p className="text-red-500 text-xs">
-                        {errors.dob.message}
-                      </p>
-                    )}
-                  </>
-                ) : (
-                  <p className="text-primary-1 font-medium text-xs md:text-base">
-                    {pet?.dob
-                      ? new Date(pet?.dob).toLocaleDateString("en-GB", {
-                          day: "numeric",
-                          month: "short",
-                          year: "numeric",
-                        })
-                      : ""}
-                  </p>
-                )}
-              </div>
-              {/* <div className={`${!isEditing && "ml-4"} md:ml-0`}>
-                <label
-                  className="text-secondary-1 text-xs md:text-sm"
-                  htmlFor="weight"
-                >
-                  Weight (kg)
-                </label>
-                {isEditing ? (
-                  <>
-                    <input
-                      type="text"
-                      {...register("weight", {
-                        pattern: {
-                          value: /^\d+(\.\d{1,2})?$/,
-                          message: "Invalid weight format",
-                        },
-                      })}
-                      className="outline-none border px-2 w-full p-1 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
-                    />
-                    {errors.weight && (
-                      <p className="text-red-500 text-xs">
-                        {errors.weight.message}
-                      </p>
-                    )}
-                  </>
-                ) : (
-                  <p className="text-primary-1 font-medium text-xs md:text-base">
-                    {pet?.weight ? `${pet.weight} kg` : ""}
-                  </p>
-                )}
-              </div> */}
-            </div>
-          </div>
-          {isEditing && (
-            <div className="self-end md:self-end lg:self-start my-5 md:mt-3 md:my-0 order-2">
-              <div className="flex items-center">
-                <OutlineButton
-                  outlineBtnText="Cancel"
-                  outlineBtnLink={() => handleEditCancelClick()}
-                />
-                <button
-                  type="submit"
-                  className="btn border bg-secondary-1 text-white px-4 text-xs font-semibold py-2 rounded-full ml-3 min-w-[80px]"
-                >
-                  {loadingUpdate ? (
-                    <ClipLoader color="#white" size={18} />
-                  ) : (
-                    "Submit"
+                  {errors.name && (
+                    <p className="text-red-500 text-xs">{errors.name.message}</p>
                   )}
-                </button>
+                </>
+              ) : (
+                <h1 className="text-secondary-1 text-lg text-center lg:text-left my-5 md:my-3 lg:my-0">
+                  {pet?.name}
+                </h1>
+              )}
+
+              <div
+                className={`grid grid-cols-2 grid-rows-3 md:grid-cols-2 md:grid-rows-2  w-full gap-4 md:gap-12 lg:gap-3`}
+              >
+                <div className={`${!isEditing && "ml-4"} md:ml-0`}>
+                  <label
+                    className="text-secondary-1 text-xs md:text-sm"
+                    htmlFor="type"
+                  >
+                    Type of Pet
+                  </label>
+                  {isEditing ? (
+                    <>
+                      <select
+                        {...register("type", { required: "Type is required" })}
+                        className="outline-none border w-full p-1 px-2 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
+                        defaultValue={pet?.type || "Unknown"}
+                        onChange={handlePetTypeChange}
+                      >
+                        <option value="">Type of Pet</option>
+                        {petSpecies?.map((species) => (
+                          <option key={species.id} value={species.displayName}>
+                            {species.displayName}
+                          </option>
+                        ))}
+                      </select>{" "}
+                      {errors.type && (
+                        <p className="text-red-500 text-xs">
+                          {errors.type.message}
+                        </p>
+                      )}
+                    </>
+                  ) : (
+                    <p className="text-primary-1 font-medium text-xs md:text-base">
+                      {pet?.type}
+                    </p>
+                  )}
+                </div>
+                <div className={`${!isEditing && "ml-4"} md:ml-0`}>
+                  <label
+                    className="text-secondary-1 text-xs md:text-sm"
+                    htmlFor="breed"
+                  >
+                    Breed
+                  </label>
+                  {isEditing ? (
+                    <>
+                      {loadingBreeds ? (
+                        <div className="flex items-center justify-center w-full h-[50px]">
+                          <ClipLoader size={16} />
+                        </div>
+                      ) : (
+                        <select
+                          {...register("breed")}
+                          className="outline-none border w-full p-1 px-2 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
+                          defaultValue={pet?.breed || ""}
+                        >
+                          <option value="">Type of breed</option>
+                          {petBreeds?.map((breed) => (
+                            <option key={breed.id} value={breed.name}>
+                              {breed.name}
+                            </option>
+                          ))}
+                        </select>
+                      )}
+                      {errors.breed && (
+                        <p className="text-red-500 text-xs">
+                          {errors.breed.message}
+                        </p>
+                      )}
+                    </>
+                  ) : (
+                    <p className="text-primary-1 font-medium text-xs md:text-base">
+                      {pet?.breed || ""}
+                    </p>
+                  )}
+                </div>
+                <div className={`${!isEditing && "ml-4"} md:ml-0`}>
+                  <label
+                    className="text-secondary-1 text-xs md:text-sm"
+                    htmlFor="gender"
+                  >
+                    Gender
+                  </label>
+                  {isEditing ? (
+                    <>
+                      {loadingGender ? (
+                        <div className="flex items-center justify-center w-full h-[50px]">
+                          <ClipLoader size={16} />
+                        </div>
+                      ) : (
+                        <select
+                          {...register("gender")}
+                          className="outline-none border w-full px-2 p-1 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
+                          defaultValue={pet?.gender || ""}
+                        >
+                          <option value="">Type of Gender</option>
+                          {petGenders?.map((gender) => (
+                            <option value={gender.name} key={gender.id}>
+                              {gender.name}
+                            </option>
+                          ))}
+                        </select>
+                      )}
+
+                      {errors.gender && (
+                        <p className="text-red-500 text-xs">
+                          {errors.gender.message}
+                        </p>
+                      )}
+                    </>
+                  ) : (
+                    <p className="text-primary-1 font-medium text-xs md:text-base">
+                      {pet?.gender || ""}
+                    </p>
+                  )}
+                </div>
+
+                {/* <div className={`${!isEditing && "ml-4"} md:ml-0`}>
+                  <label
+                    className="text-secondary-1 text-xs md:text-sm"
+                    htmlFor="age"
+                  >
+                    Age
+                  </label>
+                  {isEditing ? (
+                    <div className="flex gap-1">
+                      <div className="w-full flex flex-col">
+                        <input
+                          type="number"
+                          // value={age.years ?? ""}
+                          placeholder="0 years"
+                          min="0"
+                          max="40"
+                          // onChange={handleAgeChange}
+                          name="years"
+                          className="outline-none border w-full p-[5px] px-2 text-xs md:text-sm  mt-2 rounded bg-transparent border-secondary-1"
+                        />
+                        <label className="text-secondary-1 w-full text-left text-[10px]">
+                          Years
+                        </label>
+                      </div>
+                      <div className="w-full flex flex-col">
+                        <input
+                          type="number"
+                          // value={age.months ?? ""}
+                          min="0"
+                          max="12"
+                          // onChange={handleAgeChange}
+                          name="months"
+                          className="outline-none border w-full p-[5px] px-2 text-xs md:text-sm mt-2 rounded bg-transparent border-secondary-1"
+                        />
+                        <label className="text-secondary-1 w-full text-left text-[10px]">
+                          Months
+                        </label>
+                      </div>
+                    </div>
+                  ) : // <p className="text-primary-1 font-medium text-xs md:text-base">
+                  //   {pet?.age?.years ? `${pet.age.years} yrs ` : ""}
+                  //   {pet?.age?.months ? `${pet.age.months} mths ` : ""}
+                  // </p>
+                  null}
+                </div> */}
+
+                <div className={`${!isEditing && "ml-4"} md:ml-0`}>
+                  <label
+                    className="text-secondary-1 text-xs md:text-sm"
+                    htmlFor="birthday"
+                  >
+                    Birthday
+                  </label>
+                  {isEditing ? (
+                    <>
+                      <input
+                        type="date"
+                        {...register("dob")}
+                        className="outline-none border px-2 w-full p-1 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
+                      />
+                      {errors.dob && (
+                        <p className="text-red-500 text-xs">
+                          {errors.dob.message}
+                        </p>
+                      )}
+                    </>
+                  ) : (
+                    <p className="text-primary-1 font-medium text-xs md:text-base">
+                      {pet?.dob
+                        ? new Date(pet?.dob).toLocaleDateString("en-GB", {
+                            day: "numeric",
+                            month: "short",
+                            year: "numeric",
+                          })
+                        : ""}
+                    </p>
+                  )}
+                </div>
+                {/* <div className={`${!isEditing && "ml-4"} md:ml-0`}>
+                  <label
+                    className="text-secondary-1 text-xs md:text-sm"
+                    htmlFor="weight"
+                  >
+                    Weight (kg)
+                  </label>
+                  {isEditing ? (
+                    <>
+                      <input
+                        type="text"
+                        {...register("weight", {
+                          pattern: {
+                            value: /^\d+(\.\d{1,2})?$/,
+                            message: "Invalid weight format",
+                          },
+                        })}
+                        className="outline-none border px-2 w-full p-1 text-xs md:text-sm rounded my-2 bg-transparent border-secondary-1"
+                      />
+                      {errors.weight && (
+                        <p className="text-red-500 text-xs">
+                          {errors.weight.message}
+                        </p>
+                      )}
+                    </>
+                  ) : (
+                    <p className="text-primary-1 font-medium text-xs md:text-base">
+                      {pet?.weight ? `${pet.weight} kg` : ""}
+                    </p>
+                  )}
+                </div> */}
               </div>
             </div>
-          )}
-        </div>
+            {isEditing && (
+              <div className="self-end md:self-end lg:self-start my-5 md:mt-3 md:my-0 order-2">
+                <div className="flex items-center">
+                  <OutlineButton
+                    outlineBtnText="Cancel"
+                    outlineBtnLink={() => handleEditCancelClick()}
+                  />
+                  <button
+                    type="submit"
+                    className="btn border bg-secondary-1 text-white px-4 text-xs font-semibold py-2 rounded-full ml-3 min-w-[80px]"
+                  >
+                    {loadingUpdate ? (
+                      <ClipLoader color="#white" size={18} />
+                    ) : (
+                      "Submit"
+                    )}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
 
-        <div className="self-end lg:self-start mb-3">
-          {!isEditing && (
-            <OutlineButton
-              outlineBtnText="Edit"
-              outlineBtnLink={() => handleEditCancelClick()}
-            />
-          )}
+          <div className="self-end lg:self-start mb-3">
+            {!isEditing && (
+              <OutlineButton
+                outlineBtnText="Edit"
+                outlineBtnLink={() => handleEditCancelClick()}
+              />
+            )}
+          </div>
+        </form>
+      </div>
+      <div className="rounded-lg p-3 md:p-6 lg:p-8 w-full my-5">
+        <h1 className="text-3xl">Medical History</h1>
+        <div className="flex flex-col gap-6 w-full items-center my-4">
+          <MedicalHistory petProfileId={petId.toString()} />
         </div>
-      </form>
-    </div>
+      </div>
+    </>
   )
 }
 

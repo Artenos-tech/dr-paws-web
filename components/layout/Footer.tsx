@@ -12,7 +12,7 @@ const Footer = () => {
   const [isContactModalOpen, setContactIsModalOpen] = useState(false)
 
   return (
-    <footer className="bg-primary-3 py-10">
+    <footer className="bg-primary-3 py-10 w-full">
       <div className="mx-auto px-8 md:px-32 lg:px-20 xl:px-40">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div>

@@ -17,7 +17,6 @@ const PetProfile: React.FC<PetProfileProps> = ({ params }) => {
       <main className="flex flex-col w-full items-center px-8 md:px-32 lg:px-20 xl:px-40">
         <BackButton />
         <PetProfileInfo petId={parseInt(petProfileId)} />
-        <MedicalHistory petProfileId={petProfileId} />
       </main>
     </div>
   )
