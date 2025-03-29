@@ -22,7 +22,7 @@ pdfMake.vfs = pdfFonts.vfs
 const gridStyle: React.CSSProperties = {
   width: "25%",
   textAlign: "center",
-  color: "white",
+  color: "#5281a2",
 }
 
 interface Invoice {
