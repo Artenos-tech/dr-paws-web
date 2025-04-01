@@ -357,7 +357,9 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
                     className="outline-none border w-full p-1 px-2 text-xs  md:text-sm rounded my-5 mb:my-2 bg-transparent border-secondary-1"
                   />
                   {errors.name && (
-                    <p className="text-red-500 text-xs">{errors.name.message}</p>
+                    <p className="text-red-500 text-xs">
+                      {errors.name.message}
+                    </p>
                   )}
                 </>
               ) : (

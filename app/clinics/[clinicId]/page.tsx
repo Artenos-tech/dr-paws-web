@@ -8,7 +8,7 @@ import ClinicReviews from "@/components/ui/ClinicReviews"
 import ClinicTabBar from "@/components/ui/ClinicTabBar"
 import Overview from "@/components/ui/OverView"
 
-import { clinicItems, doctors, photos, reviews } from "@/model/mockData"
+import { clinicItems, doctors, photos } from "@/model/mockData"
 import { useAPICall } from "@/hooks/apicall"
 import api from "@/services/api"
 import Loader from "@/components/ui/Loader"

@@ -115,7 +115,11 @@ const Invoices = () => {
     setExpandedInvoiceId(expandedInvoiceId === invoiceId ? null : invoiceId)
   }
 
-  const handleDateRangeChange = (dates: any, dateStrings: [string, string]) => {
+  const handleDateRangeChange = (
+    dates: [dayjs.Dayjs | null, dayjs.Dayjs | null] | null,
+    dateStrings: [string, string],
+  ) => {
+    console.log("dates", dates)
     const [startDateStr, endDateStr] = dateStrings
 
     const startDate = startDateStr ? new Date(startDateStr) : null

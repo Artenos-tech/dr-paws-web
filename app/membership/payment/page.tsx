@@ -84,7 +84,8 @@ function PaymentStatus() {
           <div className="flex flex-col justify-center items-center space-y-4">
             <AlertCircle />
             <p className="text-center text-primary-1">
-              Payment not completed. Please contact one of our clinics if you need assistance.
+              Payment not completed. Please contact one of our clinics if you
+              need assistance.
             </p>
           </div>
         )

@@ -1,7 +1,6 @@
 import React from "react"
 import PetProfileInfo from "@/components/ui/PetProfileInfo"
 import BackButton from "@/components/ui/BackButton"
-import MedicalHistory from "@/components/ui/MedicalHistory"
 
 interface PetProfileProps {
   params: {

@@ -1,6 +1,5 @@
 "use client"
 
-import { Review } from "@/model/typeDefinitions"
 import ReviewImageCardList from "./ReviewImageCardList"
 
 interface ClinicReviewsProps {
