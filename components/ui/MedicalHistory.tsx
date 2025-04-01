@@ -13,12 +13,18 @@ interface MedicalHistoryProps {
 const MedicalHistory: React.FC<MedicalHistoryProps> = ({ petProfileId }) => {
   const [currentPageReports, setCurrentPageReports] = useState(1)
   const [currentPagePrescriptions, setCurrentPagePrescriptions] = useState(1)
-  const prescriptionsPerPage = 2
+  const [prescriptionsPerPage, setPrescriptionsPerPage] = useState(2) // Default value for large screens
   const itemsPerPage = 6
-  const indexOfLastItemReports = currentPageReports * itemsPerPage
-  const indexOfFirstItemReports = indexOfLastItemReports - itemsPerPage
-  const indexOfLastItemPrescriptions = currentPagePrescriptions * prescriptionsPerPage
-  const indexOfFirstItemPrescriptions = indexOfLastItemPrescriptions - prescriptionsPerPage
+
+  useEffect(() => {
+    const updatePrescriptionsPerPage = () => {
+      const width = window.innerWidth
+      setPrescriptionsPerPage(width < 1024 ? 1 : 2)
+    }
+    updatePrescriptionsPerPage()
+    window.addEventListener("resize", updatePrescriptionsPerPage)
+    return () => window.removeEventListener("resize", updatePrescriptionsPerPage)
+  }, [])
 
   const {
     call: getMedicalHistoryForPet,
@@ -31,7 +37,10 @@ const MedicalHistory: React.FC<MedicalHistoryProps> = ({ petProfileId }) => {
   }, [petProfileId])
 
   const medicalHistory = medicalHistoryResult?.ok && medicalHistoryResult.value.body.medical_history || null
-  const currentAttachments = medicalHistory?.attachments?.slice(indexOfFirstItemReports, indexOfLastItemReports) || []
+  const currentAttachments = medicalHistory?.attachments?.slice(
+    (currentPageReports - 1) * itemsPerPage,
+    currentPageReports * itemsPerPage
+  ) || []
   const prescriptions = medicalHistory?.prescriptions || {}
 
   const paginateReports = (pageNumber: number) => setCurrentPageReports(pageNumber)
@@ -44,7 +53,10 @@ const MedicalHistory: React.FC<MedicalHistoryProps> = ({ petProfileId }) => {
   }
 
   const currentPrescriptions = Object.entries(prescriptions)
-    .slice(indexOfFirstItemPrescriptions, indexOfLastItemPrescriptions)
+    .slice(
+      (currentPagePrescriptions - 1) * prescriptionsPerPage,
+      currentPagePrescriptions * prescriptionsPerPage
+    )
     .map(([dateAndTime, prescriptionLines]) => ({
       dateAndTime,
       prescriptionLines,
@@ -60,10 +72,10 @@ const MedicalHistory: React.FC<MedicalHistoryProps> = ({ petProfileId }) => {
         <div>
           {/* Prescriptions Section */}
           <div className="mb-8 flex flex-col justify-between">
+            <h3 className="text-lg text-primary-1 font-semibold mb-4">Prescriptions</h3>
             {Object.keys(prescriptions).length > 0 ? (
               <>
-                <h3 className="text-lg text-primary-1 font-semibold mb-4">Prescriptions</h3>
-                <ul className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <ul className="grid grid-cols-1 lg:grid-cols-2 gap-6 min-h-[500px]">
                   {currentPrescriptions.map(({ dateAndTime, prescriptionLines }, index) => (
                     <li key={index} className="bg-primary-3 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
                       <div className="flex flex-col">
@@ -89,7 +101,10 @@ const MedicalHistory: React.FC<MedicalHistoryProps> = ({ petProfileId }) => {
                   </button>
                   <button
                     onClick={() => paginatePrescriptions(currentPagePrescriptions + 1)}
-                    disabled={currentPagePrescriptions === Math.ceil(Object.keys(prescriptions).length / prescriptionsPerPage)}
+                    disabled={
+                      currentPagePrescriptions ===
+                      Math.ceil(Object.keys(prescriptions).length / prescriptionsPerPage)
+                    }
                     className="px-4 py-2 bg-gray-200 text-gray-600 rounded-md ml-2 disabled:opacity-50"
                   >
                     Next
@@ -101,11 +116,11 @@ const MedicalHistory: React.FC<MedicalHistoryProps> = ({ petProfileId }) => {
             )}
           </div>
 
+          {/* Diagnostic Reports Section */}
           <div className="mb-8 flex flex-col justify-between">
-            {/* Diagnostic Reports, Scans, and Xrays Section */}
+            <h3 className="text-lg font-semibold mb-4">Diagnostic Reports, Scans, and Xrays</h3>
             {medicalHistory && medicalHistory.attachments.length > 0 ? (
               <>
-                <h3 className="text-lg font-semibold mb-4">Diagnostic Reports, Scans, and Xrays</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 min-h-80 md:min-h-80 lg:min-h-60">
                   {currentAttachments.map((record: string, index: number) => (
                     <div
@@ -121,7 +136,6 @@ const MedicalHistory: React.FC<MedicalHistoryProps> = ({ petProfileId }) => {
                         <ExternalLink className="absolute top-3 right-3 text-gray-500 hover:text-blue-600" size={20} />
                       </a>
                       <div className="flex">
-                        {/* <FileDown /> */}
                         <p className="text-lg font-semibold text-secondary-1 mb-3 mt-6 truncate overflow-hidden">
                           {decodeURIComponent(record.split("/").pop() || record)}
                         </p>

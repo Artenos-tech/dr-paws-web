@@ -968,6 +968,7 @@ export default createAPIClient({
           clinicname: z.string(),
           cliniccontact: z.string(),
           clinicaddress: z.string(),
+          clinicgst: z.string().optional(),
           username: z.string(),
           usercontact: z.string(),
           useraddress: z.string(),
