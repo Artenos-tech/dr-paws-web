@@ -213,7 +213,7 @@ const Membership = () => {
       title: (
         <div
           style={{
-            height: 150,
+            height: isMobile ? 150 : 120,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
