@@ -101,7 +101,7 @@ const Reports = () => {
           {selectedPet && (
             <div className="w-full p-6">
               <h2 className="text-2xl font-semibold mb-4">
-                {selectedPet.name}&apos;'s Medical History
+                {selectedPet.name}&apos;s Medical History
               </h2>
               {historyLoading ? (
                 <div className="flex justify-center">

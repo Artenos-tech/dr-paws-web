@@ -119,7 +119,6 @@ const Invoices = () => {
     dates: [dayjs.Dayjs | null, dayjs.Dayjs | null] | null,
     dateStrings: [string, string],
   ) => {
-    console.log("dates", dates)
     const [startDateStr, endDateStr] = dateStrings
 
     const startDate = startDateStr ? new Date(startDateStr) : null
