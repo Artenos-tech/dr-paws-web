@@ -4,12 +4,23 @@ import { Review } from "@/model/typeDefinitions"
 import ReviewImageCardList from "./ReviewImageCardList"
 
 interface ClinicReviewsProps {
-  reviews: Review[]
+  reviews?: {
+    id: string
+    author: string
+    review_text: string
+    review_created_at: string
+    rating: number
+    profile_image: string | null
+  }[]
 }
 function ClinicReviews({ reviews }: ClinicReviewsProps) {
   return (
     <div className="w-full">
-      <ReviewImageCardList reviews={reviews} />
+      {reviews && reviews.length > 0 ? (
+        <ReviewImageCardList reviews={reviews} />
+      ) : (
+        <div>No reviews available</div>
+      )}
     </div>
   )
 }
