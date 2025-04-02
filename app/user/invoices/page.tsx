@@ -322,11 +322,11 @@ const Invoices = () => {
       width: 150,
       margin: [0, 0, 0, 10],
     }
-    const titleContent: ContentText = {
-      text: "INVOICE",
-      style: "title",
-      alignment: "center",
-    }
+    // const titleContent: ContentText = {
+    //   text: "INVOICE",
+    //   style: "title",
+    //   alignment: "center",
+    // }
 
     const invoiceDetailsGstContentStack: Content = [
       {
