@@ -42,11 +42,11 @@ const gridStyle: React.CSSProperties = {
 interface Invoice {
   id: number
   invoiceno: number
+  gstin: string | null
   createdon: string
   clinicname: string
   cliniccontact: string
   clinicaddress: string
-  clinicgst?: string
   username: string
   usercontact: string
   useraddress: string
@@ -327,43 +327,45 @@ const Invoices = () => {
       style: "title",
       alignment: "center",
     }
-    const invoiceDetailsGstContentStack: Content =
-      (invoice.clinicgst && [
+
+    const invoiceDetailsGstContentStack: Content = [
+      {
+        text: `Invoice No`,
+        style: "headerLabel",
+        margin: [0, 5, 0, 5],
+      },
+      {
+        text: `${invoice.invoiceno}`,
+        style: "entityName",
+      },
+      {
+        text: `Issue Date`,
+        style: "headerLabel",
+        margin: [0, 5, 0, 5],
+      },
+      {
+        text: `${invoice.createdon}`,
+        style: "entityName",
+      },
+    ]
+    if (invoice.gstin) {
+      invoiceDetailsGstContentStack.push(
         {
           text: "GSTIN",
           style: "headerLabel",
-          margin: [0, 0, 0, 5],
+          margin: [0, 5, 0, 5],
         },
         {
-          text: invoice.clinicgst,
+          text: invoice.gstin,
           style: "entityName",
         },
-      ]) ||
-      []
+      )
+    }
 
     const invoiceDetailsContent: Content = {
       columns: [
         {
-          stack: invoiceDetailsGstContentStack.concat([
-            {
-              text: `Invoice No`,
-              style: "headerLabel",
-              margin: [0, 0, 0, 5],
-            },
-            {
-              text: `${invoice.invoiceno}`,
-              style: "entityName",
-            },
-            {
-              text: `Issue Date`,
-              style: "headerLabel",
-              margin: [0, 0, 0, 5],
-            },
-            {
-              text: `${invoice.createdon}`,
-              style: "entityName",
-            },
-          ]),
+          stack: invoiceDetailsGstContentStack,
         },
       ],
       columnGap: 0,
@@ -478,7 +480,6 @@ const Invoices = () => {
     const docDefinition: TDocumentDefinitions = {
       content: [
         logoContent,
-        titleContent,
         invoiceDetailsContent,
         { columns: headerColumns, margin: [0, 20, 0, 20] },
         tableContent,

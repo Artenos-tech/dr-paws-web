@@ -981,11 +981,11 @@ export default createAPIClient({
             clinicname: z.string(),
             cliniccontact: z.string(),
             clinicaddress: z.string(),
-            clinicgst: z.string().optional(),
             username: z.string(),
             usercontact: z.string(),
             useraddress: z.string(),
             invoiceno: z.number(),
+            gstin: z.string().nullable(),
             createdon: z.string(),
             amount: z.number(),
             invoiceline: z.array(
