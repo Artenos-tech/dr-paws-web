@@ -774,7 +774,7 @@ export default createAPIClient({
                 id: z.number(),
                 name: z.string(),
                 description: z.string().nullable(),
-                type: z.enum(["DISCOUNT", "SESSIONS", "VACCINATIONS"]),
+                type: z.enum(["DISCOUNT", "REDEEMABLE"]),
                 value: z.number().nullable(),
               }),
             ),

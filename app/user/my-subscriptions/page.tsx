@@ -168,11 +168,7 @@ const Page = () => {
                         <h4 className="text-gray-600 text-xl mb-2">Sessions</h4>
                         <div className="flex flex-col gap-6 mt-6">
                           {subscription.plan.features
-                            .filter(
-                              (feature) =>
-                                feature.type === "SESSIONS" ||
-                                feature.type === "VACCINATIONS",
-                            )
+                            .filter((feature) => feature.type === "REDEEMABLE")
                             .map((feature) => (
                               <div
                                 key={feature.name}
