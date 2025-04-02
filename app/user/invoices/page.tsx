@@ -511,31 +511,33 @@ const Invoices = () => {
     filters.amountRange[1] !== null
 
   return (
-    <div className="flex flex-col w-full h-full items-center font-roca pb-20 flex-grow">
-      <main className="flex flex-col w-full items-center px-8 md:px-32 lg:px-20 xl:px-40">
-        <div className="w-full flex flex-col md:flex-row justify-between items-center mb-6">
-          <h1 className="text-3xl m-4 lg:m-12">Your Invoices</h1>
+    <div className="flex flex-col w-full h-full items-center font-roca pb-8 md:pb-12 lg:pb-20 flex-grow">
+      <main className="flex flex-col w-full items-center px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 max-w-7xl mx-auto">
+        <div className="w-full flex flex-col sm:flex-row justify-between items-center mb-4 md:mb-6">
+          <h1 className="text-2xl md:text-3xl my-3 md:m-4 lg:m-6">
+            Your Invoices
+          </h1>
         </div>
 
         {/* Filters and Sorting Section */}
-        <div className="w-full bg-gray-50 p-4 rounded-lg mb-6 shadow-sm">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
+        <div className="w-full bg-gray-50 p-3 md:p-4 rounded-lg mb-4 md:mb-6 shadow-sm">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-3 md:mb-4">
             {isFiltering && (
               <Button
                 type="default"
                 onClick={clearAllFilters}
-                icon={<X size={16} />}
-                className="text-gray-600"
+                icon={<X size={14} className="md:size-16" />}
+                className="text-gray-600 text-sm md:text-base mb-2 md:mb-0"
               >
                 Clear All Filters
               </Button>
             )}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
             {/* Date Range Filter */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-xs md:text-sm font-medium text-gray-700 mb-1">
                 Issue Date Range
               </label>
               <RangePicker
@@ -543,7 +545,7 @@ const Invoices = () => {
                 format="YYYY-MM-DD"
                 placeholder={["Start date", "End date"]}
                 allowClear
-                className="w-full"
+                className="w-full text-xs md:text-sm"
                 value={
                   filters.dateRange[0] || filters.dateRange[1]
                     ? [
@@ -561,14 +563,14 @@ const Invoices = () => {
 
             {/* Clinic Filter */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-xs md:text-sm font-medium text-gray-700 mb-1">
                 Clinic
               </label>
               <Select
                 allowClear
                 placeholder="Select clinic"
                 onChange={handleClinicFilterChange}
-                className="w-full"
+                className="w-full text-xs md:text-sm"
                 value={filters.clinicName}
               >
                 {uniqueClinicNames.map((clinic) => (
@@ -581,7 +583,7 @@ const Invoices = () => {
 
             {/* Amount Range Filter */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-xs md:text-sm font-medium text-gray-700 mb-1">
                 Amount Range (₹)
               </label>
               <Space className="w-full">
@@ -589,15 +591,15 @@ const Invoices = () => {
                   placeholder="Min"
                   onChange={handleAmountMinChange}
                   min={0}
-                  className="w-full"
+                  className="w-full text-xs md:text-sm"
                   value={filters.amountRange[0]}
                 />
-                <span>-</span>
+                <span className="text-xs md:text-sm">-</span>
                 <InputNumber
                   placeholder="Max"
                   onChange={handleAmountMaxChange}
                   min={filters.amountRange[0] || 0}
-                  className="w-full"
+                  className="w-full text-xs md:text-sm"
                   value={filters.amountRange[1]}
                 />
               </Space>
@@ -605,13 +607,13 @@ const Invoices = () => {
 
             {/* Sorting */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-xs md:text-sm font-medium text-gray-700 mb-1">
                 Sort By
               </label>
               <Select
                 defaultValue="createdon-desc"
                 onChange={handleSortChange}
-                className="w-full"
+                className="w-full text-xs md:text-sm"
                 value={`${sortConfig.field}-${sortConfig.order}`}
               >
                 <Option value="createdon-desc">Date (Newest First)</Option>
@@ -627,15 +629,15 @@ const Invoices = () => {
           </div>
         </div>
 
-        <div className="flex flex-col gap-6 lg:w-full items-center">
+        <div className="flex flex-col gap-4 md:gap-6 w-full items-center">
           {loadingInvoices && <ClipLoader color="#33495f" />}
           {!loadingInvoices && invoicesResult !== null && (
             <div className="w-full text-center">
               {filteredInvoices.length === 0 && (
-                <div className="py-8">
-                  <h3 className="text-xl mb-2">No invoices found</h3>
+                <div className="py-6 md:py-8">
+                  <h3 className="text-lg md:text-xl mb-2">No invoices found</h3>
                   {isFiltering && (
-                    <p className="text-gray-500">
+                    <p className="text-sm text-gray-500">
                       Try adjusting your filters or{" "}
                       <button
                         onClick={clearAllFilters}
@@ -649,7 +651,7 @@ const Invoices = () => {
               )}
               {filteredInvoices.length > 0 && (
                 <>
-                  <div className="mb-4 text-left text-sm text-gray-500">
+                  <div className="mb-3 md:mb-4 text-left text-xs md:text-sm text-gray-500">
                     Showing{" "}
                     {Math.min(
                       pageSize,
@@ -664,28 +666,25 @@ const Invoices = () => {
                       return (
                         <Card
                           key={invoice.id}
-                          className="w-full bg-primary-3 mb-4 shadow-md"
+                          className="w-full bg-primary-3 mb-3 md:mb-4 shadow-md"
                         >
                           <div
                             onClick={() => toggleTableExpansion(invoice.id)}
-                            className="w-full flex flex-wrap justify-between items-center cursor-pointer"
+                            className="w-full flex flex-col md:flex-col lg:flex-row justify-between items-center cursor-pointer"
                           >
                             <Card.Grid
                               hoverable={false}
                               style={{
                                 ...gridStyle,
                                 backgroundColor: "#fdc776",
+                                width: "100%",
+                                padding: "0.5rem",
                               }}
-                              className="flex-1 md:w-1/4 p-2 bg-primary-2 text-center"
+                              className="lg:w-1/4 bg-primary-2 text-center"
                             >
-                              <div
-                                style={{
-                                  display: "flex",
-                                  flexDirection: "column",
-                                }}
-                              >
-                                <p style={{ fontSize: "small" }}>Invoice No</p>
-                                <p style={{ fontSize: "large" }}>
+                              <div className="flex flex-col">
+                                <p className="text-xs md:text-sm">Invoice No</p>
+                                <p className="text-base md:text-lg font-medium">
                                   {invoice.invoiceno}
                                 </p>
                               </div>
@@ -695,17 +694,14 @@ const Invoices = () => {
                               style={{
                                 ...gridStyle,
                                 backgroundColor: "#fdc776",
+                                width: "100%",
+                                padding: "0.5rem",
                               }}
-                              className="flex flex-wrap justify-between items-center cursor-pointer"
+                              className="lg:w-1/4 bg-primary-2 text-center"
                             >
-                              <div
-                                style={{
-                                  display: "flex",
-                                  flexDirection: "column",
-                                }}
-                              >
-                                <p style={{ fontSize: "small" }}>Issue Date</p>
-                                <p style={{ fontSize: "large" }}>
+                              <div className="flex flex-col">
+                                <p className="text-xs md:text-sm">Issue Date</p>
+                                <p className="text-base md:text-lg font-medium">
                                   {invoice.createdon}
                                 </p>
                               </div>
@@ -715,17 +711,14 @@ const Invoices = () => {
                               style={{
                                 ...gridStyle,
                                 backgroundColor: "#fdc776",
+                                width: "100%",
+                                padding: "0.5rem",
                               }}
-                              className="flex flex-wrap justify-between items-center cursor-pointer"
+                              className="lg:w-1/4 bg-primary-2 text-center"
                             >
-                              <div
-                                style={{
-                                  display: "flex",
-                                  flexDirection: "column",
-                                }}
-                              >
-                                <p style={{ fontSize: "small" }}>Clinic</p>
-                                <p style={{ fontSize: "large" }}>
+                              <div className="flex flex-col">
+                                <p className="text-xs md:text-sm">Clinic</p>
+                                <p className="text-base md:text-lg font-medium truncate max-w-full">
                                   {invoice.clinicname}
                                 </p>
                               </div>
@@ -736,46 +729,55 @@ const Invoices = () => {
                                 ...gridStyle,
                                 backgroundColor: "#33495f",
                                 color: "white",
+                                width: "100%",
+                                padding: "0.5rem",
                               }}
+                              className="lg:w-1/4 text-center"
                             >
-                              <div
-                                style={{
-                                  display: "flex",
-                                  gap: "0.5em",
-                                  justifyContent: "center",
-                                }}
-                              >
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    flexDirection: "column",
-                                  }}
-                                >
-                                  <p style={{ fontSize: "small" }}>
+                              <div className="flex items-center justify-center gap-2">
+                                <div className="flex flex-col">
+                                  <p className="text-xs md:text-sm">
                                     Total Amount (₹)
                                   </p>
-                                  <p style={{ fontSize: "large" }}>
+                                  <p className="text-base font-medium">
                                     ₹{invoice.amount}
                                   </p>
                                 </div>
-                                {expandedInvoiceId === invoice.id ? (
-                                  <ChevronUp />
-                                ) : (
-                                  <ChevronDown />
-                                )}
+                                <div className="lg:ml-2">
+                                  {expandedInvoiceId === invoice.id ? (
+                                    <ChevronUp size={16} />
+                                  ) : (
+                                    <ChevronDown size={16} />
+                                  )}
+                                </div>
                               </div>
                             </Card.Grid>
                           </div>
                           {expandedInvoiceId === invoice.id && (
                             <>
-                              <Table<LineItemTable>
-                                columns={columns}
-                                dataSource={getInvoiceLines(
-                                  invoice.invoiceline,
-                                )}
-                                style={{ width: "100%" }}
-                                pagination={false}
-                              />
+                              <div className="overflow-x-auto w-full">
+                                {/* Update the table columns to make the Amount column sticky */}
+                                <Table<LineItemTable>
+                                  columns={[
+                                    ...columns.slice(0, -1), // All columns except the last one
+                                    {
+                                      ...columns[columns.length - 1], // Use the last column (Amount column)
+                                      fixed: "right", // Make it sticky
+                                      className: "bg-white", // Give it a background so it's not transparent
+                                      width: 150, // Give it a fixed width
+                                    },
+                                  ]}
+                                  dataSource={getInvoiceLines(
+                                    invoice.invoiceline,
+                                  )}
+                                  style={{ width: "100%" }}
+                                  pagination={false}
+                                  size="small"
+                                  className="text-xs md:text-sm"
+                                  scroll={{ x: "max-content" }}
+                                  rowClassName="text-xs sm:text-sm"
+                                />
+                              </div>
                               <Card
                                 style={{
                                   width: "100%",
@@ -791,10 +793,12 @@ const Invoices = () => {
                                     display: "flex",
                                     justifyContent: "center",
                                     gap: "0.5em",
+                                    padding: "0.75rem 0",
                                   }}
+                                  className="text-sm md:text-base"
                                 >
                                   <p>Download Invoice as PDF</p>
-                                  <FileDown />
+                                  <FileDown size={16} />
                                 </Card.Grid>
                               </Card>
                             </>
@@ -804,13 +808,13 @@ const Invoices = () => {
                     })}
 
                   {/* Pagination Controls */}
-                  <div className="flex justify-center mt-6">
-                    <ul className="flex space-x-2">
+                  <div className="flex justify-center mt-4 md:mt-6">
+                    <ul className="flex flex-wrap gap-1 md:gap-2 justify-center">
                       <li>
                         <button
                           onClick={() => handlePageChange(currentPage - 1)}
                           disabled={currentPage === 1}
-                          className={`px-3 py-1 rounded ${
+                          className={`px-2 py-1 md:px-3 md:py-1 text-xs md:text-sm rounded ${
                             currentPage === 1
                               ? "bg-gray-200 text-gray-500 cursor-not-allowed"
                               : "bg-primary-3 text-gray-700 hover:bg-primary-2"
@@ -828,7 +832,7 @@ const Invoices = () => {
                         <li key={page}>
                           <button
                             onClick={() => handlePageChange(page)}
-                            className={`px-3 py-1 rounded ${
+                            className={`px-2 py-1 md:px-3 md:py-1 text-xs md:text-sm rounded ${
                               currentPage === page
                                 ? "bg-[#33495f] text-white"
                                 : "bg-primary-3 text-gray-700 hover:bg-primary-2"
@@ -845,7 +849,7 @@ const Invoices = () => {
                             currentPage ===
                             Math.ceil(filteredInvoices.length / pageSize)
                           }
-                          className={`px-3 py-1 rounded ${
+                          className={`px-2 py-1 md:px-3 md:py-1 text-xs md:text-sm rounded ${
                             currentPage ===
                             Math.ceil(filteredInvoices.length / pageSize)
                               ? "bg-gray-200 text-gray-500 cursor-not-allowed"
