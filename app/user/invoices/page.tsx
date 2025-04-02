@@ -22,7 +22,7 @@ import pdfFonts from "pdfmake/build/vfs_fonts"
 import type {
   Column,
   Content,
-  ContentText,
+  // ContentText,
   TDocumentDefinitions,
   TableCell,
 } from "pdfmake/interfaces"
