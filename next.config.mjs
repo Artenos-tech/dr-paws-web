@@ -17,7 +17,11 @@ const nextConfig = {
           domains: ["localhost", "maps.googleapis.com"],
         }
       : {
-          domains: ["localhost", "maps.googleapis.com"],
+          domains: [
+            "localhost",
+            "maps.googleapis.com",
+            "lh3.googleusercontent.com",
+          ],
         },
   webpack: (config, { isServer }) => {
     if (!isServer && process.env.NEXT_EXPORT === "true") {

@@ -1,15 +1,14 @@
 import React from "react"
 import ReviewImageCard from "./ReviewImageCard"
-import { StaticImageData } from "next/image"
-
-interface ReviewData {
-  name: string
-  review: string
-  image: string | StaticImageData
-}
-
 interface ReviewImageCardListProps {
-  reviews: ReviewData[]
+  reviews: {
+    id: string
+    author: string
+    review_text: string
+    review_created_at: string
+    rating: number
+    profile_image: string | null
+  }[]
 }
 
 const ReviewImageCardList: React.FC<ReviewImageCardListProps> = ({

@@ -31,6 +31,14 @@ export interface Clinic extends ClinicBase {
       imageOrder: number
     }
   }
+  reviews?: {
+    id: string
+    author: string
+    review_text: string
+    review_created_at: string
+    rating: number
+    profile_image: string | null
+  }[]
 }
 
 export type Gender = "Male" | "Female" | ""

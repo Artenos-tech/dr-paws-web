@@ -159,21 +159,20 @@ export default function NavBar() {
                           My Pets
                         </div>
                       </DropdownMenu.Item> */}
-
-                      {/* <DropdownMenu.Item asChild>
-                        <div
-                          onClick={() => setContactIsModalOpen(true)}
-                          className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
-                        >
-                          Medical History
-                        </div>
-                      </DropdownMenu.Item> */}
                       <DropdownMenu.Item asChild>
                         <div
                           onClick={() => navigate.push("/user/my-appointments")}
                           className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
                         >
                           My Appointments
+                        </div>
+                      </DropdownMenu.Item>
+                      <DropdownMenu.Item asChild>
+                        <div
+                          onClick={() => navigate.push("/user/reports")}
+                          className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
+                        >
+                          Medical History
                         </div>
                       </DropdownMenu.Item>
                       {/* <div className="border-t border-gray-300 my-2" /> */}
@@ -352,7 +351,17 @@ export default function NavBar() {
                     My Appointments
                   </button>
                 </li>
-
+                <li>
+                  <button
+                    onClick={() => {
+                      setIsOpen(false)
+                      navigate.push("/user/reports")
+                    }}
+                    className="text-primary-1 hover:text-secondary-1 cursor-pointer"
+                  >
+                    Medical History
+                  </button>
+                </li>
                 {/* <button
                         onClick={() => {
                           setIsOpen(false);

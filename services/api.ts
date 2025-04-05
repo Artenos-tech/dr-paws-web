@@ -841,6 +841,18 @@ export default createAPIClient({
                 imageOrder: z.number(),
               }),
             ),
+            reviews: z
+              .array(
+                z.object({
+                  id: z.string().uuid(),
+                  author: z.string(),
+                  rating: z.number(),
+                  review_text: z.string(),
+                  review_created_at: z.string(),
+                  profile_image: z.string().nullable(),
+                }),
+              )
+              .optional(),
           })
           .nullable(),
       }),
@@ -973,6 +985,7 @@ export default createAPIClient({
             usercontact: z.string(),
             useraddress: z.string(),
             invoiceno: z.number(),
+            gstin: z.string().nullable(),
             createdon: z.string(),
             amount: z.number(),
             invoiceline: z.array(
@@ -991,13 +1004,16 @@ export default createAPIClient({
       }),
       errorResponseSchema: z.object({}),
     },
-    getMedicalRecordsForPet: {
+    getMedicalHistoryForPet: {
       method: "GET",
-      path: "/user/medicalrecords/pet/{pet_id}",
+      path: "/user/medicalhistory/pet/{pet_id}",
       pathParamsSchema: z.object({ pet_id: z.string() }),
       requestSchema: z.object({}),
       responseSchema: z.object({
-        records: z.array(z.string()),
+        medical_history: z.object({
+          attachments: z.array(z.string()),
+          prescriptions: z.record(z.array(z.string())),
+        }),
       }),
       errorResponseSchema: z.object({}),
     },
