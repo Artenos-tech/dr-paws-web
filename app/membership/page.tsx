@@ -132,11 +132,7 @@ const Membership = () => {
     </span>
   )
 
-  const CrossMark = () => (
-    <span style={{ color: "red", fontWeight: "bold", fontSize: "20px" }}>
-      &#x2717;
-    </span>
-  )
+  const CrossMark = () => <span>-</span>
 
   const generateComparisonTable = (): ComparisonTable[] => {
     if (!filteredPlans) {
