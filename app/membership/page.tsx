@@ -177,6 +177,8 @@ const Membership = () => {
               row[plan.name] =
                 matchingFeature.value === 1 ? (
                   <TickMark />
+                ) : matchingFeature.value === null ? (
+                  "Unlimited"
                 ) : (
                   `${matchingFeature.value}`
                 )
