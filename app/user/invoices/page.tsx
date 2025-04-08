@@ -284,10 +284,10 @@ const Invoices = () => {
       return {
         description: line.planitem || line.planitemid.toString(),
         quantity: line.quantity,
-        unitPrice: `₹${line.cliniccost}`,
-        discount: `₹${line.discount}`,
-        tax: `₹${line.tax}`,
-        amount: `₹${line.total}`,
+        unitPrice: `₹${line.cliniccost.toFixed(2)}`,
+        discount: `₹${line.discount.toFixed(2)}`,
+        tax: `₹${line.tax.toFixed(2)}`,
+        amount: `₹${line.total.toFixed(2)}`,
       }
     })
   }
@@ -740,7 +740,7 @@ const Invoices = () => {
                                     Total Amount (₹)
                                   </p>
                                   <p className="text-base font-medium">
-                                    ₹{invoice.amount}
+                                    ₹{invoice.amount.toFixed(2)}
                                   </p>
                                 </div>
                                 <div className="lg:ml-2">
