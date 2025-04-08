@@ -629,6 +629,7 @@ export default createAPIClient({
                   name: z.string(),
                   description: z.string().nullable(),
                   value: z.number(),
+                  used: z.number(),
                   type: z.string(),
                 }),
               ),
@@ -773,7 +774,7 @@ export default createAPIClient({
                 id: z.number(),
                 name: z.string(),
                 description: z.string().nullable(),
-                type: z.enum(["DISCOUNT", "SESSIONS", "VACCINATIONS"]),
+                type: z.enum(["DISCOUNT", "REDEEMABLE"]),
                 value: z.number().nullable(),
               }),
             ),
@@ -1004,6 +1005,7 @@ export default createAPIClient({
       }),
       errorResponseSchema: z.object({}),
     },
+
     getMedicalHistoryForPet: {
       method: "GET",
       path: "/user/medicalhistory/pet/{pet_id}",

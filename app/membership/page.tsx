@@ -34,7 +34,7 @@ type Plan = {
     id: number
     name: string
     description: string | null
-    type: "DISCOUNT" | "SESSIONS" | "VACCINATIONS"
+    type: "DISCOUNT" | "REDEEMABLE"
     value: number | null
   }[]
 }
@@ -132,18 +132,14 @@ const Membership = () => {
     </span>
   )
 
-  const CrossMark = () => (
-    <span style={{ color: "red", fontWeight: "bold", fontSize: "20px" }}>
-      &#x2717;
-    </span>
-  )
+  const CrossMark = () => <span>-</span>
 
   const generateComparisonTable = (): ComparisonTable[] => {
     if (!filteredPlans) {
       return []
     }
 
-    const featureTypeOrder = ["VACCINATIONS", "SESSIONS", "DISCOUNT"]
+    const featureTypeOrder = ["REDEEMABLE", "DISCOUNT"]
 
     const featureGroups: Record<string, string[]> = {}
 
@@ -177,17 +173,18 @@ const Membership = () => {
           if (matchingFeature) {
             if (matchingFeature.type === "DISCOUNT") {
               row[plan.name] = `${matchingFeature.value ?? <CrossMark />}%`
-            } else if (matchingFeature.type === "VACCINATIONS") {
+            } else if (matchingFeature.type === "REDEEMABLE") {
               row[plan.name] =
                 matchingFeature.value === 1 ? (
                   <TickMark />
                 ) : (
                   `${matchingFeature.value}`
                 )
-            } else if (matchingFeature.type === "SESSIONS") {
-              row[plan.name] =
-                `${matchingFeature.value ?? <CrossMark />} sessions`
             }
+            // else if (matchingFeature.type === "SESSIONS") {
+            //   row[plan.name] =
+            //     `${matchingFeature.value ?? <CrossMark />} sessions`
+            // }
           } else {
             row[plan.name] = <CrossMark />
           }
@@ -213,7 +210,7 @@ const Membership = () => {
       title: (
         <div
           style={{
-            height: 150,
+            height: isMobile ? 150 : 120,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
