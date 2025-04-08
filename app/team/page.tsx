@@ -50,7 +50,7 @@ const TeamPage = () => {
           </div>
         </div>
 
-        {loadingDoctors && doctorsList.length > 0 ? (
+        {loadingDoctors ? (
           <Loader />
         ) : (
           <div className="w-full">
