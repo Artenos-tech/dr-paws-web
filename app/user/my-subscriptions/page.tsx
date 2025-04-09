@@ -165,10 +165,13 @@ const Page = () => {
                     {/* Includes Section */}
                     <div className="flex flex-col md:flex-row flex-1 gap-8 mb-6 lg:mb-0">
                       <div className="flex-1">
-                        <h4 className="text-gray-600 text-xl mb-2">Sessions</h4>
+                        <h4 className="text-gray-600 text-xl mb-2">
+                          Redeemable
+                        </h4>
                         <div className="flex flex-col gap-6 mt-6">
                           {subscription.plan.features
                             .filter((feature) => feature.type === "REDEEMABLE")
+                            .sort((a) => (a.value === null ? 1 : -1))
                             .map((feature) => (
                               <div
                                 key={feature.name}
@@ -179,16 +182,20 @@ const Page = () => {
                                     {feature.name}
                                   </div>
                                   <div className="text-gray-600 text-sm">
-                                    {feature.used} of {feature.value} used
+                                    {feature.value === null
+                                      ? "Unlimited"
+                                      : `${feature.used} of ${feature.value} used`}
                                   </div>
                                 </div>
-                                <Progress
-                                  percent={Math.round(
-                                    (feature.used / feature.value) * 100,
-                                  )}
-                                  showInfo={false}
-                                  strokeColor={"green"}
-                                />
+                                {feature.value !== null && (
+                                  <Progress
+                                    percent={Math.round(
+                                      (feature.used / feature.value) * 100,
+                                    )}
+                                    showInfo={false}
+                                    strokeColor={"green"}
+                                  />
+                                )}
                               </div>
                             ))}
                         </div>
@@ -216,6 +223,13 @@ const Page = () => {
                                 </div>
                               </div>
                             ))}
+                          {subscription.plan.features.filter(
+                            (feature) => feature.type === "DISCOUNT",
+                          ).length === 0 && (
+                            <div className="text-gray-500 italic">
+                              No discounts available for this plan.
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>

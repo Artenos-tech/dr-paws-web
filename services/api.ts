@@ -628,7 +628,7 @@ export default createAPIClient({
                 z.object({
                   name: z.string(),
                   description: z.string().nullable(),
-                  value: z.number(),
+                  value: z.number().nullable(),
                   used: z.number(),
                   type: z.string(),
                 }),
