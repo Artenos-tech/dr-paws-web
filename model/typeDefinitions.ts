@@ -15,10 +15,11 @@ export interface ClinicBase {
 }
 export interface Clinic extends ClinicBase {
   contact: string
-  bookable: boolean
+  bookable?: boolean
   gmapsUrl: string
   address: string
   city: string
+
   parkingInfo: string
   timings: {
     dayOfWeek: string | null
