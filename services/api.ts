@@ -800,6 +800,8 @@ export default createAPIClient({
                 type: z.enum(["url", "ref"]),
                 value: z.string(),
               }),
+              bookable: z.boolean(),
+            contact: z.string(),
             }),
           )
           .nullable(),
