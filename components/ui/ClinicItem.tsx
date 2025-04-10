@@ -30,7 +30,7 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
 
   const { initiateLogin, isLoggedIn } = useUserContext()
   const [modalVisible, setModalVisible] = useState(false)
-  const navigate = useRouter()
+  // const navigate = useRouter()
 
   const handleBookAVisit = () => {
     if (!bookable) {
@@ -94,8 +94,9 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
             <p className="mb-4 text-center">
               {name} is not currently available for online booking.
               <br />
-              To schedule an appointment, please contact the clinic directly at 
-              <span className="font-semibold text-secondary-1"> {contact}</span>.
+              To schedule an appointment, please contact the clinic directly at
+              <span className="font-semibold text-secondary-1"> {contact}</span>
+              .
             </p>
 
             <div className="flex items-center bg-green-100 px-2 py-3 rounded mb-4 gap-2 justify-center">

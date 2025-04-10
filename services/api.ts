@@ -801,7 +801,7 @@ export default createAPIClient({
                 value: z.string(),
               }),
               bookable: z.boolean(),
-            contact: z.string(),
+              contact: z.string(),
             }),
           )
           .nullable(),
