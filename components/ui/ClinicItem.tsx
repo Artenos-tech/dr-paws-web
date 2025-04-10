@@ -34,13 +34,18 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
 
   const handleBookAVisit = () => {
     if (!bookable) {
-      setModalVisible(true)
+      if (isLoggedIn) {
+        setModalVisible(true)
+      } else {
+        initiateLogin("Book a Visit", "/user/book-appointment")
+      }
       return
     }
     return isLoggedIn
       ? router.push("/user/book-appointment")
       : initiateLogin("Book a Visit", "/user/book-appointment")
   }
+  
 
   const closeModal = () => {
     setModalVisible(false)
