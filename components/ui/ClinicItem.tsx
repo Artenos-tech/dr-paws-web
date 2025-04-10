@@ -45,7 +45,6 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
       ? router.push("/user/book-appointment")
       : initiateLogin("Book a Visit", "/user/book-appointment")
   }
-  
 
   const closeModal = () => {
     setModalVisible(false)
