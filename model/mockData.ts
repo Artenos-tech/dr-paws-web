@@ -212,6 +212,7 @@ export const clinicItems: Clinic[] = [
   {
     id: 1,
     name: "Dr. Paws, Indiranagar",
+    bookable: true,
     image: {
       type: "url",
       value: IND_Exterior1,
@@ -272,6 +273,7 @@ export const clinicItems: Clinic[] = [
   {
     id: 2,
     name: "Dr. Paws, RMV (Dollars Colony)",
+    bookable: true,
     image: {
       type: "url",
       value: RMV_Exterior1,

@@ -22,6 +22,8 @@ const ClinicItemList = ({ showStaticCard, enlargedView }: ClinicItemProps) => {
         type: "url" | "ref"
         value: string | StaticImageData
       }
+      bookable: boolean
+      contact: string
     }[]
   >([])
   const { call: getClinicsList, loading: loadingClinicList } = useAPICall(
@@ -39,6 +41,10 @@ const ClinicItemList = ({ showStaticCard, enlargedView }: ClinicItemProps) => {
             name: clinic.name,
             services: clinic.services,
             image: clinic.image,
+            // We are using '!' here to assert that 'clinic.bookable' is not undefined.
+            // This is safe because 'clinic.bookable' will always be returned
+            bookable: clinic.bookable!,
+            contact: clinic.contact,
           })),
         )
       }
