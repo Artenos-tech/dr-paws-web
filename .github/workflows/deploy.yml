@@ -26,5 +26,9 @@ jobs:
         run: |
           docker build \
             -t $REGION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE_NAME:${{ github.sha }} \
+            --build-arg NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL \
+            --build-arg NEXT_PUBLIC_CASHFREE_ENVIRONMENT=$NEXT_PUBLIC_CASHFREE_ENVIRONMENT \
+            --build-arg NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=$NEXT_PUBLIC_GOOGLE_MAPS_API_KEY \
+            --build-arg NEXT_PUBLIC_MARKETING_FEATURE_ENABLED=$NEXT_PUBLIC_MARKETING_FEATURE_ENABLED \
             . \
             --push
