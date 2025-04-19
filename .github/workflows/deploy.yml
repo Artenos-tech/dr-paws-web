@@ -5,10 +5,10 @@ jobs:
     name: Build and Push Docker Image
     runs-on: ubuntu-latest
     env:
-      REGION: ${{ env.GCP_REGION }}
-      PROJECT_ID: ${{ env.GCP_PROJECT_ID }}
-      REPOSITORY: ${{ env.GCP_REPOSITORY }}
-      IMAGE_NAME: ${{ env.GCP_IMAGE_NAME }}
+      REGION: ${{ vars.GCP_REGION }}
+      PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
+      REPOSITORY: ${{ vars.GCP_REPOSITORY }}
+      IMAGE_NAME: ${{ vars.GCP_IMAGE_NAME }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
