@@ -110,12 +110,12 @@ export default function NavBar() {
                 >
                   Our Team
                 </Link>
-                <Link
+                {/* <Link
                   href="/membership"
                   className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                 >
                   Membership
-                </Link>
+                </Link> */}
               </div>
             </div>
           </div>
@@ -177,7 +177,7 @@ export default function NavBar() {
                       </DropdownMenu.Item>
                       {/* <div className="border-t border-gray-300 my-2" /> */}
                       {/* {!isMarketingFeatureEnabled ? ( */}
-                      <DropdownMenu.Item asChild>
+                      {/* <DropdownMenu.Item asChild>
                         <div
                           onClick={() =>
                             navigate.push("/user/my-subscriptions")
@@ -186,7 +186,7 @@ export default function NavBar() {
                         >
                           My Memberships
                         </div>
-                      </DropdownMenu.Item>
+                      </DropdownMenu.Item> */}
                       {/* ) : null} */}
                       {/* <div className="border-t border-gray-300 my-2" /> */}
                       <DropdownMenu.Item asChild>
@@ -273,13 +273,13 @@ export default function NavBar() {
             >
               Our Team
             </Link>
-            <Link
+            {/* <Link
               onClick={() => setIsOpen(false)}
               href="/membership"
               className="text-primary-1 hover:bg-primary-2 hover:text-white block py-2 px-2 rounded-md text-base font-medium"
             >
               Membership
-            </Link>
+            </Link> */}
           </div>
           <div className="pt-4 pb-3 border-t border-primary-2">
             <div className="flex items-center px-8 md:px-32 space-x-4">
@@ -372,7 +372,7 @@ export default function NavBar() {
                         Medical History
                       </button> */}
                 <li>
-                  <button
+                  {/* <button
                     onClick={() => {
                       setIsOpen(false)
                       navigate.push("/user/my-subscriptions")
@@ -380,7 +380,7 @@ export default function NavBar() {
                     className="text-primary-1 hover:text-secondary-1 cursor-pointer"
                   >
                     My Memberships
-                  </button>
+                  </button> */}
                 </li>
                 <li>
                   <button
