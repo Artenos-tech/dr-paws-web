@@ -11,8 +11,8 @@ import defaultBirdImg from "@/public/assets/images/pets/bird.png"
 import defaultRabbitImg from "@/public/assets/images/pets/rabbit.png"
 import defaultOtherPetImage from "@/public/assets/images/pets/petImg.png"
 import { Pet } from "@/context/UserContext"
-import { useAPICall } from "@/hooks/apicall"
-import api from "@/services/api"
+// import { useAPICall } from "@/hooks/apicall"
+// import api from "@/services/api"
 import { Subscription } from "@/app/user/my-subscriptions/page"
 
 interface PetCardProps {
@@ -37,18 +37,19 @@ const PetCard: React.FC<PetCardProps> = ({ pet, fetchMedicalHistory }) => {
   // Setup API call for getPetSubscription
   // const { call: getPetSubscription } = useAPICall(api.getPetSubscription)
 
-  // useEffect(() => {
-  //   // If pet has a vetPortId, fetch subscription
-  //   if (vetPortId) {
-  //     const fetchSubscription = async () => {
-  //       const response = await getPetSubscription({ pet_id: vetPortId })
-  //       if (response?.ok) {
-  //         setSubscription(response.value.body.subscription)
-  //       }
-  //     }
-  //     fetchSubscription()
-  //   }
-  // }, [])
+  useEffect(() => {
+    //   // If pet has a vetPortId, fetch subscription
+    //   if (vetPortId) {
+    //     const fetchSubscription = async () => {
+    //       const response = await getPetSubscription({ pet_id: vetPortId })
+    //       if (response?.ok) {
+    //         setSubscription(response.value.body.subscription)
+    //       }
+    //     }
+    //     fetchSubscription()
+    setSubscription(null)
+    //   }
+  }, [])
 
   const handlePetProfileView = () => {
     if (!fetchMedicalHistory)

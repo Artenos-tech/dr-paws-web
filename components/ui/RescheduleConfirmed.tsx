@@ -81,21 +81,20 @@ const RescheduleConfirmed: React.FC<RescheduleConfirmedProps> = ({
             </div>
             {updatedValues.selectedDoctorImage && (
               <div className="relative w-32 h-32 rounded-full overflow-hidden bg-white p-4 ml-[-30px] flex justify-center items-center">
-              {(() => {
-                const docSrc =
-                  typeof updatedValues.selectedDoctorImage === "string"
-                    ? updatedValues.selectedDoctorImage
-                    : updatedValues.selectedDoctorImage.src;
-                return (
-                  <img
-                    src={docSrc}
-                    alt={`Dr. ${updatedValues.selectedVet?.name}'s profile`}
-                    className="object-contain w-full h-full rounded-full"
-                  />
-                )
-              })()}
-            </div>
-          
+                {(() => {
+                  const docSrc =
+                    typeof updatedValues.selectedDoctorImage === "string"
+                      ? updatedValues.selectedDoctorImage
+                      : updatedValues.selectedDoctorImage.src
+                  return (
+                    <img
+                      src={docSrc}
+                      alt={`Dr. ${updatedValues.selectedVet?.name}'s profile`}
+                      className="object-contain w-full h-full rounded-full"
+                    />
+                  )
+                })()}
+              </div>
             )}
           </div>
           <div className="my-4 space-y-3">
