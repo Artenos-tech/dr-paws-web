@@ -132,11 +132,11 @@ const BookingConfirmed: React.FC<BookingConfirmedProps> = ({
             </p>
           </div>
           <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
-            <p className="italic text-gray-400 text-sm text-center w-full max-w-md">
+            {/* <p className="italic text-gray-400 text-sm text-center w-full max-w-md">
               To cancel or reschedule your appointment, please contact our{" "}
               {selectedAppointment.selectedLocation} clinic on{" "}
               {selectedAppointment.selectedClinicContact}
-            </p>
+            </p> */}
           </div>
           <div className="flex items-center">
             <CustomButton
