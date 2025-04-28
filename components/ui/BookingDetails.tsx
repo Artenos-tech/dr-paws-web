@@ -194,7 +194,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                             }
                             alt={`Dr. ${selectedAppointment.vet_name}'s profile`}
                             layout="fill"
-                            objectFit="cover"
+                            objectFit="contain"
                             sizes="128px"
                           />
                         </div>
@@ -374,7 +374,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                             }
                             alt={`Dr. ${selectedAppointment.vet_name}'s profile`}
                             layout="fill"
-                            objectFit="cover"
+                            objectFit="contain"
                             sizes="128px"
                           />
                         </div>

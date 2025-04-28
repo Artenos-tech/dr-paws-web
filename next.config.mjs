@@ -33,15 +33,15 @@ const nextConfig = {
     return config
   },
   reactStrictMode: false,
-  redirects: async () => {
-    return [
-      {
-        source: "/membership",
-        destination: "/",
-        permanent: false,
-      },
-    ]
-  },
+  // redirects: async () => {
+  //   return [
+  //     {
+  //       source: "/membership",
+  //       destination: "/",
+  //       permanent: false,
+  //     },
+  //   ]
+  // },
 }
 
 export default nextConfig
