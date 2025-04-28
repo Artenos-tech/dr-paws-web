@@ -11,8 +11,8 @@ import defaultBirdImg from "@/public/assets/images/pets/bird.png"
 import defaultRabbitImg from "@/public/assets/images/pets/rabbit.png"
 import defaultOtherPetImage from "@/public/assets/images/pets/petImg.png"
 import { Pet } from "@/context/UserContext"
-// import { useAPICall } from "@/hooks/apicall"
-// import api from "@/services/api"
+import { useAPICall } from "@/hooks/apicall"
+import api from "@/services/api"
 import { Subscription } from "@/app/user/my-subscriptions/page"
 
 interface PetCardProps {
@@ -35,20 +35,19 @@ const PetCard: React.FC<PetCardProps> = ({ pet, fetchMedicalHistory }) => {
   const [subscription, setSubscription] = useState<Subscription | null>(null)
 
   // Setup API call for getPetSubscription
-  // const { call: getPetSubscription } = useAPICall(api.getPetSubscription)
+  const { call: getPetSubscription } = useAPICall(api.getPetSubscription)
 
   useEffect(() => {
-    //   // If pet has a vetPortId, fetch subscription
-    //   if (vetPortId) {
-    //     const fetchSubscription = async () => {
-    //       const response = await getPetSubscription({ pet_id: vetPortId })
-    //       if (response?.ok) {
-    //         setSubscription(response.value.body.subscription)
-    //       }
-    //     }
-    //     fetchSubscription()
-    setSubscription(null)
-    //   }
+    // If pet has a vetPortId, fetch subscription
+    if (vetPortId) {
+      const fetchSubscription = async () => {
+        const response = await getPetSubscription({ pet_id: vetPortId })
+        if (response?.ok) {
+          setSubscription(response.value.body.subscription)
+        }
+      }
+      fetchSubscription()
+    }
   }, [])
 
   const handlePetProfileView = () => {
@@ -63,7 +62,7 @@ const PetCard: React.FC<PetCardProps> = ({ pet, fetchMedicalHistory }) => {
     defaultPetImg
 
   const borderStyle = subscription
-    ? "border-2 border-secondary-1 bg-secondary-1"
+    ? "border-2 border-secondary-1 bg-secondary-1" // Example: Green border if subscription exists
     : "border-2 border-[#E2DBC4] bg-[#E2DBC4]"
 
   return (
