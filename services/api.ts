@@ -78,6 +78,7 @@ export default createAPIClient({
         city: z.string(),
         pincode: z.string(),
         state: z.string(),
+        country: z.string(),
       }),
       responseSchema: z.object({
         status: z.number(),
@@ -93,7 +94,7 @@ export default createAPIClient({
           address2: z.string().nullable(),
           city: z.string().nullable(),
           state: z.string().nullable(),
-
+          country: z.string().nullable(),
           pincode: z.string().nullable(),
           profile_image: z.string().nullable(),
         }),
@@ -154,7 +155,7 @@ export default createAPIClient({
           address2: z.string().nullable(),
           city: z.string().nullable(),
           state: z.string().nullable(),
-
+          country: z.string().nullable(),
           pincode: z.string().nullable(),
           profile_image: z.string().nullable(),
         }),
@@ -183,8 +184,7 @@ export default createAPIClient({
         status: z.number(),
         message: z.string(),
         user: z.object({
-          id: z.string(),
-          vetport_id: z.number(),
+          id: z.string().uuid(),
           mobile: z.string(),
           name: z.string(),
           role: z.enum(["ADMIN", "USER"]),
@@ -193,16 +193,17 @@ export default createAPIClient({
           address2: z.string().nullable(),
           city: z.string().nullable(),
           state: z.string().nullable(),
+          country: z.string().nullable(),
           pincode: z.string().nullable(),
           profile_image: z.string().nullable(),
         }),
         pets: z.array(
           z.object({
-            vetport_id: z.number().nullable(),
+            id: z.string().uuid(),
             name: z.string(),
             type: z.string().nullable(),
             breed: z.string().nullable(),
-            weight: z.string().nullable(),
+            // weight: z.string().nullable(),
             gender: z.string().nullable(),
             dob: z.string().nullable(),
             profile_image: z.string().nullable(),
@@ -225,14 +226,14 @@ export default createAPIClient({
           address2: z.string().nullable(),
           city: z.string().nullable(),
           state: z.string().nullable(),
+          country: z.string().nullable(),
           pincode: z.string().nullable(),
           profile_image: z.string().nullable(),
         }),
       }),
       responseSchema: z.object({
         user: z.object({
-          id: z.string(),
-          vetport_id: z.number(),
+          id: z.string().uuid(),
           mobile: z.string(),
           name: z.string(),
           role: z.enum(["ADMIN", "USER"]),
@@ -241,135 +242,9 @@ export default createAPIClient({
           address2: z.string().nullable(),
           city: z.string().nullable(),
           state: z.string().nullable(),
+          country: z.string().nullable(),
           pincode: z.string().nullable(),
           profile_image: z.string().nullable(),
-        }),
-      }),
-      errorResponseSchema: z.object({}),
-    },
-
-    getAppointments: {
-      method: "GET",
-      path: "/user/appointments",
-      pathParamsSchema: z.object({}),
-      requestSchema: z.object({}),
-      responseSchema: z.object({
-        status: z.number(),
-        message: z.string(),
-        appointments: z.array(
-          z.object({
-            id: z.string(),
-            pet_vetport_id: z.number(),
-            pet_name: z.string(),
-            pet_type: z.string().optional(),
-            pet_profile_image: z.string().nullable(),
-            user_vetport_id: z.number(),
-            vet_vetport_id: z.number(),
-            vet_name: z.string(),
-            vet_image: z.object({
-              type: z.enum(["url", "ref"]),
-              value: z.string(),
-            }),
-            clinic_id: z.number(),
-            clinic_name: z.string(),
-            clinic_location: z.string(),
-            clinic_contact: z.string(),
-            appt_start: z.string(),
-            appt_end: z.string(),
-            appt_status: z.string().nullable(),
-            appt_reason: z.string().nullable(),
-            appt_type: z.string(),
-            appt_type_id: z.number(),
-            category: z.enum(["UPCOMING", "PAST", "CANCELLED"]),
-          }),
-        ),
-      }),
-      errorResponseSchema: z.object({}),
-    },
-
-    getStaffSchedule: {
-      method: "GET",
-      path: "/booking/clinic/{clinicid}/staffschedule/{staffid}/appointment/{appttypeid}?subtype={subtype}",
-      pathParamsSchema: z.object({
-        clinicid: z.string(),
-        staffid: z.string(),
-        appttypeid: z.string(),
-        subtype: z.string().optional(),
-      }),
-      requestSchema: z.object({}),
-      responseSchema: z.object({
-        status: z.number(),
-        message: z.string(),
-        staffschedule: z.object({
-          slots: z.record(z.string(), z.array(z.string())),
-        }),
-      }),
-      errorResponseSchema: z.object({}),
-    },
-
-    getBestAvailableVetSchedule: {
-      method: "GET",
-      path: "/booking/schedule/best?clinicid={clinicid}&apptypeid={apptypeid}",
-      pathParamsSchema: z.object({
-        clinicid: z.string(),
-        apptypeid: z.string(),
-      }),
-      requestSchema: z.object({}),
-      responseSchema: z.object({
-        slots: z.record(
-          z.string(),
-          z.record(
-            z.string(),
-            z.array(
-              z.object({
-                staffId: z.number(),
-              }),
-            ),
-          ),
-        ),
-        preferredVets: z.array(
-          z.object({
-            staffId: z.number(),
-            appCount: z.number(),
-          }),
-        ),
-      }),
-      errorResponseSchema: z.object({}),
-    },
-
-    createAppointment: {
-      method: "POST",
-      path: "/user/appointment",
-      pathParamsSchema: z.object({}),
-      requestSchema: z.object({
-        vet_id: z.number(),
-        pet_id: z.number(),
-        appt_start: z.string(),
-        appt_end: z.string(),
-        appt_reason: z.string().nullable(),
-        clinic_id: z.number(),
-        appt_type_id: z.number(),
-      }),
-      responseSchema: z.object({
-        status: z.number(),
-        message: z.string(),
-        appointment: z.object({
-          id: z.number(),
-          clinic_name: z.string(),
-          clinic_location: z.string(),
-          clinic_contact: z.string(),
-          vet_name: z.string(),
-          vet_image: z.object({
-            type: z.enum(["url", "ref"]),
-            value: z.string(),
-          }),
-          appt_start: z.string(),
-          appt_end: z.string(),
-          appt_reason: z.string().nullable(),
-          appt_type: z.string(),
-          pet_name: z.string(),
-          pet_type: z.string().nullable(),
-          pet_profile_image: z.string().nullable(),
         }),
       }),
       errorResponseSchema: z.object({}),
@@ -443,12 +318,12 @@ export default createAPIClient({
         message: z.string(),
         pets: z.array(
           z.object({
-            vetport_id: z.number(),
+            id: z.string().uuid(),
             name: z.string(),
-            type: z.string().nullable(),
+            type: z.enum(['DOG', 'CAT']).nullable(),
             breed: z.string().nullable(),
-            weight: z.string().nullable(),
-            gender: z.string().nullable(),
+            // weight: z.string().nullable(),
+            gender: z.enum(['MALE', 'FEMALE']).nullable(),
             dob: z.string().nullable(),
             profile_image: z.string().nullable(),
           }),
@@ -564,6 +439,176 @@ export default createAPIClient({
             contact: z.string(),
           }),
         ),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+
+    getStaffSchedule: {
+      method: "GET",
+      path: "/booking/clinic/{clinicid}/staffschedule/{staffid}/appointment/{appttypeid}?subtype={subtype}",
+      pathParamsSchema: z.object({
+        clinicid: z.string(),
+        staffid: z.string(),
+        appttypeid: z.string(),
+        subtype: z.string().optional(),
+      }),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        status: z.number(),
+        message: z.string(),
+        staffschedule: z.object({
+          slots: z.record(z.string(), z.array(z.string())),
+        }),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+
+    getBestAvailableVetSchedule: {
+      method: "GET",
+      path: "/booking/schedule/best?clinicid={clinicid}&apptypeid={apptypeid}",
+      pathParamsSchema: z.object({
+        clinicid: z.string(),
+        apptypeid: z.string(),
+      }),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        slots: z.record(
+          z.string(),
+          z.record(
+            z.string(),
+            z.array(
+              z.object({
+                staffId: z.number(),
+              }),
+            ),
+          ),
+        ),
+        preferredVets: z.array(
+          z.object({
+            staffId: z.number(),
+            appCount: z.number(),
+          }),
+        ),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+
+    createAppointment: {
+      method: "POST",
+      path: "/user/appointment",
+      pathParamsSchema: z.object({}),
+      requestSchema: z.object({
+        vet_id: z.number(),
+        pet_id: z.number(),
+        appt_start: z.string(),
+        appt_end: z.string(),
+        appt_reason: z.string().nullable(),
+        clinic_id: z.number(),
+        appt_type_id: z.number(),
+      }),
+      responseSchema: z.object({
+        status: z.number(),
+        message: z.string(),
+        appointment: z.object({
+          id: z.number(),
+          clinic_name: z.string(),
+          clinic_location: z.string(),
+          clinic_contact: z.string(),
+          vet_name: z.string(),
+          vet_image: z.object({
+            type: z.enum(["url", "ref"]),
+            value: z.string(),
+          }),
+          appt_start: z.string(),
+          appt_end: z.string(),
+          appt_reason: z.string().nullable(),
+          appt_type: z.string(),
+          pet_name: z.string(),
+          pet_type: z.string().nullable(),
+          pet_profile_image: z.string().nullable(),
+        }),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+
+    getAppointments: {
+      method: "GET",
+      path: "/user/appointments",
+      pathParamsSchema: z.object({}),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        status: z.number(),
+        message: z.string(),
+        appointments: z.array(
+          z.object({
+            id: z.string(),
+            pet_vetport_id: z.number(),
+            pet_name: z.string(),
+            pet_type: z.string().optional(),
+            pet_profile_image: z.string().nullable(),
+            user_vetport_id: z.number(),
+            vet_vetport_id: z.number(),
+            vet_name: z.string(),
+            vet_image: z.object({
+              type: z.enum(["url", "ref"]),
+              value: z.string(),
+            }),
+            clinic_id: z.number(),
+            clinic_name: z.string(),
+            clinic_location: z.string(),
+            clinic_contact: z.string(),
+            appt_start: z.string(),
+            appt_end: z.string(),
+            appt_status: z.string().nullable(),
+            appt_reason: z.string().nullable(),
+            appt_type: z.string(),
+            appt_type_id: z.number(),
+            category: z.enum(["UPCOMING", "PAST", "CANCELLED"]),
+          }),
+        ),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+
+    cancelAppointment: {
+      method: "PUT",
+      path: "/user/appointment/{appointmentid}/cancel",
+      pathParamsSchema: z.object({ appointmentid: z.string() }),
+      requestSchema: z.object({
+        clinic_id: z.number(),
+        vet_id: z.number(),
+        pet_id: z.number(),
+        pet_name: z.string(),
+        appt_start: z.string(),
+        appt_end: z.string(),
+        appt_type_id: z.number(),
+        reason: z.string(),
+      }),
+      responseSchema: z.object({
+        status: z.number(),
+        message: z.string(),
+        appointment: z.object({
+          id: z.number(),
+          clinic_id: z.number(),
+          vet_id: z.number(),
+          pet_id: z.number(),
+        }),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+
+    rescheduleAppointment: {
+      method: "PUT",
+      path: "/user/appointment/{appointmentid}/reschedule",
+      pathParamsSchema: z.object({ appointmentid: z.string() }),
+      requestSchema: z.object({
+        vet_id: z.number(),
+        appt_start: z.number().int(),
+        appt_end: z.number().int(),
+      }),
+      responseSchema: z.object({
+        status: z.number(),
+        message: z.string(),
       }),
       errorResponseSchema: z.object({}),
     },
@@ -687,33 +732,6 @@ export default createAPIClient({
         order: z.object({
           orderId: z.string(),
           paymentSessionId: z.string(),
-        }),
-      }),
-      errorResponseSchema: z.object({}),
-    },
-
-    cancelAppointment: {
-      method: "PUT",
-      path: "/user/appointment/{appointmentid}/cancel",
-      pathParamsSchema: z.object({ appointmentid: z.string() }),
-      requestSchema: z.object({
-        clinic_id: z.number(),
-        vet_id: z.number(),
-        pet_id: z.number(),
-        pet_name: z.string(),
-        appt_start: z.string(),
-        appt_end: z.string(),
-        appt_type_id: z.number(),
-        reason: z.string(),
-      }),
-      responseSchema: z.object({
-        status: z.number(),
-        message: z.string(),
-        appointment: z.object({
-          id: z.number(),
-          clinic_id: z.number(),
-          vet_id: z.number(),
-          pet_id: z.number(),
         }),
       }),
       errorResponseSchema: z.object({}),
@@ -952,22 +970,6 @@ export default createAPIClient({
             }),
           )
           .nullable(),
-      }),
-      errorResponseSchema: z.object({}),
-    },
-
-    rescheduleAppointment: {
-      method: "PUT",
-      path: "/user/appointment/{appointmentid}/reschedule",
-      pathParamsSchema: z.object({ appointmentid: z.string() }),
-      requestSchema: z.object({
-        vet_id: z.number(),
-        appt_start: z.number().int(),
-        appt_end: z.number().int(),
-      }),
-      responseSchema: z.object({
-        status: z.number(),
-        message: z.string(),
       }),
       errorResponseSchema: z.object({}),
     },

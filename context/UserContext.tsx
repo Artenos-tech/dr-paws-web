@@ -26,22 +26,23 @@ export interface User {
   address2: string | null
   city: string | null
   state: string | null
+  country: string | null
   pincode: string | null
   profile_image: string | null
 }
 
 export interface Pet {
+  id: string
   name: string
   type: string | null
   breed: string | null
-  weight: string | null
+  // weight: string | null
   gender: string | null
   dob: string | null
   // age: {
   //   years: number | null;
   //   months: number | null;
   // };
-  vetPortId: number
   profileImage: string | null // pet image is optional
 }
 

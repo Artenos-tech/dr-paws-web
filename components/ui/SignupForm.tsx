@@ -29,7 +29,7 @@ const signUpSchema = z.object({
     .min(1, "Provide pincode.")
     .max(6, "Pincode must be 6 digits"),
   state: z.string().trim().min(1, "Provide state name."),
-
+  country: z.string().trim().min(1, "Provide country name."),
   profilePicture: z.string().nullable().optional(),
 })
 
@@ -45,6 +45,7 @@ interface SignUpFormProps {
     city: string
     pincode: string
     state: string
+    country: string
   }) => void
   loading: boolean
   errMsg: string
@@ -73,6 +74,7 @@ const SignupForm: React.FC<SignUpFormProps> = ({
       city: "",
       pincode: "",
       state: "",
+      country: "",
     },
   })
 

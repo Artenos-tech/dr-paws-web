@@ -30,6 +30,7 @@ const profileSchema = z.object({
     .nullable(),
   city: z.string().nullable(),
   state: z.string().nullable(),
+  country: z.string().nullable(),
   pincode: z.string().nullable(),
 })
 
@@ -85,6 +86,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
       address2: data.address2,
       city: data.city,
       state: data.state,
+      country: data.country,
       pincode: data.pincode,
       role: "USER",
       mobile: profileData.mobile,

@@ -30,6 +30,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
         address2: updatedProfile.address2,
         city: updatedProfile.city,
         state: updatedProfile.state,
+        country: updatedProfile.country,
         pincode: updatedProfile.pincode,
         profile_image: updatedProfile.profile_image,
       },
@@ -39,8 +40,6 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
       onClose()
     }
   }
-
-  // if (loading) return <div><Loader /></div>;
 
   return (
     <Modal

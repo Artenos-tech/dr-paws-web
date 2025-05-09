@@ -51,7 +51,7 @@ const Profile: React.FC = () => {
     getPetsAPIResult.value.body.pets.map((pet) => ({
       ...pet,
       profileImage: pet.profile_image,
-      vetPortId: pet.vetport_id,
+      id: pet.id,
       gender: pet.gender,
     }))
 
@@ -105,7 +105,7 @@ const Profile: React.FC = () => {
             >
               {loading && <ClipLoader color="#33495f" />}
               {pets &&
-                pets.map((pet) => <PetCard key={pet.vetPortId} pet={pet} />)}
+                pets.map((pet) => <PetCard key={pet.id} pet={pet} />)}
             </div>
           )}
         </div>
