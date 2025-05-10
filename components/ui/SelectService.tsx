@@ -66,7 +66,7 @@ const SelectService: React.FC<SelectServiceProps> = ({
     getPetsAPIResult.value.body.pets.map((pet) => ({
       ...pet,
       profileImage: pet.profile_image,
-      vetPortId: pet.vetport_id,
+      id: pet.id,
     }))
 
   const ServiceTabsData = getAppointmentServicesResult?.ok

@@ -8,13 +8,19 @@ import "react-dropdown/style.css"
 import { useEffect, useState } from "react"
 import { useAPICall } from "@/hooks/apicall"
 import api from "@/services/api"
-import { PetSpecies, useUserContext } from "@/context/UserContext"
+import { useUserContext } from "@/context/UserContext"
 import { ClipLoader } from "react-spinners"
 
 const petSchema = z.object({
-  speciesId: z.number(),
   name: z.string().min(1, "Pet name is required"),
-  type: z.string().min(1, "Pet type is required"),
+  type: z.enum(["DOG", "CAT", ""], {
+    errorMap: (issue, ctx) => {
+      if (issue.code === "invalid_type" && issue.received === "undefined") {
+        return { message: "Pet type is required" }
+      }
+      return { message: "Invalid pet type" }
+    },
+  }),
 })
 
 type PetFormData = z.infer<typeof petSchema>
@@ -35,7 +41,7 @@ export default function AddPetModal({
   const { call: addNewPetAPI, loading } = useAPICall(api.addNewPet)
 
   const { user, updatePetSpeciesHandler, petSpecies } = useUserContext()
-  const [selectedType, setSelectedType] = useState<string>("")
+  const [selectedType, setSelectedType] = useState<"DOG" | "CAT" | "">("")
 
   const {
     register,
@@ -54,13 +60,7 @@ export default function AddPetModal({
   const fetchPetSpecies = async () => {
     const response = await getPetSpecies({})
     if (response?.ok) {
-      updatePetSpeciesHandler(
-        response.value.body.species.map((specie: PetSpecies) => ({
-          id: specie.id,
-          name: specie.name,
-          displayName: specie.displayName,
-        })),
-      )
+      updatePetSpeciesHandler(response.value.body.species)
     }
   }
 
@@ -69,7 +69,7 @@ export default function AddPetModal({
       const response = await addNewPetAPI({
         pet: {
           name: data.name,
-          species: { id: data.speciesId, name: data.type },
+          species: data.type as "DOG" | "CAT",
         },
       })
 
@@ -85,15 +85,7 @@ export default function AddPetModal({
 
   const handleTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedName = event.target.value
-    setSelectedType(selectedName)
-
-    // Find the speciesId for the selected type
-    const selectedSpecies = petSpecies?.find(
-      (species) => species.displayName === selectedName,
-    )
-    if (selectedSpecies) {
-      setValue("speciesId", selectedSpecies.id)
-    }
+    setSelectedType(selectedName as "DOG" | "CAT")
   }
 
   if (!isOpen) return null
@@ -140,12 +132,8 @@ export default function AddPetModal({
                   Type of Pet
                 </option>
                 {petSpecies?.map((species) => (
-                  <option
-                    key={species.id}
-                    value={species.displayName}
-                    className="!w-3/4"
-                  >
-                    {species.displayName}
+                  <option key={species} value={species} className="!w-3/4">
+                    {species}
                   </option>
                 ))}
               </select>
