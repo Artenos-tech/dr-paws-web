@@ -49,11 +49,13 @@ export interface Pet {
 export interface UserContextType {
   user: User | null
   petSpecies: Array<"DOG" | "CAT"> | null
+  petGenders: Array<"MALE" | "FEMALE"> | null
   isLoggedIn: boolean | null
   updateUserDetailsHandler: (data: User) => void
   getAuthToken: () => string | null
   refresh: () => void
   updatePetSpeciesHandler: (data: Array<"DOG" | "CAT">) => void
+  updatePetGendersHandler: (data: Array<"MALE" | "FEMALE">) => void
   initiateLogin: (loginText: string, redirectTo: string) => void
 }
 
@@ -66,6 +68,9 @@ interface UserProviderProps {
 export const UserProvider = ({ children }: UserProviderProps) => {
   const [user, setUser] = useState<User | null>(null)
   const [petSpecies, setPetSpecies] = useState<Array<"DOG" | "CAT"> | null>(
+    null,
+  )
+  const [petGenders, setPetGenders] = useState<Array<"MALE" | "FEMALE"> | null>(
     null,
   )
 
@@ -146,9 +151,11 @@ export const UserProvider = ({ children }: UserProviderProps) => {
       value={{
         user,
         petSpecies,
+        petGenders,
         isLoggedIn,
         updateUserDetailsHandler: setUser,
         updatePetSpeciesHandler: setPetSpecies,
+        updatePetGendersHandler: setPetGenders,
         getAuthToken,
         refresh: handleCheckAuthToken,
         initiateLogin,

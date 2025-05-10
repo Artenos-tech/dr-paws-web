@@ -33,11 +33,12 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
   //   years: 0,
   //   months: 0,
   // });
+
   const {
-    call: getPets,
-    result: getPetsResult,
-    loading: loadingPets,
-  } = useAPICall(api.getPets)
+    call: getPetById,
+    result: getPetResult,
+    loading: loadingPet,
+  } = useAPICall(api.getPetById)
   const { call: getPetSpecies, result: getPetSpeciesResult } = useAPICall(
     api.getPetSpecies,
   )
@@ -77,7 +78,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
   } = formMethods
 
   useEffect(() => {
-    getPets({})
+    getPetById({ petid: petId })
   }, [])
 
   useEffect(() => {
@@ -88,26 +89,25 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
   }, [petId])
 
   useEffect(() => {
-    if (getPetsResult?.ok && petId) {
-      const foundPet = getPetsResult.value.body.pets.find(
-        (pet) => pet.id === petId,
-      )
-      if (foundPet) {
+    if (getPetResult?.ok && petId) {
+      const selectedPet = getPetResult.value.body.pet
+      if (selectedPet) {
+        if (selectedPet.type) fetchPetBreedsBySpecies(selectedPet.type)
         setPet({
-          name: foundPet.name,
-          type: foundPet.type || null,
-          breed: foundPet.breed?.trim() || null,
-          // weight: foundPet.weight,
-          gender: foundPet.gender?.trim() || null,
-          id: foundPet.id,
-          dob: foundPet.dob?.split("T")[0] || null,
-          profileImage: foundPet.profile_image,
+          name: selectedPet.name,
+          type: selectedPet.type || null,
+          breed: selectedPet.breed?.trim() || null,
+          // weight: selectedPet.weight,
+          gender: selectedPet.gender?.trim() || null,
+          id: selectedPet.id,
+          dob: selectedPet.dob?.split("T")[0] || null,
+          profileImage: selectedPet.profile_image,
         })
-        setImage(foundPet.profile_image || "")
-        // setAge(foundPet.age || { years: 0, months: 0 });
+        setImage(selectedPet.profile_image || "")
+        // setAge(selectedPet.age || { years: 0, months: 0 });
 
-        Object.entries(foundPet).forEach(([key, value]) => {
-          if (key in foundPet) {
+        Object.entries(selectedPet).forEach(([key, value]) => {
+          if (key in selectedPet) {
             if (key === "dob" && typeof value === "string") {
               const formattedDate = value.split("T")[0]
               setValue("dob", formattedDate)
@@ -127,7 +127,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
     //   }
     //   fetchSubscription()
     // }
-  }, [petId, getPetsResult, setValue])
+  }, [petId, getPetResult, setValue])
 
   useEffect(() => {
     if (getPetSpeciesResult?.ok) {
@@ -190,7 +190,6 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
       (breed) => breed.name === selectedPet.breed,
     )?.id
     const petGender = petGenders.find((gender) => gender === selectedPet.gender)
-
     if (petType && petGender) {
       await updatePetDetails({
         pet: {
@@ -250,7 +249,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
     petImageByType[pet?.type?.toLowerCase() || "other"] ||
     petImageByType.other
 
-  if (loadingPets)
+  if (loadingPet)
     return (
       <div>
         <Loader />
