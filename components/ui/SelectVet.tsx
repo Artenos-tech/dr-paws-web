@@ -5,7 +5,7 @@ import SelectDoctorCard from "./SelectDoctorCard"
 
 import CustomButton from "./CustomButton"
 import SelectCalendar from "./SelectCalendar"
-import { format } from "date-fns"
+import { format, isSameDay } from "date-fns"
 import {
   Carousel,
   CarouselContent,
@@ -29,18 +29,18 @@ export function convertDateToEpoch(date: string) {
 }
 
 export interface SelectedVet {
-  id: number
+  id: string
   name: string
-  image: {
-    type: "url" | "ref"
-    value: string
-  }
+  // image: {
+  //   type: "url" | "ref"
+  //   value: string
+  // } | null
 }
 
 interface selectVetProps {
-  selectedSvcId: number
+  selectedSvcId: string
   selectedPet: Pet
-  selectedClinic: number
+  selectedClinic: string
   selectedLocation: string
   selectedService: string
   selectedSubtype: BookingCategory | null
@@ -56,7 +56,7 @@ interface selectVetProps {
   onNext?: () => void
 }
 
-const BEST_AVAILABLE_VET_ID = 0
+const BEST_AVAILABLE_VET_ID = "best-available"
 
 const SelectVet: React.FC<selectVetProps> = ({
   selectedClinic,
@@ -74,15 +74,18 @@ const SelectVet: React.FC<selectVetProps> = ({
   const { user } = useUserContext()
 
   const [selectedDoctor, setSelectedDoctor] = useState<SelectedVet | null>(null)
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null)
-  const [selectedSlot, setSelectedSlot] = useState<string | null>(null)
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date())
+  const [selectedSlot, setSelectedSlot] = useState<{
+    startTime: string
+    endTime: string
+  } | null>(null)
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false)
 
   const {
-    call: getStaffSchedule,
-    result: staffScheduleResult,
-    loading: loadingStaffSchedule,
-  } = useAPICall(api.getStaffSchedule)
+    call: getSlotsForStaff,
+    result: slotsForStaffResult,
+    loading: loadingSlotsForStaff,
+  } = useAPICall(api.getSlotsForStaff)
 
   const {
     call: getBestAvailableVetSchedule,
@@ -93,8 +96,8 @@ const SelectVet: React.FC<selectVetProps> = ({
   const { call: createAnAppointment, loading: loadingAppointmentCreation } =
     useAPICall(api.createAppointment)
 
-  const { call: rescheduleAppointment, loading: loadingRescheduleAppointment } =
-    useAPICall(api.rescheduleAppointment)
+  // const { call: rescheduleAppointment, loading: loadingRescheduleAppointment } =
+  //   useAPICall(api.rescheduleAppointment)
 
   const {
     call: getDoctorsForClinic,
@@ -102,21 +105,28 @@ const SelectVet: React.FC<selectVetProps> = ({
     loading: loadingDoctors,
   } = useAPICall(api.getDoctorsForClinic)
 
-  const fetchStaffSchedule = useCallback(async () => {
+  const fetchSlotsForStaff = useCallback(async () => {
     if (!selectedDoctor) {
       throw new Error("Doctor must be selected")
     }
-    await getStaffSchedule({
-      clinicid: selectedClinic.toString(),
-      staffid: selectedDoctor.id.toString(),
-      appttypeid: selectedSvcId.toString(),
-      subtype: selectedSubtype?.id,
-    })
+    if (selectedSvcId && selectedSubtype && selectedClinic && selectedPet) {
+      await getSlotsForStaff({
+        staffid: selectedDoctor.id,
+        // appttypeid: selectedSvcId,
+        clinicid: selectedClinic,
+        catalogue: selectedSubtype.id,
+        petid: selectedPet.id,
+        pettype: selectedPet.type as "DOG" | "CAT",
+        isgrooming: isGrooming ? "y" : "n",
+        date: format(selectedDate, "dd/MM/yyyy"),
+        // subtype: selectedSubtype?.id,
+      })
+    }
   }, [
     selectedSvcId,
     selectedDoctor,
     selectedClinic,
-    getStaffSchedule,
+    getSlotsForStaff,
     isGrooming,
   ])
 
@@ -128,28 +138,30 @@ const SelectVet: React.FC<selectVetProps> = ({
   }, [selectedClinic, selectedSvcId])
 
   const fetchDoctors = useCallback(async () => {
-    await getDoctorsForClinic({
-      clinicid: selectedClinic,
-      grooming: isGrooming ? "y" : "n",
-    })
+    if (selectedSubtype && selectedPet)
+      await getDoctorsForClinic({
+        clinicid: selectedClinic,
+        grooming: isGrooming ? "y" : "n",
+        catalogue: selectedSubtype?.id,
+        date: format(selectedDate, "dd/MM/yyyy"),
+        petid: selectedPet.id,
+        pettype: selectedPet.type as "DOG" | "CAT",
+      })
   }, [selectedClinic, getDoctorsForClinic])
 
   useEffect(() => {
     fetchDoctors()
   }, [])
 
-  const GROOMING_STAFF_NAME = "Grooming Staff"
-
   useEffect(() => {
     if (isGrooming && doctorsResult?.ok) {
-      const groomingStaff = doctorsResult.value.body.staff.find(
-        (doctor) => doctor.name === GROOMING_STAFF_NAME,
-      )
-      if (groomingStaff) {
+      const staff = doctorsResult.value.body.staff
+      const groomingStaff = staff[Math.floor(Math.random() * staff.length)]
+      if (staff.length > 0 && groomingStaff) {
         setSelectedDoctor(groomingStaff)
       } else {
         console.error(
-          "Grooming staff not found in the list of doctors",
+          "Grooming staff not found",
           doctorsResult.value.body.staff,
         )
       }
@@ -157,75 +169,87 @@ const SelectVet: React.FC<selectVetProps> = ({
   }, [doctorsResult, isGrooming])
 
   useEffect(() => {
+    if ((selectedDoctor || isGrooming) && selectedDate) {
+      if (selectedDoctor && selectedDoctor.id === BEST_AVAILABLE_VET_ID) {
+        fetchBestAvailableVetSlots()
+      } else {
+        fetchSlotsForStaff()
+      }
+    }
+  }, [selectedDate])
+
+  useEffect(() => {
     if (selectedDoctor) {
+      setSelectedSlot(null)
       if (selectedDoctor.id === BEST_AVAILABLE_VET_ID) {
         fetchBestAvailableVetSlots()
       } else {
-        fetchStaffSchedule()
+        fetchSlotsForStaff()
       }
     }
   }, [selectedDoctor])
 
-  function selectPreferredOrRandomAvailableVetId(): number {
-    if (!bestAvailableVetScheduleResult?.ok) {
-      throw new Error("Best available vet schedule not loaded")
-    }
-    if (!selectedDate) {
-      throw new Error("Date must be selected")
-    }
-    if (!selectedSlot) {
-      throw new Error("Slot must be selected")
-    }
-    const availableVets =
-      bestAvailableVetScheduleResult.value.body.slots[
-        normalizeSelectedDate(selectedDate)
-      ][selectedSlot]
-    const preferredVets =
-      bestAvailableVetScheduleResult.value.body.preferredVets
-    if (availableVets.length === 0) {
-      throw new Error("No available vets for the selected slot")
-    }
-    const preferredAvailableVets = preferredVets
-      .filter(({ staffId }) =>
-        availableVets.find((availableVet) => availableVet.staffId === staffId),
-      )
-      .sort((a, b) => b.appCount - a.appCount)
-    if (preferredAvailableVets.length > 0) {
-      return preferredAvailableVets[0].staffId
-    }
-    const randomIndex = Math.floor(Math.random() * availableVets.length)
-    return availableVets[randomIndex].staffId
-  }
+  // function selectPreferredOrRandomAvailableVetId(): number {
+  //   if (!bestAvailableVetScheduleResult?.ok) {
+  //     throw new Error("Best available vet schedule not loaded")
+  //   }
+  //   if (!selectedDate) {
+  //     throw new Error("Date must be selected")
+  //   }
+  //   if (!selectedSlot) {
+  //     throw new Error("Slot must be selected")
+  //   }
+  //   const availableVets =
+  //     bestAvailableVetScheduleResult.value.body.slots[
+  //       normalizeSelectedDate(selectedDate)
+  //     ][selectedSlot]
+  //   const preferredVets =
+  //     bestAvailableVetScheduleResult.value.body.preferredVets
+  //   if (availableVets.length === 0) {
+  //     throw new Error("No available vets for the selected slot")
+  //   }
+  //   const preferredAvailableVets = preferredVets
+  //     .filter(({ staffId }) =>
+  //       availableVets.find((availableVet) => availableVet.staffId === staffId),
+  //     )
+  //     .sort((a, b) => b.appCount - a.appCount)
+  //   if (preferredAvailableVets.length > 0) {
+  //     return preferredAvailableVets[0].staffId
+  //   }
+  //   const randomIndex = Math.floor(Math.random() * availableVets.length)
+  //   return availableVets[randomIndex].staffId
+  // }
 
   const handleNextClick = async () => {
     if (!(selectedDoctor || isGrooming)) {
       throw new Error("Doctor must be selected or grooming must be selected")
     }
-    const selectedDoc =
-      selectedDoctor?.id === BEST_AVAILABLE_VET_ID &&
-      filteredDoctors.find(
-        (doc) => doc.id === selectPreferredOrRandomAvailableVetId(),
-      )
+    // const selectedDoc =
+    //   selectedDoctor?.id === BEST_AVAILABLE_VET_ID &&
+    //   doctors.find(
+    //     (doc) => doc.id === selectPreferredOrRandomAvailableVetId(),
+    //   )
 
-    const slotEnd = selectedDate
-    if (slotEnd && selectedSlot) {
-      const [hours, minutes] = selectedSlot.split(":").map(Number)
-      slotEnd.setHours(hours, minutes, 0, 0)
-      slotEnd.setMinutes(
-        slotEnd.getMinutes() +
-          (!isGrooming ? 30 : selectedSubtype?.id === "spa-bath" ? 60 : 90),
-      )
-    }
+    // const slotEnd = selectedDate
+    // if (slotEnd && selectedSlot) {
+    //   const [hours, minutes] = selectedSlot.split(":").map(Number)
+    //   slotEnd.setHours(hours, minutes, 0, 0)
+    //   slotEnd.setMinutes(
+    //     slotEnd.getMinutes() +
+    //       (!isGrooming ? 30 : selectedSubtype?.id === "spa-bath" ? 60 : 90),
+    //   )
+    // }
     setFinalAppointmentData({
-      selectedDoctor: selectedDoc || selectedDoctor,
+      selectedDoctor: selectedDoctor,
+      // || selectedDoc
       selectedDate,
-      selectedSlot,
-      selectedSlotEnd:
-        slotEnd?.toLocaleTimeString("en-IN", {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: false,
-        }) || null,
+      selectedSlot: selectedSlot?.startTime ?? null,
+      selectedSlotEnd: selectedSlot?.endTime ?? null,
+      // slotEnd?.toLocaleTimeString("en-IN", {
+      //   hour: "2-digit",
+      //   minute: "2-digit",
+      //   hour12: false,
+      // }) || null,
     })
     setIsConfirmationModalOpen(true)
   }
@@ -234,26 +258,31 @@ const SelectVet: React.FC<selectVetProps> = ({
     if (!isReschedule) {
       setIsConfirmationModalOpen(false)
       if (user && selectedSlot && selectedDate && selectedDoctor) {
-        const [hours, minutes] = selectedSlot.split(":").map(Number)
-        selectedDate.setHours(hours, minutes, 0, 0)
-        const apptStart = selectedDate.toISOString()
-        selectedDate.setMinutes(
-          selectedDate.getMinutes() +
-            (!isGrooming ? 30 : selectedSubtype?.id === "spa-bath" ? 60 : 90),
-        )
-        const apptEnd = selectedDate.toISOString()
+        // const [hours, minutes] = selectedSlot.split(":").map(Number)
+        // selectedDate.setHours(hours, minutes, 0, 0)
+        // // const apptStart = selectedDate.toISOString()
+        // selectedDate.setMinutes(
+        //   selectedDate.getMinutes() +
+        //     (!isGrooming ? 60 : selectedSubtype?.id === "spa-bath" ? 60 : 90),
+        // )
+        // const apptEnd = format(selectedDate, "HH:mm")
         try {
           const response = await createAnAppointment({
             vet_id:
-              selectedDoctor.id === BEST_AVAILABLE_VET_ID
-                ? selectPreferredOrRandomAvailableVetId()
-                : selectedDoctor.id,
-            pet_id: selectedPet.vetPortId,
+              // selectedDoctor.id === BEST_AVAILABLE_VET_ID
+              //   ? selectPreferredOrRandomAvailableVetId()
+              // :
+              selectedDoctor.id,
+            pet_id: selectedPet.id,
             clinic_id: selectedClinic,
-            appt_reason: selectedSubtype?.title || null,
-            appt_start: apptStart,
-            appt_end: apptEnd,
+            // appt_reason: selectedSubtype?.title || null,
+            appt_start: selectedSlot.startTime.replace(":", ""),
+            appt_end: selectedSlot.endTime.replace(":", ""),
+            booking_date: format(selectedDate, "dd/MM/yyyy"),
             appt_type_id: selectedSvcId,
+            subtype_id: selectedSubtype?.id as string,
+            pet_type: selectedPet.type as "DOG" | "CAT",
+            is_grooming: isGrooming,
           })
           if (response.ok) {
             toast.success("Appointment created successfully!", {
@@ -284,81 +313,81 @@ const SelectVet: React.FC<selectVetProps> = ({
       }
     } else {
       setIsConfirmationModalOpen(false)
-      if (
-        user &&
-        selectedSlot &&
-        selectedDate &&
-        selectedDoctor &&
-        existingAppointmentId
-      ) {
-        const [hours, minutes] = selectedSlot.split(":").map(Number)
-        selectedDate.setHours(hours, minutes, 0, 0)
-        const apptStartUnixTimestamp = Math.floor(selectedDate.getTime() / 1000)
-        selectedDate.setMinutes(
-          selectedDate.getMinutes() +
-            (!isGrooming ? 30 : selectedSubtype?.id === "spa-bath" ? 60 : 90),
-        )
-        const apptEndUnixTimestamp = Math.floor(selectedDate.getTime() / 1000)
-        try {
-          const response = await rescheduleAppointment({
-            appointmentid: existingAppointmentId,
-            vet_id:
-              selectedDoctor.id === BEST_AVAILABLE_VET_ID
-                ? selectPreferredOrRandomAvailableVetId()
-                : selectedDoctor.id,
-            appt_start: apptStartUnixTimestamp,
-            appt_end: apptEndUnixTimestamp,
-          })
-          if (response.ok) {
-            toast.success("Appointment rescheduled successfully!", {
-              duration: 3000,
-              position: "bottom-right",
-            })
-            if (onNext) {
-              onNext()
-            }
-          } else {
-            toast.error("Failed to reschedule appointment. Please try again.", {
-              duration: 3000,
-              position: "bottom-right",
-            })
-          }
-        } catch (error) {
-          console.error("Error rescheduling appointment:", error)
-          toast.error("An unexpected error occurred. Please try again.", {
-            duration: 3000,
-            position: "bottom-right",
-          })
-        }
-      } else {
-        toast.error("Please fill out all required fields before proceeding.", {
-          duration: 3000,
-          position: "bottom-right",
-        })
-      }
+      // if (
+      //   user &&
+      //   selectedSlot &&
+      //   selectedDate &&
+      //   selectedDoctor &&
+      //   existingAppointmentId
+      // ) {
+      //   const [hours, minutes] = selectedSlot.split(":").map(Number)
+      //   selectedDate.setHours(hours, minutes, 0, 0)
+      //   const apptStartUnixTimestamp = Math.floor(selectedDate.getTime() / 1000)
+      //   selectedDate.setMinutes(
+      //     selectedDate.getMinutes() +
+      //       (!isGrooming ? 30 : selectedSubtype?.id === "spa-bath" ? 60 : 90),
+      //   )
+      //   const apptEndUnixTimestamp = Math.floor(selectedDate.getTime() / 1000)
+      //   try {
+      //     const response = await rescheduleAppointment({
+      //       appointmentid: existingAppointmentId,
+      //       vet_id:
+      //         selectedDoctor.id === BEST_AVAILABLE_VET_ID
+      //           ? selectPreferredOrRandomAvailableVetId()
+      //           : selectedDoctor.id,
+      //       appt_start: apptStartUnixTimestamp,
+      //       appt_end: apptEndUnixTimestamp,
+      //     })
+      //     if (response.ok) {
+      //       toast.success("Appointment rescheduled successfully!", {
+      //         duration: 3000,
+      //         position: "bottom-right",
+      //       })
+      //       if (onNext) {
+      //         onNext()
+      //       }
+      //     } else {
+      //       toast.error("Failed to reschedule appointment. Please try again.", {
+      //         duration: 3000,
+      //         position: "bottom-right",
+      //       })
+      //     }
+      //   } catch (error) {
+      //     console.error("Error rescheduling appointment:", error)
+      //     toast.error("An unexpected error occurred. Please try again.", {
+      //       duration: 3000,
+      //       position: "bottom-right",
+      //     })
+      //   }
+      // } else {
+      //   toast.error("Please fill out all required fields before proceeding.", {
+      //     duration: 3000,
+      //     position: "bottom-right",
+      //   })
+      // }
     }
   }
 
   const handleDateSelect = (date: Date) => {
-    setSelectedDate(date)
-    setSelectedSlot(null)
+    if (!isSameDay(date, selectedDate)) {
+      setSelectedDate(date)
+      setSelectedSlot(null)
+    }
   }
 
-  const handleSlotSelect = (time: string) => {
-    setSelectedSlot(selectedSlot === time ? null : time)
+  const handleSlotSelect = (time: { startTime: string; endTime: string }) => {
+    setSelectedSlot(
+      selectedSlot && selectedSlot.startTime === time.startTime ? null : time,
+    )
   }
 
   const doctors = doctorsResult?.ok ? doctorsResult.value.body.staff : []
 
-  const filteredDoctors = selectedClinic
-    ? doctors.filter((doctor) => doctor.clinicids.includes(selectedClinic))
-    : []
-
   const availableSlotsLoading =
-    loadingStaffSchedule || loadingBestAvailableVetSchedule
+    loadingSlotsForStaff || loadingBestAvailableVetSchedule
 
   const availableSlotsError =
-    staffScheduleResult?.ok === false ||
+    slotsForStaffResult?.ok === false ||
     bestAvailableVetScheduleResult?.ok === false
 
   const availableSlots = selectedDoctor
@@ -370,14 +399,14 @@ const SelectVet: React.FC<selectVetProps> = ({
             ),
           )
         : null
-      : staffScheduleResult?.ok
-        ? staffScheduleResult.value.body.staffschedule.slots
+      : slotsForStaffResult?.ok
+        ? slotsForStaffResult.value.body.slots
         : null
     : null
 
   const isNextButtonEnabled =
     (selectedDoctor !== null || isGrooming) &&
-    selectedDate !== null &&
+    // selectedDate !== null &&
     selectedSlot !== null
 
   if (loadingDoctors) {
@@ -397,11 +426,11 @@ const SelectVet: React.FC<selectVetProps> = ({
             Which of our experts would you like to see?
           </p>
           <DoctorSelectionCarousel
-            options={filteredDoctors}
+            options={doctors}
             selectedDoctor={selectedDoctor}
             onDoctorSelected={(doctor) => {
               setSelectedDoctor(doctor)
-              setSelectedDate(null) // Reset date and slot on doctor change
+              setSelectedDate(new Date()) // Reset date and slot on doctor change
             }}
           />
         </div>
@@ -439,13 +468,12 @@ const SelectVet: React.FC<selectVetProps> = ({
           buttonText={isReschedule ? "Reschedule" : "Book"}
           buttonBackground="bg-secondary-1"
           disabled={
-            !isNextButtonEnabled ||
-            loadingAppointmentCreation ||
-            loadingRescheduleAppointment
+            !isNextButtonEnabled || loadingAppointmentCreation
+            // || loadingRescheduleAppointment
           }
           loading={
-            isNextButtonEnabled &&
-            (loadingAppointmentCreation || loadingRescheduleAppointment)
+            isNextButtonEnabled && loadingAppointmentCreation
+            // || loadingRescheduleAppointment
           }
           buttonClickEvent={handleNextClick}
         />
@@ -459,16 +487,17 @@ const SelectVet: React.FC<selectVetProps> = ({
             petName: selectedPet.name,
             service: selectedSubtype?.title || selectedService,
             doctorName:
-              selectedDoctor && selectedDoctor.id === BEST_AVAILABLE_VET_ID
-                ? filteredDoctors.find(
-                    (doc) => doc.id === selectPreferredOrRandomAvailableVetId(),
-                  )?.name
-                : !selectedDoctor?.name.includes("Grooming")
-                  ? selectedDoctor?.name
-                  : undefined,
+              // selectedDoctor && selectedDoctor.id === BEST_AVAILABLE_VET_ID
+              //   ? doctors.find(
+              //       (doc) => doc.id === selectPreferredOrRandomAvailableVetId(),
+              //     )?.name
+              // :
+              !selectedDoctor?.name.includes("Grooming")
+                ? selectedDoctor?.name
+                : undefined,
             location: selectedLocation,
             date: selectedDate,
-            slot: selectedSlot,
+            slot: selectedSlot.startTime,
           }}
         />
       )}
@@ -499,10 +528,10 @@ const DoctorSelectionCarousel = ({
               onDoctorSelected({
                 id: BEST_AVAILABLE_VET_ID,
                 name: "Best Available Vet",
-                image: {
-                  type: "url",
-                  value: "",
-                },
+                // image: {
+                //   type: "url",
+                //   value: "",
+                // },
               })
             }
           />
@@ -515,8 +544,8 @@ const DoctorSelectionCarousel = ({
             <SelectDoctorCard
               doctor={doctor}
               isSelected={selectedDoctor?.id === doctor.id}
-              onDoctorSelect={(id, name, image) => {
-                onDoctorSelected({ id, name, image })
+              onDoctorSelect={(id, name) => {
+                onDoctorSelected({ id, name })
               }}
             />
           </CarouselItem>
@@ -528,13 +557,13 @@ const DoctorSelectionCarousel = ({
   )
 }
 
-const normalizeSelectedDate = (date: Date) => {
-  const selectedDay = date.getDate().toString().padStart(2, "0")
-  const selectedMonth = (date.getMonth() + 1).toString().padStart(2, "0")
-  const selectedYear = date.getFullYear().toString()
-  const normalizedDate = `${selectedYear}/${selectedMonth}/${selectedDay}`
-  return normalizedDate
-}
+// const normalizeSelectedDate = (date: Date) => {
+//   const selectedDay = date.getDate().toString().padStart(2, "0")
+//   const selectedMonth = (date.getMonth() + 1).toString().padStart(2, "0")
+//   const selectedYear = date.getFullYear().toString()
+//   const normalizedDate = `${selectedYear}/${selectedMonth}/${selectedDay}`
+//   return normalizedDate
+// }
 
 const AppointmentDateAndTimeSelector = ({
   show,
@@ -545,11 +574,13 @@ const AppointmentDateAndTimeSelector = ({
   onSlotSelected,
 }: {
   show: boolean
-  selectedDate: Date | null
+  selectedDate: Date
   onDateSelected: (date: Date) => void
-  availableSlots: Record<string, string[]>
-  selectedSlot: string | null
-  onSlotSelected: (slot: string) => void
+  availableSlots:
+    | Record<string, string[]>
+    | Array<{ startTime: string; endTime: string }>
+  selectedSlot: { startTime: string; endTime: string } | null
+  onSlotSelected: (slot: { startTime: string; endTime: string }) => void
 }) => {
   return (
     <div className="flex flex-col justify-center items-center xl:flex-row gap-8">
@@ -580,20 +611,25 @@ const AppointmentDateAndTimeSelector = ({
             }}
           >
             {availableSlots &&
-            Object.keys(availableSlots).length > 0 &&
-            availableSlots[normalizeSelectedDate(selectedDate)].length > 0 &&
-            availableSlots[normalizeSelectedDate(selectedDate)] ? (
-              availableSlots[normalizeSelectedDate(selectedDate)]
-                .toSorted()
+            // Object.keys(availableSlots).length > 0 &&
+            // availableSlots[normalizeSelectedDate(selectedDate)].length > 0 &&
+            // availableSlots[normalizeSelectedDate(selectedDate)]
+            Array.isArray(availableSlots) &&
+            availableSlots.length > 0 ? (
+              availableSlots
+                // [normalizeSelectedDate(selectedDate)]
+                //   .toSorted()
                 .map((time, index) => (
                   <div
                     key={index}
                     className={` text-center bg-primary-3 py-2 px-6 sm:py-1 sm:px-6 lg:py-2 lg:px-8 w-full rounded-md cursor-pointer shadow-md ${
-                      selectedSlot === time ? "border border-secondary-1" : ""
+                      selectedSlot?.startTime === time.startTime
+                        ? "border border-secondary-1"
+                        : ""
                     }`}
                     onClick={() => onSlotSelected(time)}
                   >
-                    {time}
+                    {time.startTime}
                   </div>
                 ))
             ) : (
