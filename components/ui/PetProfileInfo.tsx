@@ -203,6 +203,8 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
               }
             : null,
           // weight: null,
+          breedSize: null,
+          coat: null,
           gender: petGender,
           dob: selectedPet.dob ? new Date(selectedPet.dob).toISOString() : null,
           profileImage: realPetImage,

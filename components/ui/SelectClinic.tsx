@@ -30,7 +30,7 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
   const [missingAttributes, setMissingAttributes] = useState<string[]>([])
   const [showModal, setShowModal] = useState(false)
   const [dropdownOptions, setDropdownOptions] = useState<
-    Record<string, Array<{ id: string; name: string }>>
+    Record<string, Array<{ id: string; name: string; description?: string }>>
   >({})
   const [formData, setFormData] = useState<
     Record<string, { id: string; name: string }>
@@ -54,50 +54,55 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
 
   const onClinicSelect = async function (clinic: string) {
     setIsFormComplete(false)
-    const response = await getMissingAttributes({
-      clinicid: clinic,
-      petid: selectedPet.id,
-      grooming: isGrooming ? "y" : "n",
-    })
-    if (response.ok && response.value.body.attributes.length > 0) {
-      const missing = response.value.body.attributes
-      setMissingAttributes(missing)
-      setShowModal(true)
-      setFormData({})
-      const options: Record<string, Array<{ id: string; name: string }>> = {}
-      for (const attr of missing) {
-        if (attr === "Breed" && selectedPet.type) {
-          const breedsRes = await getBreeds({ species: selectedPet.type })
-          if (breedsRes.ok) {
-            options[attr] = breedsRes.value.body.breeds.map((breed) => ({
-              id: breed.id,
-              name: breed.name,
-            }))
+    if (clinic !== selectedClinic) {
+      const response = await getMissingAttributes({
+        clinicid: clinic,
+        petid: selectedPet.id,
+        grooming: isGrooming ? "y" : "n",
+      })
+      if (response.ok && response.value.body.attributes.length > 0) {
+        const missing = response.value.body.attributes
+        setMissingAttributes(missing)
+        setShowModal(true)
+        setFormData({})
+        const options: Record<
+          string,
+          Array<{ id: string; name: string; description?: string }>
+        > = {}
+        for (const attr of missing) {
+          if (attr === "Breed" && selectedPet.type) {
+            const breedsRes = await getBreeds({ species: selectedPet.type })
+            if (breedsRes.ok) {
+              options[attr] = breedsRes.value.body.breeds.map((breed) => ({
+                id: breed.id,
+                name: breed.name,
+              }))
+            }
+          } else if (attr === "Breed size") {
+            const breedSizeRes = await getSizes({})
+            if (breedSizeRes.ok) {
+              options[attr] = breedSizeRes.value.body.sizes.map((size) => ({
+                id: size.id,
+                name: size.name,
+                description: size.description,
+              }))
+            }
+          } else if (attr === "Coat size") {
+            const coatSizeRes = await getCoats({})
+            if (coatSizeRes.ok) {
+              options[attr] = coatSizeRes.value.body.coats.map((coat) => ({
+                id: coat.id,
+                name: coat.name,
+              }))
+            }
+          } else {
+            options[attr] = []
           }
-        } else if (attr === "Breed size") {
-          const breedSizeRes = await getSizes({})
-          if (breedSizeRes.ok) {
-            options[attr] = breedSizeRes.value.body.sizes.map((size) => ({
-              id: size.id,
-              name: size.name,
-            }))
-          }
-        } else if (attr === "Coat size") {
-          const coatSizeRes = await getCoats({})
-          if (coatSizeRes.ok) {
-            console.log(coatSizeRes.value.body.coats)
-            options[attr] = coatSizeRes.value.body.coats.map((coat) => ({
-              id: coat.id,
-              name: coat.name,
-            }))
-          }
-        } else {
-          options[attr] = []
         }
+        setDropdownOptions(options)
+      } else {
+        setIsFormComplete(true)
       }
-      setDropdownOptions(options)
-    } else {
-      setIsFormComplete(true)
     }
   }
 
@@ -172,7 +177,8 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
                   <option value="">Select {attr}</option>
                   {dropdownOptions[attr]?.map((option) => (
                     <option key={option.id} value={option.id}>
-                      {option.name}
+                      {option.name}{" "}
+                      {option.description ? `(${option.description})` : ""}
                     </option>
                   ))}
                 </select>

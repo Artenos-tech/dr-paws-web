@@ -306,6 +306,7 @@ export default createAPIClient({
             id: z.string().uuid(),
             name: z.string(),
             order: z.number(),
+            description: z.string(),
           }),
         ),
       }),
@@ -656,7 +657,6 @@ export default createAPIClient({
             pet_name: z.string(),
             pet_type: z.string().optional(),
             pet_profile_image: z.string().nullable(),
-            // user_id: z.number(),
             vet_id: z.string().uuid(),
             vet_name: z.string(),
             // vet_image: z.object({
@@ -671,7 +671,6 @@ export default createAPIClient({
             appt_start: z.string(),
             appt_end: z.string(),
             appt_status: z.string().nullable(),
-            // appt_reason: z.string().nullable(),
             appt_type: z.string().nullable(),
             appt_type_id: z.string().uuid(),
             category: z.enum(["UPCOMING", "COMPLETED", "REQUESTED"]),
