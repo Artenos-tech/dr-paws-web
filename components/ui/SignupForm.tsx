@@ -251,6 +251,20 @@ const SignupForm: React.FC<SignUpFormProps> = ({
             </p>
           )}
         </div>
+        <div className="inputGroup">
+          <input
+            type="text"
+            {...register("country")}
+            required
+            autoComplete="off"
+          />
+          <label htmlFor="country">Country</label>
+          {errors.country && (
+            <p className="text-red-500 text-left text-xs mt-1">
+              {errors.country.message}
+            </p>
+          )}
+        </div>
         <button
           type="submit"
           className="w-full bg-secondary-1 text-white rounded-full py-3 text-xs md:text-sm my-2"
