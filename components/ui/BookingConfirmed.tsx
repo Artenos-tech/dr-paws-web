@@ -1,7 +1,7 @@
 import { Pet } from "@/context/UserContext"
 import { BsCheckCircleFill } from "react-icons/bs"
 import Image from "next/image"
-import { doctorImagesMap } from "@/model/mockData"
+// import { doctorImagesMap } from "@/model/mockData"
 import defaultVetImage from "@/public/assets/images/clinic/doctorFemale.webp"
 import { GrLocation } from "react-icons/gr"
 import { HiOutlineCalendar } from "react-icons/hi"
@@ -61,7 +61,7 @@ const BookingConfirmed: React.FC<BookingConfirmedProps> = ({
               : `${selectedAppointment.selectedService}`}
             {isGroomingAppointment
               ? ""
-              : ` with ${selectedAppointment.selectedVet!.name}`}
+              : ` with ${selectedAppointment.selectedVet!.name} `}
             has been submitted successfully
           </p>
           <div className="flex items-center my-4 relative">
@@ -78,33 +78,34 @@ const BookingConfirmed: React.FC<BookingConfirmedProps> = ({
                 priority
               />
             </div>
-            {/* {!isGroomingAppointment &&
-              selectedAppointment.selectedDoctorImage &&
-              ((selectedAppointment.selectedDoctorImage.type === "ref" &&
-                doctorImagesMap[
-                  selectedAppointment.selectedDoctorImage.value
-                ]) ||
-                selectedAppointment.selectedDoctorImage.value) && (
-                <div className="relative w-32 h-32 rounded-full overflow-hidden bg-white p-8 ml-[-30px] flex justify-center items-center">
-                  <Image
-                    src={
-                      selectedAppointment.selectedDoctorImage.value ===
-                      "unknown"
-                        ? defaultVetImage
-                        : selectedAppointment.selectedDoctorImage.type === "ref"
-                          ? doctorImagesMap[
-                              selectedAppointment.selectedDoctorImage.value
-                            ]
-                          : selectedAppointment.selectedDoctorImage.value
-                    }
-                    alt={`Dr. ${selectedAppointment.selectedVet?.name}'s profile`}
-                    objectFit="cover"
-                    sizes="128px"
-                    width={128}
-                    height={128}
-                  />
-                </div>
-              )} */}
+            {!isGroomingAppointment && (
+              // selectedAppointment.selectedDoctorImage &&
+              // ((selectedAppointment.selectedDoctorImage.type === "ref" &&
+              //   doctorImagesMap[
+              //     selectedAppointment.selectedDoctorImage.value
+              //   ]) ||
+              //   selectedAppointment.selectedDoctorImage.value) && (
+              <div className="relative w-32 h-32 rounded-full overflow-hidden bg-white p-8 ml-[-30px] flex justify-center items-center">
+                <Image
+                  src={
+                    // selectedAppointment.selectedDoctorImage.value ===
+                    // "unknown"
+                    // ?
+                    defaultVetImage
+                    // : selectedAppointment.selectedDoctorImage.type === "ref"
+                    //   ? doctorImagesMap[
+                    //       selectedAppointment.selectedDoctorImage.value
+                    //     ]
+                    //   : selectedAppointment.selectedDoctorImage.value
+                  }
+                  alt={`Dr. ${selectedAppointment.selectedVet?.name}'s profile`}
+                  objectFit="cover"
+                  sizes="128px"
+                  width={128}
+                  height={128}
+                />
+              </div>
+            )}
           </div>
           <div className="my-4 space-y-3">
             <p className={`flex items-center gap-2`}>

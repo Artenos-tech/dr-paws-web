@@ -4,7 +4,7 @@ import { AppointmentType } from "@/model/typeDefinitions"
 import React from "react"
 import OutlineButton from "./OutlineButton"
 import Image from "next/image"
-import { doctorImagesMap } from "@/model/mockData"
+// import { doctorImagsesMap } from "@/model/mockData"
 import defaultVetImage from "@/public/assets/images/clinic/doctorFemale.webp"
 import { petImageByType } from "./PetCard"
 import { format, parseISO } from "date-fns"
@@ -25,7 +25,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
       bg: "bg-white",
       text: "text-primary-1",
     },
-    past: {
+    requested: {
       border: "border-l-primary-2 border-l-4",
       bg: "bg-primary-3",
       text: "text-primary-1",
@@ -35,11 +35,11 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
     //   bg: "bg-[#F1F1F1]",
     //   text: "text-[#909090]",
     // },
-    requested: {
+    past: {
       border: "border-l-[#C6C4C4] border-l-4",
       bg: "bg-[#F1F1F1]",
-      text: "text-[#909090]",   
-    }
+      text: "text-[#909090]",
+    },
   }
 
   // Mapping appt_status to style categories
@@ -124,38 +124,38 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
         <p className="font-semibold">
           {appointment.pet_name}
           {
-          // appointment.vet_vetport_id !== 0 &&
+            // appointment.vet_vetport_id !== 0 &&
             appointment.appt_type !== "Grooming" &&
-            ` and ${appointment.vet_name}`}
+              ` and ${appointment.vet_name}`
+          }
         </p>
         <p>{appointment.clinic_name}</p>
         <p>
           {
             format(parsedDate, "EEEE dd MMMM, yyyy")
-          // new Date(appointment.appt_start).toLocaleDateString("en-IN", {
-          //   weekday: "long",
-          //   day: "2-digit",
-          //   month: "short",
-          //   year: "numeric",
-          // })
+            // new Date(appointment.appt_start).toLocaleDateString("en-IN", {
+            //   weekday: "long",
+            //   day: "2-digit",
+            //   month: "short",
+            //   year: "numeric",
+            // })
           }
-
         </p>
         <p>
           {
             appointment.appt_start
-          // new Date(appointment.appt_start).toLocaleTimeString("en-IN", {
-          //   hour: "2-digit",
-          //   minute: "2-digit",
-          // })
+            // new Date(appointment.appt_start).toLocaleTimeString("en-IN", {
+            //   hour: "2-digit",
+            //   minute: "2-digit",
+            // })
           }
           {" - "}
           {
             appointment.appt_end
-          // new Date(appointment.appt_end).toLocaleTimeString("en-IN", {
-          //   hour: "2-digit",
-          //   minute: "2-digit",
-          // })
+            // new Date(appointment.appt_end).toLocaleTimeString("en-IN", {
+            //   hour: "2-digit",
+            //   minute: "2-digit",
+            // })
           }
         </p>
       </div>
