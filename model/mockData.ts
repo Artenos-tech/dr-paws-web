@@ -4,6 +4,7 @@ import IND_Diagnostics from "../public/assets/images/ClinicDetails/IND_Diagnosti
 import IND_OPT from "../public/assets/images/ClinicDetails/IND_OPT.jpg"
 import IND_Reception from "../public/assets/images/ClinicDetails/IND_Reception.jpg"
 import IND_WaitingArea from "../public/assets/images/ClinicDetails/IND_WaitingArea.jpg"
+import HSR_Exterior1 from "../public/assets/images/ClinicDetails/HSR_Exterior.jpg"
 import IND_Exterior1 from "../public/assets/images/ClinicDetails/IND_Exterior1.jpg"
 import IND_Exterior2 from "../public/assets/images/ClinicDetails/IND_Exterior2.jpg"
 import RMV_Exterior1 from "../public/assets/images/ClinicDetails/RMV_Exterior1.jpg"
@@ -175,6 +176,7 @@ export const reviewData = [
 export const clinicImagesMap: { [key: string]: StaticImageData } = {
   indiranagar: IND_Exterior1,
   rmv: RMV_Exterior1,
+  hsr: HSR_Exterior1,
   unknown: ClinicImage,
 }
 
