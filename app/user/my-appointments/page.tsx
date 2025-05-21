@@ -22,8 +22,8 @@ const TABS = {
     label: "Past",
   },
   REQUESTED: {
-    label: "Requested"
-  }
+    label: "Requested",
+  },
   // CANCELLED: {
   //   label: "Cancelled",
   // },

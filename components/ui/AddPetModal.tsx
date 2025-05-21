@@ -14,7 +14,7 @@ import { ClipLoader } from "react-spinners"
 const petSchema = z.object({
   name: z.string().min(1, "Pet name is required"),
   type: z.enum(["DOG", "CAT", ""], {
-    errorMap: (issue, ctx) => {
+    errorMap: (issue) => {
       if (issue.code === "invalid_type" && issue.received === "undefined") {
         return { message: "Pet type is required" }
       }
@@ -22,7 +22,7 @@ const petSchema = z.object({
     },
   }),
   gender: z.enum(["MALE", "FEMALE", ""], {
-    errorMap: (issue, ctx) => {
+    errorMap: (issue) => {
       if (issue.code === "invalid_type" && issue.received === "undefined") {
         return { message: "Pet gender is required" }
       }
@@ -64,7 +64,7 @@ export default function AddPetModal({
     handleSubmit,
     reset,
     formState: { errors },
-    setValue,
+    // setValue,
   } = useForm<PetFormData>({
     resolver: zodResolver(petSchema),
   })

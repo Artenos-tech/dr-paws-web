@@ -1,8 +1,8 @@
 // components/ui/DoctorCard.tsx
 import React from "react"
-import Image from "next/image"
-import { doctorImagesMap } from "@/model/mockData"
-import defaultVetImg from "@/public/assets/images/clinic/doctorFemale.webp"
+// import Image from "next/image"
+// import { doctorImagesMap } from "@/model/mockData"
+// import defaultVetImg from "@/public/assets/images/clinic/doctorFemale.webp"
 import { SelectedVet } from "./SelectVet"
 
 interface SelectDoctorCardProps {

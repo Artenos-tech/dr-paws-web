@@ -144,7 +144,7 @@ const Booking: React.FC = () => {
               selectedSubtype={selectedAppointment.selectedSubtype}
               isGrooming={selectedAppointment.isGrooming}
               isReschedule={false}
-              existingAppointmentId={null}
+              // existingAppointmentId={null}
               setFinalAppointmentData={(appData) => {
                 setSelectedAppointmentState((prev) => ({
                   ...prev,

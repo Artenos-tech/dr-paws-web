@@ -104,8 +104,7 @@ const Profile: React.FC = () => {
               }  flex-wrap gap-4 my-8 md:my-4`}
             >
               {loading && <ClipLoader color="#33495f" />}
-              {pets &&
-                pets.map((pet) => <PetCard key={pet.id} pet={pet} />)}
+              {pets && pets.map((pet) => <PetCard key={pet.id} pet={pet} />)}
             </div>
           )}
         </div>

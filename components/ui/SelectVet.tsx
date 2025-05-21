@@ -46,7 +46,7 @@ interface selectVetProps {
   selectedSubtype: BookingCategory | null
   isGrooming: boolean
   isReschedule: boolean
-  existingAppointmentId: string | null
+  // existingAppointmentId: string | null
   setFinalAppointmentData: (finalAppData: {
     selectedDoctor: SelectedVet | null
     selectedDate: Date | null
@@ -69,7 +69,7 @@ const SelectVet: React.FC<selectVetProps> = ({
   isGrooming,
   onNext,
   isReschedule,
-  existingAppointmentId,
+  // existingAppointmentId,
 }) => {
   const { user } = useUserContext()
 
