@@ -34,7 +34,7 @@ export interface User {
 export interface Pet {
   id: string
   name: string
-  type: "DOG" | "CAT" | null
+  type: "DOG" | "CAT" | "OTHER" | null
   breed: string | null
   // weight: string | null
   gender: string | null
@@ -48,13 +48,13 @@ export interface Pet {
 
 export interface UserContextType {
   user: User | null
-  petSpecies: Array<"DOG" | "CAT"> | null
+  petSpecies: Array<"DOG" | "CAT" | "OTHER"> | null
   petGenders: Array<"MALE" | "FEMALE"> | null
   isLoggedIn: boolean | null
   updateUserDetailsHandler: (data: User) => void
   getAuthToken: () => string | null
   refresh: () => void
-  updatePetSpeciesHandler: (data: Array<"DOG" | "CAT">) => void
+  updatePetSpeciesHandler: (data: Array<"DOG" | "CAT" | "OTHER">) => void
   updatePetGendersHandler: (data: Array<"MALE" | "FEMALE">) => void
   initiateLogin: (loginText: string, redirectTo: string) => void
 }
@@ -67,9 +67,9 @@ interface UserProviderProps {
 
 export const UserProvider = ({ children }: UserProviderProps) => {
   const [user, setUser] = useState<User | null>(null)
-  const [petSpecies, setPetSpecies] = useState<Array<"DOG" | "CAT"> | null>(
-    null,
-  )
+  const [petSpecies, setPetSpecies] = useState<Array<
+    "DOG" | "CAT" | "OTHER"
+  > | null>(null)
   const [petGenders, setPetGenders] = useState<Array<"MALE" | "FEMALE"> | null>(
     null,
   )

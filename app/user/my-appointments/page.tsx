@@ -15,14 +15,14 @@ const TABS = {
   ALL: {
     label: "All",
   },
+  REQUESTED: {
+    label: "Requested",
+  },
   UPCOMING: {
     label: "Upcoming",
   },
   PAST: {
     label: "Past",
-  },
-  REQUESTED: {
-    label: "Requested",
   },
   // CANCELLED: {
   //   label: "Cancelled",
@@ -111,11 +111,11 @@ const MyAppointmentsPage = () => {
               <div className="w-full h-full lg:h-screen">
                 <NoAppointments
                   displayText={
-                    activeTab === "PAST"
+                    activeTab !== "REQUESTED"
                       ? "No appointments"
                       : "You haven't booked any visits yet"
                   }
-                  showButton={activeTab !== "PAST"}
+                  showButton={activeTab === "REQUESTED"}
                 />
               </div>
             ) : (

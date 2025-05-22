@@ -13,7 +13,7 @@ import { ClipLoader } from "react-spinners"
 
 const petSchema = z.object({
   name: z.string().min(1, "Pet name is required"),
-  type: z.enum(["DOG", "CAT", ""], {
+  type: z.enum(["DOG", "CAT", "OTHER", ""], {
     errorMap: (issue) => {
       if (issue.code === "invalid_type" && issue.received === "undefined") {
         return { message: "Pet type is required" }
@@ -55,7 +55,9 @@ export default function AddPetModal({
     updatePetGendersHandler,
     petGenders,
   } = useUserContext()
-  const [selectedType, setSelectedType] = useState<"DOG" | "CAT" | "">("")
+  const [selectedType, setSelectedType] = useState<
+    "DOG" | "CAT" | "OTHER" | ""
+  >("")
   const [selectedGender, setSelectedGender] = useState<"MALE" | "FEMALE" | "">(
     "",
   )
@@ -95,7 +97,7 @@ export default function AddPetModal({
       const response = await addNewPetAPI({
         pet: {
           name: data.name,
-          species: data.type as "DOG" | "CAT",
+          species: data.type as "DOG" | "CAT" | "OTHER",
           gender: data.gender as "MALE" | "FEMALE",
         },
       })
@@ -113,7 +115,7 @@ export default function AddPetModal({
 
   const handleTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedName = event.target.value
-    setSelectedType(selectedName as "DOG" | "CAT")
+    setSelectedType(selectedName as "DOG" | "CAT" | "OTHER")
   }
 
   const handleGenderChange = (event: React.ChangeEvent<HTMLSelectElement>) => {

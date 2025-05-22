@@ -200,7 +200,7 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
                     pet: {
                       id: selectedPet.id,
                       name: selectedPet.name,
-                      species: selectedPet.type as "DOG" | "CAT",
+                      species: selectedPet.type as "DOG" | "CAT" | "OTHER",
                       gender: selectedPet.gender as "MALE" | "FEMALE",
                       breed: formData["Breed"],
                       breedSize: formData["Breed size"],

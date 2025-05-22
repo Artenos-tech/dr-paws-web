@@ -2,7 +2,6 @@
 
 import React, { useCallback, useEffect, useState } from "react"
 import SelectDoctorCard from "./SelectDoctorCard"
-
 import CustomButton from "./CustomButton"
 import SelectCalendar from "./SelectCalendar"
 import { format, isSameDay } from "date-fns"
@@ -13,13 +12,11 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "./carousel"
-
 import { useAPICall } from "@/hooks/apicall"
 import api from "@/services/api"
 import { Pet, useUserContext } from "@/context/UserContext"
 import toast, { Toaster } from "react-hot-toast"
 import { ClipLoader } from "react-spinners"
-
 import { BookingCategory } from "./SelectService"
 import BestAvailableVetCard from "./BestAvailableVetCard"
 import ConfirmationModal from "./ConfirmationModal"
@@ -116,7 +113,7 @@ const SelectVet: React.FC<selectVetProps> = ({
         clinicid: selectedClinic,
         catalogue: selectedSubtype.id,
         petid: selectedPet.id,
-        pettype: selectedPet.type as "DOG" | "CAT",
+        pettype: selectedPet.type as "DOG" | "CAT" | "OTHER",
         isgrooming: isGrooming ? "y" : "n",
         date: format(selectedDate, "dd/MM/yyyy"),
         // subtype: selectedSubtype?.id,
@@ -138,15 +135,16 @@ const SelectVet: React.FC<selectVetProps> = ({
   }, [selectedClinic, selectedSvcId])
 
   const fetchDoctors = useCallback(async () => {
-    if (selectedSubtype && selectedPet)
+    if (selectedSubtype && selectedPet) {
       await getDoctorsForClinic({
         clinicid: selectedClinic,
         grooming: isGrooming ? "y" : "n",
         catalogue: selectedSubtype?.id,
         date: format(selectedDate, "dd/MM/yyyy"),
         petid: selectedPet.id,
-        pettype: selectedPet.type as "DOG" | "CAT",
+        pettype: selectedPet.type as "DOG" | "CAT" | "OTHER",
       })
+    }
   }, [selectedClinic, getDoctorsForClinic])
 
   useEffect(() => {
@@ -281,7 +279,7 @@ const SelectVet: React.FC<selectVetProps> = ({
             booking_date: format(selectedDate, "dd/MM/yyyy"),
             appt_type_id: selectedSvcId,
             subtype_id: selectedSubtype?.id as string,
-            pet_type: selectedPet.type as "DOG" | "CAT",
+            pet_type: selectedPet.type as "DOG" | "CAT" | "OTHER",
             is_grooming: isGrooming,
           })
           if (response.ok) {

@@ -141,7 +141,13 @@ const SelectService: React.FC<SelectServiceProps> = ({
             isGrooming={category.isGrooming}
             toggleCard={toggleCard}
             selectedPet={selectedPet}
-            pets={pets || []}
+            pets={
+              pets
+                ? category.isGrooming
+                  ? pets.filter((pet) => pet.type !== "OTHER")
+                  : pets
+                : []
+            }
             fetchPets={fetchPets}
           />
         ))}

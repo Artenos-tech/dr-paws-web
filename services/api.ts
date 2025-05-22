@@ -258,7 +258,7 @@ export default createAPIClient({
       responseSchema: z.object({
         status: z.number(),
         message: z.string(),
-        species: z.array(z.enum(["DOG", "CAT"])),
+        species: z.array(z.enum(["DOG", "CAT", "OTHER"])),
       }),
       errorResponseSchema: z.object({}),
     },
@@ -266,7 +266,7 @@ export default createAPIClient({
     getPetBreeds: {
       method: "GET",
       path: "/pets/breeds/{species}",
-      pathParamsSchema: z.object({ species: z.enum(["DOG", "CAT"]) }),
+      pathParamsSchema: z.object({ species: z.enum(["DOG", "CAT", "OTHER"]) }),
       requestSchema: z.object({}),
       responseSchema: z.object({
         status: z.number(),
@@ -275,7 +275,7 @@ export default createAPIClient({
           z.object({
             id: z.string().uuid(),
             name: z.string(),
-            species: z.enum(["DOG", "CAT"]),
+            species: z.enum(["DOG", "CAT", "OTHER"]),
           }),
         ),
       }),
@@ -342,7 +342,7 @@ export default createAPIClient({
           z.object({
             id: z.string().uuid(),
             name: z.string(),
-            type: z.enum(["DOG", "CAT"]).nullable(),
+            type: z.enum(["DOG", "CAT", "OTHER"]).nullable(),
             breed: z.string().nullable(),
             breedId: z.string().nullable(),
             // weight: z.string().nullable(),
@@ -366,7 +366,7 @@ export default createAPIClient({
         pet: z.object({
           id: z.string(),
           name: z.string(),
-          type: z.enum(["DOG", "CAT"]).nullable(),
+          type: z.enum(["DOG", "CAT", "OTHER"]).nullable(),
           breed: z.string().nullable(),
           breedId: z.string().nullable(),
           gender: z.string().nullable(),
@@ -384,7 +384,7 @@ export default createAPIClient({
       requestSchema: z.object({
         pet: z.object({
           name: z.string(),
-          species: z.enum(["DOG", "CAT"]),
+          species: z.enum(["DOG", "CAT", "OTHER"]),
           gender: z.enum(["MALE", "FEMALE"]),
         }),
       }),
@@ -406,13 +406,14 @@ export default createAPIClient({
         pet: z.object({
           id: z.string().uuid(),
           name: z.string(),
-          species: z.enum(["DOG", "CAT"]),
+          species: z.enum(["DOG", "CAT", "OTHER"]),
           breed: z
             .object({
               id: z.string().uuid(),
               name: z.string(),
             })
-            .nullable(),
+            .nullable()
+            .optional(),
           breedSize: z
             .object({
               id: z.string().uuid(),
@@ -524,7 +525,7 @@ export default createAPIClient({
         catalogue: z.string(),
         date: z.string(),
         petid: z.string().uuid(),
-        pettype: z.enum(["DOG", "CAT"]),
+        pettype: z.enum(["DOG", "CAT", "OTHER"]),
       }),
       requestSchema: z.object({}),
       responseSchema: z.object({
@@ -552,7 +553,7 @@ export default createAPIClient({
         clinicid: z.string().uuid(),
         catalogue: z.string(),
         petid: z.string().uuid(),
-        pettype: z.enum(["DOG", "CAT"]),
+        pettype: z.enum(["DOG", "CAT", "OTHER"]),
         isgrooming: z.enum(["y", "n"]),
         date: z.string(),
         // subtype: z.string().optional(),
@@ -613,7 +614,7 @@ export default createAPIClient({
         clinic_id: z.string().uuid(),
         appt_type_id: z.string(),
         subtype_id: z.string(),
-        pet_type: z.enum(["DOG", "CAT"]),
+        pet_type: z.enum(["DOG", "CAT", "OTHER"]),
         is_grooming: z.boolean(),
       }),
       responseSchema: z.object({

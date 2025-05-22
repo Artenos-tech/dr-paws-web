@@ -144,7 +144,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
     await getPetSpecies({})
   }
 
-  const fetchPetBreedsBySpecies = async (species: "DOG" | "CAT") => {
+  const fetchPetBreedsBySpecies = async (species: "DOG" | "CAT" | "OTHER") => {
     await getPetBreeds({ species })
   }
 
