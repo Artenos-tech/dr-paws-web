@@ -3,18 +3,18 @@ import Image from "next/image"
 import { clinicImagesMap } from "@/model/mockData"
 import defaultClinicImg from "@/public/assets/images/clinic/ClinicImage.png"
 
-type VetportClinic = {
+type Clinic = {
   image: {
     type: "url" | "ref"
     value: string
   }
   services: string
-  id: number
+  id: string
   name: string
   location: string
 }
 interface ClinicItemProps {
-  clinic: VetportClinic
+  clinic: Clinic
   isSelected: boolean
   onSelect: () => void
 }

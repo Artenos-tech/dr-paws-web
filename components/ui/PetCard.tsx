@@ -2,7 +2,7 @@
 
 import Image, { StaticImageData } from "next/image"
 import { useRouter } from "next/navigation"
-import React, { useEffect, useState } from "react"
+import React from "react"
 import defaultPetImg from "@/public/assets/images/pets/petImg.png"
 import defaultdogImg from "@/public/assets/images/pets/DogIcon_Web.jpg"
 import defaultCatImg from "@/public/assets/images/pets/CatIcon_Web.jpg"
@@ -11,9 +11,9 @@ import defaultBirdImg from "@/public/assets/images/pets/bird.png"
 import defaultRabbitImg from "@/public/assets/images/pets/rabbit.png"
 import defaultOtherPetImage from "@/public/assets/images/pets/petImg.png"
 import { Pet } from "@/context/UserContext"
-import { useAPICall } from "@/hooks/apicall"
-import api from "@/services/api"
-import { Subscription } from "@/app/user/my-subscriptions/page"
+// import { useAPICall } from "@/hooks/apicall"
+// import api from "@/services/api"
+// import { Subscription } from "@/app/user/my-subscriptions/page"
 
 interface PetCardProps {
   pet: Pet
@@ -30,29 +30,28 @@ export const petImageByType: Record<string, StaticImageData> = {
 }
 
 const PetCard: React.FC<PetCardProps> = ({ pet, fetchMedicalHistory }) => {
-  const { name, vetPortId, profileImage, type } = pet
+  const { name, id, profileImage, type } = pet
   const router = useRouter()
-  const [subscription, setSubscription] = useState<Subscription | null>(null)
+  // const [subscription, setSubscription] = useState<Subscription | null>(null)
 
   // Setup API call for getPetSubscription
-  const { call: getPetSubscription } = useAPICall(api.getPetSubscription)
+  // const { call: getPetSubscription } = useAPICall(api.getPetSubscription)
 
-  useEffect(() => {
-    // If pet has a vetPortId, fetch subscription
-    if (vetPortId) {
-      const fetchSubscription = async () => {
-        const response = await getPetSubscription({ pet_id: vetPortId })
-        if (response?.ok) {
-          setSubscription(response.value.body.subscription)
-        }
-      }
-      fetchSubscription()
-    }
-  }, [])
+  // useEffect(() => {
+  //   // If pet has a vetPortId, fetch subscription
+  //   if (vetPortId) {
+  //     const fetchSubscription = async () => {
+  //       const response = await getPetSubscription({ pet_id: vetPortId })
+  //       if (response?.ok) {
+  //         setSubscription(response.value.body.subscription)
+  //       }
+  //     }
+  //     fetchSubscription()
+  //   }
+  // }, [])
 
   const handlePetProfileView = () => {
-    if (!fetchMedicalHistory)
-      router.push(`/user/profile/pet-profile/${vetPortId}`)
+    if (!fetchMedicalHistory) router.push(`/user/profile/pet-profile/${id}`)
     else fetchMedicalHistory(pet)
   }
 
@@ -61,9 +60,10 @@ const PetCard: React.FC<PetCardProps> = ({ pet, fetchMedicalHistory }) => {
     petImageByType[type?.toLowerCase() || "other"] ||
     defaultPetImg
 
-  const borderStyle = subscription
-    ? "border-2 border-secondary-1 bg-secondary-1" // Example: Green border if subscription exists
-    : "border-2 border-[#E2DBC4] bg-[#E2DBC4]"
+  const borderStyle = "border-2 border-[#E2DBC4] bg-[#E2DBC4]"
+  // subscription
+  //   ? "border-2 border-secondary-1 bg-secondary-1" // Example: Green border if subscription exists
+  // :
 
   return (
     <div
@@ -83,13 +83,13 @@ const PetCard: React.FC<PetCardProps> = ({ pet, fetchMedicalHistory }) => {
         </div>
         <h2 className="text-xl font-bold text-secondary-1">{name}</h2>
       </div>
-      {subscription && subscription.plan ? (
+      {/* {subscription && subscription.plan ? (
         <div className={`bg-secondary-1 rounded-b-xl`}>
           <p className="text-xs text-white p-2">{subscription.plan.name}</p>
         </div>
-      ) : (
-        <div className="rounded-b-xl pb-6"></div>
-      )}
+      ) : ( */}
+      <div className="rounded-b-xl pb-6"></div>
+      {/* )} */}
     </div>
   )
 }

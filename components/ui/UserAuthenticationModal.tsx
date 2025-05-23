@@ -38,12 +38,14 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
     city: string
     pincode: string
     state: string
+    country: string
   }>({
     address1: "",
     address2: "",
     city: "",
     pincode: "",
     state: "",
+    country: "",
   })
   const [loginErr, setLoginErr] = useState("")
   const [signupErr, setSignupErr] = useState("")
@@ -108,6 +110,7 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
     city: string
     pincode: string
     state: string
+    country: string
   }) => {
     setOtpErr("")
     // Updating state variables for resending OTP
@@ -119,6 +122,7 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
       city: data.city,
       pincode: data.pincode,
       state: data.state,
+      country: data.country,
     })
     const response = await signupOTP({
       name: data.userName,
@@ -190,6 +194,7 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
           city: signupData.city,
           pincode: signupData.pincode,
           state: signupData.state,
+          country: signupData.country,
         })
         if (response?.ok) {
           setAuthToken(response.value.body.token)

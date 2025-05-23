@@ -4,9 +4,10 @@ import { AppointmentType } from "@/model/typeDefinitions"
 import React from "react"
 import OutlineButton from "./OutlineButton"
 import Image from "next/image"
-import { doctorImagesMap } from "@/model/mockData"
+// import { doctorImagsesMap } from "@/model/mockData"
 import defaultVetImage from "@/public/assets/images/clinic/doctorFemale.webp"
 import { petImageByType } from "./PetCard"
+import { format, parseISO } from "date-fns"
 
 type AppointmentCardProps = {
   appointment: AppointmentType
@@ -24,12 +25,17 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
       bg: "bg-white",
       text: "text-primary-1",
     },
-    past: {
+    requested: {
       border: "border-l-primary-2 border-l-4",
       bg: "bg-primary-3",
       text: "text-primary-1",
     },
-    cancelled: {
+    // cancelled: {
+    //   border: "border-l-[#C6C4C4] border-l-4",
+    //   bg: "bg-[#F1F1F1]",
+    //   text: "text-[#909090]",
+    // },
+    past: {
       border: "border-l-[#C6C4C4] border-l-4",
       bg: "bg-[#F1F1F1]",
       text: "text-[#909090]",
@@ -39,15 +45,17 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
   // Mapping appt_status to style categories
   const getStatusCategory = (appt: AppointmentType) => {
     if (appt.category === "UPCOMING") return "upcoming"
-    if (appt.category === "PAST") return "past"
-    if (appt.category === "CANCELLED") return "cancelled"
+    if (appt.category === "COMPLETED") return "past"
+    // if (appt.category === "CANCELLED") return "cancelled"
+    if (appt.category === "REQUESTED") return "requested"
     throw new Error(`No status category defined for ${appt.category}`)
   }
 
   function getAppointmentCategoryLabel(category: string) {
     if (category === "UPCOMING") return "Upcoming"
-    if (category === "PAST") return "Visited"
-    if (category === "CANCELLED") return "Cancelled"
+    if (category === "COMPLETED") return "Visited"
+    // if (category === "CANCELLED") return "Cancelled"
+    if (category === "REQUESTED") return "Requested"
     throw new Error(`No category label defined for ${category}`)
   }
 
@@ -57,6 +65,8 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
   const defaultPetImageByType =
     petImageByType[appointment.pet_type?.toLowerCase() || "other"] ||
     petImageByType.other
+
+  const parsedDate = parseISO(appointment.booking_date)
 
   return (
     <div
@@ -69,9 +79,11 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
         </p>
         <p
           className={`px-2 py-1 rounded-md ${
-            statusCategory === "cancelled" ? "bg-[#E0E0E0]" : "bg-primary-2"
+            // statusCategory === "cancelled" ? "bg-[#E0E0E0]" : "bg-primary-2"
+            statusCategory === "requested" ? "bg-[#E0E0E0]" : "bg-primary-2"
           } ${
-            statusCategory === "cancelled" ? "text-[#909090]" : "text-primary-1"
+            // statusCategory === "cancelled" ? "text-[#909090]" : "text-primary-1"
+            statusCategory === "requested" ? "text-[#909090]" : "text-primary-1"
           }`}
         >
           {appointment.appt_type}
@@ -92,11 +104,12 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
           <div className="relative w-20 h-20 rounded-full overflow-hidden bg-white -ml-6 border-2 border-white">
             <Image
               src={
-                appointment.vet_image.value === "unknown"
-                  ? defaultVetImage
-                  : appointment.vet_image.type === "ref"
-                    ? doctorImagesMap[appointment.vet_image.value]
-                    : appointment.vet_image.value
+                defaultVetImage
+                // appointment.vet_image.value === "unknown"
+                //   ? defaultVetImage
+                //   : appointment.vet_image.type === "ref"
+                //     ? doctorImagesMap[appointment.vet_image.value]
+                //     : appointment.vet_image.value
               }
               alt={`Dr. ${appointment.vet_name}'s profile`}
               objectFit="cover"
@@ -110,29 +123,40 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
       <div className={`space-y-1 ${text}`}>
         <p className="font-semibold">
           {appointment.pet_name}
-          {appointment.vet_vetport_id !== 0 &&
+          {
+            // appointment.vet_vetport_id !== 0 &&
             appointment.appt_type !== "Grooming" &&
-            ` and ${appointment.vet_name}`}
+              ` and ${appointment.vet_name}`
+          }
         </p>
         <p>{appointment.clinic_name}</p>
         <p>
-          {new Date(appointment.appt_start).toLocaleDateString("en-IN", {
-            weekday: "long",
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-          })}
+          {
+            format(parsedDate, "EEEE dd MMMM, yyyy")
+            // new Date(appointment.appt_start).toLocaleDateString("en-IN", {
+            //   weekday: "long",
+            //   day: "2-digit",
+            //   month: "short",
+            //   year: "numeric",
+            // })
+          }
         </p>
         <p>
-          {new Date(appointment.appt_start).toLocaleTimeString("en-IN", {
-            hour: "2-digit",
-            minute: "2-digit",
-          })}
+          {
+            appointment.appt_start
+            // new Date(appointment.appt_start).toLocaleTimeString("en-IN", {
+            //   hour: "2-digit",
+            //   minute: "2-digit",
+            // })
+          }
           {" - "}
-          {new Date(appointment.appt_end).toLocaleTimeString("en-IN", {
-            hour: "2-digit",
-            minute: "2-digit",
-          })}
+          {
+            appointment.appt_end
+            // new Date(appointment.appt_end).toLocaleTimeString("en-IN", {
+            //   hour: "2-digit",
+            //   minute: "2-digit",
+            // })
+          }
         </p>
       </div>
       <div className="self-end">

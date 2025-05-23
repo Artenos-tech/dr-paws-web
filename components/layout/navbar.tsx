@@ -167,14 +167,14 @@ export default function NavBar() {
                           My Appointments
                         </div>
                       </DropdownMenu.Item>
-                      <DropdownMenu.Item asChild>
+                      {/* <DropdownMenu.Item asChild>
                         <div
                           onClick={() => navigate.push("/user/reports")}
                           className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
                         >
                           Medical History
                         </div>
-                      </DropdownMenu.Item>
+                      </DropdownMenu.Item> */}
                       {/* <div className="border-t border-gray-300 my-2" /> */}
                       {/* {!isMarketingFeatureEnabled ? ( */}
                       {/* <DropdownMenu.Item asChild>
@@ -189,14 +189,14 @@ export default function NavBar() {
                       </DropdownMenu.Item> */}
                       {/* ) : null} */}
                       {/* <div className="border-t border-gray-300 my-2" /> */}
-                      <DropdownMenu.Item asChild>
+                      {/* <DropdownMenu.Item asChild>
                         <div
                           onClick={() => navigate.push("/user/invoices")}
                           className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
                         >
                           My Invoices
                         </div>
-                      </DropdownMenu.Item>
+                      </DropdownMenu.Item> */}
                       {/* <DropdownMenu.Item asChild>
                         <div
                           onClick={() => setContactIsModalOpen(true)}
@@ -351,7 +351,7 @@ export default function NavBar() {
                     My Appointments
                   </button>
                 </li>
-                <li>
+                {/* <li>
                   <button
                     onClick={() => {
                       setIsOpen(false)
@@ -361,7 +361,7 @@ export default function NavBar() {
                   >
                     Medical History
                   </button>
-                </li>
+                </li> */}
                 {/* <button
                         onClick={() => {
                           setIsOpen(false);
@@ -371,8 +371,8 @@ export default function NavBar() {
                       >
                         Medical History
                       </button> */}
-                <li>
-                  {/* <button
+                {/* <li> */}
+                {/* <button
                     onClick={() => {
                       setIsOpen(false)
                       navigate.push("/user/my-subscriptions")
@@ -381,8 +381,8 @@ export default function NavBar() {
                   >
                     My Memberships
                   </button> */}
-                </li>
-                <li>
+                {/* </li> */}
+                {/* <li>
                   <button
                     onClick={() => {
                       setIsOpen(false)
@@ -392,7 +392,7 @@ export default function NavBar() {
                   >
                     My Invoices
                   </button>
-                </li>
+                </li> */}
 
                 {/* <button
                         onClick={() => {

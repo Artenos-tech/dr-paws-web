@@ -26,39 +26,36 @@ export interface User {
   address2: string | null
   city: string | null
   state: string | null
+  country: string | null
   pincode: string | null
   profile_image: string | null
 }
 
 export interface Pet {
+  id: string
   name: string
-  type: string | null
+  type: "DOG" | "CAT" | "OTHER" | null
   breed: string | null
-  weight: string | null
+  // weight: string | null
   gender: string | null
   dob: string | null
   // age: {
   //   years: number | null;
   //   months: number | null;
   // };
-  vetPortId: number
   profileImage: string | null // pet image is optional
-}
-
-export interface PetSpecies {
-  id: number
-  name: string
-  displayName: string
 }
 
 export interface UserContextType {
   user: User | null
-  petSpecies: PetSpecies[] | null
+  petSpecies: Array<"DOG" | "CAT" | "OTHER"> | null
+  petGenders: Array<"MALE" | "FEMALE"> | null
   isLoggedIn: boolean | null
   updateUserDetailsHandler: (data: User) => void
   getAuthToken: () => string | null
   refresh: () => void
-  updatePetSpeciesHandler: (data: PetSpecies[]) => void
+  updatePetSpeciesHandler: (data: Array<"DOG" | "CAT" | "OTHER">) => void
+  updatePetGendersHandler: (data: Array<"MALE" | "FEMALE">) => void
   initiateLogin: (loginText: string, redirectTo: string) => void
 }
 
@@ -70,7 +67,12 @@ interface UserProviderProps {
 
 export const UserProvider = ({ children }: UserProviderProps) => {
   const [user, setUser] = useState<User | null>(null)
-  const [petSpecies, setPetSpecies] = useState<PetSpecies[] | null>(null)
+  const [petSpecies, setPetSpecies] = useState<Array<
+    "DOG" | "CAT" | "OTHER"
+  > | null>(null)
+  const [petGenders, setPetGenders] = useState<Array<"MALE" | "FEMALE"> | null>(
+    null,
+  )
 
   const { call: getUser } = useAPICall(api.getUser)
   const { call: getUser2 } = useAPICall(api.getUser)
@@ -149,9 +151,11 @@ export const UserProvider = ({ children }: UserProviderProps) => {
       value={{
         user,
         petSpecies,
+        petGenders,
         isLoggedIn,
         updateUserDetailsHandler: setUser,
         updatePetSpeciesHandler: setPetSpecies,
+        updatePetGendersHandler: setPetGenders,
         getAuthToken,
         refresh: handleCheckAuthToken,
         initiateLogin,

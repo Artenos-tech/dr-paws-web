@@ -8,13 +8,27 @@ import "react-dropdown/style.css"
 import { useEffect, useState } from "react"
 import { useAPICall } from "@/hooks/apicall"
 import api from "@/services/api"
-import { PetSpecies, useUserContext } from "@/context/UserContext"
+import { useUserContext } from "@/context/UserContext"
 import { ClipLoader } from "react-spinners"
 
 const petSchema = z.object({
-  speciesId: z.number(),
   name: z.string().min(1, "Pet name is required"),
-  type: z.string().min(1, "Pet type is required"),
+  type: z.enum(["DOG", "CAT", "OTHER", ""], {
+    errorMap: (issue) => {
+      if (issue.code === "invalid_type" && issue.received === "undefined") {
+        return { message: "Pet type is required" }
+      }
+      return { message: "Invalid pet type" }
+    },
+  }),
+  gender: z.enum(["MALE", "FEMALE", ""], {
+    errorMap: (issue) => {
+      if (issue.code === "invalid_type" && issue.received === "undefined") {
+        return { message: "Pet gender is required" }
+      }
+      return { message: "Invalid pet gender" }
+    },
+  }),
 })
 
 type PetFormData = z.infer<typeof petSchema>
@@ -31,36 +45,50 @@ export default function AddPetModal({
   onSuccess,
 }: AddPetModalProps) {
   const { call: getPetSpecies } = useAPICall(api.getPetSpecies)
-
+  const { call: getPetGender } = useAPICall(api.getPetGender)
   const { call: addNewPetAPI, loading } = useAPICall(api.addNewPet)
 
-  const { user, updatePetSpeciesHandler, petSpecies } = useUserContext()
-  const [selectedType, setSelectedType] = useState<string>("")
-
+  const {
+    user,
+    updatePetSpeciesHandler,
+    petSpecies,
+    updatePetGendersHandler,
+    petGenders,
+  } = useUserContext()
+  const [selectedType, setSelectedType] = useState<
+    "DOG" | "CAT" | "OTHER" | ""
+  >("")
+  const [selectedGender, setSelectedGender] = useState<"MALE" | "FEMALE" | "">(
+    "",
+  )
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-    setValue,
+    // setValue,
   } = useForm<PetFormData>({
     resolver: zodResolver(petSchema),
   })
 
   useEffect(() => {
-    if (isOpen) fetchPetSpecies()
+    if (isOpen) {
+      fetchPetSpecies()
+      fetchPetGender()
+    }
   }, [isOpen])
 
   const fetchPetSpecies = async () => {
     const response = await getPetSpecies({})
     if (response?.ok) {
-      updatePetSpeciesHandler(
-        response.value.body.species.map((specie: PetSpecies) => ({
-          id: specie.id,
-          name: specie.name,
-          displayName: specie.displayName,
-        })),
-      )
+      updatePetSpeciesHandler(response.value.body.species)
+    }
+  }
+
+  const fetchPetGender = async () => {
+    const response = await getPetGender({})
+    if (response?.ok) {
+      updatePetGendersHandler(response.value.body.gender)
     }
   }
 
@@ -69,15 +97,17 @@ export default function AddPetModal({
       const response = await addNewPetAPI({
         pet: {
           name: data.name,
-          species: { id: data.speciesId, name: data.type },
+          species: data.type as "DOG" | "CAT" | "OTHER",
+          gender: data.gender as "MALE" | "FEMALE",
         },
       })
 
       if (response.ok) {
         // console.log("Add Pet API response:", response.value.body);
         onSuccess()
-        reset({ name: "", type: "" })
+        reset({ name: "", type: "", gender: "" })
         setSelectedType("")
+        setSelectedGender("")
         onClose()
       }
     }
@@ -85,15 +115,12 @@ export default function AddPetModal({
 
   const handleTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedName = event.target.value
-    setSelectedType(selectedName)
+    setSelectedType(selectedName as "DOG" | "CAT" | "OTHER")
+  }
 
-    // Find the speciesId for the selected type
-    const selectedSpecies = petSpecies?.find(
-      (species) => species.displayName === selectedName,
-    )
-    if (selectedSpecies) {
-      setValue("speciesId", selectedSpecies.id)
-    }
+  const handleGenderChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedGender = event.target.value
+    setSelectedGender(selectedGender as "MALE" | "FEMALE")
   }
 
   if (!isOpen) return null
@@ -140,12 +167,8 @@ export default function AddPetModal({
                   Type of Pet
                 </option>
                 {petSpecies?.map((species) => (
-                  <option
-                    key={species.id}
-                    value={species.displayName}
-                    className="!w-3/4"
-                  >
-                    {species.displayName}
+                  <option key={species} value={species} className="!w-3/4">
+                    {species}
                   </option>
                 ))}
               </select>
@@ -155,6 +178,30 @@ export default function AddPetModal({
                 </p>
               )}
             </div>
+
+            <div>
+              <select
+                {...register("gender")}
+                value={selectedGender}
+                onChange={handleGenderChange}
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="" disabled className="!w-3/4">
+                  Gender
+                </option>
+                {petGenders?.map((gender) => (
+                  <option key={gender} value={gender} className="!w-3/4">
+                    {gender}
+                  </option>
+                ))}
+              </select>
+              {errors.gender && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.gender.message}
+                </p>
+              )}
+            </div>
+
             <div className="flex gap-3 mt-6">
               <button
                 type="button"

@@ -9,17 +9,17 @@ import { Pet } from "@/context/UserContext"
 import toast, { Toaster } from "react-hot-toast"
 
 interface BookingCardProps {
-  cardId: number
+  cardId: string
   title: string
   description: string
   onCardSelection: (
-    cardId: number,
+    cardId: string,
     cardTitle: string,
     selectedPet: Pet | null,
     isGrooming: boolean,
   ) => void
   isOpen: boolean
-  toggleCard: (cardId: number, isGrooming: boolean) => void
+  toggleCard: (cardId: string, isGrooming: boolean) => void
   selectedPet: Pet | null
   pets: Pet[]
   fetchPets: () => void
@@ -41,7 +41,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
   const [isAddPetModalOpen, setIsAddPetModalOpen] = useState(false)
 
   const handlePetClick = (pet: Pet) => {
-    const isAlreadySelected = selectedPet?.vetPortId === pet.vetPortId
+    const isAlreadySelected = selectedPet?.id === pet.id
     const newSelectedPet = isAlreadySelected ? null : pet
     onCardSelection(cardId, title, newSelectedPet, isGrooming)
   }
@@ -93,11 +93,11 @@ const BookingCard: React.FC<BookingCardProps> = ({
                   petImageByType[pet.type?.toLowerCase() || "other"]?.src ||
                   petImageByType["other"].src
 
-                const isSelected = selectedPet?.vetPortId === pet.vetPortId
+                const isSelected = selectedPet?.id === pet.id
 
                 return (
                   <div
-                    key={pet.vetPortId}
+                    key={pet.id}
                     className="relative cursor-pointer m-2"
                     onClick={(e) => {
                       e.stopPropagation()

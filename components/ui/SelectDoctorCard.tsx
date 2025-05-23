@@ -1,24 +1,17 @@
 // components/ui/DoctorCard.tsx
 import React from "react"
-import Image from "next/image"
-import { doctorImagesMap } from "@/model/mockData"
-import defaultVetImg from "@/public/assets/images/clinic/doctorFemale.webp"
+// import Image from "next/image"
+// import { doctorImagesMap } from "@/model/mockData"
+// import defaultVetImg from "@/public/assets/images/clinic/doctorFemale.webp"
+import { SelectedVet } from "./SelectVet"
 
-type VetportDoctor = {
-  id: number
-  name: string
-  image: {
-    type: "url" | "ref"
-    value: string
-  }
-}
 interface SelectDoctorCardProps {
-  doctor: VetportDoctor
+  doctor: SelectedVet
   isSelected: boolean
   onDoctorSelect: (
-    doctorId: number,
+    doctorId: string,
     doctorName: string,
-    doctorImage: { type: "url" | "ref"; value: string },
+    // doctorImage: { type: "url" | "ref"; value: string },
   ) => void
 }
 
@@ -27,10 +20,10 @@ const SelectDoctorCard: React.FC<SelectDoctorCardProps> = ({
   isSelected,
   onDoctorSelect,
 }) => {
-  const { name, image, id } = doctor
+  const { name, id } = doctor
 
   const handleCardClick = () => {
-    onDoctorSelect(id, name, image)
+    onDoctorSelect(id, name)
   }
 
   return (
@@ -40,7 +33,7 @@ const SelectDoctorCard: React.FC<SelectDoctorCardProps> = ({
         isSelected ? `border-secondary-1` : ``
       }`}
     >
-      <Image
+      {/* <Image
         src={
           image.value === "unknown"
             ? defaultVetImg
@@ -52,7 +45,7 @@ const SelectDoctorCard: React.FC<SelectDoctorCardProps> = ({
         width={120}
         height={120}
         className="w-[120px] h-[120px] object-contain rounded-full aspect-[4/3] "
-      />
+      /> */}
 
       {/* Name */}
       <h2 className="flex-1 pt-2 text-center text-lg font-semibold">{name}</h2>

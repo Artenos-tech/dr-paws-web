@@ -15,15 +15,18 @@ const TABS = {
   ALL: {
     label: "All",
   },
+  REQUESTED: {
+    label: "Requested",
+  },
   UPCOMING: {
     label: "Upcoming",
   },
   PAST: {
     label: "Past",
   },
-  CANCELLED: {
-    label: "Cancelled",
-  },
+  // CANCELLED: {
+  //   label: "Cancelled",
+  // },
 } as const
 
 const MyAppointmentsPage = () => {
@@ -61,11 +64,14 @@ const MyAppointmentsPage = () => {
         return appointment.category === "UPCOMING"
       }
       if (activeTab === "PAST") {
-        return appointment.category === "PAST"
+        return appointment.category === "COMPLETED"
       }
-      if (activeTab === "CANCELLED") {
-        return appointment.category === "CANCELLED"
+      if (activeTab === "REQUESTED") {
+        return appointment.category === "REQUESTED"
       }
+      // if (activeTab === "CANCELLED") {
+      //   return appointment.category === "CANCELLED"
+      // }
     },
   )
 
@@ -105,11 +111,11 @@ const MyAppointmentsPage = () => {
               <div className="w-full h-full lg:h-screen">
                 <NoAppointments
                   displayText={
-                    activeTab === "PAST"
+                    activeTab !== "REQUESTED"
                       ? "No appointments"
                       : "You haven't booked any visits yet"
                   }
-                  showButton={activeTab !== "PAST"}
+                  showButton={activeTab === "REQUESTED"}
                 />
               </div>
             ) : (

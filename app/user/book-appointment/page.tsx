@@ -10,12 +10,12 @@ import BookingConfirmed from "@/components/ui/BookingConfirmed"
 
 const Booking: React.FC = () => {
   const [selectedAppointment, setSelectedAppointmentState] = useState<{
-    selectedServiceId: number | null
+    selectedServiceId: string | null
     selectedService: string | null
     selectedSubtype: BookingCategory | null
     selectedPet: Pet | null
     isGrooming: boolean
-    selectedClinic: number | null
+    selectedClinic: string | null
     selectedLocation: string | null
     selectClinicContact: string | null
     selectedDoctor: SelectedVet | null
@@ -37,12 +37,12 @@ const Booking: React.FC = () => {
     selectedSlotEnd: null,
   })
 
-  const [openCard, setOpenCard] = useState<number | null>(null) // Persist this state
+  const [openCard, setOpenCard] = useState<string | null>(null)
   const [isDisclaimerModalOpen, setIsDisclaimerModalOpen] = useState(false)
   const [currentStep, setCurrentStep] = useState<number>(1)
 
   const handleClinicSelection = (
-    clinicId: number,
+    clinicId: string,
     location: string,
     contact: string,
   ) => {
@@ -128,6 +128,8 @@ const Booking: React.FC = () => {
               onNext={goToNextStep}
               selectedClinic={selectedAppointment.selectedClinic}
               handleClinicSelection={handleClinicSelection}
+              selectedPet={notNull(selectedAppointment.selectedPet)}
+              isGrooming={selectedAppointment.isGrooming}
             />
           )}
 
@@ -142,7 +144,7 @@ const Booking: React.FC = () => {
               selectedSubtype={selectedAppointment.selectedSubtype}
               isGrooming={selectedAppointment.isGrooming}
               isReschedule={false}
-              existingAppointmentId={null}
+              // existingAppointmentId={null}
               setFinalAppointmentData={(appData) => {
                 setSelectedAppointmentState((prev) => ({
                   ...prev,
@@ -168,9 +170,9 @@ const Booking: React.FC = () => {
                 selectedDate: notNull(selectedAppointment.selectedDate),
                 selectedSlot: notNull(selectedAppointment.selectedSlot),
                 selectedSlotEnd: notNull(selectedAppointment.selectedSlotEnd),
-                selectedDoctorImage: selectedAppointment.selectedDoctor
-                  ? selectedAppointment.selectedDoctor.image
-                  : null,
+                // selectedDoctorImage: selectedAppointment.selectedDoctor
+                //   ? selectedAppointment.selectedDoctor.image
+                //   : null,
               }}
             />
           )}

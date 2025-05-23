@@ -89,26 +89,27 @@ export enum AppointmentStatus {
 }
 export interface AppointmentType {
   id: string
-  pet_vetport_id: number
+  pet_id: string
   pet_name: string
   pet_type?: string
   pet_profile_image: string | null
-  user_vetport_id: number
-  vet_vetport_id: number
+  // user_vetport_id: number
+  vet_id: string
   vet_name: string
-  vet_image: {
-    type: "url" | "ref"
-    value: string
-  }
-  clinic_id: number
+  // vet_image: {
+  //   type: "url" | "ref"
+  //   value: string
+  // }
+  clinic_id: string
   clinic_name: string
   clinic_location: string
   clinic_contact: string
   appt_start: string
+  booking_date: string
   appt_end: string
   appt_status: string | null
-  appt_reason: string | null
-  appt_type: string
-  appt_type_id: number
-  category: "UPCOMING" | "PAST" | "CANCELLED"
+  // appt_reason: string | null
+  appt_type: string | null
+  appt_type_id: string
+  category: "UPCOMING" | "COMPLETED" | "REQUESTED"
 }
