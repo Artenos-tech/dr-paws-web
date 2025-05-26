@@ -93,6 +93,7 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
               options[attr] = coatSizeRes.value.body.coats.map((coat) => ({
                 id: coat.id,
                 name: coat.name,
+                description: coat.description,
               }))
             }
           } else {
