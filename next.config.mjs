@@ -14,13 +14,18 @@ const nextConfig = {
           loader: "custom",
           loaderFile: "./image-loader.ts",
           unoptimized: true,
-          domains: ["localhost", "maps.googleapis.com"],
+          domains: [
+            "localhost",
+            "maps.googleapis.com",
+            "pettle.s3.ap-south-1.amazonaws.com",
+          ],
         }
       : {
           domains: [
             "localhost",
             "maps.googleapis.com",
             "lh3.googleusercontent.com",
+            "pettle.s3.ap-south-1.amazonaws.com",
           ],
         },
   webpack: (config, { isServer }) => {
