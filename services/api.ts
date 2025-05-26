@@ -324,6 +324,7 @@ export default createAPIClient({
             id: z.string().uuid(),
             name: z.string(),
             order: z.number(),
+            description: z.string(),
           }),
         ),
       }),
