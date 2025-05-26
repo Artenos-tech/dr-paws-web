@@ -533,6 +533,7 @@ export default createAPIClient({
           z.object({
             id: z.string(),
             name: z.string(),
+            displayImage: z.string().url().nullable(),
             // image: z.object({
             //   type: z.enum(["url", "ref"]),
             //   value: z.string(),
@@ -660,6 +661,7 @@ export default createAPIClient({
             pet_profile_image: z.string().nullable(),
             vet_id: z.string().uuid(),
             vet_name: z.string(),
+            vet_image: z.string().url().nullable(),
             // vet_image: z.object({
             //   type: z.enum(["url", "ref"]),
             //   value: z.string(),

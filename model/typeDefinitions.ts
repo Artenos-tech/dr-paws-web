@@ -96,6 +96,7 @@ export interface AppointmentType {
   // user_vetport_id: number
   vet_id: string
   vet_name: string
+  vet_image: string | null
   // vet_image: {
   //   type: "url" | "ref"
   //   value: string

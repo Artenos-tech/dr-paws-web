@@ -18,7 +18,7 @@ import { Pet, useUserContext } from "@/context/UserContext"
 import toast, { Toaster } from "react-hot-toast"
 import { ClipLoader } from "react-spinners"
 import { BookingCategory } from "./SelectService"
-import BestAvailableVetCard from "./BestAvailableVetCard"
+// import BestAvailableVetCard from "./BestAvailableVetCard"
 import ConfirmationModal from "./ConfirmationModal"
 
 export function convertDateToEpoch(date: string) {
@@ -28,6 +28,7 @@ export function convertDateToEpoch(date: string) {
 export interface SelectedVet {
   id: string
   name: string
+  displayImage: string | null
   // image: {
   //   type: "url" | "ref"
   //   value: string
@@ -516,7 +517,7 @@ const DoctorSelectionCarousel = ({
   return (
     <Carousel className="pr-1 w-[90%] sm:w-full mx-auto">
       <CarouselContent className="-ml-1">
-        <CarouselItem
+        {/* <CarouselItem
           key={"best"}
           className="basis-full sm:basis-5/12 lg:basis-1/4 xl:basis-1/5"
         >
@@ -533,7 +534,7 @@ const DoctorSelectionCarousel = ({
               })
             }
           />
-        </CarouselItem>
+        </CarouselItem> */}
         {options.map((doctor) => (
           <CarouselItem
             key={doctor.id}
@@ -542,8 +543,8 @@ const DoctorSelectionCarousel = ({
             <SelectDoctorCard
               doctor={doctor}
               isSelected={selectedDoctor?.id === doctor.id}
-              onDoctorSelect={(id, name) => {
-                onDoctorSelected({ id, name })
+              onDoctorSelect={(id, name, displayImage) => {
+                onDoctorSelected({ id, name, displayImage })
               }}
             />
           </CarouselItem>
