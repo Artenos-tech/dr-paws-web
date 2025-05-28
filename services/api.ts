@@ -648,10 +648,8 @@ export default createAPIClient({
 
     getAppointments: {
       method: "GET",
-      path: "/user/appointments?page={page}",
-      pathParamsSchema: z.object({
-        page: z.string().optional()
-      }),
+      path: "/user/appointments",
+      pathParamsSchema: z.object({}),
       requestSchema: z.object({}),
       responseSchema: z.object({
         status: z.number(),
