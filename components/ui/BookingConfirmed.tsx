@@ -9,6 +9,7 @@ import { MdOutlineAccessTime } from "react-icons/md"
 import CustomButton from "./CustomButton"
 import { useRouter } from "next/navigation"
 import { petImageByType } from "./PetCard"
+import { SelectedVet } from "./SelectVet"
 
 type BookingConfirmedProps = {
   isGroomingAppointment: boolean
@@ -20,10 +21,7 @@ type BookingConfirmedProps = {
     selectedClinicContact: string
     selectedService: string
     selectedSubtype?: string
-    selectedVet: {
-      id: string
-      name: string
-    } | null
+    selectedVet: SelectedVet | null
     // selectedDoctorImage: {
     //   type: "url" | "ref"
     //   value: string
@@ -88,6 +86,7 @@ const BookingConfirmed: React.FC<BookingConfirmedProps> = ({
               <div className="relative w-32 h-32 rounded-full overflow-hidden bg-white p-8 ml-[-30px] flex justify-center items-center">
                 <Image
                   src={
+                    selectedAppointment.selectedVet?.displayImage ||
                     // selectedAppointment.selectedDoctorImage.value ===
                     // "unknown"
                     // ?

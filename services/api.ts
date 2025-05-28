@@ -628,6 +628,7 @@ export default createAPIClient({
           clinic_location: z.string(),
           clinic_contact: z.string(),
           vet_name: z.string(),
+          vet_image: z.string().nullable(),
           // vet_image: z.object({
           //   type: z.enum(["url", "ref"]),
           //   value: z.string(),
