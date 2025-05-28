@@ -226,6 +226,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                               //   : doctorImagesMap[
                               //       selectedAppointment.vet_image.value
                               // ] ||
+                              selectedAppointment.vet_image ||
                               defaultVetImage
                             }
                             alt={`Dr. ${selectedAppointment.vet_name}'s profile`}

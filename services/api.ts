@@ -628,6 +628,7 @@ export default createAPIClient({
           clinic_location: z.string(),
           clinic_contact: z.string(),
           vet_name: z.string(),
+          vet_image: z.string().nullable(),
           // vet_image: z.object({
           //   type: z.enum(["url", "ref"]),
           //   value: z.string(),
@@ -647,8 +648,10 @@ export default createAPIClient({
 
     getAppointments: {
       method: "GET",
-      path: "/user/appointments",
-      pathParamsSchema: z.object({}),
+      path: "/user/appointments?page={page}",
+      pathParamsSchema: z.object({
+        page: z.string().optional()
+      }),
       requestSchema: z.object({}),
       responseSchema: z.object({
         status: z.number(),
