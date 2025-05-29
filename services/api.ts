@@ -659,7 +659,7 @@ export default createAPIClient({
             id: z.string().uuid(),
             pet_id: z.string().uuid(),
             pet_name: z.string(),
-            pet_type: z.string().optional(),
+            pet_type: z.string().nullable(),
             pet_profile_image: z.string().nullable(),
             vet_id: z.string().uuid(),
             vet_name: z.string(),
