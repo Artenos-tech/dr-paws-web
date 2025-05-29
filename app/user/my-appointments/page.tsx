@@ -10,7 +10,7 @@ import { useAPICall } from "@/hooks/apicall"
 import { AppointmentType } from "@/model/typeDefinitions"
 import api from "@/services/api"
 
-export const TABS = {
+const TABS = {
   ALL: { label: "All" },
   REQUESTED: { label: "Requested" },
   UPCOMING: { label: "Upcoming" },
