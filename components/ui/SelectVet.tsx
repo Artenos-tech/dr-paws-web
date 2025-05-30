@@ -18,21 +18,13 @@ import { Pet, useUserContext } from "@/context/UserContext"
 import toast, { Toaster } from "react-hot-toast"
 import { ClipLoader } from "react-spinners"
 import { BookingCategory } from "./SelectService"
-// import BestAvailableVetCard from "./BestAvailableVetCard"
+import BestAvailableVetCard from "./BestAvailableVetCard"
 import ConfirmationModal from "./ConfirmationModal"
-
-export function convertDateToEpoch(date: string) {
-  return Date.parse(date)
-}
 
 export interface SelectedVet {
   id: string
   name: string
   displayImage: string | null
-  // image: {
-  //   type: "url" | "ref"
-  //   value: string
-  // } | null
 }
 
 interface selectVetProps {
@@ -78,6 +70,7 @@ const SelectVet: React.FC<selectVetProps> = ({
     endTime: string
   } | null>(null)
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false)
+  const [chosenVetId, setChosenVetId] = useState<string | null>(null)
 
   const {
     call: getSlotsForStaff,
@@ -110,14 +103,12 @@ const SelectVet: React.FC<selectVetProps> = ({
     if (selectedSvcId && selectedSubtype && selectedClinic && selectedPet) {
       await getSlotsForStaff({
         staffid: selectedDoctor.id,
-        // appttypeid: selectedSvcId,
         clinicid: selectedClinic,
         catalogue: selectedSubtype.id,
         petid: selectedPet.id,
         pettype: selectedPet.type as "DOG" | "CAT" | "OTHER",
         isgrooming: isGrooming ? "y" : "n",
         date: format(selectedDate, "dd/MM/yyyy"),
-        // subtype: selectedSubtype?.id,
       })
     }
   }, [
@@ -129,11 +120,17 @@ const SelectVet: React.FC<selectVetProps> = ({
   ])
 
   const fetchBestAvailableVetSlots = useCallback(async () => {
-    await getBestAvailableVetSchedule({
-      clinicid: selectedClinic.toString(),
-      apptypeid: selectedSvcId.toString(),
-    })
-  }, [selectedClinic, selectedSvcId])
+    if (selectedSvcId && selectedSubtype && selectedClinic && selectedPet) {
+      await getBestAvailableVetSchedule({
+        clinicid: selectedClinic,
+        catalogue: selectedSubtype.id,
+        petid: selectedPet.id,
+        pettype: selectedPet.type as "DOG" | "CAT" | "OTHER",
+        isgrooming: isGrooming ? "y" : "n",
+        date: format(selectedDate, "dd/MM/yyyy"),
+      })
+    }
+  }, [selectedClinic, selectedSvcId, selectedDate])
 
   const fetchDoctors = useCallback(async () => {
     if (selectedSubtype && selectedPet) {
@@ -169,86 +166,96 @@ const SelectVet: React.FC<selectVetProps> = ({
 
   useEffect(() => {
     if ((selectedDoctor || isGrooming) && selectedDate) {
-      if (selectedDoctor && selectedDoctor.id === BEST_AVAILABLE_VET_ID) {
+      if (selectedDoctor && selectedDoctor.id === BEST_AVAILABLE_VET_ID)
         fetchBestAvailableVetSlots()
-      } else {
-        fetchSlotsForStaff()
-      }
+      else fetchSlotsForStaff()
     }
   }, [selectedDate])
 
   useEffect(() => {
-    if (selectedDoctor) {
-      setSelectedSlot(null)
-      if (selectedDoctor.id === BEST_AVAILABLE_VET_ID) {
-        fetchBestAvailableVetSlots()
-      } else {
-        fetchSlotsForStaff()
-      }
-    }
+    if (!selectedDoctor) return
+    setSelectedSlot(null)
+    const isBestAvailable = selectedDoctor.id === BEST_AVAILABLE_VET_ID
+    if (isBestAvailable) fetchBestAvailableVetSlots()
+    else fetchSlotsForStaff()
   }, [selectedDoctor])
 
-  // function selectPreferredOrRandomAvailableVetId(): number {
-  //   if (!bestAvailableVetScheduleResult?.ok) {
-  //     throw new Error("Best available vet schedule not loaded")
-  //   }
-  //   if (!selectedDate) {
-  //     throw new Error("Date must be selected")
-  //   }
-  //   if (!selectedSlot) {
-  //     throw new Error("Slot must be selected")
-  //   }
-  //   const availableVets =
-  //     bestAvailableVetScheduleResult.value.body.slots[
-  //       normalizeSelectedDate(selectedDate)
-  //     ][selectedSlot]
-  //   const preferredVets =
-  //     bestAvailableVetScheduleResult.value.body.preferredVets
-  //   if (availableVets.length === 0) {
-  //     throw new Error("No available vets for the selected slot")
-  //   }
-  //   const preferredAvailableVets = preferredVets
-  //     .filter(({ staffId }) =>
-  //       availableVets.find((availableVet) => availableVet.staffId === staffId),
-  //     )
-  //     .sort((a, b) => b.appCount - a.appCount)
-  //   if (preferredAvailableVets.length > 0) {
-  //     return preferredAvailableVets[0].staffId
-  //   }
-  //   const randomIndex = Math.floor(Math.random() * availableVets.length)
-  //   return availableVets[randomIndex].staffId
-  // }
+  useEffect(() => {
+    if (
+      selectedDoctor?.id === BEST_AVAILABLE_VET_ID &&
+      selectedSlot &&
+      selectedDate &&
+      bestAvailableVetScheduleResult?.ok
+    ) {
+      try {
+        const vetId = selectPreferredOrRandomAvailableVetId()
+        setChosenVetId(vetId)
+      } catch (err) {
+        console.error("Vet selection error:", err)
+        setChosenVetId(null)
+      }
+    }
+  }, [
+    selectedSlot,
+    selectedDoctor,
+    selectedDate,
+    bestAvailableVetScheduleResult,
+  ])
+
+  function selectPreferredOrRandomAvailableVetId(): string {
+    if (!bestAvailableVetScheduleResult?.ok) {
+      throw new Error("Best available vet schedule not loaded")
+    }
+    if (!selectedDate) {
+      throw new Error("Date must be selected")
+    }
+    if (!selectedSlot) {
+      throw new Error("Slot must be selected")
+    }
+
+    const { slots, preferredVets } = bestAvailableVetScheduleResult.value.body
+
+    const matchedSlot = slots.find(
+      (slot) =>
+        slot.startTime === selectedSlot.startTime &&
+        slot.endTime === selectedSlot.endTime,
+    )
+
+    if (!matchedSlot || matchedSlot.staffIds.length === 0) {
+      throw new Error("No available vets for the selected slot")
+    }
+
+    // Find preferred vets who are available in this slot
+    const preferredAvailableVets = preferredVets
+      .filter(({ staffId }) => matchedSlot.staffIds.includes(staffId))
+      .sort((a, b) => b.appCount - a.appCount)
+
+    if (preferredAvailableVets.length > 0) {
+      return preferredAvailableVets[0].staffId
+    }
+
+    // Pick a random vet from available staff for the slot
+    const randomIndex = Math.floor(Math.random() * matchedSlot.staffIds.length)
+    return matchedSlot.staffIds[randomIndex]
+  }
 
   const handleNextClick = async () => {
     if (!(selectedDoctor || isGrooming)) {
-      throw new Error("Doctor must be selected or grooming must be selected")
+      toast.error("Doctor must be selected or grooming must be selected")
+      return
     }
-    // const selectedDoc =
-    //   selectedDoctor?.id === BEST_AVAILABLE_VET_ID &&
-    //   doctors.find(
-    //     (doc) => doc.id === selectPreferredOrRandomAvailableVetId(),
-    //   )
-
-    // const slotEnd = selectedDate
-    // if (slotEnd && selectedSlot) {
-    //   const [hours, minutes] = selectedSlot.split(":").map(Number)
-    //   slotEnd.setHours(hours, minutes, 0, 0)
-    //   slotEnd.setMinutes(
-    //     slotEnd.getMinutes() +
-    //       (!isGrooming ? 30 : selectedSubtype?.id === "spa-bath" ? 60 : 90),
-    //   )
-    // }
+    if (!selectedSlot) {
+      toast.error("Please select a time slot before proceeding.")
+      return
+    }
+    const selectedDoc =
+      selectedDoctor?.id === BEST_AVAILABLE_VET_ID &&
+      doctors.find((doc) => doc.id === chosenVetId)
     setFinalAppointmentData({
-      selectedDoctor: selectedDoctor,
-      // || selectedDoc
+      selectedDoctor: selectedDoc || selectedDoctor,
       selectedDate,
       selectedSlot: selectedSlot?.startTime ?? null,
       selectedSlotEnd: selectedSlot?.endTime ?? null,
-      // slotEnd?.toLocaleTimeString("en-IN", {
-      //   hour: "2-digit",
-      //   minute: "2-digit",
-      //   hour12: false,
-      // }) || null,
     })
     setIsConfirmationModalOpen(true)
   }
@@ -257,21 +264,12 @@ const SelectVet: React.FC<selectVetProps> = ({
     if (!isReschedule) {
       setIsConfirmationModalOpen(false)
       if (user && selectedSlot && selectedDate && selectedDoctor) {
-        // const [hours, minutes] = selectedSlot.split(":").map(Number)
-        // selectedDate.setHours(hours, minutes, 0, 0)
-        // // const apptStart = selectedDate.toISOString()
-        // selectedDate.setMinutes(
-        //   selectedDate.getMinutes() +
-        //     (!isGrooming ? 60 : selectedSubtype?.id === "spa-bath" ? 60 : 90),
-        // )
-        // const apptEnd = format(selectedDate, "HH:mm")
         try {
           const response = await createAnAppointment({
             vet_id:
-              // selectedDoctor.id === BEST_AVAILABLE_VET_ID
-              //   ? selectPreferredOrRandomAvailableVetId()
-              // :
-              selectedDoctor.id,
+              selectedDoctor.id === BEST_AVAILABLE_VET_ID && chosenVetId
+                ? chosenVetId
+                : selectedDoctor.id,
             pet_id: selectedPet.id,
             clinic_id: selectedClinic,
             // appt_reason: selectedSubtype?.title || null,
@@ -392,11 +390,7 @@ const SelectVet: React.FC<selectVetProps> = ({
   const availableSlots = selectedDoctor
     ? selectedDoctor.id === BEST_AVAILABLE_VET_ID
       ? bestAvailableVetScheduleResult?.ok
-        ? Object.fromEntries(
-            Object.entries(bestAvailableVetScheduleResult.value.body.slots).map(
-              ([date, slots]) => [date, Object.keys(slots)],
-            ),
-          )
+        ? bestAvailableVetScheduleResult.value.body.slots
         : null
       : slotsForStaffResult?.ok
         ? slotsForStaffResult.value.body.slots
@@ -486,14 +480,13 @@ const SelectVet: React.FC<selectVetProps> = ({
             petName: selectedPet.name,
             service: selectedSubtype?.title || selectedService,
             doctorName:
-              // selectedDoctor && selectedDoctor.id === BEST_AVAILABLE_VET_ID
-              //   ? doctors.find(
-              //       (doc) => doc.id === selectPreferredOrRandomAvailableVetId(),
-              //     )?.name
-              // :
-              !selectedDoctor?.name.includes("Grooming")
-                ? selectedDoctor?.name
-                : undefined,
+              selectedDoctor && selectedDoctor.id === BEST_AVAILABLE_VET_ID
+                ? doctors.find((doc) => {
+                    return doc.id === chosenVetId
+                  })?.name
+                : !isGrooming
+                  ? selectedDoctor?.name
+                  : undefined,
             location: selectedLocation,
             date: selectedDate,
             slot: selectedSlot.startTime,
@@ -517,7 +510,7 @@ const DoctorSelectionCarousel = ({
   return (
     <Carousel className="pr-1 w-[90%] sm:w-full mx-auto">
       <CarouselContent className="-ml-1">
-        {/* <CarouselItem
+        <CarouselItem
           key={"best"}
           className="basis-full sm:basis-5/12 lg:basis-1/4 xl:basis-1/5"
         >
@@ -527,14 +520,11 @@ const DoctorSelectionCarousel = ({
               onDoctorSelected({
                 id: BEST_AVAILABLE_VET_ID,
                 name: "Best Available Vet",
-                // image: {
-                //   type: "url",
-                //   value: "",
-                // },
+                displayImage: null,
               })
             }
           />
-        </CarouselItem> */}
+        </CarouselItem>
         {options.map((doctor) => (
           <CarouselItem
             key={doctor.id}
