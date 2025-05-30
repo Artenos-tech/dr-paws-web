@@ -535,11 +535,6 @@ export default createAPIClient({
             id: z.string(),
             name: z.string(),
             displayImage: z.string().url().nullable(),
-            // image: z.object({
-            //   type: z.enum(["url", "ref"]),
-            //   value: z.string(),
-            // }),
-            // clinicids: z.array(z.number()),
           }),
         ),
       }),
@@ -551,51 +546,49 @@ export default createAPIClient({
       path: "/booking/slots/staff/{staffid}?clinicid={clinicid}&catalogue={catalogue}&petid={petid}&pettype={pettype}&isgrooming={isgrooming}&date={date}",
       pathParamsSchema: z.object({
         staffid: z.string().uuid(),
-        // appttypeid: z.string(),
         clinicid: z.string().uuid(),
         catalogue: z.string(),
         petid: z.string().uuid(),
         pettype: z.enum(["DOG", "CAT", "OTHER"]),
         isgrooming: z.enum(["y", "n"]),
         date: z.string(),
-        // subtype: z.string().optional(),
       }),
       requestSchema: z.object({}),
       responseSchema: z.object({
         status: z.number(),
         message: z.string(),
-        // staffschedule: z.object({
         slots: z.array(
           z.object({ startTime: z.string(), endTime: z.string() }),
         ),
-        // }),
       }),
       errorResponseSchema: z.object({}),
     },
 
     getBestAvailableVetSchedule: {
       method: "GET",
-      path: "/booking/schedule/best?clinicid={clinicid}&apptypeid={apptypeid}",
+      path: "/booking/schedule/best?clinicid={clinicid}&catalogue={catalogue}&petid={petid}&pettype={pettype}&isgrooming={isgrooming}&date={date}",
       pathParamsSchema: z.object({
-        clinicid: z.string(),
-        apptypeid: z.string(),
+        clinicid: z.string().uuid(),
+        catalogue: z.string(),
+        petid: z.string().uuid(),
+        pettype: z.enum(["DOG", "CAT", "OTHER"]),
+        isgrooming: z.enum(["y", "n"]),
+        date: z.string(),
       }),
       requestSchema: z.object({}),
       responseSchema: z.object({
-        slots: z.record(
-          z.string(),
-          z.record(
-            z.string(),
-            z.array(
-              z.object({
-                staffId: z.number(),
-              }),
-            ),
-          ),
+        status: z.number(),
+        message: z.string(),
+        slots: z.array(
+          z.object({
+            startTime: z.string(),
+            endTime: z.string(),
+            staffIds: z.array(z.string().uuid()),
+          }),
         ),
         preferredVets: z.array(
           z.object({
-            staffId: z.number(),
+            staffId: z.string().uuid(),
             appCount: z.number(),
           }),
         ),
@@ -629,10 +622,6 @@ export default createAPIClient({
           clinic_contact: z.string(),
           vet_name: z.string(),
           vet_image: z.string().nullable(),
-          // vet_image: z.object({
-          //   type: z.enum(["url", "ref"]),
-          //   value: z.string(),
-          // }),
           appt_start: z.string(),
           appt_end: z.string(),
           booking_date: z.string(),
@@ -664,10 +653,6 @@ export default createAPIClient({
             vet_id: z.string().uuid(),
             vet_name: z.string(),
             vet_image: z.string().url().nullable(),
-            // vet_image: z.object({
-            //   type: z.enum(["url", "ref"]),
-            //   value: z.string(),
-            // }),
             clinic_id: z.string().uuid(),
             clinic_name: z.string(),
             clinic_location: z.string(),
