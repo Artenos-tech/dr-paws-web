@@ -484,7 +484,7 @@ const SelectVet: React.FC<selectVetProps> = ({
                 ? doctors.find((doc) => {
                     return doc.id === chosenVetId
                   })?.name
-                : !selectedDoctor?.name.includes("Grooming")
+                : !isGrooming
                   ? selectedDoctor?.name
                   : undefined,
             location: selectedLocation,
