@@ -21,10 +21,6 @@ import { BookingCategory } from "./SelectService"
 import BestAvailableVetCard from "./BestAvailableVetCard"
 import ConfirmationModal from "./ConfirmationModal"
 
-export function convertDateToEpoch(date: string) {
-  return Date.parse(date)
-}
-
 export interface SelectedVet {
   id: string
   name: string
@@ -74,6 +70,7 @@ const SelectVet: React.FC<selectVetProps> = ({
     endTime: string
   } | null>(null)
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false)
+  const [chosenVetId, setChosenVetId] = useState<string | null>(null)
 
   const {
     call: getSlotsForStaff,
@@ -169,24 +166,41 @@ const SelectVet: React.FC<selectVetProps> = ({
 
   useEffect(() => {
     if ((selectedDoctor || isGrooming) && selectedDate) {
-      if (selectedDoctor && selectedDoctor.id === BEST_AVAILABLE_VET_ID) {
+      if (selectedDoctor && selectedDoctor.id === BEST_AVAILABLE_VET_ID)
         fetchBestAvailableVetSlots()
-      } else {
-        fetchSlotsForStaff()
-      }
+      else fetchSlotsForStaff()
     }
   }, [selectedDate])
 
   useEffect(() => {
-    if (selectedDoctor) {
-      setSelectedSlot(null)
-      if (selectedDoctor.id === BEST_AVAILABLE_VET_ID) {
-        fetchBestAvailableVetSlots()
-      } else {
-        fetchSlotsForStaff()
+    if (!selectedDoctor) return
+    setSelectedSlot(null)
+    const isBestAvailable = selectedDoctor.id === BEST_AVAILABLE_VET_ID
+    if (isBestAvailable) fetchBestAvailableVetSlots()
+    else fetchSlotsForStaff()
+  }, [selectedDoctor])
+
+  useEffect(() => {
+    if (
+      selectedDoctor?.id === BEST_AVAILABLE_VET_ID &&
+      selectedSlot &&
+      selectedDate &&
+      bestAvailableVetScheduleResult?.ok
+    ) {
+      try {
+        const vetId = selectPreferredOrRandomAvailableVetId()
+        setChosenVetId(vetId)
+      } catch (err) {
+        console.error("Vet selection error:", err)
+        setChosenVetId(null)
       }
     }
-  }, [selectedDoctor])
+  }, [
+    selectedSlot,
+    selectedDoctor,
+    selectedDate,
+    bestAvailableVetScheduleResult,
+  ])
 
   function selectPreferredOrRandomAvailableVetId(): string {
     if (!bestAvailableVetScheduleResult?.ok) {
@@ -227,11 +241,16 @@ const SelectVet: React.FC<selectVetProps> = ({
 
   const handleNextClick = async () => {
     if (!(selectedDoctor || isGrooming)) {
-      throw new Error("Doctor must be selected or grooming must be selected")
+      toast.error("Doctor must be selected or grooming must be selected")
+      return
+    }
+    if (!selectedSlot) {
+      toast.error("Please select a time slot before proceeding.")
+      return
     }
     const selectedDoc =
       selectedDoctor?.id === BEST_AVAILABLE_VET_ID &&
-      doctors.find((doc) => doc.id === selectPreferredOrRandomAvailableVetId())
+      doctors.find((doc) => doc.id === chosenVetId)
     setFinalAppointmentData({
       selectedDoctor: selectedDoc || selectedDoctor,
       selectedDate,
@@ -248,10 +267,9 @@ const SelectVet: React.FC<selectVetProps> = ({
         try {
           const response = await createAnAppointment({
             vet_id:
-              // selectedDoctor.id === BEST_AVAILABLE_VET_ID
-              //   ? selectPreferredOrRandomAvailableVetId()
-              // :
-              selectedDoctor.id,
+              selectedDoctor.id === BEST_AVAILABLE_VET_ID && chosenVetId
+                ? chosenVetId
+                : selectedDoctor.id,
             pet_id: selectedPet.id,
             clinic_id: selectedClinic,
             // appt_reason: selectedSubtype?.title || null,
@@ -463,9 +481,9 @@ const SelectVet: React.FC<selectVetProps> = ({
             service: selectedSubtype?.title || selectedService,
             doctorName:
               selectedDoctor && selectedDoctor.id === BEST_AVAILABLE_VET_ID
-                ? doctors.find(
-                    (doc) => doc.id === selectPreferredOrRandomAvailableVetId(),
-                  )?.name
+                ? doctors.find((doc) => {
+                    return doc.id === chosenVetId
+                  })?.name
                 : !selectedDoctor?.name.includes("Grooming")
                   ? selectedDoctor?.name
                   : undefined,
