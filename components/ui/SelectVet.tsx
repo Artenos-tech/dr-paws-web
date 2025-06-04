@@ -79,6 +79,12 @@ const SelectVet: React.FC<selectVetProps> = ({
   } = useAPICall(api.getSlotsForStaff)
 
   const {
+    call: getGroomingSlots,
+    result: groomingSlotsResult,
+    loading: loadingGroomingSlots,
+  } = useAPICall(api.getSlotsForGrooming)
+
+  const {
     call: getBestAvailableVetSchedule,
     result: bestAvailableVetScheduleResult,
     loading: loadingBestAvailableVetSchedule,
@@ -96,18 +102,26 @@ const SelectVet: React.FC<selectVetProps> = ({
     loading: loadingDoctors,
   } = useAPICall(api.getDoctorsForClinic)
 
+  const { call: getDoctor } = useAPICall(api.getDoctor)
+
   const fetchSlotsForStaff = useCallback(async () => {
     if (!selectedDoctor) {
       throw new Error("Doctor must be selected")
     }
-    if (selectedSvcId && selectedSubtype && selectedClinic && selectedPet) {
+    if (
+      selectedSvcId &&
+      selectedSubtype &&
+      selectedClinic &&
+      selectedPet &&
+      !isGrooming
+    ) {
       await getSlotsForStaff({
         staffid: selectedDoctor.id,
         clinicid: selectedClinic,
         catalogue: selectedSubtype.id,
         petid: selectedPet.id,
         pettype: selectedPet.type as "DOG" | "CAT" | "OTHER",
-        isgrooming: isGrooming ? "y" : "n",
+        // isgrooming: isGrooming ? "y" : "n",
         date: format(selectedDate, "dd/MM/yyyy"),
       })
     }
@@ -119,6 +133,24 @@ const SelectVet: React.FC<selectVetProps> = ({
     isGrooming,
   ])
 
+  const fetchGroomingSlots = useCallback(async () => {
+    if (
+      selectedSvcId &&
+      selectedSubtype &&
+      selectedClinic &&
+      selectedPet &&
+      isGrooming
+    ) {
+      await getGroomingSlots({
+        clinicid: selectedClinic,
+        catalogue: selectedSubtype.id,
+        petid: selectedPet.id,
+        pettype: selectedPet.type as "DOG" | "CAT" | "OTHER",
+        date: format(selectedDate, "dd/MM/yyyy"),
+      })
+    }
+  }, [selectedSvcId, selectedSubtype, selectedClinic, selectedPet, isGrooming])
+
   const fetchBestAvailableVetSlots = useCallback(async () => {
     if (selectedSvcId && selectedSubtype && selectedClinic && selectedPet) {
       await getBestAvailableVetSchedule({
@@ -126,7 +158,7 @@ const SelectVet: React.FC<selectVetProps> = ({
         catalogue: selectedSubtype.id,
         petid: selectedPet.id,
         pettype: selectedPet.type as "DOG" | "CAT" | "OTHER",
-        isgrooming: isGrooming ? "y" : "n",
+        // isgrooming: isGrooming ? "y" : "n",
         date: format(selectedDate, "dd/MM/yyyy"),
       })
     }
@@ -145,41 +177,22 @@ const SelectVet: React.FC<selectVetProps> = ({
     }
   }, [selectedClinic, getDoctorsForClinic])
 
+  // on initial mount, for non grooming appts
   useEffect(() => {
-    fetchDoctors()
+    if (!isGrooming) fetchDoctors()
+    else fetchGroomingSlots()
   }, [])
 
+  // when a different doctor is selected
   useEffect(() => {
-    if (isGrooming && doctorsResult?.ok) {
-      const staff = doctorsResult.value.body.staff
-      const groomingStaff = staff[Math.floor(Math.random() * staff.length)]
-      if (staff.length > 0 && groomingStaff) {
-        setSelectedDoctor(groomingStaff)
-      } else {
-        console.error(
-          "Grooming staff not found",
-          doctorsResult.value.body.staff,
-        )
-      }
-    }
-  }, [doctorsResult, isGrooming])
-
-  useEffect(() => {
-    if ((selectedDoctor || isGrooming) && selectedDate) {
-      if (selectedDoctor && selectedDoctor.id === BEST_AVAILABLE_VET_ID)
-        fetchBestAvailableVetSlots()
-      else fetchSlotsForStaff()
-    }
-  }, [selectedDate])
-
-  useEffect(() => {
-    if (!selectedDoctor) return
+    if (!selectedDoctor || isGrooming) return
     setSelectedSlot(null)
     const isBestAvailable = selectedDoctor.id === BEST_AVAILABLE_VET_ID
     if (isBestAvailable) fetchBestAvailableVetSlots()
     else fetchSlotsForStaff()
   }, [selectedDoctor])
 
+  // for best available vet
   useEffect(() => {
     if (
       selectedDoctor?.id === BEST_AVAILABLE_VET_ID &&
@@ -201,6 +214,16 @@ const SelectVet: React.FC<selectVetProps> = ({
     selectedDate,
     bestAvailableVetScheduleResult,
   ])
+
+  // when a different date is selected
+  useEffect(() => {
+    if ((selectedDoctor || isGrooming) && selectedDate) {
+      if (selectedDoctor && selectedDoctor.id === BEST_AVAILABLE_VET_ID)
+        fetchBestAvailableVetSlots()
+      else if (selectedDoctor && !isGrooming) fetchSlotsForStaff()
+      else fetchGroomingSlots()
+    }
+  }, [selectedDate])
 
   function selectPreferredOrRandomAvailableVetId(): string {
     if (!bestAvailableVetScheduleResult?.ok) {
@@ -231,7 +254,16 @@ const SelectVet: React.FC<selectVetProps> = ({
       .sort((a, b) => b.appCount - a.appCount)
 
     if (preferredAvailableVets.length > 0) {
-      return preferredAvailableVets[0].staffId
+      const maxAppCount = Math.max(
+        ...preferredAvailableVets.map((vet) => vet.appCount),
+      )
+      const topVets = preferredAvailableVets
+        .map((vet, index) => ({ ...vet, index }))
+        .filter((vet) => vet.appCount === maxAppCount)
+
+      const randomTopVet = topVets[Math.floor(Math.random() * topVets.length)]
+
+      return preferredAvailableVets[randomTopVet.index].staffId
     }
 
     // Pick a random vet from available staff for the slot
@@ -372,30 +404,50 @@ const SelectVet: React.FC<selectVetProps> = ({
     }
   }
 
-  const handleSlotSelect = (time: { startTime: string; endTime: string }) => {
+  const handleSlotSelect = async (time: {
+    startTime: string
+    endTime: string
+    staffIds?: string[]
+  }) => {
     setSelectedSlot(
       selectedSlot && selectedSlot.startTime === time.startTime ? null : time,
     )
+    if (time.staffIds && isGrooming) {
+      const response = await getDoctor({
+        staffid:
+          time.staffIds[Math.floor(Math.random() * time.staffIds.length)],
+      })
+      if (response.ok) {
+        const doctor = response.value.body.staff
+        setSelectedDoctor(doctor)
+      }
+    }
   }
 
   const doctors = doctorsResult?.ok ? doctorsResult.value.body.staff : []
 
   const availableSlotsLoading =
-    loadingSlotsForStaff || loadingBestAvailableVetSchedule
+    loadingSlotsForStaff ||
+    loadingBestAvailableVetSchedule ||
+    loadingGroomingSlots
 
   const availableSlotsError =
     slotsForStaffResult?.ok === false ||
-    bestAvailableVetScheduleResult?.ok === false
+    bestAvailableVetScheduleResult?.ok === false ||
+    groomingSlotsResult?.ok === false
 
-  const availableSlots = selectedDoctor
-    ? selectedDoctor.id === BEST_AVAILABLE_VET_ID
-      ? bestAvailableVetScheduleResult?.ok
-        ? bestAvailableVetScheduleResult.value.body.slots
+  const availableSlots =
+    selectedDoctor && !isGrooming
+      ? selectedDoctor.id === BEST_AVAILABLE_VET_ID
+        ? bestAvailableVetScheduleResult?.ok
+          ? bestAvailableVetScheduleResult.value.body.slots
+          : null
+        : slotsForStaffResult?.ok
+          ? slotsForStaffResult.value.body.slots
+          : null
+      : groomingSlotsResult?.ok
+        ? groomingSlotsResult.value.body.slots
         : null
-      : slotsForStaffResult?.ok
-        ? slotsForStaffResult.value.body.slots
-        : null
-    : null
 
   const isNextButtonEnabled =
     (selectedDoctor !== null || isGrooming) &&
@@ -446,7 +498,7 @@ const SelectVet: React.FC<selectVetProps> = ({
               </p>
             ) : availableSlots ? (
               <AppointmentDateAndTimeSelector
-                show={!selectedDoctor && selectedPet && !isGrooming}
+                show={false}
                 selectedDate={selectedDate}
                 onDateSelected={handleDateSelect}
                 availableSlots={availableSlots}
@@ -546,14 +598,6 @@ const DoctorSelectionCarousel = ({
   )
 }
 
-// const normalizeSelectedDate = (date: Date) => {
-//   const selectedDay = date.getDate().toString().padStart(2, "0")
-//   const selectedMonth = (date.getMonth() + 1).toString().padStart(2, "0")
-//   const selectedYear = date.getFullYear().toString()
-//   const normalizedDate = `${selectedYear}/${selectedMonth}/${selectedDay}`
-//   return normalizedDate
-// }
-
 const AppointmentDateAndTimeSelector = ({
   show,
   selectedDate,
@@ -565,9 +609,11 @@ const AppointmentDateAndTimeSelector = ({
   show: boolean
   selectedDate: Date
   onDateSelected: (date: Date) => void
-  availableSlots:
-    | Record<string, string[]>
-    | Array<{ startTime: string; endTime: string }>
+  availableSlots: Array<{
+    startTime: string
+    endTime: string
+    staffIds?: string[]
+  }>
   selectedSlot: { startTime: string; endTime: string } | null
   onSlotSelected: (slot: { startTime: string; endTime: string }) => void
 }) => {
@@ -600,30 +646,26 @@ const AppointmentDateAndTimeSelector = ({
             }}
           >
             {availableSlots &&
-            // Object.keys(availableSlots).length > 0 &&
-            // availableSlots[normalizeSelectedDate(selectedDate)].length > 0 &&
-            // availableSlots[normalizeSelectedDate(selectedDate)]
             Array.isArray(availableSlots) &&
             availableSlots.length > 0 ? (
-              availableSlots
-                // [normalizeSelectedDate(selectedDate)]
-                //   .toSorted()
-                .map((time, index) => (
-                  <div
-                    key={index}
-                    className={` text-center bg-primary-3 py-2 px-6 sm:py-1 sm:px-6 lg:py-2 lg:px-8 w-full rounded-md cursor-pointer shadow-md ${
-                      selectedSlot?.startTime === time.startTime
-                        ? "border border-secondary-1"
-                        : ""
-                    }`}
-                    onClick={() => onSlotSelected(time)}
-                  >
-                    {time.startTime}
-                  </div>
-                ))
+              availableSlots.map((time, index) => (
+                <button
+                  key={index}
+                  type="button"
+                  className={` text-center bg-primary-3 py-2 px-6 sm:py-1 sm:px-6 lg:py-2 lg:px-8 w-full rounded-md cursor-pointer shadow-md ${
+                    selectedSlot?.startTime === time.startTime
+                      ? "border border-secondary-1"
+                      : ""
+                  }`}
+                  onClick={() => onSlotSelected(time)}
+                >
+                  {time.startTime}
+                </button>
+              ))
             ) : (
               <p className="text-gray-500 text-sm">
-                No slots available for the selected date.
+                No slots available for the selected date. Please try another
+                day.
               </p>
             )}
           </div>
