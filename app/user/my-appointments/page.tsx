@@ -12,7 +12,6 @@ import api from "@/services/api"
 
 const TABS = {
   ALL: { label: "All" },
-  REQUESTED: { label: "Requested" },
   UPCOMING: { label: "Upcoming" },
   PAST: { label: "Past" },
 } as const
@@ -73,9 +72,6 @@ const MyAppointmentsPage = () => {
       case "PAST":
         filtered = allAppointments.filter((a) => a.category === "COMPLETED")
         break
-      case "REQUESTED":
-        filtered = allAppointments.filter((a) => a.category === "REQUESTED")
-        break
       default:
         filtered = allAppointments
     }
@@ -130,11 +126,11 @@ const MyAppointmentsPage = () => {
               <div className="w-full h-full lg:h-screen">
                 <NoAppointments
                   displayText={
-                    activeTab !== "REQUESTED"
+                    activeTab !== "UPCOMING"
                       ? "No appointments"
                       : "You haven't booked any visits yet"
                   }
-                  showButton={activeTab === "REQUESTED"}
+                  showButton={activeTab === "UPCOMING"}
                 />
               </div>
             ) : (

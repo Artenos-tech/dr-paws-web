@@ -1,7 +1,6 @@
 "use client"
 
 import { AppointmentType } from "@/model/typeDefinitions"
-// import toast from "react-hot-toast"
 import React from "react"
 import BackButton from "./BackButton"
 import { MdOutlineAccessTime } from "react-icons/md"
@@ -9,9 +8,8 @@ import { GrLocation } from "react-icons/gr"
 import { HiOutlineCalendar } from "react-icons/hi"
 import Image from "next/image"
 import defaultVetImage from "@/public/assets/images/clinic/doctorFemale.webp"
-// import { doctorImagesMap } from "@/model/mockData"
 import { petImageByType } from "./PetCard"
-import { CalendarDays, Clock, CircleCheck } from "lucide-react"
+import { CalendarDays, CircleCheck } from "lucide-react"
 import { format, parseISO } from "date-fns"
 // import CustomButton from "./CustomButton"
 // import { useAPICall } from "@/hooks/apicall"
@@ -142,11 +140,9 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                   {/* {selectedAppointment.category === "CANCELLED"
                     ? "Booking Cancelled"
                     : "Your Booking"} */}
-                  {selectedAppointment.category === "REQUESTED"
-                    ? "Booking Requested"
-                    : selectedAppointment.category === "COMPLETED"
-                      ? "Booking Completed"
-                      : "Your Booking"}
+                  {selectedAppointment.category === "COMPLETED"
+                    ? "Booking Completed"
+                    : "Your Booking"}
                 </h1>
                 {/* {selectedAppointment.category === "CANCELLED" && (
                   <CircleX
@@ -163,13 +159,6 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                     stroke="white"
                     strokeWidth={2}
                   />
-                ) : selectedAppointment.category === "REQUESTED" ? (
-                  <Clock
-                    size={40}
-                    fill="#5281a2"
-                    stroke="white"
-                    strokeWidth={2}
-                  />
                 ) : (
                   <CalendarDays
                     size={40}
@@ -181,11 +170,9 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
               </div>
               <div
                 className={`p-4 text-primary-1 w-11/12 md:w-4/5 lg:w-[50%] shadow-md my-5 flex flex-col gap-2 items-center ${
-                  selectedAppointment.category === "REQUESTED"
-                    ? "bg-primary-3"
-                    : selectedAppointment.category === "COMPLETED"
-                      ? "bg-[#F1F1F1] text-[#909090]"
-                      : "bg-[#FFFCF3]"
+                  selectedAppointment.category === "COMPLETED"
+                    ? "bg-[#F1F1F1] text-[#909090]"
+                    : "bg-[#FFFCF3]"
                 }`}
               >
                 <p className="text-lg font-semibold mt-4 text-center">
@@ -193,13 +180,9 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                     ? selectedAppointment.appt_type === "Grooming"
                       ? `${selectedAppointment.pet_name} had a ${selectedAppointment.appt_type} session`
                       : `${selectedAppointment.pet_name} visited ${selectedAppointment.vet_name} for a ${selectedAppointment.appt_type}`
-                    : selectedAppointment.category === "REQUESTED"
-                      ? selectedAppointment.appt_type !== "Grooming"
-                        ? `A request for ${selectedAppointment.pet_name} to be scheduled with ${selectedAppointment.vet_name} for a ${selectedAppointment.appt_type} has been submitted`
-                        : `A request for ${selectedAppointment.pet_name} to be scheduled for a ${selectedAppointment.appt_type} session has been submitted`
-                      : selectedAppointment.appt_type !== "Grooming"
-                        ? `${selectedAppointment.pet_name} is scheduled for a ${selectedAppointment.appt_type} with ${selectedAppointment.vet_name}`
-                        : `${selectedAppointment.pet_name} is scheduled for a ${selectedAppointment.appt_type} session`}
+                    : selectedAppointment.appt_type !== "Grooming"
+                      ? `${selectedAppointment.pet_name} is scheduled for a ${selectedAppointment.appt_type} with ${selectedAppointment.vet_name}`
+                      : `${selectedAppointment.pet_name} is scheduled for a ${selectedAppointment.appt_type} session`}
                 </p>
                 <div className="flex items-center my-4 relative">
                   {
@@ -221,11 +204,6 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                         <div className="relative w-32 h-32 rounded-full overflow-hidden bg-white -ml-8 border-4 border-white flex justify-center items-center">
                           <Image
                             src={
-                              // selectedAppointment.vet_image.type === "url"
-                              //   ? selectedAppointment.vet_image.value
-                              //   : doctorImagesMap[
-                              //       selectedAppointment.vet_image.value
-                              // ] ||
                               selectedAppointment.vet_image || defaultVetImage
                             }
                             alt={`Dr. ${selectedAppointment.vet_name}'s profile`}
@@ -249,43 +227,16 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                     <span className="text-secondary-1">
                       <HiOutlineCalendar />
                     </span>
-                    {
-                      // new Date(
-                      //   selectedAppointment.appt_start,
-                      // ).toLocaleDateString("en-IN", {
-                      //   weekday: "long",
-                      //   year: "numeric",
-                      //   month: "long",
-                      //   day: "numeric",
-                      // })
-                      format(parsedDate, "EEEE dd MMMM, yyyy")
-                    }
+                    {format(parsedDate, "EEEE dd MMMM, yyyy")}
                   </p>
                   <p className={`flex items-center gap-2`}>
                     <span className="text-secondary-1">
                       <MdOutlineAccessTime />
                     </span>
 
-                    {
-                      // new Date(
-                      //   selectedAppointment.appt_start,
-                      // ).toLocaleTimeString("en-IN", {
-                      //   hour: "2-digit",
-                      //   minute: "2-digit",
-                      // })
-                      selectedAppointment.appt_start
-                    }
+                    {selectedAppointment.appt_start}
                     {" - "}
-                    {
-                      // new Date(selectedAppointment.appt_end).toLocaleTimeString(
-                      //   `en-IN`,
-                      //   {
-                      //     hour: "2-digit",
-                      //     minute: "2-digit",
-                      //   },
-                      // )
-                      selectedAppointment.appt_end
-                    }
+                    {selectedAppointment.appt_end}
                   </p>
                 </div>
                 {/* {selectedAppointment.category === "UPCOMING" && (

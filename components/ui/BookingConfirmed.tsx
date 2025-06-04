@@ -46,21 +46,20 @@ const BookingConfirmed: React.FC<BookingConfirmedProps> = ({
     <div className="w-full h-full">
       <div className="flex flex-col justify-center gap-4 items-center">
         <h1 className="text-3xl flex items-center gap-4">
-          Booking Requested <BsCheckCircleFill fill="#5281a2" />
+          Booking Confirmed <BsCheckCircleFill fill="#5281a2" />
         </h1>
         <div
           className={`p-4 text-primary-1 shadow-md my-5 flex flex-col gap-2 items-center
               bg-[#FFFCF3]`}
         >
           <p className="text-lg font-semibold mt-4 text-center">
-            A request to schedule {selectedAppointment.selectedPet.name} for a{" "}
+            {selectedAppointment.selectedPet.name} is scheduled for a{" "}
             {isGroomingAppointment && selectedAppointment.selectedSubtype
-              ? `${selectedAppointment.selectedSubtype} `
+              ? `${selectedAppointment.selectedSubtype}`
               : `${selectedAppointment.selectedService}`}
             {isGroomingAppointment
               ? ""
-              : ` with ${selectedAppointment.selectedVet!.name} `}
-            has been submitted successfully
+              : ` with ${selectedAppointment.selectedVet!.name}`}
           </p>
           <div className="flex items-center my-4 relative">
             <div className="relative w-32 h-32 rounded-full overflow-hidden bg-whitep-3 flex justify-center items-center">
@@ -134,13 +133,13 @@ const BookingConfirmed: React.FC<BookingConfirmedProps> = ({
           </div>
           <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
             <p className="italic text-gray-400 text-sm text-center w-full max-w-md justify-self-center">
-              {/* To cancel or reschedule your appointment, please contact our{" "}
-              {selectedAppointment.selectedLocation} clinic on{" "}
-              {selectedAppointment.selectedClinicContact} */}
-              You’ll receive a confirmation via WhatsApp once the appointment is
-              confirmed. For any queries, feel free to contact our{" "}
+              To cancel or reschedule your appointment, please contact our{" "}
               {selectedAppointment.selectedLocation} clinic on{" "}
               {selectedAppointment.selectedClinicContact}
+              {/* You’ll receive a confirmation via WhatsApp once the appointment is
+              confirmed. For any queries, feel free to contact our{" "}
+              {selectedAppointment.selectedLocation} clinic on{" "}
+              {selectedAppointment.selectedClinicContact} */}
             </p>
           </div>
           <div className="flex items-center">
