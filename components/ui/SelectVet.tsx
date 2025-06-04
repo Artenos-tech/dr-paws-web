@@ -149,7 +149,14 @@ const SelectVet: React.FC<selectVetProps> = ({
         date: format(selectedDate, "dd/MM/yyyy"),
       })
     }
-  }, [selectedSvcId, selectedSubtype, selectedClinic, selectedPet, isGrooming])
+  }, [
+    selectedSvcId,
+    selectedSubtype,
+    selectedClinic,
+    selectedPet,
+    selectedDate,
+    isGrooming,
+  ])
 
   const fetchBestAvailableVetSlots = useCallback(async () => {
     if (selectedSvcId && selectedSubtype && selectedClinic && selectedPet) {
