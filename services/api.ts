@@ -541,16 +541,32 @@ export default createAPIClient({
       errorResponseSchema: z.object({}),
     },
 
+    getDoctor: {
+      method: "GET",
+      path: "/booking/staff/{staffid}",
+      pathParamsSchema: z.object({
+        staffid: z.string().uuid(),
+      }),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        staff: z.object({
+          id: z.string().uuid(),
+          name: z.string(),
+          displayImage: z.string().url().nullable(),
+        }),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+
     getSlotsForStaff: {
       method: "GET",
-      path: "/booking/slots/staff/{staffid}?clinicid={clinicid}&catalogue={catalogue}&petid={petid}&pettype={pettype}&isgrooming={isgrooming}&date={date}",
+      path: "/booking/slots/staff/{staffid}?clinicid={clinicid}&catalogue={catalogue}&petid={petid}&pettype={pettype}&date={date}",
       pathParamsSchema: z.object({
         staffid: z.string().uuid(),
         clinicid: z.string().uuid(),
         catalogue: z.string(),
         petid: z.string().uuid(),
         pettype: z.enum(["DOG", "CAT", "OTHER"]),
-        isgrooming: z.enum(["y", "n"]),
         date: z.string(),
       }),
       requestSchema: z.object({}),
@@ -564,15 +580,37 @@ export default createAPIClient({
       errorResponseSchema: z.object({}),
     },
 
-    getBestAvailableVetSchedule: {
+    getSlotsForGrooming: {
       method: "GET",
-      path: "/booking/schedule/best?clinicid={clinicid}&catalogue={catalogue}&petid={petid}&pettype={pettype}&isgrooming={isgrooming}&date={date}",
+      path: "/booking/slots/grooming?clinicid={clinicid}&catalogue={catalogue}&petid={petid}&pettype={pettype}&date={date}",
       pathParamsSchema: z.object({
         clinicid: z.string().uuid(),
         catalogue: z.string(),
         petid: z.string().uuid(),
         pettype: z.enum(["DOG", "CAT", "OTHER"]),
-        isgrooming: z.enum(["y", "n"]),
+        date: z.string(),
+      }),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        slots: z.array(
+          z.object({
+            startTime: z.string(),
+            endTime: z.string(),
+            staffIds: z.array(z.string()),
+          }),
+        ),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+
+    getBestAvailableVetSchedule: {
+      method: "GET",
+      path: "/booking/schedule/best?clinicid={clinicid}&catalogue={catalogue}&petid={petid}&pettype={pettype}&date={date}",
+      pathParamsSchema: z.object({
+        clinicid: z.string().uuid(),
+        catalogue: z.string(),
+        petid: z.string().uuid(),
+        pettype: z.enum(["DOG", "CAT", "OTHER"]),
         date: z.string(),
       }),
       requestSchema: z.object({}),
