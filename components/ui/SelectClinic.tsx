@@ -63,7 +63,22 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
         grooming: isGrooming ? "y" : "n",
       })
       if (response.ok && response.value.body.attributes.length > 0) {
-        const missing = response.value.body.attributes
+        const missing = response.value.body.attributes as [
+          | "Name"
+          | "Type"
+          | "Breed"
+          | "Gender"
+          | "Birthday"
+          | "Breed size"
+          | "Coat size"
+          | "Species",
+        ]
+        if (!selectedPet.gender) {
+          missing.push("Gender")
+        }
+        if (!selectedPet.type) {
+          missing.push("Species")
+        }
         setMissingAttributes(missing)
         setShowModal(true)
         setFormData({})
@@ -98,6 +113,17 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
                 description: coat.description,
               }))
             }
+          } else if (attr === "Gender") {
+            options[attr] = [
+              { id: "MALE", name: "Male" },
+              { id: "FEMALE", name: "Female" },
+            ]
+          } else if (attr === "Species") {
+            options[attr] = [
+              { id: "DOG", name: "Dog" },
+              { id: "CAT", name: "Cat" },
+              { id: "OTHER", name: "Other" },
+            ]
           } else {
             options[attr] = []
           }
@@ -203,13 +229,17 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
                     pet: {
                       id: selectedPet.id,
                       name: selectedPet.name,
-                      species: selectedPet.type as "DOG" | "CAT" | "OTHER",
-                      gender: selectedPet.gender as "MALE" | "FEMALE",
+                      species:
+                        selectedPet.type ??
+                        (formData["Species"]?.id as "DOG" | "CAT" | "OTHER"),
+                      gender:
+                        selectedPet.gender ??
+                        (formData["Gender"]?.id as "MALE" | "FEMALE"),
                       breed: formData["Breed"],
                       breedSize: formData["Breed size"],
                       coat: formData["Coat size"],
-                      dob: null,
-                      profileImage: null,
+                      dob: selectedPet.dob ?? null,
+                      profileImage: selectedPet.profileImage ?? null,
                     },
                   })
                   if (updateResponse.ok) {

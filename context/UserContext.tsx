@@ -37,7 +37,7 @@ export interface Pet {
   type: "DOG" | "CAT" | "OTHER" | null
   breed: string | null
   // weight: string | null
-  gender: string | null
+  gender: "MALE" | "FEMALE" | null
   dob: string | null
   // age: {
   //   years: number | null;
