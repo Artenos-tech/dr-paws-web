@@ -35,7 +35,9 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
   const [formData, setFormData] = useState<
     Record<string, { id: string; name: string }>
   >({})
-  const [isFormComplete, setIsFormComplete] = useState(selectedClinic ? true : false)
+  const [isFormComplete, setIsFormComplete] = useState(
+    selectedClinic ? true : false,
+  )
 
   const {
     call: getClinicsForBooking,
