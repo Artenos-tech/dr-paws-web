@@ -370,7 +370,7 @@ export default createAPIClient({
           type: z.enum(["DOG", "CAT", "OTHER"]).nullable(),
           breed: z.string().nullable(),
           breedId: z.string().nullable(),
-          gender: z.string().nullable(),
+          gender: z.enum(["MALE", "FEMALE"]).nullable(),
           dob: z.string().nullable(),
           profile_image: z.string().nullable(),
         }),

@@ -64,7 +64,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
       name: "",
       type: null,
       breed: "",
-      gender: "",
+      gender: null,
       dob: "",
       // weight: "",
       profileImage: "",
@@ -98,7 +98,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
           type: selectedPet.type || null,
           breed: selectedPet.breed?.trim() || null,
           // weight: selectedPet.weight,
-          gender: selectedPet.gender?.trim() || null,
+          gender: selectedPet.gender || null,
           id: selectedPet.id,
           dob: selectedPet.dob?.split("T")[0] || null,
           profileImage: selectedPet.profile_image,
@@ -185,7 +185,12 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
         ? null
         : image
 
-    const petType = petSpecies.find((species) => species === selectedPet.type)
+    const allPetSpecies = petSpecies.find((species) => species === "OTHER")
+      ? petSpecies
+      : ([...petSpecies, "OTHER"] as ["DOG" | "CAT" | "OTHER"])
+    const petType = allPetSpecies.find(
+      (species) => species === selectedPet.type,
+    )
     const petBreed = petBreeds.find(
       (breed) => breed.name === selectedPet.breed,
     )?.id
@@ -234,12 +239,12 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
   }
 
   const handlePetTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedType = e.target.value.toLowerCase()
+    const selectedType = e.target.value
     if (image && image.includes("/_next/static/media/")) {
-      const newImage = petImageByType[selectedType]?.src || ""
+      const newImage = petImageByType[selectedType.toLowerCase()]?.src || ""
       setImage(newImage)
     }
-    const selectedSpecies = petSpecies.find((type) => type === e.target.value)
+    const selectedSpecies = petSpecies.find((type) => type === selectedType)
     if (selectedSpecies) {
       fetchPetBreedsBySpecies(selectedSpecies)
     }
@@ -375,6 +380,13 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
                             {species}
                           </option>
                         ))}
+                        {!petSpecies?.find(
+                          (species) => species === "OTHER",
+                        ) && (
+                          <option key="OTHER" value="OTHER">
+                            OTHER
+                          </option>
+                        )}
                       </select>{" "}
                       {errors.type && (
                         <p className="text-red-500 text-xs">
