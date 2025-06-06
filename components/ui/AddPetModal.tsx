@@ -65,8 +65,8 @@ export default function AddPetModal({
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors },
-    // setValue,
   } = useForm<PetFormData>({
     resolver: zodResolver(petSchema),
   })
@@ -103,7 +103,6 @@ export default function AddPetModal({
       })
 
       if (response.ok) {
-        // console.log("Add Pet API response:", response.value.body);
         onSuccess()
         reset({ name: "", type: "", gender: "" })
         setSelectedType("")
@@ -132,12 +131,22 @@ export default function AddPetModal({
     >
       <div
         className="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
-        onClick={onClose}
+        onClick={() => {
+          reset({ name: "", type: "", gender: "" })
+          setSelectedType("")
+          setSelectedGender("")
+          onClose()
+        }}
       />
       <div className="flex min-h-full items-center justify-center p-4">
         <div className="relative w-full max-w-sm transform overflow-hidden rounded-lg bg-primary-3 p-6 shadow-xl transition-all">
           <button
-            onClick={onClose}
+            onClick={() => {
+              reset({ name: "", type: "", gender: "" })
+              setSelectedType("")
+              setSelectedGender("")
+              onClose()
+            }}
             className="absolute right-4 top-4 text-gray-400 hover:text-gray-500"
           >
             <X className="h-5 w-5" />
@@ -205,14 +214,36 @@ export default function AddPetModal({
             <div className="flex gap-3 mt-6">
               <button
                 type="button"
-                onClick={onClose}
-                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-full"
+                onClick={() => {
+                  reset({ name: "", type: "", gender: "" })
+                  setSelectedType("")
+                  setSelectedGender("")
+                  onClose()
+                }}
+                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50 transition-colors"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="flex-1 px-4 py-2 bg-secondary-1 text-white rounded-full"
+                className={`
+                  flex-1 px-4 py-2 rounded-full font-medium transition-all duration-200 
+                  ${
+                    selectedGender === "" ||
+                    selectedType === "" ||
+                    !watch("name")
+                      ? "bg-gray-300 text-gray-500 cursor-not-allowed opacity-60 transform-none shadow-none"
+                      : "bg-secondary-1 text-white cursor-pointer hover:bg-secondary-1/90 hover:shadow-md hover:scale-105 active:scale-95"
+                  }
+                `}
+                disabled={
+                  selectedGender === "" || selectedType === "" || !watch("name")
+                }
+                title={
+                  selectedGender === "" || selectedType === "" || !watch("name")
+                    ? "Please fill in all fields to continue"
+                    : "Add new pet"
+                }
               >
                 {loading ? <ClipLoader color="white" size={18} /> : `Yes`}
               </button>
