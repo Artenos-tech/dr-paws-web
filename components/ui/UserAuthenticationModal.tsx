@@ -76,7 +76,7 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
 
   const handleLoginSubmit = async (mobileNumber: string) => {
     setOtpErr("")
-    const response = await loginOTP({ mobile: mobileNumber, role: "USER" })
+    const response = await loginOTP({ mobile: mobileNumber })
 
     if (response.ok) {
       setUserMobileNumber(mobileNumber)
@@ -125,10 +125,7 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
       country: data.country,
     })
     const response = await signupOTP({
-      name: data.userName,
       mobile: data.mobileNumber,
-      role: "USER",
-      profile_image: data.profilePicture || null,
     })
     if (response?.ok) {
       setUserMobileNumber(data.mobileNumber)
@@ -189,12 +186,14 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
           mobile: userMobileNumber,
           role: "USER",
           otp,
+          name: userName,
           address1: signupData.address1,
           address2: signupData.address2,
           city: signupData.city,
           pincode: signupData.pincode,
           state: signupData.state,
           country: signupData.country,
+          profile_image: profileImage,
         })
         if (response?.ok) {
           setAuthToken(response.value.body.token)
@@ -226,12 +225,9 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
     setOtpErr("")
     if (userMobileNumber) {
       const response = isLogin
-        ? await loginOTP({ mobile: userMobileNumber, role: "USER" })
+        ? await loginOTP({ mobile: userMobileNumber })
         : await signupOTP({
             mobile: userMobileNumber,
-            role: "USER",
-            name: userName,
-            profile_image: profileImage,
           })
 
       if (response.ok) {
@@ -261,7 +257,7 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
 
   const handleCloseOnRequest = async () => {
     if (userMobileNumber) {
-      await signupCancel({ mobile: userMobileNumber, role: "USER" })
+      await signupCancel({ mobile: userMobileNumber })
     }
     setIsLogin(true)
     onClose()

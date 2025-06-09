@@ -53,10 +53,7 @@ export default createAPIClient({
       path: "/signup/otp",
       pathParamsSchema: z.object({}),
       requestSchema: z.object({
-        name: z.string(),
         mobile: z.string(),
-        role: z.enum(["ADMIN", "USER"]),
-        profile_image: z.string().nullable(),
       }),
       responseSchema: z.object({
         status: z.number(),
@@ -73,12 +70,14 @@ export default createAPIClient({
         mobile: z.string(),
         role: z.enum(["ADMIN", "USER"]),
         otp: z.string(),
+        name: z.string(),
         address1: z.string(),
         address2: z.string(),
         city: z.string(),
         pincode: z.string(),
         state: z.string(),
         country: z.string(),
+        profile_image: z.string().nullable(),
       }),
       responseSchema: z.object({
         status: z.number(),
@@ -108,7 +107,6 @@ export default createAPIClient({
       pathParamsSchema: z.object({}),
       requestSchema: z.object({
         mobile: z.string(),
-        role: z.enum(["ADMIN", "USER"]),
       }),
       responseSchema: z.object({
         status: z.number(),
@@ -123,7 +121,6 @@ export default createAPIClient({
       pathParamsSchema: z.object({}),
       requestSchema: z.object({
         mobile: z.string(),
-        role: z.enum(["ADMIN", "USER"]),
       }),
       responseSchema: z.object({
         status: z.number(),
