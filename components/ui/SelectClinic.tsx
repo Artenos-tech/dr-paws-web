@@ -55,84 +55,88 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
     getClinicsForBooking({})
   }, [])
 
+  useEffect(() => {
+    if (selectedClinic) {
+      onClinicSelect(selectedClinic)
+    }
+  }, [selectedClinic])
+
   const onClinicSelect = async function (clinic: string) {
     setIsFormComplete(false)
-    if (clinic !== selectedClinic) {
-      const response = await getMissingAttributes({
-        clinicid: clinic,
-        petid: selectedPet.id,
-        grooming: isGrooming ? "y" : "n",
-      })
-      if (response.ok && response.value.body.attributes.length > 0) {
-        const missing = response.value.body.attributes as [
-          | "Name"
-          | "Type"
-          | "Breed"
-          | "Gender"
-          | "Birthday"
-          | "Breed size"
-          | "Coat size"
-          | "Species",
-        ]
-        if (!selectedPet.gender) {
-          missing.push("Gender")
-        }
-        if (!selectedPet.type) {
-          missing.push("Species")
-        }
-        setMissingAttributes(missing)
-        setShowModal(true)
-        setFormData({})
-        const options: Record<
-          string,
-          Array<{ id: string; name: string; description?: string }>
-        > = {}
-        for (const attr of missing) {
-          if (attr === "Breed" && selectedPet.type) {
-            const breedsRes = await getBreeds({ species: selectedPet.type })
-            if (breedsRes.ok) {
-              options[attr] = breedsRes.value.body.breeds.map((breed) => ({
-                id: breed.id,
-                name: breed.name,
-              }))
-            }
-          } else if (attr === "Breed size") {
-            const breedSizeRes = await getSizes({})
-            if (breedSizeRes.ok) {
-              options[attr] = breedSizeRes.value.body.sizes.map((size) => ({
-                id: size.id,
-                name: size.name,
-                description: size.description,
-              }))
-            }
-          } else if (attr === "Coat size") {
-            const coatSizeRes = await getCoats({})
-            if (coatSizeRes.ok) {
-              options[attr] = coatSizeRes.value.body.coats.map((coat) => ({
-                id: coat.id,
-                name: coat.name,
-                description: coat.description,
-              }))
-            }
-          } else if (attr === "Gender") {
-            options[attr] = [
-              { id: "MALE", name: "Male" },
-              { id: "FEMALE", name: "Female" },
-            ]
-          } else if (attr === "Species") {
-            options[attr] = [
-              { id: "DOG", name: "Dog" },
-              { id: "CAT", name: "Cat" },
-              { id: "OTHER", name: "Other" },
-            ]
-          } else {
-            options[attr] = []
-          }
-        }
-        setDropdownOptions(options)
-      } else {
-        setIsFormComplete(true)
+    const response = await getMissingAttributes({
+      clinicid: clinic,
+      petid: selectedPet.id,
+      grooming: isGrooming ? "y" : "n",
+    })
+    if (response.ok && response.value.body.attributes.length > 0) {
+      const missing = response.value.body.attributes as [
+        | "Name"
+        | "Type"
+        | "Breed"
+        | "Gender"
+        | "Birthday"
+        | "Breed size"
+        | "Coat size"
+        | "Species",
+      ]
+      if (!selectedPet.gender) {
+        missing.push("Gender")
       }
+      if (!selectedPet.type) {
+        missing.push("Species")
+      }
+      setMissingAttributes(missing)
+      setShowModal(true)
+      setFormData({})
+      const options: Record<
+        string,
+        Array<{ id: string; name: string; description?: string }>
+      > = {}
+      for (const attr of missing) {
+        if (attr === "Breed" && selectedPet.type) {
+          const breedsRes = await getBreeds({ species: selectedPet.type })
+          if (breedsRes.ok) {
+            options[attr] = breedsRes.value.body.breeds.map((breed) => ({
+              id: breed.id,
+              name: breed.name,
+            }))
+          }
+        } else if (attr === "Breed size") {
+          const breedSizeRes = await getSizes({})
+          if (breedSizeRes.ok) {
+            options[attr] = breedSizeRes.value.body.sizes.map((size) => ({
+              id: size.id,
+              name: size.name,
+              description: size.description,
+            }))
+          }
+        } else if (attr === "Coat size") {
+          const coatSizeRes = await getCoats({})
+          if (coatSizeRes.ok) {
+            options[attr] = coatSizeRes.value.body.coats.map((coat) => ({
+              id: coat.id,
+              name: coat.name,
+              description: coat.description,
+            }))
+          }
+        } else if (attr === "Gender") {
+          options[attr] = [
+            { id: "MALE", name: "Male" },
+            { id: "FEMALE", name: "Female" },
+          ]
+        } else if (attr === "Species") {
+          options[attr] = [
+            { id: "DOG", name: "Dog" },
+            { id: "CAT", name: "Cat" },
+            { id: "OTHER", name: "Other" },
+          ]
+        } else {
+          options[attr] = []
+        }
+      }
+      setDropdownOptions(options)
+    } else {
+      setIsFormComplete(true)
     }
   }
 
@@ -189,7 +193,7 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
                 <Select
                   showSearch
                   placeholder={`Select ${attr}`}
-                  optionFilterProp="label"
+                  optionFilterProp="value"
                   className="w-full"
                   value={formData[attr]?.id || undefined}
                   onChange={(value) => {
@@ -211,7 +215,7 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
                       label: option.description
                         ? `${option.name} (${option.description})`
                         : option.name,
-                      value: option.id,
+                      value: option.name,
                     })) || []
                   }
                 />
@@ -221,7 +225,10 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
             <div className="flex justify-end gap-4">
               <button
                 className="text-sm text-gray-500 hover:underline"
-                onClick={() => setShowModal(false)}
+                onClick={() => {
+                  setShowModal(false)
+                  setIsFormComplete(false)
+                }}
               >
                 Cancel
               </button>
