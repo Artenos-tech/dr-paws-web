@@ -7,6 +7,7 @@ import { useAPICall } from "@/hooks/apicall"
 import api from "@/services/api"
 import { ClipLoader } from "react-spinners"
 import { Pet } from "@/context/UserContext"
+import { Select } from "antd"
 
 interface SelectClinicProps {
   onNext: () => void // Prop for navigation
@@ -185,12 +186,15 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
                 <label className="block text-sm font-medium text-gray-700">
                   {attr}
                 </label>
-                <select
-                  className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm"
-                  value={formData[attr]?.id || ""}
-                  onChange={(e) => {
+                <Select
+                  showSearch
+                  placeholder={`Select ${attr}`}
+                  optionFilterProp="label"
+                  className="w-full"
+                  value={formData[attr]?.id || undefined}
+                  onChange={(value) => {
                     const selectedOption = dropdownOptions[attr]?.find(
-                      (option) => option.id === e.target.value,
+                      (option) => option.id === value,
                     )
                     if (selectedOption) {
                       setFormData((prev) => ({
@@ -202,15 +206,15 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
                       }))
                     }
                   }}
-                >
-                  <option value="">Select {attr}</option>
-                  {dropdownOptions[attr]?.map((option) => (
-                    <option key={option.id} value={option.id}>
-                      {option.name}{" "}
-                      {option.description ? `(${option.description})` : ""}
-                    </option>
-                  ))}
-                </select>
+                  options={
+                    dropdownOptions[attr]?.map((option) => ({
+                      label: option.description
+                        ? `${option.name} (${option.description})`
+                        : option.name,
+                      value: option.id,
+                    })) || []
+                  }
+                />
               </div>
             ))}
 
