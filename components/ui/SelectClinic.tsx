@@ -31,7 +31,7 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
   const [missingAttributes, setMissingAttributes] = useState<string[]>([])
   const [showModal, setShowModal] = useState(false)
   const [dropdownOptions, setDropdownOptions] = useState<
-    Record<string, Array<{ id: string; name: string; description?: string }>>
+    Record<string, Array<{ id: string; name: string }>>
   >({})
   const [formData, setFormData] = useState<
     Record<string, { id: string; name: string }>
@@ -53,13 +53,32 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
 
   useEffect(() => {
     getClinicsForBooking({})
-  }, [])
-
-  useEffect(() => {
     if (selectedClinic) {
       onClinicSelect(selectedClinic)
     }
-  }, [selectedClinic])
+  }, [])
+
+  const ATTRIBUTE_OPTIONS_CONFIG = {
+    Gender: [
+      { id: "MALE", name: "Male" },
+      { id: "FEMALE", name: "Female" },
+    ],
+    Species: [
+      { id: "DOG", name: "Dog" },
+      { id: "CAT", name: "Cat" },
+      { id: "OTHER", name: "Other" },
+    ],
+  }
+
+  const fetchBreedOptions = async (type: "DOG" | "CAT" | "OTHER") => {
+    const res = await getBreeds({ species: type })
+    return res.ok
+      ? res.value.body.breeds.map(({ id, name }) => ({ id, name }))
+      : []
+  }
+
+  const getLargestOption = (options: { id: string; name: string }[]) =>
+    options.length > 0 ? options[options.length - 1] : null
 
   const onClinicSelect = async function (clinic: string) {
     setIsFormComplete(false)
@@ -68,7 +87,12 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
       petid: selectedPet.id,
       grooming: isGrooming ? "y" : "n",
     })
-    if (response.ok && response.value.body.attributes.length > 0) {
+    if (!response.ok) return
+    if (response.value.body.attributes.length === 0) {
+      setIsFormComplete(true)
+      setMissingAttributes([])
+      setShowModal(false)
+    } else {
       const missing = response.value.body.attributes as (
         | "Name"
         | "Type"
@@ -82,71 +106,88 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
 
       if (!selectedPet.gender) missing.push("Gender")
       if (!selectedPet.type) missing.push("Species")
+      const onlyBreedAndCoatMissing = missing.every(
+        (attr) => attr === "Breed size" || attr === "Coat size",
+      )
       const updatedFormData: typeof formData = { ...formData }
       const updatedOptions: typeof dropdownOptions = {}
       const filteredMissing = []
       for (const attr of missing) {
-        if (attr === "Breed size") {
-          const breedSizeRes = await getSizes({})
-          if (breedSizeRes.ok) {
-            const sizes = breedSizeRes.value.body.sizes
-            if (sizes.length > 0) {
-              const largest = sizes[sizes.length - 1]
-              updatedFormData[attr] = {
-                id: largest.id,
-                name: largest.name,
-              }
-            }
+        if (attr !== "Breed size" && attr !== "Coat size") {
+          filteredMissing.push(attr)
+          if (
+            ATTRIBUTE_OPTIONS_CONFIG[
+              attr as keyof typeof ATTRIBUTE_OPTIONS_CONFIG
+            ]
+          ) {
+            updatedOptions[attr] =
+              ATTRIBUTE_OPTIONS_CONFIG[
+                attr as keyof typeof ATTRIBUTE_OPTIONS_CONFIG
+              ]
           }
-        } else if (attr === "Coat size") {
-          const coatSizeRes = await getCoats({})
-          if (coatSizeRes.ok) {
-            const coats = coatSizeRes.value.body.coats
-            if (coats.length > 0) {
-              const largest = coats[coats.length - 1]
-              updatedFormData[attr] = {
-                id: largest.id,
-                name: largest.name,
-              }
-            }
+          if (attr === "Breed" && selectedPet.type) {
+            updatedOptions[attr] = await fetchBreedOptions(selectedPet.type)
           }
         } else {
-          filteredMissing.push(attr)
-
-          if (attr === "Breed" && selectedPet.type) {
-            const breedsRes = await getBreeds({ species: selectedPet.type })
-            if (breedsRes.ok) {
-              updatedOptions[attr] = breedsRes.value.body.breeds.map(
-                (breed) => ({
-                  id: breed.id,
-                  name: breed.name,
-                }),
-              )
+          if (attr === "Breed size") {
+            const breedSizeRes = await getSizes({})
+            if (breedSizeRes.ok) {
+              const largest = getLargestOption(breedSizeRes.value.body.sizes)
+              if (largest) {
+                updatedFormData["Breed size"] = {
+                  id: largest.id,
+                  name: largest.name,
+                }
+              }
             }
-          } else if (attr === "Gender") {
-            updatedOptions[attr] = [
-              { id: "MALE", name: "Male" },
-              { id: "FEMALE", name: "Female" },
-            ]
-          } else if (attr === "Species") {
-            updatedOptions[attr] = [
-              { id: "DOG", name: "Dog" },
-              { id: "CAT", name: "Cat" },
-              { id: "OTHER", name: "Other" },
-            ]
-          } else {
-            updatedOptions[attr] = []
+          }
+          if (attr === "Coat size") {
+            const coatSizeRes = await getCoats({})
+            if (coatSizeRes.ok) {
+              const largest = getLargestOption(coatSizeRes.value.body.coats)
+              if (largest) {
+                updatedFormData["Coat size"] = {
+                  id: largest.id,
+                  name: largest.name,
+                }
+              }
+            }
           }
         }
       }
       setFormData(updatedFormData)
       setDropdownOptions(updatedOptions)
-      if (filteredMissing.length > 0) {
+      if (onlyBreedAndCoatMissing) {
+        await onUpdatePet()
+      } else if (filteredMissing.length > 0) {
         setMissingAttributes(filteredMissing)
         setShowModal(true)
       } else {
         setIsFormComplete(true)
       }
+    }
+  }
+
+  const onUpdatePet = async function () {
+    const updateResponse = await updatePet({
+      pet: {
+        id: selectedPet.id,
+        name: selectedPet.name,
+        species:
+          selectedPet.type ??
+          (formData["Species"]?.id as "DOG" | "CAT" | "OTHER"),
+        gender:
+          selectedPet.gender ?? (formData["Gender"]?.id as "MALE" | "FEMALE"),
+        breed: formData["Breed"],
+        breedSize: formData["Breed size"] ?? null,
+        coat: formData["Coat size"] ?? null,
+        dob: selectedPet.dob ?? null,
+        profileImage: selectedPet.profileImage ?? null,
+      },
+    })
+    if (updateResponse.ok) {
+      setIsFormComplete(true)
+      setShowModal(false)
     }
   }
 
@@ -203,7 +244,7 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
                 <Select
                   showSearch
                   placeholder={`Select ${attr}`}
-                  optionFilterProp="value"
+                  optionFilterProp="label"
                   className="w-full"
                   value={formData[attr]?.id || undefined}
                   onChange={(value) => {
@@ -222,10 +263,8 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
                   }}
                   options={
                     dropdownOptions[attr]?.map((option) => ({
-                      label: option.description
-                        ? `${option.name} (${option.description})`
-                        : option.name,
-                      value: option.name,
+                      label: option.name,
+                      value: option.id,
                     })) || []
                   }
                 />
@@ -244,32 +283,8 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
               </button>
               <button
                 className="bg-secondary-1 text-white px-4 py-2 rounded-md"
-                disabled={Object.values(formData).some((val) => !val)}
-                onClick={async () => {
-                  const updateResponse = await updatePet({
-                    pet: {
-                      id: selectedPet.id,
-                      name: selectedPet.name,
-                      species:
-                        selectedPet.type ??
-                        (formData["Species"]?.id as "DOG" | "CAT" | "OTHER"),
-                      gender:
-                        selectedPet.gender ??
-                        (formData["Gender"]?.id as "MALE" | "FEMALE"),
-                      breed: formData["Breed"],
-                      breedSize: formData["Breed size"],
-                      coat: formData["Coat size"],
-                      dob: selectedPet.dob ?? null,
-                      profileImage: selectedPet.profileImage ?? null,
-                    },
-                  })
-                  if (updateResponse.ok) {
-                    setIsFormComplete(true)
-                    setShowModal(false)
-                  } else {
-                    // Handle error UI if needed
-                  }
-                }}
+                disabled={missingAttributes.some((attr) => !formData[attr])}
+                onClick={onUpdatePet}
               >
                 Update
               </button>
