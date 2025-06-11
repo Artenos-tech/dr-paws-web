@@ -69,7 +69,7 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
       grooming: isGrooming ? "y" : "n",
     })
     if (response.ok && response.value.body.attributes.length > 0) {
-      const missing = response.value.body.attributes as [
+      const missing = response.value.body.attributes as (
         | "Name"
         | "Type"
         | "Breed"
@@ -77,66 +77,76 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
         | "Birthday"
         | "Breed size"
         | "Coat size"
-        | "Species",
-      ]
-      if (!selectedPet.gender) {
-        missing.push("Gender")
-      }
-      if (!selectedPet.type) {
-        missing.push("Species")
-      }
-      setMissingAttributes(missing)
-      setShowModal(true)
-      setFormData({})
-      const options: Record<
-        string,
-        Array<{ id: string; name: string; description?: string }>
-      > = {}
+        | "Species"
+      )[]
+
+      if (!selectedPet.gender) missing.push("Gender")
+      if (!selectedPet.type) missing.push("Species")
+      const updatedFormData: typeof formData = { ...formData }
+      const updatedOptions: typeof dropdownOptions = {}
+      const filteredMissing = []
       for (const attr of missing) {
-        if (attr === "Breed" && selectedPet.type) {
-          const breedsRes = await getBreeds({ species: selectedPet.type })
-          if (breedsRes.ok) {
-            options[attr] = breedsRes.value.body.breeds.map((breed) => ({
-              id: breed.id,
-              name: breed.name,
-            }))
-          }
-        } else if (attr === "Breed size") {
+        if (attr === "Breed size") {
           const breedSizeRes = await getSizes({})
           if (breedSizeRes.ok) {
-            options[attr] = breedSizeRes.value.body.sizes.map((size) => ({
-              id: size.id,
-              name: size.name,
-              description: size.description,
-            }))
+            const sizes = breedSizeRes.value.body.sizes
+            if (sizes.length > 0) {
+              const largest = sizes[sizes.length - 1]
+              updatedFormData[attr] = {
+                id: largest.id,
+                name: largest.name,
+              }
+            }
           }
         } else if (attr === "Coat size") {
           const coatSizeRes = await getCoats({})
           if (coatSizeRes.ok) {
-            options[attr] = coatSizeRes.value.body.coats.map((coat) => ({
-              id: coat.id,
-              name: coat.name,
-              description: coat.description,
-            }))
+            const coats = coatSizeRes.value.body.coats
+            if (coats.length > 0) {
+              const largest = coats[coats.length - 1]
+              updatedFormData[attr] = {
+                id: largest.id,
+                name: largest.name,
+              }
+            }
           }
-        } else if (attr === "Gender") {
-          options[attr] = [
-            { id: "MALE", name: "Male" },
-            { id: "FEMALE", name: "Female" },
-          ]
-        } else if (attr === "Species") {
-          options[attr] = [
-            { id: "DOG", name: "Dog" },
-            { id: "CAT", name: "Cat" },
-            { id: "OTHER", name: "Other" },
-          ]
         } else {
-          options[attr] = []
+          filteredMissing.push(attr)
+
+          if (attr === "Breed" && selectedPet.type) {
+            const breedsRes = await getBreeds({ species: selectedPet.type })
+            if (breedsRes.ok) {
+              updatedOptions[attr] = breedsRes.value.body.breeds.map(
+                (breed) => ({
+                  id: breed.id,
+                  name: breed.name,
+                }),
+              )
+            }
+          } else if (attr === "Gender") {
+            updatedOptions[attr] = [
+              { id: "MALE", name: "Male" },
+              { id: "FEMALE", name: "Female" },
+            ]
+          } else if (attr === "Species") {
+            updatedOptions[attr] = [
+              { id: "DOG", name: "Dog" },
+              { id: "CAT", name: "Cat" },
+              { id: "OTHER", name: "Other" },
+            ]
+          } else {
+            updatedOptions[attr] = []
+          }
         }
       }
-      setDropdownOptions(options)
-    } else {
-      setIsFormComplete(true)
+      setFormData(updatedFormData)
+      setDropdownOptions(updatedOptions)
+      if (filteredMissing.length > 0) {
+        setMissingAttributes(filteredMissing)
+        setShowModal(true)
+      } else {
+        setIsFormComplete(true)
+      }
     }
   }
 
