@@ -560,21 +560,21 @@ export default createAPIClient({
 
     getSlotsForStaff: {
       method: "GET",
-      path: "/booking/slots/staff/{staffid}?clinicid={clinicid}&catalogue={catalogue}&petid={petid}&pettype={pettype}&date={date}",
+      path: "/booking/slots/staff/{staffid}?clinicid={clinicid}&catalogue={catalogue}&petid={petid}&pettype={pettype}",
       pathParamsSchema: z.object({
         staffid: z.string().uuid(),
         clinicid: z.string().uuid(),
         catalogue: z.string(),
         petid: z.string().uuid(),
         pettype: z.enum(["DOG", "CAT", "OTHER"]),
-        date: z.string(),
       }),
       requestSchema: z.object({}),
       responseSchema: z.object({
         status: z.number(),
         message: z.string(),
-        slots: z.array(
-          z.object({ startTime: z.string(), endTime: z.string() }),
+        slots: z.record(
+          z.string(),                                    
+          z.array(z.object({ startTime: z.string(), endTime: z.string() }))
         ),
       }),
       errorResponseSchema: z.object({}),

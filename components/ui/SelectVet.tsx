@@ -72,6 +72,11 @@ const SelectVet: React.FC<selectVetProps> = ({
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false)
   const [chosenVetId, setChosenVetId] = useState<string | null>(null)
 
+  const [doctorSlots, setDoctorSlots] = useState<Record<
+    string,
+    { startTime: string; endTime: string }[]
+  > | null>(null)
+
   const {
     call: getSlotsForStaff,
     result: slotsForStaffResult,
@@ -108,6 +113,7 @@ const SelectVet: React.FC<selectVetProps> = ({
     if (!selectedDoctor) {
       throw new Error("Doctor must be selected")
     }
+    if (doctorSlots) return
     if (
       selectedSvcId &&
       selectedSubtype &&
@@ -115,15 +121,15 @@ const SelectVet: React.FC<selectVetProps> = ({
       selectedPet &&
       !isGrooming
     ) {
-      await getSlotsForStaff({
+      const res = await getSlotsForStaff({
         staffid: selectedDoctor.id,
         clinicid: selectedClinic,
         catalogue: selectedSubtype.id,
         petid: selectedPet.id,
         pettype: selectedPet.type as "DOG" | "CAT" | "OTHER",
         // isgrooming: isGrooming ? "y" : "n",
-        date: format(selectedDate, "dd/MM/yyyy"),
       })
+      if (res?.ok) setDoctorSlots(res.value.body.slots)
     }
   }, [
     selectedSvcId,
@@ -131,6 +137,7 @@ const SelectVet: React.FC<selectVetProps> = ({
     selectedClinic,
     getSlotsForStaff,
     isGrooming,
+    doctorSlots
   ])
 
   const fetchGroomingSlots = useCallback(async () => {
@@ -190,14 +197,18 @@ const SelectVet: React.FC<selectVetProps> = ({
     else fetchGroomingSlots()
   }, [])
 
-  // when a different doctor is selected
+
   useEffect(() => {
     if (!selectedDoctor || isGrooming) return
+  
+    setDoctorSlots(null)
     setSelectedSlot(null)
-    const isBestAvailable = selectedDoctor.id === BEST_AVAILABLE_VET_ID
-    if (isBestAvailable) fetchBestAvailableVetSlots()
-    else fetchSlotsForStaff()
+  
+    if (selectedDoctor.id === BEST_AVAILABLE_VET_ID) {
+      fetchBestAvailableVetSlots()
+    }
   }, [selectedDoctor])
+  
 
   // for best available vet
   useEffect(() => {
@@ -224,13 +235,31 @@ const SelectVet: React.FC<selectVetProps> = ({
 
   // when a different date is selected
   useEffect(() => {
-    if ((selectedDoctor || isGrooming) && selectedDate) {
-      if (selectedDoctor && selectedDoctor.id === BEST_AVAILABLE_VET_ID)
-        fetchBestAvailableVetSlots()
-      else if (selectedDoctor && !isGrooming) fetchSlotsForStaff()
-      else fetchGroomingSlots()
+    if (selectedDoctor?.id === BEST_AVAILABLE_VET_ID) {
+      fetchBestAvailableVetSlots()
+      return
+    }
+    if (selectedDoctor && !isGrooming && !doctorSlots) {
+      fetchSlotsForStaff()
+    }
+    if (isGrooming && !groomingSlotsResult?.ok) {
+      fetchGroomingSlots()
     }
   }, [selectedDate])
+
+
+  useEffect(() => {
+    // If there’s no doctor (or it’s grooming), do nothing:
+    if (!selectedDoctor || isGrooming) return
+  
+    // If “best available” is selected, it already fired in effect A above.
+    if (selectedDoctor.id === BEST_AVAILABLE_VET_ID) return
+  
+    // Now: we only want to fetchStaff‐slots when we have cleared the cache:
+    if (doctorSlots === null) {
+      fetchSlotsForStaff()
+    }
+  }, [selectedDoctor, doctorSlots])
 
   function selectPreferredOrRandomAvailableVetId(): string {
     if (!bestAvailableVetScheduleResult?.ok) {
@@ -443,14 +472,16 @@ const SelectVet: React.FC<selectVetProps> = ({
     bestAvailableVetScheduleResult?.ok === false ||
     groomingSlotsResult?.ok === false
 
+  const dayKey = format(selectedDate, "dd/MM/yyyy")
+
   const availableSlots =
     selectedDoctor && !isGrooming
       ? selectedDoctor.id === BEST_AVAILABLE_VET_ID
         ? bestAvailableVetScheduleResult?.ok
           ? bestAvailableVetScheduleResult.value.body.slots
           : null
-        : slotsForStaffResult?.ok
-          ? slotsForStaffResult.value.body.slots
+        : doctorSlots
+          ? (doctorSlots[dayKey] ?? [])
           : null
       : groomingSlotsResult?.ok
         ? groomingSlotsResult.value.body.slots
