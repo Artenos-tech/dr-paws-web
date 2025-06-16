@@ -215,6 +215,16 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
           <span className="text-red-500 text-sm">{errors.pincode.message}</span>
         )}
       </div>
+      <div className="flex flex-col ">
+        <label className="text-sm">Country</label>
+        <input
+          {...register("country")}
+          className="input rounded-md p-2 border w-full border-[#74A7B3]"
+        />
+        {errors.country && (
+          <span className="text-red-500 text-sm">{errors.country.message}</span>
+        )}
+      </div>
       <div className="flex gap-2 pt-2">
         <button
           onClick={onCancel}

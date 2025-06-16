@@ -103,7 +103,6 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
         | "Coat size"
         | "Species"
       )[]
-
       if (!selectedPet.gender) missing.push("Gender")
       if (!selectedPet.type) missing.push("Species")
       const onlyBreedAndCoatMissing = missing.every(

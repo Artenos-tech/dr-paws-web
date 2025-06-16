@@ -22,6 +22,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ profile, onEdit }) => {
     city,
     state,
     pincode,
+    country,
   } = profile
 
   function formAddressStr(
@@ -30,8 +31,9 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ profile, onEdit }) => {
     city: string | null,
     state: string | null,
     pincode: string | null,
+    country: string | null,
   ) {
-    const address = [address1, address2, city, state, pincode]
+    const address = [address1, address2, city, state, pincode, country]
     const addressStr = address
       .filter((addr) => addr !== null && addr.trim() !== "")
       .join(", ")
@@ -77,7 +79,14 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ profile, onEdit }) => {
           <div className="space-y-1 lg:space-y-2 lg:col-span-2">
             <h2 className="text-sm lg:text-base text-gray-500">Address</h2>
             <p className="text-base lg:text-lg font-medium text-gray-700 break-words">
-              {formAddressStr(address1, address2, city, state, pincode)}
+              {formAddressStr(
+                address1,
+                address2,
+                city,
+                state,
+                pincode,
+                country,
+              )}
             </p>
           </div>
         </div>
