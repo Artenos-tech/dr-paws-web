@@ -22,13 +22,10 @@ type BookingConfirmedProps = {
     selectedService: string
     selectedSubtype?: string
     selectedVet: SelectedVet | null
-    // selectedDoctorImage: {
-    //   type: "url" | "ref"
-    //   value: string
-    // } | null
     selectedDate: Date
     selectedSlot: string
     selectedSlotEnd: string
+    appliedCoupon: string | null
   }
 }
 const BookingConfirmed: React.FC<BookingConfirmedProps> = ({
@@ -131,6 +128,14 @@ const BookingConfirmed: React.FC<BookingConfirmedProps> = ({
               {selectedAppointment?.selectedSlotEnd}
             </p>
           </div>
+          {selectedAppointment.appliedCoupon && (
+            <div className="w-full mx-auto px-4 sm:px-6 lg:px-8 text-center">
+              <div className="text-md font-medium text-secondary-1">
+                Coupon Code applied: <b>{selectedAppointment.appliedCoupon}</b>
+              </div>
+              <div className="text-sm">Discount redeemable at checkout</div>
+            </div>
+          )}
           <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
             <p className="italic text-gray-400 text-sm text-center w-full max-w-md justify-self-center">
               To cancel or reschedule your appointment, please contact our{" "}

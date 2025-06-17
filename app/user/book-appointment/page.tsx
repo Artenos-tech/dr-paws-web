@@ -22,6 +22,7 @@ const Booking: React.FC = () => {
     selectedDate: Date | null
     selectedSlot: string | null
     selectedSlotEnd: string | null
+    appliedCoupon: string | null
   }>({
     selectedServiceId: null,
     selectedService: null,
@@ -35,6 +36,7 @@ const Booking: React.FC = () => {
     selectedDate: null,
     selectedSlot: null,
     selectedSlotEnd: null,
+    appliedCoupon: null,
   })
 
   const [openCard, setOpenCard] = useState<string | null>(null)
@@ -170,9 +172,7 @@ const Booking: React.FC = () => {
                 selectedDate: notNull(selectedAppointment.selectedDate),
                 selectedSlot: notNull(selectedAppointment.selectedSlot),
                 selectedSlotEnd: notNull(selectedAppointment.selectedSlotEnd),
-                // selectedDoctorImage: selectedAppointment.selectedDoctor
-                //   ? selectedAppointment.selectedDoctor.image
-                //   : null,
+                appliedCoupon: selectedAppointment.appliedCoupon,
               }}
             />
           )}

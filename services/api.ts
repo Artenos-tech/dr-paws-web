@@ -634,6 +634,17 @@ export default createAPIClient({
       errorResponseSchema: z.object({}),
     },
 
+    getCouponCodes: {
+      method: "GET",
+      path: "/booking/couponcodes",
+      pathParamsSchema: z.object({}),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        codes: z.array(z.string()),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+
     createAppointment: {
       method: "POST",
       path: "/user/appointment",
@@ -649,6 +660,7 @@ export default createAPIClient({
         subtype_id: z.string(),
         pet_type: z.enum(["DOG", "CAT", "OTHER"]),
         is_grooming: z.boolean(),
+        coupon_code: z.string().optional(),
       }),
       responseSchema: z.object({
         status: z.number(),
@@ -668,6 +680,7 @@ export default createAPIClient({
           pet_name: z.string().nullable(),
           pet_type: z.string().nullable(),
           pet_profile_image: z.string().nullable(),
+          coupon_code: z.string().optional(),
         }),
       }),
       errorResponseSchema: z.object({}),
