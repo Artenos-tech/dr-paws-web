@@ -305,6 +305,7 @@ const SelectVet: React.FC<selectVetProps> = ({
       selectedSlotEnd: selectedSlot?.endTime ?? null,
       appliedCoupon: appliedCoupon,
     })
+    setCouponError(null)
     setIsConfirmationModalOpen(true)
   }
 
@@ -594,7 +595,7 @@ const SelectVet: React.FC<selectVetProps> = ({
               )}
               {appliedCoupon && (
                 <p className="text-green-600 text-sm mt-2 font-medium">
-                  Coupon <span className="font-bold">{appliedCoupon}</span>{" "}
+                  Coupon Code <span className="font-bold">{appliedCoupon}</span>{" "}
                   applied!
                 </p>
               )}

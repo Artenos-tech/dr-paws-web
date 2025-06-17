@@ -133,7 +133,7 @@ const BookingConfirmed: React.FC<BookingConfirmedProps> = ({
               <div className="text-md font-medium text-secondary-1">
                 Coupon Code applied: <b>{selectedAppointment.appliedCoupon}</b>
               </div>
-              <div className="text-sm font-medium">
+              <div className="text-sm">
                 Discount redeemable at checkout
               </div>
             </div>
