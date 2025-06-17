@@ -508,7 +508,7 @@ const SelectVet: React.FC<selectVetProps> = ({
     <div className="h-full flex flex-col gap-12 px-4 lg:px-0">
       {!isGrooming && (
         <div>
-          <h1 className="text-3xl mb-2">Select Vet</h1>
+          <h1 className="text-3xl font-bold mb-2">Select Vet</h1>
           <p className="text-gray-600 mb-12">
             Which of our experts would you like to see?
           </p>
@@ -555,7 +555,7 @@ const SelectVet: React.FC<selectVetProps> = ({
         selectedDate &&
         selectedSlot &&
         couponCodes && (
-          <div className="flex justify-center">
+          <div className="flex">
             <div className="w-full max-w-md">
               <h2 className="text-lg font-semibold">Have a coupon code?</h2>
               <p className="text-gray-600 mb-4">
