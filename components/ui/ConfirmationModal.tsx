@@ -21,6 +21,7 @@ interface ConfirmationModalProps {
     location: string
     date: Date
     slot: string
+    couponCode: string | null
   }
 }
 
@@ -30,7 +31,8 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   onConfirm,
   bookingDetails,
 }) => {
-  const { petName, service, doctorName, location, date, slot } = bookingDetails
+  const { petName, service, doctorName, location, date, slot, couponCode } =
+    bookingDetails
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -65,6 +67,14 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
               </span>
             </div>
           </div>
+          {couponCode && (
+            <div>
+            <DialogDescription className="text-md font-medium text-secondary-1">
+              Coupon Code applied: <b>{couponCode}</b>
+            </DialogDescription>
+            <DialogDescription>Discount redeemable at checkout</DialogDescription>
+            </div>
+          )}
           <DialogDescription className="text-sm font-medium text-gray-900">
             Are you sure you want to proceed with booking this appointment?
           </DialogDescription>

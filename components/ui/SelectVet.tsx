@@ -42,6 +42,7 @@ interface selectVetProps {
     selectedDate: Date | null
     selectedSlot: string | null
     selectedSlotEnd: string | null
+    appliedCoupon: string | null
   }) => void
   onNext?: () => void
 }
@@ -71,7 +72,9 @@ const SelectVet: React.FC<selectVetProps> = ({
   } | null>(null)
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false)
   const [chosenVetId, setChosenVetId] = useState<string | null>(null)
-
+  const [couponCode, setCouponCode] = useState<string>("")
+  const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null)
+  const [couponError, setCouponError] = useState<string | null>(null)
   const {
     call: getSlotsForStaff,
     result: slotsForStaffResult,
@@ -89,6 +92,10 @@ const SelectVet: React.FC<selectVetProps> = ({
     result: bestAvailableVetScheduleResult,
     loading: loadingBestAvailableVetSchedule,
   } = useAPICall(api.getBestAvailableVetSchedule)
+
+  const { call: getCouponCodes, result: couponCodes } = useAPICall(
+    api.getCouponCodes,
+  )
 
   const { call: createAnAppointment, loading: loadingAppointmentCreation } =
     useAPICall(api.createAppointment)
@@ -186,6 +193,7 @@ const SelectVet: React.FC<selectVetProps> = ({
 
   // on initial mount, for non grooming appts
   useEffect(() => {
+    getCouponCodes({})
     if (!isGrooming) fetchDoctors()
     else fetchGroomingSlots()
   }, [])
@@ -295,6 +303,7 @@ const SelectVet: React.FC<selectVetProps> = ({
       selectedDate,
       selectedSlot: selectedSlot?.startTime ?? null,
       selectedSlotEnd: selectedSlot?.endTime ?? null,
+      appliedCoupon: appliedCoupon
     })
     setIsConfirmationModalOpen(true)
   }
@@ -319,6 +328,9 @@ const SelectVet: React.FC<selectVetProps> = ({
             subtype_id: selectedSubtype?.id as string,
             pet_type: selectedPet.type as "DOG" | "CAT" | "OTHER",
             is_grooming: isGrooming,
+            ...(appliedCoupon && {
+              coupon_code: appliedCoupon
+            })
           })
           if (response.ok) {
             toast.success("Appointment created successfully!", {
@@ -431,6 +443,29 @@ const SelectVet: React.FC<selectVetProps> = ({
     }
   }
 
+  const handleApplyCoupon = () => {
+    if (!couponCode.trim()) {
+      toast.error("Please enter a coupon code")
+      setCouponError("Please enter a coupon code.")
+      setAppliedCoupon(null)
+      return
+    }
+    const validCoupons = couponCodes?.ok ? couponCodes.value.body.codes : []
+    const found = validCoupons.find(
+      (code) => code.toLowerCase() === couponCode.trim().toLowerCase(),
+    )
+    if (!found) {
+      toast.error("Invalid coupon code")
+      setCouponError("Invalid coupon code. Please try again.")
+      setCouponCode("")
+      setAppliedCoupon(null)
+    } else {
+      toast.success("Coupon applied!")
+      setCouponError(null)
+      setAppliedCoupon(found)
+    }
+  }
+
   const doctors = doctorsResult?.ok ? doctorsResult.value.body.staff : []
 
   const availableSlotsLoading =
@@ -515,6 +550,57 @@ const SelectVet: React.FC<selectVetProps> = ({
             ) : null) // result starts out as undefined before API call is made
         }
       </div>
+      {/* Coupon Code Section */}
+      {(selectedDoctor || isGrooming) &&
+        selectedDate &&
+        selectedSlot &&
+        couponCodes && (
+          <div className="flex justify-center">
+            <div className="w-full max-w-md">
+              <h2 className="text-lg font-semibold">Have a coupon code?</h2>
+              <p className="text-gray-600 mb-4">
+                Enter it below to redeem your discount
+              </p>
+              <div className="relative w-full">
+                <input
+                  type="text"
+                  placeholder="Enter coupon code"
+                  className={`w-full border ${
+                    couponError
+                      ? "border-red-500"
+                      : appliedCoupon
+                        ? "border-green-500"
+                        : "border-gray-300"
+                  } rounded-md py-2 px-4 pr-24`}
+                  value={couponCode}
+                  onChange={(e) => {
+                    setCouponCode(e.target.value.toUpperCase())
+                    setCouponError(null)
+                    if (appliedCoupon) setAppliedCoupon(null)
+                  }}
+                  // disabled={!!appliedCoupon}
+                />
+                {!appliedCoupon && (
+                  <button
+                    className="absolute right-1 top-1 bottom-1 my-auto bg-secondary-1 text-white px-4 py-1.5 rounded-md text-sm"
+                    onClick={handleApplyCoupon}
+                  >
+                    Apply
+                  </button>
+                )}
+              </div>
+              {couponError && (
+                <p className="text-red-500 text-sm mt-2">{couponError}</p>
+              )}
+              {appliedCoupon && (
+                <p className="text-green-600 text-sm mt-2 font-medium">
+                  Coupon <span className="font-bold">{appliedCoupon}</span>{" "}
+                  applied!
+                </p>
+              )}
+            </div>
+          </div>
+        )}
       <div className="my-4 flex justify-center">
         <CustomButton
           buttonText={isReschedule ? "Reschedule" : "Book"}
@@ -549,6 +635,7 @@ const SelectVet: React.FC<selectVetProps> = ({
             location: selectedLocation,
             date: selectedDate,
             slot: selectedSlot.startTime,
+            couponCode: appliedCoupon
           }}
         />
       )}
