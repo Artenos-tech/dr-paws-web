@@ -69,10 +69,12 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           </div>
           {couponCode && (
             <div>
-            <DialogDescription className="text-md font-medium text-secondary-1">
-              Coupon Code applied: <b>{couponCode}</b>
-            </DialogDescription>
-            <DialogDescription>Discount redeemable at checkout</DialogDescription>
+              <DialogDescription className="text-md font-medium text-secondary-1">
+                Coupon Code applied: <b>{couponCode}</b>
+              </DialogDescription>
+              <DialogDescription>
+                Discount redeemable at checkout
+              </DialogDescription>
             </div>
           )}
           <DialogDescription className="text-sm font-medium text-gray-900">

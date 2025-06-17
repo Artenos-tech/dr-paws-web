@@ -303,7 +303,7 @@ const SelectVet: React.FC<selectVetProps> = ({
       selectedDate,
       selectedSlot: selectedSlot?.startTime ?? null,
       selectedSlotEnd: selectedSlot?.endTime ?? null,
-      appliedCoupon: appliedCoupon
+      appliedCoupon: appliedCoupon,
     })
     setIsConfirmationModalOpen(true)
   }
@@ -329,8 +329,8 @@ const SelectVet: React.FC<selectVetProps> = ({
             pet_type: selectedPet.type as "DOG" | "CAT" | "OTHER",
             is_grooming: isGrooming,
             ...(appliedCoupon && {
-              coupon_code: appliedCoupon
-            })
+              coupon_code: appliedCoupon,
+            }),
           })
           if (response.ok) {
             toast.success("Appointment created successfully!", {
@@ -635,7 +635,7 @@ const SelectVet: React.FC<selectVetProps> = ({
             location: selectedLocation,
             date: selectedDate,
             slot: selectedSlot.startTime,
-            couponCode: appliedCoupon
+            couponCode: appliedCoupon,
           }}
         />
       )}
