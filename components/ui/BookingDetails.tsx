@@ -126,7 +126,6 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
     | "cancelled"
     | "rescheduleConfirm"
   const parsedDate = parseISO(selectedAppointment.booking_date)
-
   return (
     <div className="w-full px-4 py-8">
       {currentView !== "reschedule" && (
@@ -238,6 +237,12 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                     {" - "}
                     {selectedAppointment.appt_end}
                   </p>
+                  {selectedAppointment.coupon_code && (
+                    <p className={`flex items-center gap-2 text-secondary-1`}>
+                      <span>Coupon Code applied: </span>
+                      <b>{selectedAppointment.coupon_code}</b>
+                    </p>
+                  )}
                 </div>
                 {/* {selectedAppointment.category === "UPCOMING" && (
                   <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">

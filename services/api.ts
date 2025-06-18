@@ -715,6 +715,7 @@ export default createAPIClient({
             appt_type: z.string().nullable(),
             appt_type_id: z.string().uuid(),
             category: z.enum(["UPCOMING", "COMPLETED", "REQUESTED"]),
+            coupon_code: z.string().nullable().optional(),
           }),
         ),
       }),
