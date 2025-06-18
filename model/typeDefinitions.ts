@@ -113,4 +113,5 @@ export interface AppointmentType {
   appt_type: string | null
   appt_type_id: string
   category: "UPCOMING" | "COMPLETED" | "REQUESTED"
+  coupon_code?: string | null
 }
