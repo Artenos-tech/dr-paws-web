@@ -153,7 +153,6 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
       if (userMobileNumber) {
         const response = await loginVerify({
           mobile: userMobileNumber,
-          role: "USER",
           otp,
         })
         if (response?.ok) {
@@ -184,7 +183,6 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
       if (userMobileNumber) {
         const response = await signupVerify({
           mobile: userMobileNumber,
-          role: "USER",
           otp,
           name: userName,
           address1: signupData.address1,
