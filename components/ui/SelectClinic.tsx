@@ -157,7 +157,31 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
       setFormData(updatedFormData)
       setDropdownOptions(updatedOptions)
       if (onlyBreedAndCoatMissing) {
-        await onUpdatePet()
+        const bs = updatedFormData["Breed size"]
+        const cs = updatedFormData["Coat size"]
+
+        const allBreeds = await getBreeds({ species: selectedPet.type! })
+        const breeds = allBreeds.ok ? allBreeds.value.body.breeds : []
+        const currentBreedObj = breeds.find((b) => b.name === selectedPet.breed)
+
+        const updateResponse = await updatePet({
+          pet: {
+            id: selectedPet.id,
+            name: selectedPet.name,
+            species: selectedPet.type!,
+            gender: selectedPet.gender!,
+            breed: currentBreedObj,
+            breedSize: bs,
+            coat: cs,
+            dob: selectedPet.dob ?? null,
+            profileImage: selectedPet.profileImage ?? null,
+          },
+        })
+        if (updateResponse.ok) {
+          setIsFormComplete(true)
+          setShowModal(false)
+        }
+        return
       } else if (filteredMissing.length > 0) {
         setMissingAttributes(filteredMissing)
         setShowModal(true)
