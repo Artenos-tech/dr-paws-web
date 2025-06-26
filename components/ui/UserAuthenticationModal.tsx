@@ -10,6 +10,7 @@ import { useAPICall } from "@/hooks/apicall"
 import api, { setAuthToken } from "@/services/api"
 import toast, { Toaster } from "react-hot-toast"
 import { useUserContext } from "@/context/UserContext"
+import { usePathname, useRouter } from "next/navigation"
 
 interface authenticationProps {
   isOpen: boolean
@@ -50,7 +51,8 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
   const [loginErr, setLoginErr] = useState("")
   const [signupErr, setSignupErr] = useState("")
   const [otpErr, setOtpErr] = useState("")
-
+  const router = useRouter()
+  const pathname = usePathname()
   // context
   const { updateUserDetailsHandler } = useUserContext()
 
@@ -269,6 +271,9 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
     setLoginErr("")
     setSignupErr("")
     setUserMobileNumber(undefined)
+    if (pathname.match("/user/")) {
+      router.push("/")
+    }
   }
 
   return (
