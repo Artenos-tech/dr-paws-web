@@ -448,7 +448,7 @@ const SelectVet: React.FC<selectVetProps> = ({
       setAppliedCoupon(null)
       return
     }
-    const resp = await applyCouponCode({ couponcode: couponCode })
+    const resp = await applyCouponCode({ code: couponCode })
     if (resp.ok) {
       toast.success("Coupon applied!")
       setCouponError(null)

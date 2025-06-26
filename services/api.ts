@@ -646,12 +646,12 @@ export default createAPIClient({
     },
 
     applyCouponCode: {
-      method: "POST",
-      path: "/booking/couponcode",
-      pathParamsSchema: z.object({}),
-      requestSchema: z.object({
-        couponcode: z.string(),
+      method: "GET",
+      path: "/booking/validatecoupon",
+      pathParamsSchema: z.object({
+        code: z.string()
       }),
+      requestSchema: z.object({}),
       responseSchema: z.object({
         status: z.number(),
         message: z.string(),
