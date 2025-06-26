@@ -157,9 +157,10 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
       setFormData(updatedFormData)
       setDropdownOptions(updatedOptions)
       if (onlyBreedAndCoatMissing) {
-        const bs = updatedFormData["Breed size"]
-        const cs = updatedFormData["Coat size"]
-        await onUpdatePet({ breedSize: bs, coat: cs })
+        await onUpdatePet({
+          breedSize: updatedFormData["Breed size"],
+          coat: updatedFormData["Coat size"],
+        })
       } else if (filteredMissing.length > 0) {
         setMissingAttributes(filteredMissing)
         setShowModal(true)
