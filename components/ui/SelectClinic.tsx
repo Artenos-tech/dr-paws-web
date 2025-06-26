@@ -160,7 +160,6 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
         const bs = updatedFormData["Breed size"]
         const cs = updatedFormData["Coat size"]
         await onUpdatePet({ breedSize: bs, coat: cs })
-        return
       } else if (filteredMissing.length > 0) {
         setMissingAttributes(filteredMissing)
         setShowModal(true)
@@ -174,11 +173,6 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
     breedSize: { id: string; name: string }
     coat: { id: string; name: string }
   }) {
-    const bs = formDataFields
-      ? formDataFields.breedSize
-      : formData["Breed size"]
-    const cs = formDataFields ? formDataFields.coat : formData["Coat size"]
-
     let breedObj: { id: string; name: string }
 
     if (selectedPet.breedId && selectedPet.breed) {
@@ -187,7 +181,7 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
         name: selectedPet.breed,
       }
     } else {
-      breedObj = formData["Breed"]
+      breedObj = formData["Breed"] ?? null
     }
 
     const updateResponse = await updatePet({
@@ -200,8 +194,12 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
         gender:
           selectedPet.gender ?? (formData["Gender"]?.id as "MALE" | "FEMALE"),
         breed: breedObj,
-        breedSize: bs,
-        coat: cs,
+        breedSize: formDataFields
+          ? formDataFields.breedSize
+          : (formData["Breed size"] ?? null),
+        coat: formDataFields
+          ? formDataFields.coat
+          : (formData["Coat size"] ?? null),
         dob: selectedPet.dob ?? null,
         profileImage: selectedPet.profileImage ?? null,
       },
