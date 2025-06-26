@@ -159,28 +159,7 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
       if (onlyBreedAndCoatMissing) {
         const bs = updatedFormData["Breed size"]
         const cs = updatedFormData["Coat size"]
-
-        const allBreeds = await getBreeds({ species: selectedPet.type! })
-        const breeds = allBreeds.ok ? allBreeds.value.body.breeds : []
-        const currentBreedObj = breeds.find((b) => b.name === selectedPet.breed)
-
-        const updateResponse = await updatePet({
-          pet: {
-            id: selectedPet.id,
-            name: selectedPet.name,
-            species: selectedPet.type!,
-            gender: selectedPet.gender!,
-            breed: currentBreedObj,
-            breedSize: bs,
-            coat: cs,
-            dob: selectedPet.dob ?? null,
-            profileImage: selectedPet.profileImage ?? null,
-          },
-        })
-        if (updateResponse.ok) {
-          setIsFormComplete(true)
-          setShowModal(false)
-        }
+        await onUpdatePet({ breedSize: bs, coat: cs })
         return
       } else if (filteredMissing.length > 0) {
         setMissingAttributes(filteredMissing)
@@ -191,7 +170,26 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
     }
   }
 
-  const onUpdatePet = async function () {
+  const onUpdatePet = async function (formDataFields?: {
+    breedSize: { id: string; name: string }
+    coat: { id: string; name: string }
+  }) {
+    const bs = formDataFields
+      ? formDataFields.breedSize
+      : formData["Breed size"]
+    const cs = formDataFields ? formDataFields.coat : formData["Coat size"]
+
+    let breedObj: { id: string; name: string }
+
+    if (selectedPet.breedId && selectedPet.breed) {
+      breedObj = {
+        id: selectedPet.breedId,
+        name: selectedPet.breed,
+      }
+    } else {
+      breedObj = formData["Breed"]
+    }
+
     const updateResponse = await updatePet({
       pet: {
         id: selectedPet.id,
@@ -201,9 +199,9 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
           (formData["Species"]?.id as "DOG" | "CAT" | "OTHER"),
         gender:
           selectedPet.gender ?? (formData["Gender"]?.id as "MALE" | "FEMALE"),
-        breed: formData["Breed"],
-        breedSize: formData["Breed size"] ?? null,
-        coat: formData["Coat size"] ?? null,
+        breed: breedObj,
+        breedSize: bs,
+        coat: cs,
         dob: selectedPet.dob ?? null,
         profileImage: selectedPet.profileImage ?? null,
       },
@@ -306,8 +304,10 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
               </button>
               <button
                 className="bg-secondary-1 text-white px-4 py-2 rounded-md"
-                disabled={missingAttributes.some((attr) => !formData[attr])}
-                onClick={onUpdatePet}
+                disabled={
+                  !missingAttributes.every((attr) => Boolean(formData[attr]))
+                }
+                onClick={() => onUpdatePet()}
               >
                 Update
               </button>

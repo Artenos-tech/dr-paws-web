@@ -35,6 +35,7 @@ export interface Pet {
   id: string
   name: string
   type: "DOG" | "CAT" | "OTHER" | null
+  breedId: string | null
   breed: string | null
   // weight: string | null
   gender: "MALE" | "FEMALE" | null

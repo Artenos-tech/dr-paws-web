@@ -96,6 +96,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
         setPet({
           name: selectedPet.name,
           type: selectedPet.type || null,
+          breedId: selectedPet.breedId,
           breed: selectedPet.breed?.trim() || null,
           // weight: selectedPet.weight,
           gender: selectedPet.gender || null,
