@@ -645,6 +645,20 @@ export default createAPIClient({
       errorResponseSchema: z.object({}),
     },
 
+    applyCouponCode: {
+      method: "POST",
+      path: "/booking/couponcode",
+      pathParamsSchema: z.object({}),
+      requestSchema: z.object({
+        couponcode: z.string(),
+      }),
+      responseSchema: z.object({
+        status: z.number(),
+        message: z.string(),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+
     createAppointment: {
       method: "POST",
       path: "/user/appointment",
