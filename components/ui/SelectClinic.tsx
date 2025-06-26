@@ -157,7 +157,10 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
       setFormData(updatedFormData)
       setDropdownOptions(updatedOptions)
       if (onlyBreedAndCoatMissing) {
-        await onUpdatePet()
+        await onUpdatePet({
+          breedSize: updatedFormData["Breed size"],
+          coat: updatedFormData["Coat size"],
+        })
       } else if (filteredMissing.length > 0) {
         setMissingAttributes(filteredMissing)
         setShowModal(true)
@@ -167,7 +170,21 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
     }
   }
 
-  const onUpdatePet = async function () {
+  const onUpdatePet = async function (formDataFields?: {
+    breedSize: { id: string; name: string }
+    coat: { id: string; name: string }
+  }) {
+    let breedObj: { id: string; name: string }
+
+    if (selectedPet.breedId && selectedPet.breed) {
+      breedObj = {
+        id: selectedPet.breedId,
+        name: selectedPet.breed,
+      }
+    } else {
+      breedObj = formData["Breed"] ?? null
+    }
+
     const updateResponse = await updatePet({
       pet: {
         id: selectedPet.id,
@@ -177,9 +194,13 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
           (formData["Species"]?.id as "DOG" | "CAT" | "OTHER"),
         gender:
           selectedPet.gender ?? (formData["Gender"]?.id as "MALE" | "FEMALE"),
-        breed: formData["Breed"],
-        breedSize: formData["Breed size"] ?? null,
-        coat: formData["Coat size"] ?? null,
+        breed: breedObj,
+        breedSize: formDataFields
+          ? formDataFields.breedSize
+          : (formData["Breed size"] ?? null),
+        coat: formDataFields
+          ? formDataFields.coat
+          : (formData["Coat size"] ?? null),
         dob: selectedPet.dob ?? null,
         profileImage: selectedPet.profileImage ?? null,
       },
@@ -282,8 +303,10 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
               </button>
               <button
                 className="bg-secondary-1 text-white px-4 py-2 rounded-md"
-                disabled={missingAttributes.some((attr) => !formData[attr])}
-                onClick={onUpdatePet}
+                disabled={
+                  !missingAttributes.every((attr) => Boolean(formData[attr]))
+                }
+                onClick={() => onUpdatePet()}
               >
                 Update
               </button>
