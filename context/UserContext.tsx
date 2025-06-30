@@ -20,7 +20,7 @@ export interface User {
   id: string
   mobile: string
   name: string
-  role: UserRole
+  role?: UserRole
   email: string | null
   address1: string | null
   address2: string | null
