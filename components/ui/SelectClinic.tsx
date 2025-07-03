@@ -131,7 +131,12 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
           if (attr === "Breed size") {
             const breedSizeRes = await getSizes({})
             if (breedSizeRes.ok) {
-              const largest = getLargestOption(breedSizeRes.value.body.sizes)
+              const largest =
+                selectedPet.type === "CAT"
+                  ? breedSizeRes.value.body.sizes.find(
+                      (size) => size.name.toLowerCase() === "medium",
+                    )
+                  : getLargestOption(breedSizeRes.value.body.sizes)
               if (largest) {
                 updatedFormData["Breed size"] = {
                   id: largest.id,
