@@ -1,14 +1,14 @@
 "use client"
 
-import { Card } from "antd"
-import { ChevronDown, ChevronUp } from "lucide-react"
+import { Card, Button, Tooltip } from "antd"
+import { ChevronDown, ChevronUp, Eye, Download } from "lucide-react"
 import { useState } from "react"
 
 const gridStyle: React.CSSProperties = {
   width: "100%",
   textAlign: "center",
   color: "#5281a2",
-  backgroundColor: "#fdc776",
+  backgroundColor: "#f9fafb",
   padding: "0.5rem",
 }
 
@@ -49,11 +49,27 @@ const InvoiceCard: React.FC<InvoiceCardProps> = ({
 }) => {
   const [expanded, setExpanded] = useState(false)
 
+  const handleViewPDF = (invoiceId: string) => {
+    console.log("Viewing PDF for invoice: ", invoiceId)
+    // window.open(`/api/invoices/${invoiceId}/pdf`, "_blank")
+  }
+
+  const handleDownloadPDF = async (invoiceId: string) => {
+    console.log("Donwloading PDF for invoice: ", invoiceId)
+    // const link = document.createElement("a")
+    // link.href = `/api/invoices/${invoiceId}/pdf?download=true`
+    // link.download = `invoice-${invoiceId}.pdf`
+    // link.click()
+  }
+
   return (
     <Card className="w-full bg-primary-3 mb-3 md:mb-4 shadow-md">
       {/* HEADER INFO */}
       <div
-        onClick={() => setExpanded(!expanded)}
+        onClick={() => {
+          if (!!billingLineItems?.length) setExpanded(!expanded)
+        }}
+        aria-expanded={expanded}
         className="w-full flex flex-wrap lg:flex-nowrap justify-between items-stretch cursor-pointer"
       >
         {/* Invoice No */}
@@ -106,14 +122,14 @@ const InvoiceCard: React.FC<InvoiceCardProps> = ({
         <Card.Grid
           hoverable={false}
           style={gridStyle}
-          className="basis-full lg:basis-1/5"
+          className="basis-full lg:basis-1/5 content-center"
         >
-          <div className="flex justify-center lg:justify-between items-center w-full">
-            {/* Left: Status info */}
-            <div className="flex flex-col gap-1">
-              <p className="text-xs md:text-sm">Status</p>
+          <div className="flex flex-col sm:flex-row sm:justify-center sm:items-center gap-2 w-full text-center">
+            {/* 🔹 Status Label + Badge */}
+            <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 justify-center">
+              <p className="text-xs md:text-sm hidden sm:inline">Status</p>
               <span
-                className={`text-xs px-2 py-1 rounded text-center w-fit ${
+                className={`text-xs px-2 py-1 rounded w-fit ${
                   status === "PAID"
                     ? "bg-green-600 text-white"
                     : status === "UNPAID"
@@ -124,17 +140,63 @@ const InvoiceCard: React.FC<InvoiceCardProps> = ({
                 {status}
               </span>
             </div>
-            {/* Right: Chevron */}
-            <div className="ml-2">
-              {expanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+
+            {/* 🔹 Action Icons */}
+            <div className="flex gap-2 justify-center items-center flex-wrap">
+              <Tooltip title="View Invoice">
+                <Button
+                  type="text"
+                  shape="circle"
+                  size="small"
+                  icon={<Eye size={16} />}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleViewPDF(invoiceId)
+                  }}
+                />
+              </Tooltip>
+
+              <Tooltip title="Download PDF">
+                <Button
+                  type="text"
+                  shape="circle"
+                  size="small"
+                  icon={<Download size={16} />}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleDownloadPDF(invoiceId)
+                  }}
+                />
+              </Tooltip>
+
+              {billingLineItems.length > 0 && (
+                <Tooltip title={expanded ? "Collapse" : "Expand"}>
+                  <Button
+                    type="text"
+                    shape="circle"
+                    size="small"
+                    icon={
+                      expanded ? (
+                        <ChevronUp size={16} />
+                      ) : (
+                        <ChevronDown size={16} />
+                      )
+                    }
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setExpanded(!expanded)
+                    }}
+                  />
+                </Tooltip>
+              )}
             </div>
           </div>
         </Card.Grid>
       </div>
 
       {/* EXPANDED CONTENT */}
-      {expanded && (
-        <div className="mt-4 px-2 sm:px-4 md:px-6 py-2">
+      {!!billingLineItems?.length && expanded && (
+        <div className="mt-4 px-2 sm:px-4 md:px-6 py-2 transition-all duration-300 ease-in-out">
           <div className="flex flex-col gap-4">
             {billingLineItems.map((item, index) => (
               <div
@@ -171,6 +233,24 @@ const InvoiceCard: React.FC<InvoiceCardProps> = ({
           </div>
         </div>
       )}
+
+      {/* Action Buttons
+      <div className="flex flex-wrap gap-2 justify-end mt-4 px-2 sm:px-4 md:px-6">
+        <Button
+          type="primary"
+          onClick={() => handleViewPDF(invoiceId)}
+          className="text-xs md:text-sm"
+        >
+          View PDF
+        </Button>
+        <Button
+          type="default"
+          onClick={() => handleDownloadPDF(invoiceId)}
+          className="text-xs md:text-sm"
+        >
+          Download PDF
+        </Button>
+      </div> */}
     </Card>
   )
 }

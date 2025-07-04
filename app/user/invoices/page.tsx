@@ -117,16 +117,25 @@ const Invoices = () => {
     setCurrentPage(1)
   }
 
+  const parseCustomDateString = (dateStr: string): dayjs.Dayjs | null => {
+    const cleaned = dateStr.replace(/(\d+)(st|nd|rd|th)/, "$1")
+    return dayjs(cleaned, "D MMM YY", true)
+  }
+
   const filterInvoices = (invoices: Invoice[]) => {
     return invoices.filter((invoice) => {
       if (filters.dateRange[0] || filters.dateRange[1]) {
-        const invoiceDate = dayjs(invoice.date)
+        const invoiceDate = parseCustomDateString(invoice.date)
+        if (!invoiceDate?.isValid()) return false
+
         const afterStartDate = filters.dateRange[0]
           ? invoiceDate.isSameOrAfter(dayjs(filters.dateRange[0]), "day")
           : true
+
         const beforeEndDate = filters.dateRange[1]
           ? invoiceDate.isSameOrBefore(dayjs(filters.dateRange[1]), "day")
           : true
+
         if (!(afterStartDate && beforeEndDate)) {
           return false
         }
@@ -154,8 +163,8 @@ const Invoices = () => {
     return [...invoices].sort((a, b) => {
       switch (sortConfig.field) {
         case "date": {
-          const dateA = new Date(a.date).getTime()
-          const dateB = new Date(b.date).getTime()
+          const dateA = parseCustomDateString(a.date)?.valueOf() || 0
+          const dateB = parseCustomDateString(b.date)?.valueOf() || 0
           return sortConfig.order === "asc" ? dateA - dateB : dateB - dateA
         }
         case "invoiceId": {
@@ -184,7 +193,6 @@ const Invoices = () => {
 
   const isFiltering =
     filters.dateRange.some((d) => d !== null) ||
-    filters.clinicName !== null ||
     filters.amountRange.some((v) => v !== null)
 
   return (
@@ -261,8 +269,6 @@ const Invoices = () => {
                 <Option value="invoiceId-asc">Invoice # (Low to High)</Option>
                 <Option value="billAmount-desc">Amount (High to Low)</Option>
                 <Option value="billAmount-asc">Amount (Low to High)</Option>
-                <Option value="clinicname-asc">Clinic Name (A-Z)</Option>
-                <Option value="clinicname-desc">Clinic Name (Z-A)</Option>
               </Select>
             </div>
 
