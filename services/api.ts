@@ -1109,41 +1109,52 @@ export default createAPIClient({
       errorResponseSchema: z.object({}),
     },
 
-    // getInvoices: {
-    //   method: "GET",
-    //   path: "/user/invoices",
-    //   pathParamsSchema: z.object({}),
-    //   requestSchema: z.object({}),
-    //   responseSchema: z.object({
-    //     invoices: z.array(
-    //       z.object({
-    //         id: z.number(),
-    //         clinicname: z.string(),
-    //         cliniccontact: z.string(),
-    //         clinicaddress: z.string(),
-    //         username: z.string(),
-    //         usercontact: z.string(),
-    //         useraddress: z.string(),
-    //         invoiceno: z.number(),
-    //         gstin: z.string().nullable(),
-    //         createdon: z.string(),
-    //         amount: z.number(),
-    //         invoiceline: z.array(
-    //           z.object({
-    //             planitemid: z.number(),
-    //             planitem: z.string().optional(),
-    //             quantity: z.number(),
-    //             cliniccost: z.number(),
-    //             tax: z.number(),
-    //             discount: z.number(),
-    //             total: z.number(),
-    //           }),
-    //         ),
-    //       }),
-    //     ),
-    //   }),
-    //   errorResponseSchema: z.object({}),
-    // },
+    getInvoices: {
+      method: "GET",
+      path: "/user/invoices",
+      pathParamsSchema: z.object({}),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        invoices: z.array(
+          z.object({
+            id: z.string(),
+            invoiceId: z.string(),
+            // clinicname: z.string(),
+            // cliniccontact: z.string(),
+            // clinicaddress: z.string(),
+            // username: z.string(),
+            // usercontact: z.string(),
+            // useraddress: z.string(),
+            // gstin: z.string().nullable(),
+            date: z.string(),
+            billAmount: z.number(),
+            totalTaxAmount: z.number(),
+            status: z.enum([
+              "NO_BILL",
+              "OVERPAID",
+              "PARTIALLY_PAID",
+              "PAID",
+              "UNPAID",
+            ]),
+            billingLineItems: z.array(
+              z.object({
+                amount: z.number(),
+                name: z.string(),
+                taxes: z.array(
+                  z.object({
+                    taxName: z.string(),
+                    taxAmount: z.number(),
+                    taxPercentage: z.number(),
+                    companyTaxId: z.string().uuid(),
+                  }),
+                ),
+              }),
+            ),
+          }),
+        ),
+      }),
+      errorResponseSchema: z.object({}),
+    },
 
     // getMedicalHistoryForPet: {
     //   method: "GET",
