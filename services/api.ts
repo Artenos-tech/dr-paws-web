@@ -1156,6 +1156,17 @@ export default createAPIClient({
       errorResponseSchema: z.object({}),
     },
 
+    getInvoice: {
+      method: "GET",
+      path: "/user/invoice/{invoiceid}",
+      pathParamsSchema: z.object({ invoiceid: z.string() }),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        invoicePdf: z.string(),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+
     // getMedicalHistoryForPet: {
     //   method: "GET",
     //   path: "/user/medicalhistory/pet/{pet_id}",

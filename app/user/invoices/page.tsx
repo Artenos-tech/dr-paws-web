@@ -190,10 +190,20 @@ const Invoices = () => {
     (invoicesResult?.ok && invoicesResult.value.body.invoices) || []
 
   const filteredInvoices = sortInvoices(filterInvoices(allInvoices))
+  const totalFiltered = filteredInvoices.length
+  const totalPages = Math.ceil(totalFiltered / pageSize)
+  const startIdx = (currentPage - 1) * pageSize
+  const endIdx = currentPage * pageSize
+  const paginatedInvoices = filteredInvoices.slice(startIdx, endIdx)
 
   const isFiltering =
     filters.dateRange.some((d) => d !== null) ||
     filters.amountRange.some((v) => v !== null)
+
+  useEffect(() => {
+    const maxPages = Math.ceil(filteredInvoices.length / pageSize)
+    if (currentPage > maxPages) setCurrentPage(1)
+  }, [filteredInvoices.length])
 
   return (
     <div className="flex flex-col w-full h-full items-center font-roca pb-8 md:pb-12 lg:pb-20 flex-grow">
@@ -316,21 +326,21 @@ const Invoices = () => {
                       pageSize,
                       filteredInvoices.length - (currentPage - 1) * pageSize,
                     )}{" "}
-                    of {filteredInvoices.length} invoices
+                    of {filteredInvoices.length} invoice
+                    {filteredInvoices.length !== 1 ? "s" : ""}
                   </div>
-                  {filteredInvoices
-                    .slice((currentPage - 1) * pageSize, currentPage * pageSize)
-                    .map((invoice) => (
-                      <InvoiceCard
-                        key={invoice.id}
-                        invoiceId={invoice.invoiceId}
-                        date={invoice.date}
-                        billAmount={invoice.billAmount}
-                        totalTaxAmount={invoice.totalTaxAmount}
-                        status={invoice.status}
-                        billingLineItems={invoice.billingLineItems}
-                      />
-                    ))}
+                  {paginatedInvoices.map((invoice) => (
+                    <InvoiceCard
+                      key={invoice.id}
+                      invoiceId={invoice.id}
+                      invoiceNo={invoice.invoiceId}
+                      date={invoice.date}
+                      billAmount={invoice.billAmount}
+                      totalTaxAmount={invoice.totalTaxAmount}
+                      status={invoice.status}
+                      billingLineItems={invoice.billingLineItems}
+                    />
+                  ))}
                   {/* Pagination Controls */}
                   <div className="flex justify-center mt-4 md:mt-6">
                     <ul className="flex flex-wrap gap-1 md:gap-2 justify-center">
@@ -369,10 +379,7 @@ const Invoices = () => {
                       <li>
                         <button
                           onClick={() => handlePageChange(currentPage + 1)}
-                          disabled={
-                            currentPage ===
-                            Math.ceil(filteredInvoices.length / pageSize)
-                          }
+                          disabled={currentPage === totalPages}
                           className={`px-2 py-1 md:px-3 md:py-1 text-xs md:text-sm rounded ${
                             currentPage ===
                             Math.ceil(filteredInvoices.length / pageSize)
