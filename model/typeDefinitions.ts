@@ -114,4 +114,8 @@ export interface AppointmentType {
   appt_type_id: string
   category: "UPCOMING" | "COMPLETED" | "REQUESTED"
   coupon_code?: string | null
+  invoice_id: string
+  total_tax_amount: number
+  total_billing_amount: number
+  payment_status: "PAID" | "UNPAID" | "NO_BILL" | "PARTIALLY_PAID" | "OVERPAID"
 }

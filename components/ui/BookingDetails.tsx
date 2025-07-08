@@ -1,7 +1,7 @@
 "use client"
 
 import { AppointmentType } from "@/model/typeDefinitions"
-import React from "react"
+import React, { useState, useCallback } from "react"
 import BackButton from "./BackButton"
 import { MdOutlineAccessTime } from "react-icons/md"
 import { GrLocation } from "react-icons/gr"
@@ -9,12 +9,13 @@ import { HiOutlineCalendar } from "react-icons/hi"
 import Image from "next/image"
 import defaultVetImage from "@/public/assets/images/clinic/doctorFemale.webp"
 import { petImageByType } from "./PetCard"
-import { CalendarDays, CircleCheck } from "lucide-react"
+import { CalendarDays, CircleCheck, Eye, Download, XCircle } from "lucide-react"
 import { format, parseISO } from "date-fns"
+import { Tooltip, Modal, Button } from "antd"
 // import CustomButton from "./CustomButton"
-// import { useAPICall } from "@/hooks/apicall"
-// import api from "@/services/api"
-// import { ClipLoader } from "react-spinners"
+import { useAPICall } from "@/hooks/apicall"
+import api from "@/services/api"
+import { ClipLoader } from "react-spinners"
 // import RescheduleAppointment from "@/components/ui/RescheduleAppointment"
 
 // export const cancelReasons = [
@@ -42,6 +43,10 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
   selectedAppointment,
   goBack,
 }) => {
+  const [loadingView, setLoadingView] = useState(false)
+  const [loadingDownload, setLoadingDownload] = useState(false)
+  const [showPdfModal, setShowPdfModal] = useState(false)
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null)
   // const [currentView, setCurrentView] = useState<
   //   | "default"
   //   | "cancelConfirm"
@@ -119,6 +124,62 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
 
   //   setCurrentView("reschedule")
   // }
+
+  const { call: getInvoiceById } = useAPICall(api.getInvoice)
+
+  const fetchInvoiceById = useCallback(
+    async (invoiceid: string) => {
+      try {
+        const resp = await getInvoiceById({ invoiceid })
+        if (resp.ok) {
+          return resp.value.body.invoicePdf
+        }
+      } catch (e) {
+        console.error("Failed to fetch invoice PDF", e)
+        return null
+      }
+    },
+    [selectedAppointment],
+  )
+
+  const handleViewPDF = async (invoiceId: string) => {
+    setLoadingView(true)
+    const base64str = await fetchInvoiceById(invoiceId)
+    setLoadingView(false)
+    if (!base64str) return
+    const byteCharacters = atob(base64str)
+    const byteNumbers = Array.from(byteCharacters, (char) => char.charCodeAt(0))
+    const byteArray = new Uint8Array(byteNumbers)
+    const blob = new Blob([byteArray], { type: "application/pdf" })
+
+    const blobUrl = URL.createObjectURL(blob)
+    setPdfUrl(blobUrl)
+    setShowPdfModal(true)
+  }
+
+  const handleDownloadPDF = async (invoiceId: string) => {
+    setLoadingDownload(true)
+    const base64 = await fetchInvoiceById(invoiceId)
+    setLoadingDownload(false)
+    if (!base64) return
+
+    const byteCharacters = atob(base64)
+    const byteNumbers = Array.from(byteCharacters, (char) => char.charCodeAt(0))
+    const byteArray = new Uint8Array(byteNumbers)
+    const blob = new Blob([byteArray], { type: "application/pdf" })
+
+    const blobUrl = URL.createObjectURL(blob)
+
+    const link = document.createElement("a")
+    link.href = blobUrl
+    link.download = `invoice-${invoiceId}.pdf`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+
+    URL.revokeObjectURL(blobUrl)
+  }
+
   const currentView = "default" as
     | "default"
     | "cancelConfirm"
@@ -126,6 +187,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
     | "cancelled"
     | "rescheduleConfirm"
   const parsedDate = parseISO(selectedAppointment.booking_date)
+
   return (
     <div className="w-full px-4 py-8">
       {currentView !== "reschedule" && (
@@ -205,7 +267,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                             src={
                               selectedAppointment.vet_image || defaultVetImage
                             }
-                            alt={`Dr. ${selectedAppointment.vet_name}'s profile`}
+                            alt={`${selectedAppointment.vet_name}'s profile`}
                             layout="fill"
                             objectFit="contain"
                             sizes="128px"
@@ -263,6 +325,122 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                   </div>
                 )} */}
               </div>
+              {/* Invoice Details Section */}
+              <div className="w-full md:w-4/5 lg:w-[50%] border-t border-gray-200 pt-6 mt-6 text-primary-1 px-6 sm:px-0">
+                <h2 className="text-xl font-semibold text-[--primary-1] mb-4">
+                  Invoice Details
+                </h2>
+                <div className="bg-[#FFFCF3] p-6 rounded-md shadow-sm">
+                  {selectedAppointment.payment_status === "NO_BILL" ? (
+                    <p className="text-gray-500 italic">
+                      No bill was generated for this appointment.
+                    </p>
+                  ) : (
+                    <div className="min-w-[600px]">
+                      {/* Header Row */}
+                      <div className="grid grid-cols-5 gap-2 px-4 py-2 bg-[--primary-3] text-[--primary-1] font-semibold text-sm rounded-t-md">
+                        <div>Invoice ID</div>
+                        <div>Total Amount</div>
+                        <div>Total Tax</div>
+                        <div>Status</div>
+                        <div className="text-right pr-2">Actions</div>
+                      </div>
+
+                      {/* Data Row */}
+                      <div className="grid grid-cols-5 gap-4 px-4 py-3 items-center bg-white text-sm text-[--primary-1] border border-t-0 border-gray-200 rounded-b-md">
+                        <Tooltip title={selectedAppointment.invoice_id}>
+                          <div className="truncate">
+                            {selectedAppointment.invoice_id || "—"}
+                          </div>
+                        </Tooltip>
+                        <div>
+                          ₹{selectedAppointment.total_billing_amount.toFixed(2)}
+                        </div>
+                        <div>
+                          ₹{selectedAppointment.total_tax_amount.toFixed(2)}
+                        </div>
+                        <div
+                          className={
+                            selectedAppointment.payment_status === "PAID"
+                              ? "text-green-600 font-medium"
+                              : selectedAppointment.payment_status ===
+                                  "PARTIALLY_PAID"
+                                ? "text-yellow-600 font-medium"
+                                : selectedAppointment.payment_status ===
+                                    "OVERPAID"
+                                  ? "text-blue-600 font-medium"
+                                  : "text-red-600 font-medium"
+                          }
+                        >
+                          {selectedAppointment.payment_status.replaceAll(
+                            "_",
+                            " ",
+                          )}
+                        </div>
+                        <div className="flex items-center justify-end gap-3 pr-2">
+                          <Tooltip title="View Invoice">
+                            <Button
+                              type="text"
+                              shape="circle"
+                              size="small"
+                              icon={
+                                loadingView ? <ClipLoader /> : <Eye size={16} />
+                              }
+                              onClick={() =>
+                                handleViewPDF(selectedAppointment.invoice_id)
+                              }
+                            />
+                          </Tooltip>
+                          <Tooltip title="Download PDF">
+                            <Button
+                              type="text"
+                              shape="circle"
+                              size="small"
+                              icon={
+                                loadingDownload ? (
+                                  <ClipLoader />
+                                ) : (
+                                  <Download size={16} />
+                                )
+                              }
+                              onClick={() => {
+                                handleDownloadPDF(
+                                  selectedAppointment.invoice_id,
+                                )
+                              }}
+                            />
+                          </Tooltip>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+              {/* Invoice Viewer */}
+              <Modal
+                open={showPdfModal}
+                onCancel={() => {
+                  setShowPdfModal(false)
+                  if (pdfUrl) URL.revokeObjectURL(pdfUrl)
+                }}
+                footer={null}
+                width="90vw"
+                centered
+                destroyOnClose
+                title={`Invoice #${selectedAppointment.invoice_id}`}
+                closeIcon={<XCircle />}
+                bodyStyle={{ padding: 0, height: "80vh" }} // remove padding, fix height
+              >
+                {pdfUrl && (
+                  <iframe
+                    src={pdfUrl}
+                    width="100%"
+                    height="100%"
+                    style={{ border: "none" }}
+                    title="Invoice PDF"
+                  />
+                )}
+              </Modal>
             </div>
           )}
           {/* {currentView === "cancelConfirm" && (
