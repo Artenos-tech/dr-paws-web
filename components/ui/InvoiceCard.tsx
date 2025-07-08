@@ -3,7 +3,7 @@
 import { useAPICall } from "@/hooks/apicall"
 import api from "@/services/api"
 import { Card, Button, Tooltip, Modal } from "antd"
-import { ChevronDown, ChevronUp, Eye, Download, XCircle } from "lucide-react"
+import { Eye, Download, XCircle } from "lucide-react"
 import { useCallback, useState } from "react"
 import { ClipLoader } from "react-spinners"
 
@@ -176,11 +176,15 @@ const InvoiceCard: React.FC<InvoiceCardProps> = ({
                     status === "PAID"
                       ? "bg-green-600 text-white"
                       : status === "UNPAID"
-                        ? "bg-red-500 text-white"
-                        : "bg-yellow-500 text-white"
+                        ? "bg-red-600 text-white"
+                        : status === "OVERPAID"
+                          ? "bg-blue-600 text-white"
+                          : status === "PARTIALLY_PAID"
+                            ? "bg-yellow-600 text-white"
+                            : "bg-gray-600 text-white"
                   }`}
                 >
-                  {status}
+                  {status.replaceAll("_", " ")}
                 </span>
               </div>
 
@@ -191,9 +195,7 @@ const InvoiceCard: React.FC<InvoiceCardProps> = ({
                     shape="circle"
                     size="small"
                     icon={loadingView ? <ClipLoader /> : <Eye size={16} />}
-                    onClick={() => {
-                      handleViewPDF(invoiceId)
-                    }}
+                    onClick={() => handleViewPDF(invoiceId)}
                   />
                 </Tooltip>
 
@@ -211,7 +213,7 @@ const InvoiceCard: React.FC<InvoiceCardProps> = ({
                   />
                 </Tooltip>
 
-                {billingLineItems.length > 0 && (
+                {/* {billingLineItems.length > 0 && (
                   <Tooltip title={expanded ? "Collapse" : "Expand"}>
                     <Button
                       type="text"
@@ -229,7 +231,7 @@ const InvoiceCard: React.FC<InvoiceCardProps> = ({
                       }}
                     />
                   </Tooltip>
-                )}
+                )} */}
               </div>
             </div>
           </Card.Grid>
