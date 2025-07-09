@@ -746,7 +746,7 @@ export default createAPIClient({
       pathParamsSchema: z.object({ appointmentid: z.string().uuid() }),
       requestSchema: z.object({
         clinic_id: z.string().uuid(),
-        sub_booking_id: z.string().uuid().optional()
+        sub_booking_id: z.string().uuid().optional(),
       }),
       responseSchema: z.object({
         status: z.number(),

@@ -95,7 +95,6 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
       setShowCancelValidationMessage(true)
       return
     }
-    // console.log("selectedAppointment", selectedAppointment);
     try {
       const resp = await cancelAppointment({
         appointmentid: selectedAppointment.id,
