@@ -9,23 +9,31 @@ import { HiOutlineCalendar } from "react-icons/hi"
 import Image from "next/image"
 import defaultVetImage from "@/public/assets/images/clinic/doctorFemale.webp"
 import { petImageByType } from "./PetCard"
-import { CalendarDays, CircleCheck, Eye, Download, XCircle } from "lucide-react"
+import {
+  CalendarDays,
+  CircleCheck,
+  Eye,
+  Download,
+  XCircle,
+  CircleX,
+} from "lucide-react"
 import { format, parseISO } from "date-fns"
 import { Tooltip, Modal, Button } from "antd"
-// import CustomButton from "./CustomButton"
+import CustomButton from "./CustomButton"
 import { useAPICall } from "@/hooks/apicall"
 import api from "@/services/api"
 import { ClipLoader } from "react-spinners"
+import toast from "react-hot-toast"
 // import RescheduleAppointment from "@/components/ui/RescheduleAppointment"
 
-// export const cancelReasons = [
-//   "Another commitment has come up",
-//   "I'm sick / unwell",
-//   "I have to travel out of the city",
-//   "My pet doesn't need the treatment anymore",
-//   "I've visited / will visit another clinic",
-//   "Other",
-// ]
+export const cancelReasons = [
+  "Another commitment has come up",
+  "I'm sick / unwell",
+  "I have to travel out of the city",
+  "My pet doesn't need the treatment anymore",
+  "I've visited / will visit another clinic",
+  "Other",
+]
 
 // export const rescheduleReasons = [
 //   "Another commitment has come up",
@@ -47,74 +55,68 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
   const [loadingDownload, setLoadingDownload] = useState(false)
   const [showPdfModal, setShowPdfModal] = useState(false)
   const [pdfUrl, setPdfUrl] = useState<string | null>(null)
-  // const [currentView, setCurrentView] = useState<
-  //   | "default"
-  //   | "cancelConfirm"
-  //   | "reschedule"
-  //   | "cancelled"
-  //   | "rescheduleConfirm"
-  // >("default")
-  // const [cancelReason, setCancelReason] = useState<string>("")
+  const [currentView, setCurrentView] = useState<
+    | "default"
+    | "cancelConfirm"
+    | "reschedule"
+    | "cancelled"
+    | "rescheduleConfirm"
+  >("default")
+  const [cancelReason, setCancelReason] = useState<string>("")
   // const [rescheduleReason, setRescheduleReason] = useState<string>("")
-  // const [showCancelValidationMessage, setShowCancelValidationMessage] =
-  //   useState<boolean>(false)
+  const [showCancelValidationMessage, setShowCancelValidationMessage] =
+    useState<boolean>(false)
   // const [showRescheduleValidationMessage, setShowRescheduleValidationMessage] =
   //   useState<boolean>(false)
   const defaultPetImageByType =
     petImageByType[selectedAppointment.pet_type?.toLowerCase() || "other"] ||
     petImageByType.other
-  // const { call: cancelAppointment, loading: cancelAppointmentLoading } =
-  //   useAPICall(api.cancelAppointment)
+  const { call: cancelAppointment, loading: cancelAppointmentLoading } =
+    useAPICall(api.cancelAppointment)
 
-  // const handleCancelClick = () => {
-  //   setCurrentView("cancelConfirm")
-  // }
+  const handleCancelClick = () => {
+    setCurrentView("cancelConfirm")
+  }
 
   // const handleRescheduleClick = () => {
   //   setCurrentView("rescheduleConfirm")
   // }
 
-  // const resetView = () => {
-  //   setCancelReason("")
-  //   setShowCancelValidationMessage(false)
-  //   setRescheduleReason("")
-  //   setShowRescheduleValidationMessage(false)
-  //   setCurrentView("default")
-  // }
+  const resetView = () => {
+    setCancelReason("")
+    setShowCancelValidationMessage(false)
+    // setRescheduleReason("")
+    // setShowRescheduleValidationMessage(false)
+    setCurrentView("default")
+  }
 
-  // const cancelBooking = async () => {
-  //   if (!cancelReason) {
-  //     setShowCancelValidationMessage(true)
-  //     return
-  //   }
-  //   // console.log("selectedAppointment", selectedAppointment);
-  //   try {
-  //     const resp = await cancelAppointment({
-  //       appointmentid: selectedAppointment.id,
-  //       clinic_id: selectedAppointment.clinic_id,
-  //       vet_id: selectedAppointment.vet_vetport_id,
-  //       pet_id: selectedAppointment.pet_vetport_id,
-  //       pet_name: selectedAppointment.pet_name,
-  //       appt_start: selectedAppointment.appt_start,
-  //       appt_end: selectedAppointment.appt_end,
-  //       appt_type_id: selectedAppointment.appt_type_id,
-  //       reason: cancelReason,
-  //     })
-  //     if (!resp.ok) {
-  //       console.error("Error cancelling appointment", resp)
-  //       toast.error(
-  //         "We couldn't cancel your appointment. Please try again later.",
-  //       )
-  //       return
-  //     }
-  //     setCurrentView("cancelled")
-  //   } catch (error) {
-  //     console.error("Error cancelling appointment", error)
-  //     toast.error(
-  //       "We couldn't cancel your appointment. Please try again later.",
-  //     )
-  //   }
-  // }
+  const cancelBooking = async () => {
+    if (!cancelReason) {
+      setShowCancelValidationMessage(true)
+      return
+    }
+    // console.log("selectedAppointment", selectedAppointment);
+    try {
+      const resp = await cancelAppointment({
+        appointmentid: selectedAppointment.id,
+        clinic_id: selectedAppointment.clinic_id,
+        sub_booking_id: selectedAppointment.sub_booking_id,
+      })
+      if (!resp.ok) {
+        console.error("Error cancelling appointment", resp)
+        toast.error(
+          "We couldn't cancel your appointment. Please try again later.",
+        )
+        return
+      }
+      setCurrentView("cancelled")
+    } catch (error) {
+      console.error("Error cancelling appointment", error)
+      toast.error(
+        "We couldn't cancel your appointment. Please try again later.",
+      )
+    }
+  }
 
   // const rescheduleBooking = async () => {
   //   if (!rescheduleReason) {
@@ -180,12 +182,6 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
     URL.revokeObjectURL(blobUrl)
   }
 
-  const currentView = "default" as
-    | "default"
-    | "cancelConfirm"
-    | "reschedule"
-    | "cancelled"
-    | "rescheduleConfirm"
   const parsedDate = parseISO(selectedAppointment.booking_date)
 
   return (
@@ -306,7 +302,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                     </p>
                   )}
                 </div>
-                {/* {selectedAppointment.category === "UPCOMING" && (
+                {selectedAppointment.category === "UPCOMING" && (
                   <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex flex-col sm:flex-row sm:justify-center gap-4 mt-6">
                       <button
@@ -315,19 +311,19 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                       >
                         Cancel
                       </button>
-                      <button
+                      {/* <button
                         onClick={handleRescheduleClick}
                         className="w-full sm:w-auto sm:min-w-[150px] py-3 px-4 sm:px-6 border-2 border-secondary-1 rounded-full text-sm sm:text-base font-bold text-secondary-1"
                       >
                         Reschedule
-                      </button>
+                      </button> */}
                     </div>
                   </div>
-                )} */}
+                )}
               </div>
               {/* Invoice Details Section */}
               <div className="w-full md:w-4/5 lg:w-[50%] border-t border-gray-200 pt-6 mt-6 text-primary-1 px-6 sm:px-0">
-                <h2 className="text-xl font-semibold text-[--primary-1] mb-4">
+                <h2 className="text-xl text-center font-semibold text-[--primary-1] mb-4">
                   Invoice Details
                 </h2>
                 <div className="bg-[#FFFCF3] p-6 rounded-md shadow-sm">
@@ -443,7 +439,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
               </Modal>
             </div>
           )}
-          {/* {currentView === "cancelConfirm" && (
+          {currentView === "cancelConfirm" && (
             <div className="flex flex-col justify-center items-center gap-4">
               <h1 className="text-3xl">Cancel Booking</h1>
               <div className="py-6 px-6 md:py-8 md:px-12 text-primary-1 w-11/12 md:w-4/5 lg:w-[50%] shadow-md my-5 flex flex-col gap-6 items-center bg-[#FFFCF3] rounded-lg">
@@ -539,11 +535,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                         <div className="relative w-32 h-32 rounded-full overflow-hidden bg-white -ml-8 border-4 border-white flex justify-center items-center">
                           <Image
                             src={
-                              selectedAppointment.vet_image.type === "url"
-                                ? selectedAppointment.vet_image.value
-                                : doctorImagesMap[
-                                    selectedAppointment.vet_image.value
-                                  ] || defaultVetImage
+                              selectedAppointment.vet_image || defaultVetImage
                             }
                             alt={`Dr. ${selectedAppointment.vet_name}'s profile`}
                             layout="fill"
@@ -566,33 +558,15 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                     <span className="text-secondary-1">
                       <HiOutlineCalendar />
                     </span>
-                    {new Date(
-                      selectedAppointment.appt_start,
-                    ).toLocaleDateString("en-IN", {
-                      weekday: "long",
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
+                    {format(parsedDate, "EEEE dd MMMM, yyyy")}
                   </p>
                   <p className="flex items-center gap-2 line-through">
                     <span className="text-secondary-1">
                       <MdOutlineAccessTime />
                     </span>
-                    {new Date(
-                      selectedAppointment.appt_start,
-                    ).toLocaleTimeString("en-IN", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
+                    {selectedAppointment.appt_start}
                     {" - "}
-                    {new Date(selectedAppointment.appt_end).toLocaleTimeString(
-                      "en-IN",
-                      {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      },
-                    )}
+                    {selectedAppointment.appt_end}
                   </p>
                 </div>
                 <div className="flex items-center">
@@ -605,7 +579,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
               </div>
             </div>
           )}
-          {currentView === "rescheduleConfirm" && (
+          {/* {currentView === "rescheduleConfirm" && (
             <div className="flex flex-col justify-center items-center gap-4">
               <h1 className="text-3xl">Reschedule Booking</h1>
               <div className="py-6 px-6 md:py-8 md:px-12 text-primary-1 w-11/12 md:w-4/5 lg:w-[50%] shadow-md my-5 flex flex-col gap-8 items-center bg-[#FFFCF3] rounded-lg">

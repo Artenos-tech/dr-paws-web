@@ -89,6 +89,7 @@ export enum AppointmentStatus {
 }
 export interface AppointmentType {
   id: string
+  sub_booking_id: string
   pet_id: string
   pet_name: string
   pet_type?: string
