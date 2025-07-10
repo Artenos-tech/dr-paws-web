@@ -704,6 +704,7 @@ export default createAPIClient({
         appointments: z.array(
           z.object({
             id: z.string().uuid(),
+            sub_booking_id: z.string().uuid(),
             pet_id: z.string().uuid(),
             pet_name: z.string(),
             pet_type: z.string().nullable(),
@@ -739,32 +740,24 @@ export default createAPIClient({
       errorResponseSchema: z.object({}),
     },
 
-    // cancelAppointment: {
-    //   method: "PUT",
-    //   path: "/user/appointment/{appointmentid}/cancel",
-    //   pathParamsSchema: z.object({ appointmentid: z.string() }),
-    //   requestSchema: z.object({
-    //     clinic_id: z.number(),
-    //     vet_id: z.number(),
-    //     pet_id: z.number(),
-    //     pet_name: z.string(),
-    //     appt_start: z.string(),
-    //     appt_end: z.string(),
-    //     appt_type_id: z.number(),
-    //     reason: z.string(),
-    //   }),
-    //   responseSchema: z.object({
-    //     status: z.number(),
-    //     message: z.string(),
-    //     appointment: z.object({
-    //       id: z.number(),
-    //       clinic_id: z.number(),
-    //       vet_id: z.number(),
-    //       pet_id: z.number(),
-    //     }),
-    //   }),
-    //   errorResponseSchema: z.object({}),
-    // },
+    cancelAppointment: {
+      method: "PUT",
+      path: "/user/appointment/{appointmentid}/cancel",
+      pathParamsSchema: z.object({ appointmentid: z.string().uuid() }),
+      requestSchema: z.object({
+        clinic_id: z.string().uuid(),
+        sub_booking_id: z.string().uuid().optional(),
+      }),
+      responseSchema: z.object({
+        status: z.number(),
+        message: z.string(),
+        appointment: z.object({
+          id: z.string().uuid(),
+          clinic_id: z.string().uuid(),
+        }),
+      }),
+      errorResponseSchema: z.object({}),
+    },
 
     // rescheduleAppointment: {
     //   method: "PUT",
