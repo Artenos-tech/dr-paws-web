@@ -1202,18 +1202,98 @@ export default createAPIClient({
       errorResponseSchema: z.object({}),
     },
 
-    // getMedicalHistoryForPet: {
-    //   method: "GET",
-    //   path: "/user/medicalhistory/pet/{pet_id}",
-    //   pathParamsSchema: z.object({ pet_id: z.string() }),
-    //   requestSchema: z.object({}),
-    //   responseSchema: z.object({
-    //     medical_history: z.object({
-    //       attachments: z.array(z.string()),
-    //       prescriptions: z.record(z.array(z.string())),
-    //     }),
-    //   }),
-    //   errorResponseSchema: z.object({}),
-    // },
+    getMedicalHistoryForPet: {
+      method: "GET",
+      path: "/user/medicalhistory/pet/{pet_id}",
+      pathParamsSchema: z.object({ pet_id: z.string() }),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        medical_history: z.array(
+          z.object({
+            bookingId: z.string(),
+            attachments: z.array(
+              z.object({
+                id: z.string().uuid(),
+                name: z.string(),
+                fileId: z.string().url(),
+                type: z.enum(["DIAGNOSTIC_TESTS", "MISCELLANEOUS"]),
+                resortBookingId: z.string().uuid(),
+                clientId: z.string().uuid(),
+                importMetaData: z
+                  .object({
+                    attachmentUrl: z.string().url(),
+                  })
+                  .nullable(),
+                createdAt: z.string().date(),
+                updatedAt: z.string().date(),
+              }),
+            ),
+            soapNotes: z.array(
+              z.object({
+                id: z.string().uuid(),
+                bookingId: z.string().uuid(),
+                clientId: z.string().uuid(),
+                subjective: z.string().nullable(),
+                objective: z.string().nullable(),
+                assessment: z.string().nullable(),
+                plan: z.string().nullable(),
+                memo: z.string().nullable(),
+                importMetaData: z
+                  .object({
+                    soapNoteId: z.string(),
+                  })
+                  .nullable(),
+                createdAt: z.string().date(),
+                updatedAt: z.string().date(),
+              }),
+            ),
+            notes: z.string(),
+            bookingDate: z.string().date(),
+            groomingBookings: z.array(
+              z.object({
+                bookingDate: z.string().date(),
+                grooming: z.object({
+                  name: z.string(),
+                }),
+                groomingBookingServices: z.array(
+                  z.object({
+                    catalogue: z.object({
+                      name: z.string(),
+                    }),
+                  }),
+                ),
+                status: z.enum(["COMPLETED", "UPCOMING", "NO_SHOW", "ACTIVE"]),
+                staff: z.object({
+                  id: z.string().uuid(),
+                  name: z.string(),
+                }),
+              }),
+            ),
+            resortServiceBookings: z.array(
+              z.object({
+                bookingDate: z.string().date(),
+                resortService: z.object({
+                  name: z.string(),
+                }),
+                resortServiceBookingServices: z.array(
+                  z.object({
+                    catalogue: z.object({
+                      name: z.string(),
+                    }),
+                  }),
+                ),
+                status: z.enum(["COMPLETED", "UPCOMING", "NO_SHOW", "ACTIVE"]),
+                staff: z.object({
+                  id: z.string().uuid(),
+                  name: z.string(),
+                }),
+              }),
+            ),
+            clinicName: z.string(),
+          }),
+        ),
+      }),
+      errorResponseSchema: z.object({}),
+    },
   },
 })
