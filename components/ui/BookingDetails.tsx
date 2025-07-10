@@ -26,14 +26,14 @@ import { ClipLoader } from "react-spinners"
 import toast from "react-hot-toast"
 // import RescheduleAppointment from "@/components/ui/RescheduleAppointment"
 
-export const cancelReasons = [
-  "Another commitment has come up",
-  "I'm sick / unwell",
-  "I have to travel out of the city",
-  "My pet doesn't need the treatment anymore",
-  "I've visited / will visit another clinic",
-  "Other",
-]
+// export const cancelReasons = [
+//   "Another commitment has come up",
+//   "I'm sick / unwell",
+//   "I have to travel out of the city",
+//   "My pet doesn't need the treatment anymore",
+//   "I've visited / will visit another clinic",
+//   "Other",
+// ]
 
 // export const rescheduleReasons = [
 //   "Another commitment has come up",
@@ -62,12 +62,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
     | "cancelled"
     | "rescheduleConfirm"
   >("default")
-  const [cancelReason, setCancelReason] = useState<string>("")
-  // const [rescheduleReason, setRescheduleReason] = useState<string>("")
-  const [showCancelValidationMessage, setShowCancelValidationMessage] =
-    useState<boolean>(false)
-  // const [showRescheduleValidationMessage, setShowRescheduleValidationMessage] =
-  //   useState<boolean>(false)
+
   const defaultPetImageByType =
     petImageByType[selectedAppointment.pet_type?.toLowerCase() || "other"] ||
     petImageByType.other
@@ -83,18 +78,10 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
   // }
 
   const resetView = () => {
-    setCancelReason("")
-    setShowCancelValidationMessage(false)
-    // setRescheduleReason("")
-    // setShowRescheduleValidationMessage(false)
     setCurrentView("default")
   }
 
   const cancelBooking = async () => {
-    if (!cancelReason) {
-      setShowCancelValidationMessage(true)
-      return
-    }
     try {
       const resp = await cancelAppointment({
         appointmentid: selectedAppointment.id,
@@ -445,7 +432,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                 <h1 className="text-center text-2xl font-semibold font-sans">
                   Are you sure you want to cancel this booking?
                 </h1>
-                <p>
+                {/* <p>
                   Please select a reason for cancelling. You will receive a
                   Whatsapp notification confirming the cancellation for this
                   booking.
@@ -471,7 +458,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                   <p className="text-red-500 text-sm">
                     Please select a reason to proceed.
                   </p>
-                )}
+                )} */}
                 <div className="flex items-center justify-center w-full md:w-[85%] gap-4 md:mt-4">
                   <button
                     onClick={resetView}
