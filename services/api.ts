@@ -973,15 +973,16 @@ export default createAPIClient({
           .object({
             id: z.number(),
             name: z.string(),
-            contact: z.string(),
+            services: z.string(),
             image: z.object({
               type: z.enum(["url", "ref"]),
               value: z.string(),
             }),
+            bookable: z.boolean(),
+            contact: z.string(),
             gmapsUrl: z.string(),
             address: z.string(),
             city: z.string(),
-            services: z.string(),
             parkingInfo: z.string(),
             timings: z.array(
               z.object({
@@ -991,13 +992,7 @@ export default createAPIClient({
                 is24Hours: z.boolean(),
               }),
             ),
-            gallery: z.record(
-              z.string(),
-              z.object({
-                imageUrl: z.string(),
-                imageOrder: z.number(),
-              }),
-            ),
+            gallery: z.array(z.string()),
             reviews: z
               .array(
                 z.object({
@@ -1005,11 +1000,11 @@ export default createAPIClient({
                   author: z.string(),
                   rating: z.number(),
                   review_text: z.string(),
-                  review_created_at: z.string(),
+                  review_created_at: z.string().date(),
                   profile_image: z.string().nullable(),
                 }),
               )
-              .optional(),
+              .nullable(),
           })
           .nullable(),
       }),

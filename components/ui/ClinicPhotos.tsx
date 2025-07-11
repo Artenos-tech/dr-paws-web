@@ -1,31 +1,16 @@
 "use client"
-import { photos } from "@/model/mockData"
 import Image from "next/image"
 import React, { useState, useEffect } from "react"
 import ReactModal from "react-modal"
 
 interface ClinicPhotosProps {
-  clinicId: string
-  gallery: {
-    [imageId: string]: {
-      imageUrl: string
-      imageOrder: number
-    }
-  } | null
+  gallery: Array<string>
 }
 
-function ClinicPhotos({ clinicId, gallery }: ClinicPhotosProps) {
+function ClinicPhotos({ gallery }: ClinicPhotosProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [currentImage, setCurrentImage] = useState<string>("")
   const [isMounted, setIsMounted] = useState(false)
-
-  const clinicImages = gallery
-    ? Object.entries(gallery).map(([imageId, image]) => ({
-        src: image.imageUrl,
-        order: image.imageOrder,
-        id: imageId,
-      }))
-    : photos.find((photoGroup) => photoGroup.id === clinicId)?.photos
 
   // Ensure ReactModal can find the root app element for accessibility
   useEffect(() => {
@@ -55,14 +40,14 @@ function ClinicPhotos({ clinicId, gallery }: ClinicPhotosProps) {
   return (
     <div className="w-full py-[40px]">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[20px] justify-items-center sm:justify-items-start">
-        {clinicImages?.map((photo, index) => (
+        {gallery.map((photo, index) => (
           <div
             key={index}
             className="w-full max-w-[245px] h-full max-h-[245px] rounded-[5px] overflow-hidden border border-gray-300 shadow-md cursor-pointer"
-            onClick={() => openModal(photo.src)}
+            onClick={() => openModal(photo)}
           >
             <Image
-              src={photo.src}
+              src={photo}
               alt="clinic image"
               width={245}
               height={245}

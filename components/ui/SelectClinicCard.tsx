@@ -1,6 +1,5 @@
 import React from "react"
 import Image from "next/image"
-import { clinicImagesMap } from "@/model/mockData"
 import defaultClinicImg from "@/public/assets/images/clinic/ClinicImage.png"
 
 type Clinic = {
@@ -37,9 +36,7 @@ const SelectClinicCard: React.FC<ClinicItemProps> = ({
           src={
             image.value === "unknown"
               ? defaultClinicImg
-              : image.type === "ref"
-                ? clinicImagesMap[image.value]
-                : image.value
+              : image.value
           }
           alt={name + " image"}
           className="image rounded-t-md"

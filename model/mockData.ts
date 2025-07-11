@@ -1,27 +1,7 @@
-import IND_2ndFloor from "../public/assets/images/ClinicDetails/IND_2ndFloor.jpg"
-import IND_2ndFloor1 from "../public/assets/images/ClinicDetails/IND_2ndfloor1.jpg"
-import IND_Diagnostics from "../public/assets/images/ClinicDetails/IND_Diagnostics.jpg"
-import IND_OPT from "../public/assets/images/ClinicDetails/IND_OPT.jpg"
-import IND_Reception from "../public/assets/images/ClinicDetails/IND_Reception.jpg"
-import IND_WaitingArea from "../public/assets/images/ClinicDetails/IND_WaitingArea.jpg"
-import HSR_Exterior1 from "../public/assets/images/ClinicDetails/HSR_Exterior.jpg"
-import IND_Exterior1 from "../public/assets/images/ClinicDetails/IND_Exterior1.jpg"
-import IND_Exterior2 from "../public/assets/images/ClinicDetails/IND_Exterior2.jpg"
-import RMV_Exterior1 from "../public/assets/images/ClinicDetails/RMV_Exterior1.jpg"
-import RMV_Exterior2 from "../public/assets/images/ClinicDetails/RMV_Exterior2.jpg"
-import RMV_CatWaiting from "../public/assets/images/ClinicDetails/RMV_CatWaiting.png"
-import RMV_ConsultRoom from "../public/assets/images/ClinicDetails/RMV_ConsultRoom.png"
-import RMV_Grooming from "../public/assets/images/ClinicDetails/RMV_Grooming.png"
-import RMV_Hallway from "../public/assets/images/ClinicDetails/RMV_Hallway.png"
-import RMV_Hydrotherapy from "../public/assets/images/ClinicDetails/RMV_Hydrotherapy.png"
-import RMV_Reception from "../public/assets/images/ClinicDetails/RMV_Reception.png"
-import RMV_Retail from "../public/assets/images/ClinicDetails/RMV_Retail.png"
 import dogImg from "../public/assets/images/dogimg.webp"
 import catImg from "../public/assets/images/catimg.webp"
 import otherPetsImg from "../public/assets/images/otherpetimg.png"
-import { Clinic, Doctor, Review } from "@/model/typeDefinitions"
-// import { BookingCategory } from "@/model/typeDefinitions";
-// import { AppointmentStatus, AppointmentType } from "@/model/typeDefinitions";
+import { Doctor, Review } from "@/model/typeDefinitions"
 
 import ParasiteControl from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/ParasiteControl.png"
 import SkinInfections from "@/public/assets/images/ServicesPage/PlannedCheckUpImages/SkinInfections.jpeg"
@@ -98,9 +78,6 @@ import LP_OneTap from "@/public/assets/images/Landing Page/LP_OneTap.png"
 import LP_OnlyNecessaryTreatment from "@/public/assets/images/Landing Page/LP_OnlyNecessaryTreatments.png"
 import LP_SpaceForCats from "@/public/assets/images/Landing Page/LP_SpaceForCats.png"
 import { StaticImageData } from "next/image"
-import ClinicImage from "@/public/assets/images/clinic/ClinicImage.png"
-// import AppointmentPetImage from "@/public/assets/images/Appointments/petImage.png";
-// import AppointmentVetImage from "@/public/assets/images/Appointments/vetImage.png";
 
 export const FaqData = [
   {
@@ -171,178 +148,6 @@ export const reviewData = [
     review:
       "The best place to be if you are looking for your pet to be treated as family !! The staff truly treats your pets like family. Their compassionate care and attention to detail create a welcoming environment. From thorough examinations to personalised follow-up, they prioritise your pet's well-being, making every visit a positive experience.",
   },
-]
-
-export const clinicImagesMap: { [key: string]: StaticImageData } = {
-  indiranagar: IND_Exterior1,
-  rmv: RMV_Exterior1,
-  hsr: HSR_Exterior1,
-  unknown: ClinicImage,
-}
-
-export const photos = [
-  {
-    id: "1",
-    photos: [
-      IND_Exterior1,
-      IND_Exterior2,
-      IND_2ndFloor1,
-      IND_2ndFloor,
-      IND_WaitingArea,
-      IND_Diagnostics,
-      IND_OPT,
-      IND_Reception,
-    ],
-  },
-  {
-    id: "2",
-    photos: [
-      RMV_Exterior1,
-      RMV_Exterior2,
-      RMV_CatWaiting,
-      RMV_ConsultRoom,
-      RMV_Grooming,
-      RMV_Hallway,
-      RMV_Hydrotherapy,
-      RMV_Reception,
-      RMV_Retail,
-    ],
-  },
-]
-
-export const clinicItems: Clinic[] = [
-  {
-    id: 1,
-    name: "Dr. Paws, Indiranagar",
-    bookable: true,
-    image: {
-      type: "url",
-      value: IND_Exterior1,
-    },
-    services:
-      "Consults | Surgeries | Grooming | Diagnostics | X-Ray | Ultrasound | Retail",
-    address: "Indiranagar",
-    city: "Bangalore",
-    contact: "+91 9606994627",
-    gmapsUrl: "https://maps.app.goo.gl/p3JpKF8ud82urwFt6",
-    parkingInfo:
-      "Ample parking available outside clinic, and in surrounding lanes",
-    timings: [
-      {
-        dayOfWeek: "Monday",
-        openTime: "09:00",
-        closeTime: "21:00",
-        is24Hours: false,
-      },
-      {
-        dayOfWeek: "Tuesday",
-        openTime: "09:00",
-        closeTime: "21:00",
-        is24Hours: false,
-      },
-      {
-        dayOfWeek: "Wednesday",
-        openTime: "09:00",
-        closeTime: "21:00",
-        is24Hours: false,
-      },
-      {
-        dayOfWeek: "Thursday",
-        openTime: "09:00",
-        closeTime: "21:00",
-        is24Hours: false,
-      },
-      {
-        dayOfWeek: "Friday",
-        openTime: "09:00",
-        closeTime: "21:00",
-        is24Hours: false,
-      },
-      {
-        dayOfWeek: "Saturday",
-        openTime: "09:00",
-        closeTime: "21:00",
-        is24Hours: false,
-      },
-      {
-        dayOfWeek: "Sunday",
-        openTime: "09:00",
-        closeTime: "21:00",
-        is24Hours: false,
-      },
-    ],
-  },
-  {
-    id: 2,
-    name: "Dr. Paws, RMV (Dollars Colony)",
-    bookable: true,
-    image: {
-      type: "url",
-      value: RMV_Exterior1,
-    },
-    services:
-      "Consults | Surgeries | Grooming | Diagnostics | X-Ray | Ultrasound | Hydrotherapy | Retail",
-    contact: "+91 7204996899",
-    address: "RMV (Dollars Colony)",
-    city: "Bangalore",
-    gmapsUrl:
-      "https://www.google.com/maps/place/Dr.+Paws+RMV+-+24x7+Pet+Clinic+in+Sanjay+Nagar,+Bengaluru+%7C+Vet+Consultation,+Pet+Vaccination,+Pet+Grooming,+Pet+Surgery/data=!4m2!3m1!1s0x0:0xc9a13342ab7933ac?sa=X&ved=1t:2428&ictx=111",
-    parkingInfo:
-      "Ample parking available outside clinic, and in surrounding lanes",
-    timings: [
-      {
-        dayOfWeek: "Monday",
-        openTime: "00:00",
-        closeTime: "23:59",
-        is24Hours: true,
-      },
-      {
-        dayOfWeek: "Tuesday",
-        openTime: "00:00",
-        closeTime: "23:59",
-        is24Hours: true,
-      },
-      {
-        dayOfWeek: "Wednesday",
-        openTime: "00:00",
-        closeTime: "23:59",
-        is24Hours: true,
-      },
-      {
-        dayOfWeek: "Thursday",
-        openTime: "00:00",
-        closeTime: "23:59",
-        is24Hours: true,
-      },
-      {
-        dayOfWeek: "Friday",
-        openTime: "00:00",
-        closeTime: "23:59",
-        is24Hours: true,
-      },
-      {
-        dayOfWeek: "Saturday",
-        openTime: "00:00",
-        closeTime: "23:59",
-        is24Hours: true,
-      },
-      {
-        dayOfWeek: "Sunday",
-        openTime: "00:00",
-        closeTime: "23:59",
-        is24Hours: true,
-      },
-    ],
-  },
-  // {
-  //   id: "3",
-  //   image: clinic1,
-  //   clinicName: "HSR layout",
-  //   services:
-  //     "Consults | Grooming | Surgery | Dignostics | Ultrasound | Retail",
-  //   contact: "Coming soon!",
-  //   location: "",
-  // },
 ]
 
 export const descriptionItems = [

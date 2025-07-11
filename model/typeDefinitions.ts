@@ -27,20 +27,17 @@ export interface Clinic extends ClinicBase {
     closeTime: string | null
     is24Hours: boolean | null
   }[]
-  gallery?: {
-    [imageId: string]: {
-      imageUrl: string
-      imageOrder: number
-    }
-  }
-  reviews?: {
-    id: string
-    author: string
-    review_text: string
-    review_created_at: string
-    rating: number
-    profile_image: string | null
-  }[]
+  gallery: Array<string>
+  reviews?:
+    | {
+        id: string
+        author: string
+        review_text: string
+        review_created_at: string
+        rating: number
+        profile_image: string | null
+      }[]
+    | null
 }
 
 export type Gender = "Male" | "Female" | ""

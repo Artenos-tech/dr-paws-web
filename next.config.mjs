@@ -18,7 +18,7 @@ const nextConfig = {
             "localhost",
             "maps.googleapis.com",
             "pettle.s3.ap-south-1.amazonaws.com",
-            "storage.googleapis.com"
+            "storage.googleapis.com",
           ],
         }
       : {
@@ -27,7 +27,7 @@ const nextConfig = {
             "maps.googleapis.com",
             "lh3.googleusercontent.com",
             "pettle.s3.ap-south-1.amazonaws.com",
-            "storage.googleapis.com"
+            "storage.googleapis.com",
           ],
         },
   webpack: (config, { isServer }) => {
