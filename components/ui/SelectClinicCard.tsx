@@ -33,11 +33,7 @@ const SelectClinicCard: React.FC<ClinicItemProps> = ({
     >
       <div className="image-container">
         <Image
-          src={
-            image.value === "unknown"
-              ? defaultClinicImg
-              : image.value
-          }
+          src={image.value === "unknown" ? defaultClinicImg : image.value}
           alt={name + " image"}
           className="image rounded-t-md"
           height={200}

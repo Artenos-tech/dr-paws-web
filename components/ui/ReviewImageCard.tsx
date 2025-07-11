@@ -18,9 +18,12 @@ interface ReviewImageCardProps {
 const ReviewImageCard: React.FC<ReviewImageCardProps> = ({ data }) => {
   const { profile_image, author, review_text, review_created_at, rating } = data
 
-  const formattedDate = formatDistanceToNow(review_created_at.length > 0 ? new Date(review_created_at) : new Date(), {
-    addSuffix: true,
-  })
+  const formattedDate = formatDistanceToNow(
+    review_created_at.length > 0 ? new Date(review_created_at) : new Date(),
+    {
+      addSuffix: true,
+    },
+  )
 
   const stars = Array.from({ length: 5 }).map((_, i) => (
     <span key={i} className={i < rating ? "text-yellow-400" : "text-gray-300"}>
