@@ -103,19 +103,16 @@ export default function Home() {
 
                 {/* Review Cards */}
                 <div className="flex flex-col mt-4 custom:mt-0 custom:flex-none">
-                  {/* ReviewCard 1 */}
                   <ReviewCard
                     name={reviewData[0].name}
                     review={reviewData[0].review}
                     className="w-[290px] md:w-[330px] custom:min-w-[410px] custom:absolute custom:-top-14 custom:-right-[92%]"
                   />
-                  {/* ReviewCard 2 */}
                   <ReviewCard
                     name={reviewData[1].name}
                     review={reviewData[1].review}
                     className="w-[290px] md:w-[330px] custom:min-w-[410px] custom:absolute custom:-bottom-18 custom:-right-[85%]"
                   />
-                  {/* ReviewCard 3 */}
                   <ReviewCard
                     name={reviewData[2].name}
                     review={reviewData[2].review}

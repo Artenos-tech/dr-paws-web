@@ -2,7 +2,6 @@
 import React, { useEffect } from "react"
 import Image from "next/image"
 import teamImg from "@/public/assets/images/team/teamImg.png"
-// import { doctors } from "@/model/mockData";
 import DoctorCard from "@/components/ui/DoctorCard"
 import { DoctorBase } from "@/model/typeDefinitions"
 import { useAPICall } from "@/hooks/apicall"

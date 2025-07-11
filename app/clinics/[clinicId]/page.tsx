@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 
 import ClinicGallery from "@/components/ui/ClinicGallery"
 import ClinicPhotos from "@/components/ui/ClinicPhotos"
-// import ClinicReviews from "@/components/ui/ClinicReviews"
+import ClinicReviews from "@/components/ui/ClinicReviews"
 import ClinicTabBar from "@/components/ui/ClinicTabBar"
 import Overview from "@/components/ui/OverView"
 
@@ -72,10 +72,10 @@ const ClinicDetails: React.FC<ClinicDetailsProps> = ({ params }) => {
       label: "Photos",
       component: <ClinicPhotos gallery={clinic.gallery} />,
     },
-    // REVIEWS: {
-    //   label: "Reviews",
-    //   component: <ClinicReviews reviews={clinic.reviews} />,
-    // },
+    REVIEWS: {
+      label: "Reviews",
+      component: <ClinicReviews reviews={clinic.reviews} />,
+    },
   } as const
 
   const getTabs = () => {
@@ -87,9 +87,12 @@ const ClinicDetails: React.FC<ClinicDetailsProps> = ({ params }) => {
       if (typedTab === "PHOTOS" && clinic.gallery.length === 0) {
         return
       }
-      // if (typedTab === "REVIEWS" && !clinic.reviews) {
-      //   return
-      // }
+      if (
+        typedTab === "REVIEWS" &&
+        (!clinic.reviews || (clinic.reviews && clinic.reviews.length === 0))
+      ) {
+        return
+      }
       availableTabs[typedTab] = tabs[typedTab]
     })
     return availableTabs
@@ -103,14 +106,17 @@ const ClinicDetails: React.FC<ClinicDetailsProps> = ({ params }) => {
           services={clinic.services}
           gallery={clinic.gallery}
         />
-        {clinic.gallery.length > 0 && <ClinicTabBar
-          tabs={getTabs()}
-          activeTabId={activeTab}
-          onTabChange={setActiveTab}
-        />}
+        {clinic.gallery.length > 0 ||
+          (clinic.reviews && clinic.reviews.length > 0 && (
+            <ClinicTabBar
+              tabs={getTabs()}
+              activeTabId={activeTab}
+              onTabChange={setActiveTab}
+            />
+          ))}
         {activeTab === "OVERVIEW" && tabs["OVERVIEW"].component}
         {activeTab === "PHOTOS" && tabs["PHOTOS"].component}
-        {/* {activeTab === "REVIEWS" && tabs["REVIEWS"].component} */}
+        {activeTab === "REVIEWS" && tabs["REVIEWS"].component}
       </main>
     </div>
   )

@@ -993,18 +993,16 @@ export default createAPIClient({
               }),
             ),
             gallery: z.array(z.string()),
-            reviews: z
-              .array(
-                z.object({
-                  id: z.string().uuid(),
-                  author: z.string(),
-                  rating: z.number(),
-                  review_text: z.string(),
-                  review_created_at: z.string().date(),
-                  profile_image: z.string().nullable(),
-                }),
-              )
-              .nullable(),
+            reviews: z.array(
+              z.object({
+                id: z.string(),
+                author: z.string(),
+                rating: z.number(),
+                review_text: z.string(),
+                review_created_at: z.string(),
+                profile_image: z.string().nullable(),
+              }),
+            ),
           })
           .nullable(),
       }),
