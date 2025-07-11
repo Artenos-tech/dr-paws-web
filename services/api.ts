@@ -946,21 +946,19 @@ export default createAPIClient({
       pathParamsSchema: z.object({}),
       requestSchema: z.object({}),
       responseSchema: z.object({
-        clinics: z
-          .array(
-            z.object({
-              id: z.number(),
-              name: z.string(),
-              services: z.string(),
-              image: z.object({
-                type: z.enum(["url", "ref"]),
-                value: z.string(),
-              }),
-              bookable: z.boolean(),
-              contact: z.string(),
+        clinics: z.array(
+          z.object({
+            id: z.number(),
+            name: z.string(),
+            services: z.string(),
+            image: z.object({
+              type: z.enum(["url", "ref"]),
+              value: z.string(),
             }),
-          )
-          .nullable(),
+            bookable: z.boolean(),
+            contact: z.string(),
+          }),
+        ),
       }),
       errorResponseSchema: z.object({}),
     },
