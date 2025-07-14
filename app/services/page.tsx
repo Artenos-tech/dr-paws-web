@@ -2,21 +2,32 @@
 
 import Image from "next/image"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Toaster } from "react-hot-toast"
 
 import ContactInfoModal from "@/components/ui/ContactInfoModal"
 import CustomButton from "@/components/ui/CustomButton"
 import ServicePageTab from "@/components/ui/ServicePageTab"
 import { useUserContext } from "@/context/UserContext"
-import { ServiceTabsData } from "@/model/mockData"
 import DescritionImage from "@/public/assets/images/ServicesPage/DescriptionImage.png"
+import { useAPICall } from "@/hooks/apicall"
+import api from "@/services/api"
+import { Loader } from "lucide-react"
 
 const Services = () => {
   const [isContactModalOpen, setContactIsModalOpen] = useState(false)
   const { initiateLogin, isLoggedIn } = useUserContext()
   const navigate = useRouter()
 
+  const {
+    call: getServicesDetails,
+    loading: loadingServicesDetails,
+    result: servicesDetails,
+  } = useAPICall(api.getServicesDetails)
+
+  useEffect(() => {
+    getServicesDetails({})
+  }, [])
   const handleBookAVisit = () => {
     return isLoggedIn
       ? navigate.push("/user/book-appointment")
@@ -50,10 +61,12 @@ const Services = () => {
             />
           </div>
         </div>
-
-        <div className="w-full">
-          <ServicePageTab tabs={ServiceTabsData} />
-        </div>
+        {loadingServicesDetails && <Loader />}
+        {servicesDetails?.ok && (
+          <div className="w-full">
+            <ServicePageTab tabs={servicesDetails.value.body.servicesDetails} />
+          </div>
+        )}
         <div className="w-[75%] flex flex-col items-center gap-4 md:gap-6 ">
           <p className="text-center text-primary-1 text-sm font-sans italic font-semibold">
             We&apos;ve listed our most commonly requested services, but cater to

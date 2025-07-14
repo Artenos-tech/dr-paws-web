@@ -5,7 +5,7 @@ export interface Service {
 }
 
 export interface ClinicBase {
-  id: number
+  id: string
   name: string
   image: {
     type: "url" | "ref"
@@ -27,35 +27,30 @@ export interface Clinic extends ClinicBase {
     closeTime: string | null
     is24Hours: boolean | null
   }[]
-  gallery?: {
-    [imageId: string]: {
-      imageUrl: string
-      imageOrder: number
-    }
-  }
-  reviews?: {
+  gallery: Array<string>
+  reviews: Array<{
     id: string
     author: string
     review_text: string
     review_created_at: string
     rating: number
     profile_image: string | null
-  }[]
+  }>
 }
 
 export type Gender = "Male" | "Female" | ""
 
 export interface DoctorBase {
-  id: number
+  id: string
   displayName: string
   imageUrl: {
     type: "url" | "ref"
-    value: string | StaticImageData
+    value: string
   }
   position: string
   experience: string
   availableToDisplayAt: {
-    id: number
+    id: string
     name: string
   }[]
 }
@@ -67,13 +62,6 @@ export interface Doctor extends DoctorBase {
   passionateAbout: string
   spiritAnimal: string
   favPetName: string
-}
-
-export interface Review {
-  clinicId: string
-  image: StaticImageData
-  name: string
-  review: string
 }
 
 export interface BookingCategory {

@@ -8,7 +8,6 @@ import ClinicReviews from "@/components/ui/ClinicReviews"
 import ClinicTabBar from "@/components/ui/ClinicTabBar"
 import Overview from "@/components/ui/OverView"
 
-import { clinicItems, doctors, photos } from "@/model/mockData"
 import { useAPICall } from "@/hooks/apicall"
 import api from "@/services/api"
 import Loader from "@/components/ui/Loader"
@@ -38,11 +37,6 @@ const ClinicDetails: React.FC<ClinicDetailsProps> = ({ params }) => {
       const clinic = await getClinic({ clinicid: clinicId })
       if (clinic.ok && clinic.value.body.clinic) {
         setClinic(clinic.value.body.clinic)
-      } else {
-        setClinic(
-          clinicItems.find((clinic) => clinic.id === parseInt(clinicId)) ||
-            null,
-        )
       }
     }
     fetchClinic()
@@ -50,15 +44,11 @@ const ClinicDetails: React.FC<ClinicDetailsProps> = ({ params }) => {
   }, [clinicId])
 
   const doctorsList =
-    (doctorsResult?.ok && doctorsResult.value.body.doctors) || doctors
+    (doctorsResult?.ok && doctorsResult.value.body.doctors) || []
 
   if (loadingClinic || loadingDoctors || !clinic) {
     return <Loader />
   }
-
-  // if (!clinic) {
-  //   return <div>Clinic not found</div>;
-  // }
 
   const tabs = {
     OVERVIEW: {
@@ -75,12 +65,7 @@ const ClinicDetails: React.FC<ClinicDetailsProps> = ({ params }) => {
     },
     PHOTOS: {
       label: "Photos",
-      component: (
-        <ClinicPhotos
-          clinicId={clinicId}
-          gallery={clinic.gallery ? clinic.gallery : null}
-        />
-      ),
+      component: <ClinicPhotos gallery={clinic.gallery} />,
     },
     REVIEWS: {
       label: "Reviews",
@@ -94,14 +79,13 @@ const ClinicDetails: React.FC<ClinicDetailsProps> = ({ params }) => {
     } = {}
     Object.keys(tabs).forEach((tab) => {
       const typedTab = tab as keyof typeof tabs
-      if (
-        typedTab === "PHOTOS" &&
-        !clinic.gallery &&
-        !photos.find((photoGroup) => photoGroup.id === clinicId)
-      ) {
+      if (typedTab === "PHOTOS" && clinic.gallery.length === 0) {
         return
       }
-      if (typedTab === "REVIEWS" && !clinic.reviews) {
+      if (
+        typedTab === "REVIEWS" &&
+        (!clinic.reviews || (clinic.reviews && clinic.reviews.length === 0))
+      ) {
         return
       }
       availableTabs[typedTab] = tabs[typedTab]
@@ -115,14 +99,15 @@ const ClinicDetails: React.FC<ClinicDetailsProps> = ({ params }) => {
         <ClinicGallery
           name={clinic.name}
           services={clinic.services}
-          clinic={clinic}
-          gallery={clinic.gallery ? clinic.gallery : null}
+          gallery={clinic.gallery}
         />
-        <ClinicTabBar
-          tabs={getTabs()}
-          activeTabId={activeTab}
-          onTabChange={setActiveTab}
-        />
+        {(clinic.gallery.length > 0 || clinic.reviews.length > 0) && (
+          <ClinicTabBar
+            tabs={getTabs()}
+            activeTabId={activeTab}
+            onTabChange={setActiveTab}
+          />
+        )}
         {activeTab === "OVERVIEW" && tabs["OVERVIEW"].component}
         {activeTab === "PHOTOS" && tabs["PHOTOS"].component}
         {activeTab === "REVIEWS" && tabs["REVIEWS"].component}

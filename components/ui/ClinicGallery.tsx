@@ -8,38 +8,17 @@ import ReactModal from "react-modal"
 
 import CustomButton from "@/components/ui/CustomButton"
 import { useUserContext } from "@/context/UserContext"
-import { photos } from "@/model/mockData"
-import { Clinic } from "@/model/typeDefinitions"
 
 interface ClinicGalleryProps {
   name: string
   services: string
-  clinic: Clinic
-  gallery: {
-    [imageId: string]: {
-      imageUrl: string
-      imageOrder: number
-    }
-  } | null
+  gallery: Array<string>
 }
 
-function ClinicGallery({
-  name,
-  services,
-  clinic,
-  gallery,
-}: ClinicGalleryProps) {
+function ClinicGallery({ name, services, gallery }: ClinicGalleryProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [currentIndex, setCurrentIndex] = useState(0)
-  const clinicImages = gallery
-    ? Object.entries(gallery).map(([imageId, image]) => ({
-        id: imageId,
-        src: image.imageUrl,
-        order: image.imageOrder,
-      }))
-    : photos.find((clinicInfo) => clinicInfo.id === clinic.id.toString())
-        ?.photos
-  const limitedGalleryItems = clinicImages ? clinicImages.slice(0, 7) : []
+  const limitedGalleryItems = gallery.slice(0, 7) ?? []
   const [isMounted, setIsMounted] = useState(false)
   const { initiateLogin, isLoggedIn } = useUserContext()
   const navigate = useRouter()
@@ -75,7 +54,7 @@ function ClinicGallery({
 
   return (
     <div className="w-full">
-      {limitedGalleryItems && limitedGalleryItems.length > 0 && (
+      {limitedGalleryItems.length > 0 && (
         <div className="gallery-container grid grid-cols-3 gap-4 max-h-[75vh] relative overflow-y-auto">
           {limitedGalleryItems.map((image, index) => (
             <div
@@ -88,7 +67,7 @@ function ClinicGallery({
               }
             >
               <img
-                src={image.src}
+                src={image}
                 alt="gallery image"
                 className={`w-full h-full object-cover ${
                   index === limitedGalleryItems.length - 1 ? "opacity-60" : ""
@@ -160,7 +139,7 @@ function ClinicGallery({
             limitedGalleryItems[currentIndex] && (
               <div className="w-full">
                 <img
-                  src={limitedGalleryItems[currentIndex].src}
+                  src={limitedGalleryItems[currentIndex]}
                   alt="gallery image"
                   className="overflow-hidden w-full h-[80vh] object-contain"
                   loading="lazy"

@@ -1,6 +1,5 @@
-import Image, { StaticImageData } from "next/image"
+import Image from "next/image"
 import ClinicItem from "./ClinicItem"
-import { clinicItems } from "@/model/mockData"
 import ClinicThumbnail from "@/public/assets/images/clinic/clinicThumbnail.svg"
 import { useAPICall } from "@/hooks/apicall"
 import api from "@/services/api"
@@ -15,12 +14,12 @@ interface ClinicItemProps {
 const ClinicItemList = ({ showStaticCard, enlargedView }: ClinicItemProps) => {
   const [clinics, setClinics] = useState<
     {
-      id: number
+      id: string
       name: string
       services: string
       image: {
         type: "url" | "ref"
-        value: string | StaticImageData
+        value: string
       }
       bookable: boolean
       contact: string
@@ -29,24 +28,12 @@ const ClinicItemList = ({ showStaticCard, enlargedView }: ClinicItemProps) => {
   const { call: getClinicsList, loading: loadingClinicList } = useAPICall(
     api.getClinicsForDisplay,
   )
+
   useEffect(() => {
     const fetchClinics = async () => {
       const clinics = await getClinicsList({})
       if (clinics.ok && clinics.value.body.clinics) {
         setClinics(clinics.value.body.clinics)
-      } else {
-        setClinics(
-          clinicItems.map((clinic) => ({
-            id: clinic.id,
-            name: clinic.name,
-            services: clinic.services,
-            image: clinic.image,
-            // We are using '!' here to assert that 'clinic.bookable' is not undefined.
-            // This is safe because 'clinic.bookable' will always be returned
-            bookable: clinic.bookable!,
-            contact: clinic.contact,
-          })),
-        )
       }
     }
     fetchClinics()

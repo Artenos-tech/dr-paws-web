@@ -2,12 +2,10 @@
 import React, { useEffect } from "react"
 import Image from "next/image"
 import teamImg from "@/public/assets/images/team/teamImg.png"
-// import { doctors } from "@/model/mockData";
 import DoctorCard from "@/components/ui/DoctorCard"
 import { DoctorBase } from "@/model/typeDefinitions"
 import { useAPICall } from "@/hooks/apicall"
 import api from "@/services/api"
-import { doctors } from "@/model/mockData"
 import Loader from "@/components/ui/Loader"
 
 const TeamPage = () => {
@@ -15,18 +13,16 @@ const TeamPage = () => {
     api.getDoctorsForDisplay,
   )
   const [doctorsList, setDoctors] = React.useState<DoctorBase[]>([])
+
   useEffect(() => {
     const fetchDoctors = async () => {
       const docsResult = await getDoctorsForDisplay({})
       if (docsResult.ok && docsResult.value.body.doctors) {
         setDoctors(docsResult.value.body.doctors)
-      } else {
-        setDoctors(doctors)
       }
     }
     fetchDoctors()
   }, [])
-  // const doctorsList = doctorsResult && doctorsResult.ok && doctorsResult.value.body.doctors || doctors;
   return (
     <div className="flex flex-col w-full h-full items-center justify-items-center font-roca pb-20">
       <main className="flex flex-col gap-[50px] row-start-2 items-center w-full px-8 md:px-32 lg:px-20 xl:px-40">

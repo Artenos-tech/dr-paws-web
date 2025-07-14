@@ -3,7 +3,7 @@
 import ReviewImageCardList from "./ReviewImageCardList"
 
 interface ClinicReviewsProps {
-  reviews?: {
+  reviews: {
     id: string
     author: string
     review_text: string

@@ -1,6 +1,6 @@
 "use client"
 
-import Image, { StaticImageData } from "next/image"
+import Image from "next/image"
 import { useRouter } from "next/navigation"
 import React, { useState } from "react"
 import { Toaster } from "react-hot-toast"
@@ -8,12 +8,12 @@ import { useUserContext } from "@/context/UserContext"
 import { CalendarClock } from "lucide-react"
 
 interface ClinicInfo {
-  id: number
+  id: string
   name: string
   services: string
   image: {
     type: "url" | "ref"
-    value: string | StaticImageData
+    value: string
   }
   bookable: boolean
   contact: string
@@ -30,7 +30,6 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
 
   const { initiateLogin, isLoggedIn } = useUserContext()
   const [modalVisible, setModalVisible] = useState(false)
-  // const navigate = useRouter()
 
   const handleBookAVisit = () => {
     if (!bookable) {

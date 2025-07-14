@@ -4,16 +4,16 @@ import { useState } from "react"
 import Image, { StaticImageData } from "next/image"
 import { ChevronDown } from "lucide-react"
 
-interface ImageDetail {
+interface ServiceDetail {
   img: StaticImageData | string
-  imgText: string
+  title: string
 }
 
 interface Tab {
   id: string
   title: string
   description: string
-  imageDetails: ImageDetail[]
+  services: ServiceDetail[]
 }
 
 type ServiceTabProps = {
@@ -95,23 +95,23 @@ const ServiceTab = ({ tabs }: ServiceTabProps) => {
 
           {/* Image Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-10 xl:grid-cols-4 2xl:grid-cols-5 justify-between  md:gap-6 w-full mx-auto">
-            {activeTabContent.imageDetails.map((detail, index) => (
+            {activeTabContent.services.map((service, index) => (
               <div
                 key={index}
                 className={`flex flex-col items-center space-y-4 `}
               >
                 <div className="mt-6 md:mt-0 rounded-full overflow-hidden max-w-[120px] max-h-[120px] md:max-w-[150px] md:max-h-[150px] lg:max-w-[165px] lg:max-h-[165px] flex-shrink-0">
                   <Image
-                    src={detail.img}
-                    alt={detail.imgText}
+                    src={service.img}
+                    alt={service.title}
                     className="object-cover w-[120px] h-[120px] md:w-[150px] md:h-[150px] lg:w-[165px] lg:h-[165px]"
                     width={165}
                     height={165}
-                    unoptimized={typeof detail.img === "string"}
+                    // unoptimized={typeof service.img === "string"}
                   />
                 </div>
                 <span className="text-center text-primary-1 text-lg sm:text-xl font-medium">
-                  {detail.imgText}
+                  {service.title}
                 </span>
               </div>
             ))}

@@ -946,21 +946,19 @@ export default createAPIClient({
       pathParamsSchema: z.object({}),
       requestSchema: z.object({}),
       responseSchema: z.object({
-        clinics: z
-          .array(
-            z.object({
-              id: z.number(),
-              name: z.string(),
-              services: z.string(),
-              image: z.object({
-                type: z.enum(["url", "ref"]),
-                value: z.string(),
-              }),
-              bookable: z.boolean(),
-              contact: z.string(),
+        clinics: z.array(
+          z.object({
+            id: z.string(),
+            name: z.string(),
+            services: z.string(),
+            image: z.object({
+              type: z.enum(["url", "ref"]),
+              value: z.string(),
             }),
-          )
-          .nullable(),
+            bookable: z.boolean(),
+            contact: z.string(),
+          }),
+        ),
       }),
       errorResponseSchema: z.object({}),
     },
@@ -971,49 +969,40 @@ export default createAPIClient({
       pathParamsSchema: z.object({ clinicid: z.string() }),
       requestSchema: z.object({}),
       responseSchema: z.object({
-        clinic: z
-          .object({
-            id: z.number(),
-            name: z.string(),
-            contact: z.string(),
-            image: z.object({
-              type: z.enum(["url", "ref"]),
-              value: z.string(),
+        clinic: z.object({
+          id: z.string(),
+          name: z.string(),
+          services: z.string(),
+          image: z.object({
+            type: z.enum(["url", "ref"]),
+            value: z.string(),
+          }),
+          bookable: z.boolean(),
+          contact: z.string(),
+          gmapsUrl: z.string(),
+          address: z.string(),
+          city: z.string(),
+          parkingInfo: z.string(),
+          timings: z.array(
+            z.object({
+              dayOfWeek: z.string().nullable(),
+              openTime: z.string().nullable(),
+              closeTime: z.string().nullable(),
+              is24Hours: z.boolean(),
             }),
-            gmapsUrl: z.string(),
-            address: z.string(),
-            city: z.string(),
-            services: z.string(),
-            parkingInfo: z.string(),
-            timings: z.array(
-              z.object({
-                dayOfWeek: z.string().nullable(),
-                openTime: z.string().nullable(),
-                closeTime: z.string().nullable(),
-                is24Hours: z.boolean(),
-              }),
-            ),
-            gallery: z.record(
-              z.string(),
-              z.object({
-                imageUrl: z.string(),
-                imageOrder: z.number(),
-              }),
-            ),
-            reviews: z
-              .array(
-                z.object({
-                  id: z.string().uuid(),
-                  author: z.string(),
-                  rating: z.number(),
-                  review_text: z.string(),
-                  review_created_at: z.string(),
-                  profile_image: z.string().nullable(),
-                }),
-              )
-              .optional(),
-          })
-          .nullable(),
+          ),
+          gallery: z.array(z.string()),
+          reviews: z.array(
+            z.object({
+              id: z.string(),
+              author: z.string(),
+              rating: z.number(),
+              review_text: z.string(),
+              review_created_at: z.string(),
+              profile_image: z.string().nullable(),
+            }),
+          ),
+        }),
       }),
       errorResponseSchema: z.object({}),
     },
@@ -1024,26 +1013,24 @@ export default createAPIClient({
       pathParamsSchema: z.object({}),
       requestSchema: z.object({}),
       responseSchema: z.object({
-        doctors: z
-          .array(
-            z.object({
-              id: z.number(),
-              displayName: z.string(),
-              position: z.string(),
-              experience: z.string(),
-              availableToDisplayAt: z.array(
-                z.object({
-                  id: z.number(),
-                  name: z.string(),
-                }),
-              ),
-              imageUrl: z.object({
-                type: z.enum(["url", "ref"]),
-                value: z.string(),
+        doctors: z.array(
+          z.object({
+            id: z.string(),
+            displayName: z.string(),
+            position: z.string(),
+            experience: z.string(),
+            availableToDisplayAt: z.array(
+              z.object({
+                id: z.string(),
+                name: z.string(),
               }),
+            ),
+            imageUrl: z.object({
+              type: z.enum(["url", "ref"]),
+              value: z.string(),
             }),
-          )
-          .nullable(),
+          }),
+        ),
       }),
       errorResponseSchema: z.object({}),
     },
@@ -1056,7 +1043,7 @@ export default createAPIClient({
       responseSchema: z.object({
         doctor: z
           .object({
-            id: z.number(),
+            id: z.string(),
             displayName: z.string(),
             position: z.string(),
             experience: z.string(),
@@ -1068,7 +1055,7 @@ export default createAPIClient({
             spiritAnimal: z.string(),
             availableToDisplayAt: z.array(
               z.object({
-                id: z.number(),
+                id: z.string(),
                 name: z.string(),
               }),
             ),
@@ -1088,30 +1075,75 @@ export default createAPIClient({
       pathParamsSchema: z.object({ clinicid: z.string() }),
       requestSchema: z.object({}),
       responseSchema: z.object({
-        doctors: z
-          .array(
-            z.object({
-              id: z.number(),
-              displayName: z.string(),
-              position: z.string(),
-              experience: z.string(),
-              availableToDisplayAt: z.array(
-                z.object({
-                  id: z.number(),
-                  name: z.string(),
-                }),
-              ),
-              imageUrl: z.object({
-                type: z.enum(["url", "ref"]),
-                value: z.string(),
+        doctors: z.array(
+          z.object({
+            id: z.string(),
+            displayName: z.string(),
+            position: z.string(),
+            experience: z.string(),
+            availableToDisplayAt: z.array(
+              z.object({
+                id: z.string(),
+                name: z.string(),
               }),
+            ),
+            imageUrl: z.object({
+              type: z.enum(["url", "ref"]),
+              value: z.string(),
             }),
-          )
-          .nullable(),
+          }),
+        ),
       }),
       errorResponseSchema: z.object({}),
     },
 
+    getServiceCategoriesOffered: {
+      method: "GET",
+      path: "/service-categories",
+      pathParamsSchema: z.object({}),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        serviceCategories: z.array(z.string()),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+
+    getServicesOverview: {
+      method: "GET",
+      path: "/services-overview",
+      pathParamsSchema: z.object({}),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        servicesOverview: z.record(
+          z.string(),
+          z.array(z.object({ name: z.string() })),
+        ),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+
+    getServicesDetails: {
+      method: "GET",
+      path: "/services-details",
+      pathParamsSchema: z.object({}),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        servicesDetails: z.array(
+          z.object({
+            id: z.string(),
+            title: z.string(),
+            description: z.string(),
+            services: z.array(
+              z.object({
+                img: z.string(),
+                title: z.string(),
+              }),
+            ),
+          }),
+        ),
+      }),
+      errorResponseSchema: z.object({}),
+    },
     getInvoices: {
       method: "GET",
       path: "/user/invoices",
