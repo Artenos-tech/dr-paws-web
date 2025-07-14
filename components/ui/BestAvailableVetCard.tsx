@@ -1,4 +1,3 @@
-// components/ui/DoctorCard.tsx
 import React from "react"
 
 interface BestAvailableVetCardProps {

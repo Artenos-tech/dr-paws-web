@@ -948,7 +948,7 @@ export default createAPIClient({
       responseSchema: z.object({
         clinics: z.array(
           z.object({
-            id: z.number(),
+            id: z.string(),
             name: z.string(),
             services: z.string(),
             image: z.object({
@@ -969,42 +969,40 @@ export default createAPIClient({
       pathParamsSchema: z.object({ clinicid: z.string() }),
       requestSchema: z.object({}),
       responseSchema: z.object({
-        clinic: z
-          .object({
-            id: z.number(),
-            name: z.string(),
-            services: z.string(),
-            image: z.object({
-              type: z.enum(["url", "ref"]),
-              value: z.string(),
+        clinic: z.object({
+          id: z.string(),
+          name: z.string(),
+          services: z.string(),
+          image: z.object({
+            type: z.enum(["url", "ref"]),
+            value: z.string(),
+          }),
+          bookable: z.boolean(),
+          contact: z.string(),
+          gmapsUrl: z.string(),
+          address: z.string(),
+          city: z.string(),
+          parkingInfo: z.string(),
+          timings: z.array(
+            z.object({
+              dayOfWeek: z.string().nullable(),
+              openTime: z.string().nullable(),
+              closeTime: z.string().nullable(),
+              is24Hours: z.boolean(),
             }),
-            bookable: z.boolean(),
-            contact: z.string(),
-            gmapsUrl: z.string(),
-            address: z.string(),
-            city: z.string(),
-            parkingInfo: z.string(),
-            timings: z.array(
-              z.object({
-                dayOfWeek: z.string().nullable(),
-                openTime: z.string().nullable(),
-                closeTime: z.string().nullable(),
-                is24Hours: z.boolean(),
-              }),
-            ),
-            gallery: z.array(z.string()),
-            reviews: z.array(
-              z.object({
-                id: z.string(),
-                author: z.string(),
-                rating: z.number(),
-                review_text: z.string(),
-                review_created_at: z.string(),
-                profile_image: z.string().nullable(),
-              }),
-            ),
-          })
-          .nullable(),
+          ),
+          gallery: z.array(z.string()),
+          reviews: z.array(
+            z.object({
+              id: z.string(),
+              author: z.string(),
+              rating: z.number(),
+              review_text: z.string(),
+              review_created_at: z.string(),
+              profile_image: z.string().nullable(),
+            }),
+          ),
+        }),
       }),
       errorResponseSchema: z.object({}),
     },
@@ -1015,26 +1013,24 @@ export default createAPIClient({
       pathParamsSchema: z.object({}),
       requestSchema: z.object({}),
       responseSchema: z.object({
-        doctors: z
-          .array(
-            z.object({
-              id: z.number(),
-              displayName: z.string(),
-              position: z.string(),
-              experience: z.string(),
-              availableToDisplayAt: z.array(
-                z.object({
-                  id: z.number(),
-                  name: z.string(),
-                }),
-              ),
-              imageUrl: z.object({
-                type: z.enum(["url", "ref"]),
-                value: z.string(),
+        doctors: z.array(
+          z.object({
+            id: z.string(),
+            displayName: z.string(),
+            position: z.string(),
+            experience: z.string(),
+            availableToDisplayAt: z.array(
+              z.object({
+                id: z.string(),
+                name: z.string(),
               }),
+            ),
+            imageUrl: z.object({
+              type: z.enum(["url", "ref"]),
+              value: z.string(),
             }),
-          )
-          .nullable(),
+          }),
+        ),
       }),
       errorResponseSchema: z.object({}),
     },
@@ -1047,7 +1043,7 @@ export default createAPIClient({
       responseSchema: z.object({
         doctor: z
           .object({
-            id: z.number(),
+            id: z.string(),
             displayName: z.string(),
             position: z.string(),
             experience: z.string(),
@@ -1059,7 +1055,7 @@ export default createAPIClient({
             spiritAnimal: z.string(),
             availableToDisplayAt: z.array(
               z.object({
-                id: z.number(),
+                id: z.string(),
                 name: z.string(),
               }),
             ),
@@ -1079,26 +1075,24 @@ export default createAPIClient({
       pathParamsSchema: z.object({ clinicid: z.string() }),
       requestSchema: z.object({}),
       responseSchema: z.object({
-        doctors: z
-          .array(
-            z.object({
-              id: z.number(),
-              displayName: z.string(),
-              position: z.string(),
-              experience: z.string(),
-              availableToDisplayAt: z.array(
-                z.object({
-                  id: z.number(),
-                  name: z.string(),
-                }),
-              ),
-              imageUrl: z.object({
-                type: z.enum(["url", "ref"]),
-                value: z.string(),
+        doctors: z.array(
+          z.object({
+            id: z.string(),
+            displayName: z.string(),
+            position: z.string(),
+            experience: z.string(),
+            availableToDisplayAt: z.array(
+              z.object({
+                id: z.string(),
+                name: z.string(),
               }),
+            ),
+            imageUrl: z.object({
+              type: z.enum(["url", "ref"]),
+              value: z.string(),
             }),
-          )
-          .nullable(),
+          }),
+        ),
       }),
       errorResponseSchema: z.object({}),
     },

@@ -8,7 +8,6 @@ import ClinicReviews from "@/components/ui/ClinicReviews"
 import ClinicTabBar from "@/components/ui/ClinicTabBar"
 import Overview from "@/components/ui/OverView"
 
-import { doctors } from "@/model/mockData"
 import { useAPICall } from "@/hooks/apicall"
 import api from "@/services/api"
 import Loader from "@/components/ui/Loader"
@@ -45,15 +44,11 @@ const ClinicDetails: React.FC<ClinicDetailsProps> = ({ params }) => {
   }, [clinicId])
 
   const doctorsList =
-    (doctorsResult?.ok && doctorsResult.value.body.doctors) || doctors
+    (doctorsResult?.ok && doctorsResult.value.body.doctors) || []
 
   if (loadingClinic || loadingDoctors || !clinic) {
     return <Loader />
   }
-
-  // if (!clinic) {
-  //   return <div>Clinic not found</div>;
-  // }
 
   const tabs = {
     OVERVIEW: {
@@ -106,14 +101,13 @@ const ClinicDetails: React.FC<ClinicDetailsProps> = ({ params }) => {
           services={clinic.services}
           gallery={clinic.gallery}
         />
-        {clinic.gallery.length > 0 ||
-          (clinic.reviews && clinic.reviews.length > 0 && (
-            <ClinicTabBar
-              tabs={getTabs()}
-              activeTabId={activeTab}
-              onTabChange={setActiveTab}
-            />
-          ))}
+        {(clinic.gallery.length > 0 || clinic.reviews.length > 0) && (
+          <ClinicTabBar
+            tabs={getTabs()}
+            activeTabId={activeTab}
+            onTabChange={setActiveTab}
+          />
+        )}
         {activeTab === "OVERVIEW" && tabs["OVERVIEW"].component}
         {activeTab === "PHOTOS" && tabs["PHOTOS"].component}
         {activeTab === "REVIEWS" && tabs["REVIEWS"].component}

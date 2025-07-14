@@ -3,10 +3,8 @@
 import React, { useState } from "react"
 import Image from "next/image"
 import { CiLocationOn } from "react-icons/ci"
-import defaultVetImage from "@/public/assets/images/clinic/doctorFemale.webp"
 import { DoctorBase } from "@/model/typeDefinitions"
 import DoctorDetailsModal from "./DoctorDetailsModal"
-import { doctorImagesMap, doctors } from "@/model/mockData"
 import api from "@/services/api"
 import { useAPICall } from "@/hooks/apicall"
 import Loader from "./Loader"
@@ -27,7 +25,7 @@ const DoctorCard: React.FC<DoctorCardProps> = ({ doctor }) => {
 
   const handleViewProfile = async () => {
     const doctorDetails = await getDoctorProfile({
-      doctorid: doctor.id.toString(),
+      doctorid: doctor.id,
     })
     if (doctorDetails.ok) {
       setModalOpen(true)
@@ -37,19 +35,14 @@ const DoctorCard: React.FC<DoctorCardProps> = ({ doctor }) => {
   const doctorProfile =
     doctorProfileResult?.ok && doctorProfileResult.value.body.doctor
       ? doctorProfileResult.value.body.doctor
-      : doctors.find((doc) => doc.id === doctor.id)
+      : // : doctors.find((doc) => doc.id === doctor.id)
+        null
 
   return (
     <>
       <div className="rounded-xl border border-primary-3 shadow-md bg-primary-3 text-primary-1 p-4 sm:p-6 w-[260px] md:w-[378px] lg:w-[320px] flex flex-col items-center text-center space-y-4">
         <Image
-          src={
-            imageUrl.value === "unknown"
-              ? defaultVetImage
-              : imageUrl.type === "ref"
-                ? doctorImagesMap[imageUrl.value as string]
-                : imageUrl.value
-          }
+          src={imageUrl.value}
           alt={displayName}
           width={120}
           height={120}
@@ -72,7 +65,11 @@ const DoctorCard: React.FC<DoctorCardProps> = ({ doctor }) => {
               <Loader />
             </div>
           ) : (
-            <button className="w-full h-full" onClick={handleViewProfile}>
+            <button
+              className="w-full h-full"
+              onClick={handleViewProfile}
+              disabled={!!doctorProfile}
+            >
               View Profile
             </button>
           )}

@@ -1,7 +1,5 @@
-// components/ui/DoctorCard.tsx
 import React from "react"
 import Image from "next/image"
-// import { doctorImagesMap } from "@/model/mockData"
 import defaultVetImg from "@/public/assets/images/clinic/doctorFemale.webp"
 import { SelectedVet } from "./SelectVet"
 
@@ -12,7 +10,6 @@ interface SelectDoctorCardProps {
     doctorId: string,
     doctorName: string,
     doctorImage: string | null,
-    // doctorImage: { type: "url" | "ref"; value: string },
   ) => void
 }
 
@@ -35,14 +32,7 @@ const SelectDoctorCard: React.FC<SelectDoctorCardProps> = ({
       }`}
     >
       <Image
-        src={
-          displayImage ?? defaultVetImg
-          // image.value === "unknown"
-          //   ? defaultVetImg
-          //   : image.type === "ref"
-          //     ? doctorImagesMap[image.value]
-          //     : image.value
-        }
+        src={displayImage ?? defaultVetImg}
         alt={name}
         width={120}
         height={120}
