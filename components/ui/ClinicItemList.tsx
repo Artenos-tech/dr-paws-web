@@ -1,4 +1,4 @@
-import Image, { StaticImageData } from "next/image"
+import Image from "next/image"
 import ClinicItem from "./ClinicItem"
 import ClinicThumbnail from "@/public/assets/images/clinic/clinicThumbnail.svg"
 import { useAPICall } from "@/hooks/apicall"
@@ -14,12 +14,12 @@ interface ClinicItemProps {
 const ClinicItemList = ({ showStaticCard, enlargedView }: ClinicItemProps) => {
   const [clinics, setClinics] = useState<
     {
-      id: number
+      id: string
       name: string
       services: string
       image: {
         type: "url" | "ref"
-        value: string | StaticImageData
+        value: string
       }
       bookable: boolean
       contact: string

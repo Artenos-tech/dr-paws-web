@@ -6,7 +6,6 @@ import Modal from "react-modal"
 import whatsapp from "@/public/assets/images/ContactInfo/whatsappIcon.svg"
 import Call from "@/public/assets/images/ContactInfo/telephone-icon.svg"
 import Map from "@/public/assets/images/ContactInfo/location-icon.svg"
-import { Construction } from "lucide-react"
 
 interface ContactInfoModalProps {
   isOpen: boolean
@@ -53,10 +52,8 @@ const ContactInfoModal: React.FC<ContactInfoModalProps> = ({
       <div className="flex flex-col gap-2">
         <div className="">
           <h3 className="font-semibold text-lg mb-1">Dr. Paws Indiranagar</h3>
-          <p className="text-sm text-gray-600">
-            Open 7 days a week, 9am to 8pm
-          </p>
-          <div className="flex flex-col md:flex-row items-start lg:items-center gap-2 mt-1">
+          <p className="text-sm text-gray-600">Open 24/7</p>
+          <div className="flex md:flex-row items-start lg:items-center gap-2 mt-1">
             <div className="text-blue-600">
               <div className="flex flex-row items-center justify-center gap-1">
                 <Image src={Call} alt="whats app" width={16} height={16} />
@@ -70,7 +67,7 @@ const ContactInfoModal: React.FC<ContactInfoModalProps> = ({
               </div>
             </div>
             <Link
-              href="https://www.google.com/maps/place/Dr.+Paws+-+Veterinarian+in+Indiranagar,+Bengaluru+%7C+Vet+Consultation,+Pet+Vaccination,+Pet+Grooming,+Pet+Surgery+%7C+Pet+Clinic/@12.9655265,77.6378598,19z/data=!4m6!3m5!1s0x3bae150fe803f393:0x5820ed9ef42478d3!8m2!3d12.9655253!4d77.6385461!16s%2Fg%2F11vxxyv2zc?entry=ttu&g_ep=EgoyMDI0MTExMC4wIKXMDSoASAFQAw%3D%3D"
+              href="https://maps.app.goo.gl/pJ1pXF8ud82urwFb6"
               className="text-blue-600"
             >
               <div className="flex flex-row items-center justify-center gap-1">
@@ -85,10 +82,8 @@ const ContactInfoModal: React.FC<ContactInfoModalProps> = ({
           <h3 className="font-semibold text-lg mb-1">
             Dr. Paws RMV (Dollars Colony)
           </h3>
-          <p className="text-sm text-gray-600">
-            Open 7 days a week, 9am to 8pm
-          </p>
-          <div className="flex flex-col md:flex-row items-start lg:items-center gap-2 mt-1">
+          <p className="text-sm text-gray-600">Open 24/7</p>
+          <div className="flex md:flex-row items-start lg:items-center gap-2 mt-1">
             <div className="text-blue-600">
               <div className="flex flex-row items-center justify-center gap-1">
                 <Image src={Call} alt="whats app" width={16} height={16} />
@@ -102,7 +97,7 @@ const ContactInfoModal: React.FC<ContactInfoModalProps> = ({
               </div>
             </div>
             <Link
-              href="https://www.google.com/maps/place/Dr.+Paws+-+Veterinarian+in+RMV+(Dollars+Colony)+%7C+Vet+Consultation,+Pet+Vaccination,+Pet+Grooming,+Pet+Surgery+%7C+Pet+Clinic/@13.0434014,77.570594,17z/data=!3m1!4b1!4m6!3m5!1s0x3bae174f82ebbe2f:0xc9a13342ab7933ac!8m2!3d13.0434014!4d77.570594!16s%2Fg%2F11w8ffwb9b?entry=ttu&g_ep=EgoyMDI0MTExMC4wIKXMDSoASAFQAw%3D%3D"
+              href="https://maps.app.goo.gl/qMGkH4oztRoqxMSBA"
               className="text-blue-600"
             >
               <div className="flex flex-row items-center justify-center gap-1">
@@ -111,12 +106,40 @@ const ContactInfoModal: React.FC<ContactInfoModalProps> = ({
               </div>
             </Link>
           </div>
-          <div className="flex items-center gap-2">
+        </div>
+
+        <div className="">
+          <h3 className="font-semibold text-lg mb-1">Dr. Paws HSR Layout</h3>
+          <p className="text-sm text-gray-600">Open 24/7</p>
+          <div className="flex md:flex-row items-start lg:items-center gap-2 mt-1">
+            <div className="text-blue-600">
+              <div className="flex flex-row items-center justify-center gap-1">
+                <Image src={Call} alt="whats app" width={16} height={16} />
+                <span>7204996902</span>
+              </div>
+            </div>
+            <div className="text-blue-600">
+              <div className="flex flex-row items-center justify-center gap-1">
+                <Image src={whatsapp} alt="whats app" width={14} height={14} />
+                <span>7204996902</span>
+              </div>
+            </div>
+            <Link
+              href="https://maps.app.goo.gl/5GLvX4ss994wwotT8"
+              className="text-blue-600"
+            >
+              <div className="flex flex-row items-center justify-center gap-1">
+                <Image src={Map} alt="whats app" width={14} height={14} />
+                <span>Google Maps Link</span>
+              </div>
+            </Link>
+          </div>
+          {/* <div className="flex items-center gap-2">
             <Construction />
             <p className="italic font-semibold my-2 text-gray-600">
               Mobile app coming soon
             </p>
-          </div>
+          </div> */}
         </div>
       </div>
 

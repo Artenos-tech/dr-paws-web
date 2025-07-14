@@ -1097,6 +1097,53 @@ export default createAPIClient({
       errorResponseSchema: z.object({}),
     },
 
+    getServiceCategoriesOffered: {
+      method: "GET",
+      path: "/service-categories",
+      pathParamsSchema: z.object({}),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        serviceCategories: z.array(z.string()),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+
+    getServicesOverview: {
+      method: "GET",
+      path: "/services-overview",
+      pathParamsSchema: z.object({}),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        servicesOverview: z.record(
+          z.string(),
+          z.array(z.object({ name: z.string() })),
+        ),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+
+    getServicesDetails: {
+      method: "GET",
+      path: "/services-details",
+      pathParamsSchema: z.object({}),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        servicesDetails: z.array(
+          z.object({
+            id: z.string(),
+            title: z.string(),
+            description: z.string(),
+            services: z.array(
+              z.object({
+                img: z.string(),
+                title: z.string(),
+              }),
+            ),
+          }),
+        ),
+      }),
+      errorResponseSchema: z.object({}),
+    },
     getInvoices: {
       method: "GET",
       path: "/user/invoices",

@@ -47,13 +47,13 @@ const SelectService: React.FC<SelectServiceProps> = ({
   const { call: getPetsAPI, result: getPetsAPIResult } = useAPICall(api.getPets)
 
   const {
-    call: callGetAppointmentServices,
+    call: getAppointmentServices,
     result: getAppointmentServicesResult,
     loading: loadingServices,
   } = useAPICall(api.getAppointmentServices)
 
   useEffect(() => {
-    callGetAppointmentServices({})
+    getAppointmentServices({})
     fetchPets()
   }, [])
 
@@ -69,7 +69,7 @@ const SelectService: React.FC<SelectServiceProps> = ({
       id: pet.id,
     }))
 
-  const ServiceTabsData = getAppointmentServicesResult?.ok
+  const appointmentTypes = getAppointmentServicesResult?.ok
     ? getAppointmentServicesResult.value.body.appointmentTypes
     : []
 
@@ -95,7 +95,7 @@ const SelectService: React.FC<SelectServiceProps> = ({
       if (prevOpenCard !== null) {
         setServiceOptions(null, null, null, isGrooming, selectedSubtype)
       }
-      const selectedCard = ServiceTabsData.find(
+      const selectedCard = appointmentTypes.find(
         (category) => category.id === cardId,
       )
       if (
@@ -128,29 +128,29 @@ const SelectService: React.FC<SelectServiceProps> = ({
       <p className="text-gray-600 mb-12">Choose from our services:</p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
-        {ServiceTabsData.toSorted(
-          (a, b) => a.displayOrder - b.displayOrder,
-        ).map((category) => (
-          <BookingCard
-            key={category.id}
-            cardId={category.id}
-            title={category.title}
-            description={category.description}
-            onCardSelection={handleCardSelection}
-            isOpen={openCard === category.id}
-            isGrooming={category.isGrooming}
-            toggleCard={toggleCard}
-            selectedPet={selectedPet}
-            pets={
-              pets
-                ? category.isGrooming
-                  ? pets.filter((pet) => pet.type !== "OTHER")
-                  : pets
-                : []
-            }
-            fetchPets={fetchPets}
-          />
-        ))}
+        {appointmentTypes
+          .toSorted((a, b) => a.displayOrder - b.displayOrder)
+          .map((category) => (
+            <BookingCard
+              key={category.id}
+              cardId={category.id}
+              title={category.title}
+              description={category.description}
+              onCardSelection={handleCardSelection}
+              isOpen={openCard === category.id}
+              isGrooming={category.isGrooming}
+              toggleCard={toggleCard}
+              selectedPet={selectedPet}
+              pets={
+                pets
+                  ? category.isGrooming
+                    ? pets.filter((pet) => pet.type !== "OTHER")
+                    : pets
+                  : []
+              }
+              fetchPets={fetchPets}
+            />
+          ))}
       </div>
       <div className="my-16 w-full flex item-center justify-center">
         <CustomButton

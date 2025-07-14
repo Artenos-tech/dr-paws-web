@@ -1,24 +1,53 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 import UpSyringe from "@/public/assets/images/services/UpSyringe.svg"
 import Image from "next/image"
 
-import { serviceCategories, servicesData } from "@/model/mockData"
+// import { servicesData } from "@/model/mockData"
 import CustomButton from "./CustomButton"
-
-type ServiceCategory = keyof typeof servicesData
+import { useAPICall } from "@/hooks/apicall"
+import api from "@/services/api"
+import { Loader } from "lucide-react"
 
 const Services: React.FC = () => {
-  const [selectedCategory, setSelectedCategory] =
-    useState<ServiceCategory>("Planned Visits")
+  const {
+    call: getServicesCategories,
+    result: serviceCategories,
+    loading: loadingServiceCategories,
+  } = useAPICall(api.getServiceCategoriesOffered)
+  const {
+    call: getServicesOverview,
+    result: servicesOverview,
+    loading: loadingServicesOverview,
+  } = useAPICall(api.getServicesOverview)
+
+  const serviceCategoriesOffered =
+    (serviceCategories?.ok && serviceCategories.value.body.serviceCategories) ||
+    []
+  const servicesData =
+    (servicesOverview?.ok && servicesOverview.value.body.servicesOverview) || {}
+  type ServiceCategory = keyof typeof servicesData
+
+  const [selectedCategory, setSelectedCategory] = useState<ServiceCategory>(
+    "Planned Visits" as string,
+  )
+
+  useEffect(() => {
+    getServicesCategories({})
+    getServicesOverview({})
+  }, [])
+
+  if (loadingServiceCategories || loadingServicesOverview) {
+    return <Loader />
+  }
 
   return (
     <div className="flex">
       {/* Sidebar */}
       <div className="w-[50%] lg:w-[30%] min-h-[400px] flex-shrink-0 border bg-gray-100">
-        {serviceCategories.map((category) => (
+        {serviceCategoriesOffered.map((category) => (
           <div
             key={category}
             className={`cursor-pointer p-4 text-center md:text-left ${
@@ -40,12 +69,13 @@ const Services: React.FC = () => {
             {selectedCategory}
           </h2>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
-            {servicesData[selectedCategory].map((service) => (
-              <div key={service.name} className="flex items-center space-x-2">
-                <Image src={UpSyringe} alt="Syringe" width={20} height={20} />
-                <span className="text-sm md:text-base">{service.name}</span>
-              </div>
-            ))}
+            {Object.keys(servicesData).length > 0 &&
+              servicesData[selectedCategory].map((service) => (
+                <div key={service.name} className="flex items-center space-x-2">
+                  <Image src={UpSyringe} alt="Syringe" width={20} height={20} />
+                  <span className="text-sm md:text-base">{service.name}</span>
+                </div>
+              ))}
           </div>
         </div>
 
