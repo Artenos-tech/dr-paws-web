@@ -15,7 +15,7 @@ import Loader from "./Loader"
 // import { Subscription } from "@/app/user/my-subscriptions/page"
 
 import { ClipLoader } from "react-spinners"
-// import MedicalHistory from "./MedicalHistory"
+import MedicalHistory from "./MedicalHistory"
 
 interface PetProfileInfoProps {
   petId: string
@@ -624,12 +624,12 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
           </div>
         </form>
       </div>
-      {/* <div className="rounded-lg p-3 md:p-6 lg:p-8 w-full my-5">
+      <div className="rounded-lg p-3 md:p-6 lg:p-8 w-full my-5">
         <h1 className="text-3xl">Medical History</h1>
         <div className="flex flex-col gap-6 w-full items-center my-4">
-          <MedicalHistory petProfileId={petId.toString()} />
+          <MedicalHistory petId={petId} />
         </div>
-      </div> */}
+      </div>
     </>
   )
 }
