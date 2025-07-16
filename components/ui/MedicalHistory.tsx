@@ -54,7 +54,6 @@ const MedicalHistory: React.FC<MedicalHistoryProps> = ({ petId }) => {
       })
   }, [medicalHistory])
 
-  // Pagination logic
   const totalPages = Math.ceil(filteredAndSortedHistory.length / ITEMS_PER_PAGE)
   const paginatedEntries = filteredAndSortedHistory.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
@@ -87,7 +86,7 @@ const MedicalHistory: React.FC<MedicalHistoryProps> = ({ petId }) => {
 
     const ordinal = getOrdinal(day)
     const dayWithOrdinal = `${day}${ordinal}`
-    const rest = format(date, "MMMM yyyy") // Jan 2025
+    const rest = format(date, "MMMM yyyy")
 
     return `${dayWithOrdinal} ${rest}`
   }
