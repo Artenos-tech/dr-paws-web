@@ -724,7 +724,7 @@ export default createAPIClient({
             appt_type_id: z.string().uuid(),
             category: z.enum(["UPCOMING", "COMPLETED", "REQUESTED"]),
             coupon_code: z.string().nullable().optional(),
-            invoice_id: z.string().uuid(),
+            invoice_id: z.string().uuid().nullable(),
             total_billing_amount: z.number(),
             total_tax_amount: z.number(),
             payment_status: z.enum([
