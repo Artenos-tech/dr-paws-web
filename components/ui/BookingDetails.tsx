@@ -1,7 +1,7 @@
 "use client"
 
 import { AppointmentType } from "@/model/typeDefinitions"
-import React, { useState, useCallback } from "react"
+import React, { useState, useCallback, useEffect } from "react"
 import BackButton from "./BackButton"
 import { MdOutlineAccessTime } from "react-icons/md"
 import { GrLocation } from "react-icons/gr"
@@ -68,6 +68,26 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
     petImageByType.other
   const { call: cancelAppointment, loading: cancelAppointmentLoading } =
     useAPICall(api.cancelAppointment)
+  const {
+    call: getMedicalReports,
+    loading: loadingMedicalReports,
+    result: medicalReportsResult,
+  } = useAPICall(api.getAppointmentMedicalReports)
+
+  const [attachmentsPage, setAttachmentsPage] = useState(1)
+  const [soapNotesPage, setSoapNotesPage] = useState(1)
+
+  const attachmentsPerPage = 6
+  const soapNotesPerPage = 4
+
+  const medicalReports =
+    medicalReportsResult?.ok && medicalReportsResult.value.body.medical_reports
+
+  useEffect(() => {
+    if (selectedAppointment?.id) {
+      getMedicalReports({ appointment_id: selectedAppointment.id })
+    }
+  }, [selectedAppointment.id])
 
   const handleCancelClick = () => {
     setCurrentView("cancelConfirm")
@@ -407,6 +427,183 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                   </div>
                 </div>
               )}
+              {/* Medical Reports Section */}
+              <div className="w-full md:w-4/5 lg:w-[50%] mt-10">
+                <h2 className="text-xl font-semibold text-center mb-6 text-primary-1">
+                  Medical Reports
+                </h2>
+
+                {loadingMedicalReports ? (
+                  <div className="flex justify-center items-center h-32">
+                    <ClipLoader color="#33495f" />
+                  </div>
+                ) : (
+                  <>
+                    {/* Diagnostic Reports */}
+                    <div className="mb-10">
+                      <h3 className="text-lg font-semibold mb-3">
+                        Diagnostic Reports
+                      </h3>
+                      {medicalReports && medicalReports?.attachments?.length ? (
+                        <>
+                          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            {medicalReports.attachments
+                              .slice(
+                                (attachmentsPage - 1) * attachmentsPerPage,
+                                attachmentsPage * attachmentsPerPage,
+                              )
+                              .map((attachment) => (
+                                <li
+                                  key={attachment.id}
+                                  className="bg-primary-3 p-4 rounded-md shadow hover:shadow-md"
+                                >
+                                  {attachment.importMetadata?.attachmentUrl ? (
+                                    <a
+                                      href={
+                                        attachment.importMetadata.attachmentUrl
+                                      }
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="text-blue-600 hover:underline flex justify-between items-center"
+                                    >
+                                      <span className="truncate">
+                                        {attachment.name}
+                                      </span>
+                                      <Eye
+                                        size={18}
+                                        className="text-gray-600 ml-2"
+                                      />
+                                    </a>
+                                  ) : (
+                                    <span className="text-gray-500 italic">
+                                      Attachment unavailable
+                                    </span>
+                                  )}
+                                </li>
+                              ))}
+                          </ul>
+
+                          {/* Pagination */}
+                          {medicalReports.attachments.length >
+                            attachmentsPerPage && (
+                            <div className="flex justify-center mt-4 gap-4">
+                              <button
+                                onClick={() => setAttachmentsPage((p) => p - 1)}
+                                disabled={attachmentsPage === 1}
+                                className="px-4 py-2 bg-gray-200 text-gray-600 rounded disabled:opacity-50"
+                              >
+                                Prev
+                              </button>
+                              <button
+                                onClick={() => setAttachmentsPage((p) => p + 1)}
+                                disabled={
+                                  attachmentsPage >=
+                                  Math.ceil(
+                                    medicalReports.attachments.length /
+                                      attachmentsPerPage,
+                                  )
+                                }
+                                className="px-4 py-2 bg-gray-200 text-gray-600 rounded disabled:opacity-50"
+                              >
+                                Next
+                              </button>
+                            </div>
+                          )}
+                        </>
+                      ) : (
+                        <p className="text-gray-500 italic text-center">
+                          No diagnostic reports found.
+                        </p>
+                      )}
+                    </div>
+
+                    {/* SOAP Notes */}
+                    <div>
+                      <h3 className="text-lg font-semibold mb-3">
+                        Prescriptions
+                      </h3>
+                      {medicalReports && medicalReports?.soapNotes?.length ? (
+                        <>
+                          <ul className="space-y-4">
+                            {medicalReports.soapNotes
+                              .slice(
+                                (soapNotesPage - 1) * soapNotesPerPage,
+                                soapNotesPage * soapNotesPerPage,
+                              )
+                              .map((note) => (
+                                <li
+                                  key={note.id}
+                                  className="bg-primary-3 p-4 rounded-md shadow text-primary-1 space-y-1"
+                                >
+                                  {note.subjective && (
+                                    <p>
+                                      <strong>Subjective:</strong>{" "}
+                                      {note.subjective}
+                                    </p>
+                                  )}
+                                  {note.objective && (
+                                    <p>
+                                      <strong>Objective:</strong>{" "}
+                                      {note.objective}
+                                    </p>
+                                  )}
+                                  {note.assessment && (
+                                    <p>
+                                      <strong>Assessment:</strong>{" "}
+                                      {note.assessment}
+                                    </p>
+                                  )}
+                                  {note.plan && (
+                                    <p>
+                                      <strong>Plan:</strong> {note.plan}
+                                    </p>
+                                  )}
+                                  {note.memo && (
+                                    <p>
+                                      <strong>Memo:</strong> {note.memo}
+                                    </p>
+                                  )}
+                                </li>
+                              ))}
+                          </ul>
+
+                          {/* Pagination */}
+                          {medicalReports.soapNotes.length >
+                            soapNotesPerPage && (
+                            <div className="flex justify-center mt-4 gap-4">
+                              <button
+                                onClick={() => setSoapNotesPage((p) => p - 1)}
+                                disabled={soapNotesPage === 1}
+                                className="px-4 py-2 bg-gray-200 text-gray-600 rounded disabled:opacity-50"
+                              >
+                                Prev
+                              </button>
+                              <button
+                                onClick={() => setSoapNotesPage((p) => p + 1)}
+                                disabled={
+                                  soapNotesPage >=
+                                  Math.ceil(
+                                    medicalReports.soapNotes.length /
+                                      soapNotesPerPage,
+                                  )
+                                }
+                                className="px-4 py-2 bg-gray-200 text-gray-600 rounded disabled:opacity-50"
+                              >
+                                Next
+                              </button>
+                            </div>
+                          )}
+                        </>
+                      ) : (
+                        <p className="text-gray-500 italic text-center">
+                          No prescriptions found.
+                        </p>
+                      )}
+                    </div>
+                  </>
+                )}
+              </div>
+
               {/* Invoice Viewer */}
               <Modal
                 open={showPdfModal}
