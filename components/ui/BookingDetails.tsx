@@ -308,96 +308,105 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                 )}
               </div>
               {/* Invoice Details Section */}
-              <div className="w-full md:w-4/5 lg:w-[50%] border-t border-gray-200 pt-6 mt-6 text-primary-1 px-6 sm:px-0">
-                <h2 className="text-xl text-center font-semibold text-[--primary-1] mb-4">
-                  Invoice Details
-                </h2>
-                <div className="bg-[#FFFCF3] p-6 rounded-md shadow-sm">
-                  {selectedAppointment.payment_status === "NO_BILL" ? (
-                    <p className="text-gray-500 italic">
-                      No bill was generated for this appointment.
-                    </p>
-                  ) : (
-                    <div className="min-w-[600px]">
-                      {/* Header Row */}
-                      <div className="grid grid-cols-5 gap-2 px-4 py-2 bg-[--primary-3] text-[--primary-1] font-semibold text-sm rounded-t-md">
-                        <div>Invoice ID</div>
-                        <div>Total Amount</div>
-                        <div>Total Tax</div>
-                        <div>Status</div>
-                        <div className="text-right pr-2">Actions</div>
-                      </div>
+              {selectedAppointment.invoice_id && (
+                <div className="w-full md:w-4/5 lg:w-[50%] border-t border-gray-200 pt-6 mt-6 text-primary-1 px-6 sm:px-0">
+                  <h2 className="text-xl text-center font-semibold text-[--primary-1] mb-4">
+                    Invoice Details
+                  </h2>
+                  <div className="bg-[#FFFCF3] p-6 rounded-md shadow-sm">
+                    {selectedAppointment.payment_status === "NO_BILL" ? (
+                      <p className="text-gray-500 italic">
+                        No bill was generated for this appointment.
+                      </p>
+                    ) : (
+                      <div className="min-w-[600px]">
+                        {/* Header Row */}
+                        <div className="grid grid-cols-5 gap-2 px-4 py-2 bg-[--primary-3] text-[--primary-1] font-semibold text-sm rounded-t-md">
+                          <div>Invoice ID</div>
+                          <div>Total Amount</div>
+                          <div>Total Tax</div>
+                          <div>Status</div>
+                          <div className="text-right pr-2">Actions</div>
+                        </div>
 
-                      {/* Data Row */}
-                      <div className="grid grid-cols-5 gap-4 px-4 py-3 items-center bg-white text-sm text-[--primary-1] border border-t-0 border-gray-200 rounded-b-md">
-                        <Tooltip title={selectedAppointment.invoice_id}>
-                          <div className="truncate">
-                            {selectedAppointment.invoice_id || "—"}
+                        {/* Data Row */}
+                        <div className="grid grid-cols-5 gap-4 px-4 py-3 items-center bg-white text-sm text-[--primary-1] border border-t-0 border-gray-200 rounded-b-md">
+                          <Tooltip title={selectedAppointment.invoice_id}>
+                            <div className="truncate">
+                              {selectedAppointment.invoice_id || "—"}
+                            </div>
+                          </Tooltip>
+                          <div>
+                            ₹
+                            {selectedAppointment.total_billing_amount.toFixed(
+                              2,
+                            )}
                           </div>
-                        </Tooltip>
-                        <div>
-                          ₹{selectedAppointment.total_billing_amount.toFixed(2)}
-                        </div>
-                        <div>
-                          ₹{selectedAppointment.total_tax_amount.toFixed(2)}
-                        </div>
-                        <div
-                          className={
-                            selectedAppointment.payment_status === "PAID"
-                              ? "text-green-600 font-medium"
-                              : selectedAppointment.payment_status ===
-                                  "PARTIALLY_PAID"
-                                ? "text-yellow-600 font-medium"
+                          <div>
+                            ₹{selectedAppointment.total_tax_amount.toFixed(2)}
+                          </div>
+                          <div
+                            className={
+                              selectedAppointment.payment_status === "PAID"
+                                ? "text-green-600 font-medium"
                                 : selectedAppointment.payment_status ===
-                                    "OVERPAID"
-                                  ? "text-blue-600 font-medium"
-                                  : "text-red-600 font-medium"
-                          }
-                        >
-                          {selectedAppointment.payment_status.replaceAll(
-                            "_",
-                            " ",
-                          )}
-                        </div>
-                        <div className="flex items-center justify-end gap-3 pr-2">
-                          <Tooltip title="View Invoice">
-                            <Button
-                              type="text"
-                              shape="circle"
-                              size="small"
-                              icon={
-                                loadingView ? <ClipLoader /> : <Eye size={16} />
-                              }
-                              onClick={() =>
-                                handleViewPDF(selectedAppointment.invoice_id)
-                              }
-                            />
-                          </Tooltip>
-                          <Tooltip title="Download PDF">
-                            <Button
-                              type="text"
-                              shape="circle"
-                              size="small"
-                              icon={
-                                loadingDownload ? (
-                                  <ClipLoader />
-                                ) : (
-                                  <Download size={16} />
-                                )
-                              }
-                              onClick={() => {
-                                handleDownloadPDF(
-                                  selectedAppointment.invoice_id,
-                                )
-                              }}
-                            />
-                          </Tooltip>
+                                    "PARTIALLY_PAID"
+                                  ? "text-yellow-600 font-medium"
+                                  : selectedAppointment.payment_status ===
+                                      "OVERPAID"
+                                    ? "text-blue-600 font-medium"
+                                    : "text-red-600 font-medium"
+                            }
+                          >
+                            {selectedAppointment.payment_status.replaceAll(
+                              "_",
+                              " ",
+                            )}
+                          </div>
+                          <div className="flex items-center justify-end gap-3 pr-2">
+                            <Tooltip title="View Invoice">
+                              <Button
+                                type="text"
+                                shape="circle"
+                                size="small"
+                                icon={
+                                  loadingView ? (
+                                    <ClipLoader />
+                                  ) : (
+                                    <Eye size={16} />
+                                  )
+                                }
+                                onClick={() =>
+                                  handleViewPDF(selectedAppointment.invoice_id)
+                                }
+                              />
+                            </Tooltip>
+                            <Tooltip title="Download PDF">
+                              <Button
+                                type="text"
+                                shape="circle"
+                                size="small"
+                                icon={
+                                  loadingDownload ? (
+                                    <ClipLoader />
+                                  ) : (
+                                    <Download size={16} />
+                                  )
+                                }
+                                onClick={() => {
+                                  handleDownloadPDF(
+                                    selectedAppointment.invoice_id,
+                                  )
+                                }}
+                              />
+                            </Tooltip>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
               {/* Invoice Viewer */}
               <Modal
                 open={showPdfModal}
