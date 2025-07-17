@@ -1,7 +1,7 @@
 "use client"
 
 import { AppointmentType } from "@/model/typeDefinitions"
-import React, { useState, useCallback } from "react"
+import React, { useState, useCallback, useEffect } from "react"
 import BackButton from "./BackButton"
 import { MdOutlineAccessTime } from "react-icons/md"
 import { GrLocation } from "react-icons/gr"
@@ -51,10 +51,12 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
   selectedAppointment,
   goBack,
 }) => {
-  const [loadingView, setLoadingView] = useState(false)
-  const [loadingDownload, setLoadingDownload] = useState(false)
-  const [showPdfModal, setShowPdfModal] = useState(false)
-  const [pdfUrl, setPdfUrl] = useState<string | null>(null)
+  const [loadingInvoiceView, setLoadingInvoiceView] = useState(false)
+  const [loadingInvoiceDownload, setLoadingInvoiceDownload] = useState(false)
+  const [showInvoicePdfModal, setShowInvoicePdfModal] = useState(false)
+  const [invoicePdfUrl, setPdfUrl] = useState<string | null>(null)
+  const [showReportPdfModal, setShowReportPdfModal] = useState(false)
+  const [reportUrl, setReportUrl] = useState<string | null>(null)
   const [currentView, setCurrentView] = useState<
     | "default"
     | "cancelConfirm"
@@ -68,6 +70,26 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
     petImageByType.other
   const { call: cancelAppointment, loading: cancelAppointmentLoading } =
     useAPICall(api.cancelAppointment)
+  const {
+    call: getMedicalReports,
+    loading: loadingMedicalReports,
+    result: medicalReportsResult,
+  } = useAPICall(api.getAppointmentMedicalReports)
+
+  const [attachmentsPage, setAttachmentsPage] = useState(1)
+  const [soapNotesPage, setSoapNotesPage] = useState(1)
+
+  const attachmentsPerPage = 6
+  const soapNotesPerPage = 4
+
+  const medicalReports =
+    medicalReportsResult?.ok && medicalReportsResult.value.body.medical_reports
+
+  useEffect(() => {
+    if (selectedAppointment?.id) {
+      getMedicalReports({ appointment_id: selectedAppointment.id })
+    }
+  }, [selectedAppointment.id])
 
   const handleCancelClick = () => {
     setCurrentView("cancelConfirm")
@@ -130,10 +152,10 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
     [selectedAppointment],
   )
 
-  const handleViewPDF = async (invoiceId: string) => {
-    setLoadingView(true)
+  const handleViewInvoicePDF = async (invoiceId: string) => {
+    setLoadingInvoiceView(true)
     const base64str = await fetchInvoiceById(invoiceId)
-    setLoadingView(false)
+    setLoadingInvoiceView(false)
     if (!base64str) return
     const byteCharacters = atob(base64str)
     const byteNumbers = Array.from(byteCharacters, (char) => char.charCodeAt(0))
@@ -142,13 +164,13 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
 
     const blobUrl = URL.createObjectURL(blob)
     setPdfUrl(blobUrl)
-    setShowPdfModal(true)
+    setShowInvoicePdfModal(true)
   }
 
-  const handleDownloadPDF = async (invoiceId: string) => {
-    setLoadingDownload(true)
+  const handleDownloadInvoicePDF = async (invoiceId: string) => {
+    setLoadingInvoiceDownload(true)
     const base64 = await fetchInvoiceById(invoiceId)
-    setLoadingDownload(false)
+    setLoadingInvoiceDownload(false)
     if (!base64) return
 
     const byteCharacters = atob(base64)
@@ -370,14 +392,16 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                                 shape="circle"
                                 size="small"
                                 icon={
-                                  loadingView ? (
+                                  loadingInvoiceView ? (
                                     <ClipLoader />
                                   ) : (
                                     <Eye size={16} />
                                   )
                                 }
                                 onClick={() =>
-                                  handleViewPDF(selectedAppointment.invoice_id)
+                                  handleViewInvoicePDF(
+                                    selectedAppointment.invoice_id,
+                                  )
                                 }
                               />
                             </Tooltip>
@@ -387,14 +411,14 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                                 shape="circle"
                                 size="small"
                                 icon={
-                                  loadingDownload ? (
+                                  loadingInvoiceDownload ? (
                                     <ClipLoader />
                                   ) : (
                                     <Download size={16} />
                                   )
                                 }
                                 onClick={() => {
-                                  handleDownloadPDF(
+                                  handleDownloadInvoicePDF(
                                     selectedAppointment.invoice_id,
                                   )
                                 }}
@@ -407,12 +431,228 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                   </div>
                 </div>
               )}
+              {/* Medical Reports Section */}
+              <div className="w-full md:w-4/5 lg:w-[50%] mt-10">
+                <h2 className="text-xl font-semibold text-center mb-6 text-primary-1">
+                  Medical Reports
+                </h2>
+
+                {loadingMedicalReports ? (
+                  <div className="flex justify-center items-center h-32">
+                    <ClipLoader color="#33495f" />
+                  </div>
+                ) : (
+                  <>
+                    {/* Diagnostic Reports */}
+                    <div className="mb-10">
+                      <h3 className="text-lg font-semibold mb-3">
+                        Diagnostic Reports, Scans, and X-rays
+                      </h3>
+                      {medicalReports && medicalReports?.attachments?.length ? (
+                        <>
+                          <div
+                            className={`grid gap-4 ${
+                              medicalReports.attachments.length === 1
+                                ? "grid-cols-1"
+                                : medicalReports.attachments.length === 2
+                                  ? "sm:grid-cols-2"
+                                  : medicalReports.attachments.length === 3
+                                    ? "sm:grid-cols-2 md:grid-cols-3"
+                                    : "sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+                            }`}
+                          >
+                            {medicalReports.attachments
+                              .slice(
+                                (attachmentsPage - 1) * attachmentsPerPage,
+                                attachmentsPage * attachmentsPerPage,
+                              )
+                              .map((attachment) => (
+                                <div
+                                  key={attachment.id}
+                                  className="bg-primary-3 p-4 rounded-md shadow hover:shadow-md flex flex-col justify-between"
+                                >
+                                  <div className="flex justify-between items-center mb-2">
+                                    <span className="truncate font-medium text-primary-1 max-w-[70%]">
+                                      {attachment.name}
+                                    </span>
+
+                                    {attachment.fileId ? (
+                                      <div className="flex gap-2 items-center">
+                                        <Tooltip title="View Report">
+                                          <Button
+                                            type="text"
+                                            shape="circle"
+                                            size="small"
+                                            icon={<Eye size={16} />}
+                                            onClick={() => {
+                                              setShowReportPdfModal(true)
+                                              setReportUrl(attachment.fileId)
+                                            }}
+                                          />
+                                        </Tooltip>
+                                      </div>
+                                    ) : (
+                                      <span className="text-gray-500 italic text-sm">
+                                        Unavailable
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                              ))}
+                          </div>
+
+                          {/* Pagination */}
+                          {medicalReports.attachments.length >
+                            attachmentsPerPage && (
+                            <div className="flex justify-center mt-4 gap-4">
+                              <button
+                                onClick={() => setAttachmentsPage((p) => p - 1)}
+                                disabled={attachmentsPage === 1}
+                                className="px-4 py-2 bg-gray-200 text-gray-600 rounded disabled:opacity-50"
+                              >
+                                Prev
+                              </button>
+                              <button
+                                onClick={() => setAttachmentsPage((p) => p + 1)}
+                                disabled={
+                                  attachmentsPage >=
+                                  Math.ceil(
+                                    medicalReports.attachments.length /
+                                      attachmentsPerPage,
+                                  )
+                                }
+                                className="px-4 py-2 bg-gray-200 text-gray-600 rounded disabled:opacity-50"
+                              >
+                                Next
+                              </button>
+                            </div>
+                          )}
+                        </>
+                      ) : (
+                        <p className="text-gray-500 italic text-center">
+                          No diagnostic reports found.
+                        </p>
+                      )}
+                    </div>
+
+                    {/* SOAP Notes */}
+                    <div>
+                      <h3 className="text-lg font-semibold mb-3">
+                        Prescriptions
+                      </h3>
+                      {medicalReports && medicalReports?.soapNotes?.length ? (
+                        <>
+                          <ul className="space-y-4">
+                            {medicalReports.soapNotes
+                              .slice(
+                                (soapNotesPage - 1) * soapNotesPerPage,
+                                soapNotesPage * soapNotesPerPage,
+                              )
+                              .map((note) => (
+                                <li
+                                  key={note.id}
+                                  className="bg-primary-3 p-4 rounded-md shadow text-primary-1 space-y-1"
+                                >
+                                  {note.subjective && (
+                                    <p>
+                                      <strong>Subjective:</strong>{" "}
+                                      {note.subjective}
+                                    </p>
+                                  )}
+                                  {note.objective && (
+                                    <p>
+                                      <strong>Objective:</strong>{" "}
+                                      {note.objective}
+                                    </p>
+                                  )}
+                                  {note.assessment && (
+                                    <p>
+                                      <strong>Assessment:</strong>{" "}
+                                      {note.assessment}
+                                    </p>
+                                  )}
+                                  {note.plan && (
+                                    <p>
+                                      <strong>Plan:</strong> {note.plan}
+                                    </p>
+                                  )}
+                                  {note.memo && (
+                                    <p>
+                                      <strong>Memo:</strong> {note.memo}
+                                    </p>
+                                  )}
+                                </li>
+                              ))}
+                          </ul>
+
+                          {/* Pagination */}
+                          {medicalReports.soapNotes.length >
+                            soapNotesPerPage && (
+                            <div className="flex justify-center mt-4 gap-4">
+                              <button
+                                onClick={() => setSoapNotesPage((p) => p - 1)}
+                                disabled={soapNotesPage === 1}
+                                className="px-4 py-2 bg-gray-200 text-gray-600 rounded disabled:opacity-50"
+                              >
+                                Prev
+                              </button>
+                              <button
+                                onClick={() => setSoapNotesPage((p) => p + 1)}
+                                disabled={
+                                  soapNotesPage >=
+                                  Math.ceil(
+                                    medicalReports.soapNotes.length /
+                                      soapNotesPerPage,
+                                  )
+                                }
+                                className="px-4 py-2 bg-gray-200 text-gray-600 rounded disabled:opacity-50"
+                              >
+                                Next
+                              </button>
+                            </div>
+                          )}
+                        </>
+                      ) : (
+                        <p className="text-gray-500 italic text-center">
+                          No prescriptions found.
+                        </p>
+                      )}
+                    </div>
+                  </>
+                )}
+              </div>
+
+              {/* Report Viewer */}
+              <Modal
+                open={showReportPdfModal}
+                onCancel={() => {
+                  setShowReportPdfModal(false)
+                }}
+                footer={null}
+                width="90vw"
+                centered
+                destroyOnClose
+                title={`Report`}
+                closeIcon={<XCircle />}
+                bodyStyle={{ padding: 0, height: "80vh" }}
+              >
+                {reportUrl && (
+                  <iframe
+                    src={reportUrl}
+                    width="100%"
+                    height="100%"
+                    style={{ border: "none" }}
+                    title="Report PDF"
+                  />
+                )}
+              </Modal>
+
               {/* Invoice Viewer */}
               <Modal
-                open={showPdfModal}
+                open={showInvoicePdfModal}
                 onCancel={() => {
-                  setShowPdfModal(false)
-                  if (pdfUrl) URL.revokeObjectURL(pdfUrl)
+                  setShowInvoicePdfModal(false)
+                  if (invoicePdfUrl) URL.revokeObjectURL(invoicePdfUrl)
                 }}
                 footer={null}
                 width="90vw"
@@ -420,11 +660,11 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                 destroyOnClose
                 title={`Invoice #${selectedAppointment.invoice_id}`}
                 closeIcon={<XCircle />}
-                bodyStyle={{ padding: 0, height: "80vh" }} // remove padding, fix height
+                bodyStyle={{ padding: 0, height: "80vh" }}
               >
-                {pdfUrl && (
+                {invoicePdfUrl && (
                   <iframe
-                    src={pdfUrl}
+                    src={invoicePdfUrl}
                     width="100%"
                     height="100%"
                     style={{ border: "none" }}

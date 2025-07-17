@@ -167,14 +167,14 @@ export default function NavBar() {
                           My Appointments
                         </div>
                       </DropdownMenu.Item>
-                      {/* <DropdownMenu.Item asChild>
+                      <DropdownMenu.Item asChild>
                         <div
                           onClick={() => navigate.push("/user/reports")}
                           className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
                         >
                           Medical History
                         </div>
-                      </DropdownMenu.Item> */}
+                      </DropdownMenu.Item>
                       {/* <div className="border-t border-gray-300 my-2" /> */}
                       {/* {!isMarketingFeatureEnabled ? ( */}
                       {/* <DropdownMenu.Item asChild>
@@ -351,7 +351,7 @@ export default function NavBar() {
                     My Appointments
                   </button>
                 </li>
-                {/* <li>
+                <li>
                   <button
                     onClick={() => {
                       setIsOpen(false)
@@ -361,17 +361,7 @@ export default function NavBar() {
                   >
                     Medical History
                   </button>
-                </li> */}
-                {/* <button
-                        onClick={() => {
-                          setIsOpen(false);
-                          setContactIsModalOpen(true);
-                        }}
-                        className="text-primary-1 hover:text-secondary-1 cursor-pointer"
-                      >
-                        Medical History
-                      </button> */}
-                {/* <li> */}
+                </li>
                 {/* <button
                     onClick={() => {
                       setIsOpen(false)

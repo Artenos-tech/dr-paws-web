@@ -1202,18 +1202,167 @@ export default createAPIClient({
       errorResponseSchema: z.object({}),
     },
 
-    // getMedicalHistoryForPet: {
-    //   method: "GET",
-    //   path: "/user/medicalhistory/pet/{pet_id}",
-    //   pathParamsSchema: z.object({ pet_id: z.string() }),
-    //   requestSchema: z.object({}),
-    //   responseSchema: z.object({
-    //     medical_history: z.object({
-    //       attachments: z.array(z.string()),
-    //       prescriptions: z.record(z.array(z.string())),
-    //     }),
-    //   }),
-    //   errorResponseSchema: z.object({}),
-    // },
+    getMedicalHistoryForPet: {
+      method: "GET",
+      path: "/user/medicalhistory/pet/{pet_id}",
+      pathParamsSchema: z.object({ pet_id: z.string() }),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        medical_history: z.array(
+          z.object({
+            clinicName: z.string(),
+            bookingId: z.string().optional(),
+            attachments: z
+              .array(
+                z.object({
+                  id: z.string().uuid(),
+                  name: z.string(),
+                  fileId: z.string().url(),
+                  type: z.enum(["DIAGNOSTIC_TESTS", "MISCELLANEOUS"]),
+                  resortBookingId: z.string().uuid(),
+                  clientId: z.string().uuid(),
+                  importMetadata: z
+                    .object({
+                      attachmentUrl: z.string().url(),
+                    })
+                    .nullable(),
+                  createdAt: z.string(),
+                  updatedAt: z.string(),
+                }),
+              )
+              .optional(),
+            soapNotes: z
+              .array(
+                z.object({
+                  id: z.string().uuid(),
+                  bookingId: z.string().uuid(),
+                  clientId: z.string().uuid(),
+                  subjective: z.string().nullable(),
+                  objective: z.string().nullable(),
+                  assessment: z.string().nullable(),
+                  plan: z.string().nullable(),
+                  memo: z.string().nullable(),
+                  importMetadata: z
+                    .object({
+                      soapNoteId: z.string(),
+                    })
+                    .nullable(),
+                  createdAt: z.string(),
+                  updatedAt: z.string(),
+                }),
+              )
+              .optional(),
+            notes: z.string().nullable().optional(),
+            bookingDate: z.string().optional(),
+            groomingBookings: z
+              .array(
+                z.object({
+                  bookingDate: z.string(),
+                  grooming: z.object({
+                    name: z.string(),
+                  }),
+                  groomingBookingServices: z.array(
+                    z.object({
+                      catalogue: z.object({
+                        name: z.string(),
+                      }),
+                    }),
+                  ),
+                  status: z.enum([
+                    "COMPLETED",
+                    "UPCOMING",
+                    "NO_SHOW",
+                    "ACTIVE",
+                  ]),
+                  staff: z.object({
+                    id: z.string().uuid(),
+                    name: z.string(),
+                  }),
+                }),
+              )
+              .optional(),
+            resortServiceBookings: z
+              .array(
+                z.object({
+                  bookingDate: z.string(),
+                  resortService: z.object({
+                    name: z.string(),
+                  }),
+                  resortServiceBookingServices: z.array(
+                    z.object({
+                      catalogue: z.object({
+                        name: z.string(),
+                      }),
+                    }),
+                  ),
+                  status: z.enum([
+                    "COMPLETED",
+                    "UPCOMING",
+                    "NO_SHOW",
+                    "ACTIVE",
+                  ]),
+                  staff: z.object({
+                    id: z.string().uuid(),
+                    name: z.string(),
+                  }),
+                }),
+              )
+              .optional(),
+          }),
+        ),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+    getAppointmentMedicalReports: {
+      method: "GET",
+      path: "/user/appointment/{appointment_id}/medical-reports",
+      pathParamsSchema: z.object({ appointment_id: z.string() }),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        medical_reports: z.object({
+          attachments: z
+            .array(
+              z.object({
+                id: z.string().uuid(),
+                name: z.string(),
+                fileId: z.string().url(),
+                type: z.enum(["DIAGNOSTIC_TESTS", "MISCELLANEOUS"]),
+                resortBookingId: z.string().uuid(),
+                clientId: z.string().uuid(),
+                importMetadata: z
+                  .object({
+                    attachmentUrl: z.string().url(),
+                  })
+                  .nullable(),
+                createdAt: z.string(),
+                updatedAt: z.string(),
+              }),
+            )
+            .optional(),
+          soapNotes: z
+            .array(
+              z.object({
+                id: z.string().uuid(),
+                bookingId: z.string().uuid(),
+                clientId: z.string().uuid(),
+                subjective: z.string().nullable(),
+                objective: z.string().nullable(),
+                assessment: z.string().nullable(),
+                plan: z.string().nullable(),
+                memo: z.string().nullable(),
+                importMetadata: z
+                  .object({
+                    soapNoteId: z.string(),
+                  })
+                  .nullable(),
+                createdAt: z.string(),
+                updatedAt: z.string(),
+              }),
+            )
+            .optional(),
+        }),
+      }),
+      errorResponseSchema: z.object({}),
+    },
   },
 })
