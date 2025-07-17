@@ -103,8 +103,8 @@ const MedicalHistory: React.FC<MedicalHistoryProps> = ({ petId }) => {
       ) : (
         <div className="space-y-8">
           {medicalHistory.length === 0 ? (
-            <p className="text-gray-500 text-center">
-              No medical history found for this pet.
+            <p className="text-gray-500">
+              No medical history found.
             </p>
           ) : (
             paginatedEntries.map((entry, index) => {

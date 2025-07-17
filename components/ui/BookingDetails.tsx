@@ -432,7 +432,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                 </div>
               )}
               {/* Medical Reports Section */}
-              <div className="w-full md:w-4/5 lg:w-[50%] mt-10">
+              {selectedAppointment.category === "COMPLETED" && <div className="w-full md:w-4/5 lg:w-[50%] mt-10">
                 <h2 className="text-xl font-semibold text-center mb-6 text-primary-1">
                   Medical Reports
                 </h2>
@@ -620,7 +620,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                     </div>
                   </>
                 )}
-              </div>
+              </div>}
 
               {/* Report Viewer */}
               <Modal
