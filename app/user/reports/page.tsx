@@ -188,9 +188,7 @@ const Reports = () => {
                               ))}
                             </div>
                           ) : (
-                            <p className="text-gray-500">
-                              No reports found.
-                            </p>
+                            <p className="text-gray-500">No reports found.</p>
                           )}
                         </div>
 
