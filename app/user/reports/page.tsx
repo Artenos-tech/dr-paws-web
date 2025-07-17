@@ -134,8 +134,8 @@ const Reports = () => {
                   <ClipLoader color="#33495f" />
                 </div>
               ) : filteredAndSortedHistory.length === 0 ? (
-                <p className="text-gray-500 text-center">
-                  No medical history found for {selectedPet.name}
+                <p className="text-gray-500">
+                  No medical history found for {selectedPet.name}.
                 </p>
               ) : (
                 <div className="space-y-8">
