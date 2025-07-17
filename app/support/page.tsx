@@ -13,10 +13,10 @@ export default function SupportPage() {
       },
       {
         clinicName: "Dr. Paws, HSR Layout",
-        clinicContact: "+91 7204996902"
-      }
+        clinicContact: "+91 7204996902",
+      },
     ],
-  };
+  }
 
   return (
     <main className="max-w-xl mx-auto p-6 font-sans text-gray-900 bg-white">
@@ -49,5 +49,5 @@ export default function SupportPage() {
         ))}
       </ul>
     </main>
-  );
+  )
 }
