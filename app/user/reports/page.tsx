@@ -6,14 +6,17 @@ import { Pet } from "@/context/UserContext"
 import { useAPICall } from "@/hooks/apicall"
 import api from "@/services/api"
 import { ClipLoader } from "react-spinners"
-import { ExternalLink } from "lucide-react"
+import { Eye, XCircle } from "lucide-react"
 import { format } from "date-fns"
+import { Button, Modal, Tooltip } from "antd"
 
 const ITEMS_PER_PAGE = 5
 
 const Reports = () => {
   const [selectedPet, setSelectedPet] = useState<Pet | null>(null)
   const [currentPage, setCurrentPage] = useState(1)
+  const [showReportPdfModal, setShowReportPdfModal] = useState(false)
+  const [reportUrl, setReportUrl] = useState<string | null>(null)
 
   const {
     call: getMedicalHistoryForPet,
@@ -173,17 +176,26 @@ const Reports = () => {
                                   <p className="text-sm truncate text-gray-800 font-medium">
                                     {decodeURIComponent(attachment.name)}
                                   </p>
-                                  <a
-                                    href={
-                                      attachment.importMetadata
-                                        ?.attachmentUrl || attachment.fileId
-                                    }
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-gray-500 hover:text-blue-600"
-                                  >
-                                    <ExternalLink size={18} />
-                                  </a>
+                                  {attachment.fileId ? (
+                                    <div className="flex gap-2 items-center">
+                                      <Tooltip title="View Report">
+                                        <Button
+                                          type="text"
+                                          shape="circle"
+                                          size="small"
+                                          icon={<Eye size={16} />}
+                                          onClick={() => {
+                                            setShowReportPdfModal(true)
+                                            setReportUrl(attachment.fileId)
+                                          }}
+                                        />
+                                      </Tooltip>
+                                    </div>
+                                  ) : (
+                                    <span className="text-gray-500 italic text-sm">
+                                      Unavailable
+                                    </span>
+                                  )}
                                 </div>
                               ))}
                             </div>
@@ -274,6 +286,30 @@ const Reports = () => {
             </div>
           )}
         </div>
+        {/* Report Viewer */}
+        <Modal
+          open={showReportPdfModal}
+          onCancel={() => {
+            setShowReportPdfModal(false)
+          }}
+          footer={null}
+          width="90vw"
+          centered
+          destroyOnClose
+          title={`Report`}
+          closeIcon={<XCircle />}
+          bodyStyle={{ padding: 0, height: "80vh" }}
+        >
+          {reportUrl && (
+            <iframe
+              src={reportUrl}
+              width="100%"
+              height="100%"
+              style={{ border: "none" }}
+              title="Report PDF"
+            />
+          )}
+        </Modal>
       </main>
     </div>
   )

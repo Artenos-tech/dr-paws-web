@@ -51,10 +51,12 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
   selectedAppointment,
   goBack,
 }) => {
-  const [loadingView, setLoadingView] = useState(false)
-  const [loadingDownload, setLoadingDownload] = useState(false)
-  const [showPdfModal, setShowPdfModal] = useState(false)
-  const [pdfUrl, setPdfUrl] = useState<string | null>(null)
+  const [loadingInvoiceView, setLoadingInvoiceView] = useState(false)
+  const [loadingInvoiceDownload, setLoadingInvoiceDownload] = useState(false)
+  const [showInvoicePdfModal, setShowInvoicePdfModal] = useState(false)
+  const [invoicePdfUrl, setPdfUrl] = useState<string | null>(null)
+  const [showReportPdfModal, setShowReportPdfModal] = useState(false)
+  const [reportUrl, setReportUrl] = useState<string | null>(null)
   const [currentView, setCurrentView] = useState<
     | "default"
     | "cancelConfirm"
@@ -150,10 +152,10 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
     [selectedAppointment],
   )
 
-  const handleViewPDF = async (invoiceId: string) => {
-    setLoadingView(true)
+  const handleViewInvoicePDF = async (invoiceId: string) => {
+    setLoadingInvoiceView(true)
     const base64str = await fetchInvoiceById(invoiceId)
-    setLoadingView(false)
+    setLoadingInvoiceView(false)
     if (!base64str) return
     const byteCharacters = atob(base64str)
     const byteNumbers = Array.from(byteCharacters, (char) => char.charCodeAt(0))
@@ -162,13 +164,13 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
 
     const blobUrl = URL.createObjectURL(blob)
     setPdfUrl(blobUrl)
-    setShowPdfModal(true)
+    setShowInvoicePdfModal(true)
   }
 
-  const handleDownloadPDF = async (invoiceId: string) => {
-    setLoadingDownload(true)
+  const handleDownloadInvoicePDF = async (invoiceId: string) => {
+    setLoadingInvoiceDownload(true)
     const base64 = await fetchInvoiceById(invoiceId)
-    setLoadingDownload(false)
+    setLoadingInvoiceDownload(false)
     if (!base64) return
 
     const byteCharacters = atob(base64)
@@ -390,14 +392,16 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                                 shape="circle"
                                 size="small"
                                 icon={
-                                  loadingView ? (
+                                  loadingInvoiceView ? (
                                     <ClipLoader />
                                   ) : (
                                     <Eye size={16} />
                                   )
                                 }
                                 onClick={() =>
-                                  handleViewPDF(selectedAppointment.invoice_id)
+                                  handleViewInvoicePDF(
+                                    selectedAppointment.invoice_id,
+                                  )
                                 }
                               />
                             </Tooltip>
@@ -407,14 +411,14 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                                 shape="circle"
                                 size="small"
                                 icon={
-                                  loadingDownload ? (
+                                  loadingInvoiceDownload ? (
                                     <ClipLoader />
                                   ) : (
                                     <Download size={16} />
                                   )
                                 }
                                 onClick={() => {
-                                  handleDownloadPDF(
+                                  handleDownloadInvoicePDF(
                                     selectedAppointment.invoice_id,
                                   )
                                 }}
@@ -442,46 +446,60 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                     {/* Diagnostic Reports */}
                     <div className="mb-10">
                       <h3 className="text-lg font-semibold mb-3">
-                        Diagnostic Reports
+                        Diagnostic Reports, Scans, and X-rays
                       </h3>
                       {medicalReports && medicalReports?.attachments?.length ? (
                         <>
-                          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div
+                            className={`grid gap-4 ${
+                              medicalReports.attachments.length === 1
+                                ? "grid-cols-1"
+                                : medicalReports.attachments.length === 2
+                                  ? "sm:grid-cols-2"
+                                  : medicalReports.attachments.length === 3
+                                    ? "sm:grid-cols-2 md:grid-cols-3"
+                                    : "sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+                            }`}
+                          >
                             {medicalReports.attachments
                               .slice(
                                 (attachmentsPage - 1) * attachmentsPerPage,
                                 attachmentsPage * attachmentsPerPage,
                               )
                               .map((attachment) => (
-                                <li
+                                <div
                                   key={attachment.id}
-                                  className="bg-primary-3 p-4 rounded-md shadow hover:shadow-md"
+                                  className="bg-primary-3 p-4 rounded-md shadow hover:shadow-md flex flex-col justify-between"
                                 >
-                                  {attachment.importMetadata?.attachmentUrl ? (
-                                    <a
-                                      href={
-                                        attachment.importMetadata.attachmentUrl
-                                      }
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="text-blue-600 hover:underline flex justify-between items-center"
-                                    >
-                                      <span className="truncate">
-                                        {attachment.name}
-                                      </span>
-                                      <Eye
-                                        size={18}
-                                        className="text-gray-600 ml-2"
-                                      />
-                                    </a>
-                                  ) : (
-                                    <span className="text-gray-500 italic">
-                                      Attachment unavailable
+                                  <div className="flex justify-between items-center mb-2">
+                                    <span className="truncate font-medium text-primary-1 max-w-[70%]">
+                                      {attachment.name}
                                     </span>
-                                  )}
-                                </li>
+
+                                    {attachment.fileId ? (
+                                      <div className="flex gap-2 items-center">
+                                        <Tooltip title="View Report">
+                                          <Button
+                                            type="text"
+                                            shape="circle"
+                                            size="small"
+                                            icon={<Eye size={16} />}
+                                            onClick={() => {
+                                              setShowReportPdfModal(true)
+                                              setReportUrl(attachment.fileId)
+                                            }}
+                                          />
+                                        </Tooltip>
+                                      </div>
+                                    ) : (
+                                      <span className="text-gray-500 italic text-sm">
+                                        Unavailable
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
                               ))}
-                          </ul>
+                          </div>
 
                           {/* Pagination */}
                           {medicalReports.attachments.length >
@@ -604,12 +622,37 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                 )}
               </div>
 
+              {/* Report Viewer */}
+              <Modal
+                open={showReportPdfModal}
+                onCancel={() => {
+                  setShowReportPdfModal(false)
+                }}
+                footer={null}
+                width="90vw"
+                centered
+                destroyOnClose
+                title={`Report`}
+                closeIcon={<XCircle />}
+                bodyStyle={{ padding: 0, height: "80vh" }}
+              >
+                {reportUrl && (
+                  <iframe
+                    src={reportUrl}
+                    width="100%"
+                    height="100%"
+                    style={{ border: "none" }}
+                    title="Report PDF"
+                  />
+                )}
+              </Modal>
+
               {/* Invoice Viewer */}
               <Modal
-                open={showPdfModal}
+                open={showInvoicePdfModal}
                 onCancel={() => {
-                  setShowPdfModal(false)
-                  if (pdfUrl) URL.revokeObjectURL(pdfUrl)
+                  setShowInvoicePdfModal(false)
+                  if (invoicePdfUrl) URL.revokeObjectURL(invoicePdfUrl)
                 }}
                 footer={null}
                 width="90vw"
@@ -617,11 +660,11 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                 destroyOnClose
                 title={`Invoice #${selectedAppointment.invoice_id}`}
                 closeIcon={<XCircle />}
-                bodyStyle={{ padding: 0, height: "80vh" }} // remove padding, fix height
+                bodyStyle={{ padding: 0, height: "80vh" }}
               >
-                {pdfUrl && (
+                {invoicePdfUrl && (
                   <iframe
-                    src={pdfUrl}
+                    src={invoicePdfUrl}
                     width="100%"
                     height="100%"
                     style={{ border: "none" }}

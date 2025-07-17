@@ -1,11 +1,12 @@
 "use client"
 
 import { useEffect, useState, useMemo } from "react"
-import { ExternalLink } from "lucide-react"
+import { Eye, XCircle } from "lucide-react"
 import { ClipLoader } from "react-spinners"
 import { useAPICall } from "@/hooks/apicall"
 import api from "@/services/api"
 import { format } from "date-fns"
+import { Button, Modal, Tooltip } from "antd"
 
 interface MedicalHistoryProps {
   petId: string
@@ -15,6 +16,8 @@ const ITEMS_PER_PAGE = 5
 
 const MedicalHistory: React.FC<MedicalHistoryProps> = ({ petId }) => {
   const [currentPage, setCurrentPage] = useState(1)
+  const [showReportPdfModal, setShowReportPdfModal] = useState(false)
+  const [reportUrl, setReportUrl] = useState<string | null>(null)
 
   const {
     call: getMedicalHistoryForPet,
@@ -141,7 +144,27 @@ const MedicalHistory: React.FC<MedicalHistoryProps> = ({ petId }) => {
                             <p className="text-sm truncate text-gray-800 font-medium">
                               {decodeURIComponent(attachment.name)}
                             </p>
-                            <a
+                            {attachment.fileId ? (
+                              <div className="flex gap-2 items-center">
+                                <Tooltip title="View Report">
+                                  <Button
+                                    type="text"
+                                    shape="circle"
+                                    size="small"
+                                    icon={<Eye size={16} />}
+                                    onClick={() => {
+                                      setShowReportPdfModal(true)
+                                      setReportUrl(attachment.fileId)
+                                    }}
+                                  />
+                                </Tooltip>
+                              </div>
+                            ) : (
+                              <span className="text-gray-500 italic text-sm">
+                                Unavailable
+                              </span>
+                            )}
+                            {/* <a
                               href={
                                 attachment.importMetadata?.attachmentUrl ||
                                 attachment.fileId
@@ -151,7 +174,7 @@ const MedicalHistory: React.FC<MedicalHistoryProps> = ({ petId }) => {
                               className="text-gray-500 hover:text-blue-600"
                             >
                               <ExternalLink size={18} />
-                            </a>
+                            </a> */}
                           </div>
                         ))}
                       </div>
@@ -206,6 +229,31 @@ const MedicalHistory: React.FC<MedicalHistoryProps> = ({ petId }) => {
                       <p className="text-gray-500">No prescriptions found.</p>
                     )}
                   </div>
+
+                  {/* Report Viewer */}
+                  <Modal
+                    open={showReportPdfModal}
+                    onCancel={() => {
+                      setShowReportPdfModal(false)
+                    }}
+                    footer={null}
+                    width="90vw"
+                    centered
+                    destroyOnClose
+                    title={`Report`}
+                    closeIcon={<XCircle />}
+                    bodyStyle={{ padding: 0, height: "80vh" }}
+                  >
+                    {reportUrl && (
+                      <iframe
+                        src={reportUrl}
+                        width="100%"
+                        height="100%"
+                        style={{ border: "none" }}
+                        title="Report PDF"
+                      />
+                    )}
+                  </Modal>
                 </div>
               )
             })
