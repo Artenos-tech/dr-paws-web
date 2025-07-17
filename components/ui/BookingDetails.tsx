@@ -432,195 +432,202 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                 </div>
               )}
               {/* Medical Reports Section */}
-              {selectedAppointment.category === "COMPLETED" && <div className="w-full md:w-4/5 lg:w-[50%] mt-10">
-                <h2 className="text-xl font-semibold text-center mb-6 text-primary-1">
-                  Medical Reports
-                </h2>
+              {selectedAppointment.category === "COMPLETED" && (
+                <div className="w-full md:w-4/5 lg:w-[50%] mt-10">
+                  <h2 className="text-xl font-semibold text-center mb-6 text-primary-1">
+                    Medical Reports
+                  </h2>
 
-                {loadingMedicalReports ? (
-                  <div className="flex justify-center items-center h-32">
-                    <ClipLoader color="#33495f" />
-                  </div>
-                ) : (
-                  <>
-                    {/* Diagnostic Reports */}
-                    <div className="mb-10">
-                      <h3 className="text-lg font-semibold mb-3">
-                        Diagnostic Reports, Scans, and X-rays
-                      </h3>
-                      {medicalReports && medicalReports?.attachments?.length ? (
-                        <>
-                          <div
-                            className={`grid gap-4 ${
-                              medicalReports.attachments.length === 1
-                                ? "grid-cols-1"
-                                : medicalReports.attachments.length === 2
-                                  ? "sm:grid-cols-2"
-                                  : medicalReports.attachments.length === 3
-                                    ? "sm:grid-cols-2 md:grid-cols-3"
-                                    : "sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
-                            }`}
-                          >
-                            {medicalReports.attachments
-                              .slice(
-                                (attachmentsPage - 1) * attachmentsPerPage,
-                                attachmentsPage * attachmentsPerPage,
-                              )
-                              .map((attachment) => (
-                                <div
-                                  key={attachment.id}
-                                  className="bg-primary-3 p-4 rounded-md shadow hover:shadow-md flex flex-col justify-between"
-                                >
-                                  <div className="flex justify-between items-center mb-2">
-                                    <span className="truncate font-medium text-primary-1 max-w-[70%]">
-                                      {attachment.name}
-                                    </span>
-
-                                    {attachment.fileId ? (
-                                      <div className="flex gap-2 items-center">
-                                        <Tooltip title="View Report">
-                                          <Button
-                                            type="text"
-                                            shape="circle"
-                                            size="small"
-                                            icon={<Eye size={16} />}
-                                            onClick={() => {
-                                              setShowReportPdfModal(true)
-                                              setReportUrl(attachment.fileId)
-                                            }}
-                                          />
-                                        </Tooltip>
-                                      </div>
-                                    ) : (
-                                      <span className="text-gray-500 italic text-sm">
-                                        Unavailable
+                  {loadingMedicalReports ? (
+                    <div className="flex justify-center items-center h-32">
+                      <ClipLoader color="#33495f" />
+                    </div>
+                  ) : (
+                    <>
+                      {/* Diagnostic Reports */}
+                      <div className="mb-10">
+                        <h3 className="text-lg font-semibold mb-3">
+                          Diagnostic Reports, Scans, and X-rays
+                        </h3>
+                        {medicalReports &&
+                        medicalReports?.attachments?.length ? (
+                          <>
+                            <div
+                              className={`grid gap-4 ${
+                                medicalReports.attachments.length === 1
+                                  ? "grid-cols-1"
+                                  : medicalReports.attachments.length === 2
+                                    ? "sm:grid-cols-2"
+                                    : medicalReports.attachments.length === 3
+                                      ? "sm:grid-cols-2 md:grid-cols-3"
+                                      : "sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+                              }`}
+                            >
+                              {medicalReports.attachments
+                                .slice(
+                                  (attachmentsPage - 1) * attachmentsPerPage,
+                                  attachmentsPage * attachmentsPerPage,
+                                )
+                                .map((attachment) => (
+                                  <div
+                                    key={attachment.id}
+                                    className="bg-primary-3 p-4 rounded-md shadow hover:shadow-md flex flex-col justify-between"
+                                  >
+                                    <div className="flex justify-between items-center mb-2">
+                                      <span className="truncate font-medium text-primary-1 max-w-[70%]">
+                                        {attachment.name}
                                       </span>
-                                    )}
+
+                                      {attachment.fileId ? (
+                                        <div className="flex gap-2 items-center">
+                                          <Tooltip title="View Report">
+                                            <Button
+                                              type="text"
+                                              shape="circle"
+                                              size="small"
+                                              icon={<Eye size={16} />}
+                                              onClick={() => {
+                                                setShowReportPdfModal(true)
+                                                setReportUrl(attachment.fileId)
+                                              }}
+                                            />
+                                          </Tooltip>
+                                        </div>
+                                      ) : (
+                                        <span className="text-gray-500 italic text-sm">
+                                          Unavailable
+                                        </span>
+                                      )}
+                                    </div>
                                   </div>
-                                </div>
-                              ))}
-                          </div>
-
-                          {/* Pagination */}
-                          {medicalReports.attachments.length >
-                            attachmentsPerPage && (
-                            <div className="flex justify-center mt-4 gap-4">
-                              <button
-                                onClick={() => setAttachmentsPage((p) => p - 1)}
-                                disabled={attachmentsPage === 1}
-                                className="px-4 py-2 bg-gray-200 text-gray-600 rounded disabled:opacity-50"
-                              >
-                                Prev
-                              </button>
-                              <button
-                                onClick={() => setAttachmentsPage((p) => p + 1)}
-                                disabled={
-                                  attachmentsPage >=
-                                  Math.ceil(
-                                    medicalReports.attachments.length /
-                                      attachmentsPerPage,
-                                  )
-                                }
-                                className="px-4 py-2 bg-gray-200 text-gray-600 rounded disabled:opacity-50"
-                              >
-                                Next
-                              </button>
+                                ))}
                             </div>
-                          )}
-                        </>
-                      ) : (
-                        <p className="text-gray-500 italic text-center">
-                          No diagnostic reports found.
-                        </p>
-                      )}
-                    </div>
 
-                    {/* SOAP Notes */}
-                    <div>
-                      <h3 className="text-lg font-semibold mb-3">
-                        Prescriptions
-                      </h3>
-                      {medicalReports && medicalReports?.soapNotes?.length ? (
-                        <>
-                          <ul className="space-y-4">
-                            {medicalReports.soapNotes
-                              .slice(
-                                (soapNotesPage - 1) * soapNotesPerPage,
-                                soapNotesPage * soapNotesPerPage,
-                              )
-                              .map((note) => (
-                                <li
-                                  key={note.id}
-                                  className="bg-primary-3 p-4 rounded-md shadow text-primary-1 space-y-1"
+                            {/* Pagination */}
+                            {medicalReports.attachments.length >
+                              attachmentsPerPage && (
+                              <div className="flex justify-center mt-4 gap-4">
+                                <button
+                                  onClick={() =>
+                                    setAttachmentsPage((p) => p - 1)
+                                  }
+                                  disabled={attachmentsPage === 1}
+                                  className="px-4 py-2 bg-gray-200 text-gray-600 rounded disabled:opacity-50"
                                 >
-                                  {note.subjective && (
-                                    <p>
-                                      <strong>Subjective:</strong>{" "}
-                                      {note.subjective}
-                                    </p>
-                                  )}
-                                  {note.objective && (
-                                    <p>
-                                      <strong>Objective:</strong>{" "}
-                                      {note.objective}
-                                    </p>
-                                  )}
-                                  {note.assessment && (
-                                    <p>
-                                      <strong>Assessment:</strong>{" "}
-                                      {note.assessment}
-                                    </p>
-                                  )}
-                                  {note.plan && (
-                                    <p>
-                                      <strong>Plan:</strong> {note.plan}
-                                    </p>
-                                  )}
-                                  {note.memo && (
-                                    <p>
-                                      <strong>Memo:</strong> {note.memo}
-                                    </p>
-                                  )}
-                                </li>
-                              ))}
-                          </ul>
+                                  Prev
+                                </button>
+                                <button
+                                  onClick={() =>
+                                    setAttachmentsPage((p) => p + 1)
+                                  }
+                                  disabled={
+                                    attachmentsPage >=
+                                    Math.ceil(
+                                      medicalReports.attachments.length /
+                                        attachmentsPerPage,
+                                    )
+                                  }
+                                  className="px-4 py-2 bg-gray-200 text-gray-600 rounded disabled:opacity-50"
+                                >
+                                  Next
+                                </button>
+                              </div>
+                            )}
+                          </>
+                        ) : (
+                          <p className="text-gray-500 italic text-center">
+                            No diagnostic reports found.
+                          </p>
+                        )}
+                      </div>
 
-                          {/* Pagination */}
-                          {medicalReports.soapNotes.length >
-                            soapNotesPerPage && (
-                            <div className="flex justify-center mt-4 gap-4">
-                              <button
-                                onClick={() => setSoapNotesPage((p) => p - 1)}
-                                disabled={soapNotesPage === 1}
-                                className="px-4 py-2 bg-gray-200 text-gray-600 rounded disabled:opacity-50"
-                              >
-                                Prev
-                              </button>
-                              <button
-                                onClick={() => setSoapNotesPage((p) => p + 1)}
-                                disabled={
-                                  soapNotesPage >=
-                                  Math.ceil(
-                                    medicalReports.soapNotes.length /
-                                      soapNotesPerPage,
-                                  )
-                                }
-                                className="px-4 py-2 bg-gray-200 text-gray-600 rounded disabled:opacity-50"
-                              >
-                                Next
-                              </button>
-                            </div>
-                          )}
-                        </>
-                      ) : (
-                        <p className="text-gray-500 italic text-center">
-                          No prescriptions found.
-                        </p>
-                      )}
-                    </div>
-                  </>
-                )}
-              </div>}
+                      {/* SOAP Notes */}
+                      <div>
+                        <h3 className="text-lg font-semibold mb-3">
+                          Prescriptions
+                        </h3>
+                        {medicalReports && medicalReports?.soapNotes?.length ? (
+                          <>
+                            <ul className="space-y-4">
+                              {medicalReports.soapNotes
+                                .slice(
+                                  (soapNotesPage - 1) * soapNotesPerPage,
+                                  soapNotesPage * soapNotesPerPage,
+                                )
+                                .map((note) => (
+                                  <li
+                                    key={note.id}
+                                    className="bg-primary-3 p-4 rounded-md shadow text-primary-1 space-y-1"
+                                  >
+                                    {note.subjective && (
+                                      <p>
+                                        <strong>Subjective:</strong>{" "}
+                                        {note.subjective}
+                                      </p>
+                                    )}
+                                    {note.objective && (
+                                      <p>
+                                        <strong>Objective:</strong>{" "}
+                                        {note.objective}
+                                      </p>
+                                    )}
+                                    {note.assessment && (
+                                      <p>
+                                        <strong>Assessment:</strong>{" "}
+                                        {note.assessment}
+                                      </p>
+                                    )}
+                                    {note.plan && (
+                                      <p>
+                                        <strong>Plan:</strong> {note.plan}
+                                      </p>
+                                    )}
+                                    {note.memo && (
+                                      <p>
+                                        <strong>Memo:</strong> {note.memo}
+                                      </p>
+                                    )}
+                                  </li>
+                                ))}
+                            </ul>
+
+                            {/* Pagination */}
+                            {medicalReports.soapNotes.length >
+                              soapNotesPerPage && (
+                              <div className="flex justify-center mt-4 gap-4">
+                                <button
+                                  onClick={() => setSoapNotesPage((p) => p - 1)}
+                                  disabled={soapNotesPage === 1}
+                                  className="px-4 py-2 bg-gray-200 text-gray-600 rounded disabled:opacity-50"
+                                >
+                                  Prev
+                                </button>
+                                <button
+                                  onClick={() => setSoapNotesPage((p) => p + 1)}
+                                  disabled={
+                                    soapNotesPage >=
+                                    Math.ceil(
+                                      medicalReports.soapNotes.length /
+                                        soapNotesPerPage,
+                                    )
+                                  }
+                                  className="px-4 py-2 bg-gray-200 text-gray-600 rounded disabled:opacity-50"
+                                >
+                                  Next
+                                </button>
+                              </div>
+                            )}
+                          </>
+                        ) : (
+                          <p className="text-gray-500 italic text-center">
+                            No prescriptions found.
+                          </p>
+                        )}
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
 
               {/* Report Viewer */}
               <Modal
