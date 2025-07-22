@@ -6,7 +6,7 @@ import { Pet } from "@/context/UserContext"
 import { useAPICall } from "@/hooks/apicall"
 import api from "@/services/api"
 import { ClipLoader } from "react-spinners"
-import { Eye, XCircle } from "lucide-react"
+import { Eye, XCircle, Download } from "lucide-react"
 import { format } from "date-fns"
 import { Button, Modal, Tooltip } from "antd"
 
@@ -16,7 +16,11 @@ const Reports = () => {
   const [selectedPet, setSelectedPet] = useState<Pet | null>(null)
   const [currentPage, setCurrentPage] = useState(1)
   const [showReportPdfModal, setShowReportPdfModal] = useState(false)
-  const [reportUrl, setReportUrl] = useState<string | null>(null)
+  const [reportBlobUrl, setReportBlobUrl] = useState<string | null>(null)
+  const [reportBlob, setReportBlob] = useState<Blob | null>(null)
+  const [reportType, setReportType] = useState<
+    "pdf" | "image" | "docx" | "other" | null
+  >(null)
 
   const {
     call: getMedicalHistoryForPet,
@@ -105,6 +109,118 @@ const Reports = () => {
     return `${day}${getOrdinal(day)} ${format(date, "MMMM yyyy")}`
   }
 
+  const getFileType = async (
+    blob: Blob,
+  ): Promise<{
+    type: "pdf" | "image" | "docx" | "other"
+    mimeType: string
+  }> => {
+    const buffer = await blob.arrayBuffer()
+    const bytes = new Uint8Array(buffer.slice(0, 12))
+
+    // PDF signature
+    if (
+      bytes[0] === 0x25 &&
+      bytes[1] === 0x50 &&
+      bytes[2] === 0x44 &&
+      bytes[3] === 0x46
+    ) {
+      return { type: "pdf", mimeType: "application/pdf" }
+    }
+
+    // PNG signature
+    if (
+      bytes[0] === 0x89 &&
+      bytes[1] === 0x50 &&
+      bytes[2] === 0x4e &&
+      bytes[3] === 0x47
+    ) {
+      return { type: "image", mimeType: "image/png" }
+    }
+
+    // JPEG signature
+    if (bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff) {
+      return { type: "image", mimeType: "image/jpeg" }
+    }
+
+    // GIF signature
+    if (
+      bytes[0] === 0x47 &&
+      bytes[1] === 0x49 &&
+      bytes[2] === 0x46 &&
+      bytes[3] === 0x38
+    ) {
+      return { type: "image", mimeType: "image/gif" }
+    }
+
+    // WebP signature
+    if (
+      bytes[0] === 0x52 &&
+      bytes[1] === 0x49 &&
+      bytes[2] === 0x46 &&
+      bytes[3] === 0x46 &&
+      bytes[8] === 0x57 &&
+      bytes[9] === 0x45 &&
+      bytes[10] === 0x42 &&
+      bytes[11] === 0x50
+    ) {
+      return { type: "image", mimeType: "image/webp" }
+    }
+
+    // DOCX/ZIP signature
+    if (bytes[0] === 0x50 && bytes[1] === 0x4b) {
+      return {
+        type: "docx",
+        mimeType:
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      }
+    }
+
+    return { type: "other", mimeType: "application/octet-stream" }
+  }
+
+  const handlePreview = async (url: string) => {
+    try {
+      const response = await fetch(url)
+      const blob = await response.blob()
+      const { type, mimeType } = await getFileType(blob)
+      const correctedBlob = new Blob([blob], { type: mimeType })
+      const blobUrl = URL.createObjectURL(correctedBlob)
+      setReportBlob(correctedBlob)
+      setReportBlobUrl(blobUrl)
+      setReportType(type)
+      setShowReportPdfModal(true)
+    } catch (err) {
+      console.error("Failed to preview file:", err)
+    }
+  }
+
+  const handleDownload = () => {
+    if (!reportBlob) return
+    const url = URL.createObjectURL(reportBlob)
+    const link = document.createElement("a")
+    link.href = url
+    let ext = "bin"
+    switch (reportType) {
+      case "pdf":
+        ext = "pdf"
+        break
+      case "image":
+        ext = "jpg"
+        break
+      case "docx":
+        ext = "docx"
+        break
+      default:
+        ext = "bin"
+    }
+    link.download = `attachment.${ext}`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+  }
+
   return (
     <div className="flex flex-col w-full h-full items-center font-roca pb-20 flex-grow">
       <main className="flex flex-col w-full items-center px-8 md:px-32 lg:px-20 xl:px-40">
@@ -184,10 +300,9 @@ const Reports = () => {
                                           shape="circle"
                                           size="small"
                                           icon={<Eye size={16} />}
-                                          onClick={() => {
-                                            setShowReportPdfModal(true)
-                                            setReportUrl(attachment.fileId)
-                                          }}
+                                          onClick={() =>
+                                            handlePreview(attachment.fileId)
+                                          }
                                         />
                                       </Tooltip>
                                     </div>
@@ -286,29 +401,77 @@ const Reports = () => {
             </div>
           )}
         </div>
-        {/* Report Viewer */}
+
+        {/* Report Viewer Modal */}
         <Modal
           open={showReportPdfModal}
           onCancel={() => {
             setShowReportPdfModal(false)
+            if (reportBlobUrl) {
+              URL.revokeObjectURL(reportBlobUrl)
+            }
+            setReportBlobUrl(null)
+            setReportBlob(null)
+            setReportType(null)
           }}
           footer={null}
           width="90vw"
           centered
           destroyOnClose
-          title={`Report`}
+          title="Report"
           closeIcon={<XCircle />}
           bodyStyle={{ padding: 0, height: "80vh" }}
         >
-          {reportUrl && (
+          {reportBlobUrl && reportType === "pdf" ? (
             <iframe
-              src={reportUrl}
+              src={reportBlobUrl}
               width="100%"
               height="100%"
               style={{ border: "none" }}
               title="Report PDF"
             />
-          )}
+          ) : reportBlobUrl && reportType === "image" ? (
+            <div className="relative w-full h-full bg-black flex justify-center items-center">
+              <img
+                src={reportBlobUrl}
+                alt="Attachment"
+                className="max-h-full max-w-full object-contain"
+              />
+              <div className="absolute top-4 right-4 z-10">
+                <Tooltip title="Download">
+                  <Button
+                    style={{
+                      backgroundColor: "#5281a2",
+                      borderColor: "#5281a2",
+                    }}
+                    type="primary"
+                    shape="circle"
+                    size="large"
+                    icon={<Download size={18} />}
+                    onClick={handleDownload}
+                  />
+                </Tooltip>
+              </div>
+            </div>
+          ) : reportBlobUrl ? (
+            <div className="p-6 text-center space-y-4">
+              <p className="text-lg text-gray-700">
+                Preview not available for this file type.
+              </p>
+              <Button
+                type="primary"
+                size="large"
+                icon={<Download />}
+                style={{
+                  backgroundColor: "#5281a2",
+                  borderColor: "#5281a2",
+                }}
+                onClick={handleDownload}
+              >
+                Download File
+              </Button>
+            </div>
+          ) : null}
         </Modal>
       </main>
     </div>
