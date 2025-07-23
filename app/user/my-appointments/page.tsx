@@ -142,15 +142,13 @@ const MyAppointmentsPage = () => {
             ) : (
               <>
                 <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {visibleAppointments
-                    .filter((appt) => appt.vet_id !== null)
-                    .map((appointment) => (
-                      <AppointmentCard
-                        key={appointment.id}
-                        appointment={appointment}
-                        onClick={() => setSelectedAppointment(appointment)}
-                      />
-                    ))}
+                  {visibleAppointments.map((appointment) => (
+                    <AppointmentCard
+                      key={appointment.id}
+                      appointment={appointment}
+                      onClick={() => setSelectedAppointment(appointment)}
+                    />
+                  ))}
                 </div>
 
                 {/* Pagination */}
