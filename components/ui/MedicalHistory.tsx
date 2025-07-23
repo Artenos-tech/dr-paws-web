@@ -18,6 +18,7 @@ const MedicalHistory: React.FC<MedicalHistoryProps> = ({ petId }) => {
   const [currentPage, setCurrentPage] = useState(1)
   const [showReportPdfModal, setShowReportPdfModal] = useState(false)
   const [reportBlobUrl, setReportBlobUrl] = useState<string | null>(null)
+  const [reportFileUrl, setReportFileUrl] = useState<string | null>(null)
   const [reportBlob, setReportBlob] = useState<Blob | null>(null)
   const [reportType, setReportType] = useState<
     "pdf" | "image" | "docx" | "other" | null
@@ -171,6 +172,7 @@ const MedicalHistory: React.FC<MedicalHistoryProps> = ({ petId }) => {
       setReportBlobUrl(blobUrl)
       setReportType(type)
       setShowReportPdfModal(true)
+      setReportFileUrl(url)
     } catch (err) {
       console.error("Failed to preview file:", err)
     }
@@ -363,6 +365,17 @@ const MedicalHistory: React.FC<MedicalHistoryProps> = ({ petId }) => {
                             />
                           </Tooltip>
                         </div>
+                      </div>
+                    ) : reportFileUrl && reportType === "docx" ? (
+                      <div className="relative w-full h-full flex justify-center items-center">
+                        <iframe
+                          src={`https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(
+                            reportFileUrl,
+                          )}`}
+                          width="100%"
+                          height="100%"
+                          style={{ border: "none" }}
+                        />
                       </div>
                     ) : (
                       <div className="p-6 text-center space-y-4">
