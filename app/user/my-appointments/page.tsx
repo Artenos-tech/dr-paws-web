@@ -75,7 +75,7 @@ const MyAppointmentsPage = () => {
         break
       case "CANCELLED":
         filtered = allAppointments.filter((a) => a.category === "CANCELLED")
-        break  
+        break
       default:
         filtered = allAppointments
     }

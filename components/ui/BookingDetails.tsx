@@ -114,7 +114,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
       : "Your Booking"
 
   const HeaderIcon = isCancelled
-    ? CircleX 
+    ? CircleX
     : isCompleted
       ? CircleCheck
       : CalendarDays
