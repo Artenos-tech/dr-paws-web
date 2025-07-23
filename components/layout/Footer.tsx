@@ -18,10 +18,10 @@ const Footer = () => {
           <div>
             <Image src={logo} alt="Dr. Paws Logo" width={100} height={30} />
             <Link
-              href="mailto:admin@drpaws.care"
+              href="mailto:support@drpaws.care"
               className="block mt-2 text-primary-1 hover:text-primary-2"
             >
-              admin@drpaws.care
+              support@drpaws.care
             </Link>
             <div className="block mt-1 text-primary-1">
               <div>Indiranagar Clinic</div>

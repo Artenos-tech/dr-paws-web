@@ -1,6 +1,6 @@
 export default function SupportPage() {
   const support = {
-    email: "admin@drpaws.care",
+    email: "support@drpaws.care",
     // phoneNumber: "",
     clinics: [
       {
