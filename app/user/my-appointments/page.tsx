@@ -14,6 +14,7 @@ const TABS = {
   ALL: { label: "All" },
   UPCOMING: { label: "Upcoming" },
   PAST: { label: "Past" },
+  CANCELLED: { label: "Cancelled" },
 } as const
 
 const determinePageSize = () => {
@@ -72,6 +73,9 @@ const MyAppointmentsPage = () => {
       case "PAST":
         filtered = allAppointments.filter((a) => a.category === "COMPLETED")
         break
+      case "CANCELLED":
+        filtered = allAppointments.filter((a) => a.category === "CANCELLED")
+        break  
       default:
         filtered = allAppointments
     }

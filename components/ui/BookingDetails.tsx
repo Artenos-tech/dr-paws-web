@@ -103,6 +103,28 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
     setCurrentView("default")
   }
 
+  const isUpcoming = selectedAppointment.category === "UPCOMING"
+  const isCompleted = selectedAppointment.category === "COMPLETED"
+  const isCancelled = selectedAppointment.category === "CANCELLED"
+
+  const headerTitle = isCancelled
+    ? "Booking Cancelled"
+    : isCompleted
+      ? "Booking Completed"
+      : "Your Booking"
+
+  const HeaderIcon = isCancelled
+    ? CircleX 
+    : isCompleted
+      ? CircleCheck
+      : CalendarDays
+
+  const bannerClasses = isCancelled
+    ? "bg-[#F1F1F1] text-[#909090]"
+    : isCompleted
+      ? "bg-[#f7f1de] text-[#909090]"
+      : "bg-[#FFFCF3] text-primary-1"
+
   const cancelBooking = async () => {
     try {
       const resp = await cancelAppointment({
@@ -202,52 +224,30 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
             <div className="flex flex-col justify-center gap-4 items-center">
               <div className="flex items-center gap-2">
                 <h1 className="text-2xl sm:text-3xl flex items-center gap-4">
-                  {/* {selectedAppointment.category === "CANCELLED"
-                    ? "Booking Cancelled"
-                    : "Your Booking"} */}
-                  {selectedAppointment.category === "COMPLETED"
-                    ? "Booking Completed"
-                    : "Your Booking"}
+                  {headerTitle}
                 </h1>
-                {/* {selectedAppointment.category === "CANCELLED" && (
-                  <CircleX
-                    size={40}
-                    fill="#5281a2"
-                    stroke="white"
-                    strokeWidth={2}
-                  />
-                )} */}
-                {selectedAppointment.category === "COMPLETED" ? (
-                  <CircleCheck
-                    size={40}
-                    fill="#5281a2"
-                    stroke="white"
-                    strokeWidth={2}
-                  />
-                ) : (
-                  <CalendarDays
-                    size={40}
-                    fill="#5281a2"
-                    stroke="white"
-                    strokeWidth={2}
-                  />
-                )}
+                <HeaderIcon
+                  size={40}
+                  fill="#5281a2"
+                  stroke="white"
+                  strokeWidth={2}
+                />
               </div>
               <div
-                className={`p-4 text-primary-1 w-11/12 md:w-4/5 lg:w-[50%] shadow-md my-5 flex flex-col gap-2 items-center ${
-                  selectedAppointment.category === "COMPLETED"
-                    ? "bg-[#F1F1F1] text-[#909090]"
-                    : "bg-[#FFFCF3]"
-                }`}
+                className={`p-4 w-11/12 md:w-4/5 lg:w-[50%] shadow-md my-5 flex flex-col gap-2 items-center ${bannerClasses}`}
               >
                 <p className="text-lg font-semibold mt-4 text-center">
-                  {selectedAppointment.category === "COMPLETED"
+                  {isCancelled
                     ? selectedAppointment.appt_type === "Grooming"
-                      ? `${selectedAppointment.pet_name} had a ${selectedAppointment.appt_type} session`
-                      : `${selectedAppointment.pet_name} visited ${selectedAppointment.vet_name} for a ${selectedAppointment.appt_type}`
-                    : selectedAppointment.appt_type !== "Grooming"
-                      ? `${selectedAppointment.pet_name} is scheduled for a ${selectedAppointment.appt_type} with ${selectedAppointment.vet_name}`
-                      : `${selectedAppointment.pet_name} is scheduled for a ${selectedAppointment.appt_type} session`}
+                      ? `${selectedAppointment.pet_name} was scheduled for a ${selectedAppointment.appt_type} session`
+                      : `${selectedAppointment.pet_name} was scheduled with ${selectedAppointment.vet_name} for a ${selectedAppointment.appt_type}`
+                    : isCompleted
+                      ? selectedAppointment.appt_type === "Grooming"
+                        ? `${selectedAppointment.pet_name} had a ${selectedAppointment.appt_type} session`
+                        : `${selectedAppointment.pet_name} visited ${selectedAppointment.vet_name} for a ${selectedAppointment.appt_type}`
+                      : selectedAppointment.appt_type === "Grooming"
+                        ? `${selectedAppointment.pet_name} is scheduled for a ${selectedAppointment.appt_type} session`
+                        : `${selectedAppointment.pet_name} is scheduled for a ${selectedAppointment.appt_type} with ${selectedAppointment.vet_name}`}
                 </p>
                 <div className="flex items-center my-4 relative">
                   {
@@ -282,19 +282,25 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                   }
                 </div>
                 <div className="my-4 space-y-3">
-                  <p className={`flex items-center gap-2`}>
+                  <p
+                    className={`flex items-center gap-2 ${isCancelled ? "line-through" : ""}`}
+                  >
                     <span className="text-secondary-1">
                       <GrLocation />
                     </span>{" "}
                     {selectedAppointment.clinic_location}
                   </p>
-                  <p className={`flex items-center gap-2`}>
+                  <p
+                    className={`flex items-center gap-2 ${isCancelled ? "line-through" : ""}`}
+                  >
                     <span className="text-secondary-1">
                       <HiOutlineCalendar />
                     </span>
                     {format(parsedDate, "EEEE dd MMMM, yyyy")}
                   </p>
-                  <p className={`flex items-center gap-2`}>
+                  <p
+                    className={`flex items-center gap-2 ${isCancelled ? "line-through" : ""}`}
+                  >
                     <span className="text-secondary-1">
                       <MdOutlineAccessTime />
                     </span>
@@ -310,7 +316,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                     </p>
                   )}
                 </div>
-                {selectedAppointment.category === "UPCOMING" && (
+                {isUpcoming && (
                   <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex flex-col sm:flex-row sm:justify-center gap-4 mt-6">
                       <button
