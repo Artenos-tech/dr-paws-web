@@ -76,7 +76,13 @@ const MyAppointmentsPage = () => {
         filtered = allAppointments
     }
 
-    setFilteredAppointments(filtered)
+    setFilteredAppointments(
+      filtered.filter(
+        (appt) =>
+          (appt.vet_id !== null && appt.appt_type === "Vet Consultation") ||
+          appt.appt_type === "Grooming",
+      ),
+    )
     setCurrentPage(1)
   }, [activeTab, allAppointments])
 

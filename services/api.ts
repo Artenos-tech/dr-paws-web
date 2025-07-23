@@ -709,8 +709,8 @@ export default createAPIClient({
             pet_name: z.string(),
             pet_type: z.string().nullable(),
             pet_profile_image: z.string().nullable(),
-            vet_id: z.string().uuid(),
-            vet_name: z.string(),
+            vet_id: z.string().uuid().nullable(),
+            vet_name: z.string().nullable(),
             vet_image: z.string().url().nullable(),
             clinic_id: z.string().uuid(),
             clinic_name: z.string(),
@@ -722,7 +722,12 @@ export default createAPIClient({
             appt_status: z.string().nullable(),
             appt_type: z.string().nullable(),
             appt_type_id: z.string().uuid(),
-            category: z.enum(["UPCOMING", "COMPLETED", "REQUESTED"]),
+            category: z.enum([
+              "UPCOMING",
+              "COMPLETED",
+              "REQUESTED",
+              "CANCELLED",
+            ]),
             coupon_code: z.string().nullable().optional(),
             invoice_id: z.string().uuid().nullable(),
             total_billing_amount: z.number(),
@@ -1144,6 +1149,7 @@ export default createAPIClient({
       }),
       errorResponseSchema: z.object({}),
     },
+
     getInvoices: {
       method: "GET",
       path: "/user/invoices",
@@ -1218,7 +1224,11 @@ export default createAPIClient({
                   id: z.string().uuid(),
                   name: z.string(),
                   fileId: z.string().url(),
-                  type: z.enum(["DIAGNOSTIC_TESTS", "MISCELLANEOUS"]),
+                  type: z.enum([
+                    "DIAGNOSTIC_TESTS",
+                    "MISCELLANEOUS",
+                    "CONSENT_FORMS",
+                  ]),
                   resortBookingId: z.string().uuid(),
                   clientId: z.string().uuid(),
                   importMetadata: z
@@ -1274,10 +1284,12 @@ export default createAPIClient({
                     "NO_SHOW",
                     "ACTIVE",
                   ]),
-                  staff: z.object({
-                    id: z.string().uuid(),
-                    name: z.string(),
-                  }),
+                  staff: z
+                    .object({
+                      id: z.string().uuid(),
+                      name: z.string(),
+                    })
+                    .nullable(),
                 }),
               )
               .optional(),
@@ -1301,10 +1313,12 @@ export default createAPIClient({
                     "NO_SHOW",
                     "ACTIVE",
                   ]),
-                  staff: z.object({
-                    id: z.string().uuid(),
-                    name: z.string(),
-                  }),
+                  staff: z
+                    .object({
+                      id: z.string().uuid(),
+                      name: z.string(),
+                    })
+                    .nullable(),
                 }),
               )
               .optional(),
@@ -1313,6 +1327,7 @@ export default createAPIClient({
       }),
       errorResponseSchema: z.object({}),
     },
+
     getAppointmentMedicalReports: {
       method: "GET",
       path: "/user/appointment/{appointment_id}/medical-reports",
@@ -1326,7 +1341,11 @@ export default createAPIClient({
                 id: z.string().uuid(),
                 name: z.string(),
                 fileId: z.string().url(),
-                type: z.enum(["DIAGNOSTIC_TESTS", "MISCELLANEOUS"]),
+                type: z.enum([
+                  "DIAGNOSTIC_TESTS",
+                  "MISCELLANEOUS",
+                  "CONSENT_FORMS",
+                ]),
                 resortBookingId: z.string().uuid(),
                 clientId: z.string().uuid(),
                 importMetadata: z
