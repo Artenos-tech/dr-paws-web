@@ -11,7 +11,7 @@ import MedicalHistory from "@/components/ui/MedicalHistory"
 
 const Reports = () => {
   const [selectedPet, setSelectedPet] = useState<Pet | null>(null)
-  
+
   const {
     call: getPets,
     result: petsResult,
@@ -40,15 +40,28 @@ const Reports = () => {
         <h1 className="text-3xl m-4 lg:m-12">Medical History</h1>
 
         <div className="flex flex-col gap-6 lg:w-full items-center">
-          <div className={`flex justify-center items-center ${!petsLoading && "md:justify-start"} flex-wrap gap-4 my-8 md:my-4`}>
-            {petsLoading ? <ClipLoader color="#33495f" /> : pets && pets?.map((pet) => (
-              <PetCard key={pet.id} pet={pet} fetchMedicalHistory={handleFetchMedicalHistory} />
-            ))}
+          <div
+            className={`flex justify-center items-center ${!petsLoading && "md:justify-start"} flex-wrap gap-4 my-8 md:my-4`}
+          >
+            {petsLoading ? (
+              <ClipLoader color="#33495f" />
+            ) : (
+              pets &&
+              pets?.map((pet) => (
+                <PetCard
+                  key={pet.id}
+                  pet={pet}
+                  fetchMedicalHistory={handleFetchMedicalHistory}
+                />
+              ))
+            )}
           </div>
 
           {selectedPet && (
             <div className="w-full p-6">
-              <h2 className="text-2xl font-semibold mb-4">{selectedPet.name}&apos;s Medical History</h2>
+              <h2 className="text-2xl font-semibold mb-4">
+                {selectedPet.name}&apos;s Medical History
+              </h2>
               <MedicalHistory petId={selectedPet.id} />
             </div>
           )}
