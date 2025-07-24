@@ -13,7 +13,7 @@ interface MedicalHistoryProps {
   petId: string
 }
 
-interface AttachmentInfo {
+export interface AttachmentInfo {
   name: string
   fileId: string
   mimeType: string
@@ -36,6 +36,7 @@ const MedicalHistory: React.FC<MedicalHistoryProps> = ({ petId }) => {
   } = useAPICall(api.getMedicalHistoryForPet)
 
   useEffect(() => {
+    setCurrentPage(1)
     getMedicalHistoryForPet({ pet_id: petId })
   }, [petId])
 

@@ -1358,6 +1358,9 @@ export default createAPIClient({
                   .nullable(),
                 createdAt: z.string(),
                 updatedAt: z.string(),
+                mimeType: z.string(),
+                fileType: z.enum(["pdf", "image", "docx", "other"]),
+                previewable: z.boolean(),
               }),
             )
             .optional(),
