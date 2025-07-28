@@ -24,6 +24,7 @@ import { useAPICall } from "@/hooks/apicall"
 import api from "@/services/api"
 import { ClipLoader } from "react-spinners"
 import toast from "react-hot-toast"
+import { AttachmentInfo } from "./MedicalHistory"
 // import RescheduleAppointment from "@/components/ui/RescheduleAppointment"
 
 // export const cancelReasons = [
@@ -56,7 +57,8 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
   const [showInvoicePdfModal, setShowInvoicePdfModal] = useState(false)
   const [invoicePdfUrl, setPdfUrl] = useState<string | null>(null)
   const [showReportPdfModal, setShowReportPdfModal] = useState(false)
-  const [reportUrl, setReportUrl] = useState<string | null>(null)
+  const [currentAttachment, setCurrentAttachment] =
+    useState<AttachmentInfo | null>(null)
   const [currentView, setCurrentView] = useState<
     | "default"
     | "cancelConfirm"
@@ -79,7 +81,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
   const [attachmentsPage, setAttachmentsPage] = useState(1)
   const [soapNotesPage, setSoapNotesPage] = useState(1)
 
-  const attachmentsPerPage = 6
+  const attachmentsPerPage = 8
   const soapNotesPerPage = 4
 
   const medicalReports =
@@ -188,6 +190,68 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
     document.body.removeChild(link)
 
     URL.revokeObjectURL(blobUrl)
+  }
+
+  const handleReportPreview = async (
+    attachment: AttachmentInfo,
+    previewable: boolean,
+  ) => {
+    if (!previewable) {
+      // Not previewable, trigger download instead
+      handleReportDownload(attachment)
+      return
+    }
+    try {
+      const { fileId, mimeType, fileType, name } = attachment
+      const response = await fetch(fileId)
+      const blob = await response.blob()
+      const correctedBlob = new Blob([blob], { type: mimeType })
+      const blobUrl = URL.createObjectURL(correctedBlob)
+      setShowReportPdfModal(true)
+      setCurrentAttachment({
+        name,
+        mimeType,
+        fileId,
+        fileType,
+        blobUrl,
+      })
+    } catch (err) {
+      console.error("Failed to preview file:", err)
+    }
+  }
+
+  const handleReportDownload = async (attachment: AttachmentInfo) => {
+    try {
+      const response = await fetch(attachment.fileId)
+      const blob = await response.blob()
+
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement("a")
+      link.href = url
+      let ext = "bin"
+      switch (attachment.fileType) {
+        case "pdf":
+          ext = "pdf"
+          break
+        case "image":
+          ext = "jpg"
+          break
+        case "docx":
+          ext = "docx"
+          break
+        default:
+          ext = "bin"
+      }
+      link.download = `${attachment.name}.${ext}`
+
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+
+      URL.revokeObjectURL(url)
+    } catch (error) {
+      console.error("Download failed:", error)
+    }
   }
 
   const parsedDate = parseISO(selectedAppointment.booking_date)
@@ -474,30 +538,80 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                                     className="bg-primary-3 p-4 rounded-md shadow hover:shadow-md flex flex-col justify-between"
                                   >
                                     <div className="flex justify-between items-center mb-2">
-                                      <span className="truncate font-medium text-primary-1 max-w-[70%]">
-                                        {attachment.name}
-                                      </span>
+                                      <Tooltip title={attachment.name}>
+                                        <span className="truncate font-medium text-primary-1 max-w-[70%]">
+                                          {decodeURIComponent(attachment.name)}
+                                        </span>
+                                      </Tooltip>
+                                      <div className="flex gap-3 text-xs text-gray-500 mt-1">
+                                        {!attachment.previewable && (
+                                          <span className="text-orange-600">
+                                            Download only
+                                          </span>
+                                        )}
+                                      </div>
 
-                                      {attachment.fileId ? (
-                                        <div className="flex gap-2 items-center">
-                                          <Tooltip title="View Report">
+                                      <div className="flex gap-2 items-center">
+                                        {attachment.previewable ? (
+                                          <Tooltip title="Preview">
                                             <Button
                                               type="text"
                                               shape="circle"
                                               size="small"
                                               icon={<Eye size={16} />}
-                                              onClick={() => {
-                                                setShowReportPdfModal(true)
-                                                setReportUrl(attachment.fileId)
-                                              }}
+                                              onClick={() =>
+                                                handleReportPreview(
+                                                  {
+                                                    name: attachment.name,
+                                                    fileId: attachment.fileId,
+                                                    fileType:
+                                                      attachment.fileType,
+                                                    mimeType:
+                                                      attachment.mimeType,
+                                                    blobUrl: null,
+                                                  },
+                                                  attachment.previewable,
+                                                )
+                                              }
                                             />
                                           </Tooltip>
-                                        </div>
-                                      ) : (
-                                        <span className="text-gray-500 italic text-sm">
-                                          Unavailable
-                                        </span>
-                                      )}
+                                        ) : (
+                                          <Tooltip title="Preview not available">
+                                            <Button
+                                              type="text"
+                                              shape="circle"
+                                              size="small"
+                                              icon={<Eye size={16} />}
+                                              disabled
+                                              className="opacity-30"
+                                            />
+                                          </Tooltip>
+                                        )}
+
+                                        <Tooltip title="Download">
+                                          <Button
+                                            type="text"
+                                            shape="circle"
+                                            size="small"
+                                            icon={<Download size={16} />}
+                                            onClick={() =>
+                                              handleReportDownload(
+                                                currentAttachment
+                                                  ? currentAttachment
+                                                  : {
+                                                      name: attachment.name,
+                                                      fileId: attachment.fileId,
+                                                      fileType:
+                                                        attachment.fileType,
+                                                      mimeType:
+                                                        attachment.mimeType,
+                                                      blobUrl: null,
+                                                    },
+                                              )
+                                            }
+                                          />
+                                        </Tooltip>
+                                      </div>
                                     </div>
                                   </div>
                                 ))}
@@ -634,24 +748,71 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                 open={showReportPdfModal}
                 onCancel={() => {
                   setShowReportPdfModal(false)
+                  setCurrentAttachment(null)
                 }}
                 footer={null}
                 width="90vw"
                 centered
                 destroyOnClose
-                title={`Report`}
+                title="Report"
                 closeIcon={<XCircle />}
                 bodyStyle={{ padding: 0, height: "80vh" }}
               >
-                {reportUrl && (
-                  <iframe
-                    src={reportUrl}
-                    width="100%"
-                    height="100%"
-                    style={{ border: "none" }}
-                    title="Report PDF"
-                  />
-                )}
+                {currentAttachment &&
+                  currentAttachment.blobUrl &&
+                  currentAttachment.fileType === "pdf" && (
+                    <iframe
+                      src={currentAttachment.blobUrl}
+                      width="100%"
+                      height="100%"
+                      style={{ border: "none" }}
+                      title="PDF Preview"
+                    />
+                  )}
+                {currentAttachment &&
+                  currentAttachment.blobUrl &&
+                  currentAttachment.fileType === "image" && (
+                    <div className="relative w-full h-full bg-black flex justify-center items-center">
+                      <Image
+                        src={currentAttachment.blobUrl}
+                        alt={currentAttachment.name}
+                        className="max-h-full max-w-full object-contain"
+                        layout="fill"
+                        objectFit="contain"
+                      />
+                      <div className="absolute top-4 right-4 z-10">
+                        <Tooltip title="Download">
+                          <Button
+                            style={{
+                              backgroundColor: "#5281a2",
+                              borderColor: "#5281a2",
+                            }}
+                            type="primary"
+                            shape="circle"
+                            size="large"
+                            icon={<Download size={18} />}
+                            onClick={() =>
+                              handleReportDownload(currentAttachment)
+                            }
+                          />
+                        </Tooltip>
+                      </div>
+                    </div>
+                  )}
+                {currentAttachment &&
+                  currentAttachment.blobUrl &&
+                  currentAttachment.fileType === "docx" && (
+                    <div className="relative w-full h-full flex justify-center items-center">
+                      <iframe
+                        src={`https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(
+                          currentAttachment.fileId,
+                        )}`}
+                        width="100%"
+                        height="100%"
+                        style={{ border: "none" }}
+                      />
+                    </div>
+                  )}
               </Modal>
 
               {/* Invoice Viewer */}
