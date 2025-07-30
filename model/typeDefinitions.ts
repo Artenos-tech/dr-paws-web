@@ -101,7 +101,7 @@ export interface AppointmentType {
   // appt_reason: string | null
   appt_type: string | null
   appt_type_id: string
-  category: "UPCOMING" | "COMPLETED" | "REQUESTED"
+  category: "UPCOMING" | "COMPLETED" | "REQUESTED" | "CANCELLED"
   coupon_code?: string | null
   invoice_id: string
   total_tax_amount: number
