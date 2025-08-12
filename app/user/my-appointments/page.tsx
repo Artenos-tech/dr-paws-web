@@ -42,6 +42,66 @@ const MyAppointmentsPage = () => {
   const [pageSize, setPageSize] = useState<number | null>(null)
   const [currentPage, setCurrentPage] = useState(1)
 
+  const sortAppointmentsByDateTime = (appointments: AppointmentType[]) => {
+    return appointments.sort((a, b) => {
+      const formatTime = (time: string) => {
+        const [hours, minutes] = time.split(":")
+        return `${hours.padStart(2, "0")}:${minutes}`
+      }
+
+      const dateTimeA = new Date(
+        `${a.booking_date.split("T")[0]}T${formatTime(a.appt_start)}:00.000Z`,
+      )
+      const dateTimeB = new Date(
+        `${b.booking_date.split("T")[0]}T${formatTime(b.appt_start)}:00.000Z`,
+      )
+
+      return dateTimeB.getTime() - dateTimeA.getTime()
+    })
+  }
+  const sortAppointmentsWithUpcomingFirst = (
+    appointments: AppointmentType[],
+  ) => {
+    return appointments.sort((a, b) => {
+      const categoryPriority: Record<AppointmentType["category"], number> = {
+        UPCOMING: 1,
+        COMPLETED: 2,
+        CANCELLED: 3,
+        REQUESTED: 4,
+      }
+
+      const priorityA = categoryPriority[a.category]
+      const priorityB = categoryPriority[b.category]
+
+      if (priorityA !== priorityB) {
+        return priorityA - priorityB
+      }
+
+      try {
+        const formatTime = (time: string) => {
+          const [hours, minutes] = time.split(":")
+          return `${hours.padStart(2, "0")}:${minutes}`
+        }
+
+        const dateTimeA = new Date(
+          `${a.booking_date.split("T")[0]}T${formatTime(a.appt_start)}:00.000Z`,
+        )
+        const dateTimeB = new Date(
+          `${b.booking_date.split("T")[0]}T${formatTime(b.appt_start)}:00.000Z`,
+        )
+
+        if (a.category === "UPCOMING") {
+          return dateTimeA.getTime() - dateTimeB.getTime()
+        } else {
+          return dateTimeB.getTime() - dateTimeA.getTime()
+        }
+      } catch (error) {
+        console.warn("Date parsing error in appointment sorting:", error)
+        return 0
+      }
+    })
+  }
+
   useEffect(() => {
     const updatePageSize = () => {
       setPageSize(determinePageSize())
@@ -80,13 +140,24 @@ const MyAppointmentsPage = () => {
         filtered = allAppointments
     }
 
-    setFilteredAppointments(
-      filtered.filter(
-        (appt) =>
-          (appt.vet_id !== null && appt.appt_type === "Vet Consultation") ||
-          appt.appt_type === "Grooming",
-      ),
+    const typeFiltered = filtered.filter(
+      (appt) =>
+        (appt.vet_id !== null && appt.appt_type === "Vet Consultation") ||
+        appt.appt_type === "Grooming",
     )
+
+    let sortedAppointments: AppointmentType[] = []
+
+    if (activeTab === "ALL") {
+      sortedAppointments = sortAppointmentsWithUpcomingFirst([...typeFiltered])
+    } else if (activeTab === "UPCOMING") {
+      const sorted = sortAppointmentsByDateTime([...typeFiltered])
+      sortedAppointments = sorted.reverse()
+    } else {
+      sortedAppointments = sortAppointmentsByDateTime([...typeFiltered])
+    }
+
+    setFilteredAppointments(sortedAppointments)
     setCurrentPage(1)
   }, [activeTab, allAppointments])
 
@@ -148,7 +219,7 @@ const MyAppointmentsPage = () => {
                 <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {visibleAppointments.map((appointment) => (
                     <AppointmentCard
-                      key={appointment.id}
+                      key={appointment.sub_booking_id}
                       appointment={appointment}
                       onClick={() => setSelectedAppointment(appointment)}
                     />
