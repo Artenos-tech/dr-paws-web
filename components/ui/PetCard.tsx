@@ -18,6 +18,7 @@ import { Pet } from "@/context/UserContext"
 interface PetCardProps {
   pet: Pet
   fetchMedicalHistory?: (pet: Pet) => void
+  isSelected?: boolean
 }
 
 export const petImageByType: Record<string, StaticImageData> = {
@@ -29,7 +30,11 @@ export const petImageByType: Record<string, StaticImageData> = {
   other: defaultOtherPetImage,
 }
 
-const PetCard: React.FC<PetCardProps> = ({ pet, fetchMedicalHistory }) => {
+const PetCard: React.FC<PetCardProps> = ({
+  pet,
+  fetchMedicalHistory,
+  isSelected,
+}) => {
   const { name, id, profileImage, type } = pet
   const router = useRouter()
   // const [subscription, setSubscription] = useState<Subscription | null>(null)
@@ -60,10 +65,14 @@ const PetCard: React.FC<PetCardProps> = ({ pet, fetchMedicalHistory }) => {
     petImageByType[type?.toLowerCase() || "other"] ||
     defaultPetImg
 
-  const borderStyle = "border-2 border-[#E2DBC4] bg-[#E2DBC4]"
-  // subscription
-  //   ? "border-2 border-secondary-1 bg-secondary-1" // Example: Green border if subscription exists
+  // const borderStyle = "border-2 border-[#E2DBC4] bg-[#E2DBC4]"
+  // subscription ?
+  //  "border-2 border-secondary-1 bg-secondary-1" // Example: Green border if subscription exists
   // :
+
+  const borderStyle = isSelected
+    ? "border-2 border-[#5281a2] bg-[#E2DBC4]"
+    : "border-2 border-[#E2DBC4] bg-[#E2DBC4]"
 
   return (
     <div

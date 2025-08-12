@@ -48,11 +48,14 @@ const Reports = () => {
             ) : (
               pets &&
               pets?.map((pet) => (
-                <PetCard
-                  key={pet.id}
-                  pet={pet}
-                  fetchMedicalHistory={handleFetchMedicalHistory}
-                />
+                <div key={pet.id} className="flex-shrink-0">
+                  <PetCard
+                    key={pet.id}
+                    pet={pet}
+                    fetchMedicalHistory={handleFetchMedicalHistory}
+                    isSelected={selectedPet?.id === pet.id}
+                  />
+                </div>
               ))
             )}
           </div>
