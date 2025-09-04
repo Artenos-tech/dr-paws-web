@@ -1224,11 +1224,6 @@ export default createAPIClient({
                   id: z.string().uuid(),
                   name: z.string(),
                   fileId: z.string().url(),
-                  type: z.enum([
-                    "DIAGNOSTIC_TESTS",
-                    "MISCELLANEOUS",
-                    "CONSENT_FORMS",
-                  ]),
                   resortBookingId: z.string().uuid(),
                   clientId: z.string().uuid(),
                   importMetadata: z
@@ -1344,11 +1339,6 @@ export default createAPIClient({
                 id: z.string().uuid(),
                 name: z.string(),
                 fileId: z.string().url(),
-                type: z.enum([
-                  "DIAGNOSTIC_TESTS",
-                  "MISCELLANEOUS",
-                  "CONSENT_FORMS",
-                ]),
                 resortBookingId: z.string().uuid(),
                 clientId: z.string().uuid(),
                 importMetadata: z
