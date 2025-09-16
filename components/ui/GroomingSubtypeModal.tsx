@@ -5,6 +5,7 @@ interface GroomingSubtypeModalProps {
   isOpen: boolean
   onClose: (subtypeSelected: boolean) => void
   subtypes: BookingCategory[]
+  selectedServiceType: "Consultation" | "Grooming" | null
   setSelectedSubtype: React.Dispatch<
     React.SetStateAction<BookingCategory | null>
   >
@@ -17,6 +18,7 @@ export default function GroomingSubtypeModal({
   setSelectedSubtype,
   selectedSubtype,
   subtypes,
+  selectedServiceType,
 }: GroomingSubtypeModalProps) {
   const handleSelect = () => {
     if (selectedSubtype) {
@@ -32,7 +34,7 @@ export default function GroomingSubtypeModal({
       <div className="bg-white rounded-lg w-full max-w-md sm:max-w-lg md:max-w-2xl lg:max-w-3xl">
         <div className="p-4 sm:p-6 flex flex-col items-center justify-between gap-4 sm:gap-6">
           <h2 className="text-xl sm:text-2xl mb-2 sm:mb-4">
-            Select type of Grooming
+            Select type of {selectedServiceType}
           </h2>
 
           <div className="w-full space-y-3 sm:space-y-4">
