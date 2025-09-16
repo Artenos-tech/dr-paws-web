@@ -44,7 +44,9 @@ const SelectService: React.FC<SelectServiceProps> = ({
   const [selectedSubtype, setSelectedSubtype] =
     useState<BookingCategory | null>(null)
   const [selectedCardId, setSelectedCardId] = useState<string>()
-  const [selectedServiceType, setSelectedServiceType] = useState<"Consultation" | "Grooming" | null>(null)
+  const [selectedServiceType, setSelectedServiceType] = useState<
+    "Consultation" | "Grooming" | null
+  >(null)
   const { call: getPetsAPI, result: getPetsAPIResult } = useAPICall(api.getPets)
 
   const {

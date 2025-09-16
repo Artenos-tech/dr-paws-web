@@ -18,7 +18,7 @@ export default function GroomingSubtypeModal({
   setSelectedSubtype,
   selectedSubtype,
   subtypes,
-  selectedServiceType
+  selectedServiceType,
 }: GroomingSubtypeModalProps) {
   const handleSelect = () => {
     if (selectedSubtype) {
