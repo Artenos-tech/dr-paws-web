@@ -44,6 +44,7 @@ const SelectService: React.FC<SelectServiceProps> = ({
   const [selectedSubtype, setSelectedSubtype] =
     useState<BookingCategory | null>(null)
   const [selectedCardId, setSelectedCardId] = useState<string>()
+  const [selectedServiceType, setSelectedServiceType] = useState<"Consultation" | "Grooming" | null>(null)
   const { call: getPetsAPI, result: getPetsAPIResult } = useAPICall(api.getPets)
 
   const {
@@ -109,6 +110,7 @@ const SelectService: React.FC<SelectServiceProps> = ({
       }
       return prevOpenCard === cardId ? null : cardId
     })
+    setSelectedServiceType(isGrooming ? "Grooming" : "Consultation")
   }
 
   const handleNext = () => {
@@ -122,6 +124,7 @@ const SelectService: React.FC<SelectServiceProps> = ({
       </div>
     )
   }
+
   return (
     <div className="w-full h-full">
       <h1 className="text-2xl mb-2">Select Services</h1>
@@ -165,10 +168,12 @@ const SelectService: React.FC<SelectServiceProps> = ({
         isOpen={isModalOpen}
         subtypes={subtypes}
         setSelectedSubtype={setSelectedSubtype}
+        selectedServiceType={selectedServiceType}
         onClose={(subtypeSelected: boolean) => {
           if (!subtypeSelected) {
             setSelectedSubtype(null)
             toggleCard(selectedCardId as string, false)
+            setSelectedServiceType(null)
           }
           setIsModalOpen(false)
         }}
