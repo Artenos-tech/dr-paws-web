@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import Script from "next/script"
 import localFont from "next/font/local"
 import { Open_Sans } from "next/font/google"
 import "./globals.css"
@@ -61,6 +62,24 @@ export default function RootLayout({
         <body className={`w-full min-h-screen overflow-x-hidden flex flex-col`}>
           <div className="flex-grow flex flex-col w-full overflow-x-hidden ">
             <NavBar />
+            <Script
+              strategy="afterInteractive"
+              src={`https://www.googletagmanager.com/gtag/js?id=G-J7KBLL019Z`}
+            />
+            <Script
+              id="gtag-init"
+              strategy="afterInteractive"
+              dangerouslySetInnerHTML={{
+                __html: `
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  gtag('js', new Date());
+                  gtag('config', 'G-J7KBLL019Z', {
+                    page_path: window.location.pathname,
+                  });
+                `,
+              }}
+            />
             <div className="mt-16 flex-grow">{children}</div>
             <Footer />
           </div>
