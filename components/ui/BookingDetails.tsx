@@ -25,7 +25,7 @@ import api from "@/services/api"
 import { ClipLoader } from "react-spinners"
 import toast from "react-hot-toast"
 import { AttachmentInfo } from "./MedicalHistory"
-// import RescheduleAppointment from "@/components/ui/RescheduleAppointment"
+import RescheduleAppointment from "@/components/ui/RescheduleAppointment"
 
 // export const cancelReasons = [
 //   "Another commitment has come up",
@@ -66,10 +66,9 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
     | "cancelled"
     | "rescheduleConfirm"
   >("default")
+  const [attachmentsPage, setAttachmentsPage] = useState(1)
+  const [soapNotesPage, setSoapNotesPage] = useState(1)
 
-  const defaultPetImageByType =
-    petImageByType[selectedAppointment.pet_type?.toLowerCase() || "other"] ||
-    petImageByType.other
   const { call: cancelAppointment, loading: cancelAppointmentLoading } =
     useAPICall(api.cancelAppointment)
   const {
@@ -77,15 +76,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
     loading: loadingMedicalReports,
     result: medicalReportsResult,
   } = useAPICall(api.getAppointmentMedicalReports)
-
-  const [attachmentsPage, setAttachmentsPage] = useState(1)
-  const [soapNotesPage, setSoapNotesPage] = useState(1)
-
-  const attachmentsPerPage = 8
-  const soapNotesPerPage = 4
-
-  const medicalReports =
-    medicalReportsResult?.ok && medicalReportsResult.value.body.medical_reports
+  const { call: getInvoiceById } = useAPICall(api.getInvoice)
 
   useEffect(() => {
     if (selectedAppointment?.id) {
@@ -97,35 +88,13 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
     setCurrentView("cancelConfirm")
   }
 
-  // const handleRescheduleClick = () => {
-  //   setCurrentView("rescheduleConfirm")
-  // }
+  const handleRescheduleClick = () => {
+    setCurrentView("rescheduleConfirm")
+  }
 
   const resetView = () => {
     setCurrentView("default")
   }
-
-  const isUpcoming = selectedAppointment.category === "UPCOMING"
-  const isCompleted = selectedAppointment.category === "COMPLETED"
-  const isCancelled = selectedAppointment.category === "CANCELLED"
-
-  const headerTitle = isCancelled
-    ? "Booking Cancelled"
-    : isCompleted
-      ? "Booking Completed"
-      : "Your Booking"
-
-  const HeaderIcon = isCancelled
-    ? CircleX
-    : isCompleted
-      ? CircleCheck
-      : CalendarDays
-
-  const bannerClasses = isCancelled
-    ? "bg-[#F1F1F1] text-[#909090]"
-    : isCompleted
-      ? "bg-[#f7f1de] text-[#909090]"
-      : "bg-[#FFFCF3] text-primary-1"
 
   const cancelBooking = async () => {
     try {
@@ -150,16 +119,9 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
     }
   }
 
-  // const rescheduleBooking = async () => {
-  //   if (!rescheduleReason) {
-  //     setShowRescheduleValidationMessage(true)
-  //     return
-  //   }
-
-  //   setCurrentView("reschedule")
-  // }
-
-  const { call: getInvoiceById } = useAPICall(api.getInvoice)
+  const rescheduleBooking = async () => {
+    setCurrentView("reschedule")
+  }
 
   const fetchInvoiceById = useCallback(
     async (invoiceid: string) => {
@@ -276,6 +238,38 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
     }
   }
 
+  const attachmentsPerPage = 8
+  const soapNotesPerPage = 4
+
+  const medicalReports =
+    medicalReportsResult?.ok && medicalReportsResult.value.body.medical_reports
+
+  const defaultPetImageByType =
+    petImageByType[selectedAppointment.pet_type?.toLowerCase() || "other"] ||
+    petImageByType.other
+
+  const isUpcoming = selectedAppointment.category === "UPCOMING"
+  const isCompleted = selectedAppointment.category === "COMPLETED"
+  const isCancelled = selectedAppointment.category === "CANCELLED"
+
+  const headerTitle = isCancelled
+    ? "Booking Cancelled"
+    : isCompleted
+      ? "Booking Completed"
+      : "Your Booking"
+
+  const HeaderIcon = isCancelled
+    ? CircleX
+    : isCompleted
+      ? CircleCheck
+      : CalendarDays
+
+  const bannerClasses = isCancelled
+    ? "bg-[#F1F1F1] text-[#909090]"
+    : isCompleted
+      ? "bg-[#f7f1de] text-[#909090]"
+      : "bg-[#FFFCF3] text-primary-1"
+
   const parsedDate = parseISO(selectedAppointment.booking_date)
 
   return (
@@ -389,12 +383,12 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                       >
                         Cancel
                       </button>
-                      {/* <button
+                      <button
                         onClick={handleRescheduleClick}
                         className="w-full sm:w-auto sm:min-w-[150px] py-3 px-4 sm:px-6 border-2 border-secondary-1 rounded-full text-sm sm:text-base font-bold text-secondary-1"
                       >
                         Reschedule
-                      </button> */}
+                      </button>
                     </div>
                   </div>
                 )}
@@ -988,7 +982,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
               </div>
             </div>
           )}
-          {/* {currentView === "rescheduleConfirm" && (
+          {currentView === "rescheduleConfirm" && (
             <div className="flex flex-col justify-center items-center gap-4">
               <h1 className="text-3xl">Reschedule Booking</h1>
               <div className="py-6 px-6 md:py-8 md:px-12 text-primary-1 w-11/12 md:w-4/5 lg:w-[50%] shadow-md my-5 flex flex-col gap-8 items-center bg-[#FFFCF3] rounded-lg">
@@ -999,7 +993,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                   You will receive a Whatsapp notification confirming the
                   rescheduled booking
                 </p>
-                <div className="space-y-3">
+                {/* <div className="space-y-3">
                   {rescheduleReasons.map((reason, index) => (
                     <div className="flex items-start gap-2" key={index}>
                       <input
@@ -1020,7 +1014,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                   <p className="text-red-500 text-sm">
                     Please select a reason to proceed.
                   </p>
-                )}
+                )} */}
                 <div className="flex items-center justify-center w-full md:w-[85%] gap-4 md:mt-4">
                   <button
                     onClick={resetView}
@@ -1037,17 +1031,23 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                 </div>
               </div>
             </div>
-          )} */}
+          )}
         </>
       )}
 
-      {/* {currentView === "reschedule" && (
+      {currentView === "reschedule" && (
         <RescheduleAppointment
           existingAppointment={selectedAppointment}
           onBack={() => goBack(false)}
           onDone={() => goBack(true)}
+          onError={() => {
+            goBack(false)
+            toast.error(
+              "We couldn't reschedule your appointment. Please try again later.",
+            )
+          }}
         />
-      )} */}
+      )}
     </div>
   )
 }

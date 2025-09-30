@@ -1,23 +1,24 @@
-import { Pet } from "@/context/UserContext"
 import { BsCheckCircleFill } from "react-icons/bs"
 import Image, { StaticImageData } from "next/image"
 import { GrLocation } from "react-icons/gr"
 import { HiOutlineCalendar } from "react-icons/hi"
 import { MdOutlineAccessTime } from "react-icons/md"
+import defaultVetImage from "@/public/assets/images/clinic/doctorFemale.webp"
+import { Pet } from "@/context/UserContext"
 import CustomButton from "./CustomButton"
 import { petImageByType } from "./PetCard"
 
 type RescheduleConfirmedProps = {
   isGroomingAppointment: boolean
   updatedValues: {
-    selectedSvcId: number
+    selectedSvcId: string
     selectedPet: Pet
-    selectedClinic: number
+    selectedClinic: string
     selectedLocation: string
     selectedService: string
     selectedSubtype?: string
     selectedVet: {
-      id: number
+      id: string
       name: string
     } | null
     selectedDoctorImage: string | StaticImageData | null
@@ -27,7 +28,7 @@ type RescheduleConfirmedProps = {
   }
   oldValues: {
     oldVet: {
-      id: number
+      id: string
       name: string
     }
     oldDoctorImage: string | StaticImageData | null
@@ -79,21 +80,14 @@ const RescheduleConfirmed: React.FC<RescheduleConfirmedProps> = ({
                 sizes="128px"
               />
             </div>
-            {updatedValues.selectedDoctorImage && (
+            {!isGroomingAppointment && (
               <div className="relative w-32 h-32 rounded-full overflow-hidden bg-white p-4 ml-[-30px] flex justify-center items-center">
-                {(() => {
-                  const docSrc =
-                    typeof updatedValues.selectedDoctorImage === "string"
-                      ? updatedValues.selectedDoctorImage
-                      : updatedValues.selectedDoctorImage.src
-                  return (
-                    <img
-                      src={docSrc}
-                      alt={`Dr. ${updatedValues.selectedVet?.name}'s profile`}
-                      className="object-contain w-full h-full rounded-full"
-                    />
-                  )
-                })()}
+                <Image
+                  src={updatedValues.selectedDoctorImage || defaultVetImage}
+                  alt={`Dr. ${updatedValues.selectedVet?.name}'s profile`}
+                  objectFit="cover"
+                  sizes="128px"
+                />
               </div>
             )}
           </div>
