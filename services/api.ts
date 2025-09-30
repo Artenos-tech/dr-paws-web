@@ -803,6 +803,7 @@ export default createAPIClient({
         catalogue_id: z.string(),
         clinic_id: z.string().uuid(),
         is_grooming: z.boolean(),
+        pet_type: z.enum(["DOG", "CAT", "OTHER"]),
       }),
       responseSchema: z.object({
         status: z.number(),

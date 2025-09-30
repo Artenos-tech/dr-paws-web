@@ -384,6 +384,7 @@ const SelectVet: React.FC<selectVetProps> = ({
             catalogue_id: selectedSubtype?.id as string,
             clinic_id: selectedClinic,
             is_grooming: isGrooming,
+            pet_type: selectedPet.type as "DOG" | "CAT" | "OTHER",
           })
           if (response.ok) {
             toast.success("Appointment rescheduled successfully!", {

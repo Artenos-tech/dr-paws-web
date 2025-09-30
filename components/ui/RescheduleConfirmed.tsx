@@ -78,6 +78,7 @@ const RescheduleConfirmed: React.FC<RescheduleConfirmedProps> = ({
                 layout="fill"
                 objectFit="cover"
                 sizes="128px"
+                priority
               />
             </div>
             {!isGroomingAppointment && (
@@ -87,6 +88,8 @@ const RescheduleConfirmed: React.FC<RescheduleConfirmedProps> = ({
                   alt={`Dr. ${updatedValues.selectedVet?.name}'s profile`}
                   objectFit="cover"
                   sizes="128px"
+                  width={128}
+                  height={128}
                 />
               </div>
             )}
