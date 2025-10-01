@@ -764,21 +764,57 @@ export default createAPIClient({
       errorResponseSchema: z.object({}),
     },
 
-    // rescheduleAppointment: {
-    //   method: "PUT",
-    //   path: "/user/appointment/{appointmentid}/reschedule",
-    //   pathParamsSchema: z.object({ appointmentid: z.string() }),
-    //   requestSchema: z.object({
-    //     vet_id: z.number(),
-    //     appt_start: z.number().int(),
-    //     appt_end: z.number().int(),
-    //   }),
-    //   responseSchema: z.object({
-    //     status: z.number(),
-    //     message: z.string(),
-    //   }),
-    //   errorResponseSchema: z.object({}),
-    // },
+    getAppointmentServiceDetails: {
+      method: "GET",
+      path: "/user/appointment/{appointment_id}/service-details",
+      pathParamsSchema: z.object({ appointment_id: z.string().uuid() }),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        status: z.number(),
+        message: z.string(),
+        serviceDetails: z.object({
+          id: z.string(),
+          title: z.string(),
+          description: z.string(),
+          isGrooming: z.boolean(),
+          subtype: z
+            .object({
+              id: z.string(),
+              title: z.string(),
+              description: z.string(),
+            })
+            .nullable(),
+        }),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+
+    rescheduleAppointment: {
+      method: "PUT",
+      path: "/user/appointment/{appointmentid}/reschedule",
+      pathParamsSchema: z.object({ appointmentid: z.string() }),
+      requestSchema: z.object({
+        sub_booking_id: z.string().uuid(),
+        vet_id: z.string().uuid(),
+        appt_start: z.string(),
+        appt_end: z.string(),
+        booking_date: z.string(),
+        service_id: z.string(),
+        catalogue_id: z.string(),
+        clinic_id: z.string().uuid(),
+        is_grooming: z.boolean(),
+        pet_type: z.enum(["DOG", "CAT", "OTHER"]),
+      }),
+      responseSchema: z.object({
+        status: z.number(),
+        message: z.string(),
+        appointment: z.object({
+          id: z.string().uuid(),
+          sub_booking_id: z.string().uuid(),
+        }),
+      }),
+      errorResponseSchema: z.object({}),
+    },
 
     // getDoctors: {
     //   method: "GET",

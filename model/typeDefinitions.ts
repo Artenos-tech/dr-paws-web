@@ -80,16 +80,11 @@ export interface AppointmentType {
   sub_booking_id: string
   pet_id: string
   pet_name: string
-  pet_type?: string
+  pet_type?: "DOG" | "CAT" | "OTHER" | null
   pet_profile_image: string | null
-  // user_vetport_id: number
   vet_id: string
   vet_name: string
   vet_image: string | null
-  // vet_image: {
-  //   type: "url" | "ref"
-  //   value: string
-  // }
   clinic_id: string
   clinic_name: string
   clinic_location: string

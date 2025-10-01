@@ -36,7 +36,10 @@ interface selectVetProps {
   selectedSubtype: BookingCategory | null
   isGrooming: boolean
   isReschedule: boolean
-  // existingAppointmentId: string | null
+  existingAppointment: {
+    appointmentId: string
+    subBookingId: string
+  } | null
   setFinalAppointmentData: (finalAppData: {
     selectedDoctor: SelectedVet | null
     selectedDate: Date | null
@@ -60,7 +63,7 @@ const SelectVet: React.FC<selectVetProps> = ({
   isGrooming,
   onNext,
   isReschedule,
-  // existingAppointmentId,
+  existingAppointment,
 }) => {
   const { user } = useUserContext()
 
@@ -98,8 +101,8 @@ const SelectVet: React.FC<selectVetProps> = ({
   const { call: createAnAppointment, loading: loadingAppointmentCreation } =
     useAPICall(api.createAppointment)
 
-  // const { call: rescheduleAppointment, loading: loadingRescheduleAppointment } =
-  //   useAPICall(api.rescheduleAppointment)
+  const { call: rescheduleAppointment, loading: loadingRescheduleAppointment } =
+    useAPICall(api.rescheduleAppointment)
 
   const {
     call: getDoctorsForClinic,
@@ -359,58 +362,57 @@ const SelectVet: React.FC<selectVetProps> = ({
       }
     } else {
       setIsConfirmationModalOpen(false)
-      // if (
-      //   user &&
-      //   selectedSlot &&
-      //   selectedDate &&
-      //   selectedDoctor &&
-      //   existingAppointmentId
-      // ) {
-      //   const [hours, minutes] = selectedSlot.split(":").map(Number)
-      //   selectedDate.setHours(hours, minutes, 0, 0)
-      //   const apptStartUnixTimestamp = Math.floor(selectedDate.getTime() / 1000)
-      //   selectedDate.setMinutes(
-      //     selectedDate.getMinutes() +
-      //       (!isGrooming ? 30 : selectedSubtype?.id === "spa-bath" ? 60 : 90),
-      //   )
-      //   const apptEndUnixTimestamp = Math.floor(selectedDate.getTime() / 1000)
-      //   try {
-      //     const response = await rescheduleAppointment({
-      //       appointmentid: existingAppointmentId,
-      //       vet_id:
-      //         selectedDoctor.id === BEST_AVAILABLE_VET_ID
-      //           ? selectPreferredOrRandomAvailableVetId()
-      //           : selectedDoctor.id,
-      //       appt_start: apptStartUnixTimestamp,
-      //       appt_end: apptEndUnixTimestamp,
-      //     })
-      //     if (response.ok) {
-      //       toast.success("Appointment rescheduled successfully!", {
-      //         duration: 3000,
-      //         position: "bottom-right",
-      //       })
-      //       if (onNext) {
-      //         onNext()
-      //       }
-      //     } else {
-      //       toast.error("Failed to reschedule appointment. Please try again.", {
-      //         duration: 3000,
-      //         position: "bottom-right",
-      //       })
-      //     }
-      //   } catch (error) {
-      //     console.error("Error rescheduling appointment:", error)
-      //     toast.error("An unexpected error occurred. Please try again.", {
-      //       duration: 3000,
-      //       position: "bottom-right",
-      //     })
-      //   }
-      // } else {
-      //   toast.error("Please fill out all required fields before proceeding.", {
-      //     duration: 3000,
-      //     position: "bottom-right",
-      //   })
-      // }
+      if (
+        user &&
+        selectedSlot &&
+        selectedDate &&
+        selectedDoctor &&
+        existingAppointment
+      ) {
+        try {
+          const response = await rescheduleAppointment({
+            appointmentid: existingAppointment.appointmentId,
+            sub_booking_id: existingAppointment.subBookingId,
+            vet_id:
+              selectedDoctor.id === BEST_AVAILABLE_VET_ID && chosenVetId
+                ? chosenVetId
+                : selectedDoctor.id,
+            appt_start: selectedSlot.startTime.replace(":", ""),
+            appt_end: selectedSlot.endTime.replace(":", ""),
+            booking_date: format(selectedDate, "dd/MM/yyyy"),
+            service_id: selectedSvcId,
+            catalogue_id: selectedSubtype?.id as string,
+            clinic_id: selectedClinic,
+            is_grooming: isGrooming,
+            pet_type: selectedPet.type as "DOG" | "CAT" | "OTHER",
+          })
+          if (response.ok) {
+            toast.success("Appointment rescheduled successfully!", {
+              duration: 3000,
+              position: "bottom-right",
+            })
+            if (onNext) {
+              onNext() // Navigate to the next page only if the API succeeds
+            }
+          } else {
+            toast.error("Failed to reschedule appointment. Please try again.", {
+              duration: 3000,
+              position: "bottom-right",
+            })
+          }
+        } catch (error) {
+          console.error("Error rescheduling appointment:", error)
+          toast.error("An unexpected error occurred. Please try again.", {
+            duration: 3000,
+            position: "bottom-right",
+          })
+        }
+      } else {
+        toast.error("Please fill out all required fields before proceeding.", {
+          duration: 3000,
+          position: "bottom-right",
+        })
+      }
     }
   }
 
