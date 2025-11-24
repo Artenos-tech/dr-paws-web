@@ -273,7 +273,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
   const parsedDate = parseISO(selectedAppointment.booking_date)
 
   return (
-    <div className="w-full px-4 py-8">
+    <div className="w-full">
       {currentView !== "reschedule" && (
         <>
           <BackButton navigateBack={() => goBack(false)} />
