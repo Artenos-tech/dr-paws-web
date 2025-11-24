@@ -424,7 +424,7 @@ const SelectVet: React.FC<selectVetProps> = ({
               duration: 3000,
               position: "bottom-right",
             })
-            onRescheduleError && onRescheduleError()
+            if (onRescheduleError) onRescheduleError()
           }
         } catch (error) {
           console.error("Error rescheduling appointment:", error)
@@ -432,7 +432,7 @@ const SelectVet: React.FC<selectVetProps> = ({
             duration: 3000,
             position: "bottom-right",
           })
-          onRescheduleError && onRescheduleError()
+          if (onRescheduleError) onRescheduleError()
         }
       } else {
         toast.error("Please fill out all required fields before proceeding.", {
