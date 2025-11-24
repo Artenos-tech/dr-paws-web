@@ -161,6 +161,13 @@ const MyAppointmentsPage = () => {
     setCurrentPage(1)
   }, [activeTab, allAppointments])
 
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    })
+  }, [currentPage, selectedAppointment])
+
   if (pageSize === null || loading) return <Loader />
 
   const totalPages = Math.ceil(filteredAppointments.length / pageSize)

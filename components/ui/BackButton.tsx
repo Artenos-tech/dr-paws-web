@@ -12,7 +12,7 @@ const BackButton = ({ navigateBack }: BackButtonProps) => {
     <button
       type="button"
       onClick={() => (navigateBack ? navigateBack() : navigate.back())}
-      className="flex gap-1 items-center self-start my-7"
+      className="flex gap-1 items-center self-start mb-7"
     >
       <MdOutlineKeyboardArrowLeft /> Back
     </button>

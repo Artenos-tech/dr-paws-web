@@ -72,6 +72,14 @@ const MedicalHistory: React.FC<MedicalHistoryProps> = ({ petId }) => {
     currentPage * ITEMS_PER_PAGE,
   )
 
+  useEffect(() => {
+    if (medicalHistory.length > 0 && currentPage > 1)
+      window.scrollTo({
+        top: 300,
+        behavior: "smooth",
+      })
+  }, [currentPage])
+
   const paginate = (page: number) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page)

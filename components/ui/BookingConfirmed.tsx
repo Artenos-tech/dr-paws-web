@@ -123,13 +123,11 @@ const BookingConfirmed: React.FC<BookingConfirmedProps> = ({
           )}
           <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
             <p className="italic text-gray-400 text-sm text-center w-full max-w-md justify-self-center">
-              To cancel or reschedule your appointment, please contact our{" "}
-              {selectedAppointment.selectedLocation} clinic on{" "}
-              {selectedAppointment.selectedClinicContact}
-              {/* You’ll receive a confirmation via WhatsApp once the appointment is
-              confirmed. For any queries, feel free to contact our{" "}
-              {selectedAppointment.selectedLocation} clinic on{" "}
-              {selectedAppointment.selectedClinicContact} */}
+              You’ll receive a confirmation via WhatsApp. You can cancel or
+              reschedule your appointment through the app/website or by
+              contacting our {selectedAppointment.selectedLocation} clinic at{" "}
+              {selectedAppointment.selectedClinicContact}. You’ll receive a
+              WhatsApp message confirming any changes.
             </p>
           </div>
           <div className="flex items-center">

@@ -68,7 +68,7 @@ const DoctorCard: React.FC<DoctorCardProps> = ({ doctor }) => {
             <button
               className="w-full h-full"
               onClick={handleViewProfile}
-              disabled={!!doctorProfile}
+              // disabled={!!doctorProfile}
             >
               View Profile
             </button>

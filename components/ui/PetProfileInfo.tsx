@@ -252,6 +252,10 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
     setValue("breed", "")
   }
 
+  const convertToSentenceCase = (str: string) => {
+    return str.charAt(0).toUpperCase().concat(str.slice(1).toLowerCase())
+  }
+
   const defaultImageOrPetImage =
     image ||
     petImageByType[pet?.type?.toLowerCase() || "other"] ||
@@ -378,14 +382,14 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
                         <option value="">Type of Pet</option>
                         {petSpecies?.map((species) => (
                           <option key={species} value={species}>
-                            {species}
+                            {convertToSentenceCase(species)}
                           </option>
                         ))}
                         {!petSpecies?.find(
                           (species) => species === "OTHER",
                         ) && (
                           <option key="OTHER" value="OTHER">
-                            OTHER
+                            Other
                           </option>
                         )}
                       </select>{" "}
@@ -397,7 +401,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
                     </>
                   ) : (
                     <p className="text-primary-1 font-medium text-xs md:text-base">
-                      {pet?.type}
+                      {pet?.type ? convertToSentenceCase(pet?.type) : ""}
                     </p>
                   )}
                 </div>
@@ -423,7 +427,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
                           <option value="">Type of breed</option>
                           {petBreeds?.map((breed) => (
                             <option key={breed.id} value={breed.name}>
-                              {breed.name}
+                              {convertToSentenceCase(breed.name)}
                             </option>
                           ))}
                         </select>
@@ -436,7 +440,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
                     </>
                   ) : (
                     <p className="text-primary-1 font-medium text-xs md:text-base">
-                      {pet?.breed || ""}
+                      {pet?.breed ? convertToSentenceCase(pet?.breed) : ""}
                     </p>
                   )}
                 </div>
@@ -462,7 +466,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
                           <option value="">Type of Gender</option>
                           {petGenders?.map((gender) => (
                             <option value={gender} key={gender}>
-                              {gender}
+                              {convertToSentenceCase(gender)}
                             </option>
                           ))}
                         </select>
@@ -476,7 +480,7 @@ const PetProfileInfo: React.FC<PetProfileInfoProps> = ({ petId }) => {
                     </>
                   ) : (
                     <p className="text-primary-1 font-medium text-xs md:text-base">
-                      {pet?.gender || ""}
+                      {pet?.gender ? convertToSentenceCase(pet?.gender) : ""}
                     </p>
                   )}
                 </div>

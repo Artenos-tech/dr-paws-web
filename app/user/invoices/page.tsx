@@ -205,6 +205,14 @@ const Invoices = () => {
     if (currentPage > maxPages) setCurrentPage(1)
   }, [filteredInvoices.length])
 
+  useEffect(() => {
+    if (totalFiltered > 0 && currentPage > 1)
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      })
+  }, [currentPage, totalFiltered])
+
   return (
     <div className="flex flex-col w-full h-full items-center font-roca pb-8 md:pb-12 lg:pb-20 flex-grow">
       <main className="flex flex-col w-full items-center px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 max-w-7xl mx-auto">

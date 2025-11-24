@@ -36,10 +36,11 @@ interface selectVetProps {
   selectedSubtype: BookingCategory | null
   isGrooming: boolean
   isReschedule: boolean
-  existingAppointment: {
+  existingAppointment?: {
     appointmentId: string
     subBookingId: string
   } | null
+  onRescheduleError?: () => void
   setFinalAppointmentData: (finalAppData: {
     selectedDoctor: SelectedVet | null
     selectedDate: Date | null
@@ -64,6 +65,7 @@ const SelectVet: React.FC<selectVetProps> = ({
   onNext,
   isReschedule,
   existingAppointment,
+  onRescheduleError,
 }) => {
   const { user } = useUserContext()
 
@@ -123,15 +125,19 @@ const SelectVet: React.FC<selectVetProps> = ({
       selectedPet &&
       !isGrooming
     ) {
-      await getSlotsForStaff({
-        staffid: selectedDoctor.id,
-        clinicid: selectedClinic,
-        catalogue: selectedSubtype.id,
-        petid: selectedPet.id,
-        pettype: selectedPet.type as "DOG" | "CAT" | "OTHER",
-        // isgrooming: isGrooming ? "y" : "n",
-        date: format(selectedDate, "dd/MM/yyyy"),
-      })
+      try {
+        await getSlotsForStaff({
+          staffid: selectedDoctor.id,
+          clinicid: selectedClinic,
+          catalogue: selectedSubtype.id,
+          petid: selectedPet.id,
+          pettype: selectedPet.type as "DOG" | "CAT" | "OTHER",
+          date: format(selectedDate, "dd/MM/yyyy"),
+        })
+      } catch (error) {
+        console.error("Error fetching slots for staff:", error)
+        toast.error("Failed to load slots for staff. Please try again later.")
+      }
     }
   }, [
     selectedSvcId,
@@ -149,13 +155,18 @@ const SelectVet: React.FC<selectVetProps> = ({
       selectedPet &&
       isGrooming
     ) {
-      await getGroomingSlots({
-        clinicid: selectedClinic,
-        catalogue: selectedSubtype.id,
-        petid: selectedPet.id,
-        pettype: selectedPet.type as "DOG" | "CAT" | "OTHER",
-        date: format(selectedDate, "dd/MM/yyyy"),
-      })
+      try {
+        await getGroomingSlots({
+          clinicid: selectedClinic,
+          catalogue: selectedSubtype.id,
+          petid: selectedPet.id,
+          pettype: selectedPet.type as "DOG" | "CAT" | "OTHER",
+          date: format(selectedDate, "dd/MM/yyyy"),
+        })
+      } catch (error) {
+        console.error("Error fetching grooming slots:", error)
+        toast.error("Failed to load grooming slots. Please try again later.")
+      }
     }
   }, [
     selectedSvcId,
@@ -168,27 +179,38 @@ const SelectVet: React.FC<selectVetProps> = ({
 
   const fetchBestAvailableVetSlots = useCallback(async () => {
     if (selectedSvcId && selectedSubtype && selectedClinic && selectedPet) {
-      await getBestAvailableVetSchedule({
-        clinicid: selectedClinic,
-        catalogue: selectedSubtype.id,
-        petid: selectedPet.id,
-        pettype: selectedPet.type as "DOG" | "CAT" | "OTHER",
-        // isgrooming: isGrooming ? "y" : "n",
-        date: format(selectedDate, "dd/MM/yyyy"),
-      })
+      try {
+        await getBestAvailableVetSchedule({
+          clinicid: selectedClinic,
+          catalogue: selectedSubtype.id,
+          petid: selectedPet.id,
+          pettype: selectedPet.type as "DOG" | "CAT" | "OTHER",
+          date: format(selectedDate, "dd/MM/yyyy"),
+        })
+      } catch (error) {
+        console.error("Error fetching best available vet slots:", error)
+        toast.error(
+          "Failed to load slots for best available vet. Please try again later.",
+        )
+      }
     }
   }, [selectedClinic, selectedSvcId, selectedDate])
 
   const fetchDoctors = useCallback(async () => {
     if (selectedSubtype && selectedPet) {
-      await getDoctorsForClinic({
-        clinicid: selectedClinic,
-        grooming: isGrooming ? "y" : "n",
-        catalogue: selectedSubtype?.id,
-        date: format(selectedDate, "dd/MM/yyyy"),
-        petid: selectedPet.id,
-        pettype: selectedPet.type as "DOG" | "CAT" | "OTHER",
-      })
+      try {
+        await getDoctorsForClinic({
+          clinicid: selectedClinic,
+          grooming: isGrooming ? "y" : "n",
+          catalogue: selectedSubtype?.id,
+          date: format(selectedDate, "dd/MM/yyyy"),
+          petid: selectedPet.id,
+          pettype: selectedPet.type as "DOG" | "CAT" | "OTHER",
+        })
+      } catch (error) {
+        console.error("Error fetching doctors for clinic:", error)
+        toast.error("Failed to load doctors. Please try again later.")
+      }
     }
   }, [selectedClinic, getDoctorsForClinic])
 
@@ -220,6 +242,9 @@ const SelectVet: React.FC<selectVetProps> = ({
         setChosenVetId(vetId)
       } catch (err) {
         console.error("Vet selection error:", err)
+        toast.error(
+          "Failed to select a vet for the chosen slot. Please try again later.",
+        )
         setChosenVetId(null)
       }
     }
@@ -288,7 +313,7 @@ const SelectVet: React.FC<selectVetProps> = ({
 
   const handleNextClick = async () => {
     if (!(selectedDoctor || isGrooming)) {
-      toast.error("Doctor must be selected or grooming must be selected")
+      toast.error("Please select a doctor or grooming option.")
       return
     }
     if (!selectedSlot) {
@@ -399,6 +424,7 @@ const SelectVet: React.FC<selectVetProps> = ({
               duration: 3000,
               position: "bottom-right",
             })
+            if (onRescheduleError) onRescheduleError()
           }
         } catch (error) {
           console.error("Error rescheduling appointment:", error)
@@ -406,6 +432,7 @@ const SelectVet: React.FC<selectVetProps> = ({
             duration: 3000,
             position: "bottom-right",
           })
+          if (onRescheduleError) onRescheduleError()
         }
       } else {
         toast.error("Please fill out all required fields before proceeding.", {
@@ -432,13 +459,24 @@ const SelectVet: React.FC<selectVetProps> = ({
       selectedSlot && selectedSlot.startTime === time.startTime ? null : time,
     )
     if (time.staffIds && isGrooming) {
-      const response = await getDoctor({
-        staffid:
-          time.staffIds[Math.floor(Math.random() * time.staffIds.length)],
-      })
-      if (response.ok) {
-        const doctor = response.value.body.staff
-        setSelectedDoctor(doctor)
+      try {
+        const response = await getDoctor({
+          staffid:
+            time.staffIds[Math.floor(Math.random() * time.staffIds.length)],
+        })
+        if (response.ok) {
+          const doctor = response.value.body.staff
+          setSelectedDoctor(doctor)
+        } else {
+          toast.error(
+            "Failed to load groomer information. Please try again later.",
+          )
+        }
+      } catch (error) {
+        console.error("Error fetching doctor for grooming slot:", error)
+        toast.error(
+          "Failed to load groomer information. Please try again later.",
+        )
       }
     }
   }
@@ -450,15 +488,28 @@ const SelectVet: React.FC<selectVetProps> = ({
       setAppliedCoupon(null)
       return
     }
-    const resp = await applyCouponCode({ code: couponCode })
-    if (resp.ok) {
-      toast.success("Coupon applied!")
-      setCouponError(null)
-      setAppliedCoupon(couponCode)
-    } else {
-      toast.error("Invalid coupon code")
-      setCouponError("Invalid coupon code. Please try again.")
-      setCouponCode("")
+    if (!/^[A-Z0-9]{6}$/.test(couponCode.trim())) {
+      toast.error("Invalid coupon code format. Please enter a valid code.")
+      setCouponError("Invalid coupon code format. Please enter a valid code.")
+      setAppliedCoupon(null)
+      return
+    }
+    try {
+      const resp = await applyCouponCode({ code: couponCode })
+      if (resp.ok) {
+        toast.success("Coupon applied!")
+        setCouponError(null)
+        setAppliedCoupon(couponCode)
+      } else {
+        toast.error("Invalid coupon code. Please try again.")
+        setCouponError("Invalid coupon code. Please try again.")
+        setCouponCode("")
+        setAppliedCoupon(null)
+      }
+    } catch (error) {
+      console.error("Error applying coupon code:", error)
+      toast.error("Failed to apply coupon code. Please try again later.")
+      setCouponError("Failed to apply coupon code. Please try again later.")
       setAppliedCoupon(null)
     }
   }
@@ -505,7 +556,7 @@ const SelectVet: React.FC<selectVetProps> = ({
     <div className="h-full flex flex-col gap-12 px-4 lg:px-0">
       {!isGrooming && (
         <div>
-          <h1 className="text-3xl font-bold mb-2">Select Vet</h1>
+          <h1 className="text-2xl mb-2">Select Vet</h1>
           <p className="text-gray-600 mb-12">
             Which of our experts would you like to see?
           </p>
@@ -521,7 +572,7 @@ const SelectVet: React.FC<selectVetProps> = ({
       )}
       <div className="flex flex-col gap-8">
         <div className="flex flex-col gap-2">
-          <h1 className="text-3xl font-bold">Select Date and Time</h1>
+          <h1 className="text-2xl">Select Date and Time</h1>
           <p className="text-gray-600 mb-4">When would you like to visit us?</p>
         </div>
 
@@ -599,17 +650,18 @@ const SelectVet: React.FC<selectVetProps> = ({
           </div>
         </div>
       )}
-      <div className="my-4 flex justify-center">
+      <div className="mt-4 mb-16 flex justify-center">
         <CustomButton
           buttonText={isReschedule ? "Reschedule" : "Book"}
           buttonBackground="bg-secondary-1"
           disabled={
-            !isNextButtonEnabled || loadingAppointmentCreation
-            // || loadingRescheduleAppointment
+            !isNextButtonEnabled ||
+            loadingAppointmentCreation ||
+            loadingRescheduleAppointment
           }
           loading={
-            isNextButtonEnabled && loadingAppointmentCreation
-            // || loadingRescheduleAppointment
+            (isNextButtonEnabled && loadingAppointmentCreation) ||
+            loadingRescheduleAppointment
           }
           buttonClickEvent={handleNextClick}
         />

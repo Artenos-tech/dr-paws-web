@@ -37,9 +37,7 @@ const Reports = () => {
   return (
     <div className="flex flex-col w-full h-full items-center font-roca pb-20 flex-grow">
       <main className="flex flex-col w-full items-center px-8 md:px-32 lg:px-20 xl:px-40">
-        <h1 className="text-3xl m-4 lg:m-12">Medical History</h1>
-
-        <div className="flex flex-col gap-6 lg:w-full items-center">
+        <div className="flex flex-col m-4 lg:m-8 gap-6 lg:w-full items-center">
           <div
             className={`flex justify-center items-center ${!petsLoading && "md:justify-start"} flex-wrap gap-4 my-8 md:my-4`}
           >
