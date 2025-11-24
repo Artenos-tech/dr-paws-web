@@ -122,6 +122,10 @@ export default function AddPetModal({
     setSelectedGender(selectedGender as "MALE" | "FEMALE")
   }
 
+  const convertToSentenceCase = (str: string) => {
+    return str.charAt(0).toUpperCase().concat(str.slice(1).toLowerCase())
+  }
+
   if (!isOpen) return null
 
   return (
@@ -176,10 +180,11 @@ export default function AddPetModal({
                   Type of Pet
                 </option>
                 {petSpecies?.map((species) => (
-                  <option key={species} value={species} className="!w-3/4">
-                    {species}
-                  </option>
-                ))}
+                    <option key={species} value={species} className="!w-3/4">
+                      {convertToSentenceCase(species)}
+                    </option>
+                  )
+                )}
               </select>
               {errors.type && (
                 <p className="text-red-500 text-sm mt-1">
@@ -200,7 +205,7 @@ export default function AddPetModal({
                 </option>
                 {petGenders?.map((gender) => (
                   <option key={gender} value={gender} className="!w-3/4">
-                    {gender}
+                    {convertToSentenceCase(gender)}
                   </option>
                 ))}
               </select>
