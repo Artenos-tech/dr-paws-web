@@ -45,14 +45,13 @@ const RescheduleConfirmed: React.FC<RescheduleConfirmedProps> = ({
   oldValues,
   onDone,
 }) => {
-
   useEffect(() => {
     window.scrollTo({
       top: 0,
       behavior: "smooth",
     })
   }, [])
-  
+
   const defaultPetImageByType =
     petImageByType[updatedValues.selectedPet.type?.toLowerCase() || "other"] ||
     petImageByType.other
