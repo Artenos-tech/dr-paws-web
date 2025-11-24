@@ -7,6 +7,7 @@ import defaultVetImage from "@/public/assets/images/clinic/doctorFemale.webp"
 import { Pet } from "@/context/UserContext"
 import CustomButton from "./CustomButton"
 import { petImageByType } from "./PetCard"
+import { useEffect } from "react"
 
 type RescheduleConfirmedProps = {
   isGroomingAppointment: boolean
@@ -44,6 +45,14 @@ const RescheduleConfirmed: React.FC<RescheduleConfirmedProps> = ({
   oldValues,
   onDone,
 }) => {
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    })
+  }, [])
+  
   const defaultPetImageByType =
     petImageByType[updatedValues.selectedPet.type?.toLowerCase() || "other"] ||
     petImageByType.other
