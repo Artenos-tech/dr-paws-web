@@ -103,6 +103,9 @@ const RescheduleAppointment: React.FC<ReschedulingProps> = ({
                 onNext={() => {
                   setDone(true)
                 }}
+                onRescheduleError={() => {
+                  onError()
+                }}
                 selectedClinic={notNull(selectedAppointment.selectedClinic)}
                 selectedSvcId={notNull(
                   apptServiceDetails.value.body.serviceDetails.id,
