@@ -8,6 +8,7 @@ import { Pet } from "@/context/UserContext"
 import { useAPICall } from "@/hooks/apicall"
 import api from "@/services/api"
 import ClipLoader from "react-spinners/ClipLoader"
+import toast, { Toaster } from "react-hot-toast"
 
 export interface BookingCategory {
   id: string
@@ -52,17 +53,31 @@ const SelectService: React.FC<SelectServiceProps> = ({
   const {
     call: getAppointmentServices,
     result: getAppointmentServicesResult,
-    loading: loadingServices,
+    loading: loadingServices
   } = useAPICall(api.getAppointmentServices)
 
-  useEffect(() => {
-    getAppointmentServices({})
-    fetchPets()
-  }, [])
+  const fetchAppointmentServices = async () => {
+    try {
+      await getAppointmentServices({})
+    } catch (error) {
+      console.error("Error fetching appointment services:", error)
+      toast.error("Failed to load appointment services. Please try again later.")
+    }
+  }
 
   const fetchPets = async () => {
-    await getPetsAPI({})
+    try {
+      await getPetsAPI({})
+    } catch (error) {
+      console.error("Error fetching pets:", error)
+      toast.error("Failed to load pets. Please try again later.")
+    }
   }
+
+  useEffect(() => {
+    fetchAppointmentServices()
+    fetchPets()
+  }, [])
 
   const pets =
     getPetsAPIResult?.ok &&
@@ -128,11 +143,11 @@ const SelectService: React.FC<SelectServiceProps> = ({
   }
 
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full mt-4">
       <h1 className="text-2xl mb-2">Select Services</h1>
       <p className="text-gray-600 mb-12">Choose from our services:</p>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-stretch">
         {appointmentTypes
           .toSorted((a, b) => a.displayOrder - b.displayOrder)
           .map((category) => (
@@ -181,6 +196,7 @@ const SelectService: React.FC<SelectServiceProps> = ({
         }}
         selectedSubtype={selectedSubtype}
       />
+      <Toaster />
     </div>
   )
 }
