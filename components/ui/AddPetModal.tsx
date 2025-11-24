@@ -180,11 +180,10 @@ export default function AddPetModal({
                   Type of Pet
                 </option>
                 {petSpecies?.map((species) => (
-                    <option key={species} value={species} className="!w-3/4">
-                      {convertToSentenceCase(species)}
-                    </option>
-                  )
-                )}
+                  <option key={species} value={species} className="!w-3/4">
+                    {convertToSentenceCase(species)}
+                  </option>
+                ))}
               </select>
               {errors.type && (
                 <p className="text-red-500 text-sm mt-1">

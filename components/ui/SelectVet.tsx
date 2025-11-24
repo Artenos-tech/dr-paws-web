@@ -189,7 +189,9 @@ const SelectVet: React.FC<selectVetProps> = ({
         })
       } catch (error) {
         console.error("Error fetching best available vet slots:", error)
-        toast.error("Failed to load slots for best available vet. Please try again later.")
+        toast.error(
+          "Failed to load slots for best available vet. Please try again later.",
+        )
       }
     }
   }, [selectedClinic, selectedSvcId, selectedDate])
@@ -240,7 +242,9 @@ const SelectVet: React.FC<selectVetProps> = ({
         setChosenVetId(vetId)
       } catch (err) {
         console.error("Vet selection error:", err)
-        toast.error("Failed to select a vet for the chosen slot. Please try again later.")
+        toast.error(
+          "Failed to select a vet for the chosen slot. Please try again later.",
+        )
         setChosenVetId(null)
       }
     }
@@ -464,11 +468,15 @@ const SelectVet: React.FC<selectVetProps> = ({
           const doctor = response.value.body.staff
           setSelectedDoctor(doctor)
         } else {
-          toast.error("Failed to load groomer information. Please try again later.")
+          toast.error(
+            "Failed to load groomer information. Please try again later.",
+          )
         }
       } catch (error) {
         console.error("Error fetching doctor for grooming slot:", error)
-        toast.error("Failed to load groomer information. Please try again later.")
+        toast.error(
+          "Failed to load groomer information. Please try again later.",
+        )
       }
     }
   }
@@ -481,10 +489,10 @@ const SelectVet: React.FC<selectVetProps> = ({
       return
     }
     if (!/^[A-Z0-9]{6}$/.test(couponCode.trim())) {
-      toast.error("Invalid coupon code format. Please enter a valid code.");
-      setCouponError("Invalid coupon code format. Please enter a valid code.");
-      setAppliedCoupon(null);
-      return;
+      toast.error("Invalid coupon code format. Please enter a valid code.")
+      setCouponError("Invalid coupon code format. Please enter a valid code.")
+      setAppliedCoupon(null)
+      return
     }
     try {
       const resp = await applyCouponCode({ code: couponCode })
@@ -647,11 +655,12 @@ const SelectVet: React.FC<selectVetProps> = ({
           buttonText={isReschedule ? "Reschedule" : "Book"}
           buttonBackground="bg-secondary-1"
           disabled={
-            !isNextButtonEnabled || loadingAppointmentCreation ||
+            !isNextButtonEnabled ||
+            loadingAppointmentCreation ||
             loadingRescheduleAppointment
           }
           loading={
-            isNextButtonEnabled && loadingAppointmentCreation ||
+            (isNextButtonEnabled && loadingAppointmentCreation) ||
             loadingRescheduleAppointment
           }
           buttonClickEvent={handleNextClick}

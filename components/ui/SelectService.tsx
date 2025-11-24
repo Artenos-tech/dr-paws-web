@@ -53,7 +53,7 @@ const SelectService: React.FC<SelectServiceProps> = ({
   const {
     call: getAppointmentServices,
     result: getAppointmentServicesResult,
-    loading: loadingServices
+    loading: loadingServices,
   } = useAPICall(api.getAppointmentServices)
 
   const fetchAppointmentServices = async () => {
@@ -61,7 +61,9 @@ const SelectService: React.FC<SelectServiceProps> = ({
       await getAppointmentServices({})
     } catch (error) {
       console.error("Error fetching appointment services:", error)
-      toast.error("Failed to load appointment services. Please try again later.")
+      toast.error(
+        "Failed to load appointment services. Please try again later.",
+      )
     }
   }
 
