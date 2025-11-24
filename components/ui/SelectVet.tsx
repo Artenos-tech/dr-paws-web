@@ -556,7 +556,7 @@ const SelectVet: React.FC<selectVetProps> = ({
     <div className="h-full flex flex-col gap-12 px-4 lg:px-0">
       {!isGrooming && (
         <div>
-          <h1 className="text-3xl font-bold mb-2">Select Vet</h1>
+          <h1 className="text-2xl mb-2">Select Vet</h1>
           <p className="text-gray-600 mb-12">
             Which of our experts would you like to see?
           </p>
@@ -572,7 +572,7 @@ const SelectVet: React.FC<selectVetProps> = ({
       )}
       <div className="flex flex-col gap-8">
         <div className="flex flex-col gap-2">
-          <h1 className="text-3xl font-bold">Select Date and Time</h1>
+          <h1 className="text-2xl">Select Date and Time</h1>
           <p className="text-gray-600 mb-4">When would you like to visit us?</p>
         </div>
 
