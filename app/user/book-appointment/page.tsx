@@ -85,8 +85,8 @@ const Booking: React.FC = () => {
   }
 
   return (
-    <div className="font-roca pb-20 h-full w-full">
-      <main className="flex flex-col items-center w-full mt-4 lg:mt-16 px-8 md:px-32 lg:px-20 xl:px-40">
+    <div className="font-roca h-full w-full">
+      <main className="flex flex-col items-center w-full mt-4 px-8 md:px-32 lg:px-20 xl:px-40">
         <div className="w-full">
           {currentStep > 1 && currentStep !== 4 && (
             <button
@@ -146,7 +146,6 @@ const Booking: React.FC = () => {
               selectedSubtype={selectedAppointment.selectedSubtype}
               isGrooming={selectedAppointment.isGrooming}
               isReschedule={false}
-              // existingAppointmentId={null}
               setFinalAppointmentData={(appData) => {
                 setSelectedAppointmentState((prev) => ({
                   ...prev,

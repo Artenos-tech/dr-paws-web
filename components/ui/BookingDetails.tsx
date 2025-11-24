@@ -1042,9 +1042,6 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
           onDone={() => goBack(true)}
           onError={() => {
             goBack(false)
-            toast.error(
-              "We couldn't reschedule your appointment. Please try again later.",
-            )
           }}
         />
       )}
