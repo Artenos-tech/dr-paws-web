@@ -58,11 +58,11 @@ const InvoiceCard: React.FC<InvoiceCardProps> = ({
   const [showPdfModal, setShowPdfModal] = useState(false)
   const [pdfUrl, setPdfUrl] = useState<string | null>(null)
 
-  const { call: getInvoiceById } = useAPICall(api.getInvoice)
+  const { call: getInvoicePdf } = useAPICall(api.getInvoicePdf)
 
-  const fetchInvoiceById = useCallback(async (invoiceid: string) => {
+  const fetchInvoicePdf = useCallback(async (invoiceid: string) => {
     try {
-      const resp = await getInvoiceById({ invoiceid })
+      const resp = await getInvoicePdf({ invoiceid })
       if (resp.ok) {
         return resp.value.body.invoicePdf
       }
@@ -74,7 +74,7 @@ const InvoiceCard: React.FC<InvoiceCardProps> = ({
 
   const handleViewPDF = async (invoiceId: string) => {
     setLoadingView(true)
-    const base64str = await fetchInvoiceById(invoiceId)
+    const base64str = await fetchInvoicePdf(invoiceId)
     setLoadingView(false)
     if (!base64str) return
     const byteCharacters = atob(base64str)
@@ -89,7 +89,7 @@ const InvoiceCard: React.FC<InvoiceCardProps> = ({
 
   const handleDownloadPDF = async (invoiceId: string) => {
     setLoadingDownload(true)
-    const base64 = await fetchInvoiceById(invoiceId)
+    const base64 = await fetchInvoicePdf(invoiceId)
     setLoadingDownload(false)
     if (!base64) return
 
@@ -142,23 +142,23 @@ const InvoiceCard: React.FC<InvoiceCardProps> = ({
 
           <Card.Grid
             hoverable={false}
-            style={gridStyleDark}
-            className="basis-full sm:basis-1/2 lg:basis-1/5"
-          >
-            <p className="text-xs md:text-sm">Bill Amount (₹)</p>
-            <p className="text-base md:text-lg font-medium">
-              ₹{billAmount.toFixed(2)}
-            </p>
-          </Card.Grid>
-
-          <Card.Grid
-            hoverable={false}
             style={gridStyle}
             className="basis-full sm:basis-1/2 lg:basis-1/5"
           >
             <p className="text-xs md:text-sm">Total Tax (₹)</p>
             <p className="text-base md:text-lg font-medium">
               ₹{totalTaxAmount.toFixed(2)}
+            </p>
+          </Card.Grid>
+
+          <Card.Grid
+            hoverable={false}
+            style={gridStyleDark}
+            className="basis-full sm:basis-1/2 lg:basis-1/5"
+          >
+            <p className="text-xs md:text-sm">Total Amount (₹)</p>
+            <p className="text-base md:text-lg font-medium">
+              ₹{billAmount.toFixed(2)}
             </p>
           </Card.Grid>
 

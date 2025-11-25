@@ -8,6 +8,7 @@ import api from "@/services/api"
 import { format } from "date-fns"
 import { Button, Modal, Tooltip } from "antd"
 import Image from "next/image"
+import InvoiceCard from "@/components/ui/InvoiceCard"
 
 interface MedicalHistoryProps {
   petId: string
@@ -290,9 +291,9 @@ const MedicalHistory: React.FC<MedicalHistoryProps> = ({ petId }) => {
                   </div>
 
                   {/* SOAP Notes */}
-                  <div>
+                  <div className="mb-4">
                     <h5 className="text-sm font-semibold mb-2">
-                      Prescriptions
+                      Notes
                     </h5>
                     {soapNotes.length > 0 ? (
                       <ul className="space-y-3">
@@ -332,9 +333,27 @@ const MedicalHistory: React.FC<MedicalHistoryProps> = ({ petId }) => {
                         ))}
                       </ul>
                     ) : (
-                      <p className="text-gray-500">No prescriptions found.</p>
+                      <p className="text-gray-500">No notes found.</p>
                     )}
                   </div>
+
+                  {/* Invoice */}
+                  {entry.invoiceDetails && (
+                    <div>
+                      <h5 className="text-sm font-semibold mb-2">
+                        Invoice
+                      </h5>
+                      <InvoiceCard
+                        invoiceId={entry.invoiceDetails.id}
+                        invoiceNo={entry.invoiceDetails.invoiceId}
+                        date={entry.invoiceDetails.date}
+                        billAmount={entry.invoiceDetails.billAmount}
+                        totalTaxAmount={entry.invoiceDetails.totalTaxAmount}
+                        status={entry.invoiceDetails.status}
+                        billingLineItems={entry.invoiceDetails.billingLineItems}
+                      />
+                    </div>
+                  )}
 
                   {/* Report Modal */}
                   <Modal

@@ -1225,15 +1225,57 @@ export default createAPIClient({
                     companyTaxId: z.string().uuid(),
                   }),
                 ),
+                discount: z.number(),
               }),
             ),
+            taxSummary: z.object({}).optional(),
           }),
         ),
       }),
       errorResponseSchema: z.object({}),
     },
 
-    getInvoice: {
+    getInvoiceById: {
+      method: "GET",
+      path: "/user/invoice/details/{invoiceid}",
+      pathParamsSchema: z.object({ invoiceid: z.string() }),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        invoice: z.object({
+          id: z.string(),
+          invoiceId: z.string(),
+          date: z.string(),
+          billAmount: z.number(),
+          totalTaxAmount: z.number(),
+          status: z.enum([
+            "NO_BILL",
+            "OVERPAID",
+            "PARTIALLY_PAID",
+            "PAID",
+            "UNPAID",
+          ]),
+          billingLineItems: z.array(
+            z.object({
+              amount: z.number(),
+              name: z.string(),
+              taxes: z.array(
+                z.object({
+                  taxName: z.string(),
+                  taxAmount: z.number(),
+                  taxPercentage: z.number(),
+                  companyTaxId: z.string().uuid(),
+                }),
+              ),
+              discount: z.number(),
+            }),
+          ),
+          taxSummary: z.object({}).optional(),
+        }),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+
+    getInvoicePdf: {
       method: "GET",
       path: "/user/invoice/{invoiceid}",
       pathParamsSchema: z.object({ invoiceid: z.string() }),
@@ -1302,13 +1344,10 @@ export default createAPIClient({
               .array(
                 z.object({
                   bookingDate: z.string(),
-                  grooming: z.object({
-                    name: z.string(),
-                  }),
-                  groomingBookingServices: z.array(
+                  services: z.array(
                     z.object({
                       catalogue: z.object({
-                        name: z.string(),
+                        serviceName: z.string(),
                       }),
                     }),
                   ),
@@ -1355,6 +1394,38 @@ export default createAPIClient({
                     .nullable(),
                 }),
               )
+              .optional(),
+            invoiceDetails: z
+              .object({
+                id: z.string().uuid(),
+                invoiceId: z.string(),
+                date: z.string(),
+                billAmount: z.number(),
+                totalTaxAmount: z.number(),
+                status: z.enum([
+                  "NO_BILL",
+                  "OVERPAID",
+                  "PARTIALLY_PAID",
+                  "PAID",
+                  "UNPAID",
+                ]),
+                billingLineItems: z.array(
+                  z.object({
+                    amount: z.number(),
+                    name: z.string(),
+                    taxes: z.array(
+                      z.object({
+                        taxName: z.string(),
+                        taxAmount: z.number(),
+                        taxPercentage: z.number(),
+                        companyTaxId: z.string().uuid(),
+                      }),
+                    ),
+                    discount: z.number(),
+                  }),
+                ),
+                taxSummary: z.object({}).optional(),
+              })
               .optional(),
           }),
         ),

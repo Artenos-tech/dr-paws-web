@@ -76,7 +76,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
     loading: loadingMedicalReports,
     result: medicalReportsResult,
   } = useAPICall(api.getAppointmentMedicalReports)
-  const { call: getInvoiceById } = useAPICall(api.getInvoice)
+  const { call: getInvoicePdf } = useAPICall(api.getInvoicePdf)
 
   useEffect(() => {
     if (selectedAppointment?.id) {
@@ -123,10 +123,10 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
     setCurrentView("reschedule")
   }
 
-  const fetchInvoiceById = useCallback(
+  const fetchInvoicePDF = useCallback(
     async (invoiceid: string) => {
       try {
-        const resp = await getInvoiceById({ invoiceid })
+        const resp = await getInvoicePdf({ invoiceid })
         if (resp.ok) {
           return resp.value.body.invoicePdf
         }
@@ -140,7 +140,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
 
   const handleViewInvoicePDF = async (invoiceId: string) => {
     setLoadingInvoiceView(true)
-    const base64str = await fetchInvoiceById(invoiceId)
+    const base64str = await fetchInvoicePDF(invoiceId)
     setLoadingInvoiceView(false)
     if (!base64str) return
     const byteCharacters = atob(base64str)
@@ -155,7 +155,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
 
   const handleDownloadInvoicePDF = async (invoiceId: string) => {
     setLoadingInvoiceDownload(true)
-    const base64 = await fetchInvoiceById(invoiceId)
+    const base64 = await fetchInvoicePDF(invoiceId)
     setLoadingInvoiceDownload(false)
     if (!base64) return
 
