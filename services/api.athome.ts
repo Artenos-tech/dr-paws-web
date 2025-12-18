@@ -1,4 +1,9 @@
-import { createAPIClient, RequestContext, z, type APIResponse } from "../lib/apiclient"
+import {
+  createAPIClient,
+  RequestContext,
+  z,
+  type APIResponse,
+} from "../lib/apiclient"
 import { type Result, ok, err } from "../lib/result"
 
 export {
@@ -71,7 +76,13 @@ const PaymentOrderSchema = z.object({
 
 const OrderStatusSchema = z.object({
   success: z.boolean(),
-  status: z.enum(["ACTIVE", "PAID", "EXPIRED", "TERMINATED", "TERMINATION_REQUESTED"]),
+  status: z.enum([
+    "ACTIVE",
+    "PAID",
+    "EXPIRED",
+    "TERMINATED",
+    "TERMINATION_REQUESTED",
+  ]),
 })
 
 const AppointmentAddressSchema = z.object({
@@ -118,15 +129,17 @@ const AppointmentDetailSchema = z.object({
   vet_name: z.string().nullable(),
   vet_image: z.string().url().nullable(),
   vet_contact: z.string(),
-  vet_status: z.enum([
-    "UNCONFIRMED",
-    "CONFIRMED",
-    "DELAYED",
-    "REACHED",
-    "CANCELLED",
-    "VISIT_STARTED",
-    "VISIT_FINISHED",
-  ]).nullable(),
+  vet_status: z
+    .enum([
+      "UNCONFIRMED",
+      "CONFIRMED",
+      "DELAYED",
+      "REACHED",
+      "CANCELLED",
+      "VISIT_STARTED",
+      "VISIT_FINISHED",
+    ])
+    .nullable(),
   clinic_id: z.string().uuid().nullable(),
   clinic_name: z.string().nullable(),
   clinic_location: z.string().nullable(),
@@ -142,7 +155,13 @@ const AppointmentDetailSchema = z.object({
   invoice_id: z.string().uuid().nullable(),
   total_tax_amount: z.number(),
   total_billing_amount: z.number(),
-  payment_status: z.enum(["PAID", "UNPAID", "NO_BILL", "PARTIALLY_PAID", "OVERPAID"]),
+  payment_status: z.enum([
+    "PAID",
+    "UNPAID",
+    "NO_BILL",
+    "PARTIALLY_PAID",
+    "OVERPAID",
+  ]),
   address: AppointmentAddressSchema.optional(),
 })
 
@@ -159,12 +178,30 @@ export type AtHomeAPIClient = {
   getAddressBook: (
     params: Record<string, never>,
     opts?: { abortSignal?: AbortSignal },
-  ) => Promise<Result<APIResponse<{ status: number; message: string; address_book: Array<z.infer<typeof AddressSchema>> }>, any>>
+  ) => Promise<
+    Result<
+      APIResponse<{
+        status: number
+        message: string
+        address_book: Array<z.infer<typeof AddressSchema>>
+      }>,
+      any
+    >
+  >
 
   getAddress: (
     params: { addressid: string },
     opts?: { abortSignal?: AbortSignal },
-  ) => Promise<Result<APIResponse<{ status: number; message: string; address_book: z.infer<typeof AddressSchema> }>, any>>
+  ) => Promise<
+    Result<
+      APIResponse<{
+        status: number
+        message: string
+        address_book: z.infer<typeof AddressSchema>
+      }>,
+      any
+    >
+  >
 
   addAddress: (
     params: {
@@ -177,7 +214,12 @@ export type AtHomeAPIClient = {
       }
     },
     opts?: { abortSignal?: AbortSignal },
-  ) => Promise<Result<APIResponse<{ status: number; message: string; address: { id: string } }>, any>>
+  ) => Promise<
+    Result<
+      APIResponse<{ status: number; message: string; address: { id: string } }>,
+      any
+    >
+  >
 
   updateAddress: (
     params: {
@@ -191,7 +233,12 @@ export type AtHomeAPIClient = {
       }
     },
     opts?: { abortSignal?: AbortSignal },
-  ) => Promise<Result<APIResponse<{ status: number; message: string; address: { id: string } }>, any>>
+  ) => Promise<
+    Result<
+      APIResponse<{ status: number; message: string; address: { id: string } }>,
+      any
+    >
+  >
 
   deleteAddress: (
     params: { addressid: string },
@@ -202,32 +249,82 @@ export type AtHomeAPIClient = {
   getBookingTypes: (
     params: Record<string, never>,
     opts?: { abortSignal?: AbortSignal },
-  ) => Promise<Result<APIResponse<{ status: number; message: string; bookingTypes: Array<z.infer<typeof BookingTypeSchema>> }>, any>>
+  ) => Promise<
+    Result<
+      APIResponse<{
+        status: number
+        message: string
+        bookingTypes: Array<z.infer<typeof BookingTypeSchema>>
+      }>,
+      any
+    >
+  >
 
   checkLocationServiceability: (
     params: { location: { lat: number; lng: number } },
     opts?: { abortSignal?: AbortSignal },
-  ) => Promise<Result<APIResponse<{ status: number; message: string; serviceable: boolean }>, any>>
+  ) => Promise<
+    Result<
+      APIResponse<{ status: number; message: string; serviceable: boolean }>,
+      any
+    >
+  >
 
   getBookingPets: (
     params: Record<string, never>,
     opts?: { abortSignal?: AbortSignal },
-  ) => Promise<Result<APIResponse<{ status: number; message: string; pets: Array<z.infer<typeof PetSchema>> }>, any>>
+  ) => Promise<
+    Result<
+      APIResponse<{
+        status: number
+        message: string
+        pets: Array<z.infer<typeof PetSchema>>
+      }>,
+      any
+    >
+  >
 
   getAtHomeSlots: (
     params: { clinicid: string },
     opts?: { abortSignal?: AbortSignal },
-  ) => Promise<Result<APIResponse<{ status: number; message: string; days: Array<z.infer<typeof DayWithSlotsSchema>> }>, any>>
+  ) => Promise<
+    Result<
+      APIResponse<{
+        status: number
+        message: string
+        days: Array<z.infer<typeof DayWithSlotsSchema>>
+      }>,
+      any
+    >
+  >
 
   createPaymentOrder: (
     params: { amount: number },
     opts?: { abortSignal?: AbortSignal },
-  ) => Promise<Result<APIResponse<{ status: number; message: string; order: z.infer<typeof PaymentOrderSchema> }>, any>>
+  ) => Promise<
+    Result<
+      APIResponse<{
+        status: number
+        message: string
+        order: z.infer<typeof PaymentOrderSchema>
+      }>,
+      any
+    >
+  >
 
   getOrderStatus: (
     params: { orderid: string },
     opts?: { abortSignal?: AbortSignal },
-  ) => Promise<Result<APIResponse<{ status: number; message: string; order_payment: z.infer<typeof OrderStatusSchema> }>, any>>
+  ) => Promise<
+    Result<
+      APIResponse<{
+        status: number
+        message: string
+        order_payment: z.infer<typeof OrderStatusSchema>
+      }>,
+      any
+    >
+  >
 
   // Appointments
   createAtHomeAppointment: (
@@ -240,31 +337,54 @@ export type AtHomeAPIClient = {
       notes: string
     },
     opts?: { abortSignal?: AbortSignal },
-  ) => Promise<Result<APIResponse<{
-    status: number
-    message: string
-    appointment: {
-      appt_type: string
-      appt_start: string
-      appt_end: string
-      booking_date: string
-      pet_name: string
-      pet_type: "DOG" | "CAT"
-      pet_profile_image: string | null
-      address: z.infer<typeof AppointmentAddressSchema>
-      clinic_contact: string
-    }
-  }>, any>>
+  ) => Promise<
+    Result<
+      APIResponse<{
+        status: number
+        message: string
+        appointment: {
+          appt_type: string
+          appt_start: string
+          appt_end: string
+          booking_date: string
+          pet_name: string
+          pet_type: "DOG" | "CAT"
+          pet_profile_image: string | null
+          address: z.infer<typeof AppointmentAddressSchema>
+          clinic_contact: string
+        }
+      }>,
+      any
+    >
+  >
 
   getAppointmentsV2: (
     params: Record<string, never>,
     opts?: { abortSignal?: AbortSignal },
-  ) => Promise<Result<APIResponse<{ status: number; message: string; appointments: Array<z.infer<typeof AppointmentSchema>> }>, any>>
+  ) => Promise<
+    Result<
+      APIResponse<{
+        status: number
+        message: string
+        appointments: Array<z.infer<typeof AppointmentSchema>>
+      }>,
+      any
+    >
+  >
 
   getAppointmentDetailsV2: (
     params: { appointment_id: string },
     opts?: { abortSignal?: AbortSignal },
-  ) => Promise<Result<APIResponse<{ status: number; message: string; appointment: z.infer<typeof AppointmentDetailSchema> }>, any>>
+  ) => Promise<
+    Result<
+      APIResponse<{
+        status: number
+        message: string
+        appointment: z.infer<typeof AppointmentDetailSchema>
+      }>,
+      any
+    >
+  >
 
   cancelAppointmentV2: (
     params: {
@@ -273,15 +393,20 @@ export type AtHomeAPIClient = {
       sub_booking_id: string
     },
     opts?: { abortSignal?: AbortSignal },
-  ) => Promise<Result<APIResponse<{
-    status: number
-    message: string
-    appointment: {
-      id: string
-      clinic_id: string
-      refund?: z.infer<typeof RefundSchema>
-    }
-  }>, any>>
+  ) => Promise<
+    Result<
+      APIResponse<{
+        status: number
+        message: string
+        appointment: {
+          id: string
+          clinic_id: string
+          refund?: z.infer<typeof RefundSchema>
+        }
+      }>,
+      any
+    >
+  >
 }
 
 // ============================================================================
@@ -319,16 +444,44 @@ const mockAddresses = [
 ]
 
 const mockPets = [
-  { id: generateUUID(), name: "Max", profile_image: "https://example.com/max.jpg" },
-  { id: generateUUID(), name: "Bella", profile_image: "https://example.com/bella.jpg" },
+  {
+    id: generateUUID(),
+    name: "Max",
+    profile_image: "https://example.com/max.jpg",
+  },
+  {
+    id: generateUUID(),
+    name: "Bella",
+    profile_image: "https://example.com/bella.jpg",
+  },
   { id: generateUUID(), name: "Charlie", profile_image: null },
 ]
 
 const mockBookingTypes = [
-  { id: "1", title: "Vaccination", description: "Pet vaccination services", displayOrder: 1 },
-  { id: "2", title: "Check-up", description: "Regular health check-up", displayOrder: 2 },
-  { id: "3", title: "Sick Visit", description: "When your pet is unwell", displayOrder: 3 },
-  { id: "4", title: "Other", description: "Other veterinary services", displayOrder: 4 },
+  {
+    id: "1",
+    title: "Vaccination",
+    description: "Pet vaccination services",
+    displayOrder: 1,
+  },
+  {
+    id: "2",
+    title: "Check-up",
+    description: "Regular health check-up",
+    displayOrder: 2,
+  },
+  {
+    id: "3",
+    title: "Sick Visit",
+    description: "When your pet is unwell",
+    displayOrder: 3,
+  },
+  {
+    id: "4",
+    title: "Other",
+    description: "Other veterinary services",
+    displayOrder: 4,
+  },
 ]
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
@@ -441,15 +594,18 @@ export const mockAtHomeClient: AtHomeAPIClient = {
     // Mock: Bangalore area is serviceable (lat between 12.8-13.1, lng between 77.5-77.8)
     const { lat, lng } = params.location
     const serviceable = lat >= 12.8 && lat <= 13.1 && lng >= 77.5 && lng <= 77.8
-    
+
     // 10% chance of returning not serviceable for testing
     const randomFail = Math.random() < 0.1
-    
+
     return ok({
       status: 200,
       body: {
         status: 200,
-        message: serviceable && !randomFail ? "Location is serviceable" : "Location is not serviceable",
+        message:
+          serviceable && !randomFail
+            ? "Location is serviceable"
+            : "Location is not serviceable",
         serviceable: serviceable && !randomFail,
       },
     })
@@ -469,16 +625,16 @@ export const mockAtHomeClient: AtHomeAPIClient = {
 
   getAtHomeSlots: async (params, opts) => {
     await delay(500)
-    
+
     // Generate slots for next 7 days
     const days = []
     const today = new Date()
-    
+
     for (let i = 0; i < 7; i++) {
       const date = new Date(today)
       date.setDate(date.getDate() + i)
-      const dateStr = date.toISOString().split('T')[0]
-      
+      const dateStr = date.toISOString().split("T")[0]
+
       const slots = [
         { startTime: "09:00", endTime: "10:00" },
         { startTime: "11:00", endTime: "12:00" },
@@ -486,10 +642,10 @@ export const mockAtHomeClient: AtHomeAPIClient = {
         { startTime: "16:00", endTime: "17:00" },
         { startTime: "18:00", endTime: "19:00" },
       ]
-      
+
       days.push({ date: dateStr, slots })
     }
-    
+
     return ok({
       status: 200,
       body: {
@@ -517,10 +673,10 @@ export const mockAtHomeClient: AtHomeAPIClient = {
 
   getOrderStatus: async (params, opts) => {
     await delay(500)
-    
+
     // 10% chance of payment failure for testing
     const paymentFailed = Math.random() < 0.1
-    
+
     return ok({
       status: 200,
       body: {
@@ -536,15 +692,16 @@ export const mockAtHomeClient: AtHomeAPIClient = {
 
   createAtHomeAppointment: async (params, opts) => {
     await delay(500)
-    
-    const pet = mockPets.find(p => p.id === params.pet_id) || mockPets[0]
-    const address = mockAddresses.find(a => a.id === params.address_id) || mockAddresses[0]
-    
+
+    const pet = mockPets.find((p) => p.id === params.pet_id) || mockPets[0]
+    const address =
+      mockAddresses.find((a) => a.id === params.address_id) || mockAddresses[0]
+
     // Calculate end time (1 hour after start)
     const startTime = new Date(`${params.booking_date}T${params.appt_start}`)
     const endTime = new Date(startTime.getTime() + 60 * 60 * 1000)
     const endTimeStr = endTime.toTimeString().slice(0, 5)
-    
+
     return ok({
       status: 200,
       body: {
@@ -574,7 +731,7 @@ export const mockAtHomeClient: AtHomeAPIClient = {
 
   getAppointmentsV2: async (params, opts) => {
     await delay(500)
-    
+
     const appointments = [
       {
         id: generateUUID(),
@@ -617,7 +774,7 @@ export const mockAtHomeClient: AtHomeAPIClient = {
         coupon_code: "FIRST50",
       },
     ]
-    
+
     return ok({
       status: 200,
       body: {
@@ -630,7 +787,7 @@ export const mockAtHomeClient: AtHomeAPIClient = {
 
   getAppointmentDetailsV2: async (params, opts) => {
     await delay(500)
-    
+
     const appointment = {
       id: params.appointment_id,
       sub_booking_id: generateUUID(),
@@ -661,7 +818,7 @@ export const mockAtHomeClient: AtHomeAPIClient = {
       payment_status: "PAID" as const,
       address: mockAddresses[0],
     }
-    
+
     return ok({
       status: 200,
       body: {
@@ -674,10 +831,10 @@ export const mockAtHomeClient: AtHomeAPIClient = {
 
   cancelAppointmentV2: async (params, opts) => {
     await delay(500)
-    
+
     // 20% chance of refund being processed for testing
     const hasRefund = Math.random() < 0.8
-    
+
     return ok({
       status: 200,
       body: {
