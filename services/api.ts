@@ -9,9 +9,9 @@ export {
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL as string
 
-const AUTH_TOKEN_HEADER_NAME = "X-Auth-Token"
+export const AUTH_TOKEN_HEADER_NAME = "X-Auth-Token"
 
-const AUTH_TOKEN_LOCALSTORAGE_KEY = "authToken"
+export const AUTH_TOKEN_LOCALSTORAGE_KEY = "authToken"
 
 function initRequestContext() {
   const ctx = new RequestContext()
