@@ -460,28 +460,16 @@ const mockPets = [
 const mockBookingTypes = [
   {
     id: "1",
-    title: "Vaccination",
-    description: "Pet vaccination services",
+    title: "Home Visit",
+    description: "One of our vets comes to you",
     displayOrder: 1,
   },
   {
     id: "2",
-    title: "Check-up",
-    description: "Regular health check-up",
+    title: "Dr. Paws Clinics",
+    description: "Visit one of our awesome clinics",
     displayOrder: 2,
-  },
-  {
-    id: "3",
-    title: "Sick Visit",
-    description: "When your pet is unwell",
-    displayOrder: 3,
-  },
-  {
-    id: "4",
-    title: "Other",
-    description: "Other veterinary services",
-    displayOrder: 4,
-  },
+  }
 ]
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
