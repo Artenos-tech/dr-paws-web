@@ -7,12 +7,17 @@ import BookingTypeSelection, {
 import ClinicBookingFlow from "@/components/ui/ClinicBookingFlow"
 import AtHomeBookingFlow from "@/components/ui/AtHomeBookingFlow"
 import atHomeClient from "@/services/api.athome"
+import { useParams, useRouter, useSearchParams } from "next/navigation"
 
 const Booking: React.FC = () => {
   const [bookingTypes, setBookingTypes] = useState<BookingType[]>([])
   const [selectedBookingType, setSelectedBookingType] =
     useState<BookingType | null>(null)
   const [loading, setLoading] = useState(true)
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const home = searchParams.get("home")
+  const clinic = searchParams.get("clinic")
 
   useEffect(() => {
     const fetchBookingTypes = async () => {
@@ -43,6 +48,8 @@ const Booking: React.FC = () => {
 
     const title = selectedBookingType.title.toLowerCase()
 
+    console.log(title.includes("clinic"))
+
     // Check if it's a clinic booking
     if (title.includes("clinic") || title.includes("paws")) {
       return <ClinicBookingFlow onBackToStart={handleBackToSelection} />
@@ -56,6 +63,39 @@ const Booking: React.FC = () => {
     // Default fallback
     return <ClinicBookingFlow onBackToStart={handleBackToSelection} />
   }
+
+  useEffect(() => {
+    if (bookingTypes.length === 0) return
+    if (selectedBookingType) return
+
+    if (home === "true") {
+      const atHomeType = bookingTypes.find(
+        (type) =>
+          type.title.toLowerCase().includes("home") ||
+          type.title.toLowerCase().includes("visit"),
+      )
+
+      if (atHomeType) {
+        setSelectedBookingType(atHomeType)
+        router.replace("/user/book-appointment", { scroll: false })
+        return
+      }
+    }
+
+    if (clinic === "true") {
+      const clinicType = bookingTypes.find(
+        (type) =>
+          type.title.toLowerCase().includes("clinic") ||
+          type.title.toLowerCase().includes("paws"),
+      )
+
+      if (clinicType) {
+        setSelectedBookingType(clinicType)
+        router.replace("/user/book-appointment", { scroll: false })
+        return
+      }
+    }
+  }, [bookingTypes, home, clinic, selectedBookingType])
 
   if (loading) {
     return (
