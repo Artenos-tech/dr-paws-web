@@ -548,6 +548,8 @@ export const mockAtHomeClient: AtHomeAPIClient = {
         body: { status: 404, message: "Address not found" },
       } as any)
     }
+
+    Object.assign(address, params.address)
     return ok({
       status: 200,
       body: {
