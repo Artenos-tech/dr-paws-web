@@ -16,7 +16,6 @@ interface SelectAddressProps {
 }
 
 const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
-  const router = useRouter()
 
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(
     addressId || null,
@@ -38,6 +37,8 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
   const { call: deleteAddress, loading: deletingAddress } = useAPICall(
     mockAtHomeClient.deleteAddress,
   )
+  const router = useRouter()
+  const params = useSearchParams()
 
   const searchParams = useSearchParams()
   const initialAddressId = searchParams.get("addressId")
