@@ -6,6 +6,7 @@ import "./globals.css"
 import NavBar from "@/components/layout/navbar"
 import Footer from "@/components/layout/Footer"
 import { UserProvider } from "@/context/UserContext"
+import "react-toastify/dist/ReactToastify.css"
 
 // Load Open Sans from Google Fonts
 const openSans = Open_Sans({
