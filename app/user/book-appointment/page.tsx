@@ -10,12 +10,12 @@ import atHomeClient from "@/services/api.athome"
 import { useAPICall } from "@/hooks/apicall"
 import { ClipLoader } from "react-spinners"
 import toast from "react-hot-toast"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useParams, useRouter, useSearchParams } from "next/navigation"
 
 const Booking: React.FC = () => {
   const [selectedBookingType, setSelectedBookingType] =
     useState<BookingType | null>(null)
-
+  const [loading, setLoading] = useState(true)
   const router = useRouter()
   const searchParams = useSearchParams()
   const home = searchParams.get("home")

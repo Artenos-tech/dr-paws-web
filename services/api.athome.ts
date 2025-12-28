@@ -657,6 +657,12 @@ export const mockAtHomeClient: AtHomeAPIClient = {
   addAddress: async (params, opts) => {
     await delay(500)
     const newId = generateUUID()
+    const newAddress = {
+      id: newId,
+      ...params.address,
+    }
+
+    mockAddresses.push(newAddress)
     return ok({
       status: 200,
       body: {
