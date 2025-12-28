@@ -3,6 +3,7 @@
 import { mockAtHomeClient } from "@/services/api.athome"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
+import { FaPen } from "react-icons/fa6"
 
 type Address = {
   id: string
@@ -93,14 +94,25 @@ const SelectAddress = () => {
                 >
                   {address.tag}
                 </h2>
+                <div className="flex">
+                  <FaPen
+                    className="mx-3 mt-1"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      router.push(
+                        `/user/book-appointment/update-address?addressId=${address.id}`,
+                      )
+                    }}
+                  />
 
-                <span
-                  className={`text-xs px-3 py-1 rounded-full text-white ${
-                    isServiceable ? "bg-green-600" : "bg-red-500"
-                  }`}
-                >
-                  {isServiceable ? "Serviceable" : "Unserviceable"}
-                </span>
+                  <span
+                    className={`text-xs px-3 py-1 rounded-full text-white ${
+                      isServiceable ? "bg-green-600" : "bg-red-500"
+                    }`}
+                  >
+                    {isServiceable ? "Serviceable" : "Unserviceable"}
+                  </span>
+                </div>
               </div>
 
               <p className="mt-2 text-sm text-gray-500">
