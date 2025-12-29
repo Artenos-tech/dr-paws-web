@@ -52,6 +52,11 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
   }, [addresses, checkedAddressIds])
 
   useEffect(() => {
+    if (initialAddressId) {
+      setSelectedAddressId(initialAddressId)
+    }
+  }, [initialAddressId])
+  useEffect(() => {
     getAddressBook({})
   }, [])
 
