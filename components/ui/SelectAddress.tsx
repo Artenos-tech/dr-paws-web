@@ -145,6 +145,8 @@ const SelectAddress = () => {
 
           return (
             <div
+              key={address.id}
+              onClick={() => handleSelect(address.id)}
               className={`w-full md:w-[260px] border-2 rounded-lg p-4 mb-4 transition
     ${isServiceable ? "cursor-pointer" : "cursor-not-allowed opacity-50"}
     ${isSelected ? "border-secondary-1" : "border-gray-300"}
