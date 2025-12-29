@@ -71,7 +71,7 @@ const Booking: React.FC = () => {
 
   const bookingTypes =
     (getBookingTypesResult?.ok &&
-      getBookingTypesResult.value.body.bookingTypes) ||
+      getBookingTypesResult.value.body.data.bookingTypes) ||
     []
 
   return (
