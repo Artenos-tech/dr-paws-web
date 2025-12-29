@@ -15,7 +15,7 @@ import { useParams, useRouter, useSearchParams } from "next/navigation"
 const Booking: React.FC = () => {
   const [selectedBookingType, setSelectedBookingType] =
     useState<BookingType | null>(null)
-  const [loading, setLoading] = useState(true)
+
   const router = useRouter()
   const searchParams = useSearchParams()
   const home = searchParams.get("home")
