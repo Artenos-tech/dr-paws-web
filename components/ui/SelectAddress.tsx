@@ -3,7 +3,7 @@
 import { mockAtHomeClient } from "@/services/api.athome"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
-import { FaPen } from "react-icons/fa6"
+import { FaPen, FaTrash } from "react-icons/fa6"
 import { useAPICall } from "@/hooks/apicall"
 
 type Address = {
@@ -84,12 +84,11 @@ const SelectAddress = () => {
 
           return (
             <div
-              key={address.id}
-              onClick={() => handleSelect(address.id)}
               className={`w-full md:w-[260px] border-2 rounded-lg p-4 mb-4 transition
-                ${isServiceable ? "cursor-pointer" : "cursor-not-allowed opacity-50"}
-                ${isSelected ? "border-secondary-1" : "border-gray-300"}
-              `}
+    ${isServiceable ? "cursor-pointer" : "cursor-not-allowed opacity-50"}
+    ${isSelected ? "border-secondary-1" : "border-gray-300"}
+
+  `}
             >
               <div className="flex justify-between items-start">
                 <h2
@@ -101,15 +100,38 @@ const SelectAddress = () => {
                 </h2>
 
                 <div className="flex items-center">
-                  <FaPen
-                    className="mx-3 mt-1 cursor-pointer"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      router.push(
-                        `/user/book-appointment/update-address?addressId=${address.id}`,
-                      )
-                    }}
-                  />
+                  <div className="relative group">
+                    <FaPen
+                      className={`mx-1 mt-1 ${isServiceable ? "cursor-pointer" : "cursor-not-allowed opacity-50"}`}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        if (!isServiceable) return
+                        router.push(
+                          `/user/book-appointment/update-address?addressId=${address.id}`,
+                        )
+                      }}
+                    />
+                    {isServiceable && (
+                      <span className="absolute top-full mt-1 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs rounded px-2 py-1 opacity-0 transition-opacity group-hover:opacity-100 whitespace-nowrap z-50">
+                        Edit
+                      </span>
+                    )}
+                  </div>
+                  <div className="relative group">
+                    <FaTrash
+                      className={`mx-1 mt-1 ${isServiceable ? "cursor-pointer" : "cursor-not-allowed opacity-50"}`}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        if (!isServiceable) return
+                        // delete logic
+                      }}
+                    />
+                    {isServiceable && (
+                      <span className="absolute top-full mt-1 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs rounded px-2 py-1 opacity-0 transition-opacity group-hover:opacity-100 whitespace-nowrap z-50">
+                        Delete
+                      </span>
+                    )}
+                  </div>
 
                   <span
                     className={`text-xs px-3 py-1 rounded-full text-white ${
