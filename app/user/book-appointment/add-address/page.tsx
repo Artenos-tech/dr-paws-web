@@ -66,11 +66,6 @@ const Page = () => {
     try {
       const serviceRes = await checkServiceability({ location: pin })
 
-      if (!serviceRes.ok) {
-        toast.error("Unable to check serviceability. Please try again.")
-        return
-      }
-
       const payload = {
         address: {
           tag: addressDetails.tag,
@@ -88,14 +83,16 @@ const Page = () => {
         return
       }
 
-      // Show unserviceable modal if the address is not serviceable
-      if (!serviceRes.value.body.serviceable) {
+      const newAddressId = res.value?.body?.address?.id
+
+      if (serviceRes.ok && !serviceRes.value.body.serviceable) {
         setShowUnserviceableModal(true)
         return
       }
 
-      // If serviceable, redirect
-      router.replace("/user/book-appointment?home=true")
+      router.replace(
+        `/user/book-appointment?home=true&addressId=${newAddressId}`,
+      )
     } catch (err) {
       console.error(err)
       toast.error("Something went wrong. Please try again.")
