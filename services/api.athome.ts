@@ -703,8 +703,9 @@ export const mockAtHomeClient: AtHomeAPIClient = {
 
   deleteAddress: async (params, opts) => {
     await delay(500)
-    const address = mockAddresses.find((a) => a.id === params.addressid)
-    if (!address) {
+
+    const index = mockAddresses.findIndex((a) => a.id === params.addressid)
+    if (index === -1) {
       return err({
         apiClientError: true,
         apiClientErrorType: "ErrorResponseAPIError",
@@ -713,6 +714,9 @@ export const mockAtHomeClient: AtHomeAPIClient = {
         body: { status: 404, message: "Address not found" },
       } as any)
     }
+
+    mockAddresses.splice(index, 1)
+
     return ok({
       status: 200,
       body: {
