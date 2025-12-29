@@ -1,7 +1,7 @@
 "use client"
 
 import { mockAtHomeClient } from "@/services/api.athome"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import { FaPen, FaTrash } from "react-icons/fa6"
 import { useAPICall } from "@/hooks/apicall"
@@ -39,6 +39,14 @@ const SelectAddress = () => {
     mockAtHomeClient.deleteAddress,
   )
 
+  const searchParams = useSearchParams()
+  const initialAddressId = searchParams.get("addressId")
+
+  useEffect(() => {
+    if (initialAddressId) {
+      setSelectedAddressId(initialAddressId)
+    }
+  }, [initialAddressId])
   useEffect(() => {
     getAddressBook({})
   }, [])
