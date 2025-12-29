@@ -1,9 +1,10 @@
 "use client"
 
 import { mockAtHomeClient } from "@/services/api.athome"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { FaPen } from "react-icons/fa6"
+import { useAPICall } from "@/hooks/apicall"
 
 type Address = {
   id: string
@@ -15,54 +16,58 @@ type Address = {
 }
 
 const SelectAddress = () => {
-  const [addresses, setAddresses] = useState<Address[]>([])
-  const [serviceableIds, setServiceableIds] = useState<Set<string>>(new Set())
+  const router = useRouter()
+
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(
     null,
   )
-  const router = useRouter()
-  const params = useSearchParams()
+  const [serviceableIds, setServiceableIds] = useState<Set<string>>(new Set())
 
-  const home = params.get("home")
+  const {
+    call: getAddressBook,
+    loading: loadingAddresses,
+    result: addressBookResult,
+  } = useAPICall(mockAtHomeClient.getAddressBook)
 
-  useEffect(() => {
-    fetchAddress()
-  }, [home])
-
-  const fetchAddress = async () => {
-    const result = await mockAtHomeClient.getAddressBook({}, {})
-    if (result.ok) {
-      setAddresses(result.value.body.address_book)
-    }
-  }
-
-  const checkLocationServiceability = async (
-    addressId: string,
-    location: { lat: number; lng: number },
-  ) => {
-    const result = await mockAtHomeClient.checkLocationServiceability(
-      { location },
-      {},
-    )
-
-    if (result.ok && result.value.body.serviceable) {
-      setServiceableIds((prev) => new Set(prev).add(addressId))
-    }
-  }
+  const { call: checkServiceability } = useAPICall(
+    mockAtHomeClient.checkLocationServiceability,
+  )
 
   useEffect(() => {
-    fetchAddress()
+    getAddressBook({})
   }, [])
 
+  const addresses: Address[] =
+    (addressBookResult?.ok && addressBookResult.value.body.address_book) || []
+
   useEffect(() => {
-    addresses.forEach((address) => {
-      checkLocationServiceability(address.id, address.location)
-    })
+    if (addresses.length === 0) return
+
+    const runChecks = async () => {
+      for (const address of addresses) {
+        const result = await checkServiceability({ location: address.location })
+
+        if (result?.ok && result.value.body.serviceable) {
+          setServiceableIds((prev) => {
+            if (prev.has(address.id)) return prev
+            const next = new Set(prev)
+            next.add(address.id)
+            return next
+          })
+        }
+      }
+    }
+
+    runChecks()
   }, [addresses])
 
   const handleSelect = (addressId: string) => {
     if (!serviceableIds.has(addressId)) return
     setSelectedAddressId(addressId)
+  }
+
+  if (loadingAddresses) {
+    return <div className="py-10 text-center">Loading addresses…</div>
   }
 
   return (
@@ -83,7 +88,7 @@ const SelectAddress = () => {
               onClick={() => handleSelect(address.id)}
               className={`w-full md:w-[260px] border-2 rounded-lg p-4 mb-4 transition
                 ${isServiceable ? "cursor-pointer" : "cursor-not-allowed opacity-50"}
-                ${isSelected ? "border-secondary-1 " : "border-gray-300"}
+                ${isSelected ? "border-secondary-1" : "border-gray-300"}
               `}
             >
               <div className="flex justify-between items-start">
@@ -94,9 +99,10 @@ const SelectAddress = () => {
                 >
                   {address.tag}
                 </h2>
-                <div className="flex">
+
+                <div className="flex items-center">
                   <FaPen
-                    className="mx-3 mt-1"
+                    className="mx-3 mt-1 cursor-pointer"
                     onClick={(e) => {
                       e.stopPropagation()
                       router.push(
@@ -135,7 +141,7 @@ const SelectAddress = () => {
       <div className="flex justify-center">
         <button
           disabled={!selectedAddressId}
-          className=" rounded-full px-8 py-3 bg-secondary-1 text-white disabled:opacity-50 disabled:cursor-not-allowed"
+          className="rounded-full px-8 py-3 bg-secondary-1 text-white disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Confirm Address
         </button>
