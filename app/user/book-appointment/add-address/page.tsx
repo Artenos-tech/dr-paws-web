@@ -1,14 +1,16 @@
 "use client"
 
 import AddressForm from "@/components/ui/AddressForm"
-import apiAthome, { mockAtHomeClient } from "@/services/api.athome"
+import { useAPICall } from "@/hooks/apicall"
+import { mockAtHomeClient } from "@/services/api.athome"
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api"
-import { redirect, useRouter } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md"
 import { toast, ToastContainer } from "react-toastify"
 
 const DEFAULT_PIN = { lat: 12.97, lng: 77.59 }
+
 const Page = () => {
   const router = useRouter()
   const [pin, setPin] = useState(DEFAULT_PIN)
@@ -27,57 +29,69 @@ const Page = () => {
     libraries: ["places"],
   })
 
-  if (!isLoaded) {
-    return <div>Loading map...</div>
-  }
+  // useAPICall hooks
+  const { call: checkServiceability, loading: loadingCheck } = useAPICall(
+    mockAtHomeClient.checkLocationServiceability,
+  )
+  const { call: addAddress, loading: loadingAdd } = useAPICall(
+    mockAtHomeClient.addAddress,
+  )
+
+  if (!isLoaded) return <div>Loading map...</div>
+
   const setLocation = (e: google.maps.MapMouseEvent) => {
-    if (e.latLng) setPin(e.latLng?.toJSON())
+    if (e.latLng) setPin(e.latLng.toJSON())
   }
 
   const handleAddAddress = async () => {
     if (
+      !addressDetails.tag ||
       !addressDetails.addressLine1 ||
-      !addressDetails.addressLine2 ||
-      !addressDetails.tag
+      !addressDetails.addressLine2
     ) {
       toast.error("Please fill all required fields")
       return
     }
 
-    const serviceRes = await mockAtHomeClient.checkLocationServiceability({
-      location: pin,
-    })
+    try {
+      // Check serviceability
+      const serviceRes = await checkServiceability({ location: pin })
 
-    if (!serviceRes.ok) {
-      toast.error("Sorry, your location is too far for home visit", {
-        autoClose: 5000,
-      })
-      return
-    }
+      if (!serviceRes.ok) {
+        toast.error("Unable to check serviceability. Please try again.")
+        return
+      }
 
-    if (!serviceRes.value.body.serviceable) {
-      setShowUnserviceableModal(true)
-      return
-    }
+      if (!serviceRes.value.body.serviceable) {
+        setShowUnserviceableModal(true)
+        return
+      }
 
-    const payload = {
-      address: {
-        tag: addressDetails.tag,
-        location: pin,
-        address_line1: addressDetails.addressLine1,
-        address_line2: addressDetails.addressLine2,
-        directions: addressDetails.directions,
-      },
-    }
+      // Add address
+      const payload = {
+        address: {
+          tag: addressDetails.tag,
+          location: pin,
+          address_line1: addressDetails.addressLine1,
+          address_line2: addressDetails.addressLine2,
+          directions: addressDetails.directions,
+        },
+      }
 
-    const res = await mockAtHomeClient.addAddress(payload)
+      const res = await addAddress(payload)
 
-    if (res.ok) {
-      router.replace("/user/book-appointment?home=true")
-    } else {
-      toast.error("Failed to add address")
+      if (res.ok) {
+        router.replace("/user/book-appointment?home=true")
+      } else {
+        toast.error("Failed to add address")
+      }
+    } catch (err) {
+      console.error(err)
+      toast.error("Something went wrong. Please try again.")
     }
   }
+
+  const isLoading = loadingCheck || loadingAdd
 
   return (
     <main className="flex flex-col items-center w-full my-4 px-8 md:px-32 lg:px-20 xl:px-40">
@@ -90,15 +104,12 @@ const Page = () => {
       </button>
 
       <GoogleMap
-        center={{ lat: 12.97, lng: 77.59 }}
+        center={pin}
         zoom={20}
-        mapContainerStyle={{
-          width: "100%",
-          height: "400px",
-        }}
-        onClick={(e) => setLocation(e)}
+        mapContainerStyle={{ width: "100%", height: "400px" }}
+        onClick={setLocation}
       >
-        <Marker draggable={true} position={pin} />
+        <Marker draggable position={pin} />
       </GoogleMap>
 
       {openForm && (
@@ -112,30 +123,24 @@ const Page = () => {
       )}
 
       <button
-        onClick={() => {
-          if (openForm) {
-            handleAddAddress()
-          } else {
-            setOpenForm(true)
-          }
-        }}
-        className="mt-8 rounded-full px-8 py-3 bg-secondary-1 text-white"
+        onClick={() => (openForm ? handleAddAddress() : setOpenForm(true))}
+        disabled={isLoading}
+        className="mt-8 rounded-full px-8 py-3 bg-secondary-1 text-white disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {openForm ? "Save" : "Confirm"}
+        {isLoading ? "Processing..." : openForm ? "Save" : "Confirm"}
       </button>
 
       <ToastContainer position="top-right" />
+
       {showUnserviceableModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
           <div className="bg-white rounded-xl p-6 w-[90%] max-w-sm">
             <h2 className="text-lg font-semibold mb-2">
               Location not serviceable
             </h2>
-
             <p className="text-sm text-gray-600 mb-6">
               Sorry, your location is too far for a home visit.
             </p>
-
             <div className="flex gap-3">
               <button
                 className="flex-1 rounded-full px-4 py-2 bg-secondary-1 text-white"
