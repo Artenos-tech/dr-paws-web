@@ -1,6 +1,7 @@
 "use client"
 
 import AddressForm from "@/components/ui/AddressForm"
+import { useAPICall } from "@/hooks/apicall"
 import apiAthome, { mockAtHomeClient } from "@/services/api.athome"
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api"
 import {
@@ -28,12 +29,21 @@ const Page = () => {
     directions: null as string | null,
   })
 
+  const { call: checkServiceability, loading: loadingCheck } = useAPICall(
+    mockAtHomeClient.checkLocationServiceability,
+  )
+  const { call: getAddress, loading: loadingGet } = useAPICall(
+    mockAtHomeClient.getAddress,
+  )
+  const { call: updateAddress, loading: loadingUpdate } = useAPICall(
+    mockAtHomeClient.updateAddress,
+  )
   useEffect(() => {
     fetchAddress()
   }, [addressId])
   const fetchAddress = async () => {
     if (!addressId) return
-    const res = await mockAtHomeClient.getAddress({ addressid: addressId })
+    const res = await getAddress({ addressid: addressId })
     if (res.ok) {
       const address = res.value.body.address_book
       setAddressDetails({
@@ -68,7 +78,7 @@ const Page = () => {
       return
     }
 
-    const serviceRes = await mockAtHomeClient.checkLocationServiceability({
+    const serviceRes = await checkServiceability({
       location: pin,
     })
 
@@ -95,7 +105,7 @@ const Page = () => {
       },
     }
 
-    const res = await mockAtHomeClient.updateAddress(payload)
+    const res = await updateAddress(payload)
 
     if (res.ok) {
       router.replace("/user/book-appointment?home=true")
@@ -114,35 +124,36 @@ const Page = () => {
         <MdOutlineKeyboardArrowLeft /> Back
       </button>
 
-      <GoogleMap
-        center={pin}
-        zoom={20}
-        mapContainerStyle={{
-          width: "100%",
-          height: "400px",
-        }}
-        onClick={(e) => setLocation(e)}
-      >
-        <Marker draggable={true} position={pin} />
-      </GoogleMap>
+      {loadingGet ? (
+        <div className="text-center py-10">Loading address details...</div>
+      ) : (
+        <>
+          <GoogleMap
+            center={pin}
+            zoom={20}
+            mapContainerStyle={{ width: "100%", height: "400px" }}
+            onClick={(e) => setLocation(e)}
+          >
+            <Marker draggable={true} position={pin} />
+          </GoogleMap>
 
-      <div className="w-full my-5">
-        <h1 className="text-xl font-semibold">Update Address Details</h1>
-      
-        <AddressForm
-          addressDetails={addressDetails}
-          setAddressDetails={setAddressDetails}
-        />
-      </div>
+          <div className="w-full my-5">
+            <h1 className="text-xl font-semibold">Update Address Details</h1>
+            <AddressForm
+              addressDetails={addressDetails}
+              setAddressDetails={setAddressDetails}
+            />
+          </div>
 
-      <button
-        onClick={() => {
-          handleUpdateAddress()
-        }}
-        className="mt-8 rounded-full px-8 py-3 bg-secondary-1 text-white"
-      >
-        Update
-      </button>
+          <button
+            onClick={handleUpdateAddress}
+            disabled={loadingCheck || loadingUpdate}
+            className="mt-8 rounded-full px-8 py-3 bg-secondary-1 text-white disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {loadingUpdate ? "Updating..." : "Update"}
+          </button>
+        </>
+      )}
 
       <ToastContainer position="top-right" />
       {showUnserviceableModal && (
