@@ -70,11 +70,6 @@ const Page = () => {
         return
       }
 
-      if (!serviceRes.value.body.serviceable) {
-        setShowUnserviceableModal(true)
-        return
-      }
-
       const payload = {
         address: {
           tag: addressDetails.tag,
@@ -87,11 +82,19 @@ const Page = () => {
 
       const res = await addAddress(payload)
 
-      if (res.ok) {
-        router.replace("/user/book-appointment?home=true")
-      } else {
+      if (!res.ok) {
         toast.error("Failed to add address")
+        return
       }
+
+      // Show unserviceable modal if the address is not serviceable
+      if (!serviceRes.value.body.serviceable) {
+        setShowUnserviceableModal(true)
+        return
+      }
+
+      // If serviceable, redirect
+      router.replace("/user/book-appointment?home=true")
     } catch (err) {
       console.error(err)
       toast.error("Something went wrong. Please try again.")
@@ -154,15 +157,24 @@ const Page = () => {
             <p className="text-sm text-gray-600 mb-6">
               Sorry, your location is too far for a home visit.
             </p>
-            <div className="flex gap-3">
+            <div className="flex gap-3 flex-col">
               <button
-                className="flex-1 rounded-full px-4 py-2 bg-secondary-1 text-white"
+                className="w-full rounded-full px-4 py-2 bg-secondary-1 text-white"
                 onClick={() => {
                   setShowUnserviceableModal(false)
                   router.replace("/user/book-appointment?clinic=true")
                 }}
               >
                 Book clinic visit
+              </button>
+              <button
+                className="w-full rounded-full px-4 py-2 border border-gray-400 text-gray-800"
+                onClick={() => {
+                  setShowUnserviceableModal(false)
+                  router.replace("/user/book-appointment?home=true")
+                }}
+              >
+                Select another address
               </button>
             </div>
           </div>
