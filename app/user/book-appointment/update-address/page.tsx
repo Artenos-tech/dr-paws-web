@@ -1,6 +1,7 @@
 "use client"
 
 import AddressForm from "@/components/ui/AddressForm"
+import UnserviceableModal from "@/components/ui/UnserviceableModal"
 import { useAPICall } from "@/hooks/apicall"
 import { mockAtHomeClient } from "@/services/api.athome"
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api"
@@ -83,39 +84,40 @@ const Page = () => {
       return
     }
 
-    const serviceRes = await checkServiceability({
-      location: pin,
-    })
+    try {
+      // Check serviceability
+      const serviceRes = await checkServiceability({ location: pin })
 
-    if (!serviceRes.ok) {
-      toast.error("Sorry, your location is too far for home visit", {
-        autoClose: 5000,
-      })
-      return
-    }
+      const payload = {
+        addressid: addressId,
+        address: {
+          tag: addressDetails.tag,
+          location: pin,
+          address_line1: addressDetails.addressLine1,
+          address_line2: addressDetails.addressLine2,
+          directions: addressDetails.directions,
+        },
+      }
 
-    if (!serviceRes.value.body.serviceable) {
-      setShowUnserviceableModal(true)
-      return
-    }
+      // Update address regardless of serviceability
+      const res = await updateAddress(payload)
 
-    const payload = {
-      addressid: addressId,
-      address: {
-        tag: addressDetails.tag,
-        location: pin,
-        address_line1: addressDetails.addressLine1,
-        address_line2: addressDetails.addressLine2,
-        directions: addressDetails.directions,
-      },
-    }
+      if (!res.ok) {
+        toast.error("Failed to update address")
+        return
+      }
 
-    const res = await updateAddress(payload)
+      // If unserviceable, show modal but still keep the address updated
+      if (!serviceRes.ok || !serviceRes.value.body.serviceable) {
+        setShowUnserviceableModal(true)
+        return
+      }
 
-    if (res.ok) {
+      // If serviceable, redirect
       router.replace("/user/book-appointment?home=true")
-    } else {
-      toast.error("Failed to add address")
+    } catch (err) {
+      console.error(err)
+      toast.error("Something went wrong. Please try again.")
     }
   }
 
@@ -168,29 +170,7 @@ const Page = () => {
 
       <ToastContainer position="top-right" />
       {showUnserviceableModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="bg-white rounded-xl p-6 w-[90%] max-w-sm">
-            <h2 className="text-lg font-semibold mb-2">
-              Location not serviceable
-            </h2>
-
-            <p className="text-sm text-gray-600 mb-6">
-              Sorry, your location is too far for a home visit.
-            </p>
-
-            <div className="flex gap-3">
-              <button
-                className="flex-1 rounded-full px-4 py-2 bg-secondary-1 text-white"
-                onClick={() => {
-                  setShowUnserviceableModal(false)
-                  router.replace("/user/book-appointment?clinic=true")
-                }}
-              >
-                Book clinic visit
-              </button>
-            </div>
-          </div>
-        </div>
+        <UnserviceableModal onClose={() => setShowUnserviceableModal(false)} />
       )}
     </main>
   )
