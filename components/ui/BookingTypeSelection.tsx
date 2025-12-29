@@ -41,7 +41,6 @@ const BookingTypeSelection: React.FC<BookingTypeSelectionProps> = ({
     return Building2
   }
 
-  // Sort by displayOrder
   const sortedBookingTypes = [...bookingTypes].sort(
     (a, b) => a.displayOrder - b.displayOrder,
   )
@@ -50,7 +49,7 @@ const BookingTypeSelection: React.FC<BookingTypeSelectionProps> = ({
     <div className="w-full">
       <h1 className="text-2xl mb-2">Your place or ours?</h1>
       <p className="text-gray-600 mb-12">
-        Choose how you'd like to schedule your appointment:
+        {"Choose how you'd like to schedule your appointment:"}
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
