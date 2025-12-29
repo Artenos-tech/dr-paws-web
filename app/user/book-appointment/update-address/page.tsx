@@ -21,6 +21,7 @@ const Page = () => {
   const addressId = searchParams.get("addressId")
   const [pin, setPin] = useState(DEFAULT_PIN)
   const [showUnserviceableModal, setShowUnserviceableModal] = useState(false)
+  const [locationDescription, setLocationDescription] = useState("")
 
   const [addressDetails, setAddressDetails] = useState({
     tag: "",
@@ -63,10 +64,19 @@ const Page = () => {
   if (!isLoaded) {
     return <div>Loading map...</div>
   }
-  const setLocation = (e: google.maps.MapMouseEvent) => {
-    if (e.latLng) setPin(e.latLng?.toJSON())
-  }
+  const setLocation = async (e: google.maps.MapMouseEvent) => {
+    if (!e.latLng) return
 
+    const latLng = e.latLng.toJSON()
+    setPin(latLng)
+
+    const geocoder = new google.maps.Geocoder()
+    geocoder.geocode({ location: latLng }, (results, status) => {
+      if (status === "OK" && results?.[0]) {
+        setLocationDescription(results[0].formatted_address)
+      }
+    })
+  }
   const handleUpdateAddress = async () => {
     if (
       !addressDetails.addressLine1 ||
@@ -136,6 +146,12 @@ const Page = () => {
           >
             <Marker draggable={true} position={pin} />
           </GoogleMap>
+          <div className="w-full mt-3 bg-gray-200 p-2 rounded-lg">
+            <p className="text-sm text-gray-600">Selected location</p>
+            <p className="text-base font-medium text-gray-900">
+              {locationDescription || "Move the marker to update location"}
+            </p>
+          </div>
 
           <div className="w-full my-5">
             <h1 className="text-xl font-semibold">Update Address Details</h1>
