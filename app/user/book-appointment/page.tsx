@@ -7,24 +7,28 @@ import BookingTypeSelection, {
 import ClinicBookingFlow from "@/components/ui/ClinicBookingFlow"
 import AtHomeBookingFlow from "@/components/ui/AtHomeBookingFlow"
 import atHomeClient from "@/services/api.athome"
+import { useAPICall } from "@/hooks/apicall"
+import { ClipLoader } from "react-spinners"
+import toast from "react-hot-toast"
 
 const Booking: React.FC = () => {
-  const [bookingTypes, setBookingTypes] = useState<BookingType[]>([])
   const [selectedBookingType, setSelectedBookingType] =
     useState<BookingType | null>(null)
-  const [loading, setLoading] = useState(true)
+
+  const {
+    call: getBookingTypes,
+    loading: loadingBookingTypes,
+    result: getBookingTypesResult,
+  } = useAPICall(atHomeClient.getBookingTypes)
 
   useEffect(() => {
     const fetchBookingTypes = async () => {
-      setLoading(true)
-      const result = await atHomeClient.getBookingTypes({})
-
-      if (result.ok) {
-        setBookingTypes(result.value.body.bookingTypes)
-      } else {
-        console.error("Failed to fetch booking types:", result.error)
+      try {
+        await getBookingTypes({})
+      } catch (error) {
+        console.error("Error fetching booking types:", error)
+        toast.error("Failed to load booking types. Please try again later.")
       }
-      setLoading(false)
     }
 
     fetchBookingTypes()
@@ -57,15 +61,18 @@ const Booking: React.FC = () => {
     return <ClinicBookingFlow onBackToStart={handleBackToSelection} />
   }
 
-  if (loading) {
+  if (loadingBookingTypes) {
     return (
-      <div className="font-roca h-full w-full">
-        <main className="flex flex-col items-center w-full mt-4 px-8 md:px-32 lg:px-20 xl:px-40">
-          <div className="w-full text-center">Loading...</div>
-        </main>
+      <div className="flex justify-center items-center my-20">
+        <ClipLoader color="#33495f" />
       </div>
     )
   }
+
+  const bookingTypes =
+    (getBookingTypesResult?.ok &&
+      getBookingTypesResult.value.body.bookingTypes) ||
+    []
 
   return (
     <div className="font-roca h-full w-full">
