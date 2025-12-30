@@ -6,7 +6,7 @@ import { useAPICall } from "@/hooks/apicall"
 import { mockAtHomeClient } from "@/services/api.athome"
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md"
 import { toast, ToastContainer } from "react-toastify"
 
@@ -38,14 +38,15 @@ const Page = () => {
     mockAtHomeClient.addAddress,
   )
 
-  if (!isLoaded) return <div>Loading map...</div>
-
   const setLocation = async (e: google.maps.MapMouseEvent) => {
     if (!e.latLng) return
 
     const latLng = e.latLng.toJSON()
     setPin(latLng)
+    reverseGeocode(latLng)
+  }
 
+  const reverseGeocode = (latLng: google.maps.LatLngLiteral) => {
     const geocoder = new google.maps.Geocoder()
     geocoder.geocode({ location: latLng }, (results, status) => {
       if (status === "OK" && results?.[0]) {
@@ -53,6 +54,12 @@ const Page = () => {
       }
     })
   }
+
+  useEffect(() => {
+    if (!isLoaded) return
+    reverseGeocode(pin)
+  }, [isLoaded])
+
   const handleAddAddress = async () => {
     if (
       !addressDetails.tag ||
@@ -111,38 +118,49 @@ const Page = () => {
         <MdOutlineKeyboardArrowLeft /> Back
       </button>
 
-      <GoogleMap
-        center={pin}
-        zoom={20}
-        mapContainerStyle={{ width: "100%", height: "400px" }}
-        onClick={setLocation}
-      >
-        <Marker draggable position={pin} />
-      </GoogleMap>
-      <div className="w-full mt-3 bg-gray-200 p-2 rounded-lg">
-        <p className="text-sm text-gray-600">Selected location</p>
-        <p className="text-base font-medium text-gray-900">
-          {locationDescription || "Move the marker to update location"}
-        </p>
-      </div>
+      {!isLoaded ? (
+        <div>Loading map...</div>
+      ) : (
+        <>
+          <GoogleMap
+            center={pin}
+            zoom={20}
+            mapContainerStyle={{ width: "100%", height: "400px" }}
+            onClick={setLocation}
+          >
+            <Marker
+              draggable
+              position={pin}
+              onDragEnd={(e) => setLocation(e)}
+            />
+          </GoogleMap>
 
-      {openForm && (
-        <div className="w-full my-5">
-          <h1 className="text-xl font-semibold">Fill Address Details</h1>
-          <AddressForm
-            addressDetails={addressDetails}
-            setAddressDetails={setAddressDetails}
-          />
-        </div>
+          <div className="w-full mt-3 bg-gray-200 p-2 rounded-lg">
+            <p className="text-sm text-gray-600">Selected location</p>
+            <p className="text-base font-medium text-gray-900">
+              {locationDescription || "Move the marker to update location"}
+            </p>
+          </div>
+
+          {openForm && (
+            <div className="w-full my-5">
+              <h1 className="text-xl font-semibold">Fill Address Details</h1>
+              <AddressForm
+                addressDetails={addressDetails}
+                setAddressDetails={setAddressDetails}
+              />
+            </div>
+          )}
+
+          <button
+            onClick={() => (openForm ? handleAddAddress() : setOpenForm(true))}
+            disabled={isLoading}
+            className="mt-8 rounded-full px-8 py-3 bg-secondary-1 text-white disabled:opacity-50"
+          >
+            {isLoading ? "Processing..." : openForm ? "Save" : "Confirm"}
+          </button>
+        </>
       )}
-
-      <button
-        onClick={() => (openForm ? handleAddAddress() : setOpenForm(true))}
-        disabled={isLoading}
-        className="mt-8 rounded-full px-8 py-3 bg-secondary-1 text-white disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        {isLoading ? "Processing..." : openForm ? "Save" : "Confirm"}
-      </button>
 
       <ToastContainer position="top-right" />
 
