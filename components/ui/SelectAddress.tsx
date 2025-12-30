@@ -151,7 +151,7 @@ const SelectAddress = () => {
       </h1>
       <p className="text-gray-600">Add or select your address</p>
 
-      <div className="flex flex-col md:flex-row md:gap-4 overflow-x-auto">
+      <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-4 overflow-x-auto">
         {addresses.map((address) => {
           const isServiceable = serviceableIds.has(address.id)
           const isSelected = selectedAddressId === address.id
@@ -160,11 +160,10 @@ const SelectAddress = () => {
             <div
               key={address.id}
               onClick={() => handleSelect(address.id)}
-              className={`w-full md:w-[260px] border-2 rounded-lg p-4 mb-4 transition
-    ${isServiceable ? "cursor-pointer" : "cursor-not-allowed opacity-50"}
-    ${isSelected ? "border-secondary-1" : "border-gray-300"}
-
-  `}
+              className={`border-2 rounded-lg p-4 transition
+          ${isServiceable ? "cursor-pointer" : "cursor-not-allowed opacity-50"}
+          ${isSelected ? "border-secondary-1" : "border-gray-300"}
+        `}
             >
               <div className="flex justify-between items-start">
                 <h2
@@ -178,7 +177,11 @@ const SelectAddress = () => {
                 <div className="flex items-center">
                   <div className="relative group">
                     <FaPen
-                      className={`mx-1 mt-1 ${isServiceable ? "cursor-pointer" : "cursor-not-allowed opacity-50"}`}
+                      className={`mx-1 mt-1 ${
+                        isServiceable
+                          ? "cursor-pointer"
+                          : "cursor-not-allowed opacity-50"
+                      }`}
                       onClick={(e) => {
                         e.stopPropagation()
                         if (!isServiceable) return
@@ -195,7 +198,11 @@ const SelectAddress = () => {
                   </div>
                   <div className="relative group">
                     <FaTrash
-                      className={`mx-1 mt-1 ${isServiceable ? "cursor-pointer" : "cursor-not-allowed opacity-50"}`}
+                      className={`mx-1 mt-1 ${
+                        isServiceable
+                          ? "cursor-pointer"
+                          : "cursor-not-allowed opacity-50"
+                      }`}
                       onClick={(e) => handleDeleteClick(address.id, e)}
                     />
                     {isServiceable && (
@@ -227,7 +234,8 @@ const SelectAddress = () => {
           )
         })}
 
-        <div className="w-full md:w-[260px] border rounded-lg p-4 mb-4 flex items-center justify-center">
+       
+        <div className="border rounded-lg p-4 flex items-center justify-center">
           <button
             onClick={() => router.push("/user/book-appointment/add-address")}
             className="rounded-full px-6 py-3 bg-secondary-1 text-white"
@@ -237,10 +245,10 @@ const SelectAddress = () => {
         </div>
       </div>
 
-      <div className="flex justify-center">
+      <div className="flex justify-center ">
         <button
           disabled={!selectedAddressId}
-          className="rounded-full px-8 py-3 bg-secondary-1 text-white disabled:opacity-50 disabled:cursor-not-allowed"
+          className="rounded-full px-8 py-3  bg-secondary-1 text-white disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Confirm Address
         </button>
