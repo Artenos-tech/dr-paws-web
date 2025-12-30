@@ -181,7 +181,7 @@ const Page = () => {
           <button
             onClick={handleUpdateAddress}
             disabled={loadingCheck || loadingUpdate}
-            className="mt-8 rounded-full px-8 py-3 bg-secondary-1 text-white disabled:opacity-50"
+            className="my-10 rounded-full px-8 py-3 bg-secondary-1 text-white disabled:opacity-50"
           >
             {loadingUpdate ? "Updating..." : "Update"}
           </button>
