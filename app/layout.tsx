@@ -60,26 +60,27 @@ export default function RootLayout({
     <UserProvider>
       <html lang="en" className={`${roca.variable} ${openSans.variable}`}>
         <body className={`w-full min-h-screen overflow-x-hidden flex flex-col`}>
+          <Script
+            id="gtm-script"
+            strategy="beforeInteractive"
+            dangerouslySetInnerHTML={{
+              __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-TGCL6HKT');`,
+            }}
+          />
+          <noscript>
+            <iframe
+              src="https://www.googletagmanager.com/ns.html?id=GTM-TGCL6HKT"
+              height="0"
+              width="0"
+              style={{ display: "none", visibility: "hidden" }}
+            />
+          </noscript>
           <div className="flex-grow flex flex-col w-full overflow-x-hidden ">
             <NavBar />
-            <Script
-              strategy="afterInteractive"
-              src={`https://www.googletagmanager.com/gtag/js?id=G-J7KBLL019Z`}
-            />
-            <Script
-              id="gtag-init"
-              strategy="afterInteractive"
-              dangerouslySetInnerHTML={{
-                __html: `
-                  window.dataLayer = window.dataLayer || [];
-                  function gtag(){dataLayer.push(arguments);}
-                  gtag('js', new Date());
-                  gtag('config', 'G-J7KBLL019Z', {
-                    page_path: window.location.pathname,
-                  });
-                `,
-              }}
-            />
             <div className="mt-16 flex-grow">{children}</div>
             <Footer />
           </div>
