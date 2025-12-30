@@ -234,7 +234,6 @@ const SelectAddress = () => {
           )
         })}
 
-       
         <div className="border rounded-lg p-4 flex items-center justify-center">
           <button
             onClick={() => router.push("/user/book-appointment/add-address")}
