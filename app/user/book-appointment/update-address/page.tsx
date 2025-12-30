@@ -57,15 +57,22 @@ const Page = () => {
     if (!addressId || !isLoaded) return
     const res = await getAddress({ addressid: addressId })
     if (res.ok) {
-      const address = res.value.body.address_book
+      const address = res.value.body.data.address_book
       setAddressDetails({
         tag: address.tag,
         addressLine1: address.address_line1,
         addressLine2: address.address_line2,
-        directions: address.directions,
+        directions: address.directions || null,
       })
-      setPin(address.location)
-      reverseGeocode(address.location)
+      setPin({
+        lat: address.location.lat,
+        lng: address.location.long,
+      })
+
+      reverseGeocode({
+        lat: address.location.lat,
+        lng: address.location.long,
+      })
     }
   }
 
@@ -89,16 +96,19 @@ const Page = () => {
     }
 
     try {
-      const serviceRes = await checkServiceability({ location: pin })
+      const serviceRes = await checkServiceability({
+        location: { lat: pin.lat, long: pin.lng },
+      })
 
       const payload = {
         addressid: addressId,
         address: {
           tag: addressDetails.tag,
-          location: pin,
+          location: { lat: pin.lat, long: pin.lng },
           address_line1: addressDetails.addressLine1,
           address_line2: addressDetails.addressLine2,
-          directions: addressDetails.directions,
+          pincode: 560000,
+          directions: addressDetails.directions || null,
         },
       }
 
@@ -109,7 +119,7 @@ const Page = () => {
         return
       }
 
-      if (!serviceRes.ok || !serviceRes.value.body.serviceable) {
+      if (!serviceRes.ok || !serviceRes.value.body.data.serviceable) {
         setShowUnserviceableModal(true)
         return
       }
