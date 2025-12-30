@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import { FaPen, FaTrash } from "react-icons/fa6"
 import { useAPICall } from "@/hooks/apicall"
+import { ClipLoader } from "react-spinners"
 
 type Address = {
   id: string
@@ -110,7 +111,11 @@ const SelectAddress = () => {
   }
 
   if (loadingAddresses) {
-    return <div className="py-10 text-center">Loading addresses…</div>
+    return (
+      <div className="flex justify-center items-center my-20">
+        <ClipLoader color="#33495f" />
+      </div>
+    )
   }
 
   return (
