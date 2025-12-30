@@ -32,9 +32,8 @@ const SelectAddress = () => {
     result: addressBookResult,
   } = useAPICall(mockAtHomeClient.getAddressBook)
 
-  const { call: checkServiceability } = useAPICall(
-    mockAtHomeClient.checkLocationServiceability,
-  )
+  const { call: checkServiceability, loading: serviceabilityLoading } =
+    useAPICall(mockAtHomeClient.checkLocationServiceability)
 
   const { call: deleteAddress, loading: deletingAddress } = useAPICall(
     mockAtHomeClient.deleteAddress,
@@ -205,14 +204,19 @@ const SelectAddress = () => {
                       </span>
                     )}
                   </div>
-
-                  <span
-                    className={`text-xs px-3 py-1 rounded-full text-white ${
-                      isServiceable ? "bg-green-600" : "bg-red-500"
-                    }`}
-                  >
-                    {isServiceable ? "Serviceable" : "Unserviceable"}
-                  </span>
+                  {serviceabilityLoading ? (
+                    <div className="flex justify-center items-center ">
+                      <ClipLoader color="#33495f" size={12} />
+                    </div>
+                  ) : (
+                    <span
+                      className={`text-xs px-3 py-1 rounded-full text-white ${
+                        isServiceable ? "bg-green-600" : "bg-red-500"
+                      }`}
+                    >
+                      {isServiceable ? "Serviceable" : "Unserviceable"}
+                    </span>
+                  )}
                 </div>
               </div>
 
