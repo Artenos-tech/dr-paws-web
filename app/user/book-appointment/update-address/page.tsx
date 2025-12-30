@@ -26,6 +26,20 @@ const Page = () => {
     directions: null as string | null,
   })
 
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
+    libraries: ["places"],
+  })
+
+  const reverseGeocode = (latLng: google.maps.LatLngLiteral) => {
+    const geocoder = new google.maps.Geocoder()
+    geocoder.geocode({ location: latLng }, (results, status) => {
+      if (status === "OK" && results?.[0]) {
+        setLocationDescription(results[0].formatted_address)
+      }
+    })
+  }
+
   const { call: checkServiceability, loading: loadingCheck } = useAPICall(
     mockAtHomeClient.checkLocationServiceability,
   )
@@ -37,9 +51,10 @@ const Page = () => {
   )
   useEffect(() => {
     fetchAddress()
-  }, [addressId])
+  }, [addressId, isLoaded])
+
   const fetchAddress = async () => {
-    if (!addressId) return
+    if (!addressId || !isLoaded) return
     const res = await getAddress({ addressid: addressId })
     if (res.ok) {
       const address = res.value.body.address_book
@@ -50,29 +65,18 @@ const Page = () => {
         directions: address.directions,
       })
       setPin(address.location)
+      reverseGeocode(address.location)
     }
   }
-  const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
-    libraries: ["places"],
-  })
 
-  if (!isLoaded) {
-    return <div>Loading map...</div>
-  }
   const setLocation = async (e: google.maps.MapMouseEvent) => {
     if (!e.latLng) return
 
     const latLng = e.latLng.toJSON()
     setPin(latLng)
-
-    const geocoder = new google.maps.Geocoder()
-    geocoder.geocode({ location: latLng }, (results, status) => {
-      if (status === "OK" && results?.[0]) {
-        setLocationDescription(results[0].formatted_address)
-      }
-    })
+    reverseGeocode(latLng)
   }
+
   const handleUpdateAddress = async () => {
     if (
       !addressDetails.addressLine1 ||
@@ -85,7 +89,6 @@ const Page = () => {
     }
 
     try {
-      // Check serviceability
       const serviceRes = await checkServiceability({ location: pin })
 
       const payload = {
@@ -99,7 +102,6 @@ const Page = () => {
         },
       }
 
-      // Update address regardless of serviceability
       const res = await updateAddress(payload)
 
       if (!res.ok) {
@@ -107,19 +109,19 @@ const Page = () => {
         return
       }
 
-      // If unserviceable, show modal but still keep the address updated
       if (!serviceRes.ok || !serviceRes.value.body.serviceable) {
         setShowUnserviceableModal(true)
         return
       }
 
-      // If serviceable, redirect
       router.replace("/user/book-appointment?home=true")
     } catch (err) {
       console.error(err)
       toast.error("Something went wrong. Please try again.")
     }
   }
+
+  const isPageLoading = loadingGet || !isLoaded || !addressId
 
   return (
     <main className="flex flex-col items-center w-full my-4 px-8 md:px-32 lg:px-20 xl:px-40">
@@ -131,7 +133,7 @@ const Page = () => {
         <MdOutlineKeyboardArrowLeft /> Back
       </button>
 
-      {loadingGet ? (
+      {isPageLoading ? (
         <div className="text-center py-10">Loading address details...</div>
       ) : (
         <>
@@ -139,10 +141,15 @@ const Page = () => {
             center={pin}
             zoom={20}
             mapContainerStyle={{ width: "100%", height: "400px" }}
-            onClick={(e) => setLocation(e)}
+            onClick={setLocation}
           >
-            <Marker draggable={true} position={pin} />
+            <Marker
+              draggable
+              position={pin}
+              onDragEnd={(e) => setLocation(e)}
+            />
           </GoogleMap>
+
           <div className="w-full mt-3 bg-gray-200 p-2 rounded-lg">
             <p className="text-sm text-gray-600">Selected location</p>
             <p className="text-base font-medium text-gray-900">
@@ -161,7 +168,7 @@ const Page = () => {
           <button
             onClick={handleUpdateAddress}
             disabled={loadingCheck || loadingUpdate}
-            className="mt-8 rounded-full px-8 py-3 bg-secondary-1 text-white disabled:opacity-50 disabled:cursor-not-allowed"
+            className="mt-8 rounded-full px-8 py-3 bg-secondary-1 text-white disabled:opacity-50"
           >
             {loadingUpdate ? "Updating..." : "Update"}
           </button>
@@ -169,6 +176,7 @@ const Page = () => {
       )}
 
       <ToastContainer position="top-right" />
+
       {showUnserviceableModal && (
         <UnserviceableModal onClose={() => setShowUnserviceableModal(false)} />
       )}
