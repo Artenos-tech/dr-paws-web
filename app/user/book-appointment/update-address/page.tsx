@@ -100,17 +100,18 @@ const Page = () => {
         location: { lat: pin.lat, long: pin.lng },
       })
 
-      const payload = {
-        addressid: addressId,
-        address: {
-          tag: addressDetails.tag,
-          location: { lat: pin.lat, long: pin.lng },
-          address_line1: addressDetails.addressLine1,
-          address_line2: addressDetails.addressLine2,
-          pincode: 560000,
-          directions: addressDetails.directions || null,
-        },
-      }
+   const payload = {
+  addressid: addressId,
+  address: {
+    tag: addressDetails.tag,
+    location: { lat: pin.lat, long: pin.lng },
+    address_line1: addressDetails.addressLine1,
+    address_line2: addressDetails.addressLine2,
+    pincode: 560000, 
+    directions: addressDetails.directions || null,
+  },
+}
+
 
       const res = await updateAddress(payload)
 
