@@ -59,7 +59,7 @@ export default function RootLayout({
   return (
     <UserProvider>
       <html lang="en" className={`${roca.variable} ${openSans.variable}`}>
-        <head>
+        <body className={`w-full min-h-screen overflow-x-hidden flex flex-col`}>
           <Script
             id="gtm-script"
             strategy="beforeInteractive"
@@ -71,8 +71,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-TGCL6HKT');`,
             }}
           />
-        </head>
-        <body className={`w-full min-h-screen overflow-x-hidden flex flex-col`}>
           <noscript>
             <iframe
               src="https://www.googletagmanager.com/ns.html?id=GTM-TGCL6HKT"
