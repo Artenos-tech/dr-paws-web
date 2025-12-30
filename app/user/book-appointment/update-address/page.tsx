@@ -152,7 +152,7 @@ const Page = () => {
         <>
           <GoogleMap
             center={pin}
-            zoom={20}
+            zoom={19}
             mapContainerStyle={{ width: "100%", height: "400px" }}
             onClick={setLocation}
           >
