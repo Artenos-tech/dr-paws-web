@@ -533,7 +533,7 @@ export type AtHomeAPIClient = {
 // Mock data generators
 const generateUUID = () => crypto.randomUUID()
 
-const mockAddresses = [
+const mockAddresses: Array<z.infer<typeof AddressSchema>> = [
   {
     id: generateUUID(),
     tag: "Home",
@@ -558,14 +558,6 @@ const mockAddresses = [
     address_line1: "789 Garden Road",
     address_line2: "Whitefield Main Road",
     pincode: 560066,
-    directions: "Opposite Forum Mall",
-  },
-  {
-    id: generateUUID(),
-    tag: "akshay's Place",
-    location: { lat: 58.9698, lng: 25.7499 }, // Whitefield
-    address_line1: "789 Garden Road ",
-    address_line2: "Whitefield Main Road",
     directions: "Opposite Forum Mall",
   },
 ]
@@ -657,9 +649,14 @@ export const mockAtHomeClient: AtHomeAPIClient = {
   addAddress: async (params, opts) => {
     await delay(500)
     const newId = generateUUID()
-    const newAddress = {
+    const newAddress: z.infer<typeof AddressSchema> = {
       id: newId,
-      ...params.address,
+      tag: params.address.tag,
+      location: params.address.location,
+      address_line1: params.address.address_line1,
+      address_line2: params.address.address_line2,
+      pincode: 560000,
+      directions: params.address.directions ?? undefined,
     }
 
     mockAddresses.push(newAddress)
