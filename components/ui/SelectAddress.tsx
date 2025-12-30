@@ -278,10 +278,10 @@ const SelectAddress = () => {
         </div>
       )}
 
-      <div className="flex justify-center">
+      <div className="flex justify-center ">
         <button
           disabled={!selectedAddressId}
-          className="rounded-full px-8 py-3 bg-secondary-1 text-white disabled:opacity-50 disabled:cursor-not-allowed"
+          className="rounded-full px-8 py-3  bg-secondary-1 text-white disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Confirm Address
         </button>
