@@ -160,7 +160,7 @@ const Page = () => {
           <button
             onClick={() => (openForm ? handleAddAddress() : setOpenForm(true))}
             disabled={isLoading}
-            className="mt-8 rounded-full px-8 py-3 bg-secondary-1 text-white disabled:opacity-50"
+            className="my-10 rounded-full px-8 py-3 bg-secondary-1 text-white disabled:opacity-50"
           >
             {isLoading ? "Processing..." : openForm ? "Save" : "Confirm"}
           </button>
