@@ -110,7 +110,17 @@ const AppointmentSchema = z.object({
   vet_image: z.string().nullable().optional(),
   vet_contact: z.string().nullable().optional(),
   address: AddressSchema.optional(),
-  visit_status: z.enum(["UNCONFIRMED", "CONFIRMED", "DELAYED", "REACHED", "CANCELLED", "VISIT_STARTED", "VISIT_FINISHED"]).optional(),
+  visit_status: z
+    .enum([
+      "UNCONFIRMED",
+      "CONFIRMED",
+      "DELAYED",
+      "REACHED",
+      "CANCELLED",
+      "VISIT_STARTED",
+      "VISIT_FINISHED",
+    ])
+    .optional(),
   helpline_no: z.string().optional(),
   start_otp: z.string().nullable().optional(),
   sos_status: z.enum(["ACTIVE", "INACTIVE"]).optional(),
@@ -147,15 +157,41 @@ const AppointmentDetailSchema = z.object({
   vet_image: z.string().nullable().optional(),
   vet_contact: z.string().nullable().optional(),
   address: AddressSchema.optional(),
-  visit_status: z.enum(["UNCONFIRMED", "CONFIRMED", "DELAYED", "REACHED", "CANCELLED", "VISIT_STARTED", "VISIT_FINISHED"]).optional(),
+  visit_status: z
+    .enum([
+      "UNCONFIRMED",
+      "CONFIRMED",
+      "DELAYED",
+      "REACHED",
+      "CANCELLED",
+      "VISIT_STARTED",
+      "VISIT_FINISHED",
+    ])
+    .optional(),
   helpline_no: z.string().optional(),
   start_otp: z.string().nullable().optional(),
-  refund_status: z.enum(["PENDING", "SUCCESS", "FAILED", "CANCELLED", "ONHOLD", "NOT_APPLICABLE"]).optional(),
+  refund_status: z
+    .enum([
+      "PENDING",
+      "SUCCESS",
+      "FAILED",
+      "CANCELLED",
+      "ONHOLD",
+      "NOT_APPLICABLE",
+    ])
+    .optional(),
   sos_status: z.enum(["ACTIVE", "INACTIVE"]).optional(),
 })
 
 const RefundSchema = z.object({
-  status: z.enum(["PENDING", "SUCCESS", "FAILED", "CANCELLED", "ONHOLD", "NOT_APPLICABLE"]),
+  status: z.enum([
+    "PENDING",
+    "SUCCESS",
+    "FAILED",
+    "CANCELLED",
+    "ONHOLD",
+    "NOT_APPLICABLE",
+  ]),
 })
 
 const OrderAppointmentSchema = z.object({
@@ -496,7 +532,7 @@ export type AtHomeAPIClient = {
 // Mock data generators
 const generateUUID = () => crypto.randomUUID()
 
-const mockAddresses = [
+const mockAddresses: Array<z.infer<typeof AddressSchema>> = [
   {
     id: generateUUID(),
     tag: "Home",
@@ -521,14 +557,6 @@ const mockAddresses = [
     address_line1: "789 Garden Road",
     address_line2: "Whitefield Main Road",
     pincode: 560066,
-    directions: "Opposite Forum Mall",
-  },
-  {
-    id: generateUUID(),
-    tag: "akshay's Place",
-    location: { lat: 58.9698, lng: 25.7499 }, // Whitefield
-    address_line1: "789 Garden Road ",
-    address_line2: "Whitefield Main Road",
     directions: "Opposite Forum Mall",
   },
 ]
@@ -618,9 +646,14 @@ export const mockAtHomeClient: AtHomeAPIClient = {
   addAddress: async (params, opts) => {
     await delay(500)
     const newId = generateUUID()
-    const newAddress = {
+    const newAddress: z.infer<typeof AddressSchema> = {
       id: newId,
-      ...params.address,
+      tag: params.address.tag,
+      location: params.address.location,
+      address_line1: params.address.address_line1,
+      address_line2: params.address.address_line2,
+      pincode: 560000,
+      directions: params.address.directions ?? undefined,
     }
 
     mockAddresses.push(newAddress)
@@ -794,21 +827,23 @@ export const mockAtHomeClient: AtHomeAPIClient = {
     // 10% chance of payment failure for testing
     const paymentFailed = Math.random() < 0.1
 
-    const appointment = paymentFailed ? null : {
-      id: generateUUID(),
-      sub_booking_id: generateUUID(),
-      pet_name: mockPets[0].name,
-      pet_type: mockPets[0].type,
-      pet_profile_image: mockPets[0].profile_image,
-      clinic_id: generateUUID(),
-      booking_date: new Date().toISOString().split("T")[0],
-      appt_start: "10:00",
-      appt_end: "11:00",
-      appt_type_title: "At-Home Visit" as const,
-      appt_type: "AT_HOME_VISIT" as const,
-      address: mockAddresses[0],
-      sos_status: "INACTIVE" as const,
-    }
+    const appointment = paymentFailed
+      ? null
+      : {
+          id: generateUUID(),
+          sub_booking_id: generateUUID(),
+          pet_name: mockPets[0].name,
+          pet_type: mockPets[0].type,
+          pet_profile_image: mockPets[0].profile_image,
+          clinic_id: generateUUID(),
+          booking_date: new Date().toISOString().split("T")[0],
+          appt_start: "10:00",
+          appt_end: "11:00",
+          appt_type_title: "At-Home Visit" as const,
+          appt_type: "AT_HOME_VISIT" as const,
+          address: mockAddresses[0],
+          sos_status: "INACTIVE" as const,
+        }
 
     return ok({
       status: 200,

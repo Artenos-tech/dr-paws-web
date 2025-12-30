@@ -71,12 +71,14 @@ const Page = () => {
     }
 
     try {
-      const serviceRes = await checkServiceability({ location: pin })
+      const serviceRes = await checkServiceability({
+        location: { lat: pin.lat, long: pin.lng },
+      })
 
       const payload = {
         address: {
           tag: addressDetails.tag,
-          location: pin,
+          location: { lat: pin.lat, long: pin.lng },
           address_line1: addressDetails.addressLine1,
           address_line2: addressDetails.addressLine2,
           directions: addressDetails.directions,
@@ -90,9 +92,9 @@ const Page = () => {
         return
       }
 
-      const newAddressId = res.value?.body?.address?.id
+      const newAddressId = res.value.body.data.address.id
 
-      if (serviceRes.ok && !serviceRes.value.body.serviceable) {
+      if (serviceRes.ok && !serviceRes.value.body.data.serviceable) {
         setShowUnserviceableModal(true)
         return
       }

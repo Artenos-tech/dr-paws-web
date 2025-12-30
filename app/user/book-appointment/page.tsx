@@ -40,11 +40,6 @@ const Booking: React.FC = () => {
     fetchBookingTypes()
   }, [])
 
-  const bookingTypes: BookingType[] =
-    (getBookingTypesResult?.ok &&
-      getBookingTypesResult.value.body.bookingTypes) ||
-    []
-
   useEffect(() => {
     if (!getBookingTypesResult?.ok) return
     if (selectedBookingType) return
@@ -75,14 +70,7 @@ const Booking: React.FC = () => {
         router.replace("/user/book-appointment", { scroll: false })
       }
     }
-  }, [
-    bookingTypes,
-    home,
-    clinic,
-    selectedBookingType,
-    getBookingTypesResult,
-    router,
-  ])
+  }, [home, clinic, selectedBookingType, getBookingTypesResult, router])
 
   const handleBookingTypeSelect = (bookingType: BookingType) => {
     setSelectedBookingType(bookingType)

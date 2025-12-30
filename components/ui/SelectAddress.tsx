@@ -9,10 +9,10 @@ import { useAPICall } from "@/hooks/apicall"
 type Address = {
   id: string
   tag: string
-  location: { lat: number; lng: number }
+  location: { lat: number; long: number }
   address_line1: string
   address_line2: string
-  directions: string | null
+  directions?: string | null
 }
 
 const SelectAddress = () => {
@@ -52,7 +52,8 @@ const SelectAddress = () => {
   }, [])
 
   const addresses: Address[] =
-    (addressBookResult?.ok && addressBookResult.value.body.address_book) || []
+    (addressBookResult?.ok && addressBookResult.value.body.data.address_book) ||
+    []
 
   useEffect(() => {
     if (addresses.length === 0) return
@@ -61,7 +62,7 @@ const SelectAddress = () => {
       for (const address of addresses) {
         const result = await checkServiceability({ location: address.location })
 
-        if (result?.ok && result.value.body.serviceable) {
+        if (result?.ok && result.value.body.data.serviceable) {
           setServiceableIds((prev) => {
             if (prev.has(address.id)) return prev
             const next = new Set(prev)
