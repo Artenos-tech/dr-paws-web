@@ -8,6 +8,7 @@ import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md"
+import { ClipLoader } from "react-spinners"
 import { toast, ToastContainer } from "react-toastify"
 
 const DEFAULT_PIN = { lat: 12.97, lng: 77.59 }
@@ -100,18 +101,17 @@ const Page = () => {
         location: { lat: pin.lat, long: pin.lng },
       })
 
-   const payload = {
-  addressid: addressId,
-  address: {
-    tag: addressDetails.tag,
-    location: { lat: pin.lat, long: pin.lng },
-    address_line1: addressDetails.addressLine1,
-    address_line2: addressDetails.addressLine2,
-    pincode: 560000, 
-    directions: addressDetails.directions || null,
-  },
-}
-
+      const payload = {
+        addressid: addressId,
+        address: {
+          tag: addressDetails.tag,
+          location: { lat: pin.lat, long: pin.lng },
+          address_line1: addressDetails.addressLine1,
+          address_line2: addressDetails.addressLine2,
+          pincode: 560000,
+          directions: addressDetails.directions || null,
+        },
+      }
 
       const res = await updateAddress(payload)
 
@@ -145,7 +145,9 @@ const Page = () => {
       </button>
 
       {isPageLoading ? (
-        <div className="text-center py-10">Loading address details...</div>
+        <div className="flex justify-center items-center my-20">
+          <ClipLoader color="#33495f" />
+        </div>
       ) : (
         <>
           <GoogleMap
