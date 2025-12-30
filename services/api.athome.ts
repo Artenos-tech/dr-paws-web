@@ -39,17 +39,19 @@ const AddressSchema = z.object({
   tag: z.string(),
   location: z.object({
     lat: z.number(),
-    lng: z.number(),
+    long: z.number(),
   }),
   address_line1: z.string(),
   address_line2: z.string(),
-  directions: z.string().nullable(),
+  pincode: z.number(),
+  directions: z.string().optional(),
 })
 
 const BookingTypeSchema = z.object({
   id: z.string(),
   title: z.string(),
   description: z.string(),
+  image: z.string(),
   displayOrder: z.number(),
 })
 
@@ -57,6 +59,8 @@ const PetSchema = z.object({
   id: z.string(),
   name: z.string(),
   profile_image: z.string().nullable(),
+  type: z.enum(["DOG", "CAT", "OTHER"]),
+  serviceable: z.boolean(),
 })
 
 const SlotSchema = z.object({
@@ -85,73 +89,46 @@ const OrderStatusSchema = z.object({
   ]),
 })
 
-const AppointmentAddressSchema = z.object({
-  id: z.string().uuid(),
-  tag: z.string(),
-  location: z.object({
-    lat: z.number(),
-    lng: z.number(),
-  }),
-  address_line1: z.string(),
-  address_line2: z.string(),
-  directions: z.string().nullable(),
-})
-
 const AppointmentSchema = z.object({
   id: z.string().uuid(),
   sub_booking_id: z.string().uuid(),
-  pet_id: z.string().uuid(),
+  clinic_id: z.string().uuid(),
   pet_name: z.string(),
-  pet_type: z.string().nullable(),
+  pet_type: z.enum(["DOG", "CAT", "OTHER"]).nullable(),
   pet_profile_image: z.string().nullable(),
-  vet_id: z.string().uuid().nullable(),
-  vet_name: z.string().nullable(),
-  vet_image: z.string().url().nullable(),
-  clinic_name: z.string().nullable(),
   booking_date: z.string(),
   appt_start: z.string(),
   appt_end: z.string(),
-  appt_status: z.string(),
-  appt_type: z.string(),
-  appt_type_id: z.string().uuid(),
+  appt_type_title: z.enum(["Vet Consultation", "Grooming", "At-Home Visit"]),
+  appt_type: z.enum(["VET_CONSULTATION", "GROOMING", "AT_HOME_VISIT"]),
   category: z.enum(["UPCOMING", "COMPLETED", "REQUESTED", "CANCELLED"]),
-  coupon_code: z.string().nullable().optional(),
+  clinic_name: z.string().optional(),
+  clinic_location: z.string().optional(),
+  clinic_contact: z.string().optional(),
+  coupon_code: z.string().optional(),
+  vet_name: z.string().nullable().optional(),
+  vet_image: z.string().nullable().optional(),
+  vet_contact: z.string().nullable().optional(),
+  address: AddressSchema.optional(),
+  visit_status: z.enum(["UNCONFIRMED", "CONFIRMED", "DELAYED", "REACHED", "CANCELLED", "VISIT_STARTED", "VISIT_FINISHED"]).optional(),
+  helpline_no: z.string().optional(),
+  start_otp: z.string().nullable().optional(),
+  sos_status: z.enum(["ACTIVE", "INACTIVE"]).optional(),
 })
 
 const AppointmentDetailSchema = z.object({
   id: z.string().uuid(),
   sub_booking_id: z.string().uuid(),
-  pet_id: z.string().uuid(),
+  clinic_id: z.string().uuid(),
   pet_name: z.string(),
-  pet_type: z.string().nullable(),
+  pet_type: z.enum(["DOG", "CAT", "OTHER"]).nullable(),
   pet_profile_image: z.string().nullable(),
-  vet_id: z.string().uuid().nullable(),
-  vet_name: z.string().nullable(),
-  vet_image: z.string().url().nullable(),
-  vet_contact: z.string(),
-  vet_status: z
-    .enum([
-      "UNCONFIRMED",
-      "CONFIRMED",
-      "DELAYED",
-      "REACHED",
-      "CANCELLED",
-      "VISIT_STARTED",
-      "VISIT_FINISHED",
-    ])
-    .nullable(),
-  clinic_id: z.string().uuid().nullable(),
-  clinic_name: z.string().nullable(),
-  clinic_location: z.string().nullable(),
-  clinic_contact: z.string(),
   booking_date: z.string(),
   appt_start: z.string(),
   appt_end: z.string(),
-  appt_status: z.string(),
-  appt_type: z.string(),
-  appt_type_id: z.string().uuid(),
+  appt_type_title: z.enum(["Vet Consultation", "Grooming", "At-Home Visit"]),
+  appt_type: z.enum(["VET_CONSULTATION", "GROOMING", "AT_HOME_VISIT"]),
   category: z.enum(["UPCOMING", "COMPLETED", "REQUESTED", "CANCELLED"]),
-  coupon_code: z.string().nullable().optional(),
   invoice_id: z.string().uuid().nullable(),
   total_tax_amount: z.number(),
   total_billing_amount: z.number(),
@@ -162,11 +139,39 @@ const AppointmentDetailSchema = z.object({
     "PARTIALLY_PAID",
     "OVERPAID",
   ]),
-  address: AppointmentAddressSchema.optional(),
+  clinic_name: z.string().optional(),
+  clinic_location: z.string().optional(),
+  clinic_contact: z.string().optional(),
+  coupon_code: z.string().optional(),
+  vet_name: z.string().nullable().optional(),
+  vet_image: z.string().nullable().optional(),
+  vet_contact: z.string().nullable().optional(),
+  address: AddressSchema.optional(),
+  visit_status: z.enum(["UNCONFIRMED", "CONFIRMED", "DELAYED", "REACHED", "CANCELLED", "VISIT_STARTED", "VISIT_FINISHED"]).optional(),
+  helpline_no: z.string().optional(),
+  start_otp: z.string().nullable().optional(),
+  refund_status: z.enum(["PENDING", "SUCCESS", "FAILED", "CANCELLED", "ONHOLD", "NOT_APPLICABLE"]).optional(),
+  sos_status: z.enum(["ACTIVE", "INACTIVE"]).optional(),
 })
 
 const RefundSchema = z.object({
-  status: z.enum(["PENDING", "SUCCESS", "FAILED", "CANCELLED", "ONHOLD"]),
+  status: z.enum(["PENDING", "SUCCESS", "FAILED", "CANCELLED", "ONHOLD", "NOT_APPLICABLE"]),
+})
+
+const OrderAppointmentSchema = z.object({
+  id: z.string().uuid(),
+  sub_booking_id: z.string().uuid(),
+  pet_name: z.string(),
+  pet_type: z.enum(["DOG", "CAT", "OTHER"]).nullable(),
+  pet_profile_image: z.string().nullable(),
+  clinic_id: z.string().uuid(),
+  booking_date: z.string(),
+  appt_start: z.string(),
+  appt_end: z.string(),
+  appt_type_title: z.enum(["Vet Consultation", "Grooming", "At-Home Visit"]),
+  appt_type: z.enum(["VET_CONSULTATION", "GROOMING", "AT_HOME_VISIT"]),
+  address: AddressSchema,
+  sos_status: z.enum(["ACTIVE", "INACTIVE"]),
 })
 
 // ============================================================================
@@ -183,7 +188,9 @@ export type AtHomeAPIClient = {
       APIResponse<{
         status: number
         message: string
-        address_book: Array<z.infer<typeof AddressSchema>>
+        data: {
+          address_book: Array<z.infer<typeof AddressSchema>>
+        }
       }>,
       any
     >
@@ -197,7 +204,9 @@ export type AtHomeAPIClient = {
       APIResponse<{
         status: number
         message: string
-        address_book: z.infer<typeof AddressSchema>
+        data: {
+          address_book: z.infer<typeof AddressSchema>
+        }
       }>,
       any
     >
@@ -207,7 +216,7 @@ export type AtHomeAPIClient = {
     params: {
       address: {
         tag: string
-        location: { lat: number; lng: number }
+        location: { lat: number; long: number }
         address_line1: string
         address_line2: string
         directions: string | null
@@ -216,7 +225,13 @@ export type AtHomeAPIClient = {
     opts?: { abortSignal?: AbortSignal },
   ) => Promise<
     Result<
-      APIResponse<{ status: number; message: string; address: { id: string } }>,
+      APIResponse<{
+        status: number
+        message: string
+        data: {
+          address: { id: string }
+        }
+      }>,
       any
     >
   >
@@ -226,16 +241,23 @@ export type AtHomeAPIClient = {
       addressid: string
       address: {
         tag: string
-        location: { lat: number; lng: number }
+        location: { lat: number; long: number }
         address_line1: string
         address_line2: string
+        pincode: number
         directions: string | null
       }
     },
     opts?: { abortSignal?: AbortSignal },
   ) => Promise<
     Result<
-      APIResponse<{ status: number; message: string; address: { id: string } }>,
+      APIResponse<{
+        status: number
+        message: string
+        data: {
+          address: { id: string }
+        }
+      }>,
       any
     >
   >
@@ -254,18 +276,26 @@ export type AtHomeAPIClient = {
       APIResponse<{
         status: number
         message: string
-        bookingTypes: Array<z.infer<typeof BookingTypeSchema>>
+        data: {
+          bookingTypes: Array<z.infer<typeof BookingTypeSchema>>
+        }
       }>,
       any
     >
   >
 
   checkLocationServiceability: (
-    params: { location: { lat: number; lng: number } },
+    params: { location: { lat: number; long: number } },
     opts?: { abortSignal?: AbortSignal },
   ) => Promise<
     Result<
-      APIResponse<{ status: number; message: string; serviceable: boolean }>,
+      APIResponse<{
+        status: number
+        message: string
+        data: {
+          serviceable: boolean
+        }
+      }>,
       any
     >
   >
@@ -278,56 +308,31 @@ export type AtHomeAPIClient = {
       APIResponse<{
         status: number
         message: string
-        pets: Array<z.infer<typeof PetSchema>>
+        data: {
+          pets: Array<z.infer<typeof PetSchema>>
+        }
       }>,
       any
     >
   >
 
   getAtHomeSlots: (
-    params: { clinicid: string },
+    params: { addressid: string },
     opts?: { abortSignal?: AbortSignal },
   ) => Promise<
     Result<
       APIResponse<{
         status: number
         message: string
-        days: Array<z.infer<typeof DayWithSlotsSchema>>
+        data: {
+          days: Array<z.infer<typeof DayWithSlotsSchema>>
+        }
       }>,
       any
     >
   >
 
   createPaymentOrder: (
-    params: { amount: number },
-    opts?: { abortSignal?: AbortSignal },
-  ) => Promise<
-    Result<
-      APIResponse<{
-        status: number
-        message: string
-        order: z.infer<typeof PaymentOrderSchema>
-      }>,
-      any
-    >
-  >
-
-  getOrderStatus: (
-    params: { orderid: string },
-    opts?: { abortSignal?: AbortSignal },
-  ) => Promise<
-    Result<
-      APIResponse<{
-        status: number
-        message: string
-        order_payment: z.infer<typeof OrderStatusSchema>
-      }>,
-      any
-    >
-  >
-
-  // Appointments
-  createAtHomeAppointment: (
     params: {
       pet_id: string
       appt_start: string
@@ -342,23 +347,33 @@ export type AtHomeAPIClient = {
       APIResponse<{
         status: number
         message: string
-        appointment: {
-          appt_type: string
-          appt_start: string
-          appt_end: string
-          booking_date: string
-          pet_name: string
-          pet_type: "DOG" | "CAT"
-          pet_profile_image: string | null
-          address: z.infer<typeof AppointmentAddressSchema>
-          clinic_contact: string
+        data: {
+          order: z.infer<typeof PaymentOrderSchema>
         }
       }>,
       any
     >
   >
 
-  getAppointmentsV2: (
+  getOrderStatus: (
+    params: { orderid: string },
+    opts?: { abortSignal?: AbortSignal },
+  ) => Promise<
+    Result<
+      APIResponse<{
+        status: number
+        message: string
+        data: {
+          order_payment: z.infer<typeof OrderStatusSchema>
+          appointment: z.infer<typeof OrderAppointmentSchema> | null
+        }
+      }>,
+      any
+    >
+  >
+
+  // Appointments
+  getAppointments: (
     params: Record<string, never>,
     opts?: { abortSignal?: AbortSignal },
   ) => Promise<
@@ -366,13 +381,15 @@ export type AtHomeAPIClient = {
       APIResponse<{
         status: number
         message: string
-        appointments: Array<z.infer<typeof AppointmentSchema>>
+        data: {
+          appointments: Array<z.infer<typeof AppointmentSchema>>
+        }
       }>,
       any
     >
   >
 
-  getAppointmentDetailsV2: (
+  getAppointmentDetails: (
     params: { appointment_id: string },
     opts?: { abortSignal?: AbortSignal },
   ) => Promise<
@@ -380,13 +397,15 @@ export type AtHomeAPIClient = {
       APIResponse<{
         status: number
         message: string
-        appointment: z.infer<typeof AppointmentDetailSchema>
+        data: {
+          appointment: z.infer<typeof AppointmentDetailSchema>
+        }
       }>,
       any
     >
   >
 
-  cancelAppointmentV2: (
+  cancelAppointment: (
     params: {
       appointmentid: string
       clinic_id: string
@@ -398,10 +417,71 @@ export type AtHomeAPIClient = {
       APIResponse<{
         status: number
         message: string
-        appointment: {
-          id: string
-          clinic_id: string
-          refund?: z.infer<typeof RefundSchema>
+        data: {
+          appointment: {
+            id: string
+            refund?: z.infer<typeof RefundSchema>
+          }
+        }
+      }>,
+      any
+    >
+  >
+
+  rescheduleAppointment: (
+    params: {
+      appointment_id: string
+      sub_booking_id: string
+      booking_date: string
+      appt_start: string
+      appt_end: string
+      vet_id?: string
+    },
+    opts?: { abortSignal?: AbortSignal },
+  ) => Promise<
+    Result<
+      APIResponse<{
+        status: number
+        message: string
+        data: {
+          appointment_id: string
+        }
+      }>,
+      any
+    >
+  >
+
+  raiseSOSAlert: (
+    params: {
+      appointment_id: string
+      description?: string
+    },
+    opts?: { abortSignal?: AbortSignal },
+  ) => Promise<
+    Result<
+      APIResponse<{
+        status: number
+        message: string
+        data: {
+          appointment_id: string
+        }
+      }>,
+      any
+    >
+  >
+
+  cancelSOSAlert: (
+    params: {
+      appointment_id: string
+    },
+    opts?: { abortSignal?: AbortSignal },
+  ) => Promise<
+    Result<
+      APIResponse<{
+        status: number
+        message: string
+        data: {
+          appointment_id: string
         }
       }>,
       any
@@ -420,25 +500,27 @@ const mockAddresses = [
   {
     id: generateUUID(),
     tag: "Home",
-    location: { lat: 12.9352, lng: 77.6245 }, // Koramangala
+    location: { lat: 12.9352, long: 77.6245 }, // Koramangala
     address_line1: "123 Main Street",
     address_line2: "Koramangala 4th Block",
+    pincode: 560034,
     directions: "Near Sony Signal",
   },
   {
     id: generateUUID(),
     tag: "Office",
-    location: { lat: 12.9716, lng: 77.5946 }, // Indiranagar
+    location: { lat: 12.9716, long: 77.5946 }, // Indiranagar
     address_line1: "456 Park Avenue",
     address_line2: "Indiranagar 100 Feet Road",
-    directions: null,
+    pincode: 560038,
   },
   {
     id: generateUUID(),
     tag: "Parent's Place",
-    location: { lat: 12.9698, lng: 77.7499 }, // Whitefield
+    location: { lat: 12.9698, long: 77.7499 }, // Whitefield
     address_line1: "789 Garden Road",
     address_line2: "Whitefield Main Road",
+    pincode: 560066,
     directions: "Opposite Forum Mall",
   },
   {
@@ -456,13 +538,23 @@ const mockPets = [
     id: generateUUID(),
     name: "Max",
     profile_image: "https://example.com/max.jpg",
+    type: "DOG" as const,
+    serviceable: true,
   },
   {
     id: generateUUID(),
     name: "Bella",
     profile_image: "https://example.com/bella.jpg",
+    type: "CAT" as const,
+    serviceable: true,
   },
-  { id: generateUUID(), name: "Charlie", profile_image: null },
+  {
+    id: generateUUID(),
+    name: "Charlie",
+    profile_image: null,
+    type: "OTHER" as const,
+    serviceable: false,
+  },
 ]
 
 const mockBookingTypes = [
@@ -470,12 +562,14 @@ const mockBookingTypes = [
     id: "1",
     title: "Home Visit",
     description: "One of our vets comes to you",
+    image: "https://example.com/home-visit.jpg",
     displayOrder: 1,
   },
   {
     id: "2",
     title: "Dr. Paws Clinics",
     description: "Visit one of our awesome clinics",
+    image: "https://example.com/clinic.jpg",
     displayOrder: 2,
   },
 ]
@@ -490,7 +584,9 @@ export const mockAtHomeClient: AtHomeAPIClient = {
       body: {
         status: 200,
         message: "User address book fetched successfully",
-        address_book: mockAddresses,
+        data: {
+          address_book: mockAddresses,
+        },
       },
     })
   },
@@ -512,7 +608,9 @@ export const mockAtHomeClient: AtHomeAPIClient = {
       body: {
         status: 200,
         message: "Address fetched successfully",
-        address_book: address,
+        data: {
+          address_book: address,
+        },
       },
     })
   },
@@ -531,7 +629,9 @@ export const mockAtHomeClient: AtHomeAPIClient = {
       body: {
         status: 200,
         message: "New address added to address book successfully",
-        address: { id: newId },
+        data: {
+          address: { id: newId },
+        },
       },
     })
   },
@@ -555,7 +655,9 @@ export const mockAtHomeClient: AtHomeAPIClient = {
       body: {
         status: 200,
         message: "Address updated successfully",
-        address: { id: params.addressid },
+        data: {
+          address: { id: params.addressid },
+        },
       },
     })
   },
@@ -592,15 +694,17 @@ export const mockAtHomeClient: AtHomeAPIClient = {
       body: {
         status: 200,
         message: "Booking types fetched successfully",
-        bookingTypes: mockBookingTypes,
+        data: {
+          bookingTypes: mockBookingTypes,
+        },
       },
     })
   },
 
   checkLocationServiceability: async (params, opts) => {
     await delay(500)
-    // Mock: Bangalore area is serviceable (lat between 12.8-13.1, lng between 77.5-77.8)
-    const { lat, lng } = params.location
+    // Mock: Bangalore area is serviceable (lat between 12.8-13.1, long between 77.5-77.8)
+    const { lat, long: lng } = params.location
     const serviceable = lat >= 12.8 && lat <= 13.1 && lng >= 77.5 && lng <= 77.8
 
     // 10% chance of returning not serviceable for testing
@@ -610,11 +714,10 @@ export const mockAtHomeClient: AtHomeAPIClient = {
       status: 200,
       body: {
         status: 200,
-        message:
-          serviceable && !randomFail
-            ? "Location is serviceable"
-            : "Location is not serviceable",
-        serviceable: serviceable && !randomFail,
+        message: "Location serviceability checked successfully",
+        data: {
+          serviceable: serviceable && !randomFail,
+        },
       },
     })
   },
@@ -626,7 +729,9 @@ export const mockAtHomeClient: AtHomeAPIClient = {
       body: {
         status: 200,
         message: "User pets fetched successfully",
-        pets: mockPets,
+        data: {
+          pets: mockPets,
+        },
       },
     })
   },
@@ -659,7 +764,9 @@ export const mockAtHomeClient: AtHomeAPIClient = {
       body: {
         status: 200,
         message: "Slots for staff fetched successfully",
-        days,
+        data: {
+          days,
+        },
       },
     })
   },
@@ -671,9 +778,11 @@ export const mockAtHomeClient: AtHomeAPIClient = {
       body: {
         status: 200,
         message: "Payment order created successfully",
-        order: {
-          orderId: generateUUID(),
-          paymentSessionId: `session_${generateUUID()}`,
+        data: {
+          order: {
+            orderId: generateUUID(),
+            paymentSessionId: `session_${generateUUID()}`,
+          },
         },
       },
     })
@@ -685,100 +794,82 @@ export const mockAtHomeClient: AtHomeAPIClient = {
     // 10% chance of payment failure for testing
     const paymentFailed = Math.random() < 0.1
 
-    return ok({
-      status: 200,
-      body: {
-        status: 200,
-        message: paymentFailed ? "Payment failed" : "Payment successful",
-        order_payment: {
-          success: !paymentFailed,
-          status: paymentFailed ? "EXPIRED" : "PAID",
-        },
-      },
-    })
-  },
-
-  createAtHomeAppointment: async (params, opts) => {
-    await delay(500)
-
-    const pet = mockPets.find((p) => p.id === params.pet_id) || mockPets[0]
-    const address =
-      mockAddresses.find((a) => a.id === params.address_id) || mockAddresses[0]
-
-    // Calculate end time (1 hour after start)
-    const startTime = new Date(`${params.booking_date}T${params.appt_start}`)
-    const endTime = new Date(startTime.getTime() + 60 * 60 * 1000)
-    const endTimeStr = endTime.toTimeString().slice(0, 5)
+    const appointment = paymentFailed ? null : {
+      id: generateUUID(),
+      sub_booking_id: generateUUID(),
+      pet_name: mockPets[0].name,
+      pet_type: mockPets[0].type,
+      pet_profile_image: mockPets[0].profile_image,
+      clinic_id: generateUUID(),
+      booking_date: new Date().toISOString().split("T")[0],
+      appt_start: "10:00",
+      appt_end: "11:00",
+      appt_type_title: "At-Home Visit" as const,
+      appt_type: "AT_HOME_VISIT" as const,
+      address: mockAddresses[0],
+      sos_status: "INACTIVE" as const,
+    }
 
     return ok({
       status: 200,
       body: {
         status: 200,
-        message: "Appointment booking created successfully",
-        appointment: {
-          appt_type: "At Home Visit",
-          appt_start: params.appt_start,
-          appt_end: endTimeStr,
-          booking_date: params.booking_date,
-          pet_name: pet.name,
-          pet_type: "DOG" as const,
-          pet_profile_image: pet.profile_image,
-          address: {
-            id: address.id,
-            tag: address.tag,
-            location: address.location,
-            address_line1: address.address_line1,
-            address_line2: address.address_line2,
-            directions: address.directions,
+        message: "Order status fetched successfully",
+        data: {
+          order_payment: {
+            success: !paymentFailed,
+            status: paymentFailed ? ("EXPIRED" as const) : ("PAID" as const),
           },
-          clinic_contact: "+91-9876543210",
+          appointment,
         },
       },
     })
   },
 
-  getAppointmentsV2: async (params, opts) => {
+  getAppointments: async (params, opts) => {
     await delay(500)
 
     const appointments = [
       {
         id: generateUUID(),
         sub_booking_id: generateUUID(),
-        pet_id: mockPets[0].id,
+        clinic_id: generateUUID(),
         pet_name: mockPets[0].name,
-        pet_type: "DOG",
+        pet_type: mockPets[0].type,
         pet_profile_image: mockPets[0].profile_image,
-        vet_id: generateUUID(),
-        vet_name: "Dr. Sharma",
-        vet_image: "https://example.com/dr-sharma.jpg",
-        clinic_name: "PetCare Bangalore",
         booking_date: "2025-01-15",
         appt_start: "10:00",
         appt_end: "11:00",
-        appt_status: "CONFIRMED",
-        appt_type: "At Home Visit",
-        appt_type_id: generateUUID(),
+        appt_type_title: "At-Home Visit" as const,
+        appt_type: "AT_HOME_VISIT" as const,
         category: "UPCOMING" as const,
-        coupon_code: null,
+        vet_name: "Dr. Sharma",
+        vet_image: "https://example.com/dr-sharma.jpg",
+        vet_contact: "+91-9876543210",
+        address: mockAddresses[0],
+        visit_status: "CONFIRMED" as const,
+        helpline_no: "+91-1800-DRPAWS",
+        start_otp: "123456",
+        sos_status: "INACTIVE" as const,
       },
       {
         id: generateUUID(),
         sub_booking_id: generateUUID(),
-        pet_id: mockPets[1].id,
+        clinic_id: generateUUID(),
         pet_name: mockPets[1].name,
-        pet_type: "CAT",
+        pet_type: mockPets[1].type,
         pet_profile_image: mockPets[1].profile_image,
-        vet_id: generateUUID(),
-        vet_name: "Dr. Patel",
-        vet_image: null,
-        clinic_name: "PetCare Bangalore",
         booking_date: "2024-12-10",
         appt_start: "14:00",
         appt_end: "15:00",
-        appt_status: "COMPLETED",
-        appt_type: "Vaccination",
-        appt_type_id: generateUUID(),
+        appt_type_title: "Vet Consultation" as const,
+        appt_type: "VET_CONSULTATION" as const,
         category: "COMPLETED" as const,
+        clinic_name: "PetCare Bangalore",
+        clinic_location: "Koramangala, Bangalore",
+        clinic_contact: "+91-9876543211",
+        vet_name: "Dr. Patel",
+        vet_image: null,
         coupon_code: "FIRST50",
       },
     ]
@@ -788,43 +879,42 @@ export const mockAtHomeClient: AtHomeAPIClient = {
       body: {
         status: 200,
         message: "Appointments fetched successfully",
-        appointments,
+        data: {
+          appointments,
+        },
       },
     })
   },
 
-  getAppointmentDetailsV2: async (params, opts) => {
+  getAppointmentDetails: async (params, opts) => {
     await delay(500)
 
     const appointment = {
       id: params.appointment_id,
       sub_booking_id: generateUUID(),
-      pet_id: mockPets[0].id,
-      pet_name: mockPets[0].name,
-      pet_type: "DOG",
-      pet_profile_image: mockPets[0].profile_image,
-      vet_id: generateUUID(),
-      vet_name: "Dr. Sharma",
-      vet_image: "https://example.com/dr-sharma.jpg",
-      vet_contact: "+91-9876543210",
-      vet_status: "CONFIRMED" as const,
       clinic_id: generateUUID(),
-      clinic_name: "PetCare Bangalore",
-      clinic_location: "Koramangala, Bangalore",
-      clinic_contact: "+91-9876543210",
+      pet_name: mockPets[0].name,
+      pet_type: mockPets[0].type,
+      pet_profile_image: mockPets[0].profile_image,
       booking_date: "2025-01-15",
       appt_start: "10:00",
       appt_end: "11:00",
-      appt_status: "CONFIRMED",
-      appt_type: "At Home Visit",
-      appt_type_id: generateUUID(),
+      appt_type_title: "At-Home Visit" as const,
+      appt_type: "AT_HOME_VISIT" as const,
       category: "UPCOMING" as const,
-      coupon_code: null,
       invoice_id: null,
       total_tax_amount: 0,
       total_billing_amount: 500,
       payment_status: "PAID" as const,
+      vet_name: "Dr. Sharma",
+      vet_image: "https://example.com/dr-sharma.jpg",
+      vet_contact: "+91-9876543210",
       address: mockAddresses[0],
+      visit_status: "CONFIRMED" as const,
+      helpline_no: "+91-1800-DRPAWS",
+      start_otp: "123456",
+      refund_status: "NOT_APPLICABLE" as const,
+      sos_status: "INACTIVE" as const,
     }
 
     return ok({
@@ -832,12 +922,14 @@ export const mockAtHomeClient: AtHomeAPIClient = {
       body: {
         status: 200,
         message: "Appointment details fetched successfully",
-        appointment,
+        data: {
+          appointment,
+        },
       },
     })
   },
 
-  cancelAppointmentV2: async (params, opts) => {
+  cancelAppointment: async (params, opts) => {
     await delay(500)
 
     // 20% chance of refund being processed for testing
@@ -848,10 +940,53 @@ export const mockAtHomeClient: AtHomeAPIClient = {
       body: {
         status: 200,
         message: "Appointment cancelled successfully",
-        appointment: {
-          id: params.appointmentid,
-          clinic_id: params.clinic_id,
-          refund: hasRefund ? { status: "PENDING" as const } : undefined,
+        data: {
+          appointment: {
+            id: params.appointmentid,
+            refund: hasRefund ? { status: "PENDING" as const } : undefined,
+          },
+        },
+      },
+    })
+  },
+
+  rescheduleAppointment: async (params, opts) => {
+    await delay(500)
+    return ok({
+      status: 200,
+      body: {
+        status: 200,
+        message: "Appointment rescheduled successfully",
+        data: {
+          appointment_id: params.appointment_id,
+        },
+      },
+    })
+  },
+
+  raiseSOSAlert: async (params, opts) => {
+    await delay(500)
+    return ok({
+      status: 200,
+      body: {
+        status: 200,
+        message: "SOS Alert raised for appointment successfully",
+        data: {
+          appointment_id: params.appointment_id,
+        },
+      },
+    })
+  },
+
+  cancelSOSAlert: async (params, opts) => {
+    await delay(500)
+    return ok({
+      status: 200,
+      body: {
+        status: 200,
+        message: "SOS Alert cancelled for appointment successfully",
+        data: {
+          appointment_id: params.appointment_id,
         },
       },
     })
@@ -870,7 +1005,9 @@ const endpointConfig = {
     pathParamsSchema: z.object({}),
     requestSchema: z.object({}),
     responseSchema: z.object({
-      address_book: z.array(AddressSchema),
+      data: z.object({
+        address_book: z.array(AddressSchema),
+      }),
     }),
     errorResponseSchema: z.object({}),
   },
@@ -881,7 +1018,9 @@ const endpointConfig = {
     pathParamsSchema: z.object({ addressid: z.string().uuid() }),
     requestSchema: z.object({}),
     responseSchema: z.object({
-      address_book: AddressSchema,
+      data: z.object({
+        address_book: AddressSchema,
+      }),
     }),
     errorResponseSchema: z.object({}),
   },
@@ -895,7 +1034,7 @@ const endpointConfig = {
         tag: z.string(),
         location: z.object({
           lat: z.number(),
-          lng: z.number(),
+          long: z.number(),
         }),
         address_line1: z.string(),
         address_line2: z.string(),
@@ -903,8 +1042,10 @@ const endpointConfig = {
       }),
     }),
     responseSchema: z.object({
-      address: z.object({
-        id: z.string().uuid(),
+      data: z.object({
+        address: z.object({
+          id: z.string().uuid(),
+        }),
       }),
     }),
     errorResponseSchema: z.object({}),
@@ -919,16 +1060,19 @@ const endpointConfig = {
         tag: z.string(),
         location: z.object({
           lat: z.number(),
-          lng: z.number(),
+          long: z.number(),
         }),
         address_line1: z.string(),
         address_line2: z.string(),
+        pincode: z.number(),
         directions: z.string().nullable(),
       }),
     }),
     responseSchema: z.object({
-      address: z.object({
-        id: z.string().uuid(),
+      data: z.object({
+        address: z.object({
+          id: z.string().uuid(),
+        }),
       }),
     }),
     errorResponseSchema: z.object({}),
@@ -950,7 +1094,9 @@ const endpointConfig = {
     pathParamsSchema: z.object({}),
     requestSchema: z.object({}),
     responseSchema: z.object({
-      bookingTypes: z.array(BookingTypeSchema),
+      data: z.object({
+        bookingTypes: z.array(BookingTypeSchema),
+      }),
     }),
     errorResponseSchema: z.object({}),
   },
@@ -962,7 +1108,7 @@ const endpointConfig = {
     requestSchema: z.object({
       location: z.object({
         lat: z.number(),
-        lng: z.number(),
+        long: z.number(),
       }),
     }),
     responseSchema: z.object({
@@ -977,18 +1123,22 @@ const endpointConfig = {
     pathParamsSchema: z.object({}),
     requestSchema: z.object({}),
     responseSchema: z.object({
-      pets: z.array(PetSchema),
+      data: z.object({
+        pets: z.array(PetSchema),
+      }),
     }),
     errorResponseSchema: z.object({}),
   },
 
   getAtHomeSlots: {
     method: "GET" as const,
-    path: "/booking/at-home/slots?clinicid={clinicid}",
-    pathParamsSchema: z.object({ clinicid: z.string().uuid() }),
+    path: "/booking/at-home/slots?addressid={addressid}",
+    pathParamsSchema: z.object({ addressid: z.string().uuid() }),
     requestSchema: z.object({}),
     responseSchema: z.object({
-      days: z.array(DayWithSlotsSchema),
+      data: z.object({
+        days: z.array(DayWithSlotsSchema),
+      }),
     }),
     errorResponseSchema: z.object({}),
   },
@@ -998,7 +1148,12 @@ const endpointConfig = {
     path: "/booking/at-home/payments/orders",
     pathParamsSchema: z.object({}),
     requestSchema: z.object({
-      amount: z.number(),
+      pet_id: z.string().uuid(),
+      appt_start: z.string(),
+      booking_date: z.string(),
+      address_id: z.string(),
+      reason_for_visit: z.enum(["VACCINATION", "CHECK-UP", "SICK", "OTHER"]),
+      notes: z.string(),
     }),
     responseSchema: z.object({
       order: PaymentOrderSchema,
@@ -1013,62 +1168,39 @@ const endpointConfig = {
     requestSchema: z.object({}),
     responseSchema: z.object({
       order_payment: OrderStatusSchema,
+      appointment: OrderAppointmentSchema.nullable(),
     }),
     errorResponseSchema: z.object({}),
   },
 
   // Appointments
-  createAtHomeAppointment: {
-    method: "POST" as const,
-    path: "/user/appointment/at-home",
-    pathParamsSchema: z.object({}),
-    requestSchema: z.object({
-      pet_id: z.string().uuid(),
-      appt_start: z.string(),
-      booking_date: z.string(),
-      address_id: z.string(),
-      reason_for_visit: z.enum(["VACCINATION", "CHECK-UP", "SICK", "OTHER"]),
-      notes: z.string(),
-    }),
-    responseSchema: z.object({
-      appointment: z.object({
-        appt_type: z.string(),
-        appt_start: z.string(),
-        appt_end: z.string(),
-        booking_date: z.string(),
-        pet_name: z.string(),
-        pet_type: z.enum(["DOG", "CAT"]),
-        pet_profile_image: z.string().nullable(),
-        address: AppointmentAddressSchema,
-        clinic_contact: z.string(),
-      }),
-    }),
-    errorResponseSchema: z.object({}),
-  },
-
-  getAppointmentsV2: {
+  getAppointments: {
     method: "GET" as const,
     path: "/user/appointments",
     pathParamsSchema: z.object({}),
     requestSchema: z.object({}),
     responseSchema: z.object({
-      appointments: z.array(AppointmentSchema),
+      data: z.object({
+        appointments: z.array(AppointmentSchema),
+      }),
     }),
     errorResponseSchema: z.object({}),
   },
 
-  getAppointmentDetailsV2: {
+  getAppointmentDetails: {
     method: "GET" as const,
     path: "/user/appointment/{appointment_id}",
     pathParamsSchema: z.object({ appointment_id: z.string().uuid() }),
     requestSchema: z.object({}),
     responseSchema: z.object({
-      appointment: AppointmentDetailSchema,
+      data: z.object({
+        appointment: AppointmentDetailSchema,
+      }),
     }),
     errorResponseSchema: z.object({}),
   },
 
-  cancelAppointmentV2: {
+  cancelAppointment: {
     method: "PUT" as const,
     path: "/user/appointment/{appointmentid}/cancel",
     pathParamsSchema: z.object({ appointmentid: z.string().uuid() }),
@@ -1077,10 +1209,58 @@ const endpointConfig = {
       sub_booking_id: z.string().uuid(),
     }),
     responseSchema: z.object({
-      appointment: z.object({
-        id: z.string().uuid(),
-        clinic_id: z.string().uuid(),
-        refund: RefundSchema.optional(),
+      data: z.object({
+        appointment: z.object({
+          id: z.string().uuid(),
+          refund: RefundSchema.optional(),
+        }),
+      }),
+    }),
+    errorResponseSchema: z.object({}),
+  },
+
+  rescheduleAppointment: {
+    method: "PUT" as const,
+    path: "/user/appointment/{appointment_id}/reschedule",
+    pathParamsSchema: z.object({ appointment_id: z.string().uuid() }),
+    requestSchema: z.object({
+      sub_booking_id: z.string().uuid(),
+      booking_date: z.string(),
+      appt_start: z.string(),
+      appt_end: z.string(),
+      vet_id: z.string().uuid().optional(),
+    }),
+    responseSchema: z.object({
+      data: z.object({
+        appointment_id: z.string().uuid(),
+      }),
+    }),
+    errorResponseSchema: z.object({}),
+  },
+
+  raiseSOSAlert: {
+    method: "PUT" as const,
+    path: "/user/appointment/{appointment_id}/sos/alert",
+    pathParamsSchema: z.object({ appointment_id: z.string().uuid() }),
+    requestSchema: z.object({
+      description: z.string().optional(),
+    }),
+    responseSchema: z.object({
+      data: z.object({
+        appointment_id: z.string().uuid(),
+      }),
+    }),
+    errorResponseSchema: z.object({}),
+  },
+
+  cancelSOSAlert: {
+    method: "PUT" as const,
+    path: "/user/appointment/{appointment_id}/sos/cancel",
+    pathParamsSchema: z.object({ appointment_id: z.string().uuid() }),
+    requestSchema: z.object({}),
+    responseSchema: z.object({
+      data: z.object({
+        appointment_id: z.string().uuid(),
       }),
     }),
     errorResponseSchema: z.object({}),

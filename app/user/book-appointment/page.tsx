@@ -116,6 +116,11 @@ const Booking: React.FC = () => {
     )
   }
 
+  const bookingTypes =
+    (getBookingTypesResult?.ok &&
+      getBookingTypesResult.value.body.data.bookingTypes) ||
+    []
+
   return (
     <div className="font-roca h-full w-full">
       <main className="flex flex-col items-center w-full mt-4 px-8 md:px-32 lg:px-20 xl:px-40">
