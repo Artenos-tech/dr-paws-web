@@ -105,6 +105,7 @@ const AddressPage = () => {
       setIsPinSelected(true)
       return
     }
+
     const { tag, addressLine1, addressLine2 } = addressDetails
 
     if (!tag || !addressLine1 || !addressLine2) {
@@ -152,8 +153,14 @@ const AddressPage = () => {
   }
 
   const isPageLoading = !isLoaded || (isEditMode && loadingGet)
-
   const isSubmitting = loadingAdd || loadingUpdate || loadingCheck
+
+  const isFormValid =
+    Boolean(addressDetails.tag) &&
+    Boolean(addressDetails.addressLine1) &&
+    Boolean(addressDetails.addressLine2)
+
+  const shouldDisableButton = isSubmitting || (isPinSelected && !isFormValid)
 
   return (
     <main className="flex flex-col items-center w-full my-4 px-8 md:px-32 lg:px-20 xl:px-40">
@@ -201,7 +208,7 @@ const AddressPage = () => {
 
           <button
             onClick={handleSubmit}
-            disabled={isSubmitting}
+            disabled={shouldDisableButton}
             className="my-10 rounded-full px-8 py-3 bg-secondary-1 text-white disabled:opacity-50"
           >
             {isPinSelected

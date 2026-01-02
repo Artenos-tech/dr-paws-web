@@ -234,13 +234,22 @@ const SelectAddress = () => {
           )
         })}
 
-        <div className="border rounded-lg p-4 flex items-center justify-center">
-          <button
-            onClick={() => router.push("/user/book-appointment/edit-address")}
-            className="rounded-full px-6 py-3 bg-secondary-1 text-white"
+        <div className=" rounded-lg p-4 flex flex-col items-center justify-center  ">
+          <div
+            onClick={() => router.push(`/user/book-appointment/edit-address`)}
+            className="
+      w-12 h-12
+      flex items-center justify-center
+      rounded-full
+      border-2 border-dashed border-current
+      mb-2
+      cursor-pointer
+    "
           >
-            + Add
-          </button>
+            <span className="text-2xl font-semibold leading-none">+</span>
+          </div>
+
+          <span className="font-medium">Add</span>
         </div>
       </div>
 
