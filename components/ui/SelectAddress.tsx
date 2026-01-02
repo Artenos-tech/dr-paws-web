@@ -186,7 +186,7 @@ const SelectAddress = () => {
                         e.stopPropagation()
                         if (!isServiceable) return
                         router.push(
-                          `/user/book-appointment/update-address?addressId=${address.id}`,
+                          `/user/book-appointment/edit-address?addressId=${address.id}`,
                         )
                       }}
                     />
@@ -236,7 +236,7 @@ const SelectAddress = () => {
 
         <div className="border rounded-lg p-4 flex items-center justify-center">
           <button
-            onClick={() => router.push("/user/book-appointment/add-address")}
+            onClick={() => router.push("/user/book-appointment/edit-address")}
             className="rounded-full px-6 py-3 bg-secondary-1 text-white"
           >
             + Add
