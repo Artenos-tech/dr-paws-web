@@ -10,7 +10,11 @@ import toast from "react-hot-toast"
 import Modal from "react-modal"
 import { Address } from "@/model/typeDefinitions"
 
-const SelectAddress = () => {
+const SelectAddress = ({
+  handleConfirm,
+}: {
+  handleConfirm: (addressId: string) => void
+}) => {
   const router = useRouter()
 
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(
