@@ -24,6 +24,7 @@ const AddressPage = () => {
   const [isPinSelected, setIsPinSelected] = useState(false)
   const [locationDescription, setLocationDescription] = useState("")
   const [showUnserviceableModal, setShowUnserviceableModal] = useState(false)
+  const [pincode, setPincode] = useState<number | null>(null)
 
   const [addressDetails, setAddressDetails] = useState({
     tag: "",
@@ -52,9 +53,22 @@ const AddressPage = () => {
 
   const reverseGeocode = (latLng: google.maps.LatLngLiteral) => {
     const geocoder = new google.maps.Geocoder()
+
     geocoder.geocode({ location: latLng }, (results, status) => {
-      if (status === "OK" && results?.[0]) {
-        setLocationDescription(results[0].formatted_address)
+      if (status !== "OK" || !results?.[0]) return
+
+      const result = results[0]
+      setLocationDescription(result.formatted_address)
+
+      const postalComponent = result.address_components.find((component) =>
+        component.types.includes("postal_code"),
+      )
+
+      if (postalComponent?.long_name) {
+        setPincode(Number(postalComponent.long_name))
+      } else {
+        setPincode(null)
+        toast.error("Unable to detect pincode for this location")
       }
     })
   }
@@ -63,25 +77,35 @@ const AddressPage = () => {
     if (!isEditMode || !isLoaded) return
 
     const fetchAddress = async () => {
-      const res = await getAddress({ addressid: addressId! })
-      if (!res.ok) return
+      try {
+        const res = await getAddress({ addressid: addressId! })
+        if (!res.ok) {
+          toast.error("Failed to load address. Please retry.")
+          return
+        }
 
-      const address = res.value.body.data.address_book
+        const address = res.value.body.data.address_book
 
-      setAddressDetails({
-        tag: address.tag,
-        addressLine1: address.address_line1,
-        addressLine2: address.address_line2,
-        directions: address.directions || null,
-      })
+        setAddressDetails({
+          tag: address.tag,
+          addressLine1: address.address_line1,
+          addressLine2: address.address_line2,
+          directions: address.directions || null,
+        })
 
-      const newPin = {
-        lat: address.location.lat,
-        lng: address.location.long,
+        setPincode(address.pincode)
+
+        const newPin = {
+          lat: address.location.lat,
+          lng: address.location.long,
+        }
+
+        setPin(newPin)
+        reverseGeocode(newPin)
+      } catch (err) {
+        console.error(err)
+        toast.error("Something went wrong while fetching address")
       }
-
-      setPin(newPin)
-      reverseGeocode(newPin)
     }
 
     fetchAddress()
@@ -101,7 +125,7 @@ const AddressPage = () => {
   }
 
   const handleSubmit = async () => {
-    if (isPinSelected === false) {
+    if (!isPinSelected) {
       setIsPinSelected(true)
       return
     }
@@ -110,6 +134,11 @@ const AddressPage = () => {
 
     if (!tag || !addressLine1 || !addressLine2) {
       toast.error("Please fill all required fields")
+      return
+    }
+
+    if (!pincode) {
+      toast.error("Unable to determine pincode. Please retry.")
       return
     }
 
@@ -123,7 +152,7 @@ const AddressPage = () => {
         location: { lat: pin.lat, long: pin.lng },
         address_line1: addressLine1,
         address_line2: addressLine2,
-        pincode: 123456,
+        pincode,
         directions: addressDetails.directions,
       }
 
@@ -136,6 +165,12 @@ const AddressPage = () => {
         return
       }
 
+      toast.success(
+        isEditMode
+          ? "Address updated successfully"
+          : "Address saved successfully",
+      )
+
       if (!serviceRes.ok || !serviceRes.value.body.data.serviceable) {
         setShowUnserviceableModal(true)
         return
@@ -143,9 +178,11 @@ const AddressPage = () => {
 
       const newAddressId = res.value.body.data.address?.id || addressId
 
-      router.replace(
-        `/user/book-appointment?home=true&addressId=${newAddressId}`,
-      )
+      setTimeout(() => {
+        router.replace(
+          `/user/book-appointment?home=true&addressId=${newAddressId}`,
+        )
+      }, 800)
     } catch (err) {
       console.error(err)
       toast.error("Something went wrong. Please try again.")
