@@ -225,7 +225,10 @@ const AddressPage = () => {
       <ToastContainer position="top-right" />
 
       {showUnserviceableModal && (
-        <UnserviceableModal onClose={() => setShowUnserviceableModal(false)} />
+        <UnserviceableModal
+          isOpen={showUnserviceableModal}
+          onClose={() => setShowUnserviceableModal(false)}
+        />
       )}
     </main>
   )
