@@ -25,6 +25,7 @@ const AddressPage = () => {
   const [locationDescription, setLocationDescription] = useState("")
   const [showUnserviceableModal, setShowUnserviceableModal] = useState(false)
   const [pincode, setPincode] = useState<number | null>(null)
+  const [isFormValid, setIsFormValid] = useState(false)
 
   const [addressDetails, setAddressDetails] = useState({
     tag: "",
@@ -192,11 +193,6 @@ const AddressPage = () => {
   const isPageLoading = !isLoaded || (isEditMode && loadingGet)
   const isSubmitting = loadingAdd || loadingUpdate || loadingCheck
 
-  const isFormValid =
-    Boolean(addressDetails.tag) &&
-    Boolean(addressDetails.addressLine1) &&
-    Boolean(addressDetails.addressLine2)
-
   const shouldDisableButton = isSubmitting || (isPinSelected && !isFormValid)
 
   return (
@@ -239,6 +235,7 @@ const AddressPage = () => {
               <AddressForm
                 addressDetails={addressDetails}
                 setAddressDetails={setAddressDetails}
+                onValidityChange={setIsFormValid}
               />
             </div>
           )}
