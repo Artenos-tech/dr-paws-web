@@ -23,6 +23,7 @@ const SelectAddress = () => {
   const [checkingServiceability, setCheckingServiceability] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [addressToDelete, setAddressToDelete] = useState<string | null>(null)
+  const [showDeleteSuccess, setShowDeleteSuccess] = useState(false)
 
   const {
     call: getAddressBook,
@@ -139,7 +140,7 @@ const SelectAddress = () => {
     const result = await deleteAddress({ addressid: addressToDelete })
 
     if (result?.ok) {
-      getAddressBook({})
+      await getAddressBook({})
       if (selectedAddressId === addressToDelete) {
         setSelectedAddressId(null)
       }
@@ -167,33 +168,6 @@ const SelectAddress = () => {
 
   return (
     <div className="space-y-8 py-10">
-      {showDeleteModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-sm mx-4">
-            <h3 className="text-lg font-semibold mb-4">Confirm Delete</h3>
-            <p className="text-gray-600 mb-6">
-              Are you sure you want to delete this address?
-            </p>
-            <div className="flex justify-end space-x-3">
-              <button
-                onClick={handleCancelDelete}
-                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
-                disabled={deletingAddress}
-              >
-                No
-              </button>
-              <button
-                onClick={handleConfirmDelete}
-                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50"
-                disabled={deletingAddress}
-              >
-                {deletingAddress ? "Deleting..." : "Yes, Delete"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
       <h1 className="text-xl font-semibold">
         Let&apos;s check if your address is within range
       </h1>
@@ -278,10 +252,12 @@ const SelectAddress = () => {
         </div>
       )}
 
-      <div className="flex justify-center ">
+      <div className="flex justify-center">
         <button
-          disabled={!selectedAddressId}
-          className="rounded-full px-8 py-3  bg-secondary-1 text-white disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={
+            !selectedAddressId || !serviceableIds.has(selectedAddressId)
+          }
+          className="rounded-full px-8 py-3 bg-secondary-1 text-white disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Confirm Address
         </button>
