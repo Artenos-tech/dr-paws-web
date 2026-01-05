@@ -8,15 +8,7 @@ import { useAPICall } from "@/hooks/apicall"
 import { ClipLoader } from "react-spinners"
 import toast, { Toaster } from "react-hot-toast"
 import Modal from "react-modal"
-
-type Address = {
-  id: string
-  tag: string
-  location: { lat: number; long: number }
-  address_line1: string
-  address_line2: string
-  directions?: string | null
-}
+import { AddressApi } from "@/types/select-address"
 
 const SelectAddress = () => {
   const router = useRouter()
@@ -55,7 +47,7 @@ const SelectAddress = () => {
     getAddressBook({})
   }, [])
 
-  const addresses: Address[] =
+  const addresses: AddressApi[] =
     (addressBookResult?.ok && addressBookResult.value.body.data.address_book) ||
     []
 

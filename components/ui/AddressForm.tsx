@@ -1,3 +1,4 @@
+import { AddressFormValues } from "@/types/select-address"
 import React, { useEffect, useState } from "react"
 import { z } from "zod"
 
@@ -8,16 +9,9 @@ const addressSchema = z.object({
   directions: z.string().trim().optional().nullable(),
 })
 
-type AddressDetails = {
-  tag: string
-  addressLine1: string
-  addressLine2: string
-  directions: string | null
-}
-
 type AddressFormProps = {
-  addressDetails: AddressDetails
-  setAddressDetails: React.Dispatch<React.SetStateAction<AddressDetails>>
+  addressDetails: AddressFormValues
+  setAddressDetails: React.Dispatch<React.SetStateAction<AddressFormValues>>
   isSubmitting?: boolean
   onValidityChange: (isValid: boolean) => void
 }
@@ -54,7 +48,7 @@ const AddressForm = ({
   }, [addressDetails, onValidityChange])
 
   const handleChange =
-    (field: keyof AddressDetails) =>
+    (field: keyof AddressFormValues) =>
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       const value = e.target.value
 
