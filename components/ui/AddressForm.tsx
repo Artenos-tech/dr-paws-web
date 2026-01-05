@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react"
 import { z } from "zod"
 
 const addressSchema = z.object({
-  addressLine1: z.string().trim().min(1, "Address line 1 is required"),
-  addressLine2: z.string().trim().min(1, "Address line 2 is required"),
-  tag: z.string().trim().min(1, "Tag is required"),
+  addressLine1: z.string().trim().min(1, "This field is required"),
+  addressLine2: z.string().trim().min(1, "This field is required"),
+  tag: z.string().trim().min(1, "This field is required"),
   directions: z.string().trim().optional().nullable(),
 })
 
