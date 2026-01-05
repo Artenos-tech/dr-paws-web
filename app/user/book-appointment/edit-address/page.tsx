@@ -75,11 +75,15 @@ const AddressPage = () => {
   }
 
   useEffect(() => {
-    if (!isEditMode || !isLoaded) return
+    if (!isEditMode || !addressId) return
 
     const fetchAddress = async () => {
       try {
-        const res = await getAddress({ addressid: addressId! })
+        console.log(addressId, "address id is ")
+
+        const res = await getAddress({ addressid: addressId })
+        console.log(res, "res is ")
+
         if (!res.ok) {
           toast.error("Failed to load address. Please retry.")
           return
@@ -110,7 +114,7 @@ const AddressPage = () => {
     }
 
     fetchAddress()
-  }, [isEditMode, isLoaded])
+  }, [isEditMode, addressId])
 
   useEffect(() => {
     if (isLoaded && !isEditMode) {
