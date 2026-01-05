@@ -63,12 +63,19 @@ const SelectAddress = () => {
 
     const runChecks = async () => {
       const next = new Set<string>()
-      for (const address of addresses) {
-        const result = await checkServiceability({ location: address.location })
-        if (result?.ok && result.value.body.data.serviceable) {
-          next.add(address.id)
-        }
-      }
+
+      await Promise.all(
+        addresses.map(async (address) => {
+          const result = await mockAtHomeClient.checkLocationServiceability({
+            location: address.location,
+          })
+
+          if (result?.ok && result.value.body.data.serviceable) {
+            next.add(address.id)
+          }
+        }),
+      )
+
       setServiceableIds(next)
     }
 
