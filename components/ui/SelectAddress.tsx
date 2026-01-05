@@ -34,8 +34,9 @@ const SelectAddress = () => {
     result: addressBookResult,
   } = useAPICall(mockAtHomeClient.getAddressBook)
 
-  const { call: checkServiceability, loading: serviceabilityLoading } =
-    useAPICall(mockAtHomeClient.checkLocationServiceability)
+  const { loading: serviceabilityLoading } = useAPICall(
+    mockAtHomeClient.checkLocationServiceability,
+  )
 
   const { call: deleteAddress, loading: deletingAddress } = useAPICall(
     mockAtHomeClient.deleteAddress,
