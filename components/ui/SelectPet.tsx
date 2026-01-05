@@ -6,7 +6,7 @@ import { useAPICall } from "@/hooks/apicall"
 import { mockAtHomeClient } from "@/services/api.athome"
 import PetSelectItem from "./PetSelectionItem"
 import AddPetModal from "./AddPetModal"
-import toast, { Toaster } from "react-hot-toast"
+import toast from "react-hot-toast"
 import { BookingPet } from "@/model/typeDefinitions"
 
 interface SelectPetProps {
@@ -16,7 +16,7 @@ interface SelectPetProps {
 }
 
 const SelectPet: React.FC<SelectPetProps> = ({ handleConfirm }) => {
-  const { call, loading, result } = useAPICall(mockAtHomeClient.getBookingPets)
+  const { call, loading } = useAPICall(mockAtHomeClient.getBookingPets)
 
   const [selectedPetId, setSelectedPetId] = useState<string | null>(null)
   const [pets, setPets] = useState<BookingPet[]>([])
