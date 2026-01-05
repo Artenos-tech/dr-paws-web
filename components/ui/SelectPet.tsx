@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react"
 import { ClipLoader } from "react-spinners"
 import { useAPICall } from "@/hooks/apicall"
 import { mockAtHomeClient } from "@/services/api.athome"
+import PetSelectItem from "./PetSelectionItem"
 
 const SelectPet = ({
   handleConfirm,
@@ -34,61 +35,31 @@ const SelectPet = ({
           <ClipLoader color="#33495f" size={24} />
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {pets.map((pet: any) => {
-            const isSelected = selectedPetId === pet.id
-            const isServiceable = pet.serviceable
-
-            return (
-              <div
-                key={pet.id}
-                onClick={() => handleSelect(pet.id, isServiceable)}
-                className={`border-2 rounded-lg p-4 transition
-                  ${
-                    isServiceable
-                      ? "cursor-pointer"
-                      : "cursor-not-allowed opacity-50"
-                  }
-                  ${isSelected ? "border-secondary-1" : "border-gray-300"}
-                `}
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    {pet.profile_image ? (
-                      <img
-                        src={pet.profile_image}
-                        alt={pet.name}
-                        className="w-12 h-12 rounded-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-sm">
-                        N/A
-                      </div>
-                    )}
-
-                    <div>
-                      <h2
-                        className={`font-semibold ${
-                          isServiceable ? "primary-text" : "text-gray-400"
-                        }`}
-                      >
-                        {pet.name}
-                      </h2>
-                      <p className="text-sm text-gray-500">{pet.type}</p>
-                    </div>
-                  </div>
-
-                  <span
-                    className={`text-xs px-3 py-1 rounded-full text-white ${
-                      isServiceable ? "bg-green-600" : "bg-red-500"
-                    }`}
-                  >
-                    {isServiceable ? "Serviceable" : "Unserviceable"}
-                  </span>
-                </div>
-              </div>
-            )
-          })}
+        <div
+          className="
+    grid
+    grid-cols-2      
+    md:grid-cols-4   
+    lg:grid-cols-8    
+    gap-2
+    justify-items-center
+  "
+        >
+          {pets.map((pet) => (
+            <PetSelectItem
+              key={pet.id}
+              pet={pet}
+              isSelected={selectedPetId === pet.id}
+              isServiceable={pet.serviceable}
+              onSelect={() => setSelectedPetId(pet.id)}
+            />
+          ))}
+          <div className="flex flex-col items-center justify-center gap-3">
+            <div className="flex flex-col items-center rounded-full justify-center cursor-pointer border border-dashed border-gray-400 w-[100px] h-[100px] text-gray-500">
+              <span className="text-2xl font-bold">+</span>
+            </div>
+            <div className="text-sm">Add Pet</div>
+          </div>
         </div>
       )}
 
