@@ -9,7 +9,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md"
 import { ClipLoader } from "react-spinners"
-import { toast, ToastContainer } from "react-toastify"
+import toast, { Toaster } from "react-hot-toast"
 
 const DEFAULT_PIN = { lat: 12.97, lng: 77.59 }
 
@@ -197,6 +197,8 @@ const AddressPage = () => {
 
   return (
     <main className="flex flex-col items-center w-full my-4 px-8 md:px-32 lg:px-20 xl:px-40">
+      <Toaster position="top-right" />
+
       <button
         type="button"
         onClick={() => router.replace("/user/book-appointment?home=true")}
@@ -255,8 +257,6 @@ const AddressPage = () => {
           </button>
         </>
       )}
-
-      <ToastContainer position="top-right" />
 
       {showUnserviceableModal && (
         <UnserviceableModal
