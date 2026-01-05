@@ -20,11 +20,6 @@ const SelectPet = ({
 
   console.log("Pets:", pets)
 
-  const handleSelect = (petId: string, serviceable: boolean) => {
-    if (!serviceable) return
-    setSelectedPetId(petId)
-  }
-
   return (
     <div className="space-y-8 py-10">
       <h1 className="text-xl font-semibold">Select your pet</h1>
