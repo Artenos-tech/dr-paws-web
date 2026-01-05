@@ -16,7 +16,6 @@ const PetSelectItem = ({
   isServiceable = true,
   onSelect,
 }: PetSelectItemProps) => {
-  
   const petImage =
     //TODO comment to uncomment
     // pet.profile_image ||
