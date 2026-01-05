@@ -10,7 +10,7 @@ import { useEffect, useState } from "react"
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md"
 import { ClipLoader } from "react-spinners"
 import toast, { Toaster } from "react-hot-toast"
-import { AddressFormValues } from "@/types/select-address"
+import { AddressFormValues } from "@/model/typeDefinitions"
 
 const DEFAULT_PIN = { lat: 12.97, lng: 77.59 }
 

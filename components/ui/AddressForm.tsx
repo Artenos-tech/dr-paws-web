@@ -1,4 +1,4 @@
-import { AddressFormValues } from "@/types/select-address"
+import { AddressFormValues } from "@/model/typeDefinitions"
 import React, { useEffect, useState } from "react"
 import { z } from "zod"
 

@@ -8,7 +8,7 @@ import { useAPICall } from "@/hooks/apicall"
 import { ClipLoader } from "react-spinners"
 import toast, { Toaster } from "react-hot-toast"
 import Modal from "react-modal"
-import { AddressApi } from "@/types/select-address"
+import { AddressApi } from "@/model/typeDefinitions"
 
 const SelectAddress = () => {
   const router = useRouter()
