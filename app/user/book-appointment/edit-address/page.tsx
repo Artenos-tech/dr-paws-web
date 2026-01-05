@@ -10,6 +10,7 @@ import { useEffect, useState } from "react"
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md"
 import { ClipLoader } from "react-spinners"
 import toast, { Toaster } from "react-hot-toast"
+import { AddressFormValues } from "@/types/select-address"
 
 const DEFAULT_PIN = { lat: 12.97, lng: 77.59 }
 
@@ -27,11 +28,11 @@ const AddressPage = () => {
   const [pincode, setPincode] = useState<number | null>(null)
   const [isFormValid, setIsFormValid] = useState(false)
 
-  const [addressDetails, setAddressDetails] = useState({
+  const [addressDetails, setAddressDetails] = useState<AddressFormValues>({
     tag: "",
     addressLine1: "",
     addressLine2: "",
-    directions: null as string | null,
+    directions: null,
   })
 
   const { isLoaded } = useJsApiLoader({
