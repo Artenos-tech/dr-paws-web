@@ -221,7 +221,7 @@ const AddressPage = () => {
         <>
           <GoogleMap
             center={pin}
-            zoom={12}
+            zoom={15}
             mapContainerStyle={{ width: "100%", height: "400px" }}
             onClick={setLocation}
           >
