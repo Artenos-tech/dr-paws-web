@@ -2,6 +2,7 @@
 
 import { PhoneCall } from "lucide-react"
 import React, { useEffect, useState } from "react"
+import toast, { Toaster } from "react-hot-toast"
 import { z } from "zod"
 
 interface ReasonForVisitProps {
@@ -24,6 +25,7 @@ const reasonForVisitSchema = z.object({
   ),
   filledDescription: z.string().trim().min(1, "Description is required"),
 })
+const PHONE_NUMBER = "+1234567890"
 
 const ReasonForVisit = ({
   handleConfirm,
@@ -67,7 +69,7 @@ const ReasonForVisit = ({
             <h1 className="text-2xl mb-2">
               Please visit our clinics for emergencies
             </h1>
-            <p className="text-gray-600 mb-12">
+            <p className="text-gray-600 mb-4">
               If your pet needs immediate attention, please visit one of our
               clinics where we can provide immediate care.
             </p>
@@ -84,7 +86,16 @@ const ReasonForVisit = ({
               </button>
 
               <button className="px-4 py-2 bg-red-600 text-white rounded-lg">
-                <div className="flex items-center space-x-2">
+                <div
+                  className="flex items-center space-x-2"
+                  onClick={() => {
+                    navigator.clipboard.writeText(PHONE_NUMBER)
+
+                    toast.success("Phone number copied to clipboard", {
+                      duration: 3000,
+                    })
+                  }}
+                >
                   <PhoneCall />
                   <span>Call Us</span>
                 </div>
@@ -93,7 +104,7 @@ const ReasonForVisit = ({
           </div>
         </div>
       )}
-
+      <Toaster position="top-center" />
       <div>
         <h1 className="text-2xl mb-2">
           Tell us a bit about what your pet needs
