@@ -60,7 +60,7 @@ const AddressForm = ({
 
       setAddressDetails((prev) => ({
         ...prev,
-        [field]: field === "directions" ? (value.trim() || null) : value,
+        [field]: field === "directions" ? value.trim() || null : value,
       }))
     }
 
@@ -70,7 +70,8 @@ const AddressForm = ({
     if (field !== "directions") {
       setAddressDetails((prev) => ({
         ...prev,
-        [field]: typeof prev[field] === "string" ? prev[field].trim() : prev[field],
+        [field]:
+          typeof prev[field] === "string" ? prev[field].trim() : prev[field],
       }))
     }
   }
