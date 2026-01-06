@@ -182,7 +182,7 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
       <h1 className="text-xl font-semibold">
         Let&apos;s check if your address is within range
       </h1>
-      <p className="text-gray-600">Add or select your address</p>
+      <p className="text-gray-600 mb-12">Add or select your address</p>
 
       {addresses.length === 0 ? (
         <div className="text-center py-12">

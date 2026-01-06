@@ -64,9 +64,9 @@ const SelectPet: React.FC<SelectPetProps> = ({ handleConfirm, petId }) => {
   }
 
   return (
-    <div className="space-y-8 py-10">
-      <h1 className="text-xl font-semibold">Select your pet</h1>
-      <p className="text-gray-600">Choose a pet for this booking</p>
+    <div className="w-full h-full mt-4">
+      <h1 className="text-2xl mb-2">Select your pet</h1>
+      <p className="text-gray-600 mb-12">Choose a pet for this booking</p>
 
       {loadingPets ? (
         <div className="flex justify-center">

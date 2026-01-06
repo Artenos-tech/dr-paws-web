@@ -55,14 +55,14 @@ const ReasonForVisit = ({
   }
 
   return (
-    <div className="space-y-8 py-10">
+    <div className="w-full h-full mt-4">
       {showEmergencyModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 max-w-sm mx-4">
-            <h3 className="text-lg font-semibold mb-2">
+            <h1 className="text-2xl mb-2">
               Please visit our clinics for emergencies
-            </h3>
-            <p className="text-gray-600 mb-6">
+            </h1>
+            <p className="text-gray-600 mb-12">
               If your pet needs immediate attention, please visit one of our
               clinics where we can provide immediate care.
             </p>
@@ -90,16 +90,16 @@ const ReasonForVisit = ({
       )}
 
       <div>
-        <h1 className="text-xl font-semibold">
+        <h1 className="text-2xl mb-2">
           Tell us a bit about what your pet needs
         </h1>
-        <p className="text-gray-600">
+        <p className="text-gray-600 mb-12">
           This helps us prepare better for your visit
         </p>
       </div>
 
-      <div className="space-y-2">
-        <p className="font-bold">Is it an emergency?</p>
+      <div className="space-y-2 mb-6">
+        <p className="font-bold text-gray-600">Is it an emergency?</p>
         <div className="flex space-x-6">
           {["yes", "no"].map((val) => (
             <label key={val} className="flex items-center space-x-2">
@@ -114,8 +114,8 @@ const ReasonForVisit = ({
         </div>
       </div>
 
-      <div className="space-y-4">
-        <p className="font-bold">What seems to be wrong?</p>
+      <div className="space-y-4 mb-6">
+        <p className="font-bold text-gray-600">What seems to be wrong?</p>
 
         {VISIT_REASONS.map((item) => (
           <label key={item.key} className="flex items-center space-x-2">
@@ -128,7 +128,7 @@ const ReasonForVisit = ({
           </label>
         ))}
 
-        <div className="space-y-2">
+        <div className="space-y-4 mt-4">
           <p className="text-sm font-bold text-gray-600">
             Please describe the problem in as much detail as possible. It will
             help us prepare for the visit and make sure we bring everything we
@@ -145,7 +145,7 @@ const ReasonForVisit = ({
         </div>
       </div>
 
-      <div className="flex justify-center">
+      <div className="flex justify-center my-10">
         <button
           disabled={!isValid}
           onClick={() =>
