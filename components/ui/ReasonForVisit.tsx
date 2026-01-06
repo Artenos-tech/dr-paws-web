@@ -25,7 +25,8 @@ const reasonForVisitSchema = z.object({
   ),
   filledDescription: z.string().trim().min(1, "Description is required"),
 })
-const PHONE_NUMBER = "+1234567890"
+const PHONE_NUMBER =
+  process.env.NEXT_PUBLIC_EMERGENCY_HELPLINE_PHONE_NUMBER || ""
 
 const ReasonForVisit = ({
   handleConfirm,
@@ -91,9 +92,12 @@ const ReasonForVisit = ({
                   onClick={() => {
                     navigator.clipboard.writeText(PHONE_NUMBER)
 
-                    toast.success("Phone number copied to clipboard", {
-                      duration: 3000,
-                    })
+                    toast.success(
+                      `Phone number ${PHONE_NUMBER} copied to clipboard`,
+                      {
+                        duration: 3000,
+                      },
+                    )
                   }}
                 >
                   <PhoneCall />
