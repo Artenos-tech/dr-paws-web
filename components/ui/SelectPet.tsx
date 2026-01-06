@@ -59,7 +59,6 @@ const SelectPet: React.FC<SelectPetProps> = ({ handleConfirm, petId }) => {
     toast.success("Added pet successfully", {
       duration: 3000,
       position: "bottom-right",
-      style: { backgroundColor: "#4CAF50", color: "#fff", fontWeight: 700 },
     })
   }
 
