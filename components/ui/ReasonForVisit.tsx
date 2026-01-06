@@ -145,7 +145,7 @@ const ReasonForVisit = ({
         </div>
       </div>
 
-      <div className="flex justify-center mb-16 ">
+      <div className="flex justify-center mb-10 mt-6 ">
         <button
           disabled={!isValid}
           onClick={() =>

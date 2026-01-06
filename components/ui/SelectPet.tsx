@@ -96,7 +96,7 @@ const SelectPet: React.FC<SelectPetProps> = ({ handleConfirm, petId }) => {
         </div>
       )}
 
-      <div className="flex justify-center my-10">
+      <div className="flex justify-center mb-10 mt-6">
         <button
           disabled={!selectedPetId}
           onClick={() => selectedPetId && handleConfirm(selectedPetId)}

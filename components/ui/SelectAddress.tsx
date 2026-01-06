@@ -265,7 +265,7 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
         </div>
       )}
 
-      <div className="flex justify-center mt-8">
+      <div className="flex justify-center mb-10 mt-6">
         <button
           disabled={
             !selectedAddressId || !serviceableIds.has(selectedAddressId)
