@@ -38,6 +38,29 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
     setCurrentStep(3)
   }
 
+  const handleReasonForVisitConfirm = (
+    reasonForVisit: string,
+    description: string,
+  ) => {
+    setAtHomeAppointmentData((prev) => ({
+      ...prev,
+      reasonForVisit,
+      description,
+    }))
+    setCurrentStep(4)
+  }
+
+  const handleDateTimeConfirm = (
+    date: string,
+    slot: { startTime: string; endTime: string },
+  ) => {
+    setAtHomeAppointmentData((prev) => ({
+      ...prev,
+      date,
+      slot,
+    }))
+  }
+
   const handleBack = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1)
@@ -73,7 +96,7 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
         <ReasonForVisit
           reason={atHomeAppointmentData.reasonForVisit}
           description={atHomeAppointmentData.description}
-          handleConfirm={handleReasonConfirm}
+          handleConfirm={handleReasonForVisitConfirm}
         />
       )}
       {currentStep === 4 && (

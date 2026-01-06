@@ -16,7 +16,6 @@ interface SelectAddressProps {
 }
 
 const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
-
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(
     addressId || null,
   )
@@ -38,7 +37,6 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
     mockAtHomeClient.deleteAddress,
   )
   const router = useRouter()
-  const params = useSearchParams()
 
   const searchParams = useSearchParams()
   const initialAddressId = searchParams.get("addressId")
@@ -267,9 +265,7 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
 
       <div className="flex justify-center mb-10 mt-6">
         <button
-          disabled={
-            !selectedAddressId || !serviceableIds.has(selectedAddressId)
-          }
+          disabled={isDisabled}
           className="rounded-full px-8 py-3 bg-secondary-1 text-white disabled:opacity-50 disabled:cursor-not-allowed"
           onClick={() => handleConfirm(selectedAddressId!)}
         >
