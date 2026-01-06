@@ -182,9 +182,9 @@ const AddressPage = () => {
       const newAddressId = res.value.body.data.address?.id || addressId
 
       // setTimeout(() => {
-        router.replace(
-          `/user/book-appointment?home=true&addressId=${newAddressId}`,
-        )
+      router.replace(
+        `/user/book-appointment?home=true&addressId=${newAddressId}`,
+      )
       // }, 800)
     } catch (err) {
       console.error(err)
