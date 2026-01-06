@@ -9,6 +9,7 @@ export type BookingType = {
   title: string
   description: string
   displayOrder: number
+  type: "AT_HOME_VISIT" | "CLINIC_VISIT"
 }
 
 interface BookingTypeSelectionProps {
