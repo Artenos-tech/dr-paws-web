@@ -30,7 +30,7 @@ const ReasonForVisit = ({
   reason,
   description,
 }: ReasonForVisitProps) => {
-  const [isEmergency, setIsEmergency] = useState<"yes" | "no" | null>(null)
+  const [isEmergency, setIsEmergency] = useState<"yes" | "no" | null>("no")
   const [showEmergencyModal, setShowEmergencyModal] = useState(false)
   const [selectedReason, setSelectedReason] = useState<string | null>(
     reason || null,
@@ -51,7 +51,12 @@ const ReasonForVisit = ({
 
   const handleEmergencyChange = (value: "yes" | "no") => {
     setIsEmergency(value)
-    if (value === "yes") setShowEmergencyModal(true)
+    if (value === "yes") {
+      setSelectedReason("")
+      setFilledDescription("")
+
+      setShowEmergencyModal(true)
+    }
   }
 
   return (
@@ -152,7 +157,7 @@ const ReasonForVisit = ({
             selectedReason && handleConfirm(selectedReason, filledDescription)
           }
           className={`font-open-sans btn rounded-full text-white px-4 md:px-10 py-2 tracking-wider text-xs md:text-base bg-secondary-1 ${
-            isValid ? "opacity-50 cursor-not-allowed" : ""
+            !isValid ? "opacity-50 cursor-not-allowed" : ""
           }`}
         >
           Proceed
