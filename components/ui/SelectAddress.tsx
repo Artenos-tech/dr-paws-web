@@ -2,13 +2,13 @@
 
 import { mockAtHomeClient } from "@/services/api.athome"
 import { useRouter, useSearchParams } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo } from "react"
 import { FaPen, FaTrash } from "react-icons/fa6"
 import { useAPICall } from "@/hooks/apicall"
 import { ClipLoader } from "react-spinners"
-import toast, { Toaster } from "react-hot-toast"
+import toast from "react-hot-toast"
 import Modal from "react-modal"
-import { AddressApi } from "@/model/typeDefinitions"
+import { Address } from "@/model/typeDefinitions"
 
 const SelectAddress = () => {
   const router = useRouter()
@@ -17,6 +17,10 @@ const SelectAddress = () => {
     null,
   )
   const [serviceableIds, setServiceableIds] = useState<Set<string>>(new Set())
+  const [checkedAddressIds, setCheckedAddressIds] = useState<Set<string>>(
+    new Set(),
+  )
+  const [checkingServiceability, setCheckingServiceability] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [addressToDelete, setAddressToDelete] = useState<string | null>(null)
 
@@ -26,16 +30,24 @@ const SelectAddress = () => {
     result: addressBookResult,
   } = useAPICall(mockAtHomeClient.getAddressBook)
 
-  const { loading: serviceabilityLoading } = useAPICall(
-    mockAtHomeClient.checkLocationServiceability,
-  )
-
   const { call: deleteAddress, loading: deletingAddress } = useAPICall(
     mockAtHomeClient.deleteAddress,
   )
 
   const searchParams = useSearchParams()
   const initialAddressId = searchParams.get("addressId")
+
+  const addresses: Address[] =
+    (addressBookResult?.ok && addressBookResult.value.body.data.address_book) ||
+    []
+
+  const uncheckedAddresses = useMemo(() => {
+    return addresses.filter((addr) => !checkedAddressIds.has(addr.id))
+  }, [addresses, checkedAddressIds])
+
+  useEffect(() => {
+    getAddressBook({})
+  }, [])
 
   useEffect(() => {
     if (initialAddressId) {
@@ -44,36 +56,62 @@ const SelectAddress = () => {
   }, [initialAddressId])
 
   useEffect(() => {
-    getAddressBook({})
-  }, [])
+    if (uncheckedAddresses.length === 0) return
 
-  const addresses: AddressApi[] =
-    (addressBookResult?.ok && addressBookResult.value.body.data.address_book) ||
-    []
-
-  useEffect(() => {
-    if (addresses.length === 0) return
+    const abortController = new AbortController()
+    let isActive = true
 
     const runChecks = async () => {
-      const next = new Set<string>()
+      setCheckingServiceability(true)
 
-      await Promise.all(
-        addresses.map(async (address) => {
-          const result = await mockAtHomeClient.checkLocationServiceability({
-            location: address.location,
-          })
+      try {
+        await Promise.all(
+          uncheckedAddresses.map(async (address) => {
+            if (!isActive || abortController.signal.aborted) return
 
-          if (result?.ok && result.value.body.data.serviceable) {
-            next.add(address.id)
-          }
-        }),
-      )
+            try {
+              const result = await mockAtHomeClient.checkLocationServiceability(
+                { location: address.location },
+                { abortSignal: abortController.signal },
+              )
 
-      setServiceableIds(next)
+              if (!isActive || abortController.signal.aborted) return
+
+              if (result?.ok) {
+                setCheckedAddressIds((prev) => new Set(prev).add(address.id))
+
+                if (result.value.body.data.serviceable) {
+                  setServiceableIds((prev) => new Set(prev).add(address.id))
+                }
+              }
+            } catch (error: any) {
+              if (error?.name !== "AbortError") {
+                console.error(
+                  `Failed to check serviceability for address ${address.id}:`,
+                  error,
+                )
+              }
+            }
+          }),
+        )
+      } catch (error: any) {
+        if (error?.name !== "AbortError") {
+          console.error("Serviceability check error:", error)
+        }
+      }
+
+      if (isActive && !abortController.signal.aborted) {
+        setCheckingServiceability(false)
+      }
     }
 
     runChecks()
-  }, [addresses])
+
+    return () => {
+      isActive = false
+      abortController.abort()
+    }
+  }, [uncheckedAddresses])
 
   const handleSelect = (addressId: string) => {
     setSelectedAddressId(addressId)
@@ -91,7 +129,7 @@ const SelectAddress = () => {
     const result = await deleteAddress({ addressid: addressToDelete })
 
     if (result?.ok) {
-      await getAddressBook({})
+      getAddressBook({})
       if (selectedAddressId === addressToDelete) {
         setSelectedAddressId(null)
       }
@@ -119,75 +157,89 @@ const SelectAddress = () => {
 
   return (
     <div className="space-y-8 py-10">
-      <Toaster position="top-right" />
-
       <h1 className="text-xl font-semibold">
-        {"Let's check if your address is within range"}
+        Let's check if your address is within range
       </h1>
       <p className="text-gray-600">Add or select your address</p>
 
-      <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-4 overflow-x-auto">
-        {addresses.map((address) => {
-          const isServiceable = serviceableIds.has(address.id)
-          const isSelected = selectedAddressId === address.id
-
-          return (
-            <div
-              key={address.id}
-              onClick={() => handleSelect(address.id)}
-              className={`border-2 rounded-lg p-4 transition cursor-pointer ${
-                isSelected ? "border-secondary-1" : "border-gray-300"
-              }`}
-            >
-              <div className="flex justify-between items-start">
-                <h2 className="font-semibold primary-text">{address.tag}</h2>
-
-                <div className="flex items-center gap-2">
-                  <FaPen
-                    className="cursor-pointer"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      router.push(
-                        `/user/book-appointment/edit-address?addressId=${address.id}`,
-                      )
-                    }}
-                  />
-                  <FaTrash
-                    className="cursor-pointer"
-                    onClick={(e) => handleDeleteClick(address.id, e)}
-                  />
-
-                  {serviceabilityLoading ? (
-                    <ClipLoader size={12} color="#33495f" />
-                  ) : (
-                    <span
-                      className={`text-xs px-3 py-1 rounded-full text-white ${
-                        isServiceable ? "bg-green-600" : "bg-red-500"
-                      }`}
-                    >
-                      {isServiceable ? "Serviceable" : "Unserviceable"}
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              <p className="mt-2 text-sm text-gray-500">
-                {address.address_line1}
-              </p>
-            </div>
-          )
-        })}
-
-        <div className="rounded-lg p-4 flex flex-col items-center justify-center">
-          <div
+      {addresses.length === 0 ? (
+        <div className="text-center py-12">
+          <p className="text-gray-500 mb-4">
+            No addresses yet. Add one to get started.
+          </p>
+          <button
             onClick={() => router.push(`/user/book-appointment/edit-address`)}
-            className="w-12 h-12 flex items-center justify-center rounded-full border-2 border-dashed cursor-pointer"
+            className="rounded-full px-8 py-3 bg-secondary-1 text-white hover:bg-secondary-2 transition"
           >
-            <span className="text-2xl font-semibold">+</span>
-          </div>
-          <span className="font-medium mt-1">Add</span>
+            Add Address
+          </button>
         </div>
-      </div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 overflow-x-auto">
+          {addresses.map((address) => {
+            const isServiceable = serviceableIds.has(address.id)
+            const isSelected = selectedAddressId === address.id
+            const isChecking =
+              checkingServiceability && !checkedAddressIds.has(address.id)
+
+            return (
+              <div
+                key={address.id}
+                onClick={() => handleSelect(address.id)}
+                className={`border-2 rounded-lg p-4 transition cursor-pointer ${
+                  isSelected ? "border-secondary-1" : "border-gray-300"
+                }`}
+              >
+                <div className="flex justify-between items-start">
+                  <h2 className="font-semibold primary-text">{address.tag}</h2>
+
+                  <div className="flex items-center gap-2">
+                    <FaPen
+                      className="cursor-pointer"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        router.push(
+                          `/user/book-appointment/edit-address?addressId=${address.id}`,
+                        )
+                      }}
+                    />
+                    <FaTrash
+                      className="cursor-pointer"
+                      onClick={(e) => handleDeleteClick(address.id, e)}
+                    />
+
+                    {isChecking ? (
+                      <ClipLoader size={12} color="#33495f" />
+                    ) : (
+                      <span
+                        className={`text-xs px-3 py-1 rounded-full text-white ${
+                          isServiceable ? "bg-green-600" : "bg-red-500"
+                        }`}
+                      >
+                        {isServiceable ? "Serviceable" : "Unserviceable"}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <p className="mt-2 text-sm text-gray-500">
+                  {address.address_line1}
+                </p>
+              </div>
+            )
+          })}
+
+          <div className="rounded-lg p-4 flex flex-col items-center justify-center">
+            <div
+              onClick={() => router.push(`/user/book-appointment/edit-address`)}
+              className="w-12 h-12 flex items-center justify-center rounded-full border-2 border-dashed cursor-pointer"
+            >
+              <span className="text-2xl font-semibold">+</span>
+            </div>
+            <span className="font-medium mt-1">Add</span>
+          </div>
+        </div>
+      )}
 
       <div className="flex justify-center">
         <button
@@ -216,7 +268,7 @@ const SelectAddress = () => {
           <button
             onClick={handleCancelDelete}
             disabled={deletingAddress}
-            className="px-4 py-2 rounded-lg border"
+            className="px-4 py-2 rounded-lg border disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Cancel
           </button>
@@ -224,8 +276,9 @@ const SelectAddress = () => {
           <button
             onClick={handleConfirmDelete}
             disabled={deletingAddress}
-            className="px-4 py-2 rounded-lg bg-red-600 text-white"
+            className="px-4 py-2 rounded-lg bg-red-600 text-white disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2"
           >
+            {deletingAddress && <ClipLoader size={14} color="#ffffff" />}
             {deletingAddress ? "Deleting..." : "Delete"}
           </button>
         </div>

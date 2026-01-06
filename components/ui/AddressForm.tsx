@@ -1,5 +1,5 @@
 import { AddressFormValues } from "@/model/typeDefinitions"
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { z } from "zod"
 
 const addressSchema = z.object({
@@ -17,7 +17,7 @@ type AddressFormProps = {
 }
 
 const inputBaseClasses =
-  "w-full border-2 border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-secondary-1 disabled:bg-gray-100 disabled:cursor-not-allowed"
+  "w-full border-2 rounded-lg px-4 py-2 focus:outline-none focus:border-secondary-1 disabled:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-60 transition-all"
 
 const labelClasses = "text-sm font-medium text-gray-700"
 
@@ -28,13 +28,19 @@ const AddressForm = ({
   onValidityChange,
 }: AddressFormProps) => {
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [touched, setTouched] = useState<Record<string, boolean>>({})
+  const onValidityChangeRef = useRef(onValidityChange)
+
+  useEffect(() => {
+    onValidityChangeRef.current = onValidityChange
+  }, [onValidityChange])
 
   useEffect(() => {
     const result = addressSchema.safeParse(addressDetails)
 
     if (result.success) {
       setErrors({})
-      onValidityChange(true)
+      onValidityChangeRef.current(true)
     } else {
       const fieldErrors: Record<string, string> = {}
       result.error.errors.forEach((err) => {
@@ -43,9 +49,9 @@ const AddressForm = ({
         }
       })
       setErrors(fieldErrors)
-      onValidityChange(false)
+      onValidityChangeRef.current(false)
     }
-  }, [addressDetails, onValidityChange])
+  }, [addressDetails])
 
   const handleChange =
     (field: keyof AddressFormValues) =>
@@ -54,26 +60,54 @@ const AddressForm = ({
 
       setAddressDetails((prev) => ({
         ...prev,
-        [field]:
-          field === "directions" ? (value.trim() === "" ? null : value) : value,
+        [field]: field === "directions" ? (value.trim() || null) : value,
       }))
     }
 
+  const handleBlur = (field: keyof AddressFormValues) => () => {
+    setTouched((prev) => ({ ...prev, [field]: true }))
+
+    if (field !== "directions") {
+      setAddressDetails((prev) => ({
+        ...prev,
+        [field]: typeof prev[field] === "string" ? prev[field].trim() : prev[field],
+      }))
+    }
+  }
+
+  const getInputClasses = (field: keyof AddressFormValues) => {
+    const hasError = touched[field] && errors[field]
+    return `${inputBaseClasses} ${
+      hasError
+        ? "border-red-500"
+        : isSubmitting
+          ? "border-gray-300"
+          : "border-gray-300"
+    }`
+  }
+
   return (
-    <form className="mt-6 w-full flex flex-col gap-4">
+    <div className="mt-6 w-full flex flex-col gap-4">
       <div>
         <label htmlFor="addressLine1" className={labelClasses}>
           Address line 1 <span className="text-red-500">*</span>
         </label>
         <input
           id="addressLine1"
-          value={addressDetails.addressLine1}
-          onChange={handleChange("addressLine1")}
-          className={inputBaseClasses}
+          type="text"
+          value={addressDetails.address_line1}
+          onChange={handleChange("address_line1")}
+          onBlur={handleBlur("address_line1")}
+          className={getInputClasses("address_line1")}
           disabled={isSubmitting}
+          maxLength={200}
+          placeholder="123 Main Street"
+          autoComplete="address-line1"
         />
-        {errors.addressLine1 && (
-          <p className="text-sm text-red-500 mt-1">{errors.addressLine1}</p>
+        {touched.addressLine1 && errors.addressLine1 && (
+          <p className="text-sm text-red-600 mt-1 font-medium">
+            {errors.addressLine1}
+          </p>
         )}
       </div>
 
@@ -83,13 +117,20 @@ const AddressForm = ({
         </label>
         <input
           id="addressLine2"
-          value={addressDetails.addressLine2}
-          onChange={handleChange("addressLine2")}
-          className={inputBaseClasses}
+          type="text"
+          value={addressDetails.address_line2}
+          onChange={handleChange("address_line2")}
+          onBlur={handleBlur("address_line2")}
+          className={getInputClasses("address_line2")}
           disabled={isSubmitting}
+          maxLength={200}
+          placeholder="Apartment, suite, floor, etc."
+          autoComplete="address-line2"
         />
-        {errors.addressLine2 && (
-          <p className="text-sm text-red-500 mt-1">{errors.addressLine2}</p>
+        {touched.addressLine2 && errors.addressLine2 && (
+          <p className="text-sm text-red-600 mt-1 font-medium">
+            {errors.addressLine2}
+          </p>
         )}
       </div>
 
@@ -99,13 +140,18 @@ const AddressForm = ({
         </label>
         <input
           id="tag"
+          type="text"
           value={addressDetails.tag}
           onChange={handleChange("tag")}
-          className={inputBaseClasses}
+          onBlur={handleBlur("tag")}
+          className={getInputClasses("tag")}
           disabled={isSubmitting}
+          maxLength={50}
+          placeholder="e.g., Home, Office, Apartment"
+          autoComplete="off"
         />
-        {errors.tag && (
-          <p className="text-sm text-red-500 mt-1">{errors.tag}</p>
+        {touched.tag && errors.tag && (
+          <p className="text-sm text-red-600 mt-1 font-medium">{errors.tag}</p>
         )}
       </div>
 
@@ -118,11 +164,14 @@ const AddressForm = ({
           rows={3}
           value={addressDetails.directions ?? ""}
           onChange={handleChange("directions")}
-          className={`${inputBaseClasses} resize-none`}
+          onBlur={handleBlur("directions")}
+          className={`${getInputClasses("directions")} resize-y`}
           disabled={isSubmitting}
+          maxLength={500}
+          placeholder="Additional directions to help us find you"
         />
       </div>
-    </form>
+    </div>
   )
 }
 
