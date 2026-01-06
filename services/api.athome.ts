@@ -560,15 +560,6 @@ const mockAddresses: Array<z.infer<typeof AddressSchema>> = [
     pincode: 560066,
     directions: "Opposite Forum Mall",
   },
-  {
-    id: generateUUID(),
-    tag: "akshay's Place",
-    location: { lat: 58.9698, long: 25.7499 }, // Whitefield
-    address_line1: "789 Garden Road ",
-    address_line2: "Whitefield Main Road",
-    pincode: 560066,
-    directions: "Opposite Forum Mall",
-  },
 ]
 
 const mockPets = [
