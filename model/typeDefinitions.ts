@@ -103,3 +103,14 @@ export interface AppointmentType {
   total_billing_amount: number
   payment_status: "PAID" | "UNPAID" | "NO_BILL" | "PARTIALLY_PAID" | "OVERPAID"
 }
+export type Address = {
+  id: string
+  tag: string
+  location: { lat: number; long: number }
+  address_line1: string
+  address_line2: string
+  directions?: string
+  pincode?: number
+}
+
+export type AddressFormValues = Omit<Address, "id" | "location" | "pincode">
