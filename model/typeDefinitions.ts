@@ -114,3 +114,11 @@ export type Address = {
 }
 
 export type AddressFormValues = Omit<Address, "id" | "location" | "pincode">
+
+export type BookingPet = {
+  id: string
+  name: string
+  profile_image: string | null
+  type: "DOG" | "CAT" | "OTHER"
+  serviceable: boolean
+}

@@ -3,8 +3,8 @@ import React, { useEffect, useRef, useState } from "react"
 import { z } from "zod"
 
 const addressSchema = z.object({
-  addressLine1: z.string().trim().min(1, "This field is required"),
-  addressLine2: z.string().trim().min(1, "This field is required"),
+  address_line1: z.string().trim().min(1, "This field is required"),
+  address_line2: z.string().trim().min(1, "This field is required"),
   tag: z.string().trim().min(1, "This field is required"),
   directions: z.string().trim().optional().nullable(),
 })
@@ -105,9 +105,9 @@ const AddressForm = ({
           placeholder="123 Main Street"
           autoComplete="address-line1"
         />
-        {touched.addressLine1 && errors.addressLine1 && (
+        {touched.address_line1 && errors.address_line1 && (
           <p className="text-sm text-red-600 mt-1 font-medium">
-            {errors.addressLine1}
+            {errors.address_line1}
           </p>
         )}
       </div>
@@ -128,9 +128,9 @@ const AddressForm = ({
           placeholder="Apartment, suite, floor, etc."
           autoComplete="address-line2"
         />
-        {touched.addressLine2 && errors.addressLine2 && (
+        {touched.address_line2 && errors.address_line2 && (
           <p className="text-sm text-red-600 mt-1 font-medium">
-            {errors.addressLine2}
+            {errors.address_line2}
           </p>
         )}
       </div>
