@@ -100,7 +100,9 @@ const SelectPet: React.FC<SelectPetProps> = ({ handleConfirm, petId }) => {
         <button
           disabled={!selectedPetId}
           onClick={() => selectedPetId && handleConfirm(selectedPetId)}
-          className="rounded-full px-8 py-3 bg-secondary-1 text-white disabled:opacity-50 disabled:cursor-not-allowed"
+          className={`font-open-sans btn rounded-full text-white px-4 md:px-10 py-2 tracking-wider text-xs md:text-base bg-secondary-1 ${
+            !selectedPetId ? "opacity-50 cursor-not-allowed" : ""
+          }`}
         >
           Confirm
         </button>

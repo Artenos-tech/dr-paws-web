@@ -176,6 +176,8 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
       </div>
     )
   }
+  const isDisabled =
+    !selectedAddressId || !serviceableIds.has(selectedAddressId)
 
   return (
     <div className="space-y-8 py-10">
@@ -263,7 +265,7 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
         </div>
       )}
 
-      <div className="flex justify-center">
+      <div className="flex justify-center mt-8">
         <button
           disabled={
             !selectedAddressId || !serviceableIds.has(selectedAddressId)

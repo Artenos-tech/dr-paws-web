@@ -145,13 +145,15 @@ const ReasonForVisit = ({
         </div>
       </div>
 
-      <div className="flex justify-center my-10">
+      <div className="flex justify-center mb-16 ">
         <button
           disabled={!isValid}
           onClick={() =>
             selectedReason && handleConfirm(selectedReason, filledDescription)
           }
-          className="rounded-full px-8 py-3 bg-secondary-1 text-white disabled:opacity-50"
+          className={`font-open-sans btn rounded-full text-white px-4 md:px-10 py-2 tracking-wider text-xs md:text-base bg-secondary-1 ${
+            isValid ? "opacity-50 cursor-not-allowed" : ""
+          }`}
         >
           Proceed
         </button>
