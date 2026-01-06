@@ -10,11 +10,16 @@ import toast from "react-hot-toast"
 import Modal from "react-modal"
 import { Address } from "@/model/typeDefinitions"
 
-const SelectAddress = () => {
+interface SelectAddressProps {
+  handleConfirm: (addressId: string) => void
+  addressId?: string
+}
+
+const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
   const router = useRouter()
 
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(
-    null,
+    addressId || null,
   )
   const [serviceableIds, setServiceableIds] = useState<Set<string>>(new Set())
   const [checkedAddressIds, setCheckedAddressIds] = useState<Set<string>>(
@@ -139,7 +144,7 @@ const SelectAddress = () => {
     const result = await deleteAddress({ addressid: addressToDelete })
 
     if (result?.ok) {
-      getAddressBook({})
+      await getAddressBook({})
       if (selectedAddressId === addressToDelete) {
         setSelectedAddressId(null)
       }
@@ -256,7 +261,8 @@ const SelectAddress = () => {
           disabled={
             !selectedAddressId || !serviceableIds.has(selectedAddressId)
           }
-          className="rounded-full px-8 py-3 bg-secondary-1 text-white disabled:opacity-50"
+          className="rounded-full px-8 py-3 bg-secondary-1 text-white disabled:opacity-50 disabled:cursor-not-allowed"
+          onClick={() => handleConfirm(selectedAddressId!)}
         >
           Confirm Address
         </button>
