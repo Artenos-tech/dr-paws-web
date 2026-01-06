@@ -2,6 +2,7 @@ import React from "react"
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md"
 import SelectAddress from "./SelectAddress"
 import SelectPet from "./SelectPet"
+import ReasonForVisit from "./ReasonForVisit"
 
 interface AtHomeBookingFlowProps {
   onBackToStart: () => void
@@ -10,6 +11,8 @@ interface AtHomeBookingFlowProps {
 type AtHomeAppointmentData = {
   addressId?: string
   petId?: string
+  reasonForVisit?: string
+  description?: string
 }
 
 const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
@@ -26,6 +29,7 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
 
   const handlePetConfirm = (petId: string) => {
     setAtHomeAppointmentData((prev) => ({ ...prev, petId }))
+    setCurrentStep(3)
   }
 
   const handleBack = () => {
@@ -57,6 +61,13 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
         <SelectPet
           petId={atHomeAppointmentData.petId}
           handleConfirm={handlePetConfirm}
+        />
+      )}
+      {currentStep === 3 && (
+        <ReasonForVisit
+          reason={atHomeAppointmentData.reasonForVisit}
+          description={atHomeAppointmentData.description}
+          handleConfirm={handleReasonConfirm}
         />
       )}
     </div>
