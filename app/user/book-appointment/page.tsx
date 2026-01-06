@@ -10,7 +10,7 @@ import atHomeClient from "@/services/api.athome"
 import { useAPICall } from "@/hooks/apicall"
 import { ClipLoader } from "react-spinners"
 import toast from "react-hot-toast"
-import { useParams, useRouter, useSearchParams } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 
 const Booking: React.FC = () => {
   const [selectedBookingType, setSelectedBookingType] =
