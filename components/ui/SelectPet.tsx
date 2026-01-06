@@ -11,14 +11,15 @@ import { BookingPet } from "@/model/typeDefinitions"
 
 interface SelectPetProps {
   handleConfirm: (petId: string) => void
-  fetchPets?: () => void
-  pets?: BookingPet[]
+  petId?: string
 }
 
-const SelectPet: React.FC<SelectPetProps> = ({ handleConfirm }) => {
+const SelectPet: React.FC<SelectPetProps> = ({ handleConfirm, petId }) => {
   const { call, loading } = useAPICall(mockAtHomeClient.getBookingPets)
 
-  const [selectedPetId, setSelectedPetId] = useState<string | null>(null)
+  const [selectedPetId, setSelectedPetId] = useState<string | null>(
+    petId || null,
+  )
   const [pets, setPets] = useState<BookingPet[]>([])
   const [isAddPetModalOpen, setIsAddPetModalOpen] = useState(false)
 

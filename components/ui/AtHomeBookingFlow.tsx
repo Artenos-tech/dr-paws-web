@@ -47,10 +47,18 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
       </button>
 
       {currentStep === 1 && (
-        <SelectAddress handleConfirm={handleAddressConfirm} />
+        <SelectAddress
+          addressId={atHomeAppointmentData.addressId}
+          handleConfirm={handleAddressConfirm}
+        />
       )}
 
-      {currentStep === 2 && <SelectPet handleConfirm={handlePetConfirm} />}
+      {currentStep === 2 && (
+        <SelectPet
+          petId={atHomeAppointmentData.petId}
+          handleConfirm={handlePetConfirm}
+        />
+      )}
     </div>
   )
 }
