@@ -15,7 +15,6 @@ type AtHomeAppointmentData = {
 const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
   onBackToStart,
 }: AtHomeBookingFlowProps) => {
-
   const [currentStep, setCurrentStep] = React.useState<number>(1)
   const [atHomeAppointmentData, setAtHomeAppointmentData] =
     React.useState<AtHomeAppointmentData>({})
