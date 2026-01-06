@@ -15,7 +15,11 @@ interface SelectPetProps {
 }
 
 const SelectPet: React.FC<SelectPetProps> = ({ handleConfirm, petId }) => {
-  const { call, loading } = useAPICall(mockAtHomeClient.getBookingPets)
+  const {
+    call: getPetsForBooking,
+    loading: loadingPets,
+    result: allPetsResult,
+  } = useAPICall(mockAtHomeClient.getBookingPets)
 
   const [selectedPetId, setSelectedPetId] = useState<string | null>(
     petId || null,
@@ -24,12 +28,21 @@ const SelectPet: React.FC<SelectPetProps> = ({ handleConfirm, petId }) => {
   const [isAddPetModalOpen, setIsAddPetModalOpen] = useState(false)
 
   useEffect(() => {
-    const fetch = async () => {
-      const res = await call({})
-      if (res?.ok) setPets(res.value.body.data.pets)
-    }
-    fetch()
+    getPetsForBooking({})
   }, [])
+
+  useEffect(() => {
+    if (allPetsResult?.ok) {
+      setPets(allPetsResult.value.body.data.pets)
+    } else if (allPetsResult && !allPetsResult.ok) {
+      setPets([])
+      toast.error("Failed to fetch pets. Please try again.", {
+        duration: 3000,
+        position: "bottom-right",
+        style: { backgroundColor: "#FF5252", color: "#fff", fontWeight: 700 },
+      })
+    }
+  }, [allPetsResult])
 
   const handleSelect = (petId: string, serviceable: boolean) => {
     if (!serviceable) return
@@ -40,11 +53,9 @@ const SelectPet: React.FC<SelectPetProps> = ({ handleConfirm, petId }) => {
     setIsAddPetModalOpen(false)
   }
 
-  const handleAddPetSuccess = () => {
+  const handleAddPetSuccess = async () => {
     setIsAddPetModalOpen(false)
-    call({}).then((res) => {
-      if (res?.ok) setPets(res.value.body.data.pets)
-    })
+    await getPetsForBooking({})
     toast.success("Added pet successfully", {
       duration: 3000,
       position: "bottom-right",
@@ -57,7 +68,7 @@ const SelectPet: React.FC<SelectPetProps> = ({ handleConfirm, petId }) => {
       <h1 className="text-xl font-semibold">Select your pet</h1>
       <p className="text-gray-600">Choose a pet for this booking</p>
 
-      {loading ? (
+      {loadingPets ? (
         <div className="flex justify-center">
           <ClipLoader color="#33495f" size={24} />
         </div>

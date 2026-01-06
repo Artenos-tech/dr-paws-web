@@ -25,8 +25,8 @@ const PetSelectItem = ({
   return (
     <div
       onClick={isServiceable ? onSelect : undefined}
-      className={`relative cursor-pointer m-2 text-center
-        ${!isServiceable ? "opacity-50 cursor-not-allowed" : ""}
+      className={`relative m-2 text-center group
+        ${isServiceable ? "cursor-pointer" : "opacity-50 cursor-not-allowed"}
       `}
     >
       <div className="relative w-[100px] h-[100px] mx-auto">
