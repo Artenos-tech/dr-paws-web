@@ -28,7 +28,6 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
   const [checkingServiceability, setCheckingServiceability] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [addressToDelete, setAddressToDelete] = useState<string | null>(null)
-  const [showDeleteSuccess, setShowDeleteSuccess] = useState(false)
 
   const {
     call: getAddressBook,
