@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
+import React, { useEffect, useState, useMemo } from "react"
 import BookingTypeSelection, {
   BookingType,
 } from "@/components/ui/BookingTypeSelection"
@@ -10,16 +10,42 @@ import atHomeClient from "@/services/api.athome"
 import { useAPICall } from "@/hooks/apicall"
 import { ClipLoader } from "react-spinners"
 import toast from "react-hot-toast"
+import { useRouter, useSearchParams } from "next/navigation"
 
 const Booking: React.FC = () => {
   const [selectedBookingType, setSelectedBookingType] =
     useState<BookingType | null>(null)
+
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const home = searchParams.get("home")
+  const clinic = searchParams.get("clinic")
 
   const {
     call: getBookingTypes,
     loading: loadingBookingTypes,
     result: getBookingTypesResult,
   } = useAPICall(atHomeClient.getBookingTypes)
+
+  const bookingTypes = useMemo(() => {
+    return (
+      (getBookingTypesResult?.ok &&
+        getBookingTypesResult.value.body.data.bookingTypes) ||
+      []
+    )
+  }, [getBookingTypesResult])
+
+  const atHomeBookingType = useMemo(() => {
+    return bookingTypes.find(
+      (bookingType) => bookingType.type === "AT_HOME_VISIT",
+    )
+  }, [bookingTypes])
+
+  const clinicBookingType = useMemo(() => {
+    return bookingTypes.find(
+      (bookingType) => bookingType.type === "CLINIC_VISIT",
+    )
+  }, [bookingTypes])
 
   useEffect(() => {
     const fetchBookingTypes = async () => {
@@ -34,6 +60,30 @@ const Booking: React.FC = () => {
     fetchBookingTypes()
   }, [])
 
+  useEffect(() => {
+    if (!getBookingTypesResult?.ok) return
+    if (selectedBookingType) return
+
+    if (home === "true" && atHomeBookingType) {
+      setSelectedBookingType(atHomeBookingType)
+      router.replace("/user/book-appointment", { scroll: false })
+      return
+    }
+
+    if (clinic === "true" && clinicBookingType) {
+      setSelectedBookingType(clinicBookingType)
+      router.replace("/user/book-appointment", { scroll: false })
+    }
+  }, [
+    home,
+    clinic,
+    selectedBookingType,
+    getBookingTypesResult,
+    router,
+    atHomeBookingType,
+    clinicBookingType,
+  ])
+
   const handleBookingTypeSelect = (bookingType: BookingType) => {
     setSelectedBookingType(bookingType)
   }
@@ -45,19 +95,14 @@ const Booking: React.FC = () => {
   const renderFlow = () => {
     if (!selectedBookingType) return null
 
-    const title = selectedBookingType.title.toLowerCase()
-
-    // Check if it's a clinic booking
-    if (title.includes("clinic") || title.includes("paws")) {
+    if (selectedBookingType.type === "CLINIC_VISIT") {
       return <ClinicBookingFlow onBackToStart={handleBackToSelection} />
     }
 
-    // Check if it's an at-home booking
-    if (title.includes("home") || title.includes("visit")) {
+    if (selectedBookingType.type === "AT_HOME_VISIT") {
       return <AtHomeBookingFlow onBackToStart={handleBackToSelection} />
     }
 
-    // Default fallback
     return <ClinicBookingFlow onBackToStart={handleBackToSelection} />
   }
 
@@ -68,11 +113,6 @@ const Booking: React.FC = () => {
       </div>
     )
   }
-
-  const bookingTypes =
-    (getBookingTypesResult?.ok &&
-      getBookingTypesResult.value.body.data.bookingTypes) ||
-    []
 
   return (
     <div className="font-roca h-full w-full">

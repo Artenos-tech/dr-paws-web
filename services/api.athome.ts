@@ -53,6 +53,7 @@ const BookingTypeSchema = z.object({
   description: z.string(),
   image: z.string(),
   displayOrder: z.number(),
+  type: z.enum(["AT_HOME_VISIT", "CLINIC_VISIT"]),
 })
 
 const PetSchema = z.object({
@@ -549,13 +550,14 @@ const mockPets = [
   },
 ]
 
-const mockBookingTypes = [
+const mockBookingTypes: Array<z.infer<typeof BookingTypeSchema>> = [
   {
     id: "1",
     title: "Home Visit",
     description: "One of our vets comes to you",
     image: "https://example.com/home-visit.jpg",
     displayOrder: 1,
+    type: "AT_HOME_VISIT",
   },
   {
     id: "2",
@@ -563,6 +565,7 @@ const mockBookingTypes = [
     description: "Visit one of our awesome clinics",
     image: "https://example.com/clinic.jpg",
     displayOrder: 2,
+    type: "CLINIC_VISIT",
   }
 ]
 
