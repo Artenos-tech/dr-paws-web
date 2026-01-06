@@ -84,8 +84,13 @@ const SelectAddress = () => {
                   setServiceableIds((prev) => new Set(prev).add(address.id))
                 }
               }
-            } catch (error: any) {
-              if (error?.name !== "AbortError") {
+            } catch (error) {
+              if (
+                typeof error === "object" &&
+                error !== null &&
+                "name" in error &&
+                (error as { name: string }).name !== "AbortError"
+              ) {
                 console.error(
                   `Failed to check serviceability for address ${address.id}:`,
                   error,
@@ -94,8 +99,13 @@ const SelectAddress = () => {
             }
           }),
         )
-      } catch (error: any) {
-        if (error?.name !== "AbortError") {
+      } catch (error) {
+        if (
+          typeof error === "object" &&
+          error !== null &&
+          "name" in error &&
+          (error as { name: string }).name !== "AbortError"
+        ) {
           console.error("Serviceability check error:", error)
         }
       }
@@ -158,7 +168,7 @@ const SelectAddress = () => {
   return (
     <div className="space-y-8 py-10">
       <h1 className="text-xl font-semibold">
-        Let's check if your address is within range
+        Let&apos;s check if your address is within range
       </h1>
       <p className="text-gray-600">Add or select your address</p>
 
