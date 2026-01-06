@@ -255,7 +255,7 @@ export type AtHomeAPIClient = {
         location: { lat: number; long: number }
         address_line1: string
         address_line2: string
-        directions: string | null
+        directions?: string
       }
     },
     opts?: { abortSignal?: AbortSignal },
@@ -281,7 +281,7 @@ export type AtHomeAPIClient = {
         address_line1: string
         address_line2: string
         pincode: number
-        directions: string | null
+        directions?: string
       }
     },
     opts?: { abortSignal?: AbortSignal },
@@ -536,7 +536,7 @@ const mockAddresses: Array<z.infer<typeof AddressSchema>> = [
   {
     id: generateUUID(),
     tag: "Home",
-    location: { lat: 12.9352, long: 77.6245 }, // Koramangala
+    location: { lat: 12.9352, long: 77.6245 },
     address_line1: "123 Main Street",
     address_line2: "Koramangala 4th Block",
     pincode: 560034,
@@ -545,7 +545,7 @@ const mockAddresses: Array<z.infer<typeof AddressSchema>> = [
   {
     id: generateUUID(),
     tag: "Office",
-    location: { lat: 12.9716, long: 77.5946 }, // Indiranagar
+    location: { lat: 12.9716, long: 77.5946 },
     address_line1: "456 Park Avenue",
     address_line2: "Indiranagar 100 Feet Road",
     pincode: 560038,
@@ -553,7 +553,7 @@ const mockAddresses: Array<z.infer<typeof AddressSchema>> = [
   {
     id: generateUUID(),
     tag: "Parent's Place",
-    location: { lat: 12.9698, long: 77.7499 }, // Whitefield
+    location: { lat: 12.9698, long: 77.7499 },
     address_line1: "789 Garden Road",
     address_line2: "Whitefield Main Road",
     pincode: 560066,
@@ -602,11 +602,27 @@ const mockBookingTypes = [
   },
 ]
 
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+const delay = (ms: number, signal?: AbortSignal) =>
+  new Promise<void>((resolve) => {
+    // If already aborted, resolve immediately
+    if (signal?.aborted) {
+      return resolve()
+    }
+
+    const timeout = setTimeout(() => resolve(), ms)
+
+    // When aborted, clear timeout and resolve immediately
+    const onAbort = () => {
+      clearTimeout(timeout)
+      resolve()
+    }
+
+    signal?.addEventListener("abort", onAbort, { once: true })
+  })
 
 export const mockAtHomeClient: AtHomeAPIClient = {
   getAddressBook: async (params, opts) => {
-    await delay(500)
+    await delay(500, opts?.abortSignal)
     return ok({
       status: 200,
       body: {
@@ -620,7 +636,7 @@ export const mockAtHomeClient: AtHomeAPIClient = {
   },
 
   getAddress: async (params, opts) => {
-    await delay(500)
+    await delay(500, opts?.abortSignal)
     const address = mockAddresses.find((a) => a.id === params.addressid)
     if (!address) {
       return err({
@@ -644,7 +660,7 @@ export const mockAtHomeClient: AtHomeAPIClient = {
   },
 
   addAddress: async (params, opts) => {
-    await delay(500)
+    await delay(500, opts?.abortSignal)
     const newId = generateUUID()
     const newAddress: z.infer<typeof AddressSchema> = {
       id: newId,
@@ -670,7 +686,7 @@ export const mockAtHomeClient: AtHomeAPIClient = {
   },
 
   updateAddress: async (params, opts) => {
-    await delay(500)
+    await delay(500, opts?.abortSignal)
     const address = mockAddresses.find((a) => a.id === params.addressid)
     if (!address) {
       return err({
@@ -696,7 +712,7 @@ export const mockAtHomeClient: AtHomeAPIClient = {
   },
 
   deleteAddress: async (params, opts) => {
-    await delay(500)
+    await delay(500, opts?.abortSignal)
 
     const index = mockAddresses.findIndex((a) => a.id === params.addressid)
     if (index === -1) {
@@ -721,7 +737,7 @@ export const mockAtHomeClient: AtHomeAPIClient = {
   },
 
   getBookingTypes: async (params, opts) => {
-    await delay(500)
+    await delay(500, opts?.abortSignal)
     return ok({
       status: 200,
       body: {
@@ -735,8 +751,7 @@ export const mockAtHomeClient: AtHomeAPIClient = {
   },
 
   checkLocationServiceability: async (params, opts) => {
-    await delay(500)
-    // Mock: Bangalore area is serviceable (lat between 12.8-13.1, long between 77.5-77.8)
+    await delay(500, opts?.abortSignal)
     const { lat, long: lng } = params.location
     const serviceable = lat >= 12.8 && lat <= 13.1 && lng >= 77.5 && lng <= 77.8
 
@@ -756,7 +771,7 @@ export const mockAtHomeClient: AtHomeAPIClient = {
   },
 
   getBookingPets: async (params, opts) => {
-    await delay(500)
+    await delay(500, opts?.abortSignal)
     return ok({
       status: 200,
       body: {
@@ -770,7 +785,7 @@ export const mockAtHomeClient: AtHomeAPIClient = {
   },
 
   getAtHomeSlots: async (params, opts) => {
-    await delay(500)
+    await delay(500, opts?.abortSignal)
 
     // Generate slots for next 7 days
     const days = []
@@ -805,7 +820,7 @@ export const mockAtHomeClient: AtHomeAPIClient = {
   },
 
   createPaymentOrder: async (params, opts) => {
-    await delay(500)
+    await delay(500, opts?.abortSignal)
     return ok({
       status: 200,
       body: {
@@ -822,7 +837,7 @@ export const mockAtHomeClient: AtHomeAPIClient = {
   },
 
   getOrderStatus: async (params, opts) => {
-    await delay(500)
+    await delay(500, opts?.abortSignal)
 
     // 10% chance of payment failure for testing
     const paymentFailed = Math.random() < 0.1
@@ -862,7 +877,7 @@ export const mockAtHomeClient: AtHomeAPIClient = {
   },
 
   getAppointments: async (params, opts) => {
-    await delay(500)
+    await delay(500, opts?.abortSignal)
 
     const appointments = [
       {
@@ -922,7 +937,7 @@ export const mockAtHomeClient: AtHomeAPIClient = {
   },
 
   getAppointmentDetails: async (params, opts) => {
-    await delay(500)
+    await delay(500, opts?.abortSignal)
 
     const appointment = {
       id: params.appointment_id,
@@ -965,7 +980,7 @@ export const mockAtHomeClient: AtHomeAPIClient = {
   },
 
   cancelAppointment: async (params, opts) => {
-    await delay(500)
+    await delay(500, opts?.abortSignal)
 
     // 20% chance of refund being processed for testing
     const hasRefund = Math.random() < 0.8
@@ -986,7 +1001,7 @@ export const mockAtHomeClient: AtHomeAPIClient = {
   },
 
   rescheduleAppointment: async (params, opts) => {
-    await delay(500)
+    await delay(500, opts?.abortSignal)
     return ok({
       status: 200,
       body: {
@@ -1000,7 +1015,7 @@ export const mockAtHomeClient: AtHomeAPIClient = {
   },
 
   raiseSOSAlert: async (params, opts) => {
-    await delay(500)
+    await delay(500, opts?.abortSignal)
     return ok({
       status: 200,
       body: {
@@ -1014,7 +1029,7 @@ export const mockAtHomeClient: AtHomeAPIClient = {
   },
 
   cancelSOSAlert: async (params, opts) => {
-    await delay(500)
+    await delay(500, opts?.abortSignal)
     return ok({
       status: 200,
       body: {

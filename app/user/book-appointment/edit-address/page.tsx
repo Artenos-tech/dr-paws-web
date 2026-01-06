@@ -30,13 +30,13 @@ const AddressPage = () => {
 
   const [addressDetails, setAddressDetails] = useState<AddressFormValues>({
     tag: "",
-    addressLine1: "",
-    addressLine2: "",
-    directions: null,
+    address_line1: "",
+    address_line2: "",
+    directions: undefined,
   })
 
   const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
     libraries: ["places"],
   })
 
@@ -80,10 +80,7 @@ const AddressPage = () => {
 
     const fetchAddress = async () => {
       try {
-        console.log(addressId, "address id is ")
-
         const res = await getAddress({ addressid: addressId })
-        console.log(res, "res is ")
 
         if (!res.ok) {
           toast.error("Failed to load address. Please retry.")
@@ -94,9 +91,9 @@ const AddressPage = () => {
 
         setAddressDetails({
           tag: address.tag,
-          addressLine1: address.address_line1,
-          addressLine2: address.address_line2,
-          directions: address.directions || null,
+          address_line1: address.address_line1,
+          address_line2: address.address_line2,
+          directions: address.directions,
         })
 
         setPincode(address.pincode)
@@ -136,9 +133,9 @@ const AddressPage = () => {
       return
     }
 
-    const { tag, addressLine1, addressLine2 } = addressDetails
+    const { tag, address_line1, address_line2 } = addressDetails
 
-    if (!tag || !addressLine1 || !addressLine2) {
+    if (!tag || !address_line1 || !address_line2) {
       toast.error("Please fill all required fields")
       return
     }
@@ -156,8 +153,8 @@ const AddressPage = () => {
       const payload = {
         tag,
         location: { lat: pin.lat, long: pin.lng },
-        address_line1: addressLine1,
-        address_line2: addressLine2,
+        address_line1: address_line1,
+        address_line2: address_line2,
         pincode,
         directions: addressDetails.directions,
       }
@@ -184,11 +181,11 @@ const AddressPage = () => {
 
       const newAddressId = res.value.body.data.address?.id || addressId
 
-      setTimeout(() => {
+      // setTimeout(() => {
         router.replace(
           `/user/book-appointment?home=true&addressId=${newAddressId}`,
         )
-      }, 800)
+      // }, 800)
     } catch (err) {
       console.error(err)
       toast.error("Something went wrong. Please try again.")
@@ -199,6 +196,10 @@ const AddressPage = () => {
   const isSubmitting = loadingAdd || loadingUpdate || loadingCheck
 
   const shouldDisableButton = isSubmitting || (isPinSelected && !isFormValid)
+
+  if (isLoaded && !process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY) {
+    toast.error("Google Maps API key not configured")
+  }
 
   return (
     <main className="flex flex-col items-center w-full my-4 px-8 md:px-32 lg:px-20 xl:px-40">
@@ -220,7 +221,7 @@ const AddressPage = () => {
         <>
           <GoogleMap
             center={pin}
-            zoom={19}
+            zoom={12}
             mapContainerStyle={{ width: "100%", height: "400px" }}
             onClick={setLocation}
           >
@@ -250,7 +251,7 @@ const AddressPage = () => {
           <button
             onClick={handleSubmit}
             disabled={shouldDisableButton}
-            className="my-10 rounded-full px-8 py-3 bg-secondary-1 text-white disabled:opacity-50"
+            className="my-10 rounded-full px-8 py-3 bg-secondary-1 text-white disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isPinSelected
               ? isSubmitting
