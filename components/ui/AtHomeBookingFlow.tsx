@@ -3,7 +3,7 @@ import { MdOutlineKeyboardArrowLeft } from "react-icons/md"
 import SelectAddress from "./SelectAddress"
 
 interface AtHomeBookingFlowProps {
-  onBackToStart?: () => void
+  onBackToStart: () => void
 }
 
 const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
