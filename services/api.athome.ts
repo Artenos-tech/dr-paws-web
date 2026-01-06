@@ -111,7 +111,17 @@ const AppointmentSchema = z.object({
   vet_image: z.string().nullable().optional(),
   vet_contact: z.string().nullable().optional(),
   address: AddressSchema.optional(),
-  visit_status: z.enum(["UNCONFIRMED", "CONFIRMED", "DELAYED", "REACHED", "CANCELLED", "VISIT_STARTED", "VISIT_FINISHED"]).optional(),
+  visit_status: z
+    .enum([
+      "UNCONFIRMED",
+      "CONFIRMED",
+      "DELAYED",
+      "REACHED",
+      "CANCELLED",
+      "VISIT_STARTED",
+      "VISIT_FINISHED",
+    ])
+    .optional(),
   helpline_no: z.string().optional(),
   start_otp: z.string().nullable().optional(),
   sos_status: z.enum(["ACTIVE", "INACTIVE"]).optional(),
@@ -148,15 +158,41 @@ const AppointmentDetailSchema = z.object({
   vet_image: z.string().nullable().optional(),
   vet_contact: z.string().nullable().optional(),
   address: AddressSchema.optional(),
-  visit_status: z.enum(["UNCONFIRMED", "CONFIRMED", "DELAYED", "REACHED", "CANCELLED", "VISIT_STARTED", "VISIT_FINISHED"]).optional(),
+  visit_status: z
+    .enum([
+      "UNCONFIRMED",
+      "CONFIRMED",
+      "DELAYED",
+      "REACHED",
+      "CANCELLED",
+      "VISIT_STARTED",
+      "VISIT_FINISHED",
+    ])
+    .optional(),
   helpline_no: z.string().optional(),
   start_otp: z.string().nullable().optional(),
-  refund_status: z.enum(["PENDING", "SUCCESS", "FAILED", "CANCELLED", "ONHOLD", "NOT_APPLICABLE"]).optional(),
+  refund_status: z
+    .enum([
+      "PENDING",
+      "SUCCESS",
+      "FAILED",
+      "CANCELLED",
+      "ONHOLD",
+      "NOT_APPLICABLE",
+    ])
+    .optional(),
   sos_status: z.enum(["ACTIVE", "INACTIVE"]).optional(),
 })
 
 const RefundSchema = z.object({
-  status: z.enum(["PENDING", "SUCCESS", "FAILED", "CANCELLED", "ONHOLD", "NOT_APPLICABLE"]),
+  status: z.enum([
+    "PENDING",
+    "SUCCESS",
+    "FAILED",
+    "CANCELLED",
+    "ONHOLD",
+    "NOT_APPLICABLE",
+  ]),
 })
 
 const OrderAppointmentSchema = z.object({
@@ -566,7 +602,7 @@ const mockBookingTypes: Array<z.infer<typeof BookingTypeSchema>> = [
     image: "https://example.com/clinic.jpg",
     displayOrder: 2,
     type: "CLINIC_VISIT",
-  }
+  },
 ]
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
@@ -777,21 +813,23 @@ export const mockAtHomeClient: AtHomeAPIClient = {
     // 10% chance of payment failure for testing
     const paymentFailed = Math.random() < 0.1
 
-    const appointment = paymentFailed ? null : {
-      id: generateUUID(),
-      sub_booking_id: generateUUID(),
-      pet_name: mockPets[0].name,
-      pet_type: mockPets[0].type,
-      pet_profile_image: mockPets[0].profile_image,
-      clinic_id: generateUUID(),
-      booking_date: new Date().toISOString().split("T")[0],
-      appt_start: "10:00",
-      appt_end: "11:00",
-      appt_type_title: "At-Home Visit" as const,
-      appt_type: "AT_HOME_VISIT" as const,
-      address: mockAddresses[0],
-      sos_status: "INACTIVE" as const,
-    }
+    const appointment = paymentFailed
+      ? null
+      : {
+          id: generateUUID(),
+          sub_booking_id: generateUUID(),
+          pet_name: mockPets[0].name,
+          pet_type: mockPets[0].type,
+          pet_profile_image: mockPets[0].profile_image,
+          clinic_id: generateUUID(),
+          booking_date: new Date().toISOString().split("T")[0],
+          appt_start: "10:00",
+          appt_end: "11:00",
+          appt_type_title: "At-Home Visit" as const,
+          appt_type: "AT_HOME_VISIT" as const,
+          address: mockAddresses[0],
+          sos_status: "INACTIVE" as const,
+        }
 
     return ok({
       status: 200,
