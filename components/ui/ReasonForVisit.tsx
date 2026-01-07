@@ -97,6 +97,7 @@ const ReasonForVisit = ({
       setShowEmergencyModal(true)
       setSelectedReason(null)
       setFilledDescription("")
+      setTouched({})
     }
   }
 
