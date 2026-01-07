@@ -1,3 +1,4 @@
+import exp from "constants"
 import { StaticImageData } from "next/image"
 
 export interface Service {
@@ -86,6 +87,12 @@ export type AppointmentTypeEnum =
   | "VET_CONSULTATION"
   | "GROOMING"
   | "AT_HOME_VISIT"
+export type AppointmentPaymentStatus =
+  | "PAID"
+  | "UNPAID"
+  | "NO_BILL"
+  | "PARTIALLY_PAID"
+  | "OVERPAID"
 
 export type PetType = "DOG" | "CAT" | "OTHER"
 
@@ -93,6 +100,7 @@ export interface AppointmentType {
   id: string
   sub_booking_id: string
   clinic_id: string
+  pet_id: string
 
   pet_name: string
   pet_type: PetType | null
@@ -101,6 +109,7 @@ export interface AppointmentType {
   booking_date: string
   appt_start: string
   appt_end: string
+  appt_type_id: string
 
   appt_type_title: "Vet Consultation" | "Grooming" | "At-Home Visit"
   appt_type: AppointmentTypeEnum
@@ -113,6 +122,7 @@ export interface AppointmentType {
 
   coupon_code?: string | null
 
+  vet_id?: string | null
   vet_name?: string | null
   vet_image?: string | null
   vet_contact?: string | null
@@ -130,6 +140,10 @@ export interface AppointmentType {
 
   helpline_no?: string
   start_otp?: string | null
+  invoice_id: string
+  payment_status: AppointmentPaymentStatus
+  total_tax_amount: number
+  total_billing_amount: number
   sos_status?: "ACTIVE" | "INACTIVE"
 }
 

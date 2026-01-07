@@ -8,7 +8,6 @@ import Loader from "@/components/ui/Loader"
 import NoAppointments from "@/components/ui/NoAppointments"
 import { useAPICall } from "@/hooks/apicall"
 import { AppointmentType } from "@/model/typeDefinitions"
-import api from "@/services/api"
 import { mockAtHomeClient } from "@/services/api.athome"
 
 const TABS = {
