@@ -141,6 +141,7 @@ const AddressForm = ({
         </label>
         <input
           id="tag"
+          type="text"
           value={addressDetails.tag}
           onChange={handleChange("tag")}
           onBlur={handleBlur("tag")}

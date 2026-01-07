@@ -26,6 +26,7 @@ const SelectPet: React.FC<SelectPetProps> = ({ handleConfirm, petId }) => {
   )
   const [pets, setPets] = useState<BookingPet[]>([])
   const [isAddPetModalOpen, setIsAddPetModalOpen] = useState(false)
+  const [isConfirming, setIsConfirming] = useState(false)
 
   useEffect(() => {
     getPetsForBooking({})
@@ -62,6 +63,12 @@ const SelectPet: React.FC<SelectPetProps> = ({ handleConfirm, petId }) => {
     })
   }
 
+  const handleConfirmClick = () => {
+    if (!selectedPetId) return
+    setIsConfirming(true)
+    handleConfirm(selectedPetId)
+  }
+
   return (
     <div className="w-full h-full mt-4">
       <h1 className="text-2xl mb-2">Select your pet</h1>
@@ -71,8 +78,21 @@ const SelectPet: React.FC<SelectPetProps> = ({ handleConfirm, petId }) => {
         <div className="flex justify-center">
           <ClipLoader color="#33495f" size={24} />
         </div>
+      ) : pets.length === 0 ? (
+        <div className="text-center py-12">
+          <p className="text-gray-500 mb-4">
+            No pets yet. Add one to get started.
+          </p>
+          <button
+            type="button"
+            onClick={() => setIsAddPetModalOpen(true)}
+            className="rounded-full px-8 py-3 bg-secondary-1 text-white hover:bg-secondary-2 transition"
+          >
+            Add Pet
+          </button>
+        </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-2 justify-items-center">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-2 justify-items-center">
           {pets.map((pet) => (
             <PetSelectItem
               key={pet.id}
@@ -84,12 +104,13 @@ const SelectPet: React.FC<SelectPetProps> = ({ handleConfirm, petId }) => {
           ))}
 
           <div className="flex flex-col items-center justify-center gap-3">
-            <div
-              className="flex flex-col items-center rounded-full justify-center cursor-pointer border border-dashed border-gray-400 w-[100px] h-[100px] text-gray-500"
+            <button
+              type="button"
+              className="flex flex-col items-center rounded-full justify-center cursor-pointer border border-dashed border-gray-400 w-[100px] h-[100px] text-gray-500 hover:border-secondary-1 hover:text-secondary-1 transition"
               onClick={() => setIsAddPetModalOpen(true)}
             >
               <span className="text-2xl font-bold">+</span>
-            </div>
+            </button>
             <div className="text-sm">Add Pet</div>
           </div>
         </div>
@@ -97,13 +118,12 @@ const SelectPet: React.FC<SelectPetProps> = ({ handleConfirm, petId }) => {
 
       <div className="flex justify-center mb-10 mt-6">
         <button
-          disabled={!selectedPetId}
-          onClick={() => selectedPetId && handleConfirm(selectedPetId)}
-          className={`font-open-sans btn rounded-full text-white px-4 md:px-10 py-2 tracking-wider text-xs md:text-base bg-secondary-1 ${
-            !selectedPetId ? "opacity-50 cursor-not-allowed" : ""
-          }`}
+          disabled={!selectedPetId || isConfirming}
+          onClick={handleConfirmClick}
+          className="font-open-sans btn rounded-full text-white px-4 md:px-10 py-2 tracking-wider text-xs md:text-base bg-secondary-1 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
         >
-          Confirm
+          {isConfirming && <ClipLoader size={16} color="#ffffff" />}
+          {isConfirming ? "Confirming..." : "Confirm"}
         </button>
       </div>
 

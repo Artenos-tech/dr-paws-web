@@ -26,6 +26,7 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
   const [checkingServiceability, setCheckingServiceability] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [addressToDelete, setAddressToDelete] = useState<string | null>(null)
+  const [isConfirming, setIsConfirming] = useState(false)
 
   const {
     call: getAddressBook,
@@ -48,12 +49,6 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
   const uncheckedAddresses = useMemo(() => {
     return addresses.filter((addr) => !checkedAddressIds.has(addr.id))
   }, [addresses, checkedAddressIds])
-
-  useEffect(() => {
-    if (initialAddressId) {
-      setSelectedAddressId(initialAddressId)
-    }
-  }, [initialAddressId])
 
   useEffect(() => {
     getAddressBook({})
@@ -150,6 +145,16 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
 
     if (result?.ok) {
       await getAddressBook({})
+      setServiceableIds((prev) => {
+        const newSet = new Set(prev)
+        newSet.delete(addressToDelete)
+        return newSet
+      })
+      setCheckedAddressIds((prev) => {
+        const newSet = new Set(prev)
+        newSet.delete(addressToDelete)
+        return newSet
+      })
       if (selectedAddressId === addressToDelete) {
         setSelectedAddressId(null)
       }
@@ -174,8 +179,14 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
       </div>
     )
   }
-  const isDisabled =
-    !selectedAddressId || !serviceableIds.has(selectedAddressId)
+  const isConfirmDisabled =
+    !selectedAddressId || !serviceableIds.has(selectedAddressId) || isConfirming
+
+  const handleConfirmClick = () => {
+    if (!selectedAddressId) return
+    setIsConfirming(true)
+    handleConfirm(selectedAddressId)
+  }
 
   return (
     <div className="space-y-8 py-10">
@@ -217,7 +228,7 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
 
                   <div className="flex items-center gap-2">
                     <FaPen
-                      className="cursor-pointer"
+                      className="cursor-pointer hover:text-secondary-1 transition"
                       onClick={(e) => {
                         e.stopPropagation()
                         router.push(
@@ -226,7 +237,7 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
                       }}
                     />
                     <FaTrash
-                      className="cursor-pointer"
+                      className="cursor-pointer hover:text-red-600 transition"
                       onClick={(e) => handleDeleteClick(address.id, e)}
                     />
 
@@ -265,11 +276,12 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
 
       <div className="flex justify-center mb-10 mt-6">
         <button
-          disabled={isDisabled}
-          className="rounded-full px-8 py-3 bg-secondary-1 text-white disabled:opacity-50 disabled:cursor-not-allowed"
-          onClick={() => handleConfirm(selectedAddressId!)}
+          disabled={isConfirmDisabled}
+          className="rounded-full px-8 py-3 bg-secondary-1 text-white disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          onClick={handleConfirmClick}
         >
-          Confirm Address
+          {isConfirming && <ClipLoader size={16} color="#ffffff" />}
+          {isConfirming ? "Confirming..." : "Confirm Address"}
         </button>
       </div>
 

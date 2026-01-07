@@ -12,6 +12,7 @@ interface AtHomeBookingFlowProps {
 type AtHomeAppointmentData = {
   addressId?: string
   petId?: string
+  isEmergency?: "yes" | "no" | null
   reasonForVisit?: string
   description?: string
   date?: string
@@ -23,7 +24,7 @@ type AtHomeAppointmentData = {
 
 const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
   onBackToStart,
-}: AtHomeBookingFlowProps) => {
+}) => {
   const [currentStep, setCurrentStep] = React.useState<number>(1)
   const [atHomeAppointmentData, setAtHomeAppointmentData] =
     React.useState<AtHomeAppointmentData>({})
@@ -41,11 +42,13 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
   const handleReasonForVisitConfirm = (
     reasonForVisit: string,
     description: string,
+    isEmergency: "yes" | "no" | null,
   ) => {
     setAtHomeAppointmentData((prev) => ({
       ...prev,
       reasonForVisit,
       description,
+      isEmergency,
     }))
     setCurrentStep(4)
   }
@@ -96,12 +99,15 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
         <ReasonForVisit
           reason={atHomeAppointmentData.reasonForVisit}
           description={atHomeAppointmentData.description}
+          isEmergency={atHomeAppointmentData.isEmergency}
           handleConfirm={handleReasonForVisitConfirm}
         />
       )}
       {currentStep === 4 && (
         <SelectDateTimeForVisit
           addressId={atHomeAppointmentData.addressId}
+          date={atHomeAppointmentData.date}
+          slot={atHomeAppointmentData.slot}
           onConfirm={handleDateTimeConfirm}
         />
       )}

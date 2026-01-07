@@ -4,11 +4,17 @@ import { PhoneCall } from "lucide-react"
 import React, { useEffect, useState } from "react"
 import toast, { Toaster } from "react-hot-toast"
 import { z } from "zod"
+import { ClipLoader } from "react-spinners"
 
 interface ReasonForVisitProps {
-  handleConfirm: (reasonForVisit: string, description: string) => void
+  handleConfirm: (
+    reasonForVisit: string,
+    description: string,
+    isEmergency: "yes" | "no" | null,
+  ) => void
   reason?: string
   description?: string
+  isEmergency?: "yes" | "no" | null
 }
 
 const VISIT_REASONS = [
@@ -21,7 +27,7 @@ const VISIT_REASONS = [
 const reasonForVisitSchema = z.object({
   isEmergency: z.literal("no"),
   selectedReason: z.enum(
-    VISIT_REASONS.map((r) => r.label) as [string, ...string[]],
+    VISIT_REASONS.map((r) => r.key) as [string, ...string[]],
   ),
   filledDescription: z.string().trim().min(1, "Description is required"),
 })
@@ -32,15 +38,20 @@ const ReasonForVisit = ({
   handleConfirm,
   reason,
   description,
+  isEmergency: initialIsEmergency,
 }: ReasonForVisitProps) => {
-  const [isEmergency, setIsEmergency] = useState<"yes" | "no" | null>("no")
+  const [isEmergency, setIsEmergency] = useState<"yes" | "no" | null>(
+    initialIsEmergency ?? null,
+  )
   const [showEmergencyModal, setShowEmergencyModal] = useState(false)
   const [selectedReason, setSelectedReason] = useState<string | null>(
     reason || null,
   )
-
   const [filledDescription, setFilledDescription] = useState(description || "")
   const [isValid, setIsValid] = useState(false)
+  const [isProcessing, setIsProcessing] = useState(false)
+  const [errors, setErrors] = useState<{ [key: string]: string }>({})
+  const [touched, setTouched] = useState<{ [key: string]: boolean }>({})
 
   useEffect(() => {
     const result = reasonForVisitSchema.safeParse({
@@ -50,16 +61,63 @@ const ReasonForVisit = ({
     })
 
     setIsValid(result.success)
+
+    if (!result.success) {
+      const fieldErrors: { [key: string]: string } = {}
+      result.error.errors.forEach((err) => {
+        if (err.path[0]) {
+          fieldErrors[err.path[0] as string] = err.message
+        }
+      })
+      setErrors(fieldErrors)
+    } else {
+      setErrors({})
+    }
   }, [isEmergency, selectedReason, filledDescription])
+
+  useEffect(() => {
+    if (showEmergencyModal) {
+      document.body.style.overflow = "hidden"
+    } else {
+      document.body.style.overflow = "unset"
+    }
+
+    return () => {
+      document.body.style.overflow = "unset"
+    }
+  }, [showEmergencyModal])
 
   const handleEmergencyChange = (value: "yes" | "no") => {
     setIsEmergency(value)
     if (value === "yes") {
-      setSelectedReason("")
-      setFilledDescription("")
-
       setShowEmergencyModal(true)
     }
+  }
+
+  const handleReasonChange = (value: string) => {
+    setSelectedReason(value)
+  }
+
+  const handleDescriptionChange = (value: string) => {
+    setFilledDescription(value)
+  }
+
+  const handleDescriptionBlur = () => {
+    setTouched((prev) => ({ ...prev, filledDescription: true }))
+  }
+
+  const handleModalClose = () => {
+    setShowEmergencyModal(false)
+    setIsEmergency(null)
+    setSelectedReason(null)
+    setFilledDescription("")
+    setTouched({})
+  }
+
+  const handleProceedClick = () => {
+    if (!selectedReason) return
+    setIsProcessing(true)
+    handleConfirm(selectedReason, filledDescription, isEmergency)
   }
 
   return (
@@ -77,32 +135,29 @@ const ReasonForVisit = ({
 
             <div className="flex justify-around space-x-3">
               <button
-                onClick={() => {
-                  setShowEmergencyModal(false)
-                  setIsEmergency(null)
-                }}
+                onClick={handleModalClose}
                 className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700"
               >
                 Cancel
               </button>
 
-              <button className="px-4 py-2 bg-red-600 text-white rounded-lg">
-                <div
-                  className="flex items-center space-x-2"
-                  onClick={() => {
-                    navigator.clipboard.writeText(PHONE_NUMBER)
+              <button
+                className="px-4 py-2 bg-red-600 text-white rounded-lg flex items-center space-x-2"
+                onClick={() => {
+                  navigator.clipboard.writeText(PHONE_NUMBER)
 
-                    toast.success(
-                      `Phone number ${PHONE_NUMBER} copied to clipboard`,
-                      {
-                        duration: 3000,
-                      },
-                    )
-                  }}
-                >
-                  <PhoneCall />
-                  <span>Call Us</span>
-                </div>
+                  toast.success(
+                    `Phone number ${PHONE_NUMBER} copied to clipboard`,
+                    {
+                      duration: 3000,
+                    },
+                  )
+
+                  handleModalClose()
+                }}
+              >
+                <PhoneCall />
+                <span>Call Us</span>
               </button>
             </div>
           </div>
@@ -141,8 +196,8 @@ const ReasonForVisit = ({
           <label key={item.key} className="flex items-center space-x-2">
             <input
               type="radio"
-              checked={selectedReason === item.label}
-              onChange={() => setSelectedReason(item.label)}
+              checked={selectedReason === item.key}
+              onChange={() => handleReasonChange(item.key)}
             />
             <span>{item.label}</span>
           </label>
@@ -159,23 +214,26 @@ const ReasonForVisit = ({
              focus:outline-none focus:ring-2 focus:ring-secondary-1 focus:border-transparent"
             rows={4}
             value={filledDescription}
-            onChange={(e) => setFilledDescription(e.target.value)}
+            onChange={(e) => handleDescriptionChange(e.target.value)}
+            onBlur={handleDescriptionBlur}
             placeholder="Describe the issue..."
           />
+          {touched.filledDescription && errors.filledDescription && (
+            <p className="text-sm text-red-600 mt-1">
+              {errors.filledDescription}
+            </p>
+          )}
         </div>
       </div>
 
       <div className="flex justify-center mb-10 mt-6 ">
         <button
-          disabled={!isValid}
-          onClick={() =>
-            selectedReason && handleConfirm(selectedReason, filledDescription)
-          }
-          className={`font-open-sans btn rounded-full text-white px-4 md:px-10 py-2 tracking-wider text-xs md:text-base bg-secondary-1 ${
-            !isValid ? "opacity-50 cursor-not-allowed" : ""
-          }`}
+          disabled={!isValid || isProcessing}
+          onClick={handleProceedClick}
+          className="font-open-sans btn rounded-full text-white px-4 md:px-10 py-2 tracking-wider text-xs md:text-base bg-secondary-1 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
         >
-          Proceed
+          {isProcessing && <ClipLoader size={16} color="#ffffff" />}
+          {isProcessing ? "Processing..." : "Proceed"}
         </button>
       </div>
     </div>
