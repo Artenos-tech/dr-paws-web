@@ -296,14 +296,14 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
               >
                 <p className="text-lg font-semibold mt-4 text-center">
                   {isCancelled
-                    ? selectedAppointment.appt_type === "Grooming"
+                    ? selectedAppointment.appt_type === "GROOMING"
                       ? `${selectedAppointment.pet_name} was scheduled for a ${selectedAppointment.appt_type} session`
                       : `${selectedAppointment.pet_name} was scheduled with ${selectedAppointment.vet_name} for a ${selectedAppointment.appt_type}`
                     : isCompleted
-                      ? selectedAppointment.appt_type === "Grooming"
+                      ? selectedAppointment.appt_type === "GROOMING"
                         ? `${selectedAppointment.pet_name} had a ${selectedAppointment.appt_type} session`
                         : `${selectedAppointment.pet_name} visited ${selectedAppointment.vet_name} for a ${selectedAppointment.appt_type}`
-                      : selectedAppointment.appt_type === "Grooming"
+                      : selectedAppointment.appt_type === "GROOMING"
                         ? `${selectedAppointment.pet_name} is scheduled for a ${selectedAppointment.appt_type} session`
                         : `${selectedAppointment.pet_name} is scheduled for a ${selectedAppointment.appt_type} with ${selectedAppointment.vet_name}`}
                 </p>
@@ -323,7 +323,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                           priority
                         />
                       </div>
-                      {selectedAppointment.appt_type !== "Grooming" && (
+                      {selectedAppointment.appt_type !== "GROOMING" && (
                         <div className="relative w-32 h-32 rounded-full overflow-hidden bg-white -ml-8 border-4 border-white flex justify-center items-center">
                           <Image
                             src={
@@ -914,7 +914,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                 className={`p-4 text-primary-1 w-11/12 md:w-4/5 lg:w-[50%] shadow-md my-5 flex flex-col gap-2 items-center bg-primary-3`}
               >
                 <p className="text-lg font-semibold mt-4 text-center">
-                  {selectedAppointment.appt_type === "Grooming"
+                  {selectedAppointment.appt_type === "GROOMING"
                     ? `${selectedAppointment.pet_name} was scheduled for a ${selectedAppointment.appt_type} session`
                     : `${selectedAppointment.pet_name} was scheduled with ${selectedAppointment.vet_name} for a ${selectedAppointment.appt_type}`}
                 </p>
@@ -934,7 +934,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                           priority
                         />
                       </div>
-                      {selectedAppointment.appt_type !== "Grooming" && (
+                      {selectedAppointment.appt_type !== "GROOMING" && (
                         <div className="relative w-32 h-32 rounded-full overflow-hidden bg-white -ml-8 border-4 border-white flex justify-center items-center">
                           <Image
                             src={
