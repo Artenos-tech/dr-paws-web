@@ -88,7 +88,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
             "text-primary-1"
           }`}
         >
-          {appointment.appt_type}
+          {appointment.appt_type_title}
         </p>
       </div>
       <div className="flex items-center my-4">
@@ -123,10 +123,13 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
         </p>
         {appointment.clinic_name && <p>{appointment.clinic_name}</p>}
         {appointment.address && (
-          <p>
-            {appointment.address.address_line1},{" "}
-            {appointment.address.address_line2}, {appointment.address.pincode}
-          </p>
+          <>
+            <span className="font-semibold">{appointment.address.tag}</span>
+            <p>
+              {appointment.address.address_line1},{" "}
+              {appointment.address.address_line2}, {appointment.address.pincode}
+            </p>
+          </>
         )}
 
         <p>{format(parsedDate, "EEEE dd MMMM, yyyy")}</p>
