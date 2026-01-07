@@ -9,6 +9,7 @@ import NoAppointments from "@/components/ui/NoAppointments"
 import { useAPICall } from "@/hooks/apicall"
 import { AppointmentType } from "@/model/typeDefinitions"
 import api from "@/services/api"
+import { mockAtHomeClient } from "@/services/api.athome"
 
 const TABS = {
   ALL: { label: "All" },
@@ -29,7 +30,7 @@ const MyAppointmentsPage = () => {
     call: getAppointments,
     loading,
     result,
-  } = useAPICall(api.getAppointments)
+  } = useAPICall(mockAtHomeClient.getAppointments)
 
   const [allAppointments, setAllAppointments] = useState<AppointmentType[]>([])
   const [filteredAppointments, setFilteredAppointments] = useState<
@@ -118,7 +119,8 @@ const MyAppointmentsPage = () => {
 
   useEffect(() => {
     if (result?.ok) {
-      const all = result.value.body.appointments as AppointmentType[]
+      const all = result.value.body.data
+        .appointments as unknown as AppointmentType[]
       setAllAppointments(all)
     }
   }, [result])
@@ -142,9 +144,11 @@ const MyAppointmentsPage = () => {
 
     const typeFiltered = filtered.filter(
       (appt) =>
-        (appt.vet_id !== null && appt.appt_type === "Vet Consultation") ||
-        appt.appt_type === "Grooming",
+        appt.appt_type === "VET_CONSULTATION" ||
+        appt.appt_type === "GROOMING" ||
+        appt.appt_type === "AT_HOME_VISIT",
     )
+    console.log(allAppointments, "data is ")
 
     let sortedAppointments: AppointmentType[] = []
 

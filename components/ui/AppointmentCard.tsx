@@ -58,6 +58,16 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
     petImageByType[appointment.pet_type?.toLowerCase() || "other"] ||
     petImageByType.other
 
+  const petImage =
+    //uncomment below line to use actual pet image
+    // appointment.pet_profile_image ||
+    defaultPetImageByType
+
+  const vetImage =
+    //uncomment below line to use actual vet image
+    // appointment.vet_image ||
+    defaultVetImage
+
   const parsedDate = parseISO(appointment.booking_date)
 
   return (
@@ -84,7 +94,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
       <div className="flex items-center my-4">
         <div className="relative w-20 h-20 rounded-full overflow-hidden bg-white p-3 flex justify-center items-center">
           <Image
-            src={appointment.pet_profile_image || defaultPetImageByType}
+            src={petImage}
             alt={`${appointment.pet_name}'s profile`}
             layout="fill"
             objectFit="cover"
@@ -92,10 +102,10 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
             priority
           />
         </div>
-        {appointment.appt_type !== "Grooming" && (
+        {appointment.appt_type !== "GROOMING" && (
           <div className="relative w-20 h-20 rounded-full overflow-hidden bg-white -ml-6 border-2 border-white">
             <Image
-              src={appointment.vet_image ?? defaultVetImage}
+              src={vetImage}
               alt={`Dr. ${appointment.vet_name}'s profile`}
               objectFit="cover"
               sizes="80px"
@@ -108,10 +118,17 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
       <div className={`space-y-1 ${text}`}>
         <p className="font-semibold">
           {appointment.pet_name}
-          {appointment.appt_type !== "Grooming" &&
+          {appointment.appt_type !== "GROOMING" &&
             ` and ${appointment.vet_name}`}
         </p>
-        <p>{appointment.clinic_name}</p>
+        {appointment.clinic_name && <p>{appointment.clinic_name}</p>}
+        {appointment.address && (
+          <p>
+            {appointment.address.address_line1},{" "}
+            {appointment.address.address_line2}, {appointment.address.pincode}
+          </p>
+        )}
+
         <p>{format(parsedDate, "EEEE dd MMMM, yyyy")}</p>
         <p>
           {appointment.appt_start}

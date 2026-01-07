@@ -75,34 +75,92 @@ export enum AppointmentStatus {
   Past = "Past",
   Cancelled = "Cancelled",
 }
+
+export type AppointmentCategory =
+  | "UPCOMING"
+  | "COMPLETED"
+  | "REQUESTED"
+  | "CANCELLED"
+
+export type AppointmentTypeEnum =
+  | "VET_CONSULTATION"
+  | "GROOMING"
+  | "AT_HOME_VISIT"
+
+export type PetType = "DOG" | "CAT" | "OTHER"
+
 export interface AppointmentType {
   id: string
   sub_booking_id: string
-  pet_id: string
-  pet_name: string
-  pet_type?: "DOG" | "CAT" | "OTHER" | null
-  pet_profile_image: string | null
-  vet_id: string
-  vet_name: string
-  vet_image: string | null
   clinic_id: string
-  clinic_name: string
-  clinic_location: string
-  clinic_contact: string
-  appt_start: string
+
+  pet_name: string
+  pet_type: PetType | null
+  pet_profile_image: string | null
+
   booking_date: string
+  appt_start: string
   appt_end: string
-  appt_status: string | null
-  // appt_reason: string | null
-  appt_type: string | null
-  appt_type_id: string
-  category: "UPCOMING" | "COMPLETED" | "REQUESTED" | "CANCELLED"
+
+  appt_type_title: "Vet Consultation" | "Grooming" | "At-Home Visit"
+  appt_type: AppointmentTypeEnum
+
+  category: AppointmentCategory
+
+  clinic_name?: string
+  clinic_location?: string
+  clinic_contact: string
+
   coupon_code?: string | null
-  invoice_id: string
-  total_tax_amount: number
-  total_billing_amount: number
-  payment_status: "PAID" | "UNPAID" | "NO_BILL" | "PARTIALLY_PAID" | "OVERPAID"
+
+  vet_name?: string | null
+  vet_image?: string | null
+  vet_contact?: string | null
+
+  address?: Address
+
+  visit_status?:
+    | "UNCONFIRMED"
+    | "CONFIRMED"
+    | "DELAYED"
+    | "REACHED"
+    | "CANCELLED"
+    | "VISIT_STARTED"
+    | "VISIT_FINISHED"
+
+  helpline_no?: string
+  start_otp?: string | null
+  sos_status?: "ACTIVE" | "INACTIVE"
 }
+
+// export interface AppointmentType {
+//   id: string
+//   sub_booking_id: string
+//   pet_id: string
+//   pet_name: string
+//   pet_type?: "DOG" | "CAT" | "OTHER" | null
+//   pet_profile_image: string | null
+//   vet_id: string
+//   vet_name: string
+//   vet_image: string | null
+//   clinic_id: string
+//   clinic_name: string
+//   clinic_location: string
+//   clinic_contact: string
+//   appt_start: string
+//   booking_date: string
+//   appt_end: string
+//   appt_status: string | null
+//   // appt_reason: string | null
+//   appt_type: string | null
+//   appt_type_id: string
+//   category: "UPCOMING" | "COMPLETED" | "REQUESTED" | "CANCELLED"
+//   coupon_code?: string | null
+//   invoice_id: string
+//   total_tax_amount: number
+//   total_billing_amount: number
+//   payment_status: "PAID" | "UNPAID" | "NO_BILL" | "PARTIALLY_PAID" | "OVERPAID"
+// }
 export type Address = {
   id: string
   tag: string
