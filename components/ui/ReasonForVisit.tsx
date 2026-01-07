@@ -95,6 +95,8 @@ const ReasonForVisit = ({
     setIsEmergency(value)
     if (value === "yes") {
       setShowEmergencyModal(true)
+      setSelectedReason(null)
+      setFilledDescription("")
     }
   }
 
