@@ -16,8 +16,6 @@ interface SelectAddressProps {
 }
 
 const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
-  const router = useRouter()
-
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(
     addressId || null,
   )
@@ -28,6 +26,7 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
   const [checkingServiceability, setCheckingServiceability] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [addressToDelete, setAddressToDelete] = useState<string | null>(null)
+  const [isConfirming, setIsConfirming] = useState(false)
 
   const {
     call: getAddressBook,
@@ -38,6 +37,7 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
   const { call: deleteAddress, loading: deletingAddress } = useAPICall(
     mockAtHomeClient.deleteAddress,
   )
+  const router = useRouter()
 
   const searchParams = useSearchParams()
   const initialAddressId = searchParams.get("addressId")
@@ -145,6 +145,16 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
 
     if (result?.ok) {
       await getAddressBook({})
+      setServiceableIds((prev) => {
+        const newSet = new Set(prev)
+        newSet.delete(addressToDelete)
+        return newSet
+      })
+      setCheckedAddressIds((prev) => {
+        const newSet = new Set(prev)
+        newSet.delete(addressToDelete)
+        return newSet
+      })
       if (selectedAddressId === addressToDelete) {
         setSelectedAddressId(null)
       }
@@ -169,13 +179,21 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
       </div>
     )
   }
+  const isConfirmDisabled =
+    !selectedAddressId || !serviceableIds.has(selectedAddressId) || isConfirming
+
+  const handleConfirmClick = () => {
+    if (!selectedAddressId) return
+    setIsConfirming(true)
+    handleConfirm(selectedAddressId)
+  }
 
   return (
     <div className="space-y-8 py-10">
       <h1 className="text-xl font-semibold">
         Let&apos;s check if your address is within range
       </h1>
-      <p className="text-gray-600">Add or select your address</p>
+      <p className="text-gray-600 mb-12">Add or select your address</p>
 
       {addresses.length === 0 ? (
         <div className="text-center py-12">
@@ -210,7 +228,7 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
 
                   <div className="flex items-center gap-2">
                     <FaPen
-                      className="cursor-pointer"
+                      className="cursor-pointer hover:text-secondary-1 transition"
                       onClick={(e) => {
                         e.stopPropagation()
                         router.push(
@@ -219,7 +237,7 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
                       }}
                     />
                     <FaTrash
-                      className="cursor-pointer"
+                      className="cursor-pointer hover:text-red-600 transition"
                       onClick={(e) => handleDeleteClick(address.id, e)}
                     />
 
@@ -256,15 +274,14 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
         </div>
       )}
 
-      <div className="flex justify-center">
+      <div className="flex justify-center mb-10 mt-6">
         <button
-          disabled={
-            !selectedAddressId || !serviceableIds.has(selectedAddressId)
-          }
-          className="rounded-full px-8 py-3 bg-secondary-1 text-white disabled:opacity-50 disabled:cursor-not-allowed"
-          onClick={() => handleConfirm(selectedAddressId!)}
+          disabled={isConfirmDisabled}
+          className="rounded-full px-8 py-3 bg-secondary-1 text-white disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          onClick={handleConfirmClick}
         >
-          Confirm Address
+          {isConfirming && <ClipLoader size={16} color="#ffffff" />}
+          {isConfirming ? "Confirming..." : "Confirm Address"}
         </button>
       </div>
 
