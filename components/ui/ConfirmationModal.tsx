@@ -18,6 +18,8 @@ interface ConfirmationModalProps {
     petName: string
     service: string
     doctorName?: string
+    reasonForVisit?: string
+    reasonDescription?: string
     location: string
     date: Date
     slot: string
@@ -66,6 +68,18 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                 {format(date, "MMMM d, yyyy")} at {slot}
               </span>
             </div>
+            {bookingDetails.reasonForVisit && (
+              <div className="flex items-center text-sm text-gray-600 my-1">
+                <span className="font-medium">Reason:</span>
+                <span className="ml-2">{bookingDetails.reasonForVisit}</span>
+              </div>
+            )}
+            {bookingDetails.reasonDescription && (
+              <div className="flex items-center text-sm text-gray-600 my-1">
+                <span className="font-medium">Description:</span>
+                <span className="ml-2">{bookingDetails.reasonDescription}</span>
+              </div>
+            )}
           </div>
           {couponCode && (
             <div>

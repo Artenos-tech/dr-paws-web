@@ -4,14 +4,20 @@ import SelectAddress from "./SelectAddress"
 import SelectPet from "./SelectPet"
 import ReasonForVisit from "./ReasonForVisit"
 import SelectDateTimeForVisit from "./SelectDateTimeForVisit"
+import ConfirmationModal from "./ConfirmationModal"
+import { useAPICall } from "@/hooks/apicall"
+import { mockAtHomeClient } from "@/services/api.athome"
 
 interface AtHomeBookingFlowProps {
   onBackToStart: () => void
 }
 
 type AtHomeAppointmentData = {
+  service?: string
   addressId?: string
+  location?: string
   petId?: string
+  petName?: string
   isEmergency?: "yes" | "no" | null
   reasonForVisit?: string
   description?: string
@@ -26,16 +32,34 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
   onBackToStart,
 }) => {
   const [currentStep, setCurrentStep] = React.useState<number>(1)
+  const [showConfirmationModal, setShowConfirmationModal] =
+    React.useState(false)
   const [atHomeAppointmentData, setAtHomeAppointmentData] =
     React.useState<AtHomeAppointmentData>({})
+  const { call: getAddress } = useAPICall(mockAtHomeClient.getAddress)
 
-  const handleAddressConfirm = (addressId: string) => {
-    setAtHomeAppointmentData((prev) => ({ ...prev, addressId }))
+  const handleAddressConfirm = async (addressId: string) => {
+    const response = await getAddress({ addressid: addressId })
+    if (!response?.ok) return
+
+    const address = response.value.body.data.address_book || null
+    if (!address) return
+
+    const location = `${address.address_line1}, ${address.address_line2}, ${address.pincode}${
+      address.directions ? ` (${address.directions})` : ""
+    }`
+
+    setAtHomeAppointmentData((prev) => ({
+      ...prev,
+      addressId,
+      location,
+    }))
+
     setCurrentStep(2)
   }
 
-  const handlePetConfirm = (petId: string) => {
-    setAtHomeAppointmentData((prev) => ({ ...prev, petId }))
+  const handlePetConfirm = (petId: string, petName: string) => {
+    setAtHomeAppointmentData((prev) => ({ ...prev, petId, petName }))
     setCurrentStep(3)
   }
 
@@ -62,6 +86,7 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
       date,
       slot,
     }))
+    setShowConfirmationModal(true)
   }
 
   const handleBack = () => {
@@ -71,6 +96,23 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
       onBackToStart()
     }
   }
+  const bookingDetails = React.useMemo(() => {
+    return {
+      petName: atHomeAppointmentData.petName || "",
+      service: atHomeAppointmentData.service || "At-Home Appointment",
+      doctorName: undefined,
+      location: atHomeAppointmentData.location || "",
+      reasonForVisit: atHomeAppointmentData.reasonForVisit,
+      reasonDescription: atHomeAppointmentData.description,
+      date: atHomeAppointmentData.date
+        ? new Date(atHomeAppointmentData.date)
+        : new Date(),
+      slot: atHomeAppointmentData.slot
+        ? `${atHomeAppointmentData.slot.startTime} - ${atHomeAppointmentData.slot.endTime}`
+        : "",
+      couponCode: null,
+    }
+  }, [atHomeAppointmentData])
 
   return (
     <div className="w-full">
@@ -104,12 +146,22 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
         />
       )}
       {currentStep === 4 && (
-        <SelectDateTimeForVisit
-          addressId={atHomeAppointmentData.addressId}
-          date={atHomeAppointmentData.date}
-          slot={atHomeAppointmentData.slot}
-          onConfirm={handleDateTimeConfirm}
-        />
+        <>
+          <SelectDateTimeForVisit
+            addressId={atHomeAppointmentData.addressId}
+            date={atHomeAppointmentData.date}
+            slot={atHomeAppointmentData.slot}
+            onConfirm={handleDateTimeConfirm}
+          />
+          <ConfirmationModal
+            isOpen={showConfirmationModal}
+            onClose={() => setShowConfirmationModal(false)}
+            onConfirm={() => {
+              setShowConfirmationModal(false)
+            }}
+            bookingDetails={bookingDetails}
+          />
+        </>
       )}
     </div>
   )
