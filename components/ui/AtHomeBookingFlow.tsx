@@ -2,6 +2,8 @@ import React from "react"
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md"
 import SelectAddress from "./SelectAddress"
 import SelectPet from "./SelectPet"
+import ReasonForVisit from "./ReasonForVisit"
+import SelectDateTimeForVisit from "./SelectDateTimeForVisit"
 
 interface AtHomeBookingFlowProps {
   onBackToStart: () => void
@@ -10,11 +12,19 @@ interface AtHomeBookingFlowProps {
 type AtHomeAppointmentData = {
   addressId?: string
   petId?: string
+  isEmergency?: "yes" | "no" | null
+  reasonForVisit?: string
+  description?: string
+  date?: string
+  slot?: {
+    startTime: string
+    endTime: string
+  }
 }
 
 const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
   onBackToStart,
-}: AtHomeBookingFlowProps) => {
+}) => {
   const [currentStep, setCurrentStep] = React.useState<number>(1)
   const [atHomeAppointmentData, setAtHomeAppointmentData] =
     React.useState<AtHomeAppointmentData>({})
@@ -26,6 +36,32 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
 
   const handlePetConfirm = (petId: string) => {
     setAtHomeAppointmentData((prev) => ({ ...prev, petId }))
+    setCurrentStep(3)
+  }
+
+  const handleReasonForVisitConfirm = (
+    reasonForVisit: string,
+    description: string,
+    isEmergency: "yes" | "no" | null,
+  ) => {
+    setAtHomeAppointmentData((prev) => ({
+      ...prev,
+      reasonForVisit,
+      description,
+      isEmergency,
+    }))
+    setCurrentStep(4)
+  }
+
+  const handleDateTimeConfirm = (
+    date: string,
+    slot: { startTime: string; endTime: string },
+  ) => {
+    setAtHomeAppointmentData((prev) => ({
+      ...prev,
+      date,
+      slot,
+    }))
   }
 
   const handleBack = () => {
@@ -57,6 +93,22 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
         <SelectPet
           petId={atHomeAppointmentData.petId}
           handleConfirm={handlePetConfirm}
+        />
+      )}
+      {currentStep === 3 && (
+        <ReasonForVisit
+          reason={atHomeAppointmentData.reasonForVisit}
+          description={atHomeAppointmentData.description}
+          isEmergency={atHomeAppointmentData.isEmergency}
+          handleConfirm={handleReasonForVisitConfirm}
+        />
+      )}
+      {currentStep === 4 && (
+        <SelectDateTimeForVisit
+          addressId={atHomeAppointmentData.addressId}
+          date={atHomeAppointmentData.date}
+          slot={atHomeAppointmentData.slot}
+          onConfirm={handleDateTimeConfirm}
         />
       )}
     </div>
