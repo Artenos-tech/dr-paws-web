@@ -35,6 +35,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 }) => {
   const { petName, service, doctorName, location, date, slot, couponCode } =
     bookingDetails
+  const [showFullDesc, setShowFullDesc] = React.useState(false)
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -75,9 +76,26 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
               </div>
             )}
             {bookingDetails.reasonDescription && (
-              <div className="flex items-center text-sm text-gray-600 my-1">
+              <div className="text-sm text-gray-600 my-1">
                 <span className="font-medium">Description:</span>
-                <span className="ml-2">{bookingDetails.reasonDescription}</span>
+
+                <p className="mt-1 break-all whitespace-pre-line">
+                  {showFullDesc
+                    ? bookingDetails.reasonDescription
+                    : bookingDetails.reasonDescription.slice(0, 60) +
+                      (bookingDetails.reasonDescription.length > 60
+                        ? "..."
+                        : "")}
+                </p>
+
+                {bookingDetails.reasonDescription.length > 60 && (
+                  <button
+                    onClick={() => setShowFullDesc((prev) => !prev)}
+                    className="text-secondary-1 text-xs mt-1"
+                  >
+                    {showFullDesc ? "Show less" : "Read more"}
+                  </button>
+                )}
               </div>
             )}
           </div>
