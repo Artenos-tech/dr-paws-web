@@ -79,6 +79,7 @@ export enum AppointmentStatus {
 
 export type AppointmentCategory =
   | "UPCOMING"
+  | "ACTIVE"
   | "COMPLETED"
   | "REQUESTED"
   | "CANCELLED"
