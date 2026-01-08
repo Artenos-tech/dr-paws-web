@@ -13,6 +13,7 @@ import { mockAtHomeClient } from "@/services/api.athome"
 const TABS = {
   ALL: { label: "All" },
   UPCOMING: { label: "Upcoming" },
+  ACTIVE: { label: "Active" },
   PAST: { label: "Past" },
   CANCELLED: { label: "Cancelled" },
 } as const
@@ -65,9 +66,10 @@ const MyAppointmentsPage = () => {
     return appointments.sort((a, b) => {
       const categoryPriority: Record<AppointmentType["category"], number> = {
         UPCOMING: 1,
-        COMPLETED: 2,
-        CANCELLED: 3,
-        REQUESTED: 4,
+        ACTIVE: 2,
+        COMPLETED: 3,
+        CANCELLED: 4,
+        REQUESTED: 5,
       }
 
       const priorityA = categoryPriority[a.category]
@@ -131,6 +133,17 @@ const MyAppointmentsPage = () => {
       case "UPCOMING":
         filtered = allAppointments.filter((a) => a.category === "UPCOMING")
         break
+      case "ACTIVE":
+        filtered = allAppointments.filter((a) => {
+          if (
+            a.appt_type === "AT_HOME_VISIT" &&
+            a.visit_status === "VISIT_STARTED"
+          ) {
+            return true
+          }
+          return isCurrentTimeInSlot(a.booking_date, a.appt_start, a.appt_end)
+        })
+        break
       case "PAST":
         filtered = allAppointments.filter((a) => a.category === "COMPLETED")
         break
@@ -178,6 +191,19 @@ const MyAppointmentsPage = () => {
     (currentPage - 1) * pageSize,
     currentPage * pageSize,
   )
+  const isCurrentTimeInSlot = (
+    bookingDate: string,
+    start: string,
+    end: string,
+  ) => {
+    const date = bookingDate.split("T")[0]
+    const toDate = (time: string) =>
+      new Date(`${date}T${time.padStart(5, "0")}:00`)
+    const now = new Date()
+    const startTime = toDate(start)
+    const endTime = toDate(end)
+    return now >= startTime && now <= endTime
+  }
 
   return (
     <div className="flex flex-col w-full h-full items-center font-roca pb-20 flex-grow px-8 md:px-32 lg:px-20 xl:px-40">

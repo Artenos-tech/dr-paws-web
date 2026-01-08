@@ -24,6 +24,11 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
       bg: "bg-white",
       text: "text-primary-1",
     },
+    active: {
+      border: "border-l-secondary-1 border-l-4",
+      bg: "bg-white",
+      text: "text-primary-1",
+    },
     cancelled: {
       border: "border-l-[#C6C4C4] border-l-4",
       bg: "bg-[#F1F1F1]",
@@ -52,6 +57,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
   const getStatusCategory = (appt: AppointmentType) => {
     if (appt.category === "UPCOMING") return "upcoming"
     if (appt.category === "COMPLETED") return "past"
+    if (appt.category === "ACTIVE") return "active"
     if (appt.category === "CANCELLED") return "cancelled"
     throw new Error(`No status category defined for ${appt.category}`)
   }
@@ -59,6 +65,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
   function getAppointmentCategoryLabel(category: string) {
     if (category === "UPCOMING") return "Upcoming"
     if (category === "COMPLETED") return "Visited"
+    if (category === "ACTIVE") return "Active"
     if (category === "CANCELLED") return "Cancelled"
     throw new Error(`No category label defined for ${category}`)
   }
