@@ -125,7 +125,9 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
             priority
           />
         </div>
-        {appointment.appt_type !== "GROOMING" && (
+        {(appointment.appt_type === "VET_CONSULTATION" ||
+          (appointment.appt_type === "AT_HOME_VISIT" &&
+            appointment.visit_status !== "UNCONFIRMED")) && (
           <div className="relative w-20 h-20 rounded-full overflow-hidden bg-white -ml-6 border-2 border-white">
             <Image
               src={vetImage}
