@@ -142,7 +142,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
         <p className="font-semibold">
           {appointment.pet_name}
           {((appointment.appt_type === "AT_HOME_VISIT" &&
-            appointment.visit_status === "CONFIRMED") ||
+            appointment.visit_status !== "UNCONFIRMED") ||
             appointment.appt_type === "VET_CONSULTATION") &&
             appointment.vet_name &&
             ` and ${appointment.vet_name}`}
