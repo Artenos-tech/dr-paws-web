@@ -35,6 +35,18 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
       text: "text-[#909090]",
     },
   }
+  const visitStatusStyles: Record<
+    NonNullable<AppointmentType["visit_status"]>,
+    { bg: string; text: string }
+  > = {
+    UNCONFIRMED: { bg: "bg-[#FC862C]", text: "text-white" },
+    CONFIRMED: { bg: "bg-[#2C8DFC]", text: "text-white" },
+    DELAYED: { bg: "bg-[#D00000]", text: "text-white" },
+    REACHED: { bg: "bg-[#FBFF26A8]", text: "text-black" },
+    CANCELLED: { bg: "bg-[#656565]", text: "text-white" },
+    VISIT_STARTED: { bg: "bg-[#4AB200DB]", text: "text-white" },
+    VISIT_FINISHED: { bg: "bg-[#4AB200]", text: "text-white" },
+  }
 
   // Mapping appt_status to style categories
   const getStatusCategory = (appt: AppointmentType) => {
@@ -79,6 +91,17 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
         <p className={`${text}`}>
           {getAppointmentCategoryLabel(appointment.category)}
         </p>
+        {appointment.appt_type === "AT_HOME_VISIT" &&
+          appointment.visit_status && (
+            <span
+              className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                visitStatusStyles[appointment.visit_status].bg
+              } ${visitStatusStyles[appointment.visit_status].text}`}
+            >
+              {appointment.visit_status.replace("_", " ")}
+            </span>
+          )}
+
         <p
           className={`px-2 py-1 rounded-md ${
             // statusCategory === "cancelled" ? "bg-[#E0E0E0]" : "bg-primary-2"
@@ -118,9 +141,13 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
       <div className={`space-y-1 ${text}`}>
         <p className="font-semibold">
           {appointment.pet_name}
-          {appointment.appt_type !== "GROOMING" &&
+          {((appointment.appt_type === "AT_HOME_VISIT" &&
+            appointment.visit_status === "CONFIRMED") ||
+            appointment.appt_type === "VET_CONSULTATION") &&
+            appointment.vet_name &&
             ` and ${appointment.vet_name}`}
         </p>
+
         {appointment.clinic_name && <p>{appointment.clinic_name}</p>}
         {appointment.address && (
           <>
