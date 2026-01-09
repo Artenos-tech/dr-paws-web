@@ -79,7 +79,7 @@ const AtHomeBookingDetails = ({
         </h1>
 
         <div
-          className={`${bg} ${text} w-11/12 md:w-4/5 lg:w-[50%] shadow-md rounded-lg p-6 space-y-5`}
+          className={`${bg} ${text} w-11/12 md:w-4/5 lg:w-[50%] shadow-md rounded-lg py-12 px-28 space-y-5`}
         >
           {isVisitFinished && (
             <>
