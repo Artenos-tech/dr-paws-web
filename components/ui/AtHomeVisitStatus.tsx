@@ -4,7 +4,7 @@ import React from "react"
 import Image from "next/image"
 import { Phone } from "lucide-react"
 import defaultVetImage from "@/public/assets/images/clinic/doctorFemale.webp"
-import { AppointmentType } from "@/model/typeDefinitions"
+import { AppointmentApiDetails, AppointmentType } from "@/model/typeDefinitions"
 import toast from "react-hot-toast"
 
 type VisitStatus =
@@ -17,7 +17,7 @@ type VisitStatus =
   | "VISIT_FINISHED"
 
 type AtHomeVisitStatusProps = {
-  selectedAppointment: AppointmentType
+  selectedAppointment: AppointmentApiDetails
 
   visitStatus?: VisitStatus
 }

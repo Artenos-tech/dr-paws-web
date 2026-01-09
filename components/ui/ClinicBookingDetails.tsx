@@ -25,7 +25,7 @@ import { ClipLoader } from "react-spinners"
 import toast from "react-hot-toast"
 import { AttachmentInfo } from "./MedicalHistory"
 import RescheduleAppointment from "@/components/ui/RescheduleAppointment"
-import { BookingDetailsProps } from "./BookingDetails"
+import { AppointmentApiDetails } from "@/model/typeDefinitions"
 
 // export const cancelReasons = [
 //   "Another commitment has come up",
@@ -42,6 +42,11 @@ import { BookingDetailsProps } from "./BookingDetails"
 //   "I have to travel out of the city",
 //   "My pet needs the treatment later",
 // ]
+
+type BookingDetailsProps = {
+  goBack: (refetch: boolean) => void
+  selectedAppointment: AppointmentApiDetails
+}
 
 const ClinicBookingDetails = ({
   selectedAppointment,
@@ -460,11 +465,12 @@ const ClinicBookingDetails = ({
                                     <Eye size={16} />
                                   )
                                 }
-                                onClick={() =>
+                                onClick={() => {
+                                  if (!selectedAppointment.invoice_id) return
                                   handleViewInvoicePDF(
                                     selectedAppointment.invoice_id,
                                   )
-                                }
+                                }}
                               />
                             </Tooltip>
                             <Tooltip title="Download PDF">
@@ -480,7 +486,8 @@ const ClinicBookingDetails = ({
                                   )
                                 }
                                 onClick={() => {
-                                  handleDownloadInvoicePDF(
+                                  if (!selectedAppointment.invoice_id) return
+                                  handleViewInvoicePDF(
                                     selectedAppointment.invoice_id,
                                   )
                                 }}

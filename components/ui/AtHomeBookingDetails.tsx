@@ -2,7 +2,6 @@
 
 import React from "react"
 import BackButton from "./BackButton"
-import { BookingDetailsProps } from "./BookingDetails"
 import {
   CalendarDays,
   Phone,
@@ -15,7 +14,12 @@ import { GrLocation } from "react-icons/gr"
 import { format, parseISO } from "date-fns"
 import AtHomeVisitStatus from "./AtHomeVisitStatus"
 import toast from "react-hot-toast"
+import { AppointmentApiDetails } from "@/model/typeDefinitions"
 
+type BookingDetailsProps = {
+  goBack: (refetch: boolean) => void
+  selectedAppointment: AppointmentApiDetails
+}
 const AtHomeBookingDetails = ({
   selectedAppointment,
   goBack,
