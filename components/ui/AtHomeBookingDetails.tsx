@@ -27,7 +27,6 @@ const AtHomeBookingDetails = ({
   const parsedDate = parseISO(selectedAppointment.booking_date)
 
   const fullAddress = [
-    selectedAppointment?.address?.tag,
     selectedAppointment?.address?.address_line1,
     selectedAppointment?.address?.address_line2,
   ]
@@ -114,11 +113,17 @@ const AtHomeBookingDetails = ({
             </span>
           </div>
 
-          <div className="flex items-start gap-3">
-            <GrLocation className="text-secondary-1 text-xl mt-1" />
-            <span className="text-base font-medium leading-relaxed">
-              {fullAddress}
-            </span>
+          <div className="flex gap-3">
+            <div className="w-6 flex justify-center">
+              <GrLocation className="text-secondary-1 text-xl mt-1" />
+            </div>
+
+            <div className="flex flex-col">
+              <span className="font-medium">
+                {selectedAppointment.address?.tag}
+              </span>
+              <span className="text-base leading-relaxed">{fullAddress}</span>
+            </div>
           </div>
 
           {!isVisitFinished && (
