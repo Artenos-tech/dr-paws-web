@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import {
   Dialog,
   DialogContent,
@@ -27,15 +27,30 @@ interface ConfirmationModalProps {
   }
 }
 
+const DESC_TRUNCATE_LENGTH = 60
+
 const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   isOpen,
   onClose,
   onConfirm,
   bookingDetails,
 }) => {
-  const { petName, service, doctorName, location, date, slot, couponCode } =
-    bookingDetails
+  const {
+    petName,
+    service,
+    doctorName,
+    location,
+    date,
+    slot,
+    couponCode,
+    reasonDescription,
+    reasonForVisit,
+  } = bookingDetails
   const [showFullDesc, setShowFullDesc] = React.useState(false)
+
+  useEffect(() => {
+    if (!isOpen) setShowFullDesc(false)
+  }, [isOpen])
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -69,26 +84,26 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                 {format(date, "MMMM d, yyyy")} at {slot}
               </span>
             </div>
-            {bookingDetails.reasonForVisit && (
+            {reasonForVisit && (
               <div className="flex items-center text-sm text-gray-600 my-1">
                 <span className="font-medium">Reason:</span>
-                <span className="ml-2">{bookingDetails.reasonForVisit}</span>
+                <span className="ml-2">{reasonForVisit}</span>
               </div>
             )}
-            {bookingDetails.reasonDescription && (
+            {reasonDescription && (
               <div className="text-sm text-gray-600 my-1">
                 <span className="font-medium">Description:</span>
 
-                <p className="mt-1 break-all whitespace-pre-line">
+                <p className="mt-1 break-words whitespace-pre-line">
                   {showFullDesc
-                    ? bookingDetails.reasonDescription
-                    : bookingDetails.reasonDescription.slice(0, 60) +
-                      (bookingDetails.reasonDescription.length > 60
+                    ? reasonDescription
+                    : reasonDescription.slice(0, DESC_TRUNCATE_LENGTH) +
+                      (reasonDescription.length > DESC_TRUNCATE_LENGTH
                         ? "..."
                         : "")}
                 </p>
 
-                {bookingDetails.reasonDescription.length > 60 && (
+                {reasonDescription.length > DESC_TRUNCATE_LENGTH && (
                   <button
                     onClick={() => setShowFullDesc((prev) => !prev)}
                     className="text-secondary-1 text-xs mt-1"
@@ -116,13 +131,13 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
         <DialogFooter className="mt-6 flex flex-col sm:flex-row gap-2">
           <button
             onClick={onClose}
-            className="px-3 py-2 sm:px-4 sm:py-2 rounded-md text-[#5281a2] border border-[#5281a2] hover:bg-[#5281a2] hover:text-white transition-colors text-sm sm:text-base flex-1"
+            className="px-3 py-2 sm:px-4 sm:py-2 rounded-md text-secondary-1 border border-secondary-1 hover:bg-secondary-1 hover:text-white transition-colors text-sm sm:text-base flex-1"
           >
             Cancel
           </button>
           <button
             onClick={onConfirm}
-            className={`px-3 py-2 sm:px-4 sm:py-2 rounded-md text-white text-sm sm:text-base flex-1 bg-[#5281a2] hover:bg-[#3a6d8e] transition-colors`}
+            className="px-3 py-2 sm:px-4 sm:py-2 rounded-md text-white text-sm sm:text-base flex-1 bg-secondary-1 hover:bg-secondary-1 transition-colors"
           >
             Confirm
           </button>

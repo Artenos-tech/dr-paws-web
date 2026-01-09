@@ -18,7 +18,7 @@ interface ReasonForVisitProps {
 }
 
 const VISIT_REASONS = [
-  { key: "checkup", label: "Regular check-ups" },
+  { key: "checkup", label: "Regular check-up" },
   { key: "vaccination", label: "Vaccination" },
   { key: "sick", label: "My pet is sick" },
   { key: "other", label: "Something else" },
