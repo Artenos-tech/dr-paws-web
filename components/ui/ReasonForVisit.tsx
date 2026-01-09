@@ -18,7 +18,7 @@ interface ReasonForVisitProps {
 }
 
 const VISIT_REASONS = [
-  { key: "checkup", label: "Regular check-ups" },
+  { key: "checkup", label: "Regular check-up" },
   { key: "vaccination", label: "Vaccination" },
   { key: "sick", label: "My pet is sick" },
   { key: "other", label: "Something else" },
@@ -41,11 +41,15 @@ const ReasonForVisit = ({
   isEmergency: initialIsEmergency,
 }: ReasonForVisitProps) => {
   const [isEmergency, setIsEmergency] = useState<"yes" | "no" | null>(
-    initialIsEmergency ?? null,
+    initialIsEmergency ?? "no",
   )
   const [showEmergencyModal, setShowEmergencyModal] = useState(false)
+  const getReasonFromLabel = (label: string | null) => {
+    const reasonObj = VISIT_REASONS.find((r) => r.label === label)
+    return reasonObj ? reasonObj.key : null
+  }
   const [selectedReason, setSelectedReason] = useState<string | null>(
-    reason || null,
+    getReasonFromLabel(reason || null),
   )
   const [filledDescription, setFilledDescription] = useState(description || "")
   const [isValid, setIsValid] = useState(false)
@@ -91,6 +95,9 @@ const ReasonForVisit = ({
     setIsEmergency(value)
     if (value === "yes") {
       setShowEmergencyModal(true)
+      setSelectedReason(null)
+      setFilledDescription("")
+      setTouched({})
     }
   }
 
@@ -111,13 +118,18 @@ const ReasonForVisit = ({
     setIsEmergency(null)
     setSelectedReason(null)
     setFilledDescription("")
+    setIsEmergency("no")
     setTouched({})
   }
 
   const handleProceedClick = () => {
     if (!selectedReason) return
+
+    const reasonLabel =
+      VISIT_REASONS.find((r) => r.key === selectedReason)?.label || ""
+
     setIsProcessing(true)
-    handleConfirm(selectedReason, filledDescription, isEmergency)
+    handleConfirm(reasonLabel, filledDescription, isEmergency)
   }
 
   return (

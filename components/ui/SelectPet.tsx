@@ -10,7 +10,7 @@ import toast from "react-hot-toast"
 import { BookingPet } from "@/model/typeDefinitions"
 
 interface SelectPetProps {
-  handleConfirm: (petId: string) => void
+  handleConfirm: (petId: string, petName: string) => void
   petId?: string
 }
 
@@ -66,7 +66,9 @@ const SelectPet: React.FC<SelectPetProps> = ({ handleConfirm, petId }) => {
   const handleConfirmClick = () => {
     if (!selectedPetId) return
     setIsConfirming(true)
-    handleConfirm(selectedPetId)
+    const selectedPet = pets.find((pet) => pet.id === selectedPetId)
+    const selectedPetName = selectedPet ? selectedPet.name : ""
+    handleConfirm(selectedPetId, selectedPetName)
   }
 
   return (
