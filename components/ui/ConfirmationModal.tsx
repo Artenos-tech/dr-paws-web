@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import {
   Dialog,
   DialogContent,
@@ -22,12 +22,16 @@ interface ConfirmationModalProps {
     haircutAddOn?: boolean
     doctorName?: string
     isSenior?: boolean
+    reasonForVisit?: string
+    reasonDescription?: string
     location: string
     date: Date
     slot: string
     couponCode: string | null
   }
 }
+
+const DESC_TRUNCATE_LENGTH = 60
 
 const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   isOpen,
@@ -46,8 +50,15 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
     date,
     slot,
     couponCode,
+    reasonDescription,
+    reasonForVisit,
   } = bookingDetails
   const showHaircutAddOn = Boolean(haircutAddOn)
+  const [showFullDesc, setShowFullDesc] = React.useState(false)
+
+  useEffect(() => {
+    if (!isOpen) setShowFullDesc(false)
+  }, [isOpen])
 
   return (
     <Dialog
@@ -92,6 +103,35 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                 {format(date, "MMMM d, yyyy")} at {slot}
               </span>
             </div>
+            {reasonForVisit && (
+              <div className="flex items-center text-sm text-gray-600 my-1">
+                <span className="font-medium">Reason:</span>
+                <span className="ml-2">{reasonForVisit}</span>
+              </div>
+            )}
+            {reasonDescription && (
+              <div className="text-sm text-gray-600 my-1">
+                <span className="font-medium">Description:</span>
+
+                <p className="mt-1 break-words whitespace-pre-line">
+                  {showFullDesc
+                    ? reasonDescription
+                    : reasonDescription.slice(0, DESC_TRUNCATE_LENGTH) +
+                      (reasonDescription.length > DESC_TRUNCATE_LENGTH
+                        ? "..."
+                        : "")}
+                </p>
+
+                {reasonDescription.length > DESC_TRUNCATE_LENGTH && (
+                  <button
+                    onClick={() => setShowFullDesc((prev) => !prev)}
+                    className="text-secondary-1 text-xs mt-1"
+                  >
+                    {showFullDesc ? "Show less" : "Read more"}
+                  </button>
+                )}
+              </div>
+            )}
           </div>
           {couponCode && (
             <div>
