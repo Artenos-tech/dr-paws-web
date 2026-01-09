@@ -907,7 +907,7 @@ export const mockAtHomeClient: AtHomeAPIClient = {
         vet_image: "https://example.com/dr-sharma.jpg",
         vet_contact: "+91-9876543210",
         address: mockAddresses[0],
-        visit_status: "VISIT_FINISHED" as const,
+        visit_status: "CONFIRMED" as const,
         helpline_no: "+91-1800-DRPAWS",
         start_otp: "123456",
         sos_status: "INACTIVE" as const,

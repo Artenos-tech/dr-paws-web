@@ -74,16 +74,18 @@ const AtHomeBookingDetails = ({
   let appointmentText = ""
 
   if (isCancelled) {
-    appointmentText = `${selectedAppointment.pet_name} was scheduled for an at-home visit with ${selectedAppointment.vet_name}`
-  } else if (isConfirmed) {
+    appointmentText = `${selectedAppointment.pet_name} was scheduled for an At-Home Visit with ${selectedAppointment.vet_name}`
+  } else if (isVisitFinished) {
+    appointmentText = `${selectedAppointment.pet_name} had an At-Home Visit with ${selectedAppointment.vet_name}`
+  } else if(isConfirmed) {
     appointmentText = selectedAppointment.vet_name
-      ? `${selectedAppointment.pet_name} had an at-home visit with ${selectedAppointment.vet_name}`
-      : `${selectedAppointment.pet_name} had an at-home visit`
+      ? `${selectedAppointment.pet_name} is scheduled for an At-Home Visit with ${selectedAppointment.vet_name}`
+      : `${selectedAppointment.pet_name} is scheduled for an At-Home Visit`
   } else {
     appointmentText =
       selectedAppointment.visit_status === "UNCONFIRMED"
-        ? `${selectedAppointment.pet_name} is scheduled for an at-home visit`
-        : `${selectedAppointment.pet_name} is scheduled for an at-home visit with ${selectedAppointment.vet_name}`
+        ? `${selectedAppointment.pet_name} is scheduled for an At-Home Visit`
+        : `${selectedAppointment.pet_name} is scheduled for an At-Home Visit with ${selectedAppointment.vet_name}`
   }
 
   const defaultPetImageByType =
@@ -108,7 +110,7 @@ const AtHomeBookingDetails = ({
           {selectedAppointment.visit_status === "CANCELLED"
             ? "Home Visit Cancelled"
             : isVisitFinished
-              ? "Home visit finished"
+              ? "Home Visit Finished"
               : "Home Visit Scheduled"}
         </h1>
 
@@ -168,7 +170,7 @@ const AtHomeBookingDetails = ({
           <div className="flex items-center gap-3">
             <CalendarDays className="text-secondary-1" />
             <span className="text-base font-medium">
-              {format(parsedDate, "EEE dd MMM")}
+              {format(parsedDate, "EEE, dd MMM")}
             </span>
           </div>
 
