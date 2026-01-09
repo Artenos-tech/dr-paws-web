@@ -1,17 +1,23 @@
-import React from "react"
+import React, { useReducer } from "react"
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md"
 import SelectAddress from "./SelectAddress"
 import SelectPet from "./SelectPet"
 import ReasonForVisit from "./ReasonForVisit"
 import SelectDateTimeForVisit from "./SelectDateTimeForVisit"
+import ConfirmationModal from "./ConfirmationModal"
+import { useAPICall } from "@/hooks/apicall"
+import { mockAtHomeClient } from "@/services/api.athome"
 
 interface AtHomeBookingFlowProps {
   onBackToStart: () => void
 }
 
 type AtHomeAppointmentData = {
+  service?: string
   addressId?: string
+  location?: string
   petId?: string
+  petName?: string
   isEmergency?: "yes" | "no" | null
   reasonForVisit?: string
   description?: string
@@ -22,21 +28,148 @@ type AtHomeAppointmentData = {
   }
 }
 
+type BookingState = {
+  currentStep: number
+  showConfirmationModal: boolean
+  isLoading: boolean
+  isConfirming: boolean
+  appointmentData: AtHomeAppointmentData
+}
+
+type BookingAction =
+  | {
+      type: "SET_ADDRESS"
+      payload: { addressId: string; location: string }
+    }
+  | { type: "SET_PET"; payload: { petId: string; petName: string } }
+  | {
+      type: "SET_REASON_FOR_VISIT"
+      payload: {
+        reasonForVisit: string
+        description: string
+        isEmergency: "yes" | "no" | null
+      }
+    }
+  | {
+      type: "SET_DATE_TIME"
+      payload: { date: string; slot: { startTime: string; endTime: string } }
+    }
+  | { type: "GO_BACK" }
+  | { type: "SHOW_CONFIRMATION_MODAL" }
+  | { type: "HIDE_CONFIRMATION_MODAL" }
+  | { type: "CONFIRM_BOOKING" }
+  | { type: "SET_LOADING"; payload: boolean }
+
+const initialState: BookingState = {
+  currentStep: 1,
+  showConfirmationModal: false,
+  isLoading: false,
+  isConfirming: false,
+  appointmentData: {},
+}
+
+function bookingReducer(
+  state: BookingState,
+  action: BookingAction,
+): BookingState {
+  switch (action.type) {
+    case "SET_ADDRESS":
+      return {
+        ...state,
+        currentStep: 2,
+        isLoading: false,
+        appointmentData: {
+          ...state.appointmentData,
+          addressId: action.payload.addressId,
+          location: action.payload.location,
+        },
+      }
+    case "SET_PET":
+      return {
+        ...state,
+        currentStep: 3,
+        appointmentData: {
+          ...state.appointmentData,
+          petId: action.payload.petId,
+          petName: action.payload.petName,
+        },
+      }
+    case "SET_REASON_FOR_VISIT":
+      return {
+        ...state,
+        currentStep: 4,
+        appointmentData: {
+          ...state.appointmentData,
+          reasonForVisit: action.payload.reasonForVisit,
+          description: action.payload.description,
+          isEmergency: action.payload.isEmergency,
+        },
+      }
+    case "SET_DATE_TIME":
+      return {
+        ...state,
+        showConfirmationModal: true,
+        appointmentData: {
+          ...state.appointmentData,
+          date: action.payload.date,
+          slot: action.payload.slot,
+        },
+      }
+    case "GO_BACK":
+      return {
+        ...state,
+        currentStep: Math.max(1, state.currentStep - 1),
+      }
+    case "SHOW_CONFIRMATION_MODAL":
+      return { ...state, showConfirmationModal: true }
+    case "HIDE_CONFIRMATION_MODAL":
+      return { ...state, showConfirmationModal: false, isConfirming: false }
+    case "CONFIRM_BOOKING":
+      return { ...state, showConfirmationModal: false, isConfirming: true }
+    case "SET_LOADING":
+      return { ...state, isLoading: action.payload }
+    default:
+      return state
+  }
+}
+
 const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
   onBackToStart,
 }) => {
-  const [currentStep, setCurrentStep] = React.useState<number>(1)
-  const [atHomeAppointmentData, setAtHomeAppointmentData] =
-    React.useState<AtHomeAppointmentData>({})
+  const [state, dispatch] = useReducer(bookingReducer, initialState)
+  const {
+    currentStep,
+    showConfirmationModal,
+    isLoading,
+    isConfirming,
+    appointmentData,
+  } = state
+  const { call: getAddress } = useAPICall(mockAtHomeClient.getAddress)
 
-  const handleAddressConfirm = (addressId: string) => {
-    setAtHomeAppointmentData((prev) => ({ ...prev, addressId }))
-    setCurrentStep(2)
+  const handleAddressConfirm = async (addressId: string) => {
+    dispatch({ type: "SET_LOADING", payload: true })
+
+    const response = await getAddress({ addressid: addressId })
+    if (!response?.ok) {
+      dispatch({ type: "SET_LOADING", payload: false })
+      return
+    }
+
+    const address = response.value.body.data.address_book || null
+    if (!address) {
+      dispatch({ type: "SET_LOADING", payload: false })
+      return
+    }
+
+    const location = `${address.address_line1}, ${address.address_line2}, ${address.pincode}${
+      address.directions ? ` (${address.directions})` : ""
+    }`
+
+    dispatch({ type: "SET_ADDRESS", payload: { addressId, location } })
   }
 
-  const handlePetConfirm = (petId: string) => {
-    setAtHomeAppointmentData((prev) => ({ ...prev, petId }))
-    setCurrentStep(3)
+  const handlePetConfirm = (petId: string, petName: string) => {
+    dispatch({ type: "SET_PET", payload: { petId, petName } })
   }
 
   const handleReasonForVisitConfirm = (
@@ -44,72 +177,102 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
     description: string,
     isEmergency: "yes" | "no" | null,
   ) => {
-    setAtHomeAppointmentData((prev) => ({
-      ...prev,
-      reasonForVisit,
-      description,
-      isEmergency,
-    }))
-    setCurrentStep(4)
+    dispatch({
+      type: "SET_REASON_FOR_VISIT",
+      payload: { reasonForVisit, description, isEmergency },
+    })
   }
 
   const handleDateTimeConfirm = (
     date: string,
     slot: { startTime: string; endTime: string },
   ) => {
-    setAtHomeAppointmentData((prev) => ({
-      ...prev,
-      date,
-      slot,
-    }))
+    dispatch({ type: "SET_DATE_TIME", payload: { date, slot } })
+  }
+
+  const handleConfirmBooking = () => {
+    dispatch({ type: "CONFIRM_BOOKING" })
   }
 
   const handleBack = () => {
     if (currentStep > 1) {
-      setCurrentStep(currentStep - 1)
+      dispatch({ type: "GO_BACK" })
     } else {
       onBackToStart()
     }
   }
+
+  const bookingDetails = React.useMemo(() => {
+    return {
+      petName: appointmentData.petName || "",
+      service: appointmentData.service || "At-Home Appointment",
+      doctorName: undefined,
+      location: appointmentData.location || "",
+      reasonForVisit: appointmentData.reasonForVisit,
+      reasonDescription: appointmentData.description,
+      date: appointmentData.date ? new Date(appointmentData.date) : new Date(),
+      slot: appointmentData.slot
+        ? `${appointmentData.slot.startTime} - ${appointmentData.slot.endTime}`
+        : "",
+      couponCode: null,
+    }
+  }, [appointmentData])
 
   return (
     <div className="w-full">
       <button
         type="button"
         onClick={handleBack}
-        className="flex gap-1 mb-4 items-center self-start"
+        disabled={isLoading}
+        className="flex gap-1 mb-4 items-center self-start disabled:opacity-50"
       >
         <MdOutlineKeyboardArrowLeft /> Back
       </button>
 
-      {currentStep === 1 && (
+      {isLoading && (
+        <div className="flex justify-center items-center py-8">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+        </div>
+      )}
+
+      {!isLoading && currentStep === 1 && (
         <SelectAddress
-          addressId={atHomeAppointmentData.addressId}
+          addressId={appointmentData.addressId}
           handleConfirm={handleAddressConfirm}
         />
       )}
 
-      {currentStep === 2 && (
+      {!isLoading && currentStep === 2 && (
         <SelectPet
-          petId={atHomeAppointmentData.petId}
+          petId={appointmentData.petId}
           handleConfirm={handlePetConfirm}
         />
       )}
-      {currentStep === 3 && (
+      {!isLoading && currentStep === 3 && (
         <ReasonForVisit
-          reason={atHomeAppointmentData.reasonForVisit}
-          description={atHomeAppointmentData.description}
-          isEmergency={atHomeAppointmentData.isEmergency}
+          reason={appointmentData.reasonForVisit}
+          description={appointmentData.description}
+          isEmergency={appointmentData.isEmergency}
           handleConfirm={handleReasonForVisitConfirm}
         />
       )}
-      {currentStep === 4 && (
-        <SelectDateTimeForVisit
-          addressId={atHomeAppointmentData.addressId}
-          date={atHomeAppointmentData.date}
-          slot={atHomeAppointmentData.slot}
-          onConfirm={handleDateTimeConfirm}
-        />
+      {!isLoading && currentStep === 4 && (
+        <>
+          <SelectDateTimeForVisit
+            addressId={appointmentData.addressId}
+            date={appointmentData.date}
+            slot={appointmentData.slot}
+            isConfirmationModalOpen={showConfirmationModal}
+            isConfirming={isConfirming}
+            onConfirm={handleDateTimeConfirm}
+          />
+          <ConfirmationModal
+            isOpen={showConfirmationModal}
+            onClose={() => dispatch({ type: "HIDE_CONFIRMATION_MODAL" })}
+            onConfirm={handleConfirmBooking}
+            bookingDetails={bookingDetails}
+          />
+        </>
       )}
     </div>
   )

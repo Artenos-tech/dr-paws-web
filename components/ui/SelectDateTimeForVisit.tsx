@@ -12,6 +12,8 @@ interface SelectDateTimeForVisitProps {
   addressId?: string
   date?: string
   slot?: { startTime: string; endTime: string }
+  isConfirmationModalOpen?: boolean
+  isConfirming?: boolean
   onConfirm: (
     date: string,
     slot: { startTime: string; endTime: string },
@@ -62,6 +64,8 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
   addressId,
   date: initialDate,
   slot: initialSlot,
+  isConfirmationModalOpen,
+  isConfirming,
 }) => {
   const {
     call: getAtHomeSlots,
@@ -77,6 +81,12 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
   )
   const [days, setDays] = useState<DaySlots[]>([])
   const [isProcessing, setIsProcessing] = useState(false)
+
+  useEffect(() => {
+    if (!isConfirmationModalOpen && isProcessing && !isConfirming) {
+      setIsProcessing(false)
+    }
+  }, [isConfirmationModalOpen, isProcessing, isConfirming])
 
   useEffect(() => {
     if (!addressId) return
