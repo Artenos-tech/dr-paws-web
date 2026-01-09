@@ -210,7 +210,7 @@ const MyAppointmentsPage = () => {
       <main className="w-full flex flex-col gap-[40px] my-12 row-start-2 items-center">
         {selectedAppointment ? (
           <BookingDetails
-            selectedAppointment={selectedAppointment}
+            appointmentId={selectedAppointment.id}
             goBack={(refetch) => {
               setSelectedAppointment(null)
               if (refetch) {

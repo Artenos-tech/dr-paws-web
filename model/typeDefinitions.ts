@@ -148,6 +148,71 @@ export interface AppointmentType {
   sos_status?: "ACTIVE" | "INACTIVE"
 }
 
+export interface AppointmentApiDetails {
+  id: string
+  sub_booking_id: string
+  clinic_id: string
+  clinic_location?: string
+
+  pet_id: string
+  appt_type_id?: string
+
+  pet_name: string
+  pet_type: "DOG" | "CAT" | "OTHER" | null
+  pet_profile_image: string | null
+
+  booking_date: string
+  appt_start: string
+  appt_end: string
+
+  appt_type_title: "Vet Consultation" | "Grooming" | "At-Home Visit"
+  appt_type: "VET_CONSULTATION" | "GROOMING" | "AT_HOME_VISIT"
+
+  category: "UPCOMING" | "ACTIVE" | "COMPLETED" | "REQUESTED" | "CANCELLED"
+
+  invoice_id: string | null
+
+  total_tax_amount: number
+  total_billing_amount: number
+  payment_status: "PAID" | "UNPAID" | "NO_BILL" | "PARTIALLY_PAID" | "OVERPAID"
+
+  vet_id?: string | null
+  vet_name?: string | null
+  vet_image?: string | null
+  vet_contact?: string | null
+
+  address?: Address
+
+  visit_status?:
+    | "UNCONFIRMED"
+    | "CONFIRMED"
+    | "DELAYED"
+    | "REACHED"
+    | "CANCELLED"
+    | "VISIT_STARTED"
+    | "VISIT_FINISHED"
+
+  helpline_no?: string
+  start_otp?: string | null
+
+  refund_status?: RefundStatus
+  coupon_code?: string
+
+  sos_status?: "ACTIVE" | "INACTIVE"
+}
+
+export type RefundStatus =
+  | "NOT_APPLICABLE"
+  | "REQUESTED"
+  | "APPROVED"
+  | "REJECTED"
+  | "PROCESSED"
+  | "PENDING"
+  | "SUCCESS"
+  | "FAILED"
+  | "ONHOLD"
+  | "CANCELLED"
+
 // export interface AppointmentType {
 //   id: string
 //   sub_booking_id: string
