@@ -15,6 +15,9 @@ import { format, parseISO } from "date-fns"
 import AtHomeVisitStatus from "./AtHomeVisitStatus"
 import toast from "react-hot-toast"
 import { AppointmentApiDetails } from "@/model/typeDefinitions"
+import Image from "next/image"
+import { petImageByType } from "./PetCard"
+import defaultVetImage from "@/public/assets/images/clinic/doctorFemale.webp"
 
 type BookingDetailsProps = {
   goBack: (refetch: boolean) => void
@@ -65,6 +68,37 @@ const AtHomeBookingDetails = ({
     )
   }
 
+  const isConfirmed = selectedAppointment.visit_status === "CONFIRMED"
+  const isCancelled = selectedAppointment.visit_status === "CANCELLED"
+
+  let appointmentText = ""
+
+  if (isCancelled) {
+    appointmentText = `${selectedAppointment.pet_name} was scheduled for an at-home visit with ${selectedAppointment.vet_name}`
+  } else if (isConfirmed) {
+    appointmentText = selectedAppointment.vet_name
+      ? `${selectedAppointment.pet_name} had an at-home visit with ${selectedAppointment.vet_name}`
+      : `${selectedAppointment.pet_name} had an at-home visit`
+  } else {
+    appointmentText =
+      selectedAppointment.visit_status === "UNCONFIRMED"
+        ? `${selectedAppointment.pet_name} is scheduled for an at-home visit`
+        : `${selectedAppointment.pet_name} is scheduled for an at-home visit with ${selectedAppointment.vet_name}`
+  }
+
+  const defaultPetImageByType =
+    petImageByType[selectedAppointment.pet_type?.toLowerCase() || "other"] ||
+    petImageByType.other
+
+  const petImage =
+    //uncomment below line to use actual pet image
+    // selectedAppointment.pet_profile_image ||
+    defaultPetImageByType
+  const vetImage =
+    //uncomment below line to use actual vet image
+    //   selectedAppointment?.vet_image ||
+    defaultVetImage
+
   return (
     <div className="w-full">
       <BackButton navigateBack={() => goBack(true)} />
@@ -79,8 +113,40 @@ const AtHomeBookingDetails = ({
         </h1>
 
         <div
-          className={`${bg} ${text} w-11/12 md:w-4/5 lg:w-[50%] shadow-md rounded-lg py-12 px-28 space-y-5`}
+          className={`${bg} ${text} w-11/12 md:w-4/5 lg:w-[50%] shadow-md rounded-lg px-6 py-4 md:py-12 md:px-24 space-y-5`}
         >
+          <p className="text-lg font-semibold mt-4 text-center">
+            {appointmentText}
+          </p>
+          <div className="flex justify-center my-4 relative">
+            {
+              <>
+                <div className="relative w-32 h-32 rounded-full overflow-hidden bg-white p-3 flex justify-center items-center">
+                  <Image
+                    src={petImage}
+                    alt={`${selectedAppointment.pet_name}'s profile`}
+                    layout="fill"
+                    objectFit="cover"
+                    sizes="128px"
+                    priority
+                  />
+                </div>
+                {selectedAppointment.visit_status !== "UNCONFIRMED" && (
+                  <div className="relative w-32 h-32 rounded-full overflow-hidden bg-white -ml-8 border-4 border-white flex justify-center items-center">
+                    <Image
+                      src={vetImage}
+                      alt={`Dr. ${selectedAppointment.vet_name}'s profile`}
+                      objectFit="cover"
+                      sizes="80px"
+                      width={80}
+                      height={80}
+                    />
+                  </div>
+                )}
+              </>
+            }
+          </div>
+
           {isVisitFinished && (
             <>
               <div className="space-y-1">
@@ -126,12 +192,13 @@ const AtHomeBookingDetails = ({
             </div>
           </div>
 
-          {!isVisitFinished && (
-            <AtHomeVisitStatus
-              visitStatus={selectedAppointment.visit_status}
-              selectedAppointment={selectedAppointment}
-            />
-          )}
+          {!isVisitFinished ||
+            (isCancelled && (
+              <AtHomeVisitStatus
+                visitStatus={selectedAppointment.visit_status}
+                selectedAppointment={selectedAppointment}
+              />
+            ))}
 
           <div className="pt-4 border-t space-y-4">
             <div className="space-y-1 ">
