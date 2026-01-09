@@ -4,7 +4,7 @@ import React from "react"
 import Image from "next/image"
 import { Phone } from "lucide-react"
 import defaultVetImage from "@/public/assets/images/clinic/doctorFemale.webp"
-import { AppointmentApiDetails, AppointmentType } from "@/model/typeDefinitions"
+import { AppointmentApiDetails } from "@/model/typeDefinitions"
 import toast from "react-hot-toast"
 
 type VisitStatus =

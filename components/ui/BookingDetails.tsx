@@ -1,6 +1,6 @@
 "use client"
 
-import { AppointmentApiDetails, AppointmentType } from "@/model/typeDefinitions"
+import { AppointmentApiDetails } from "@/model/typeDefinitions"
 import ClinicBookingDetails from "./ClinicBookingDetails"
 import AtHomeBookingDetails from "./AtHomeBookingDetails"
 import { useAPICall } from "@/hooks/apicall"

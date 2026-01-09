@@ -153,28 +153,28 @@ const ClinicBookingDetails = ({
     setShowInvoicePdfModal(true)
   }
 
-  const handleDownloadInvoicePDF = async (invoiceId: string) => {
-    setLoadingInvoiceDownload(true)
-    const base64 = await fetchInvoiceById(invoiceId)
-    setLoadingInvoiceDownload(false)
-    if (!base64) return
+//   const handleDownloadInvoicePDF = async (invoiceId: string) => {
+//     setLoadingInvoiceDownload(true)
+//     const base64 = await fetchInvoiceById(invoiceId)
+//     setLoadingInvoiceDownload(false)
+//     if (!base64) return
 
-    const byteCharacters = atob(base64)
-    const byteNumbers = Array.from(byteCharacters, (char) => char.charCodeAt(0))
-    const byteArray = new Uint8Array(byteNumbers)
-    const blob = new Blob([byteArray], { type: "application/pdf" })
+//     const byteCharacters = atob(base64)
+//     const byteNumbers = Array.from(byteCharacters, (char) => char.charCodeAt(0))
+//     const byteArray = new Uint8Array(byteNumbers)
+//     const blob = new Blob([byteArray], { type: "application/pdf" })
 
-    const blobUrl = URL.createObjectURL(blob)
+//     const blobUrl = URL.createObjectURL(blob)
 
-    const link = document.createElement("a")
-    link.href = blobUrl
-    link.download = `invoice-${invoiceId}.pdf`
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
+//     const link = document.createElement("a")
+//     link.href = blobUrl
+//     link.download = `invoice-${invoiceId}.pdf`
+//     document.body.appendChild(link)
+//     link.click()
+//     document.body.removeChild(link)
 
-    URL.revokeObjectURL(blobUrl)
-  }
+//     URL.revokeObjectURL(blobUrl)
+//   }
 
   const handleReportPreview = async (
     attachment: AttachmentInfo,
