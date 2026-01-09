@@ -154,7 +154,7 @@ export interface AppointmentApiDetails {
   clinic_id: string
   clinic_location?: string
 
-  pet_id?: string
+  pet_id: string
   appt_type_id?: string
 
   pet_name: string
