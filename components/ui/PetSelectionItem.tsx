@@ -23,7 +23,11 @@ const PetSelectItem = ({
 
   return (
     <Tooltip
-      title={!isServiceable ? "This pet type is not serviceable for the selected address." : ""}
+      title={
+        !isServiceable
+          ? "This pet type is not serviceable for the selected address."
+          : ""
+      }
       placement="top"
     >
       <div

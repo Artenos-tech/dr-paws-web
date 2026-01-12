@@ -205,11 +205,10 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
             className="rounded-full px-8 py-3 bg-secondary-1 text-white hover:bg-secondary-2 transition"
           >
             Add Address
-          </button> 
+          </button>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 overflow-x-auto lg:w-4/5 lg:mx-auto">
-
           {addresses.map((address) => {
             const isServiceable = serviceableIds.has(address.id)
             const isSelected = selectedAddressId === address.id
