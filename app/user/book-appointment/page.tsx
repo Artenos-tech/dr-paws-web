@@ -35,9 +35,7 @@ const Booking: React.FC = () => {
   }, [getBookingTypesResult])
 
   const atHomeBookingType = useMemo(() => {
-    return bookingTypes.find(
-      (bookingType) => bookingType.type === "HOME_VISIT",
-    )
+    return bookingTypes.find((bookingType) => bookingType.type === "HOME_VISIT")
   }, [bookingTypes])
 
   const clinicBookingType = useMemo(() => {

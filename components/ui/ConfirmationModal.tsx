@@ -76,7 +76,9 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
             )}
             <div className="flex items-start text-sm text-gray-600 mb-1">
               <MapPinIcon className="w-4 h-4 mr-2 mt-1 flex-shrink-0" />
-              <span className="break-words">{location || "No location specified"}</span>
+              <span className="break-words">
+                {location || "No location specified"}
+              </span>
             </div>
             <div className="flex items-center text-sm text-gray-600">
               <CalendarIcon className="w-4 h-4 mr-2" />
