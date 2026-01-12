@@ -160,18 +160,19 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
 
         {appointment.clinic_name && <p>{appointment.clinic_name}</p>}
         {appointment.address && (
-  <div className="flex gap-2">
-    <HiLocationMarker className="mt-1 text-primary-1" size={18} />
-    <div>
-      <span className="font-semibold">{appointment.address.tag}</span>
-      <p>
-        {appointment.address.address_line1},{" "}
-        {appointment.address.address_line2}, {appointment.address.pincode}
-      </p>
-    </div>
-  </div>
-)}
+          <>
+          <div className="flex">
+             <HiLocationMarker className="mt-1"/>
+            <span className="font-semibold">{appointment.address.tag}</span>
 
+          </div>
+         
+            <p>
+              {appointment.address.address_line1},{" "}
+              {appointment.address.address_line2}, {appointment.address.pincode}
+            </p>
+          </>
+        )}
 
         <p>{format(parsedDate, "EEEE dd MMMM, yyyy")}</p>
         <p>
