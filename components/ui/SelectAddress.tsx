@@ -255,9 +255,16 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
                             Serviceable
                           </span>
                         ) : (
-                          <Tooltip title={
-                            selectedAddressId&& !serviceableIds.has(selectedAddressId)?unserviceableToolTipMessage:''
-                            }>
+                          <Tooltip
+                            title={
+                              selectedAddressId &&
+                              !serviceableIds.has(selectedAddressId)
+                                ? unserviceableToolTipMessage
+                                : ""
+                            }
+                            color="#f7f1de"
+                            styles={{ body: { color: "black" } }}
+                          >
                             <span className="text-xs px-3 py-1 rounded-full text-white bg-red-500 cursor-help">
                               Unserviceable
                             </span>
@@ -286,24 +293,23 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
       )}
 
       <div className="flex justify-center mb-10 mt-6">
-        <Tooltip 
-         title={
-    selectedAddressId &&
-    !serviceableIds.has(selectedAddressId)
-      ? unserviceableToolTipMessage
-      : ""
-  }
+        <Tooltip
+          title={
+            selectedAddressId && !serviceableIds.has(selectedAddressId)
+              ? unserviceableToolTipMessage
+              : ""
+          }
+          color="#f7f1de"
+          styles={{ body: { color: "black" } }}
         >
-
-
-        <button
-          disabled={isConfirmDisabled}
-          className="rounded-full px-8 py-3 bg-secondary-1 text-white disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-          onClick={handleConfirmClick}
-        >
-          {isConfirming && <ClipLoader size={16} color="#ffffff" />}
-          {isConfirming ? "Confirming..." : "Confirm Address"}
-        </button>
+          <button
+            disabled={isConfirmDisabled}
+            className="rounded-full px-8 py-3 bg-secondary-1 text-white disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            onClick={handleConfirmClick}
+          >
+            {isConfirming && <ClipLoader size={16} color="#ffffff" />}
+            {isConfirming ? "Confirming..." : "Confirm Address"}
+          </button>
         </Tooltip>
       </div>
 
