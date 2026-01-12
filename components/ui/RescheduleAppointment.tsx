@@ -5,14 +5,14 @@ import { BookingCategory } from "@/components/ui/SelectService"
 import SelectVet, { SelectedVet } from "@/components/ui/SelectVet"
 import { Pet } from "@/context/UserContext"
 import RescheduleConfirmed from "@/components/ui/RescheduleConfirmed"
-import { AppointmentType } from "@/model/typeDefinitions"
+import { AppointmentApiDetails } from "@/model/typeDefinitions"
 import BackButton from "./BackButton"
 import { useAPICall } from "@/hooks/apicall"
 import api from "@/services/api"
 import { ClipLoader } from "react-spinners"
 
 type ReschedulingProps = {
-  existingAppointment: AppointmentType
+  existingAppointment: AppointmentApiDetails
   onBack: () => void
   onDone: () => void
   onError: () => void
@@ -38,7 +38,7 @@ const RescheduleAppointment: React.FC<ReschedulingProps> = ({
     selectedSlot: string | null
     selectedSlotEnd: string | null
   }>({
-    selectedServiceId: existingAppointment.appt_type_id,
+    selectedServiceId: existingAppointment.appt_type_id ?? null,
     selectedService: existingAppointment.appt_type,
     selectedSubtype: null,
     groomingCatalogueKeys: [],
@@ -53,9 +53,9 @@ const RescheduleAppointment: React.FC<ReschedulingProps> = ({
       id: existingAppointment.pet_id,
       breedId: null,
     },
-    isGrooming: existingAppointment.appt_type == "Grooming",
+    isGrooming: existingAppointment.appt_type == "GROOMING",
     selectedClinic: existingAppointment.clinic_id,
-    selectedLocation: existingAppointment.clinic_location,
+    selectedLocation: existingAppointment.clinic_location ?? null,
     selectedDoctor: null,
     selectedDate: null,
     selectedSlot: null,
@@ -151,7 +151,7 @@ const RescheduleAppointment: React.FC<ReschedulingProps> = ({
                 selectedPet: notNull(selectedAppointment.selectedPet),
                 selectedClinic: notNull(selectedAppointment.selectedClinic),
                 selectedLocation: notNull(selectedAppointment.selectedLocation),
-                selectedVet: selectedAppointment.selectedDoctor,
+                selectedVet: selectedAppointment.selectedDoctor ?? null,
                 selectedDate: notNull(selectedAppointment.selectedDate),
                 selectedSlot: notNull(selectedAppointment.selectedSlot),
                 selectedSlotEnd: notNull(selectedAppointment.selectedSlotEnd),
@@ -160,8 +160,8 @@ const RescheduleAppointment: React.FC<ReschedulingProps> = ({
               }}
               oldValues={{
                 oldVet: {
-                  id: existingAppointment.vet_id,
-                  name: existingAppointment.vet_name,
+                  id: existingAppointment.vet_id ?? null,
+                  name: existingAppointment.vet_name ?? null,
                 },
                 oldDoctorImage: existingAppointment.vet_image || null,
                 oldDate: new Date(existingAppointment.booking_date),

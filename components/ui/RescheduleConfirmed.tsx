@@ -20,8 +20,8 @@ type RescheduleConfirmedProps = {
     selectedSubtype?: string
     groomingCatalogueKeys?: string[]
     selectedVet: {
-      id: string
-      name: string
+      id: string | null
+      name: string | null
     } | null
     selectedDoctorImage: string | StaticImageData | null
     selectedDate: Date
@@ -30,8 +30,8 @@ type RescheduleConfirmedProps = {
   }
   oldValues: {
     oldVet: {
-      id: string
-      name: string
+      id: string | null
+      name: string | null
     }
     oldDoctorImage: string | StaticImageData | null
     oldDate: Date

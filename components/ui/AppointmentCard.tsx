@@ -7,6 +7,7 @@ import Image from "next/image"
 import defaultVetImage from "@/public/assets/images/clinic/doctorFemale.webp"
 import { petImageByType } from "./PetCard"
 import { format, parseISO } from "date-fns"
+import { HiLocationMarker } from "react-icons/hi"
 
 type AppointmentCardProps = {
   appointment: AppointmentType
@@ -24,6 +25,11 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
       bg: "bg-white",
       text: "text-primary-1",
     },
+    active: {
+      border: "border-l-secondary-1 border-l-4",
+      bg: "bg-white",
+      text: "text-primary-1",
+    },
     cancelled: {
       border: "border-l-[#C6C4C4] border-l-4",
       bg: "bg-[#F1F1F1]",
@@ -35,11 +41,24 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
       text: "text-[#909090]",
     },
   }
+  const visitStatusStyles: Record<
+    NonNullable<AppointmentType["visit_status"]>,
+    { bg: string; text: string }
+  > = {
+    UNCONFIRMED: { bg: "bg-[#FC862C]", text: "text-white" },
+    CONFIRMED: { bg: "bg-[#2C8DFC]", text: "text-white" },
+    DELAYED: { bg: "bg-[#D00000]", text: "text-white" },
+    REACHED: { bg: "bg-[#FBFF26A8]", text: "text-black" },
+    CANCELLED: { bg: "bg-[#656565]", text: "text-white" },
+    VISIT_STARTED: { bg: "bg-[#4AB200DB]", text: "text-white" },
+    VISIT_FINISHED: { bg: "bg-[#4AB200]", text: "text-white" },
+  }
 
   // Mapping appt_status to style categories
   const getStatusCategory = (appt: AppointmentType) => {
     if (appt.category === "UPCOMING") return "upcoming"
     if (appt.category === "COMPLETED") return "past"
+    if (appt.category === "ACTIVE") return "active"
     if (appt.category === "CANCELLED") return "cancelled"
     throw new Error(`No status category defined for ${appt.category}`)
   }
@@ -47,6 +66,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
   function getAppointmentCategoryLabel(category: string) {
     if (category === "UPCOMING") return "Upcoming"
     if (category === "COMPLETED") return "Visited"
+    if (category === "ACTIVE") return "Active"
     if (category === "CANCELLED") return "Cancelled"
     throw new Error(`No category label defined for ${category}`)
   }
@@ -57,6 +77,16 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
   const defaultPetImageByType =
     petImageByType[appointment.pet_type?.toLowerCase() || "other"] ||
     petImageByType.other
+
+  const petImage =
+    //uncomment below line to use actual pet image
+    // appointment.pet_profile_image ||
+    defaultPetImageByType
+
+  const vetImage =
+    //uncomment below line to use actual vet image
+    // appointment.vet_image ||
+    defaultVetImage
 
   const parsedDate = parseISO(appointment.booking_date)
 
@@ -69,6 +99,16 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
         <p className={`${text}`}>
           {getAppointmentCategoryLabel(appointment.category)}
         </p>
+        {appointment.appt_type === "HOME_VISIT" && appointment.visit_status && (
+          <span
+            className={`px-3 py-1 rounded-full text-xs font-semibold ${
+              visitStatusStyles[appointment.visit_status].bg
+            } ${visitStatusStyles[appointment.visit_status].text}`}
+          >
+            {appointment.visit_status.replace("_", " ")}
+          </span>
+        )}
+
         <p
           className={`px-2 py-1 rounded-md ${
             // statusCategory === "cancelled" ? "bg-[#E0E0E0]" : "bg-primary-2"
@@ -78,13 +118,13 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
             "text-primary-1"
           }`}
         >
-          {appointment.appt_type}
+          {appointment.appt_type_title}
         </p>
       </div>
       <div className="flex items-center my-4">
         <div className="relative w-20 h-20 rounded-full overflow-hidden bg-white p-3 flex justify-center items-center">
           <Image
-            src={appointment.pet_profile_image || defaultPetImageByType}
+            src={petImage}
             alt={`${appointment.pet_name}'s profile`}
             layout="fill"
             objectFit="cover"
@@ -92,10 +132,12 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
             priority
           />
         </div>
-        {appointment.appt_type !== "Grooming" && (
+        {(appointment.appt_type === "VET_CONSULTATION" ||
+          (appointment.appt_type === "HOME_VISIT" &&
+            appointment.visit_status !== "UNCONFIRMED")) && (
           <div className="relative w-20 h-20 rounded-full overflow-hidden bg-white -ml-6 border-2 border-white">
             <Image
-              src={appointment.vet_image ?? defaultVetImage}
+              src={vetImage}
               alt={`Dr. ${appointment.vet_name}'s profile`}
               objectFit="cover"
               sizes="80px"
@@ -108,10 +150,28 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
       <div className={`space-y-1 ${text}`}>
         <p className="font-semibold">
           {appointment.pet_name}
-          {appointment.appt_type !== "Grooming" &&
+          {((appointment.appt_type === "HOME_VISIT" &&
+            appointment.visit_status !== "UNCONFIRMED") ||
+            appointment.appt_type === "VET_CONSULTATION") &&
+            appointment.vet_name &&
             ` and ${appointment.vet_name}`}
         </p>
-        <p>{appointment.clinic_name}</p>
+
+        {appointment.clinic_name && <p>{appointment.clinic_name}</p>}
+        {appointment.address && (
+          <>
+            <div className="flex">
+              <HiLocationMarker className="mt-1 mr-1" size={14} />
+              <span className="font-semibold">{appointment.address.tag}</span>
+            </div>
+
+            <p>
+              {appointment.address.address_line1},{" "}
+              {appointment.address.address_line2}, {appointment.address.pincode}
+            </p>
+          </>
+        )}
+
         <p>{format(parsedDate, "EEEE dd MMMM, yyyy")}</p>
         <p>
           {appointment.appt_start}
