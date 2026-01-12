@@ -214,6 +214,7 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
             const isSelected = selectedAddressId === address.id
             const isChecking =
               checkingServiceability && !checkedAddressIds.has(address.id)
+              const fullAddress=`${address.address_line1},${address.address_line2}`
 
             return (
               <div
@@ -256,7 +257,7 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
                 </div>
 
                 <p className="mt-2 text-sm text-gray-500">
-                  {address.address_line1}
+                  {fullAddress}
                 </p>
               </div>
             )
