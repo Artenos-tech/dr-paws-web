@@ -27,7 +27,7 @@ const PetSelectItem = ({
     <Tooltip
       title={
         !isServiceable
-          ? "This pet type is not serviceable for Home Visits."
+          ? "Only Cats and Dogs"
           : ""
       }
       placement="top"
