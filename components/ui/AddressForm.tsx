@@ -137,7 +137,7 @@ const AddressForm = ({
 
       <div>
         <label htmlFor="tag" className={labelClasses}>
-          Tag <span className="text-red-500">*</span>
+          Name <span className="text-red-500">*</span>
         </label>
         <input
           id="tag"
