@@ -18,6 +18,8 @@ const PetSelectItem = ({
   onSelect,
 }: PetSelectItemProps) => {
   const petImage =
+    //TODO: uncomment once api is integrated
+    // pet.profile_image ||
     petImageByType[pet.type?.toLowerCase() || "other"]?.src ||
     petImageByType.other.src
 
@@ -25,7 +27,7 @@ const PetSelectItem = ({
     <Tooltip
       title={
         !isServiceable
-          ? "This pet type is not serviceable for the selected address."
+          ? "This pet type is not serviceable for Home Visits."
           : ""
       }
       placement="top"
