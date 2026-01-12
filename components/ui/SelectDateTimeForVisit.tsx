@@ -144,7 +144,7 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
     <div className="w-full mt-4">
       <h1 className="text-2xl mb-2">When should our vet arrive?</h1>
       <p className="text-gray-600 mb-6">
-        Choose a convenient slot for your at-home visit
+        Choose a convenient slot for your home visit
       </p>
 
       <div className="grid grid-cols-5 gap-2 mb-6">
