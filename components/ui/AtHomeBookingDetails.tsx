@@ -195,11 +195,11 @@ const AtHomeBookingDetails = ({
           </div>
 
           {!isVisitFinished && (
-              <AtHomeVisitStatus
-                visitStatus={selectedAppointment.visit_status}
-                selectedAppointment={selectedAppointment}
-              />
-            )}
+            <AtHomeVisitStatus
+              visitStatus={selectedAppointment.visit_status}
+              selectedAppointment={selectedAppointment}
+            />
+          )}
 
           <div className="pt-4 border-t space-y-4">
             <div className="space-y-1 ">
