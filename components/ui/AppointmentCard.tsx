@@ -7,6 +7,7 @@ import Image from "next/image"
 import defaultVetImage from "@/public/assets/images/clinic/doctorFemale.webp"
 import { petImageByType } from "./PetCard"
 import { format, parseISO } from "date-fns"
+import { HiLocationMarker } from "react-icons/hi"
 
 type AppointmentCardProps = {
   appointment: AppointmentType
@@ -159,14 +160,18 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
 
         {appointment.clinic_name && <p>{appointment.clinic_name}</p>}
         {appointment.address && (
-          <>
-            <span className="font-semibold">{appointment.address.tag}</span>
-            <p>
-              {appointment.address.address_line1},{" "}
-              {appointment.address.address_line2}, {appointment.address.pincode}
-            </p>
-          </>
-        )}
+  <div className="flex gap-2">
+    <HiLocationMarker className="mt-1 text-primary-1" size={18} />
+    <div>
+      <span className="font-semibold">{appointment.address.tag}</span>
+      <p>
+        {appointment.address.address_line1},{" "}
+        {appointment.address.address_line2}, {appointment.address.pincode}
+      </p>
+    </div>
+  </div>
+)}
+
 
         <p>{format(parsedDate, "EEEE dd MMMM, yyyy")}</p>
         <p>
