@@ -16,10 +16,7 @@ interface SelectDateTimeForVisitProps {
   slot?: Slot
   isConfirmationModalOpen?: boolean
   isConfirming?: boolean
-  onConfirm: (
-    date: string,
-    slot: Slot,
-  ) => void
+  onConfirm: (date: string, slot: Slot) => void
 }
 
 type DaySlots = { date: string; slots: SlotWithAvailability[] }
@@ -199,23 +196,25 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
                   key={`${slot.startTime}-${slot.endTime}`}
                   onClick={() => setSelectedSlot(slot)}
                   className={clsx(
-                  "flex flex-col items-center justify-center rounded-lg border-2 px-2 py-3 text-xs sm:text-sm transition duration-150",
-                  isSelected
-                    ? "border-secondary-1 bg-secondary-1/10 shadow-md"
-                    : slot.available
-                    ? "border-gray-300 hover:border-secondary-1 hover:bg-secondary-1/5"
-                    : "border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed opacity-60",
+                    "flex flex-col items-center justify-center rounded-lg border-2 px-2 py-3 text-xs sm:text-sm transition duration-150",
+                    isSelected
+                      ? "border-secondary-1 bg-secondary-1/10 shadow-md"
+                      : slot.available
+                        ? "border-gray-300 hover:border-secondary-1 hover:bg-secondary-1/5"
+                        : "border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed opacity-60",
                   )}
                   disabled={!slot.available}
                   aria-label={`Slot ${formatTime(slot.startTime)} to ${formatTime(slot.endTime)}${!slot.available ? " (Unavailable)" : ""}`}
                 >
                   <span className="font-semibold">
-                  {formatTime(slot.startTime)}
+                    {formatTime(slot.startTime)}
                   </span>
                   <span className="mx-1">-</span>
                   <span>{formatTime(slot.endTime)}</span>
                   {!slot.available && (
-                  <span className="text-[10px] mt-1 text-red-400">Unavailable</span>
+                    <span className="text-[10px] mt-1 text-red-400">
+                      Unavailable
+                    </span>
                   )}
                 </button>
               )
