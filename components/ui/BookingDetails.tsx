@@ -31,7 +31,7 @@ const BookingDetails = ({ appointmentId, goBack }: BookingDetailsProps) => {
 
   return (
     <>
-      {selectedAppointment.appt_type === "AT_HOME_VISIT" ? (
+      {selectedAppointment.appt_type === "HOME_VISIT" ? (
         <AtHomeBookingDetails
           selectedAppointment={selectedAppointment}
           goBack={goBack}

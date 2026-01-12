@@ -87,7 +87,7 @@ export type AppointmentCategory =
 export type AppointmentTypeEnum =
   | "VET_CONSULTATION"
   | "GROOMING"
-  | "AT_HOME_VISIT"
+  | "HOME_VISIT"
 export type AppointmentPaymentStatus =
   | "PAID"
   | "UNPAID"
@@ -112,7 +112,7 @@ export interface AppointmentType {
   appt_end: string
   appt_type_id: string
 
-  appt_type_title: "Vet Consultation" | "Grooming" | "At-Home Visit"
+  appt_type_title: "Vet Consultation" | "Grooming" | "Home Visit"
   appt_type: AppointmentTypeEnum
 
   category: AppointmentCategory
@@ -165,8 +165,8 @@ export interface AppointmentApiDetails {
   appt_start: string
   appt_end: string
 
-  appt_type_title: "Vet Consultation" | "Grooming" | "At-Home Visit"
-  appt_type: "VET_CONSULTATION" | "GROOMING" | "AT_HOME_VISIT"
+  appt_type_title: "Vet Consultation" | "Grooming" | "Home Visit"
+  appt_type: "VET_CONSULTATION" | "GROOMING" | "HOME_VISIT"
 
   category: "UPCOMING" | "ACTIVE" | "COMPLETED" | "REQUESTED" | "CANCELLED"
 

@@ -27,7 +27,6 @@ const AtHomeVisitStatus = ({
   visitStatus,
 }: AtHomeVisitStatusProps) => {
   const { vet_name, vet_contact, vet_image, start_otp } = selectedAppointment
-  console.log(vet_image)
 
   const copyNumber = () => {
     if (!vet_contact) return
@@ -85,7 +84,7 @@ const AtHomeVisitStatus = ({
           <p className="font-semibold">Vet has been assigned</p>
           <VetRow />
           <p className="text-sm text-gray-600 mt-2">
-            {vet_name} will reach on address on time. In case there are delays,
+            {vet_name} will arrive at the address on time. In case there are delays,
             our team will be in touch with you.
           </p>
         </>
@@ -96,7 +95,7 @@ const AtHomeVisitStatus = ({
           <p className="font-semibold text-red-600">Vet is delayed</p>
           <VetRow />
           <p className="text-sm text-gray-600 mt-2">
-            {vet_name} is delayed, Our team will contact you soon.
+            {vet_name} is delayed. Our team will contact you soon.
           </p>
         </>
       )}

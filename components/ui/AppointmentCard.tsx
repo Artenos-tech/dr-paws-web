@@ -99,7 +99,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
         <p className={`${text}`}>
           {getAppointmentCategoryLabel(appointment.category)}
         </p>
-        {appointment.appt_type === "AT_HOME_VISIT" &&
+        {appointment.appt_type === "HOME_VISIT" &&
           appointment.visit_status && (
             <span
               className={`px-3 py-1 rounded-full text-xs font-semibold ${
@@ -134,7 +134,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
           />
         </div>
         {(appointment.appt_type === "VET_CONSULTATION" ||
-          (appointment.appt_type === "AT_HOME_VISIT" &&
+          (appointment.appt_type === "HOME_VISIT" &&
             appointment.visit_status !== "UNCONFIRMED")) && (
           <div className="relative w-20 h-20 rounded-full overflow-hidden bg-white -ml-6 border-2 border-white">
             <Image
@@ -151,7 +151,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
       <div className={`space-y-1 ${text}`}>
         <p className="font-semibold">
           {appointment.pet_name}
-          {((appointment.appt_type === "AT_HOME_VISIT" &&
+          {((appointment.appt_type === "HOME_VISIT" &&
             appointment.visit_status !== "UNCONFIRMED") ||
             appointment.appt_type === "VET_CONSULTATION") &&
             appointment.vet_name &&

@@ -74,18 +74,18 @@ const AtHomeBookingDetails = ({
   let appointmentText = ""
 
   if (isCancelled) {
-    appointmentText = `${selectedAppointment.pet_name} was scheduled for an At-Home Visit with ${selectedAppointment.vet_name}`
+    appointmentText = `${selectedAppointment.pet_name} was scheduled for a Home Visit with ${selectedAppointment.vet_name}`
   } else if (isVisitFinished) {
-    appointmentText = `${selectedAppointment.pet_name} had an At-Home Visit with ${selectedAppointment.vet_name}`
+    appointmentText = `${selectedAppointment.pet_name} had a Home Visit with ${selectedAppointment.vet_name}`
   } else if (isConfirmed) {
     appointmentText = selectedAppointment.vet_name
-      ? `${selectedAppointment.pet_name} is scheduled for an At-Home Visit with ${selectedAppointment.vet_name}`
-      : `${selectedAppointment.pet_name} is scheduled for an At-Home Visit`
+      ? `${selectedAppointment.pet_name} is scheduled for a Home Visit with ${selectedAppointment.vet_name}`
+      : `${selectedAppointment.pet_name} is scheduled for a Home Visit`
   } else {
     appointmentText =
       selectedAppointment.visit_status === "UNCONFIRMED"
-        ? `${selectedAppointment.pet_name} is scheduled for an At-Home Visit`
-        : `${selectedAppointment.pet_name} is scheduled for an At-Home Visit with ${selectedAppointment.vet_name}`
+        ? `${selectedAppointment.pet_name} is scheduled for a Home Visit`
+        : `${selectedAppointment.pet_name} is scheduled for a Home Visit with ${selectedAppointment.vet_name}`
   }
 
   const defaultPetImageByType =

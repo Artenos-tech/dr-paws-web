@@ -136,7 +136,7 @@ const MyAppointmentsPage = () => {
       case "ACTIVE":
         filtered = allAppointments.filter((a) => {
           if (
-            a.appt_type === "AT_HOME_VISIT" &&
+            a.appt_type === "HOME_VISIT" &&
             a.visit_status === "VISIT_STARTED"
           ) {
             return true
@@ -158,7 +158,7 @@ const MyAppointmentsPage = () => {
       (appt) =>
         appt.appt_type === "VET_CONSULTATION" ||
         appt.appt_type === "GROOMING" ||
-        appt.appt_type === "AT_HOME_VISIT",
+        appt.appt_type === "HOME_VISIT",
     )
     console.log(allAppointments, "data is ")
 
