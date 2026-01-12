@@ -1,4 +1,5 @@
 import Image from "next/image"
+import { Tooltip } from "antd"
 import tickMark from "@/public/assets/images/Booking/tick-svgrepo-com.svg"
 import { petImageByType } from "./PetCard"
 import { BookingPet } from "@/model/typeDefinitions"
@@ -17,38 +18,47 @@ const PetSelectItem = ({
   onSelect,
 }: PetSelectItemProps) => {
   const petImage =
-    //TODO comment to uncomment
+    //TODO: uncomment once api is integrated
     // pet.profile_image ||
     petImageByType[pet.type?.toLowerCase() || "other"]?.src ||
     petImageByType.other.src
 
   return (
-    <div
-      onClick={isServiceable ? onSelect : undefined}
-      className={`relative m-2 text-center group
-        ${isServiceable ? "cursor-pointer" : "opacity-50 cursor-not-allowed"}
-      `}
+    <Tooltip
+      title={
+        !isServiceable
+          ? "This pet type is not serviceable for Home Visits."
+          : ""
+      }
+      placement="top"
     >
-      <div className="relative w-[100px] h-[100px] mx-auto">
-        <Image
-          src={petImage}
-          alt={pet.name}
-          fill
-          sizes="100px"
-          className={`rounded-full border-2 object-cover
-            ${isSelected ? "opacity-50 border-secondary-1" : "border-gray-300"}
-          `}
-        />
+      <div
+        onClick={isServiceable ? onSelect : undefined}
+        className={`relative m-2 text-center group
+          ${isServiceable ? "cursor-pointer" : "opacity-50 cursor-not-allowed"}
+        `}
+      >
+        <div className="relative w-[100px] h-[100px] mx-auto">
+          <Image
+            src={petImage}
+            alt={pet.name}
+            fill
+            sizes="100px"
+            className={`rounded-full border-2 object-cover
+              ${isSelected ? "opacity-50 border-secondary-1" : "border-gray-300"}
+            `}
+          />
 
-        {isSelected && (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <Image src={tickMark} alt="selected" width={40} height={40} />
-          </div>
-        )}
+          {isSelected && (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <Image src={tickMark} alt="selected" width={40} height={40} />
+            </div>
+          )}
+        </div>
+
+        <p className="mt-2 font-medium">{pet.name}</p>
       </div>
-
-      <p className="mt-2 font-medium">{pet.name}</p>
-    </div>
+    </Tooltip>
   )
 }
 
