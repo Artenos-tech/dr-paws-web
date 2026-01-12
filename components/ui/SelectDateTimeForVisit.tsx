@@ -8,20 +8,18 @@ import { z } from "zod"
 import ClipLoader from "react-spinners/ClipLoader"
 import toast from "react-hot-toast"
 
+type Slot = { startTime: string; endTime: string }
+type SlotWithAvailability = Slot & { available: boolean }
 interface SelectDateTimeForVisitProps {
   addressId?: string
   date?: string
-  slot?: { startTime: string; endTime: string }
+  slot?: Slot
   isConfirmationModalOpen?: boolean
   isConfirming?: boolean
-  onConfirm: (
-    date: string,
-    slot: { startTime: string; endTime: string },
-  ) => void
+  onConfirm: (date: string, slot: Slot) => void
 }
 
-type Slot = { startTime: string; endTime: string }
-type DaySlots = { date: string; slots: Slot[] }
+type DaySlots = { date: string; slots: SlotWithAvailability[] }
 
 const formatDate = (dateStr: string) => {
   const date = new Date(dateStr)
@@ -44,6 +42,7 @@ const formatTime = (time: string) => {
 const slotSchema = z.object({
   startTime: z.string().min(1),
   endTime: z.string().min(1),
+  available: z.boolean(),
 })
 
 const daySlotsSchema = z.object({
@@ -197,13 +196,26 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
                   key={`${slot.startTime}-${slot.endTime}`}
                   onClick={() => setSelectedSlot(slot)}
                   className={clsx(
-                    "rounded-lg border-2 px-3 py-2 text-sm transition",
+                    "flex flex-col items-center justify-center rounded-lg border-2 px-2 py-3 text-xs sm:text-sm transition duration-150",
                     isSelected
-                      ? "border-secondary-1"
-                      : "border-gray-300 hover:border-secondary-1",
+                      ? "border-secondary-1 bg-secondary-1/10 shadow-md"
+                      : slot.available
+                        ? "border-gray-300 hover:border-secondary-1 hover:bg-secondary-1/5"
+                        : "border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed opacity-60",
                   )}
+                  disabled={!slot.available}
+                  aria-label={`Slot ${formatTime(slot.startTime)} to ${formatTime(slot.endTime)}${!slot.available ? " (Unavailable)" : ""}`}
                 >
-                  {formatTime(slot.startTime)}
+                  <span className="font-semibold">
+                    {formatTime(slot.startTime)}
+                  </span>
+                  <span className="mx-1">-</span>
+                  <span>{formatTime(slot.endTime)}</span>
+                  {!slot.available && (
+                    <span className="text-[10px] mt-1 text-red-400">
+                      Unavailable
+                    </span>
+                  )}
                 </button>
               )
             })}
