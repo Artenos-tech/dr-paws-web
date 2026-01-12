@@ -67,6 +67,7 @@ const PetSchema = z.object({
 const SlotSchema = z.object({
   startTime: z.string(),
   endTime: z.string(),
+  available: z.boolean(),
 })
 
 const DayWithSlotsSchema = z.object({
@@ -790,24 +791,49 @@ export const mockAtHomeClient: AtHomeAPIClient = {
   getAtHomeSlots: async (params, opts) => {
     await delay(500, opts?.abortSignal)
 
-    // Generate slots for next 7 days
+    // Generate slots for next 5 days
     const days = []
     const today = new Date()
 
-    for (let i = 0; i < 7; i++) {
+    const slots1 = [
+      { startTime: "09:00", endTime: "10:00", available: true },
+      { startTime: "10:00", endTime: "11:00", available: false },
+      { startTime: "11:00", endTime: "12:00", available: true },
+      { startTime: "12:00", endTime: "13:00", available: false },
+      { startTime: "13:00", endTime: "14:00", available: false },
+      { startTime: "14:00", endTime: "15:00", available: true },
+      { startTime: "15:00", endTime: "16:00", available: false },
+      { startTime: "16:00", endTime: "17:00", available: true },
+      { startTime: "17:00", endTime: "18:00", available: false },
+      { startTime: "18:00", endTime: "19:00", available: true },
+      { startTime: "19:00", endTime: "20:00", available: false },
+      { startTime: "20:00", endTime: "21:00", available: false },
+    ]
+
+    const slots2 = [
+      { startTime: "09:00", endTime: "10:00", available: true },
+      { startTime: "10:00", endTime: "11:00", available: true },
+      { startTime: "11:00", endTime: "12:00", available: true },
+      { startTime: "12:00", endTime: "13:00", available: false },
+      { startTime: "13:00", endTime: "14:00", available: false },
+      { startTime: "14:00", endTime: "15:00", available: false },
+      { startTime: "15:00", endTime: "16:00", available: false },
+      { startTime: "16:00", endTime: "17:00", available: true },
+      { startTime: "17:00", endTime: "18:00", available: true },
+      { startTime: "18:00", endTime: "19:00", available: true },
+      { startTime: "19:00", endTime: "20:00", available: false },
+      { startTime: "20:00", endTime: "21:00", available: false },
+    ]
+
+    for (let i = 0; i < 5; i++) {
       const date = new Date(today)
       date.setDate(date.getDate() + i)
       const dateStr = date.toISOString().split("T")[0]
-
-      const slots = [
-        { startTime: "09:00", endTime: "10:00" },
-        { startTime: "11:00", endTime: "12:00" },
-        { startTime: "14:00", endTime: "15:00" },
-        { startTime: "16:00", endTime: "17:00" },
-        { startTime: "18:00", endTime: "19:00" },
-      ]
-
-      days.push({ date: dateStr, slots })
+      i === 0
+        ? days.push({ date: dateStr, slots: [] })
+        : i % 2 === 0
+          ? days.push({ date: dateStr, slots: slots1 })
+          : days.push({ date: dateStr, slots: slots2 })
     }
 
     return ok({
