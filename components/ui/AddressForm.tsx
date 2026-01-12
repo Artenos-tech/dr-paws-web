@@ -60,7 +60,7 @@ const AddressForm = ({
 
       setAddressDetails((prev) => ({
         ...prev,
-        [field]: field === "directions" ? value.trim() || null : value,
+        [field]: value,
       }))
     }
 
