@@ -265,7 +265,7 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
                             color="#f7f1de"
                             styles={{ body: { color: "black" } }}
                           >
-                            <span className="text-xs px-3 py-1 rounded-full text-white bg-red-500 cursor-help">
+                            <span className="text-xs px-3 py-1 rounded-full text-white bg-red-500 cursor-not-allowed">
                               Unserviceable
                             </span>
                           </Tooltip>
