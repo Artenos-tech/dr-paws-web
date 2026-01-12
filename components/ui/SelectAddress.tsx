@@ -262,8 +262,6 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
                                 ? unserviceableToolTipMessage
                                 : ""
                             }
-                            color="#f7f1de"
-                            styles={{ body: { color: "black" } }}
                           >
                             <span className="text-xs px-3 py-1 rounded-full text-white bg-red-500 cursor-help">
                               Unserviceable
@@ -299,8 +297,6 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
               ? unserviceableToolTipMessage
               : ""
           }
-          color="#f7f1de"
-          styles={{ body: { color: "black" } }}
         >
           <button
             disabled={isConfirmDisabled}

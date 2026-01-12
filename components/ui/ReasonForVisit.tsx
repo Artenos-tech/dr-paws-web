@@ -192,7 +192,11 @@ const ReasonForVisit = ({
       <div className="space-y-2 mb-6 bg-">
         <p className="font-bold text-gray-600 flex">
           <span>Is it an emergency?</span>
-          <Tooltip title={emergencyInfoMessage} color="#f7f1de" styles={{body:{color:'black'}}}>
+          <Tooltip
+            title={emergencyInfoMessage}
+            color="#f7f1de"
+            styles={{ body: { color: "black" } }}
+          >
             <MdOutlineInfo className=" mt-1 ml-1" size={16} />
           </Tooltip>
         </p>
