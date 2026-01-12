@@ -84,10 +84,7 @@ export type AppointmentCategory =
   | "REQUESTED"
   | "CANCELLED"
 
-export type AppointmentTypeEnum =
-  | "VET_CONSULTATION"
-  | "GROOMING"
-  | "HOME_VISIT"
+export type AppointmentTypeEnum = "VET_CONSULTATION" | "GROOMING" | "HOME_VISIT"
 export type AppointmentPaymentStatus =
   | "PAID"
   | "UNPAID"

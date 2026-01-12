@@ -99,16 +99,15 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
         <p className={`${text}`}>
           {getAppointmentCategoryLabel(appointment.category)}
         </p>
-        {appointment.appt_type === "HOME_VISIT" &&
-          appointment.visit_status && (
-            <span
-              className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                visitStatusStyles[appointment.visit_status].bg
-              } ${visitStatusStyles[appointment.visit_status].text}`}
-            >
-              {appointment.visit_status.replace("_", " ")}
-            </span>
-          )}
+        {appointment.appt_type === "HOME_VISIT" && appointment.visit_status && (
+          <span
+            className={`px-3 py-1 rounded-full text-xs font-semibold ${
+              visitStatusStyles[appointment.visit_status].bg
+            } ${visitStatusStyles[appointment.visit_status].text}`}
+          >
+            {appointment.visit_status.replace("_", " ")}
+          </span>
+        )}
 
         <p
           className={`px-2 py-1 rounded-md ${
@@ -161,12 +160,11 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
         {appointment.clinic_name && <p>{appointment.clinic_name}</p>}
         {appointment.address && (
           <>
-          <div className="flex">
-             <HiLocationMarker className="mt-1 mr-1" size={14}/>
-            <span className="font-semibold">{appointment.address.tag}</span>
+            <div className="flex">
+              <HiLocationMarker className="mt-1 mr-1" size={14} />
+              <span className="font-semibold">{appointment.address.tag}</span>
+            </div>
 
-          </div>
-         
             <p>
               {appointment.address.address_line1},{" "}
               {appointment.address.address_line2}, {appointment.address.pincode}
