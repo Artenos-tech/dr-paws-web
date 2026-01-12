@@ -205,8 +205,7 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
   const bookingDetails = React.useMemo(() => {
     return {
       petName: appointmentData.petName || "",
-      service: appointmentData.service || "At-Home Appointment",
-      doctorName: undefined,
+      service: appointmentData.service || "Home Visit",
       location: appointmentData.location || "",
       reasonForVisit: appointmentData.reasonForVisit,
       reasonDescription: appointmentData.description,
