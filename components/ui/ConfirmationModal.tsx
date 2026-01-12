@@ -74,9 +74,11 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                 <span>{doctorName}</span>
               </div>
             )}
-            <div className="flex items-center text-sm text-gray-600 mb-1">
-              <MapPinIcon className="w-4 h-4 mr-2" />
-              <span>{location}</span>
+            <div className="flex items-start text-sm text-gray-600 mb-1">
+              <MapPinIcon className="w-4 h-4 mr-2 mt-1 flex-shrink-0" />
+              <span className="break-words">
+                {location || "No location specified"}
+              </span>
             </div>
             <div className="flex items-center text-sm text-gray-600">
               <CalendarIcon className="w-4 h-4 mr-2" />
@@ -86,13 +88,13 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
             </div>
             {reasonForVisit && (
               <div className="flex items-center text-sm text-gray-600 my-1">
-                <span className="font-medium">Reason:</span>
+                <span className="font-medium">Reason For Visit:</span>
                 <span className="ml-2">{reasonForVisit}</span>
               </div>
             )}
             {reasonDescription && (
               <div className="text-sm text-gray-600 my-1">
-                <span className="font-medium">Description:</span>
+                <span className="font-medium">Notes:</span>
 
                 <p className="mt-1 break-words whitespace-pre-line">
                   {showFullDesc
