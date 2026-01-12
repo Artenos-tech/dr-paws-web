@@ -36,7 +36,7 @@ const Booking: React.FC = () => {
 
   const atHomeBookingType = useMemo(() => {
     return bookingTypes.find(
-      (bookingType) => bookingType.type === "AT_HOME_VISIT",
+      (bookingType) => bookingType.type === "HOME_VISIT",
     )
   }, [bookingTypes])
 
@@ -98,7 +98,7 @@ const Booking: React.FC = () => {
       return <ClinicBookingFlow onBackToStart={handleBackToSelection} />
     }
 
-    if (selectedBookingType.type === "AT_HOME_VISIT") {
+    if (selectedBookingType.type === "HOME_VISIT") {
       return <AtHomeBookingFlow onBackToStart={handleBackToSelection} />
     }
 
