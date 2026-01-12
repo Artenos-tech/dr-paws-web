@@ -17,12 +17,15 @@ interface ReasonForVisitProps {
   isEmergency?: "yes" | "no" | null
 }
 
-const VISIT_REASONS = [
-  { key: "checkup", label: "Regular check-up" },
-  { key: "vaccination", label: "Vaccination" },
-  { key: "sick", label: "My pet is sick" },
-  { key: "other", label: "Something else" },
+export const VISIT_REASONS = [
+  { key: "GENERAL_CHECKUP", label: "General check-up" },
+  { key: "VACCINATION", label: "Vaccination" },
+  { key: "SICK_PET", label: "My pet is sick" },
+  { key: "DIAGNOSTICS", label: "Diagnostics" },
+  { key: "FOLLOW_UP", label: "Follow-up" },
+  { key: "OTHER", label: "Something else" },
 ] as const
+
 
 const reasonForVisitSchema = z.object({
   isEmergency: z.literal("no"),
