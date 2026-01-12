@@ -69,8 +69,12 @@ const AddressPage = () => {
       if (postalComponent?.long_name) {
         setPincode(postalComponent.long_name)
       } else {
-        setPincode(null)
-        toast.error("Unable to detect pincode for this location")
+        setPincode((prev) => {
+          if (prev !== null) {
+            toast.error("Unable to detect pincode for this location")
+          }
+          return null
+        })
       }
     })
   }
