@@ -5,6 +5,8 @@ import React, { useEffect, useState } from "react"
 import toast, { Toaster } from "react-hot-toast"
 import { z } from "zod"
 import { ClipLoader } from "react-spinners"
+import { MdOutlineInfo } from "react-icons/md"
+import { Tooltip } from "antd"
 
 interface ReasonForVisitProps {
   handleConfirm: (
@@ -25,7 +27,6 @@ export const VISIT_REASONS = [
   { key: "FOLLOW_UP", label: "Follow-up" },
   { key: "OTHER", label: "Something else" },
 ] as const
-
 
 const reasonForVisitSchema = z.object({
   isEmergency: z.literal("no"),
@@ -134,7 +135,7 @@ const ReasonForVisit = ({
     setIsProcessing(true)
     handleConfirm(reasonLabel, filledDescription, isEmergency)
   }
-
+  const emergencyInfoMessage = "Emergencies like bleeding"
   return (
     <div className="w-full h-full mt-4">
       {showEmergencyModal && (
@@ -188,8 +189,13 @@ const ReasonForVisit = ({
         </p>
       </div>
 
-      <div className="space-y-2 mb-6">
-        <p className="font-bold text-gray-600">Is it an emergency?</p>
+      <div className="space-y-2 mb-6 bg-">
+        <p className="font-bold text-gray-600 flex">
+          <span>Is it an emergency?</span>
+          <Tooltip title={emergencyInfoMessage} color="#f7f1de" styles={{body:{color:'black'}}}>
+            <MdOutlineInfo className=" mt-1 ml-1" size={16} />
+          </Tooltip>
+        </p>
         <div className="flex space-x-6">
           {["yes", "no"].map((val) => (
             <label key={val} className="flex items-center space-x-2">
