@@ -8,11 +8,12 @@ import Loader from "@/components/ui/Loader"
 import NoAppointments from "@/components/ui/NoAppointments"
 import { useAPICall } from "@/hooks/apicall"
 import { AppointmentType } from "@/model/typeDefinitions"
-import api from "@/services/api"
+import { mockAtHomeClient } from "@/services/api.athome"
 
 const TABS = {
   ALL: { label: "All" },
   UPCOMING: { label: "Upcoming" },
+  ACTIVE: { label: "Active" },
   PAST: { label: "Past" },
   CANCELLED: { label: "Cancelled" },
 } as const
@@ -29,7 +30,7 @@ const MyAppointmentsPage = () => {
     call: getAppointments,
     loading,
     result,
-  } = useAPICall(api.getAppointments)
+  } = useAPICall(mockAtHomeClient.getAppointments)
 
   const [allAppointments, setAllAppointments] = useState<AppointmentType[]>([])
   const [filteredAppointments, setFilteredAppointments] = useState<
@@ -65,9 +66,10 @@ const MyAppointmentsPage = () => {
     return appointments.sort((a, b) => {
       const categoryPriority: Record<AppointmentType["category"], number> = {
         UPCOMING: 1,
-        COMPLETED: 2,
-        CANCELLED: 3,
-        REQUESTED: 4,
+        ACTIVE: 2,
+        COMPLETED: 3,
+        CANCELLED: 4,
+        REQUESTED: 5,
       }
 
       const priorityA = categoryPriority[a.category]
@@ -118,7 +120,8 @@ const MyAppointmentsPage = () => {
 
   useEffect(() => {
     if (result?.ok) {
-      const all = result.value.body.appointments as AppointmentType[]
+      const all = result.value.body.data
+        .appointments as unknown as AppointmentType[]
       setAllAppointments(all)
     }
   }, [result])
@@ -129,6 +132,17 @@ const MyAppointmentsPage = () => {
     switch (activeTab) {
       case "UPCOMING":
         filtered = allAppointments.filter((a) => a.category === "UPCOMING")
+        break
+      case "ACTIVE":
+        filtered = allAppointments.filter((a) => {
+          if (
+            a.appt_type === "HOME_VISIT" &&
+            a.visit_status === "VISIT_STARTED"
+          ) {
+            return true
+          }
+          return isCurrentTimeInSlot(a.booking_date, a.appt_start, a.appt_end)
+        })
         break
       case "PAST":
         filtered = allAppointments.filter((a) => a.category === "COMPLETED")
@@ -142,9 +156,11 @@ const MyAppointmentsPage = () => {
 
     const typeFiltered = filtered.filter(
       (appt) =>
-        (appt.vet_id !== null && appt.appt_type === "Vet Consultation") ||
-        appt.appt_type === "Grooming",
+        appt.appt_type === "VET_CONSULTATION" ||
+        appt.appt_type === "GROOMING" ||
+        appt.appt_type === "HOME_VISIT",
     )
+    console.log(allAppointments, "data is ")
 
     let sortedAppointments: AppointmentType[] = []
 
@@ -175,13 +191,26 @@ const MyAppointmentsPage = () => {
     (currentPage - 1) * pageSize,
     currentPage * pageSize,
   )
+  const isCurrentTimeInSlot = (
+    bookingDate: string,
+    start: string,
+    end: string,
+  ) => {
+    const date = bookingDate.split("T")[0]
+    const toDate = (time: string) =>
+      new Date(`${date}T${time.padStart(5, "0")}:00`)
+    const now = new Date()
+    const startTime = toDate(start)
+    const endTime = toDate(end)
+    return now >= startTime && now <= endTime
+  }
 
   return (
     <div className="flex flex-col w-full h-full items-center font-roca pb-20 flex-grow px-8 md:px-32 lg:px-20 xl:px-40">
       <main className="w-full flex flex-col gap-[40px] my-12 row-start-2 items-center">
         {selectedAppointment ? (
           <BookingDetails
-            selectedAppointment={selectedAppointment}
+            appointmentId={selectedAppointment.id}
             goBack={(refetch) => {
               setSelectedAppointment(null)
               if (refetch) {
@@ -223,7 +252,7 @@ const MyAppointmentsPage = () => {
               </div>
             ) : (
               <>
-                <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="w-full grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-6">
                   {visibleAppointments.map((appointment) => (
                     <AppointmentCard
                       key={appointment.sub_booking_id}
