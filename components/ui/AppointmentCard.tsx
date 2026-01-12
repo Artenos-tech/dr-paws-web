@@ -162,7 +162,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
         {appointment.address && (
           <>
           <div className="flex">
-             <HiLocationMarker className="mt-1"/>
+             <HiLocationMarker className="mt-1 mr-1" size={14}/>
             <span className="font-semibold">{appointment.address.tag}</span>
 
           </div>
