@@ -1080,7 +1080,9 @@ export const mockAtHomeClient: AtHomeAPIClient = {
         data: {
           appointment: {
             id: params.appointmentid,
-            refund: hasRefund ? { status: "PENDING" as const, id: generateUUID(), amount: 500 } : undefined,
+            refund: hasRefund
+              ? { status: "PENDING" as const, id: generateUUID(), amount: 500 }
+              : undefined,
           },
         },
       },

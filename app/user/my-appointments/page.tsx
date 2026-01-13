@@ -32,7 +32,9 @@ const MyAppointmentsPage = () => {
     result: getAppointmentsResult,
   } = useAPICall(mockAtHomeClient.getAppointmentsV2)
 
-  const [allAppointments, setAllAppointments] = useState<AppointmentListItem[]>([])
+  const [allAppointments, setAllAppointments] = useState<AppointmentListItem[]>(
+    [],
+  )
   const [filteredAppointments, setFilteredAppointments] = useState<
     AppointmentListItem[]
   >([])
@@ -64,13 +66,14 @@ const MyAppointmentsPage = () => {
     appointments: AppointmentListItem[],
   ) => {
     return appointments.sort((a, b) => {
-      const categoryPriority: Record<AppointmentListItem["category"], number> = {
-        UPCOMING: 1,
-        ACTIVE: 2,
-        COMPLETED: 3,
-        CANCELLED: 4,
-        REQUESTED: 5,
-      }
+      const categoryPriority: Record<AppointmentListItem["category"], number> =
+        {
+          UPCOMING: 1,
+          ACTIVE: 2,
+          COMPLETED: 3,
+          CANCELLED: 4,
+          REQUESTED: 5,
+        }
 
       const priorityA = categoryPriority[a.category]
       const priorityB = categoryPriority[b.category]
@@ -221,7 +224,8 @@ const MyAppointmentsPage = () => {
         ) : (
           <>
             {!getAppointmentsResult?.ok &&
-              (getAppointmentsResult?.error.apiClientErrorType === "ErrorResponseAPIError" ? (
+              (getAppointmentsResult?.error.apiClientErrorType ===
+              "ErrorResponseAPIError" ? (
                 <div>{getAppointmentsResult.error.message}</div>
               ) : (
                 <>
