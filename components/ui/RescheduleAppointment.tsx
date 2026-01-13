@@ -5,14 +5,14 @@ import { BookingCategory } from "@/components/ui/SelectService"
 import SelectVet, { SelectedVet } from "@/components/ui/SelectVet"
 import { Pet } from "@/context/UserContext"
 import RescheduleConfirmed from "@/components/ui/RescheduleConfirmed"
-import { AppointmentApiDetails } from "@/model/typeDefinitions"
+import { AppointmentDetails } from "@/model/typeDefinitions"
 import BackButton from "./BackButton"
 import { useAPICall } from "@/hooks/apicall"
 import api from "@/services/api"
 import { ClipLoader } from "react-spinners"
 
 type ReschedulingProps = {
-  existingAppointment: AppointmentApiDetails
+  existingAppointment: AppointmentDetails
   onBack: () => void
   onDone: () => void
   onError: () => void
@@ -37,7 +37,7 @@ const RescheduleAppointment: React.FC<ReschedulingProps> = ({
     selectedSlot: string | null
     selectedSlotEnd: string | null
   }>({
-    selectedServiceId: existingAppointment.appt_type_id ?? null,
+    selectedServiceId: existingAppointment.appt_type ?? null,
     selectedService: existingAppointment.appt_type,
     selectedSubtype: null,
     selectedPet: {

@@ -1,6 +1,6 @@
 "use client"
 
-import { AppointmentApiDetails } from "@/model/typeDefinitions"
+import { AppointmentDetails } from "@/model/typeDefinitions"
 import ClinicBookingDetails from "./ClinicBookingDetails"
 import AtHomeBookingDetails from "./AtHomeBookingDetails"
 import { useAPICall } from "@/hooks/apicall"
@@ -26,7 +26,7 @@ const BookingDetails = ({ appointmentId, goBack }: BookingDetailsProps) => {
       </div>
     )
   }
-  const selectedAppointment: AppointmentApiDetails =
+  const selectedAppointment: AppointmentDetails =
     result.value.body.data.appointment
 
   return (

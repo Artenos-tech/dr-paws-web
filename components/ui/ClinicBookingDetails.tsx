@@ -25,7 +25,7 @@ import { ClipLoader } from "react-spinners"
 import toast from "react-hot-toast"
 import { AttachmentInfo } from "./MedicalHistory"
 import RescheduleAppointment from "@/components/ui/RescheduleAppointment"
-import { AppointmentApiDetails } from "@/model/typeDefinitions"
+import { AppointmentDetails } from "@/model/typeDefinitions"
 
 // export const cancelReasons = [
 //   "Another commitment has come up",
@@ -45,7 +45,7 @@ import { AppointmentApiDetails } from "@/model/typeDefinitions"
 
 type BookingDetailsProps = {
   goBack: (refetch: boolean) => void
-  selectedAppointment: AppointmentApiDetails
+  selectedAppointment: AppointmentDetails
 }
 
 const ClinicBookingDetails = ({
