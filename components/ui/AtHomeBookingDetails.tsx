@@ -240,7 +240,11 @@ const AtHomeBookingDetails = ({
 
           <div className="pt-4 border-t space-y-4">
             <div className="space-y-1 ">
-              <p className="font-semibold">Need help?</p>
+              <p className="font-semibold">
+                {isVisitFinished
+                  ? "Let us know if we can help with anything!"
+                  : "Need help?"}
+              </p>
               <button
                 onClick={copyHelpline}
                 className="flex items-center gap-2 text-secondary-1 font-medium"
@@ -248,11 +252,10 @@ const AtHomeBookingDetails = ({
                 <Phone size={16} />
                 Call us
               </button>
-            </div>
-
-            <div className="flex items-center gap-2 text-red-600 font-semibold">
-              <AlertTriangle size={18} />
-              Emergency
+              <div className="flex items-center gap-2 text-red-600 font-semibold">
+                <AlertTriangle size={18} />
+                Emergency
+              </div>
             </div>
 
             {canShowCancelActions && (
