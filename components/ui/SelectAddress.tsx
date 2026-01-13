@@ -290,9 +290,11 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
       <div className="flex justify-center mb-10 mt-6">
         <Tooltip
           title={
-            selectedAddressId && !serviceableIds.has(selectedAddressId)
-              ? unserviceableToolTipMessage
-              : "Select an address to proceeding booking a Home Visit"
+            !selectedAddressId
+              ? "Select an address to proceed with booking a Home Visit"
+              : selectedAddressId && !serviceableIds.has(selectedAddressId)
+                ? unserviceableToolTipMessage
+                : undefined
           }
           color="#f7f1de"
           styles={{ body: { color: "#33495f" } }}
