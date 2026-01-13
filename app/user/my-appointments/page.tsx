@@ -30,7 +30,7 @@ const MyAppointmentsPage = () => {
     call: getAppointments,
     loading,
     result,
-  } = useAPICall(mockAtHomeClient.getAppointments)
+  } = useAPICall(mockAtHomeClient.getAppointmentsV2)
 
   const [allAppointments, setAllAppointments] = useState<AppointmentType[]>([])
   const [filteredAppointments, setFilteredAppointments] = useState<

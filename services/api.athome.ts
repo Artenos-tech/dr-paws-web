@@ -43,7 +43,7 @@ const AddressSchema = z.object({
   }),
   address_line1: z.string(),
   address_line2: z.string(),
-  pincode: z.number(),
+  pincode: z.string(),
   directions: z.string().optional(),
 })
 
@@ -101,8 +101,9 @@ const AppointmentSchema = z.object({
   booking_date: z.string(),
   appt_start: z.string(),
   appt_end: z.string(),
+  booking_type: z.enum(["HOME_VISIT", "CLINIC_VISIT"]),
   appt_type_title: z.enum(["Vet Consultation", "Grooming", "Home Visit"]),
-  appt_type: z.enum(["VET_CONSULTATION", "GROOMING", "HOME_VISIT"]),
+  appt_type: z.enum(["VET_CONSULTATION", "GROOMING", "HOME_VISIT"]), // home visits may have different sub types in the future; for now keeping this as is
   category: z.enum(["UPCOMING", "COMPLETED", "REQUESTED", "CANCELLED"]),
   clinic_name: z.string().optional(),
   clinic_location: z.string().optional(),
@@ -129,19 +130,7 @@ const AppointmentSchema = z.object({
 })
 
 const AppointmentDetailSchema = z.object({
-  id: z.string().uuid(),
-  sub_booking_id: z.string().uuid(),
-  clinic_id: z.string().uuid(),
   pet_id: z.string().uuid(),
-  pet_name: z.string(),
-  pet_type: z.enum(["DOG", "CAT", "OTHER"]).nullable(),
-  pet_profile_image: z.string().nullable(),
-  booking_date: z.string(),
-  appt_start: z.string(),
-  appt_end: z.string(),
-  appt_type_title: z.enum(["Vet Consultation", "Grooming", "Home Visit"]),
-  appt_type: z.enum(["VET_CONSULTATION", "GROOMING", "HOME_VISIT"]),
-  category: z.enum(["UPCOMING", "COMPLETED", "REQUESTED", "CANCELLED"]),
   invoice_id: z.string().uuid().nullable(),
   total_tax_amount: z.number(),
   total_billing_amount: z.number(),
@@ -152,39 +141,18 @@ const AppointmentDetailSchema = z.object({
     "PARTIALLY_PAID",
     "OVERPAID",
   ]),
-  clinic_name: z.string().optional(),
-  clinic_location: z.string().optional(),
-  clinic_contact: z.string().optional(),
-  coupon_code: z.string().optional(),
-  vet_name: z.string().nullable().optional(),
-  vet_image: z.string().nullable().optional(),
-  vet_contact: z.string().nullable().optional(),
-  address: AddressSchema.optional(),
-  visit_status: z
-    .enum([
-      "UNCONFIRMED",
-      "CONFIRMED",
-      "DELAYED",
-      "REACHED",
-      "CANCELLED",
-      "VISIT_STARTED",
-      "VISIT_FINISHED",
-    ])
-    .optional(),
-  helpline_no: z.string().optional(),
-  start_otp: z.string().nullable().optional(),
-  refund_status: z
-    .enum([
-      "PENDING",
-      "SUCCESS",
-      "FAILED",
-      "CANCELLED",
-      "ONHOLD",
-      "NOT_APPLICABLE",
-    ])
-    .optional(),
-  sos_status: z.enum(["ACTIVE", "INACTIVE"]).optional(),
+  refund_status: z.enum([
+    "PENDING",
+    "SUCCESS",
+    "FAILED",
+    "CANCELLED",
+    "ONHOLD",
+    "NOT_APPLICABLE",
+  ]),
 })
+.merge(z.object({
+  ...AppointmentSchema.shape,
+}))
 
 const RefundSchema = z.object({
   status: z.enum([
@@ -283,7 +251,6 @@ export type AtHomeAPIClient = {
         location: { lat: number; long: number }
         address_line1: string
         address_line2: string
-        pincode: number
         directions?: string
       }
     },
@@ -317,6 +284,22 @@ export type AtHomeAPIClient = {
         message: string
         data: {
           bookingTypes: Array<z.infer<typeof BookingTypeSchema>>
+        }
+      }>,
+      any
+    >
+  >
+
+  getServiceablePincodes: (
+    params: Record<string, never>,
+    opts?: { abortSignal?: AbortSignal },
+  ) => Promise<
+    Result<
+      APIResponse<{
+        status: number
+        message: string
+        data: {
+          pincodes: Array<string>
         }
       }>,
       any
@@ -412,7 +395,7 @@ export type AtHomeAPIClient = {
   >
 
   // Appointments
-  getAppointments: (
+  getAppointmentsV2: (
     params: Record<string, never>,
     opts?: { abortSignal?: AbortSignal },
   ) => Promise<
@@ -444,7 +427,7 @@ export type AtHomeAPIClient = {
     >
   >
 
-  cancelAppointment: (
+  cancelAppointmentV2: (
     params: {
       appointmentid: string
       clinic_id: string
@@ -467,7 +450,7 @@ export type AtHomeAPIClient = {
     >
   >
 
-  rescheduleAppointment: (
+  rescheduleAtHomeAppointment: (
     params: {
       appointment_id: string
       sub_booking_id: string
@@ -542,7 +525,7 @@ const mockAddresses: Array<z.infer<typeof AddressSchema>> = [
     location: { lat: 12.9352, long: 77.6245 },
     address_line1: "123 Main Street",
     address_line2: "Koramangala 4th Block",
-    pincode: 560034,
+    pincode: "560034",
     directions: "Near Sony Signal",
   },
   {
@@ -551,7 +534,7 @@ const mockAddresses: Array<z.infer<typeof AddressSchema>> = [
     location: { lat: 12.9716, long: 77.5946 },
     address_line1: "456 Park Avenue",
     address_line2: "Indiranagar 100 Feet Road",
-    pincode: 560038,
+    pincode: "560038",
   },
   {
     id: generateUUID(),
@@ -559,7 +542,7 @@ const mockAddresses: Array<z.infer<typeof AddressSchema>> = [
     location: { lat: 12.9698, long: 77.7499 },
     address_line1: "789 Garden Road",
     address_line2: "Whitefield Main Road",
-    pincode: 560066,
+    pincode: "560066",
     directions: "Opposite Forum Mall",
   },
 ]
@@ -673,7 +656,7 @@ export const mockAtHomeClient: AtHomeAPIClient = {
       location: params.address.location,
       address_line1: params.address.address_line1,
       address_line2: params.address.address_line2,
-      pincode: 560000,
+      pincode: "560000", // Default pincode for mock
       directions: params.address.directions ?? undefined,
     }
 
@@ -750,6 +733,20 @@ export const mockAtHomeClient: AtHomeAPIClient = {
         message: "Booking types fetched successfully",
         data: {
           bookingTypes: mockBookingTypes,
+        },
+      },
+    })
+  },
+
+  getServiceablePincodes: async (params, opts) => {
+    await delay(500, opts?.abortSignal)
+    return ok({
+      status: 200,
+      body: {
+        status: 200,
+        message: "Serviceable pincodes fetched successfully",
+        data: {
+          pincodes: ["560034", "560038", "560066", "560095", "560100"],
         },
       },
     })
@@ -906,7 +903,7 @@ export const mockAtHomeClient: AtHomeAPIClient = {
     })
   },
 
-  getAppointments: async (params, opts) => {
+  getAppointmentsV2: async (params, opts) => {
     await delay(500, opts?.abortSignal)
 
     const appointments = [
@@ -920,6 +917,7 @@ export const mockAtHomeClient: AtHomeAPIClient = {
         booking_date: "2025-01-15",
         appt_start: "10:00",
         appt_end: "11:00",
+        booking_type: "HOME_VISIT" as const,
         appt_type_title: "Home Visit" as const,
         appt_type: "HOME_VISIT" as const,
         category: "UPCOMING" as const,
@@ -942,6 +940,7 @@ export const mockAtHomeClient: AtHomeAPIClient = {
         booking_date: "2024-12-10",
         appt_start: "14:00",
         appt_end: "15:00",
+        booking_type: "CLINIC_VISIT" as const,
         appt_type_title: "Vet Consultation" as const,
         appt_type: "VET_CONSULTATION" as const,
         category: "COMPLETED" as const,
@@ -962,6 +961,7 @@ export const mockAtHomeClient: AtHomeAPIClient = {
         booking_date: "2025-01-16",
         appt_start: "11:00",
         appt_end: "12:00",
+        booking_type: "HOME_VISIT" as const,
         appt_type_title: "Home Visit" as const,
         appt_type: "HOME_VISIT" as const,
         category: "UPCOMING" as const,
@@ -984,6 +984,7 @@ export const mockAtHomeClient: AtHomeAPIClient = {
         booking_date: "2025-01-10",
         appt_start: "11:00",
         appt_end: "12:00",
+        booking_type: "HOME_VISIT" as const,
         appt_type_title: "Home Visit" as const,
         appt_type: "HOME_VISIT" as const,
         category: "CANCELLED" as const,
@@ -1024,6 +1025,7 @@ export const mockAtHomeClient: AtHomeAPIClient = {
       booking_date: "2025-01-15",
       appt_start: "10:00",
       appt_end: "11:00",
+      booking_type: "HOME_VISIT" as const,
       appt_type_title: "Home Visit" as const,
       appt_type: "HOME_VISIT" as const,
       category: "UPCOMING" as const,
@@ -1054,7 +1056,7 @@ export const mockAtHomeClient: AtHomeAPIClient = {
     })
   },
 
-  cancelAppointment: async (params, opts) => {
+  cancelAppointmentV2: async (params, opts) => {
     await delay(500, opts?.abortSignal)
 
     // 20% chance of refund being processed for testing
@@ -1075,7 +1077,7 @@ export const mockAtHomeClient: AtHomeAPIClient = {
     })
   },
 
-  rescheduleAppointment: async (params, opts) => {
+  rescheduleAtHomeAppointment: async (params, opts) => {
     await delay(500, opts?.abortSignal)
     return ok({
       status: 200,
@@ -1226,6 +1228,19 @@ const endpointConfig = {
     errorResponseSchema: z.object({}),
   },
 
+  getServiceablePincodes: {
+    method: "GET" as const,
+    path: "/booking/at-home/serviceable-pincodes",
+    pathParamsSchema: z.object({}),
+    requestSchema: z.object({}),
+    responseSchema: z.object({
+      data: z.object({
+        pincodes: z.array(z.string()),
+      }),
+    }),
+    errorResponseSchema: z.object({}),
+  },
+
   checkLocationServiceability: {
     method: "POST" as const,
     path: "/booking/location/serviceability",
@@ -1299,9 +1314,9 @@ const endpointConfig = {
   },
 
   // Appointments
-  getAppointments: {
+  getAppointmentsV2: {
     method: "GET" as const,
-    path: "/user/appointments",
+    path: "/user/appointments/v2",
     pathParamsSchema: z.object({}),
     requestSchema: z.object({}),
     responseSchema: z.object({
@@ -1325,9 +1340,9 @@ const endpointConfig = {
     errorResponseSchema: z.object({}),
   },
 
-  cancelAppointment: {
+  cancelAppointmentV2: {
     method: "PUT" as const,
-    path: "/user/appointment/{appointmentid}/cancel",
+    path: "/user/appointment/{appointmentid}/cancel/v2",
     pathParamsSchema: z.object({ appointmentid: z.string().uuid() }),
     requestSchema: z.object({
       clinic_id: z.string().uuid(),
@@ -1344,9 +1359,9 @@ const endpointConfig = {
     errorResponseSchema: z.object({}),
   },
 
-  rescheduleAppointment: {
+  rescheduleAtHomeAppointment: {
     method: "PUT" as const,
-    path: "/user/appointment/{appointment_id}/reschedule",
+    path: "/user/appointment/{appointment_id}/reschedule/at-home",
     pathParamsSchema: z.object({ appointment_id: z.string().uuid() }),
     requestSchema: z.object({
       sub_booking_id: z.string().uuid(),

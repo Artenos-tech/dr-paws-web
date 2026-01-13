@@ -245,7 +245,7 @@ export type Address = {
   address_line1: string
   address_line2: string
   directions?: string
-  pincode?: number
+  pincode?: string
 }
 
 export type AddressFormValues = Omit<Address, "id" | "location" | "pincode">
