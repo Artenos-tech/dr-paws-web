@@ -109,6 +109,7 @@ const BookingTypeSelection: React.FC<BookingTypeSelectionProps> = ({
 
           return (
             <Tooltip
+              key={bookingType.id}
               title={
                 bookingType.type === "HOME_VISIT" && availablePincodesTooltip
               }
@@ -116,7 +117,6 @@ const BookingTypeSelection: React.FC<BookingTypeSelectionProps> = ({
               styles={{ body: { color: "#33495f" } }}
             >
               <div
-                key={bookingType.id}
                 onClick={() => handleCardClick(bookingType.id)}
                 className={`flex flex-col items-center p-8 rounded-md cursor-pointer transition-all ${
                   isSelected

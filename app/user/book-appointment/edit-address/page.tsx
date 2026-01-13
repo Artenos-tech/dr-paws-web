@@ -9,7 +9,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md"
 import { ClipLoader } from "react-spinners"
-import toast, { Toaster } from "react-hot-toast"
+import toast from "react-hot-toast"
 import { AddressFormValues } from "@/model/typeDefinitions"
 
 const DEFAULT_PIN = { lat: 12.97, lng: 77.59 }
@@ -60,7 +60,7 @@ const AddressPage = () => {
       if (status !== "OK" || !results?.[0]) return
 
       const result = results[0]
-      
+
       setLocationDescription(result.formatted_address)
 
       const postalComponent = result.address_components.find((component) =>
