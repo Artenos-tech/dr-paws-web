@@ -1,6 +1,9 @@
 "use client"
 
-import { AppointmentCategory, AppointmentListItem } from "@/model/typeDefinitions"
+import {
+  AppointmentCategory,
+  AppointmentListItem,
+} from "@/model/typeDefinitions"
 import React from "react"
 import OutlineButton from "./OutlineButton"
 import Image from "next/image"
