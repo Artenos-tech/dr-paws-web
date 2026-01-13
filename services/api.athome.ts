@@ -377,7 +377,7 @@ export type AtHomeAPIClient = {
       appt_start: string
       booking_date: string
       address_id: string
-      reason_for_visit: "VACCINATION" | "CHECK-UP" | "SICK" | "OTHER"
+      reason_for_visit: "VACCINATION" | "CHECK-UP" | "SICK" | "DIAGNOSTICS" | "FOLLOW_UP" | "OTHER"
       notes: string
     },
     opts?: { abortSignal?: AbortSignal },
@@ -1277,7 +1277,7 @@ const endpointConfig = {
       appt_start: z.string(),
       booking_date: z.string(),
       address_id: z.string(),
-      reason_for_visit: z.enum(["VACCINATION", "CHECK-UP", "SICK", "OTHER"]),
+      reason_for_visit: z.enum(["VACCINATION", "CHECK-UP", "SICK", "DIAGNOSTICS", "FOLLOW_UP", "OTHER"]),
       notes: z.string(),
     }),
     responseSchema: z.object({
