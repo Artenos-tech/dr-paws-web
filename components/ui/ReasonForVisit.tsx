@@ -136,7 +136,18 @@ const ReasonForVisit = ({
     handleConfirm(reasonLabel, filledDescription, isEmergency)
   }
   const emergencyInfoMessage = (
-    <div className="text-sm p-5 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-2xl">
+    <div
+      className="
+      text-sm p-4
+      max-w-xs sm:max-w-sm md:max-w-md lg:max-w-2xl
+
+      max-h-56 sm:max-h-64
+      md:max-h-none
+
+      overflow-y-auto
+      overscroll-contain
+    "
+    >
       <p className="font-semibold mb-2">
         A pet emergency is any condition that requires immediate medical
         attention and cannot wait for a scheduled home visit.
@@ -265,6 +276,7 @@ const ReasonForVisit = ({
             Please describe the problem in as much detail as possible. It will
             help us prepare for the visit and make sure we bring everything we
             need.
+            <span className="text-red-500">*</span>
           </p>
           <textarea
             className="w-full border border-gray-300 rounded-lg p-3 text-sm
