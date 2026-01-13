@@ -104,6 +104,7 @@ export interface AppointmentType {
   pet_type: PetType | null
   pet_profile_image: string | null
 
+  booking_type: "HOME_VISIT" | "CLINIC_VISIT"
   booking_date: string
   appt_start: string
   appt_end: string
