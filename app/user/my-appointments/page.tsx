@@ -7,7 +7,7 @@ import ClinicTabBar from "@/components/ui/ClinicTabBar"
 import Loader from "@/components/ui/Loader"
 import NoAppointments from "@/components/ui/NoAppointments"
 import { useAPICall } from "@/hooks/apicall"
-import { AppointmentType } from "@/model/typeDefinitions"
+import { AppointmentListItem } from "@/model/typeDefinitions"
 import { mockAtHomeClient } from "@/services/api.athome"
 
 const TABS = {
@@ -29,21 +29,21 @@ const MyAppointmentsPage = () => {
   const {
     call: getAppointments,
     loading,
-    result,
+    result: getAppointmentsResult,
   } = useAPICall(mockAtHomeClient.getAppointmentsV2)
 
-  const [allAppointments, setAllAppointments] = useState<AppointmentType[]>([])
+  const [allAppointments, setAllAppointments] = useState<AppointmentListItem[]>([])
   const [filteredAppointments, setFilteredAppointments] = useState<
-    AppointmentType[]
+    AppointmentListItem[]
   >([])
   const [selectedAppointment, setSelectedAppointment] =
-    useState<AppointmentType | null>(null)
+    useState<AppointmentListItem | null>(null)
 
   const [activeTab, setActiveTab] = useState<keyof typeof TABS>("ALL")
   const [pageSize, setPageSize] = useState<number | null>(null)
   const [currentPage, setCurrentPage] = useState(1)
 
-  const sortAppointmentsByDateTime = (appointments: AppointmentType[]) => {
+  const sortAppointmentsByDateTime = (appointments: AppointmentListItem[]) => {
     return appointments.sort((a, b) => {
       const formatTime = (time: string) => {
         const [hours, minutes] = time.split(":")
@@ -61,10 +61,10 @@ const MyAppointmentsPage = () => {
     })
   }
   const sortAppointmentsWithUpcomingFirst = (
-    appointments: AppointmentType[],
+    appointments: AppointmentListItem[],
   ) => {
     return appointments.sort((a, b) => {
-      const categoryPriority: Record<AppointmentType["category"], number> = {
+      const categoryPriority: Record<AppointmentListItem["category"], number> = {
         UPCOMING: 1,
         ACTIVE: 2,
         COMPLETED: 3,
@@ -119,15 +119,15 @@ const MyAppointmentsPage = () => {
   }, [])
 
   useEffect(() => {
-    if (result?.ok) {
-      const all = result.value.body.data
-        .appointments as unknown as AppointmentType[]
+    if (getAppointmentsResult?.ok) {
+      const all = getAppointmentsResult.value.body.data
+        .appointments as unknown as AppointmentListItem[]
       setAllAppointments(all)
     }
-  }, [result])
+  }, [getAppointmentsResult])
 
   useEffect(() => {
-    let filtered: AppointmentType[] = []
+    let filtered: AppointmentListItem[] = []
 
     switch (activeTab) {
       case "UPCOMING":
@@ -162,7 +162,7 @@ const MyAppointmentsPage = () => {
     )
     console.log(allAppointments, "data is ")
 
-    let sortedAppointments: AppointmentType[] = []
+    let sortedAppointments: AppointmentListItem[] = []
 
     if (activeTab === "ALL") {
       sortedAppointments = sortAppointmentsWithUpcomingFirst([...typeFiltered])
@@ -220,14 +220,14 @@ const MyAppointmentsPage = () => {
           />
         ) : (
           <>
-            {!result?.ok &&
-              (result?.error.apiClientErrorType === "ErrorResponseAPIError" ? (
-                <div>{result.error.message}</div>
+            {!getAppointmentsResult?.ok &&
+              (getAppointmentsResult?.error.apiClientErrorType === "ErrorResponseAPIError" ? (
+                <div>{getAppointmentsResult.error.message}</div>
               ) : (
                 <>
                   {console.error(
                     "Error fetching appointments",
-                    result?.error.message,
+                    getAppointmentsResult?.error.message,
                   )}
                   <div>Something went wrong fetching your appointments</div>
                 </>

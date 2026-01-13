@@ -4,21 +4,12 @@ import React from "react"
 import Image from "next/image"
 import { Phone } from "lucide-react"
 import defaultVetImage from "@/public/assets/images/clinic/doctorFemale.webp"
-import { AppointmentApiDetails } from "@/model/typeDefinitions"
+import { AppointmentDetails } from "@/model/typeDefinitions"
 import toast from "react-hot-toast"
-
-type VisitStatus =
-  | "UNCONFIRMED"
-  | "CONFIRMED"
-  | "DELAYED"
-  | "REACHED"
-  | "CANCELLED"
-  | "VISIT_STARTED"
-  | "VISIT_FINISHED"
+import { VisitStatus } from "@/model/typeDefinitions"
 
 type AtHomeVisitStatusProps = {
-  selectedAppointment: AppointmentApiDetails
-
+  selectedAppointment: AppointmentDetails
   visitStatus?: VisitStatus
 }
 
@@ -67,7 +58,7 @@ const AtHomeVisitStatus = ({
 
   return (
     <div
-      className={`${visitStatus === "DELAYED" ? "bg-red-100" : "bg-[#F3F3F3]"} rounded-lg p-4 mt-4 space-y-2`}
+      className={`${visitStatus === "VET_DELAYED" ? "bg-red-100" : "bg-[#F3F3F3]"} rounded-lg p-4 mt-4 space-y-2`}
     >
       {visitStatus === "UNCONFIRMED" && (
         <>
@@ -79,7 +70,7 @@ const AtHomeVisitStatus = ({
         </>
       )}
 
-      {visitStatus === "CONFIRMED" && (
+      {visitStatus === "VET_CONFIRMED" && (
         <>
           <p className="font-semibold">Vet has been assigned</p>
           <VetRow />
@@ -90,7 +81,7 @@ const AtHomeVisitStatus = ({
         </>
       )}
 
-      {visitStatus === "DELAYED" && (
+      {visitStatus === "VET_DELAYED" && (
         <>
           <p className="font-semibold text-red-600">Vet is delayed</p>
           <VetRow />
@@ -100,7 +91,7 @@ const AtHomeVisitStatus = ({
         </>
       )}
 
-      {visitStatus === "REACHED" && (
+      {visitStatus === "VET_REACHED" && (
         <>
           <p className="font-semibold">Vet has reached the address</p>
           <VetRow />
