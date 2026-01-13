@@ -135,36 +135,38 @@ const ReasonForVisit = ({
     setIsProcessing(true)
     handleConfirm(reasonLabel, filledDescription, isEmergency)
   }
-const emergencyInfoMessage = (
-  <div className="text-sm p-5 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-2xl">
-    <p className="font-semibold mb-2">
-      A pet emergency is any condition that requires immediate medical attention
-      and cannot wait for a scheduled home visit.
-    </p>
+  const emergencyInfoMessage = (
+    <div className="text-sm p-5 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-2xl">
+      <p className="font-semibold mb-2">
+        A pet emergency is any condition that requires immediate medical
+        attention and cannot wait for a scheduled home visit.
+      </p>
 
-    <p className="mb-2">This includes, but is not limited to:</p>
+      <p className="mb-2">This includes, but is not limited to:</p>
 
-    <ul className="list-disc pl-5 space-y-1">
-      <li>Difficulty breathing, choking, or collapse</li>
-      <li>Seizures, unconsciousness, or sudden extreme weakness</li>
-      <li>Severe bleeding, deep wounds, or major trauma (accident, fall, bite)</li>
-      <li>Persistent vomiting or diarrhea, especially with blood</li>
-      <li>Inability to stand, walk, or sudden paralysis</li>
-      <li>Suspected poisoning or ingestion of harmful substances</li>
-      <li>Extreme pain, bloated abdomen, or signs of shock</li>
-    </ul>
+      <ul className="list-disc pl-5 space-y-1">
+        <li>Difficulty breathing, choking, or collapse</li>
+        <li>Seizures, unconsciousness, or sudden extreme weakness</li>
+        <li>
+          Severe bleeding, deep wounds, or major trauma (accident, fall, bite)
+        </li>
+        <li>Persistent vomiting or diarrhea, especially with blood</li>
+        <li>Inability to stand, walk, or sudden paralysis</li>
+        <li>Suspected poisoning or ingestion of harmful substances</li>
+        <li>Extreme pain, bloated abdomen, or signs of shock</li>
+      </ul>
 
-    <p className="mt-3 font-semibold text-red-600">
-      Home visits are not suitable for emergencies.
-    </p>
+      <p className="mt-3 font-semibold text-red-600">
+        Home visits are not suitable for emergencies.
+      </p>
 
-    <p className="mt-1">
-      If your pet is experiencing any of the above, please visit the nearest
-      <span className="font-semibold"> Dr. Paws clinic </span>
-      immediately.
-    </p>
-  </div>
-)
+      <p className="mt-1">
+        If your pet is experiencing any of the above, please visit the nearest
+        <span className="font-semibold"> Dr. Paws clinic </span>
+        immediately.
+      </p>
+    </div>
+  )
 
   return (
     <div className="w-full h-full mt-4">
@@ -225,7 +227,7 @@ const emergencyInfoMessage = (
           <Tooltip
             title={emergencyInfoMessage}
             color="#f7f1de"
-            styles={{ body: { color: "#33495f",width:300 } }}
+            styles={{ body: { color: "#33495f", width: 300 } }}
           >
             <MdOutlineInfo className=" mt-1 ml-1" size={16} />
           </Tooltip>
