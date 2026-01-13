@@ -9,6 +9,7 @@ import { ClipLoader } from "react-spinners"
 import toast from "react-hot-toast"
 import Modal from "react-modal"
 import { Address } from "@/model/typeDefinitions"
+import { Tooltip } from "antd"
 
 interface SelectAddressProps {
   handleConfirm: (addressId: string) => void
@@ -188,12 +189,15 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
     handleConfirm(selectedAddressId)
   }
 
+  const unserviceableToolTipMessage =
+    "This Pincode is currently outside our serviceable area"
+
   return (
-    <div className="space-y-8 py-10">
-      <h1 className="text-xl font-semibold">
+    <div className="space-y-4 pb-12">
+      <h1 className="text-2xl">
         Let&apos;s check if your address is within range
       </h1>
-      <p className="text-gray-600 mb-12">Add or select your address</p>
+      <p className="text-gray-600 mb-12">Add or select an address</p>
 
       {addresses.length === 0 ? (
         <div className="text-center py-12">
@@ -208,12 +212,13 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-4 overflow-x-auto lg:w-4/5 lg:mx-auto">
+        <div className="grid grid-cols-1 py-4 gap-4 overflow-x-auto lg:w-4/5 lg:mx-auto">
           {addresses.map((address) => {
             const isServiceable = serviceableIds.has(address.id)
             const isSelected = selectedAddressId === address.id
             const isChecking =
               checkingServiceability && !checkedAddressIds.has(address.id)
+            const fullAddress = `${address.address_line1},${address.address_line2}`
 
             return (
               <div
@@ -244,20 +249,28 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
                     {isChecking ? (
                       <ClipLoader size={12} color="#33495f" />
                     ) : (
-                      <span
-                        className={`text-xs px-3 py-1 rounded-full text-white ${
-                          isServiceable ? "bg-green-600" : "bg-red-500"
-                        }`}
-                      >
-                        {isServiceable ? "Serviceable" : "Unserviceable"}
-                      </span>
+                      <>
+                        {isServiceable ? (
+                          <span className="text-xs px-3 py-1 rounded-full text-white bg-green-600">
+                            Serviceable
+                          </span>
+                        ) : (
+                          <Tooltip
+                            title={unserviceableToolTipMessage}
+                            color="#f7f1de"
+                            styles={{ body: { color: "#33495f" } }}
+                          >
+                            <span className="text-xs px-3 py-1 rounded-full text-white bg-red-500 cursor-not-allowed">
+                              Unserviceable
+                            </span>
+                          </Tooltip>
+                        )}
+                      </>
                     )}
                   </div>
                 </div>
 
-                <p className="mt-2 text-sm text-gray-500">
-                  {address.address_line1}
-                </p>
+                <p className="mt-2 text-sm text-gray-500">{fullAddress}</p>
               </div>
             )
           })}
@@ -275,14 +288,26 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
       )}
 
       <div className="flex justify-center mb-10 mt-6">
-        <button
-          disabled={isConfirmDisabled}
-          className="rounded-full px-8 py-3 bg-secondary-1 text-white disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-          onClick={handleConfirmClick}
+        <Tooltip
+          title={
+            !selectedAddressId
+              ? "Select an address to proceed with booking a Home Visit"
+              : selectedAddressId && !serviceableIds.has(selectedAddressId)
+                ? unserviceableToolTipMessage
+                : undefined
+          }
+          color="#f7f1de"
+          styles={{ body: { color: "#33495f" } }}
         >
-          {isConfirming && <ClipLoader size={16} color="#ffffff" />}
-          {isConfirming ? "Confirming..." : "Confirm Address"}
-        </button>
+          <button
+            disabled={isConfirmDisabled}
+            className="rounded-full px-8 py-3 bg-secondary-1 text-white disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            onClick={handleConfirmClick}
+          >
+            {isConfirming && <ClipLoader size={16} color="#ffffff" />}
+            {isConfirming ? "Confirming..." : "Confirm Address"}
+          </button>
+        </Tooltip>
       </div>
 
       <Modal

@@ -26,11 +26,12 @@ const PetSelectItem = ({
   return (
     <Tooltip
       title={
-        !isServiceable
-          ? "This pet type is not serviceable for Home Visits."
-          : ""
+        isServiceable
+          ? ""
+          : "Only cats and dogs are serviceable for Home Visits."
       }
-      placement="top"
+      color="#f7f1de"
+      styles={{ body: { color: "#33495f" } }}
     >
       <div
         onClick={isServiceable ? onSelect : undefined}

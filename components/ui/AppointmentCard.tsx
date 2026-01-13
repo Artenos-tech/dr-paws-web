@@ -8,6 +8,7 @@ import defaultVetImage from "@/public/assets/images/clinic/doctorFemale.webp"
 import { petImageByType } from "./PetCard"
 import { format, parseISO } from "date-fns"
 import { HiLocationMarker } from "react-icons/hi"
+import { Building2, Home } from "lucide-react"
 
 type AppointmentCardProps = {
   appointment: AppointmentType
@@ -108,18 +109,26 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
             {appointment.visit_status.replace("_", " ")}
           </span>
         )}
-
-        <p
-          className={`px-2 py-1 rounded-md ${
-            // statusCategory === "cancelled" ? "bg-[#E0E0E0]" : "bg-primary-2"
-            "bg-primary-2"
-          } ${
-            // statusCategory === "cancelled" ? "text-[#909090]" : "text-primary-1"
-            "text-primary-1"
-          }`}
-        >
-          {appointment.appt_type_title}
-        </p>
+        {appointment.appt_type !== "HOME_VISIT" && (
+          <p
+            className={`px-2 py-1 rounded-md flex ${
+              // statusCategory === "cancelled" ? "bg-[#E0E0E0]" : "bg-primary-2"
+              "bg-primary-2"
+            } ${
+              // statusCategory === "cancelled" ? "text-[#909090]" : "text-primary-1"
+              "text-primary-1"
+            }`}
+          >
+            {appointment.appt_type_title}
+          </p>
+        )}
+        <span>
+          {appointment.booking_type === "HOME_VISIT" ? (
+            <Home size={20} className="mr-1" />
+          ) : (
+            <Building2 size={20} className="mr-1" />
+          )}
+        </span>
       </div>
       <div className="flex items-center my-4">
         <div className="relative w-20 h-20 rounded-full overflow-hidden bg-white p-3 flex justify-center items-center">
