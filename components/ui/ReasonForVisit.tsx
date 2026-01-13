@@ -5,6 +5,8 @@ import React, { useEffect, useState } from "react"
 import toast, { Toaster } from "react-hot-toast"
 import { z } from "zod"
 import { ClipLoader } from "react-spinners"
+import { MdOutlineInfo } from "react-icons/md"
+import { Tooltip } from "antd"
 
 interface ReasonForVisitProps {
   handleConfirm: (
@@ -17,11 +19,13 @@ interface ReasonForVisitProps {
   isEmergency?: "yes" | "no" | null
 }
 
-const VISIT_REASONS = [
-  { key: "checkup", label: "Regular check-up" },
-  { key: "vaccination", label: "Vaccination" },
-  { key: "sick", label: "My pet is sick" },
-  { key: "other", label: "Something else" },
+export const VISIT_REASONS = [
+  { key: "CHECK-UP", label: "General check-up" },
+  { key: "VACCINATION", label: "Vaccination" },
+  { key: "SICK", label: "My pet is sick" },
+  { key: "DIAGNOSTICS", label: "Diagnostics" },
+  { key: "FOLLOW_UP", label: "Follow-up" },
+  { key: "OTHER", label: "Something else" },
 ] as const
 
 const reasonForVisitSchema = z.object({
@@ -131,6 +135,42 @@ const ReasonForVisit = ({
     setIsProcessing(true)
     handleConfirm(reasonLabel, filledDescription, isEmergency)
   }
+  const emergencyInfoMessage = (
+    <div
+      className="
+      text-sm p-4 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-2xl max-h-56 sm:max-h-64 md:max-h-none overflow-y-auto overscroll-contain
+    "
+    >
+      <p className="font-semibold mb-2">
+        A pet emergency is any condition that requires immediate medical
+        attention and cannot wait for a scheduled home visit.
+      </p>
+
+      <p className="mb-2">This includes, but is not limited to:</p>
+
+      <ul className="list-disc pl-5 space-y-1">
+        <li>Difficulty breathing, choking, or collapse</li>
+        <li>Seizures, unconsciousness, or sudden extreme weakness</li>
+        <li>
+          Severe bleeding, deep wounds, or major trauma (accident, fall, bite)
+        </li>
+        <li>Persistent vomiting or diarrhea, especially with blood</li>
+        <li>Inability to stand, walk, or sudden paralysis</li>
+        <li>Suspected poisoning or ingestion of harmful substances</li>
+        <li>Extreme pain, bloated abdomen, or signs of shock</li>
+      </ul>
+
+      <p className="mt-3 font-semibold text-red-600">
+        Home visits are not suitable for emergencies.
+      </p>
+
+      <p className="mt-1">
+        If your pet is experiencing any of the above, please visit the nearest
+        <span className="font-semibold"> Dr. Paws clinic </span>
+        immediately.
+      </p>
+    </div>
+  )
 
   return (
     <div className="w-full h-full mt-4">
@@ -185,8 +225,17 @@ const ReasonForVisit = ({
         </p>
       </div>
 
-      <div className="space-y-2 mb-6">
-        <p className="font-bold text-gray-600">Is it an emergency?</p>
+      <div className="space-y-2 mb-6 bg-">
+        <p className="font-bold text-gray-600 flex">
+          <span>Is it an emergency?</span>
+          <Tooltip
+            title={emergencyInfoMessage}
+            color="#f7f1de"
+            styles={{ body: { color: "#33495f", width: 300 } }}
+          >
+            <MdOutlineInfo className=" mt-1 ml-1" size={16} />
+          </Tooltip>
+        </p>
         <div className="flex space-x-6">
           {["yes", "no"].map((val) => (
             <label key={val} className="flex items-center space-x-2">
@@ -220,6 +269,7 @@ const ReasonForVisit = ({
             Please describe the problem in as much detail as possible. It will
             help us prepare for the visit and make sure we bring everything we
             need.
+            <span className="text-red-500">*</span>
           </p>
           <textarea
             className="w-full border border-gray-300 rounded-lg p-3 text-sm

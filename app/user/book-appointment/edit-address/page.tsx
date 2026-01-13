@@ -9,7 +9,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md"
 import { ClipLoader } from "react-spinners"
-import toast, { Toaster } from "react-hot-toast"
+import toast from "react-hot-toast"
 import { AddressFormValues } from "@/model/typeDefinitions"
 
 const DEFAULT_PIN = { lat: 12.97, lng: 77.59 }
@@ -60,6 +60,7 @@ const AddressPage = () => {
       if (status !== "OK" || !results?.[0]) return
 
       const result = results[0]
+
       setLocationDescription(result.formatted_address)
 
       const postalComponent = result.address_components.find((component) =>
@@ -69,8 +70,12 @@ const AddressPage = () => {
       if (postalComponent?.long_name) {
         setPincode(postalComponent.long_name)
       } else {
-        setPincode(null)
-        toast.error("Unable to detect pincode for this location")
+        setPincode((prev) => {
+          if (prev !== null) {
+            toast.error("Unable to detect pincode for this location")
+          }
+          return null
+        })
       }
     })
   }
@@ -202,8 +207,6 @@ const AddressPage = () => {
 
   return (
     <main className="flex flex-col items-center w-full my-4 px-8 md:px-32 lg:px-20 xl:px-40">
-      <Toaster position="top-right" />
-
       <button
         type="button"
         onClick={() => router.replace("/user/book-appointment?home=true")}
@@ -242,6 +245,7 @@ const AddressPage = () => {
               <AddressForm
                 addressDetails={addressDetails}
                 setAddressDetails={setAddressDetails}
+                pincode={pincode}
                 onValidityChange={setIsFormValid}
               />
             </div>
