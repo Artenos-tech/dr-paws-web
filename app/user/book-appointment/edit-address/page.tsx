@@ -60,7 +60,6 @@ const AddressPage = () => {
       if (status !== "OK" || !results?.[0]) return
 
       const result = results[0]
-      console.log('resukt is ',result);
       
       setLocationDescription(result.formatted_address)
 
@@ -208,8 +207,6 @@ const AddressPage = () => {
 
   return (
     <main className="flex flex-col items-center w-full my-4 px-8 md:px-32 lg:px-20 xl:px-40">
-      <Toaster position="top-right" />
-
       <button
         type="button"
         onClick={() => router.replace("/user/book-appointment?home=true")}
