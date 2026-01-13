@@ -292,7 +292,7 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
           title={
             selectedAddressId && !serviceableIds.has(selectedAddressId)
               ? unserviceableToolTipMessage
-              : ""
+              : "Select an address to proceeding booking a Home Visit"
           }
           color="#f7f1de"
           styles={{ body: { color: "#33495f" } }}
