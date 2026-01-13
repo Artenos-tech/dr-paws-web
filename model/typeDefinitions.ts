@@ -81,7 +81,6 @@ export type AppointmentCategory =
   | "UPCOMING"
   | "ACTIVE"
   | "COMPLETED"
-  | "REQUESTED"
   | "CANCELLED"
 
 export type AppointmentTypeEnum = "VET_CONSULTATION" | "GROOMING" | "HOME_VISIT"

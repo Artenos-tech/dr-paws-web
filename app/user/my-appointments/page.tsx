@@ -72,7 +72,6 @@ const MyAppointmentsPage = () => {
           ACTIVE: 2,
           COMPLETED: 3,
           CANCELLED: 4,
-          REQUESTED: 5,
         }
 
       const priorityA = categoryPriority[a.category]
@@ -105,6 +104,19 @@ const MyAppointmentsPage = () => {
         return 0
       }
     })
+  }
+  const isCurrentTimeInSlot = (
+    bookingDate: string,
+    start: string,
+    end: string,
+  ) => {
+    const date = bookingDate.split("T")[0]
+    const toDate = (time: string) =>
+      new Date(`${date}T${time.padStart(5, "0")}:00`)
+    const now = new Date()
+    const startTime = toDate(start)
+    const endTime = toDate(end)
+    return now >= startTime && now <= endTime
   }
 
   useEffect(() => {
@@ -159,9 +171,8 @@ const MyAppointmentsPage = () => {
 
     const typeFiltered = filtered.filter(
       (appt) =>
-        appt.appt_type === "VET_CONSULTATION" ||
-        appt.appt_type === "GROOMING" ||
-        appt.appt_type === "HOME_VISIT",
+        appt.booking_type === "CLINIC_VISIT" ||
+        appt.booking_type === "HOME_VISIT",
     )
     console.log(allAppointments, "data is ")
 
@@ -169,7 +180,7 @@ const MyAppointmentsPage = () => {
 
     if (activeTab === "ALL") {
       sortedAppointments = sortAppointmentsWithUpcomingFirst([...typeFiltered])
-    } else if (activeTab === "UPCOMING") {
+    } else if (activeTab === "UPCOMING" || activeTab === "ACTIVE") {
       const sorted = sortAppointmentsByDateTime([...typeFiltered])
       sortedAppointments = sorted.reverse()
     } else {
@@ -194,19 +205,6 @@ const MyAppointmentsPage = () => {
     (currentPage - 1) * pageSize,
     currentPage * pageSize,
   )
-  const isCurrentTimeInSlot = (
-    bookingDate: string,
-    start: string,
-    end: string,
-  ) => {
-    const date = bookingDate.split("T")[0]
-    const toDate = (time: string) =>
-      new Date(`${date}T${time.padStart(5, "0")}:00`)
-    const now = new Date()
-    const startTime = toDate(start)
-    const endTime = toDate(end)
-    return now >= startTime && now <= endTime
-  }
 
   return (
     <div className="flex flex-col w-full h-full items-center font-roca pb-20 flex-grow px-8 md:px-32 lg:px-20 xl:px-40">
