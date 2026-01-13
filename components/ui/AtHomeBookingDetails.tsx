@@ -23,11 +23,40 @@ type BookingDetailsProps = {
   goBack: (refetch: boolean) => void
   selectedAppointment: AppointmentDetails
 }
+
+const APPOINTMENT_CANCEL_WINDOW_HOURS = 24
 const AtHomeBookingDetails = ({
   selectedAppointment,
   goBack,
 }: BookingDetailsProps) => {
   const parsedDate = parseISO(selectedAppointment.booking_date)
+
+  const getSlotStartDateTime = () => {
+    // assuming booking_date = YYYY-MM-DD and appt_start = HH:mm
+    return new Date(
+      `${selectedAppointment.booking_date}T${selectedAppointment.appt_start}`,
+    )
+  }
+
+  const canShowCancelActions =
+    !!selectedAppointment.visit_status &&
+    !["REACHED", "CANCELLED", "VISIT_STARTED", "VISIT_FINISHED"].includes(
+      selectedAppointment.visit_status,
+    )
+
+  const isDelayed = selectedAppointment.visit_status === "DELAYED"
+
+  const isFreeCancellation = () => {
+    if (isDelayed) return true
+
+    const slotStart = getSlotStartDateTime()
+    const now = new Date()
+
+    const diffInMs = slotStart.getTime() - now.getTime()
+    const diffInHours = diffInMs / (1000 * 60 * 60)
+
+    return diffInHours >= APPOINTMENT_CANCEL_WINDOW_HOURS
+  }
 
   const fullAddress = [
     selectedAppointment?.address?.address_line1,
@@ -101,6 +130,8 @@ const AtHomeBookingDetails = ({
     //   selectedAppointment?.vet_image ||
     defaultVetImage
 
+  const showFullRefundMessage = isCancelled && isFreeCancellation()
+
   return (
     <div className="w-full">
       <BackButton navigateBack={() => goBack(true)} />
@@ -166,6 +197,12 @@ const AtHomeBookingDetails = ({
               />
             </>
           )}
+          {showFullRefundMessage && (
+            <p className="text-base text-gray-600 ">
+              Full refund will be processed and sent back to your original
+              payment method.
+            </p>
+          )}
 
           <div className="flex items-center gap-3">
             <CalendarDays className="text-secondary-1" />
@@ -194,7 +231,7 @@ const AtHomeBookingDetails = ({
             </div>
           </div>
 
-          {!isVisitFinished && (
+          {!isVisitFinished && !isCancelled && (
             <AtHomeVisitStatus
               visitStatus={selectedAppointment.visit_status}
               selectedAppointment={selectedAppointment}
@@ -218,27 +255,39 @@ const AtHomeBookingDetails = ({
               Emergency
             </div>
 
-            <div className="border border-red-300 rounded-lg p-4 space-y-3">
-              <div>
-                <p className="font-semibold text-red-700">
-                  Reschedule & Cancel
-                </p>
-                <p className="text-sm text-red-600">
-                  Free cancellation up to 24 hours before the appointment. A
-                  100% cancellation fee will be charged otherwise.
-                </p>
+            {canShowCancelActions && (
+              <div className="border border-red-300 rounded-lg p-4 space-y-3">
+                <div>
+                  <p className="font-semibold text-red-700">
+                    Reschedule & Cancel
+                  </p>
+
+                  {isFreeCancellation() ? (
+                    <p className="text-sm text-gray-600">
+                      Free cancellation available up to 24 hours before the
+                      appointment. You will receive a 100% refund.
+                    </p>
+                  ) : (
+                    <p className="text-sm text-red-600">
+                      Cancellation within 24 hours of the appointment will incur
+                      a 100% cancellation fee.
+                    </p>
+                  )}
+                </div>
+
+                <button className="flex items-center gap-2 text-secondary-1 font-medium">
+                  <RotateCcw size={16} />
+                  Reschedule
+                </button>
+
+                <button className="flex items-center gap-2 text-red-600 font-medium">
+                  <XCircle size={16} />
+                  {isFreeCancellation()
+                    ? "Cancel for free"
+                    : "Cancel with 100% fee"}
+                </button>
               </div>
-
-              <button className="flex items-center gap-2 text-secondary-1 font-medium">
-                <RotateCcw size={16} />
-                Reschedule for free
-              </button>
-
-              <button className="flex items-center gap-2 text-red-600 font-medium">
-                <XCircle size={16} />
-                Cancel for free
-              </button>
-            </div>
+            )}
           </div>
         </div>
       </div>
