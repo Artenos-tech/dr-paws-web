@@ -45,7 +45,7 @@ const AtHomeVisitStatus = ({
         <p className="font-semibold">{vet_name || "Assigned Vet"}</p>
       </div>
 
-      {vet_contact && visitStatus!=='VISIT_FINISHED' &&(
+      {vet_contact && visitStatus !== "VISIT_FINISHED" && (
         <button
           onClick={copyNumber}
           className="p-2 rounded-full bg-white shadow"
