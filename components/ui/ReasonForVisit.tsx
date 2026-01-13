@@ -195,7 +195,7 @@ const ReasonForVisit = ({
           <Tooltip
             title={emergencyInfoMessage}
             color="#f7f1de"
-            styles={{ body: { color: "black" } }}
+            styles={{ body: { color: "#33495f" } }}
           >
             <MdOutlineInfo className=" mt-1 ml-1" size={16} />
           </Tooltip>

@@ -258,7 +258,7 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
                           <Tooltip
                             title={unserviceableToolTipMessage}
                             color="#f7f1de"
-                            styles={{ body: { color: "black" } }}
+                            styles={{ body: { color: "#33495f" } }}
                           >
                             <span className="text-xs px-3 py-1 rounded-full text-white bg-red-500 cursor-not-allowed">
                               Unserviceable
@@ -295,7 +295,7 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
               : ""
           }
           color="#f7f1de"
-          styles={{ body: { color: "black" } }}
+          styles={{ body: { color: "#33495f" } }}
         >
           <button
             disabled={isConfirmDisabled}
