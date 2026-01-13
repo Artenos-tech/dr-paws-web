@@ -129,30 +129,33 @@ const AppointmentSchema = z.object({
   sos_status: z.enum(["ACTIVE", "INACTIVE"]).optional(),
 })
 
-const AppointmentDetailSchema = z.object({
-  pet_id: z.string().uuid(),
-  invoice_id: z.string().uuid().nullable(),
-  total_tax_amount: z.number(),
-  total_billing_amount: z.number(),
-  payment_status: z.enum([
-    "PAID",
-    "UNPAID",
-    "NO_BILL",
-    "PARTIALLY_PAID",
-    "OVERPAID",
-  ]),
-  refund_status: z.enum([
-    "PENDING",
-    "SUCCESS",
-    "FAILED",
-    "CANCELLED",
-    "ONHOLD",
-    "NOT_APPLICABLE",
-  ]),
-})
-.merge(z.object({
-  ...AppointmentSchema.shape,
-}))
+const AppointmentDetailSchema = z
+  .object({
+    pet_id: z.string().uuid(),
+    invoice_id: z.string().uuid().nullable(),
+    total_tax_amount: z.number(),
+    total_billing_amount: z.number(),
+    payment_status: z.enum([
+      "PAID",
+      "UNPAID",
+      "NO_BILL",
+      "PARTIALLY_PAID",
+      "OVERPAID",
+    ]),
+    refund_status: z.enum([
+      "PENDING",
+      "SUCCESS",
+      "FAILED",
+      "CANCELLED",
+      "ONHOLD",
+      "NOT_APPLICABLE",
+    ]),
+  })
+  .merge(
+    z.object({
+      ...AppointmentSchema.shape,
+    }),
+  )
 
 const RefundSchema = z.object({
   status: z.enum([
