@@ -12,7 +12,7 @@ const addressSchema = z.object({
 type AddressFormProps = {
   addressDetails: AddressFormValues
   setAddressDetails: React.Dispatch<React.SetStateAction<AddressFormValues>>
-  pincode: number|null,
+  pincode: string|null,
   isSubmitting?: boolean
   onValidityChange: (isValid: boolean) => void
 }
