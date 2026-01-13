@@ -31,7 +31,7 @@ const PetSelectItem = ({
           : "Only cats and dogs are serviceable for Home Visits."
       }
       color="#f7f1de"
-      styles={{ body: { color: "black" } }}
+      styles={{ body: { color: "#33495f" } }}
     >
       <div
         onClick={isServiceable ? onSelect : undefined}
