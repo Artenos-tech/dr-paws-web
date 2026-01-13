@@ -256,12 +256,7 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
                           </span>
                         ) : (
                           <Tooltip
-                            title={
-                              selectedAddressId &&
-                              !serviceableIds.has(selectedAddressId)
-                                ? unserviceableToolTipMessage
-                                : ""
-                            }
+                            title={unserviceableToolTipMessage}
                             color="#f7f1de"
                             styles={{ body: { color: "black" } }}
                           >
