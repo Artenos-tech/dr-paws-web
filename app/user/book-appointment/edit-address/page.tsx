@@ -25,7 +25,7 @@ const AddressPage = () => {
   const [isPinSelected, setIsPinSelected] = useState(false)
   const [locationDescription, setLocationDescription] = useState("")
   const [showUnserviceableModal, setShowUnserviceableModal] = useState(false)
-  const [pincode, setPincode] = useState<number | null>(null)
+  const [pincode, setPincode] = useState<string | null>(null)
   const [isFormValid, setIsFormValid] = useState(false)
 
   const [addressDetails, setAddressDetails] = useState<AddressFormValues>({
@@ -67,7 +67,7 @@ const AddressPage = () => {
       )
 
       if (postalComponent?.long_name) {
-        setPincode(Number(postalComponent.long_name))
+        setPincode(postalComponent.long_name)
       } else {
         setPincode(null)
         toast.error("Unable to detect pincode for this location")
@@ -155,7 +155,6 @@ const AddressPage = () => {
         location: { lat: pin.lat, long: pin.lng },
         address_line1: address_line1,
         address_line2: address_line2,
-        pincode,
         directions: addressDetails.directions,
       }
 
