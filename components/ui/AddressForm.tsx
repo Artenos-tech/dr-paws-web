@@ -67,14 +67,13 @@ const AddressForm = ({
   const handleBlur = (field: keyof AddressFormValues) => () => {
     setTouched((prev) => ({ ...prev, [field]: true }))
 
-    if (field !== "directions") {
-      setAddressDetails((prev) => ({
-        ...prev,
-        [field]:
-          typeof prev[field] === "string" ? prev[field].trim() : prev[field],
-      }))
-    }
+    setAddressDetails((prev) => ({
+      ...prev,
+      [field]:
+        typeof prev[field] === "string" ? prev[field].trim() : prev[field],
+    }))
   }
+
 
   const getInputClasses = (field: keyof AddressFormValues) => {
     const hasError = touched[field] && errors[field]
