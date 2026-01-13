@@ -193,11 +193,11 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
     "This Pincode is currently outside our serviceable area"
 
   return (
-    <div className="space-y-8 py-10">
-      <h1 className="text-xl font-semibold">
+    <div className="space-y-4 pb-12">
+      <h1 className="text-2xl">
         Let&apos;s check if your address is within range
       </h1>
-      <p className="text-gray-600 mb-12">Add or select your address</p>
+      <p className="text-gray-600 mb-12">Add or select an address</p>
 
       {addresses.length === 0 ? (
         <div className="text-center py-12">
@@ -212,7 +212,7 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-4 overflow-x-auto lg:w-4/5 lg:mx-auto">
+        <div className="grid grid-cols-1 py-4 gap-4 overflow-x-auto lg:w-4/5 lg:mx-auto">
           {addresses.map((address) => {
             const isServiceable = serviceableIds.has(address.id)
             const isSelected = selectedAddressId === address.id
