@@ -138,14 +138,7 @@ const ReasonForVisit = ({
   const emergencyInfoMessage = (
     <div
       className="
-      text-sm p-4
-      max-w-xs sm:max-w-sm md:max-w-md lg:max-w-2xl
-
-      max-h-56 sm:max-h-64
-      md:max-h-none
-
-      overflow-y-auto
-      overscroll-contain
+      text-sm p-4 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-2xl max-h-56 sm:max-h-64 md:max-h-none overflow-y-auto overscroll-contain
     "
     >
       <p className="font-semibold mb-2">
