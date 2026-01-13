@@ -74,7 +74,6 @@ const AddressForm = ({
     }))
   }
 
-
   const getInputClasses = (field: keyof AddressFormValues) => {
     const hasError = touched[field] && errors[field]
     return `${inputBaseClasses} ${
