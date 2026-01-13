@@ -7,7 +7,7 @@ import ClinicTabBar from "@/components/ui/ClinicTabBar"
 import Loader from "@/components/ui/Loader"
 import NoAppointments from "@/components/ui/NoAppointments"
 import { useAPICall } from "@/hooks/apicall"
-import { AppointmentType } from "@/model/typeDefinitions"
+import { AppointmentListItem } from "@/model/typeDefinitions"
 import { mockAtHomeClient } from "@/services/api.athome"
 
 const TABS = {
@@ -29,21 +29,23 @@ const MyAppointmentsPage = () => {
   const {
     call: getAppointments,
     loading,
-    result,
+    result: getAppointmentsResult,
   } = useAPICall(mockAtHomeClient.getAppointmentsV2)
 
-  const [allAppointments, setAllAppointments] = useState<AppointmentType[]>([])
+  const [allAppointments, setAllAppointments] = useState<AppointmentListItem[]>(
+    [],
+  )
   const [filteredAppointments, setFilteredAppointments] = useState<
-    AppointmentType[]
+    AppointmentListItem[]
   >([])
   const [selectedAppointment, setSelectedAppointment] =
-    useState<AppointmentType | null>(null)
+    useState<AppointmentListItem | null>(null)
 
   const [activeTab, setActiveTab] = useState<keyof typeof TABS>("ALL")
   const [pageSize, setPageSize] = useState<number | null>(null)
   const [currentPage, setCurrentPage] = useState(1)
 
-  const sortAppointmentsByDateTime = (appointments: AppointmentType[]) => {
+  const sortAppointmentsByDateTime = (appointments: AppointmentListItem[]) => {
     return appointments.sort((a, b) => {
       const formatTime = (time: string) => {
         const [hours, minutes] = time.split(":")
@@ -61,16 +63,16 @@ const MyAppointmentsPage = () => {
     })
   }
   const sortAppointmentsWithUpcomingFirst = (
-    appointments: AppointmentType[],
+    appointments: AppointmentListItem[],
   ) => {
     return appointments.sort((a, b) => {
-      const categoryPriority: Record<AppointmentType["category"], number> = {
-        UPCOMING: 1,
-        ACTIVE: 2,
-        COMPLETED: 3,
-        CANCELLED: 4,
-        REQUESTED: 5,
-      }
+      const categoryPriority: Record<AppointmentListItem["category"], number> =
+        {
+          UPCOMING: 1,
+          ACTIVE: 2,
+          COMPLETED: 3,
+          CANCELLED: 4,
+        }
 
       const priorityA = categoryPriority[a.category]
       const priorityB = categoryPriority[b.category]
@@ -103,6 +105,19 @@ const MyAppointmentsPage = () => {
       }
     })
   }
+  const isCurrentTimeInSlot = (
+    bookingDate: string,
+    start: string,
+    end: string,
+  ) => {
+    const date = bookingDate.split("T")[0]
+    const toDate = (time: string) =>
+      new Date(`${date}T${time.padStart(5, "0")}:00`)
+    const now = new Date()
+    const startTime = toDate(start)
+    const endTime = toDate(end)
+    return now >= startTime && now <= endTime
+  }
 
   useEffect(() => {
     const updatePageSize = () => {
@@ -119,15 +134,15 @@ const MyAppointmentsPage = () => {
   }, [])
 
   useEffect(() => {
-    if (result?.ok) {
-      const all = result.value.body.data
-        .appointments as unknown as AppointmentType[]
+    if (getAppointmentsResult?.ok) {
+      const all = getAppointmentsResult.value.body.data
+        .appointments as unknown as AppointmentListItem[]
       setAllAppointments(all)
     }
-  }, [result])
+  }, [getAppointmentsResult])
 
   useEffect(() => {
-    let filtered: AppointmentType[] = []
+    let filtered: AppointmentListItem[] = []
 
     switch (activeTab) {
       case "UPCOMING":
@@ -156,17 +171,16 @@ const MyAppointmentsPage = () => {
 
     const typeFiltered = filtered.filter(
       (appt) =>
-        appt.appt_type === "VET_CONSULTATION" ||
-        appt.appt_type === "GROOMING" ||
-        appt.appt_type === "HOME_VISIT",
+        appt.booking_type === "CLINIC_VISIT" ||
+        appt.booking_type === "HOME_VISIT",
     )
     console.log(allAppointments, "data is ")
 
-    let sortedAppointments: AppointmentType[] = []
+    let sortedAppointments: AppointmentListItem[] = []
 
     if (activeTab === "ALL") {
       sortedAppointments = sortAppointmentsWithUpcomingFirst([...typeFiltered])
-    } else if (activeTab === "UPCOMING") {
+    } else if (activeTab === "UPCOMING" || activeTab === "ACTIVE") {
       const sorted = sortAppointmentsByDateTime([...typeFiltered])
       sortedAppointments = sorted.reverse()
     } else {
@@ -191,19 +205,6 @@ const MyAppointmentsPage = () => {
     (currentPage - 1) * pageSize,
     currentPage * pageSize,
   )
-  const isCurrentTimeInSlot = (
-    bookingDate: string,
-    start: string,
-    end: string,
-  ) => {
-    const date = bookingDate.split("T")[0]
-    const toDate = (time: string) =>
-      new Date(`${date}T${time.padStart(5, "0")}:00`)
-    const now = new Date()
-    const startTime = toDate(start)
-    const endTime = toDate(end)
-    return now >= startTime && now <= endTime
-  }
 
   return (
     <div className="flex flex-col w-full h-full items-center font-roca pb-20 flex-grow px-8 md:px-32 lg:px-20 xl:px-40">
@@ -220,14 +221,15 @@ const MyAppointmentsPage = () => {
           />
         ) : (
           <>
-            {!result?.ok &&
-              (result?.error.apiClientErrorType === "ErrorResponseAPIError" ? (
-                <div>{result.error.message}</div>
+            {!getAppointmentsResult?.ok &&
+              (getAppointmentsResult?.error.apiClientErrorType ===
+              "ErrorResponseAPIError" ? (
+                <div>{getAppointmentsResult.error.message}</div>
               ) : (
                 <>
                   {console.error(
                     "Error fetching appointments",
-                    result?.error.message,
+                    getAppointmentsResult?.error.message,
                   )}
                   <div>Something went wrong fetching your appointments</div>
                 </>

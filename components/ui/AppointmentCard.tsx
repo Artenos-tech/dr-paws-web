@@ -1,6 +1,9 @@
 "use client"
 
-import { AppointmentType } from "@/model/typeDefinitions"
+import {
+  AppointmentCategory,
+  AppointmentListItem,
+} from "@/model/typeDefinitions"
 import React from "react"
 import OutlineButton from "./OutlineButton"
 import Image from "next/image"
@@ -11,7 +14,7 @@ import { HiLocationMarker } from "react-icons/hi"
 import { Building2, Home } from "lucide-react"
 
 type AppointmentCardProps = {
-  appointment: AppointmentType
+  appointment: AppointmentListItem
   onClick: () => void
 }
 
@@ -43,36 +46,36 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
     },
   }
   const visitStatusStyles: Record<
-    NonNullable<AppointmentType["visit_status"]>,
+    NonNullable<AppointmentListItem["visit_status"]>,
     { bg: string; text: string }
   > = {
     UNCONFIRMED: { bg: "bg-[#FC862C]", text: "text-white" },
-    CONFIRMED: { bg: "bg-[#2C8DFC]", text: "text-white" },
-    DELAYED: { bg: "bg-[#D00000]", text: "text-white" },
-    REACHED: { bg: "bg-[#FBFF26A8]", text: "text-black" },
+    VET_CONFIRMED: { bg: "bg-[#2C8DFC]", text: "text-white" },
+    VET_DELAYED: { bg: "bg-[#D00000]", text: "text-white" },
+    VET_REACHED: { bg: "bg-[#FBFF26A8]", text: "text-black" },
     CANCELLED: { bg: "bg-[#656565]", text: "text-white" },
     VISIT_STARTED: { bg: "bg-[#4AB200DB]", text: "text-white" },
     VISIT_FINISHED: { bg: "bg-[#4AB200]", text: "text-white" },
   }
 
   // Mapping appt_status to style categories
-  const getStatusCategory = (appt: AppointmentType) => {
-    if (appt.category === "UPCOMING") return "upcoming"
-    if (appt.category === "COMPLETED") return "past"
-    if (appt.category === "ACTIVE") return "active"
-    if (appt.category === "CANCELLED") return "cancelled"
-    throw new Error(`No status category defined for ${appt.category}`)
+  const getStatusCategory = (category: AppointmentCategory) => {
+    if (category === "UPCOMING") return "upcoming"
+    if (category === "COMPLETED") return "past"
+    if (category === "ACTIVE") return "active"
+    if (category === "CANCELLED") return "cancelled"
+    throw new Error(`No status category defined for ${category}`)
   }
 
-  function getAppointmentCategoryLabel(category: string) {
+  function getAppointmentCategoryLabel(category: AppointmentCategory) {
     if (category === "UPCOMING") return "Upcoming"
-    if (category === "COMPLETED") return "Visited"
+    if (category === "COMPLETED") return "Past"
     if (category === "ACTIVE") return "Active"
     if (category === "CANCELLED") return "Cancelled"
     throw new Error(`No category label defined for ${category}`)
   }
 
-  const statusCategory = getStatusCategory(appointment)
+  const statusCategory = getStatusCategory(appointment.category)
   const { border, bg, text } = cardStyles[statusCategory]
 
   const defaultPetImageByType =
