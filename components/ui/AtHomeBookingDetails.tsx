@@ -14,14 +14,14 @@ import { GrLocation } from "react-icons/gr"
 import { format, parseISO } from "date-fns"
 import AtHomeVisitStatus from "./AtHomeVisitStatus"
 import toast from "react-hot-toast"
-import { AppointmentApiDetails } from "@/model/typeDefinitions"
+import { AppointmentDetails } from "@/model/typeDefinitions"
 import Image from "next/image"
 import { petImageByType } from "./PetCard"
 import defaultVetImage from "@/public/assets/images/clinic/doctorFemale.webp"
 
 type BookingDetailsProps = {
   goBack: (refetch: boolean) => void
-  selectedAppointment: AppointmentApiDetails
+  selectedAppointment: AppointmentDetails
 }
 const AtHomeBookingDetails = ({
   selectedAppointment,
@@ -68,7 +68,7 @@ const AtHomeBookingDetails = ({
     )
   }
 
-  const isConfirmed = selectedAppointment.visit_status === "CONFIRMED"
+  const isConfirmed = selectedAppointment.visit_status === "VET_CONFIRMED"
   const isCancelled = selectedAppointment.visit_status === "CANCELLED"
 
   let appointmentText = ""

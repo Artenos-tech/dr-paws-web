@@ -104,10 +104,9 @@ const AppointmentSchema = z.object({
   booking_type: z.enum(["HOME_VISIT", "CLINIC_VISIT"]),
   appt_type_title: z.enum(["Vet Consultation", "Grooming", "Home Visit"]),
   appt_type: z.enum(["VET_CONSULTATION", "GROOMING", "HOME_VISIT"]), // home visits may have different sub types in the future; for now keeping this as is
-  category: z.enum(["UPCOMING", "COMPLETED", "REQUESTED", "CANCELLED"]),
+  category: z.enum(["UPCOMING", "COMPLETED", "CANCELLED", "ACTIVE"]),
   clinic_name: z.string().optional(),
   clinic_location: z.string().optional(),
-  clinic_contact: z.string().optional(),
   coupon_code: z.string().optional(),
   vet_name: z.string().nullable().optional(),
   vet_image: z.string().nullable().optional(),
@@ -116,9 +115,9 @@ const AppointmentSchema = z.object({
   visit_status: z
     .enum([
       "UNCONFIRMED",
-      "CONFIRMED",
-      "DELAYED",
-      "REACHED",
+      "VET_CONFIRMED",
+      "VET_DELAYED",
+      "VET_REACHED",
       "CANCELLED",
       "VISIT_STARTED",
       "VISIT_FINISHED",
@@ -129,9 +128,24 @@ const AppointmentSchema = z.object({
   sos_status: z.enum(["ACTIVE", "INACTIVE"]).optional(),
 })
 
+const RefundSchema = z.object({
+  status: z.enum([
+    "PENDING",
+    "SUCCESS",
+    "FAILED",
+    "CANCELLED",
+    "ONHOLD",
+    "NOT_APPLICABLE",
+  ]),
+  id: z.string().uuid().nullable(),
+  amount: z.number(),
+})
+
 const AppointmentDetailSchema = z
   .object({
     pet_id: z.string().uuid(),
+    vet_id: z.string().uuid().nullable().optional(),
+    clinic_contact: z.string(),
     invoice_id: z.string().uuid().nullable(),
     total_tax_amount: z.number(),
     total_billing_amount: z.number(),
@@ -142,31 +156,13 @@ const AppointmentDetailSchema = z
       "PARTIALLY_PAID",
       "OVERPAID",
     ]),
-    refund_status: z.enum([
-      "PENDING",
-      "SUCCESS",
-      "FAILED",
-      "CANCELLED",
-      "ONHOLD",
-      "NOT_APPLICABLE",
-    ]),
+    refund: RefundSchema.optional(),
   })
   .merge(
     z.object({
       ...AppointmentSchema.shape,
     }),
   )
-
-const RefundSchema = z.object({
-  status: z.enum([
-    "PENDING",
-    "SUCCESS",
-    "FAILED",
-    "CANCELLED",
-    "ONHOLD",
-    "NOT_APPLICABLE",
-  ]),
-})
 
 const OrderAppointmentSchema = z.object({
   id: z.string().uuid(),
@@ -934,7 +930,7 @@ export const mockAtHomeClient: AtHomeAPIClient = {
         vet_image: "https://example.com/dr-sharma.jpg",
         vet_contact: "+91-9876543210",
         address: mockAddresses[0],
-        visit_status: "CONFIRMED" as const,
+        visit_status: "VET_CONFIRMED" as const,
         helpline_no: "+91-1800-DRPAWS",
         start_otp: "123456",
         sos_status: "INACTIVE" as const,
@@ -1027,6 +1023,7 @@ export const mockAtHomeClient: AtHomeAPIClient = {
       id: params.appointment_id,
       sub_booking_id: generateUUID(),
       clinic_id: generateUUID(),
+      clinic_contact: "+91-9876543210",
       pet_id: generateUUID(),
       pet_name: mockPets[0].name,
       pet_type: mockPets[0].type,
@@ -1046,10 +1043,14 @@ export const mockAtHomeClient: AtHomeAPIClient = {
       vet_image: "https://example.com/dr-sharma.jpg",
       vet_contact: "+91-9876543210",
       address: mockAddresses[0],
-      visit_status: "CONFIRMED" as const,
+      visit_status: "VET_CONFIRMED" as const,
       helpline_no: "+91-1800-DRPAWS",
       start_otp: "123456",
-      refund_status: "NOT_APPLICABLE" as const,
+      refund: {
+        id: null,
+        amount: 0,
+        status: "NOT_APPLICABLE" as const,
+      },
       sos_status: "INACTIVE" as const,
     }
 
@@ -1079,7 +1080,9 @@ export const mockAtHomeClient: AtHomeAPIClient = {
         data: {
           appointment: {
             id: params.appointmentid,
-            refund: hasRefund ? { status: "PENDING" as const } : undefined,
+            refund: hasRefund
+              ? { status: "PENDING" as const, id: generateUUID(), amount: 500 }
+              : undefined,
           },
         },
       },
