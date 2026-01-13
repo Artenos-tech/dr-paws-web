@@ -60,6 +60,8 @@ const AddressPage = () => {
       if (status !== "OK" || !results?.[0]) return
 
       const result = results[0]
+      console.log('resukt is ',result);
+      
       setLocationDescription(result.formatted_address)
 
       const postalComponent = result.address_components.find((component) =>
@@ -246,6 +248,7 @@ const AddressPage = () => {
               <AddressForm
                 addressDetails={addressDetails}
                 setAddressDetails={setAddressDetails}
+                pincode={pincode}
                 onValidityChange={setIsFormValid}
               />
             </div>

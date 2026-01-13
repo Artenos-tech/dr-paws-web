@@ -12,6 +12,7 @@ const addressSchema = z.object({
 type AddressFormProps = {
   addressDetails: AddressFormValues
   setAddressDetails: React.Dispatch<React.SetStateAction<AddressFormValues>>
+  pincode: number|null,
   isSubmitting?: boolean
   onValidityChange: (isValid: boolean) => void
 }
@@ -24,6 +25,7 @@ const labelClasses = "text-sm font-medium text-gray-700"
 const AddressForm = ({
   addressDetails,
   setAddressDetails,
+  pincode,
   isSubmitting = false,
   onValidityChange,
 }: AddressFormProps) => {
@@ -88,6 +90,18 @@ const AddressForm = ({
   return (
     <div className="mt-6 w-full flex flex-col gap-4">
       <div>
+        {pincode && (
+          <div>
+            <label className={labelClasses}>Selected pincode</label>
+            <input
+              type="text"
+              value={pincode}
+              disabled
+              className={`${inputBaseClasses} bg-gray-100 cursor-not-allowed`}
+            />
+          </div>
+        )}
+
         <label htmlFor="addressLine1" className={labelClasses}>
           Address line 1 <span className="text-red-500">*</span>
         </label>
