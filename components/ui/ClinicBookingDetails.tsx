@@ -26,6 +26,8 @@ import toast from "react-hot-toast"
 import { AttachmentInfo } from "./MedicalHistory"
 import RescheduleAppointment from "@/components/ui/RescheduleAppointment"
 import { AppointmentDetails } from "@/model/typeDefinitions"
+import ConfirmconfirmationTypeCard from "./CancelConfirmationCard"
+import ConfirmationCard from "./CancelConfirmationCard"
 
 // export const cancelReasons = [
 //   "Another commitment has come up",
@@ -848,59 +850,65 @@ const ClinicBookingDetails = ({
             </div>
           )}
           {currentView === "cancelConfirm" && (
-            <div className="flex flex-col justify-center items-center gap-4">
-              <h1 className="text-3xl">Cancel Booking</h1>
-              <div className="py-6 px-6 md:py-8 md:px-12 text-primary-1 w-11/12 md:w-4/5 lg:w-[50%] shadow-md my-5 flex flex-col gap-6 items-center bg-[#FFFCF3] rounded-lg">
-                <h1 className="text-center text-2xl font-semibold font-sans">
-                  Are you sure you want to cancel this booking?
-                </h1>
-                {/* <p>
-                  Please select a reason for cancelling. You will receive a
-                  Whatsapp notification confirming the cancellation for this
-                  booking.
-                </p>
-                <div className="space-y-3">
-                  {cancelReasons.map((reason, index) => (
-                    <div className="flex items-start gap-2" key={index}>
-                      <input
-                        type="radio"
-                        id={`reason${index}`}
-                        name="cancelReason"
-                        value={reason}
-                        onChange={() => setCancelReason(reason)}
-                        className="mt-1.5"
-                      />
-                      <label htmlFor={`reason${index}`} className="">
-                        {reason}
-                      </label>
-                    </div>
-                  ))}
-                </div>
-                {showCancelValidationMessage && !cancelReason && (
-                  <p className="text-red-500 text-sm">
-                    Please select a reason to proceed.
-                  </p>
-                )} */}
-                <div className="flex items-center justify-center w-full md:w-[85%] gap-4 md:mt-4">
-                  <button
-                    onClick={resetView}
-                    className="w-full py-3 bg-gray-300 rounded-full text-sm text-white bg-secondary-1"
-                  >
-                    No
-                  </button>
-                  <button
-                    onClick={() => cancelBooking()}
-                    className="w-full py-3 border-2 border-secondary-1 rounded-full text-sm"
-                  >
-                    {cancelAppointmentLoading ? (
-                      <ClipLoader color="#33495f" size={18} />
-                    ) : (
-                      `Yes`
-                    )}
-                  </button>
-                </div>
-              </div>
-            </div>
+            <ConfirmationCard
+              loading={cancelAppointmentLoading}
+              onConfirm={cancelBooking}
+              onCancel={resetView}
+              confirmationType="CANCEL"
+            />
+            // <div className="flex flex-col justify-center items-center gap-4">
+            //   <h1 className="text-3xl">Cancel Booking</h1>
+            //   <div className="py-6 px-6 md:py-8 md:px-12 text-primary-1 w-11/12 md:w-4/5 lg:w-[50%] shadow-md my-5 flex flex-col gap-6 items-center bg-[#FFFCF3] rounded-lg">
+            //     <h1 className="text-center text-2xl font-semibold font-sans">
+            //       Are you sure you want to cancel this booking?
+            //     </h1>
+            //     {/* <p>
+            //       Please select a reason for cancelling. You will receive a
+            //       Whatsapp notification confirming the cancellation for this
+            //       booking.
+            //     </p>
+            //     <div className="space-y-3">
+            //       {cancelReasons.map((reason, index) => (
+            //         <div className="flex items-start gap-2" key={index}>
+            //           <input
+            //             type="radio"
+            //             id={`reason${index}`}
+            //             name="cancelReason"
+            //             value={reason}
+            //             onChange={() => setCancelReason(reason)}
+            //             className="mt-1.5"
+            //           />
+            //           <label htmlFor={`reason${index}`} className="">
+            //             {reason}
+            //           </label>
+            //         </div>
+            //       ))}
+            //     </div>
+            //     {showCancelValidationMessage && !cancelReason && (
+            //       <p className="text-red-500 text-sm">
+            //         Please select a reason to proceed.
+            //       </p>
+            //     )} */}
+            //     <div className="flex items-center justify-center w-full md:w-[85%] gap-4 md:mt-4">
+            //       <button
+            //         onClick={resetView}
+            //         className="w-full py-3 bg-gray-300 rounded-full text-sm text-white bg-secondary-1"
+            //       >
+            //         No
+            //       </button>
+            //       <button
+            //         onClick={() => cancelBooking()}
+            //         className="w-full py-3 border-2 border-secondary-1 rounded-full text-sm"
+            //       >
+            //         {cancelAppointmentLoading ? (
+            //           <ClipLoader color="#33495f" size={18} />
+            //         ) : (
+            //           `Yes`
+            //         )}
+            //       </button>
+            //     </div>
+            //   </div>
+            // </div>
           )}
           {currentView === "cancelled" && (
             <div className="flex flex-col justify-center gap-4 items-center">
@@ -988,54 +996,59 @@ const ClinicBookingDetails = ({
             </div>
           )}
           {currentView === "rescheduleConfirm" && (
-            <div className="flex flex-col justify-center items-center gap-4">
-              <h1 className="text-3xl">Reschedule Booking</h1>
-              <div className="py-6 px-6 md:py-8 md:px-12 text-primary-1 w-11/12 md:w-4/5 lg:w-[50%] shadow-md my-5 flex flex-col gap-8 items-center bg-[#FFFCF3] rounded-lg">
-                <h1 className="text-center text-2xl font-semibold font-sans">
-                  Are you sure you want to reschedule this booking?
-                </h1>
-                <p>
-                  You will receive a Whatsapp notification confirming the
-                  rescheduled booking
-                </p>
-                {/* <div className="space-y-3">
-                  {rescheduleReasons.map((reason, index) => (
-                    <div className="flex items-start gap-2" key={index}>
-                      <input
-                        type="radio"
-                        id={`rescheduleReason${index}`}
-                        name="rescheduleReason"
-                        value={reason}
-                        onChange={() => setRescheduleReason(reason)}
-                        className="mt-1.5"
-                      />
-                      <label htmlFor={`rescheduleReason${index}`} className="">
-                        {reason}
-                      </label>
-                    </div>
-                  ))}
-                </div>
-                {showRescheduleValidationMessage && !rescheduleReason && (
-                  <p className="text-red-500 text-sm">
-                    Please select a reason to proceed.
-                  </p>
-                )} */}
-                <div className="flex items-center justify-center w-full md:w-[85%] gap-4 md:mt-4">
-                  <button
-                    onClick={resetView}
-                    className="w-full py-3 bg-gray-300 rounded-full text-sm text-white bg-secondary-1"
-                  >
-                    No
-                  </button>
-                  <button
-                    onClick={rescheduleBooking}
-                    className="w-full py-3 border-2 border-secondary-1 rounded-full text-sm"
-                  >
-                    Yes
-                  </button>
-                </div>
-              </div>
-            </div>
+           <ConfirmationCard
+              onConfirm={rescheduleBooking}
+              onCancel={resetView}
+              confirmationType="RESCHEDULE"
+            />
+            // <div className="flex flex-col justify-center items-center gap-4">
+            //   <h1 className="text-3xl">Reschedule Booking</h1>
+            //   <div className="py-6 px-6 md:py-8 md:px-12 text-primary-1 w-11/12 md:w-4/5 lg:w-[50%] shadow-md my-5 flex flex-col gap-8 items-center bg-[#FFFCF3] rounded-lg">
+            //     <h1 className="text-center text-2xl font-semibold font-sans">
+            //       Are you sure you want to reschedule this booking?
+            //     </h1>
+            //     <p>
+            //       You will receive a Whatsapp notification confirming the
+            //       rescheduled booking
+            //     </p>
+            //     {/* <div className="space-y-3">
+            //       {rescheduleReasons.map((reason, index) => (
+            //         <div className="flex items-start gap-2" key={index}>
+            //           <input
+            //             type="radio"
+            //             id={`rescheduleReason${index}`}
+            //             name="rescheduleReason"
+            //             value={reason}
+            //             onChange={() => setRescheduleReason(reason)}
+            //             className="mt-1.5"
+            //           />
+            //           <label htmlFor={`rescheduleReason${index}`} className="">
+            //             {reason}
+            //           </label>
+            //         </div>
+            //       ))}
+            //     </div>
+            //     {showRescheduleValidationMessage && !rescheduleReason && (
+            //       <p className="text-red-500 text-sm">
+            //         Please select a reason to proceed.
+            //       </p>
+            //     )} */}
+            //     <div className="flex items-center justify-center w-full md:w-[85%] gap-4 md:mt-4">
+            //       <button
+            //         onClick={resetView}
+            //         className="w-full py-3 bg-gray-300 rounded-full text-sm text-white bg-secondary-1"
+            //       >
+            //         No
+            //       </button>
+            //       <button
+            //         onClick={rescheduleBooking}
+            //         className="w-full py-3 border-2 border-secondary-1 rounded-full text-sm"
+            //       >
+            //         Yes
+            //       </button>
+            //     </div>
+            //   </div>
+            // </div>
           )}
         </>
       )}
