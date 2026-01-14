@@ -40,11 +40,11 @@ const AtHomeBookingDetails = ({
 
   const canShowCancelActions =
     !!selectedAppointment.visit_status &&
-    !["REACHED", "CANCELLED", "VISIT_STARTED", "VISIT_FINISHED"].includes(
+    !["VET_REACHED", "CANCELLED", "VISIT_STARTED", "VISIT_FINISHED"].includes(
       selectedAppointment.visit_status,
     )
 
-  const isDelayed = selectedAppointment.visit_status === "DELAYED"
+  const isDelayed = selectedAppointment.visit_status === "VET_DELAYED" 
 
   const isFreeCancellation = () => {
     if (isDelayed) return true
