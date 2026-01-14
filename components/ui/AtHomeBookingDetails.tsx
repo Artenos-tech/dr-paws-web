@@ -254,7 +254,7 @@ const AtHomeBookingDetails = ({
               </button>
               <div className="flex items-center gap-2 text-red-600 font-semibold">
                 <AlertTriangle size={18} />
-                Emergency
+                SOS
               </div>
             </div>
 
