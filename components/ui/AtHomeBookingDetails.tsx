@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import BackButton from "./BackButton"
 import {
   CalendarDays,
@@ -14,11 +14,14 @@ import { GrLocation } from "react-icons/gr"
 import { format, parseISO } from "date-fns"
 import AtHomeVisitStatus from "./AtHomeVisitStatus"
 import toast from "react-hot-toast"
-import { AppointmentDetails } from "@/model/typeDefinitions"
+import { AppointmentDetails, RefundStatus } from "@/model/typeDefinitions"
 import Image from "next/image"
 import { petImageByType } from "./PetCard"
 import defaultVetImage from "@/public/assets/images/clinic/doctorFemale.webp"
 import ConfirmActionCard from "./CancelConfirmationCard"
+import CancelledBookingCard from "./CancelBookingCard"
+import { useAPICall } from "@/hooks/apicall"
+import { mockAtHomeClient } from "@/services/api.athome"
 
 type BookingDetailsProps = {
   goBack: (refetch: boolean) => void
@@ -33,8 +36,11 @@ const AtHomeBookingDetails = ({
 }: BookingDetailsProps) => {
   const [view, setView] = useState<ViewState>("DETAILS")
   const [confirmationType, setConfirmationType] = useState<
-    "CANCEL" | "RESCHEDULE"|null
+    "CANCEL" | "RESCHEDULE" | null
   >(null)
+  const [refundStatus, setRefundStatus] = useState<RefundStatus>()
+  const { call: cancelAppointment, result: cancelAppointmentResult } =
+    useAPICall(mockAtHomeClient.cancelAppointmentV2)
   const parsedDate = parseISO(selectedAppointment.booking_date)
 
   const getSlotStartDateTime = () => {
@@ -136,23 +142,36 @@ const AtHomeBookingDetails = ({
     //   selectedAppointment?.vet_image ||
     defaultVetImage
 
-  const showFullRefundMessage = isCancelled && isFreeCancellation()
   const openConfirmationView = (action: "CANCEL" | "RESCHEDULE") => {
     setConfirmationType(action)
-    setView('CONFIRM_ACTION')
+    setView("CONFIRM_ACTION")
   }
   const cancelConfirmationView = () => {
     setView("DETAILS")
   }
-  const proceedConfirmationView = () => {
+  const proceedConfirmationView = async () => {
     if (confirmationType === "CANCEL") {
+      await handleCancelAppointment()
       setView("CANCELLED")
     } else {
       setView("RESCHEDULE")
     }
   }
 
-  const handleCancelAppointment = () => {}
+  const handleCancelAppointment = async () => {
+    await cancelAppointment({
+      appointmentid: selectedAppointment.id,
+      clinic_id: selectedAppointment.clinic_id,
+      sub_booking_id: selectedAppointment.sub_booking_id,
+    })
+  }
+  useEffect(() => {
+    if (cancelAppointmentResult?.ok) {
+      const status =
+        cancelAppointmentResult.value.body.data.appointment.refund?.status
+      setRefundStatus(status)
+    }
+  }, [cancelAppointmentResult])
   return (
     <div className="w-full">
       <BackButton navigateBack={() => goBack(true)} />
@@ -163,12 +182,18 @@ const AtHomeBookingDetails = ({
           confirmationType={confirmationType}
         />
       )}
-      {view === "CANCELLED" && <div>hurray</div>}
+      {view === "CANCELLED" && (
+        <CancelledBookingCard
+          refundStatus={refundStatus}
+          appointment={selectedAppointment}
+          onDone={() => goBack(true)}
+        />
+      )}
       {view === "DETAILS" && (
         <div className="flex flex-col items-center gap-6 mt-6">
           <h1 className="text-2xl sm:text-3xl font-semibold text-primary-1">
-            {selectedAppointment.visit_status === "CANCELLED"
-              ? "Home Visit Cancelled"
+            {selectedAppointment.visit_status === "VISIT_STARTED"
+              ? "Home Visit Started"
               : isVisitFinished
                 ? "Home Visit Finished"
                 : "Home Visit Scheduled"}
@@ -226,12 +251,6 @@ const AtHomeBookingDetails = ({
                 />
               </>
             )}
-            {showFullRefundMessage && (
-              <p className="text-base text-gray-600 ">
-                Full refund will be processed and sent back to your original
-                payment method.
-              </p>
-            )}
 
             <div className="flex items-center gap-3">
               <CalendarDays className="text-secondary-1" />
@@ -261,7 +280,7 @@ const AtHomeBookingDetails = ({
               </div>
             </div>
 
-            {!isVisitFinished && !isCancelled && (
+            {!isVisitFinished && (
               <AtHomeVisitStatus
                 visitStatus={selectedAppointment.visit_status}
                 selectedAppointment={selectedAppointment}
@@ -298,7 +317,7 @@ const AtHomeBookingDetails = ({
                     {isFreeCancellation() ? (
                       <p className="text-sm text-gray-600">
                         Free cancellation available up to 24 hours before the
-                        appointment. You will receive a 100% refund.
+                        appointment.
                       </p>
                     ) : (
                       <p className="text-sm text-red-600">

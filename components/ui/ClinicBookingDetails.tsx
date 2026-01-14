@@ -28,6 +28,7 @@ import RescheduleAppointment from "@/components/ui/RescheduleAppointment"
 import { AppointmentDetails } from "@/model/typeDefinitions"
 import ConfirmconfirmationTypeCard from "./CancelConfirmationCard"
 import ConfirmationCard from "./CancelConfirmationCard"
+import CancelledBookingCard from "./CancelBookingCard"
 
 // export const cancelReasons = [
 //   "Another commitment has come up",
@@ -911,92 +912,96 @@ const ClinicBookingDetails = ({
             // </div>
           )}
           {currentView === "cancelled" && (
-            <div className="flex flex-col justify-center gap-4 items-center">
-              <div className="flex items-center gap-2">
-                <h1 className="text-2xl sm:text-3xl flex items-center gap-4">
-                  Booking Cancelled
-                </h1>
-                <CircleX
-                  size={40}
-                  fill="#5281a2"
-                  stroke="white"
-                  strokeWidth={2}
-                />
-              </div>
-              <div
-                className={`p-4 text-primary-1 w-11/12 md:w-4/5 lg:w-[50%] shadow-md my-5 flex flex-col gap-2 items-center bg-primary-3`}
-              >
-                <p className="text-lg font-semibold mt-4 text-center">
-                  {selectedAppointment.appt_type === "GROOMING"
-                    ? `${selectedAppointment.pet_name} was scheduled for a ${selectedAppointment.appt_type} session`
-                    : `${selectedAppointment.pet_name} was scheduled with ${selectedAppointment.vet_name} for a ${selectedAppointment.appt_type}`}
-                </p>
-                <div className="flex items-center my-4 relative">
-                  {
-                    <>
-                      <div className="relative w-32 h-32 rounded-full overflow-hidden bg-white p-3 flex justify-center items-center">
-                        <Image
-                          src={
-                            selectedAppointment.pet_profile_image ||
-                            defaultPetImageByType
-                          }
-                          alt={`${selectedAppointment.pet_name}'s profile`}
-                          layout="fill"
-                          objectFit="cover"
-                          sizes="128px"
-                          priority
-                        />
-                      </div>
-                      {selectedAppointment.appt_type !== "GROOMING" && (
-                        <div className="relative w-32 h-32 rounded-full overflow-hidden bg-white -ml-8 border-4 border-white flex justify-center items-center">
-                          <Image
-                            src={
-                              selectedAppointment.vet_image || defaultVetImage
-                            }
-                            alt={`Dr. ${selectedAppointment.vet_name}'s profile`}
-                            layout="fill"
-                            objectFit="contain"
-                            sizes="128px"
-                          />
-                        </div>
-                      )}
-                    </>
-                  }
-                </div>
-                <div className="my-4 space-y-3">
-                  <p className="flex items-center gap-2 line-through">
-                    <span className="text-secondary-1">
-                      <GrLocation />
-                    </span>{" "}
-                    {selectedAppointment.clinic_location}
-                  </p>
-                  <p className="flex items-center gap-2 line-through">
-                    <span className="text-secondary-1">
-                      <HiOutlineCalendar />
-                    </span>
-                    {format(parsedDate, "EEEE dd MMMM, yyyy")}
-                  </p>
-                  <p className="flex items-center gap-2 line-through">
-                    <span className="text-secondary-1">
-                      <MdOutlineAccessTime />
-                    </span>
-                    {selectedAppointment.appt_start}
-                    {" - "}
-                    {selectedAppointment.appt_end}
-                  </p>
-                </div>
-                <div className="flex items-center">
-                  <CustomButton
-                    buttonText="Done"
-                    buttonBackground="bg-secondary-1"
-                    buttonClickEvent={() => goBack(true)}
-                  />
-                </div>
-              </div>
-            </div>
+            <CancelledBookingCard
+              appointment={selectedAppointment}
+              onDone={() => goBack(true)}
+            />
+            // <div className="flex flex-col justify-center gap-4 items-center">
+            //   <div className="flex items-center gap-2">
+            //     <h1 className="text-2xl sm:text-3xl flex items-center gap-4">
+            //       Booking Cancelled
+            //     </h1>
+            //     <CircleX
+            //       size={40}
+            //       fill="#5281a2"
+            //       stroke="white"
+            //       strokeWidth={2}
+            //     />
+            //   </div>
+            //   <div
+            //     className={`p-4 text-primary-1 w-11/12 md:w-4/5 lg:w-[50%] shadow-md my-5 flex flex-col gap-2 items-center bg-primary-3`}
+            //   >
+            //     <p className="text-lg font-semibold mt-4 text-center">
+            //       {selectedAppointment.appt_type === "GROOMING"
+            //         ? `${selectedAppointment.pet_name} was scheduled for a ${selectedAppointment.appt_type} session`
+            //         : `${selectedAppointment.pet_name} was scheduled with ${selectedAppointment.vet_name} for a ${selectedAppointment.appt_type}`}
+            //     </p>
+            //     <div className="flex items-center my-4 relative">
+            //       {
+            //         <>
+            //           <div className="relative w-32 h-32 rounded-full overflow-hidden bg-white p-3 flex justify-center items-center">
+            //             <Image
+            //               src={
+            //                 selectedAppointment.pet_profile_image ||
+            //                 defaultPetImageByType
+            //               }
+            //               alt={`${selectedAppointment.pet_name}'s profile`}
+            //               layout="fill"
+            //               objectFit="cover"
+            //               sizes="128px"
+            //               priority
+            //             />
+            //           </div>
+            //           {selectedAppointment.appt_type !== "GROOMING" && (
+            //             <div className="relative w-32 h-32 rounded-full overflow-hidden bg-white -ml-8 border-4 border-white flex justify-center items-center">
+            //               <Image
+            //                 src={
+            //                   selectedAppointment.vet_image || defaultVetImage
+            //                 }
+            //                 alt={`Dr. ${selectedAppointment.vet_name}'s profile`}
+            //                 layout="fill"
+            //                 objectFit="contain"
+            //                 sizes="128px"
+            //               />
+            //             </div>
+            //           )}
+            //         </>
+            //       }
+            //     </div>
+            //     <div className="my-4 space-y-3">
+            //       <p className="flex items-center gap-2 line-through">
+            //         <span className="text-secondary-1">
+            //           <GrLocation />
+            //         </span>{" "}
+            //         {selectedAppointment.clinic_location}
+            //       </p>
+            //       <p className="flex items-center gap-2 line-through">
+            //         <span className="text-secondary-1">
+            //           <HiOutlineCalendar />
+            //         </span>
+            //         {format(parsedDate, "EEEE dd MMMM, yyyy")}
+            //       </p>
+            //       <p className="flex items-center gap-2 line-through">
+            //         <span className="text-secondary-1">
+            //           <MdOutlineAccessTime />
+            //         </span>
+            //         {selectedAppointment.appt_start}
+            //         {" - "}
+            //         {selectedAppointment.appt_end}
+            //       </p>
+            //     </div>
+            //     <div className="flex items-center">
+            //       <CustomButton
+            //         buttonText="Done"
+            //         buttonBackground="bg-secondary-1"
+            //         buttonClickEvent={() => goBack(true)}
+            //       />
+            //     </div>
+            //   </div>
+            // </div>
           )}
           {currentView === "rescheduleConfirm" && (
-           <ConfirmationCard
+            <ConfirmationCard
               onConfirm={rescheduleBooking}
               onCancel={resetView}
               confirmationType="RESCHEDULE"
