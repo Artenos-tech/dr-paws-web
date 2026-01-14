@@ -1,6 +1,6 @@
 import { ClipLoader } from "react-spinners"
 
-type ConfirmationType = "CANCEL" | "RESCHEDULE"
+type ConfirmationType = "CANCEL" | "RESCHEDULE"|null
 
 type ConfirmationProps = {
   confirmationType: ConfirmationType

@@ -24,16 +24,17 @@ type BookingDetailsProps = {
   goBack: (refetch: boolean) => void
   selectedAppointment: AppointmentDetails
 }
+type ViewState = "DETAILS" | "CONFIRM_ACTION" | "CANCELLED" | "RESCHEDULE"
 
 const APPOINTMENT_CANCEL_WINDOW_HOURS = 24
 const AtHomeBookingDetails = ({
   selectedAppointment,
   goBack,
 }: BookingDetailsProps) => {
-  const [confirmationView, setConfirmationView] = useState(false)
+  const [view, setView] = useState<ViewState>("DETAILS")
   const [confirmationType, setConfirmationType] = useState<
-    "CANCEL" | "RESCHEDULE"
-  >("CANCEL")
+    "CANCEL" | "RESCHEDULE"|null
+  >(null)
   const parsedDate = parseISO(selectedAppointment.booking_date)
 
   const getSlotStartDateTime = () => {
@@ -138,23 +139,32 @@ const AtHomeBookingDetails = ({
   const showFullRefundMessage = isCancelled && isFreeCancellation()
   const openConfirmationView = (action: "CANCEL" | "RESCHEDULE") => {
     setConfirmationType(action)
-
-    setConfirmationView(true)
+    setView('CONFIRM_ACTION')
   }
   const cancelConfirmationView = () => {
-    setConfirmationView(false)
+    setView("DETAILS")
+  }
+  const proceedConfirmationView = () => {
+    if (confirmationType === "CANCEL") {
+      setView("CANCELLED")
+    } else {
+      setView("RESCHEDULE")
+    }
   }
 
+  const handleCancelAppointment = () => {}
   return (
     <div className="w-full">
       <BackButton navigateBack={() => goBack(true)} />
-      {confirmationView ? (
+      {view === "CONFIRM_ACTION" && (
         <ConfirmActionCard
           onCancel={cancelConfirmationView}
-          onConfirm={() => {}}
+          onConfirm={proceedConfirmationView}
           confirmationType={confirmationType}
         />
-      ) : (
+      )}
+      {view === "CANCELLED" && <div>hurray</div>}
+      {view === "DETAILS" && (
         <div className="flex flex-col items-center gap-6 mt-6">
           <h1 className="text-2xl sm:text-3xl font-semibold text-primary-1">
             {selectedAppointment.visit_status === "CANCELLED"
