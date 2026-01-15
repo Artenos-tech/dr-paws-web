@@ -89,12 +89,13 @@ const CancelledBookingCard = ({ appointment, refundStatus, onDone }: Props) => {
             <Image src={petImage} alt="Pet" fill sizes="128px" />
           </div>
 
-          {appointment.appt_type !== "GROOMING" ||
-            (appointment.visit_status === "UNCONFIRMED" && (
+          {(appointment.appt_type !== "GROOMING" ||
+            appointment.booking_type === "HOME_VISIT") &&
+            appointment.visit_status !== "UNCONFIRMED" && (
               <div className="relative w-32 h-32 rounded-full overflow-hidden bg-white -ml-8 border-4 border-white">
                 <Image src={vetImage} alt="Vet" fill sizes="128px" />
               </div>
-            ))}
+            )}
         </div>
         {refundStatus === "PENDING" && (
           <p className="text-sm text-gray-600 max-w-md leading-relaxed">
