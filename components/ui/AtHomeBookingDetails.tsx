@@ -204,7 +204,7 @@ const AtHomeBookingDetails = ({
           </h1>
 
           <div
-            className={`${bg} ${text} w-11/12 md:w-4/5 lg:w-[50%] shadow-md rounded-lg px-6 py-4 md:py-12 md:px-24 space-y-5`}
+            className={`${bg} ${text}  w-full  sm:w-full   md:w-full lg:w-4/5  xl:w-3/4  2xl:w-2/3  shadow-md rounded-lg  px-6 py-4 md:py-12 md:px-24 space-y-5`}
           >
             <p className="text-lg font-semibold mt-4 text-center">
               {appointmentText}
@@ -298,16 +298,23 @@ const AtHomeBookingDetails = ({
                     ? "Let us know if we can help with anything!"
                     : "Need help?"}
                 </p>
-                <button
-                  onClick={copyHelpline}
-                  className="flex items-center gap-2 text-secondary-1 font-medium"
-                >
-                  <Phone size={16} />
-                  Call us
-                </button>
-                <div className="flex items-center gap-2 text-red-600 font-semibold">
-                  <AlertTriangle size={18} />
-                  SOS
+                <div className="flex flex-wrap gap-3">
+                  <button
+                    onClick={copyHelpline}
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg border border-secondary-1 text-secondary-1 hover:bg-secondary-1 hover:text-white transition"
+                  >
+                    <Phone size={16} />
+                    Call us
+                  </button>
+
+                  <button
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg
+      border border-red-600 text-red-600
+      hover:bg-red-600 hover:text-white transition"
+                  >
+                    <AlertTriangle size={18} />
+                    SOS
+                  </button>
                 </div>
               </div>
 
@@ -331,23 +338,28 @@ const AtHomeBookingDetails = ({
                     )}
                   </div>
 
-                  <button
-                    onClick={() => openConfirmationView("RESCHEDULE")}
-                    className="flex items-center gap-2 text-secondary-1 font-medium"
-                  >
-                    <RotateCcw size={16} />
-                    Reschedule
-                  </button>
+                  <div className="flex flex-col lg:flex-row gap-3">
+                    <button
+                      onClick={() => openConfirmationView("RESCHEDULE")}
+                      className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-secondary-1 text-secondary-1 hover:bg-secondary-1 hover:text-white transition"
+                    >
+                      <RotateCcw size={16} />
+                      Reschedule
+                    </button>
 
-                  <button
-                    onClick={() => openConfirmationView("CANCEL")}
-                    className="flex items-center gap-2 text-red-600 font-medium"
-                  >
-                    <XCircle size={16} />
-                    {isFreeCancellation()
-                      ? "Cancel for free"
-                      : "Cancel with 100% fee"}
-                  </button>
+                    <button
+                      onClick={() => openConfirmationView("CANCEL")}
+                      className="flex items-center justify-center gap-2
+      px-4 py-2 rounded-lg
+      border border-red-600 text-red-600
+      hover:bg-red-600 hover:text-white transition"
+                    >
+                      <XCircle size={16} />
+                      {isFreeCancellation()
+                        ? "Cancel for free"
+                        : "Cancel with 100% fee"}
+                    </button>
+                  </div>
                 </div>
               )}
             </div>

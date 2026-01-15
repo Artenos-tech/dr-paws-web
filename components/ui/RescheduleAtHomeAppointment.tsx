@@ -23,10 +23,8 @@ const RescheduleAtHomeAppointment = ({ appointmentId }: Props) => {
     loading: getAppointmentDetailsLoading,
   } = useAPICall(mockAtHomeClient.getAppointmentDetails)
 
-  const {
-    call: rescheduleAtHomeAppointment,
-    loading: rescheduleLoading,
-  } = useAPICall(mockAtHomeClient.rescheduleAtHomeAppointment)
+  const { call: rescheduleAtHomeAppointment, loading: rescheduleLoading } =
+    useAPICall(mockAtHomeClient.rescheduleAtHomeAppointment)
 
   useEffect(() => {
     getAppointmentDetails({ appointment_id: appointmentId })
