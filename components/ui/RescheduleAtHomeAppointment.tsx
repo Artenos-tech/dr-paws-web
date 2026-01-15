@@ -49,6 +49,7 @@ const RescheduleAtHomeAppointment = ({ appointmentId }: Props) => {
       appt_start: slot.startTime,
       appt_end: slot.endTime,
     })
+    setIsConfirmationModalOpen(true)
   }
 
   if (getAppointmentDetailsLoading || !appointment) {
