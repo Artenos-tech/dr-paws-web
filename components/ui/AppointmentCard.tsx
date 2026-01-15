@@ -93,7 +93,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
     defaultVetImage
 
   const parsedDate = parseISO(appointment.booking_date)
-
+  const Icon = appointment.booking_type === "HOME_VISIT" ? Home : Building2
   return (
     <div
       className={`p-4 ${border} ${bg} flex flex-col gap-3 rounded-lg shadow-md w-full`}
@@ -125,12 +125,13 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
             {appointment.appt_type_title}
           </p>
         )}
-        <span>
-          {appointment.booking_type === "HOME_VISIT" ? (
-            <Home size={20} className="mr-1" />
-          ) : (
-            <Building2 size={20} className="mr-1" />
-          )}
+        <span className="flex items-center text-sm">
+          <Icon size={20} className="mr-1" />
+          <span>
+            {appointment.booking_type === "HOME_VISIT"
+              ? "Home Visit"
+              : "Clinic Visit"}
+          </span>
         </span>
       </div>
       <div className="flex items-center my-4">
