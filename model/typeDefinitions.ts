@@ -150,7 +150,16 @@ export interface AppointmentDetails extends AppointmentListItem {
   payment_status: "PAID" | "UNPAID" | "NO_BILL" | "PARTIALLY_PAID" | "OVERPAID"
   vet_id?: string | null
   refund_status?: RefundStatus
+  reason_for_visit: ReasonForVisit
+  notes: string | null
 }
+export type ReasonForVisit =
+  | "VACCINATION"
+  | "CHECK-UP"
+  | "SICK"
+  | "DIAGNOSTICS"
+  | "FOLLOW_UP"
+  | "OTHER"
 
 export type RefundStatus =
   | "NOT_APPLICABLE"

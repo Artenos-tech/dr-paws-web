@@ -3,20 +3,38 @@
 import React, { useEffect, useState } from "react"
 import { useAPICall } from "@/hooks/apicall"
 import { mockAtHomeClient } from "@/services/api.athome"
-import { AppointmentDetails } from "@/model/typeDefinitions"
+import { AppointmentDetails, ReasonForVisit } from "@/model/typeDefinitions"
 import { ClipLoader } from "react-spinners"
 import SelectDateTimeForVisit from "./SelectDateTimeForVisit"
 import ConfirmationModal from "./ConfirmationModal"
+import { VISIT_REASONS } from "./ReasonForVisit"
 
 type Props = {
   appointmentId: string
+}
+
+type BookingDetails = {
+  petName: string
+  service: string
+  doctorName?: string
+  reasonForVisit?: string
+  reasonDescription?: string
+  location: string
+  date: Date
+  slot: string
+  couponCode: string | null
 }
 
 const RescheduleAtHomeAppointment = ({ appointmentId }: Props) => {
   const [appointment, setAppointment] = useState<AppointmentDetails | null>(
     null,
   )
+
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false)
+
+  const [bookingDetails, setBookingDetails] = useState<BookingDetails | null>(
+    null,
+  )
 
   const {
     call: getAppointmentDetails,
@@ -50,7 +68,28 @@ const RescheduleAtHomeAppointment = ({ appointmentId }: Props) => {
       appt_start: slot.startTime,
       appt_end: slot.endTime,
     })
+
+    setBookingDetails({
+      petName: appointment.pet_name ?? "",
+      service: "Home Visit",
+      doctorName: appointment.vet_name ?? undefined,
+      reasonForVisit: getReasonByKey(appointment.reason_for_visit),
+      reasonDescription: appointment.notes ?? undefined,
+      location: [
+        appointment.address?.address_line1,
+        appointment.address?.address_line2,
+      ]
+        .filter(Boolean)
+        .join(", "),
+      date: new Date(date),
+      slot: `${slot.startTime} - ${slot.endTime}`,
+      couponCode: appointment.coupon_code ?? null,
+    })
+
     setIsConfirmationModalOpen(true)
+  }
+  const getReasonByKey = (key: ReasonForVisit): string => {
+    return VISIT_REASONS.find((r) => r.key === key)?.label ?? "Unknown reason"
   }
 
   if (getAppointmentDetailsLoading || !appointment) {
@@ -59,24 +98,6 @@ const RescheduleAtHomeAppointment = ({ appointmentId }: Props) => {
         <ClipLoader />
       </div>
     )
-  }
-
-  //this is fake booking data
-  const fakeBookingDetails = {
-    petName: appointment.pet_name || "Buddy",
-    service: "Home Visit",
-    doctorName: appointment.vet_name || "Dr. John Doe",
-    location: [
-      appointment.address?.address_line1,
-      appointment.address?.address_line2,
-    ]
-      .filter(Boolean)
-      .join(", "),
-    date: new Date(), // fake date
-    slot: "10:00 AM - 11:00 AM",
-    reasonForVisit: "General Checkup",
-    reasonDescription: "Routine health check for testing",
-    couponCode: null,
   }
 
   return (
@@ -88,12 +109,14 @@ const RescheduleAtHomeAppointment = ({ appointmentId }: Props) => {
         onConfirm={handleReschedule}
       />
 
-      <ConfirmationModal
-        onClose={() => setIsConfirmationModalOpen(false)}
-        isOpen={isConfirmationModalOpen}
-        onConfirm={() => {}}
-        bookingDetails={fakeBookingDetails}
-      />
+      {bookingDetails && (
+        <ConfirmationModal
+          isOpen={isConfirmationModalOpen}
+          onClose={() => setIsConfirmationModalOpen(false)}
+          onConfirm={() => {}}
+          bookingDetails={bookingDetails}
+        />
+      )}
     </div>
   )
 }
