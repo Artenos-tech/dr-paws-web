@@ -307,7 +307,7 @@ const AtHomeBookingDetails = ({
                     ? "Let us know if we can help with anything!"
                     : "Need help?"}
                 </p>
-                <div className="flex flex-wrap gap-3">
+                <div className="flex flex-wrap justify-between gap-3">
                   <button
                     onClick={copyHelpline}
                     className="flex items-center gap-2 px-4 py-2 rounded-lg border border-secondary-1 text-secondary-1 hover:bg-secondary-1 hover:text-white transition"
@@ -347,7 +347,7 @@ const AtHomeBookingDetails = ({
                     )}
                   </div>
 
-                  <div className="flex flex-col lg:flex-row gap-3">
+                  <div className="flex flex-col lg:flex-row lg:justify-between gap-3">
                     <button
                       onClick={() => openConfirmationView("RESCHEDULE")}
                       className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-secondary-1 text-secondary-1 hover:bg-secondary-1 hover:text-white transition"
@@ -358,10 +358,7 @@ const AtHomeBookingDetails = ({
 
                     <button
                       onClick={() => openConfirmationView("CANCEL")}
-                      className="flex items-center justify-center gap-2
-      px-4 py-2 rounded-lg
-      border border-red-600 text-red-600
-      hover:bg-red-600 hover:text-white transition"
+                      className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-red-600 text-red-600 hover:bg-red-600 hover:text-white transition"
                     >
                       <XCircle size={16} />
                       {isFreeCancellation()
