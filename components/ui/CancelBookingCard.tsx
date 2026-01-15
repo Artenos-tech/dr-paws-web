@@ -44,27 +44,14 @@ const CancelledBookingCard = ({ appointment, refundStatus, onDone }: Props) => {
     .filter(Boolean)
     .join(", ")
 
-  const isCancelled = appointment.visit_status === "CANCELLED"
-  const isVisitFinished = appointment.visit_status === "VISIT_FINISHED"
-  const isConfirmed = appointment.visit_status === "VET_CONFIRMED"
+  const isUnConfirmed = appointment.visit_status === "UNCONFIRMED"
 
   let appointmentText = ""
 
   if (appointment.booking_type === "HOME_VISIT") {
-    if (isCancelled) {
-      appointmentText = `${appointment.pet_name} was scheduled for a Home Visit with ${appointment.vet_name}`
-    } else if (isVisitFinished) {
-      appointmentText = `${appointment.pet_name} had a Home Visit with ${appointment.vet_name}`
-    } else if (isConfirmed) {
-      appointmentText = appointment.vet_name
-        ? `${appointment.pet_name} is scheduled for a Home Visit with ${appointment.vet_name}`
-        : `${appointment.pet_name} is scheduled for a Home Visit`
-    } else {
-      appointmentText =
-        appointment.visit_status === "UNCONFIRMED"
-          ? `${appointment.pet_name} is scheduled for a Home Visit`
-          : `${appointment.pet_name} is scheduled for a Home Visit with ${appointment.vet_name}`
-    }
+    appointmentText = isUnConfirmed
+      ? `${appointment.pet_name} was scheduled for a Home Visit`
+      : `${appointment.pet_name} was scheduled for a Home Visit with ${appointment.vet_name}`
   } else {
     appointmentText =
       appointment.appt_type === "GROOMING"
