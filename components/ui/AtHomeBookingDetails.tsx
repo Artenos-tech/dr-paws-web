@@ -173,9 +173,18 @@ const AtHomeBookingDetails = ({
       setRefundStatus(status)
     }
   }, [cancelAppointmentResult])
+  const handleNavigation = () => {
+    if (view === "CONFIRM_ACTION" || view === "RESCHEDULE") {
+      setView("DETAILS")
+      setConfirmationType(null)
+      return
+    }
+    goBack(true)
+  }
+
   return (
     <div className="w-full">
-      <BackButton navigateBack={() => goBack(true)} />
+      <BackButton navigateBack={handleNavigation} />
       {view === "CONFIRM_ACTION" && (
         <ConfirmActionCard
           onCancel={cancelConfirmationView}
