@@ -23,10 +23,10 @@ import api from "@/services/api"
 import { ClipLoader } from "react-spinners"
 import toast from "react-hot-toast"
 import { AttachmentInfo } from "./MedicalHistory"
-import RescheduleAppointment from "@/components/ui/RescheduleAtClinicAppointment"
 import { AppointmentDetails } from "@/model/typeDefinitions"
 import ConfirmationCard from "./CancelConfirmationCard"
 import CancelledBookingCard from "./CancelBookingCard"
+import RescheduleAtClinicAppointment from "@/components/ui/RescheduleAtClinicAppointment"
 
 // export const cancelReasons = [
 //   "Another commitment has come up",
@@ -1057,7 +1057,7 @@ const ClinicBookingDetails = ({
       )}
 
       {currentView === "reschedule" && (
-        <RescheduleAppointment
+        <RescheduleAtClinicAppointment
           existingAppointment={selectedAppointment}
           onBack={() => goBack(false)}
           onDone={() => goBack(true)}
