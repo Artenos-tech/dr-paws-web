@@ -157,6 +157,16 @@ const AppointmentDetailSchema = z
       "OVERPAID",
     ]),
     refund: RefundSchema.optional(),
+    reason_for_visit:z.enum([
+    
+        "VACCINATION",
+         "CHECK-UP",
+         "SICK",
+         "DIAGNOSTICS",
+         "FOLLOW_UP",
+         "OTHER"
+    ])
+    ,notes:z.string()
   })
   .merge(
     z.object({
@@ -1036,7 +1046,7 @@ export const mockAtHomeClient: AtHomeAPIClient = {
       appt_type: "HOME_VISIT" as const,
       category: "UPCOMING" as const,
       invoice_id: null,
-      total_tax_amount: 0,
+      total_tax_amount: 0, 
       total_billing_amount: 500,
       payment_status: "PAID" as const,
       vet_name: "Dr. Sharma",
@@ -1052,6 +1062,8 @@ export const mockAtHomeClient: AtHomeAPIClient = {
         status: "NOT_APPLICABLE" as const,
       },
       sos_status: "INACTIVE" as const,
+      reason_for_visit:'CHECK-UP' as const,
+      notes:'my pet need check up'
     }
 
     return ok({
