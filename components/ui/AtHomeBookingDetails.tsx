@@ -307,7 +307,7 @@ const AtHomeBookingDetails = ({
                     ? "Let us know if we can help with anything!"
                     : "Need help?"}
                 </p>
-                <div className="flex flex-wrap justify-between gap-3">
+                <div className=" flex flex-col items-start gap-3">
                   <button
                     onClick={copyHelpline}
                     className="flex items-center gap-2 px-4 py-2 rounded-lg border border-secondary-1 text-secondary-1 hover:bg-secondary-1 hover:text-white transition"
