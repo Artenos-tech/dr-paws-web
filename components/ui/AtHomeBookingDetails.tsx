@@ -22,6 +22,7 @@ import ConfirmActionCard from "./CancelConfirmationCard"
 import CancelledBookingCard from "./CancelBookingCard"
 import { useAPICall } from "@/hooks/apicall"
 import { mockAtHomeClient } from "@/services/api.athome"
+import RescheduleAtHomeAppointment from "./RescheduleAtHomeAppointment"
 
 type BookingDetailsProps = {
   goBack: (refetch: boolean) => void
@@ -188,6 +189,9 @@ const AtHomeBookingDetails = ({
           appointment={selectedAppointment}
           onDone={() => goBack(true)}
         />
+      )}
+      {view === "RESCHEDULE" && (
+        <RescheduleAtHomeAppointment appointmentId={selectedAppointment.id} />
       )}
       {view === "DETAILS" && (
         <div className="flex flex-col items-center gap-6 mt-6">
