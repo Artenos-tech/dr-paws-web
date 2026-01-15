@@ -27,7 +27,7 @@ interface ConfirmationModalProps {
   }
 }
 
-const DESC_TRUNCATE_LENGTH = 60
+const DESC_TRUNCATE_LENGTH = 90
 
 const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   isOpen,
@@ -94,16 +94,18 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
             )}
             {reasonDescription && (
               <div className="text-sm text-gray-600 my-1">
-                <span className="font-medium">Notes:</span>
+                <div className="flex items-start gap-2">
+                  <span className="font-medium whitespace-nowrap">Notes:</span>
 
-                <p className="mt-1 break-words whitespace-pre-line">
-                  {showFullDesc
-                    ? reasonDescription
-                    : reasonDescription.slice(0, DESC_TRUNCATE_LENGTH) +
-                      (reasonDescription.length > DESC_TRUNCATE_LENGTH
-                        ? "..."
-                        : "")}
-                </p>
+                  <p className="break-words whitespace-pre-line">
+                    {showFullDesc
+                      ? reasonDescription
+                      : reasonDescription.slice(0, DESC_TRUNCATE_LENGTH) +
+                        (reasonDescription.length > DESC_TRUNCATE_LENGTH
+                          ? "..."
+                          : "")}
+                  </p>
+                </div>
 
                 {reasonDescription.length > DESC_TRUNCATE_LENGTH && (
                   <button
