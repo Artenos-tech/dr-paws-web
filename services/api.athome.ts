@@ -157,14 +157,16 @@ const AppointmentDetailSchema = z
       "OVERPAID",
     ]),
     refund: RefundSchema.optional(),
-    reason_for_visit: z.enum([
-      "VACCINATION",
-      "CHECK-UP",
-      "SICK",
-      "DIAGNOSTICS",
-      "FOLLOW_UP",
-      "OTHER",
-    ]).optional(),
+    reason_for_visit: z
+      .enum([
+        "VACCINATION",
+        "CHECK-UP",
+        "SICK",
+        "DIAGNOSTICS",
+        "FOLLOW_UP",
+        "OTHER",
+      ])
+      .optional(),
     notes: z.string().optional(),
   })
   .merge(

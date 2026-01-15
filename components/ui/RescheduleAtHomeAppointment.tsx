@@ -73,7 +73,9 @@ const RescheduleAtHomeAppointment = ({ appointmentId }: Props) => {
       petName: appointment.pet_name ?? "",
       service: "Home Visit",
       doctorName: appointment.vet_name ?? undefined,
-      reasonForVisit: getReasonByKey(appointment.reason_for_visit as ReasonForVisit),
+      reasonForVisit: getReasonByKey(
+        appointment.reason_for_visit as ReasonForVisit,
+      ),
       reasonDescription: appointment.notes as string,
       location: [
         appointment.address?.address_line1,
