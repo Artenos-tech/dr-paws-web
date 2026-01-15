@@ -30,12 +30,10 @@ const ConfirmationCard = ({
             : "Are you sure you want to reschedule this booking?"}
         </h1>
 
-        {!isCancel && (
-          <p className="text-center">
-            You will receive a Whatsapp notification confirming the rescheduled
-            booking
-          </p>
-        )}
+        <p className="text-center">
+          You will receive a Whatsapp notification confirming the rescheduled
+          booking
+        </p>
 
         <div className="flex items-center justify-center w-full md:w-[85%] gap-4 md:mt-4">
           <button
