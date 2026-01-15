@@ -86,7 +86,7 @@ const CancelledBookingCard = ({ appointment, refundStatus, onDone }: Props) => {
         </div>
         {refundStatus === "PENDING" && (
           <p className="text-sm text-gray-600 max-w-md leading-relaxed">
-            Full refund will be processed and sent back to your original payment
+            A full refund will be processed and sent back to your original payment
             method.
           </p>
         )}
