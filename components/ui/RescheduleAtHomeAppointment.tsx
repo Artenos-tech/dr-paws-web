@@ -6,6 +6,7 @@ import { mockAtHomeClient } from "@/services/api.athome"
 import { AppointmentDetails } from "@/model/typeDefinitions"
 import { ClipLoader } from "react-spinners"
 import SelectDateTimeForVisit from "./SelectDateTimeForVisit"
+import ConfirmationModal from "./ConfirmationModal"
 
 type Props = {
   appointmentId: string
@@ -60,6 +61,24 @@ const RescheduleAtHomeAppointment = ({ appointmentId }: Props) => {
     )
   }
 
+  //this is fake booking data
+  const fakeBookingDetails = {
+    petName: appointment.pet_name || "Buddy",
+    service: "Home Visit",
+    doctorName: appointment.vet_name || "Dr. John Doe",
+    location: [
+      appointment.address?.address_line1,
+      appointment.address?.address_line2,
+    ]
+      .filter(Boolean)
+      .join(", "),
+    date: new Date(), // fake date
+    slot: "10:00 AM - 11:00 AM",
+    reasonForVisit: "General Checkup",
+    reasonDescription: "Routine health check for testing",
+    couponCode: null,
+  }
+
   return (
     <div className="w-full pt-4">
       <SelectDateTimeForVisit
@@ -67,6 +86,13 @@ const RescheduleAtHomeAppointment = ({ appointmentId }: Props) => {
         isConfirmationModalOpen={isConfirmationModalOpen}
         isConfirming={rescheduleLoading}
         onConfirm={handleReschedule}
+      />
+
+      <ConfirmationModal
+        onClose={() => setIsConfirmationModalOpen(false)}
+        isOpen={isConfirmationModalOpen}
+        onConfirm={() => {}}
+        bookingDetails={fakeBookingDetails}
       />
     </div>
   )
