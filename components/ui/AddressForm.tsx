@@ -100,7 +100,7 @@ const AddressForm = ({
     <div className="mt-6 w-full flex flex-col gap-4">
       <div>
         {pincode && (
-          <div>
+          <div className="my-1">
             <label className={labelClasses}>Selected pincode</label>
             <input
               type="text"

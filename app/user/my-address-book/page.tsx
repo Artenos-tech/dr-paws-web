@@ -92,6 +92,12 @@ const MyAddressBookPage = () => {
 
               return (
                 <div
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    router.push(
+                      `/user/my-address-book/address?addressId=${address.id}`,
+                    )
+                  }}
                   key={address.id}
                   className="border-2 rounded-lg p-4 transition cursor-pointer hover:border-secondary-1"
                 >
