@@ -4,13 +4,20 @@ import AddressForm from "@/components/ui/AddressForm"
 import UnserviceableModal from "@/components/ui/UnserviceableModal"
 import { useAPICall } from "@/hooks/apicall"
 import { mockAtHomeClient } from "@/services/api.athome"
-import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api"
+import {
+  Autocomplete,
+  GoogleMap,
+  Marker,
+  useJsApiLoader,
+} from "@react-google-maps/api"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md"
 import { ClipLoader } from "react-spinners"
 import toast from "react-hot-toast"
 import { AddressFormValues } from "@/model/typeDefinitions"
+import { Search } from "lucide-react"
+import { GrClose } from "react-icons/gr"
 
 const DEFAULT_PIN = { lat: 12.97, lng: 77.59 }
 
@@ -27,6 +34,11 @@ const AddressPage = () => {
   const [showUnserviceableModal, setShowUnserviceableModal] = useState(false)
   const [pincode, setPincode] = useState<string | null>(null)
   const [isFormValid, setIsFormValid] = useState(false)
+  const [autocomplete, setAutocomplete] =
+    useState<google.maps.places.Autocomplete | null>(null)
+  const [searchText, setSearchText] = useState("")
+  const [showSearch, setShowSearch] = useState(false)
+  const [isMobileOrTablet, setIsMobileOrTablet] = useState(false)
 
   const [addressDetails, setAddressDetails] = useState<AddressFormValues>({
     tag: "",
@@ -52,6 +64,38 @@ const AddressPage = () => {
   const { call: getAddress, loading: loadingGet } = useAPICall(
     mockAtHomeClient.getAddress,
   )
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobileOrTablet(window.innerWidth < 1024)
+    }
+
+    handleResize()
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
+  }, [])
+
+  const onPlaceChanged = () => {
+    if (!autocomplete) return
+
+    const place = autocomplete.getPlace()
+
+    if (!place.geometry?.location) {
+      toast.error("Please select a valid location")
+      return
+    }
+
+    const latLng = {
+      lat: place.geometry.location.lat(),
+      lng: place.geometry.location.lng(),
+    }
+
+    setPin(latLng)
+    reverseGeocode(latLng)
+    setIsPinSelected(true)
+    setSearchText("")
+    setShowSearch(false)
+  }
 
   const reverseGeocode = (latLng: google.maps.LatLngLiteral) => {
     const geocoder = new google.maps.Geocoder()
@@ -201,6 +245,12 @@ const AddressPage = () => {
 
   const shouldDisableButton = isSubmitting || (isPinSelected && !isFormValid)
 
+  const mapOptions = {
+    disableDefaultUI: showSearch && isMobileOrTablet,
+    zoomControl: true,
+    fullscreenControl: true,
+  }
+
   if (isLoaded && !process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY) {
     toast.error("Google Maps API key not configured")
   }
@@ -221,14 +271,58 @@ const AddressPage = () => {
         </div>
       ) : (
         <>
-          <GoogleMap
-            center={pin}
-            zoom={15}
-            mapContainerStyle={{ width: "100%", height: "400px" }}
-            onClick={setLocation}
-          >
-            <Marker draggable position={pin} onDragEnd={setLocation} />
-          </GoogleMap>
+          <div className="relative w-full">
+            {!showSearch && (
+              <button
+                onClick={() => setShowSearch(true)}
+                className=" absolute top-2 right-14 md:right-16 z-20 rounded-full bg-white p-2 shadow-md lg:hidden "
+              >
+                <Search />
+              </button>
+            )}
+
+            <div className="absolute top-2 left-1/2 lg:left-2/3  z-20 w-[90%] -translate-x-1/2">
+              <div className={` ${showSearch ? "block" : "hidden"} lg:block `}>
+                <Autocomplete
+                  onLoad={(auto) => setAutocomplete(auto)}
+                  onPlaceChanged={onPlaceChanged}
+                >
+                  <div className="relative">
+                    <input
+                      value={searchText}
+                      onChange={(e) => setSearchText(e.target.value)}
+                      type="text"
+                      placeholder="Search for your area, street, or landmark"
+                      className=" w-full lg:w-3/4 rounded-full border px-4 py-2 pr-10 shadow-md focus:outline-none focus:ring-2 focus:ring-secondary-1 bg-white "
+                    />
+
+                    <button
+                      onClick={() => {
+                        if (searchText) {
+                          setSearchText("")
+                        } else {
+                          setShowSearch(false)
+                        }
+                      }}
+                      className="absolute right-3 top-1/2 lg:right-[27%]  -translate-y-1/2 text-gray-500 "
+                    >
+                      <GrClose />
+                    </button>
+                  </div>
+                </Autocomplete>
+              </div>
+            </div>
+
+            <GoogleMap
+              center={pin}
+              zoom={15}
+              mapContainerStyle={{ width: "100%", height: "400px" }}
+              onClick={setLocation}
+              options={mapOptions}
+            >
+              <Marker draggable position={pin} onDragEnd={setLocation} />
+            </GoogleMap>
+          </div>
 
           <div className="w-full mt-3 bg-gray-200 p-2 rounded-lg">
             <p className="text-sm text-gray-600">Selected location</p>
