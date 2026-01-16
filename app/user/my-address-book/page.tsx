@@ -7,28 +7,32 @@ import React, { useEffect, useState } from "react"
 import toast from "react-hot-toast"
 import { FaPen, FaTrash } from "react-icons/fa6"
 import { ClipLoader } from "react-spinners"
-import Modal from "react-modal"
 import DeleteModal from "@/components/ui/DeleteModal"
 
 const page = () => {
   const router = useRouter()
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [addressToDelete, setAddressToDelete] = useState<string | null>(null)
+
   const {
     call: getAddressBook,
     result: getAddressBookResult,
     loading: getAddressBookLoading,
   } = useAPICall(mockAtHomeClient.getAddressBook)
+
   const { call: deleteAddress, loading: deleteAddressLoading } = useAPICall(
     mockAtHomeClient.deleteAddress,
   )
+
   useEffect(() => {
     getAddressBook({})
   }, [])
+
   const addresses: Address[] =
     (getAddressBookResult?.ok &&
       getAddressBookResult.value.body.data.address_book) ||
     []
+
   if (getAddressBookLoading) {
     return (
       <div className="flex justify-center items-center my-20">
@@ -42,10 +46,12 @@ const page = () => {
     setAddressToDelete(addressId)
     setShowDeleteModal(true)
   }
+
   const handleCancelDelete = () => {
     setShowDeleteModal(false)
     setAddressToDelete(null)
   }
+
   const handleConfirmDelete = async () => {
     if (!addressToDelete) return
 
@@ -53,7 +59,6 @@ const page = () => {
 
     if (result?.ok) {
       await getAddressBook({})
-
       toast.success("Address deleted successfully")
     } else {
       toast.error("Failed to delete address")
@@ -62,6 +67,7 @@ const page = () => {
     setShowDeleteModal(false)
     setAddressToDelete(null)
   }
+
   return (
     <div className="font-roca h-full w-full">
       <main className="flex flex-col items-center w-full mt-4 px-8 md:px-32 lg:px-20 xl:px-40">
@@ -73,7 +79,9 @@ const page = () => {
               No addresses yet. Add one to get started.
             </p>
             <button
-              onClick={() => router.push(`/user/book-appointment/edit-address`)}
+              onClick={() =>
+                router.push("/user/my-address-book/address")
+              }
               className="rounded-full px-8 py-3 bg-secondary-1 text-white hover:bg-secondary-2 transition"
             >
               Add Address
@@ -82,12 +90,12 @@ const page = () => {
         ) : (
           <div className="grid grid-cols-1 py-4 gap-4 overflow-x-auto lg:w-4/5 lg:mx-auto">
             {addresses.map((address) => {
-              const fullAddress = `${address.address_line1},${address.address_line2}`
+              const fullAddress = `${address.address_line1}, ${address.address_line2}`
 
               return (
                 <div
                   key={address.id}
-                  className={`border-2 rounded-lg p-4 transition cursor-pointer `}
+                  className="border-2 rounded-lg p-4 transition cursor-pointer hover:border-secondary-1"
                 >
                   <div className="flex justify-between items-start">
                     <h2 className="font-semibold primary-text">
@@ -100,7 +108,7 @@ const page = () => {
                         onClick={(e) => {
                           e.stopPropagation()
                           router.push(
-                            `/user/book-appointment/edit-address?addressId=${address.id}`,
+                            `/user/my-address-book/address?addressId=${address.id}`,
                           )
                         }}
                       />
@@ -119,9 +127,9 @@ const page = () => {
             <div className="rounded-lg p-2 flex flex-col items-center justify-center">
               <div
                 onClick={() =>
-                  router.push(`/user/book-appointment/edit-address`)
+                  router.push("/user/my-address-book/address")
                 }
-                className="w-12 h-12 flex items-center justify-center rounded-full border-2 border-dashed cursor-pointer"
+                className="w-12 h-12 flex items-center justify-center rounded-full border-2 border-dashed cursor-pointer hover:border-secondary-1 transition"
               >
                 <span className="text-2xl font-semibold">+</span>
               </div>
