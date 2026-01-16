@@ -56,7 +56,7 @@ const AddressPage = () => {
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
     libraries: ["places"],
   })
-  
+
   const { call: addAddress, loading: loadingAdd } = useAPICall(
     mockAtHomeClient.addAddress,
   )
@@ -171,7 +171,7 @@ const AddressPage = () => {
       return
     }
     toast.success(isAddMode ? "Address saved" : "Address updated")
-  
+
     if (isAddMode) {
       router.replace(
         `/user/book-appointment?home=true&addressId=${res.value.body.data.address.id}`,
@@ -189,7 +189,7 @@ const AddressPage = () => {
   }
 
   const isPageLoading = !isLoaded || loadingGet
-  const isSubmitting = loadingAdd || loadingUpdate 
+  const isSubmitting = loadingAdd || loadingUpdate
 
   return (
     <main className="flex flex-col items-center w-full my-4 px-8 md:px-32 lg:px-20 xl:px-40">
