@@ -92,7 +92,6 @@ const AddressPage = () => {
 
     setPin(latLng)
     reverseGeocode(latLng)
-    setIsPinSelected(true)
     setSearchText("")
     setShowSearch(false)
   }
