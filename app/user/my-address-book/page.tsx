@@ -9,7 +9,7 @@ import { FaPen, FaTrash } from "react-icons/fa6"
 import { ClipLoader } from "react-spinners"
 import DeleteModal from "@/components/ui/DeleteModal"
 
-const page = () => {
+const MyAddressBookPage = () => {
   const router = useRouter()
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [addressToDelete, setAddressToDelete] = useState<string | null>(null)
@@ -79,9 +79,7 @@ const page = () => {
               No addresses yet. Add one to get started.
             </p>
             <button
-              onClick={() =>
-                router.push("/user/my-address-book/address")
-              }
+              onClick={() => router.push("/user/my-address-book/address")}
               className="rounded-full px-8 py-3 bg-secondary-1 text-white hover:bg-secondary-2 transition"
             >
               Add Address
@@ -126,9 +124,7 @@ const page = () => {
 
             <div className="rounded-lg p-2 flex flex-col items-center justify-center">
               <div
-                onClick={() =>
-                  router.push("/user/my-address-book/address")
-                }
+                onClick={() => router.push("/user/my-address-book/address")}
                 className="w-12 h-12 flex items-center justify-center rounded-full border-2 border-dashed cursor-pointer hover:border-secondary-1 transition"
               >
                 <span className="text-2xl font-semibold">+</span>
@@ -149,4 +145,4 @@ const page = () => {
   )
 }
 
-export default page
+export default MyAddressBookPage

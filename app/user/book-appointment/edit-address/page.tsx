@@ -4,20 +4,13 @@ import AddressForm from "@/components/ui/AddressForm"
 import UnserviceableModal from "@/components/ui/UnserviceableModal"
 import { useAPICall } from "@/hooks/apicall"
 import { mockAtHomeClient } from "@/services/api.athome"
-import {
-  Autocomplete,
-  GoogleMap,
-  Marker,
-  useJsApiLoader,
-} from "@react-google-maps/api"
+import { useJsApiLoader } from "@react-google-maps/api"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md"
 import { ClipLoader } from "react-spinners"
 import toast from "react-hot-toast"
 import { AddressFormValues } from "@/model/typeDefinitions"
-import { Search } from "lucide-react"
-import { GrClose } from "react-icons/gr"
 import MapSearchBar from "@/components/ui/MapSearchBar"
 import AddressMap from "@/components/ui/AddressMap"
 
