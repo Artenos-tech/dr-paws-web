@@ -24,8 +24,16 @@ const AddressPage = () => {
   const searchParams = useSearchParams()
   const addressId = searchParams.get("addressId")
 
-  const initialMode: PageMode = addressId ? "view" : "add"
+  const modeParam = searchParams.get("mode") as PageMode | null
+
+  const initialMode: PageMode = addressId
+    ? modeParam === "edit"
+      ? "edit"
+      : "view"
+    : "add"
+
   const [mode, setMode] = useState<PageMode>(initialMode)
+
   const [addStep, setAddStep] = useState<1 | 2>(1)
 
   const isAddMode = mode === "add"

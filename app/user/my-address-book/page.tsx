@@ -112,7 +112,7 @@ const MyAddressBookPage = () => {
                         onClick={(e) => {
                           e.stopPropagation()
                           router.push(
-                            `/user/my-address-book/address?addressId=${address.id}`,
+                            `/user/my-address-book/address?addressId=${address.id}&mode=edit`,
                           )
                         }}
                       />
