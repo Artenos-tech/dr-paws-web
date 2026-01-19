@@ -180,18 +180,13 @@ const AddressPage = () => {
     }
     toast.success(isAddMode ? "Address saved" : "Address updated")
 
-    if (isAddMode) {
-      router.replace(
-        `/user/book-appointment?home=true&addressId=${res.value.body.data.address.id}`,
-      )
-    } else {
-      setMode("view")
-    }
+    setMode("view")
   }
 
   const mapOptions = {
     draggable: isEditable,
     zoomControl: true,
+    streetViewControl: isEditMode,
     fullscreenControl: true,
     disableDefaultUI: showSearch && isMobileOrTablet,
   }
