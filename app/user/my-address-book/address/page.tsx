@@ -186,7 +186,6 @@ const AddressPage = () => {
   const mapOptions = {
     draggable: isEditable,
     zoomControl: true,
-    streetViewControl: isEditMode,
     fullscreenControl: true,
     disableDefaultUI: showSearch && isMobileOrTablet,
   }
