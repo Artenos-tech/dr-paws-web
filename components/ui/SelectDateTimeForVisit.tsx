@@ -3,7 +3,7 @@
 import React, { useEffect, useMemo, useState } from "react"
 import clsx from "clsx"
 import { useAPICall } from "@/hooks/apicall"
-import { mockAtHomeClient } from "@/services/api.athome"
+import atHomeApiClient from "@/services/api.athome"
 import { z } from "zod"
 import ClipLoader from "react-spinners/ClipLoader"
 import toast from "react-hot-toast"
@@ -11,7 +11,8 @@ import toast from "react-hot-toast"
 type Slot = { startTime: string; endTime: string }
 type SlotWithAvailability = Slot & { available: boolean }
 interface SelectDateTimeForVisitProps {
-  addressId?: string
+  addressId: string
+  petId: string
   date?: string
   slot?: Slot
   isConfirmationModalOpen?: boolean
@@ -61,6 +62,7 @@ const responseSchema = z.object({
 const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
   onConfirm,
   addressId,
+  petId,
   date: initialDate,
   slot: initialSlot,
   isConfirmationModalOpen,
@@ -70,7 +72,7 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
     call: getAtHomeSlots,
     result: atHomeSlotsResult,
     loading: loadingSlots,
-  } = useAPICall(mockAtHomeClient.getAtHomeSlots)
+  } = useAPICall(atHomeApiClient.getAtHomeSlots)
 
   const [selectedDate, setSelectedDate] = useState<string | null>(
     initialDate || null,
@@ -89,7 +91,7 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
 
   useEffect(() => {
     if (!addressId) return
-    getAtHomeSlots({ addressid: addressId })
+    getAtHomeSlots({ addressid: addressId, petid: petId })
   }, [addressId])
 
   useEffect(() => {
@@ -133,7 +135,7 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
       <div className="w-full mt-4">
         <div className="text-center py-12">
           <p className="text-red-500 mb-4">
-            Address ID is missing. Please go back and select an address.
+            Address is missing. Please go back and select an address.
           </p>
         </div>
       </div>

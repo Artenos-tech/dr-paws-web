@@ -1,13 +1,13 @@
 "use client"
 
-import { mockAtHomeClient } from "@/services/api.athome"
+import atHomeApiClient from "@/services/api.athome"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState, useMemo } from "react"
 import { FaPen, FaTrash } from "react-icons/fa6"
 import { useAPICall } from "@/hooks/apicall"
 import { ClipLoader } from "react-spinners"
 import toast from "react-hot-toast"
-import { Address } from "@/model/typeDefinitions"
+import { AddressWithPincode } from "@/model/typeDefinitions"
 import { Tooltip } from "antd"
 import DeleteModal from "./DeleteModal"
 
@@ -33,23 +33,28 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
     call: getAddressBook,
     loading: loadingAddresses,
     result: addressBookResult,
-  } = useAPICall(mockAtHomeClient.getAddressBook)
+  } = useAPICall(atHomeApiClient.getAddressBook)
 
   const { call: deleteAddress, loading: deletingAddress } = useAPICall(
-    mockAtHomeClient.deleteAddress,
+    atHomeApiClient.deleteAddress,
   )
   const router = useRouter()
 
   const searchParams = useSearchParams()
   const initialAddressId = searchParams.get("addressId")
 
-  const addresses: Address[] =
+  const addresses: AddressWithPincode[] =
     (addressBookResult?.ok && addressBookResult.value.body.data.address_book) ||
     []
 
   const uncheckedAddresses = useMemo(() => {
     return addresses.filter((addr) => !checkedAddressIds.has(addr.id))
   }, [addresses, checkedAddressIds])
+
+  console.log("SELECTED ADDRESS ID", selectedAddressId)
+  console.log("SERVICEABLE IDS", serviceableIds)
+  console.log("CHECKED ADDRESS IDS", checkedAddressIds)
+  console.log("checkingServiceability", checkingServiceability)
 
   useEffect(() => {
     getAddressBook({})
@@ -76,11 +81,11 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
             if (!isActive || abortController.signal.aborted) return
 
             try {
-              const result = await mockAtHomeClient.checkLocationServiceability(
+              const result = await atHomeApiClient.checkLocationServiceability(
                 { location: address.location },
                 { abortSignal: abortController.signal },
               )
-
+              console.log("SERVICEABILITY CHECK: ", result)
               if (!isActive || abortController.signal.aborted) return
 
               if (result?.ok) {
@@ -190,7 +195,7 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
   }
 
   const unserviceableToolTipMessage =
-    "This Pincode is currently outside our serviceable area"
+    "This location is currently outside our serviceable area"
 
   return (
     <div className="space-y-4 pb-12">
@@ -204,12 +209,15 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
           <p className="text-gray-500 mb-4">
             No addresses yet. Add one to get started.
           </p>
-          <button
-            onClick={() => router.push(`/user/book-appointment/edit-address`)}
-            className="rounded-full px-8 py-3 bg-secondary-1 text-white hover:bg-secondary-2 transition"
-          >
-            Add Address
-          </button>
+          <div className="rounded-lg p-2 flex flex-col items-center justify-center">
+            <div
+              onClick={() => router.push(`/user/book-appointment/edit-address`)}
+              className="w-12 h-12 flex items-center justify-center rounded-full border-2 border-dashed cursor-pointer"
+            >
+              <span className="text-2xl font-semibold">+</span>
+            </div>
+            <span className="font-medium mt-1">Add</span>
+          </div>
         </div>
       ) : (
         <div className="grid grid-cols-1 py-4 gap-4 overflow-x-auto lg:w-4/5 lg:mx-auto">

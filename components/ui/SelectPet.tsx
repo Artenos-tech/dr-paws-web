@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react"
 import { ClipLoader } from "react-spinners"
 import { useAPICall } from "@/hooks/apicall"
-import { mockAtHomeClient } from "@/services/api.athome"
+import atHomeApiClient from "@/services/api.athome"
 import PetSelectItem from "./PetSelectionItem"
 import AddPetModal from "./AddPetModal"
 import toast from "react-hot-toast"
@@ -19,7 +19,7 @@ const SelectPet: React.FC<SelectPetProps> = ({ handleConfirm, petId }) => {
     call: getPetsForBooking,
     loading: loadingPets,
     result: allPetsResult,
-  } = useAPICall(mockAtHomeClient.getBookingPets)
+  } = useAPICall(atHomeApiClient.getBookingPets)
 
   const [selectedPetId, setSelectedPetId] = useState<string | null>(
     petId || null,

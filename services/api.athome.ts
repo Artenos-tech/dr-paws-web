@@ -349,7 +349,7 @@ export type AtHomeAPIClient = {
   >
 
   getAtHomeSlots: (
-    params: { addressid: string },
+    params: { addressid: string; petid: string },
     opts?: { abortSignal?: AbortSignal },
   ) => Promise<
     Result<
@@ -1277,7 +1277,9 @@ const endpointConfig = {
       }),
     }),
     responseSchema: z.object({
-      serviceable: z.boolean(),
+      data: z.object({
+        serviceable: z.boolean(),
+      }),
     }),
     errorResponseSchema: z.object({}),
   },
@@ -1297,8 +1299,11 @@ const endpointConfig = {
 
   getAtHomeSlots: {
     method: "GET" as const,
-    path: "/booking/at-home/slots?addressid={addressid}",
-    pathParamsSchema: z.object({ addressid: z.string().uuid() }),
+    path: "/booking/at-home/slots?addressid={addressid}&petid={petid}",
+    pathParamsSchema: z.object({
+      addressid: z.string().uuid(),
+      petid: z.string(),
+    }),
     requestSchema: z.object({}),
     responseSchema: z.object({
       data: z.object({
@@ -1328,7 +1333,9 @@ const endpointConfig = {
       notes: z.string(),
     }),
     responseSchema: z.object({
-      order: PaymentOrderSchema,
+      data: z.object({
+        order: PaymentOrderSchema,
+      }),
     }),
     errorResponseSchema: z.object({}),
   },
@@ -1339,8 +1346,10 @@ const endpointConfig = {
     pathParamsSchema: z.object({ orderid: z.string().uuid() }),
     requestSchema: z.object({}),
     responseSchema: z.object({
-      order_payment: OrderStatusSchema,
-      appointment: OrderAppointmentSchema.nullable(),
+      data: z.object({
+        order_payment: OrderStatusSchema,
+        appointment: OrderAppointmentSchema.nullable(),
+      }),
     }),
     errorResponseSchema: z.object({}),
   },

@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useState } from "react"
 import { Building2, Home, LucideIcon } from "lucide-react"
 import CustomButton from "./CustomButton"
 import { useAPICall } from "@/hooks/apicall"
-import { mockAtHomeClient } from "@/services/api.athome"
+import atHomeApiClient from "@/services/api.athome"
 import { Tooltip } from "antd"
 import { ClipLoader } from "react-spinners"
 
@@ -31,7 +31,7 @@ const BookingTypeSelection: React.FC<BookingTypeSelectionProps> = ({
     call: getServiceablePincodes,
     result: getServiceablePincodesResult,
     loading: getServiceablePincodesLoading,
-  } = useAPICall(mockAtHomeClient.getServiceablePincodes)
+  } = useAPICall(atHomeApiClient.getServiceablePincodes)
   useEffect(() => {
     if (getServiceablePincodesResult?.ok) {
       setAvailablePincodes(

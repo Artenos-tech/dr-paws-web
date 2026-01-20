@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react"
 import { useAPICall } from "@/hooks/apicall"
-import { mockAtHomeClient } from "@/services/api.athome"
+import atHomeApiClient from "@/services/api.athome"
 import { AppointmentDetails, ReasonForVisit } from "@/model/typeDefinitions"
 import { ClipLoader } from "react-spinners"
 import SelectDateTimeForVisit from "./SelectDateTimeForVisit"
@@ -44,10 +44,10 @@ const RescheduleAtHomeAppointment = ({
     call: getAppointmentDetails,
     result: getAppointmentDetailsResult,
     loading: getAppointmentDetailsLoading,
-  } = useAPICall(mockAtHomeClient.getAppointmentDetails)
+  } = useAPICall(atHomeApiClient.getAppointmentDetails)
 
   const { call: rescheduleAtHomeAppointment, loading: rescheduleLoading } =
-    useAPICall(mockAtHomeClient.rescheduleAtHomeAppointment)
+    useAPICall(atHomeApiClient.rescheduleAtHomeAppointment)
 
   useEffect(() => {
     getAppointmentDetails({
@@ -113,6 +113,7 @@ const RescheduleAtHomeAppointment = ({
     <div className="w-full pt-4">
       <SelectDateTimeForVisit
         addressId={appointment.address?.id}
+        petId={appointment.pet_id}
         isConfirmationModalOpen={isConfirmationModalOpen}
         isConfirming={rescheduleLoading}
         onConfirm={handleReschedule}

@@ -6,7 +6,7 @@ import ReasonForVisit from "./ReasonForVisit"
 import SelectDateTimeForVisit from "./SelectDateTimeForVisit"
 import ConfirmationModal from "./ConfirmationModal"
 import { useAPICall } from "@/hooks/apicall"
-import { mockAtHomeClient } from "@/services/api.athome"
+import atHomeApiClient from "@/services/api.athome"
 
 interface AtHomeBookingFlowProps {
   onBackToStart: () => void
@@ -144,7 +144,7 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
     isConfirming,
     appointmentData,
   } = state
-  const { call: getAddress } = useAPICall(mockAtHomeClient.getAddress)
+  const { call: getAddress } = useAPICall(atHomeApiClient.getAddress)
 
   const handleAddressConfirm = async (addressId: string) => {
     dispatch({ type: "SET_LOADING", payload: true })
@@ -255,24 +255,28 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
           handleConfirm={handleReasonForVisitConfirm}
         />
       )}
-      {!isLoading && currentStep === 4 && (
-        <>
-          <SelectDateTimeForVisit
-            addressId={appointmentData.addressId}
-            date={appointmentData.date}
-            slot={appointmentData.slot}
-            isConfirmationModalOpen={showConfirmationModal}
-            isConfirming={isConfirming}
-            onConfirm={handleDateTimeConfirm}
-          />
-          <ConfirmationModal
-            isOpen={showConfirmationModal}
-            onClose={() => dispatch({ type: "HIDE_CONFIRMATION_MODAL" })}
-            onConfirm={handleConfirmBooking}
-            bookingDetails={bookingDetails}
-          />
-        </>
-      )}
+      {!isLoading &&
+        currentStep === 4 &&
+        appointmentData.addressId &&
+        appointmentData.petId && (
+          <>
+            <SelectDateTimeForVisit
+              addressId={appointmentData.addressId}
+              petId={appointmentData.petId}
+              date={appointmentData.date}
+              slot={appointmentData.slot}
+              isConfirmationModalOpen={showConfirmationModal}
+              isConfirming={isConfirming}
+              onConfirm={handleDateTimeConfirm}
+            />
+            <ConfirmationModal
+              isOpen={showConfirmationModal}
+              onClose={() => dispatch({ type: "HIDE_CONFIRMATION_MODAL" })}
+              onConfirm={handleConfirmBooking}
+              bookingDetails={bookingDetails}
+            />
+          </>
+        )}
     </div>
   )
 }

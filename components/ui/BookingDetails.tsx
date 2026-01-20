@@ -4,7 +4,7 @@ import { AppointmentDetails } from "@/model/typeDefinitions"
 import ClinicBookingDetails from "./ClinicBookingDetails"
 import AtHomeBookingDetails from "./AtHomeBookingDetails"
 import { useAPICall } from "@/hooks/apicall"
-import { mockAtHomeClient } from "@/services/api.athome"
+import atHomeApiClient from "@/services/api.athome"
 import { useEffect } from "react"
 import { ClipLoader } from "react-spinners"
 
@@ -20,7 +20,7 @@ const BookingDetails = ({
   goBack,
 }: BookingDetailsProps) => {
   const { call: getAppointmentDetails, result: getAppointmentDetailsResult } =
-    useAPICall(mockAtHomeClient.getAppointmentDetails)
+    useAPICall(atHomeApiClient.getAppointmentDetails)
   useEffect(() => {
     getAppointmentDetails({
       appointment_id: appointmentId,

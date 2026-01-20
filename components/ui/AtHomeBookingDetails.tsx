@@ -21,7 +21,7 @@ import defaultVetImage from "@/public/assets/images/clinic/doctorFemale.webp"
 import ConfirmActionCard from "./CancelConfirmationCard"
 import CancelledBookingCard from "./CancelBookingCard"
 import { useAPICall } from "@/hooks/apicall"
-import { mockAtHomeClient } from "@/services/api.athome"
+import atHomeApiClient from "@/services/api.athome"
 import RescheduleAtHomeAppointment from "./RescheduleAtHomeAppointment"
 
 type AtHomeBookingDetailsProps = {
@@ -41,7 +41,7 @@ const AtHomeBookingDetails = ({
   >(null)
   const [refundStatus, setRefundStatus] = useState<RefundStatus>()
   const { call: cancelAppointment, result: cancelAppointmentResult } =
-    useAPICall(mockAtHomeClient.cancelAppointmentV2)
+    useAPICall(atHomeApiClient.cancelAppointmentV2)
   const parsedDate = parseISO(selectedAppointment.booking_date)
 
   const getSlotStartDateTime = () => {
