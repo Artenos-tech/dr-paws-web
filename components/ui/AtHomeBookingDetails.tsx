@@ -1,6 +1,6 @@
 "use client"
 
-import React from "react"
+import React, { useEffect, useState } from "react"
 import BackButton from "./BackButton"
 import {
   CalendarDays,
@@ -14,20 +14,62 @@ import { GrLocation } from "react-icons/gr"
 import { format, parseISO } from "date-fns"
 import AtHomeVisitStatus from "./AtHomeVisitStatus"
 import toast from "react-hot-toast"
-import { AppointmentDetails } from "@/model/typeDefinitions"
+import { AppointmentDetails, RefundStatus } from "@/model/typeDefinitions"
 import Image from "next/image"
 import { petImageByType } from "./PetCard"
 import defaultVetImage from "@/public/assets/images/clinic/doctorFemale.webp"
+import ConfirmActionCard from "./CancelConfirmationCard"
+import CancelledBookingCard from "./CancelBookingCard"
+import { useAPICall } from "@/hooks/apicall"
+import { mockAtHomeClient } from "@/services/api.athome"
+import RescheduleAtHomeAppointment from "./RescheduleAtHomeAppointment"
 
 type BookingDetailsProps = {
   goBack: (refetch: boolean) => void
   selectedAppointment: AppointmentDetails
 }
+type ViewState = "DETAILS" | "CONFIRM_ACTION" | "CANCELLED" | "RESCHEDULE"
+
+const APPOINTMENT_CANCEL_WINDOW_HOURS = 24
 const AtHomeBookingDetails = ({
   selectedAppointment,
   goBack,
 }: BookingDetailsProps) => {
+  const [view, setView] = useState<ViewState>("DETAILS")
+  const [confirmationType, setConfirmationType] = useState<
+    "CANCEL" | "RESCHEDULE" | null
+  >(null)
+  const [refundStatus, setRefundStatus] = useState<RefundStatus>()
+  const { call: cancelAppointment, result: cancelAppointmentResult } =
+    useAPICall(mockAtHomeClient.cancelAppointmentV2)
   const parsedDate = parseISO(selectedAppointment.booking_date)
+
+  const getSlotStartDateTime = () => {
+    // assuming booking_date = YYYY-MM-DD and appt_start = HH:mm
+    return new Date(
+      `${selectedAppointment.booking_date}T${selectedAppointment.appt_start}`,
+    )
+  }
+
+  const canShowCancelActions =
+    !!selectedAppointment.visit_status &&
+    !["VET_REACHED", "CANCELLED", "VISIT_STARTED", "VISIT_FINISHED"].includes(
+      selectedAppointment.visit_status,
+    )
+
+  const isDelayed = selectedAppointment.visit_status === "VET_DELAYED"
+
+  const isFreeCancellation = () => {
+    if (isDelayed) return true
+
+    const slotStart = getSlotStartDateTime()
+    const now = new Date()
+
+    const diffInMs = slotStart.getTime() - now.getTime()
+    const diffInHours = diffInMs / (1000 * 60 * 60)
+
+    return diffInHours >= APPOINTMENT_CANCEL_WINDOW_HOURS
+  }
 
   const fullAddress = [
     selectedAppointment?.address?.address_line1,
@@ -101,147 +143,235 @@ const AtHomeBookingDetails = ({
     //   selectedAppointment?.vet_image ||
     defaultVetImage
 
+  const openConfirmationView = (action: "CANCEL" | "RESCHEDULE") => {
+    setConfirmationType(action)
+    setView("CONFIRM_ACTION")
+  }
+  const cancelConfirmationView = () => {
+    setView("DETAILS")
+  }
+  const proceedConfirmationView = async () => {
+    if (confirmationType === "CANCEL") {
+      await handleCancelAppointment()
+      setView("CANCELLED")
+    } else {
+      setView("RESCHEDULE")
+    }
+  }
+
+  const handleCancelAppointment = async () => {
+    await cancelAppointment({
+      appointmentid: selectedAppointment.id,
+      clinic_id: selectedAppointment.clinic_id,
+      sub_booking_id: selectedAppointment.sub_booking_id,
+    })
+  }
+  useEffect(() => {
+    if (cancelAppointmentResult?.ok) {
+      const status =
+        cancelAppointmentResult.value.body.data.appointment.refund?.status
+      setRefundStatus(status)
+    }
+  }, [cancelAppointmentResult])
+  const handleNavigation = () => {
+    if (view === "CONFIRM_ACTION" || view === "RESCHEDULE") {
+      setView("DETAILS")
+      setConfirmationType(null)
+      return
+    }
+    goBack(true)
+  }
+
   return (
     <div className="w-full">
-      <BackButton navigateBack={() => goBack(true)} />
+      <BackButton navigateBack={handleNavigation} />
+      {view === "CONFIRM_ACTION" && (
+        <ConfirmActionCard
+          onCancel={cancelConfirmationView}
+          onConfirm={proceedConfirmationView}
+          confirmationType={confirmationType}
+        />
+      )}
+      {view === "CANCELLED" && (
+        <CancelledBookingCard
+          refundStatus={refundStatus}
+          appointment={selectedAppointment}
+          onDone={() => goBack(true)}
+        />
+      )}
+      {view === "RESCHEDULE" && (
+        <RescheduleAtHomeAppointment appointmentId={selectedAppointment.id} />
+      )}
+      {view === "DETAILS" && (
+        <div className="flex flex-col items-center gap-6 mt-6">
+          <h1 className="text-2xl sm:text-3xl font-semibold text-primary-1">
+            {selectedAppointment.visit_status === "VISIT_STARTED"
+              ? "Home Visit Started"
+              : isVisitFinished
+                ? "Home Visit Finished"
+                : "Home Visit Scheduled"}
+          </h1>
 
-      <div className="flex flex-col items-center gap-6 mt-6">
-        <h1 className="text-2xl sm:text-3xl font-semibold text-primary-1">
-          {selectedAppointment.visit_status === "CANCELLED"
-            ? "Home Visit Cancelled"
-            : isVisitFinished
-              ? "Home Visit Finished"
-              : "Home Visit Scheduled"}
-        </h1>
-
-        <div
-          className={`${bg} ${text} w-11/12 md:w-4/5 lg:w-[50%] shadow-md rounded-lg px-6 py-4 md:py-12 md:px-24 space-y-5`}
-        >
-          <p className="text-lg font-semibold mt-4 text-center">
-            {appointmentText}
-          </p>
-          <div className="flex justify-center my-4 relative">
-            {
-              <>
-                <div className="relative w-32 h-32 rounded-full overflow-hidden bg-white p-3 flex justify-center items-center">
-                  <Image
-                    src={petImage}
-                    alt={`${selectedAppointment.pet_name}'s profile`}
-                    layout="fill"
-                    objectFit="cover"
-                    sizes="128px"
-                    priority
-                  />
-                </div>
-                {selectedAppointment.visit_status !== "UNCONFIRMED" && (
-                  <div className="relative w-32 h-32 rounded-full overflow-hidden bg-white -ml-8 border-4 border-white flex justify-center items-center">
+          <div
+            className={`${bg} ${text}  w-full  sm:w-full   md:w-full lg:w-4/5  xl:w-3/4  2xl:w-2/3  shadow-md rounded-lg  px-6 py-4 md:py-12 md:px-24 space-y-5`}
+          >
+            <p className="text-lg font-semibold mt-4 text-center">
+              {appointmentText}
+            </p>
+            <div className="flex justify-center my-4 relative">
+              {
+                <>
+                  <div className="relative w-32 h-32 rounded-full overflow-hidden bg-white p-3 flex justify-center items-center">
                     <Image
-                      src={vetImage}
-                      alt={`Dr. ${selectedAppointment.vet_name}'s profile`}
+                      src={petImage}
+                      alt={`${selectedAppointment.pet_name}'s profile`}
+                      layout="fill"
                       objectFit="cover"
-                      sizes="80px"
-                      width={80}
-                      height={80}
+                      sizes="128px"
+                      priority
                     />
                   </div>
-                )}
-              </>
-            }
-          </div>
+                  {selectedAppointment.visit_status !== "UNCONFIRMED" && (
+                    <div className="relative w-32 h-32 rounded-full overflow-hidden bg-white -ml-8 border-4 border-white flex justify-center items-center">
+                      <Image
+                        src={vetImage}
+                        alt={`Dr. ${selectedAppointment.vet_name}'s profile`}
+                        objectFit="cover"
+                        sizes="80px"
+                        width={80}
+                        height={80}
+                      />
+                    </div>
+                  )}
+                </>
+              }
+            </div>
 
-          {isVisitFinished && (
-            <>
-              <div className="space-y-1">
-                <p className="text-xl font-medium">
-                  {`Hope everything was to ${selectedAppointment.pet_name}'s satisfaction!`}
-                </p>
-                <p className="text-base text-gray-600">
-                  Please feel free to call us about issues or feedback.
-                </p>
+            {isVisitFinished && (
+              <>
+                <div className="space-y-1">
+                  <p className="text-xl font-medium">
+                    {`Hope everything was to ${selectedAppointment.pet_name}'s satisfaction!`}
+                  </p>
+                  <p className="text-base text-gray-600">
+                    Please feel free to call us about issues or feedback.
+                  </p>
+                </div>
+
+                <AtHomeVisitStatus
+                  visitStatus={selectedAppointment.visit_status}
+                  selectedAppointment={selectedAppointment}
+                />
+              </>
+            )}
+
+            <div className="flex items-center gap-3">
+              <CalendarDays className="text-secondary-1" />
+              <span className="text-base font-medium">
+                {format(parsedDate, "EEE, dd MMM")}
+              </span>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <MdOutlineAccessTime className="text-secondary-1 text-xl" />
+              <span className="text-base font-medium">
+                {selectedAppointment.appt_start} –{" "}
+                {selectedAppointment.appt_end}
+              </span>
+            </div>
+
+            <div className="flex gap-3">
+              <div className="w-6 flex justify-center">
+                <GrLocation className="text-secondary-1 text-xl mt-1" />
               </div>
 
+              <div className="flex flex-col">
+                <span className="font-medium">
+                  {selectedAppointment.address?.tag}
+                </span>
+                <span className="text-base leading-relaxed">{fullAddress}</span>
+              </div>
+            </div>
+
+            {!isVisitFinished && (
               <AtHomeVisitStatus
                 visitStatus={selectedAppointment.visit_status}
                 selectedAppointment={selectedAppointment}
               />
-            </>
-          )}
+            )}
 
-          <div className="flex items-center gap-3">
-            <CalendarDays className="text-secondary-1" />
-            <span className="text-base font-medium">
-              {format(parsedDate, "EEE, dd MMM")}
-            </span>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <MdOutlineAccessTime className="text-secondary-1 text-xl" />
-            <span className="text-base font-medium">
-              {selectedAppointment.appt_start} – {selectedAppointment.appt_end}
-            </span>
-          </div>
-
-          <div className="flex gap-3">
-            <div className="w-6 flex justify-center">
-              <GrLocation className="text-secondary-1 text-xl mt-1" />
-            </div>
-
-            <div className="flex flex-col">
-              <span className="font-medium">
-                {selectedAppointment.address?.tag}
-              </span>
-              <span className="text-base leading-relaxed">{fullAddress}</span>
-            </div>
-          </div>
-
-          {!isVisitFinished && (
-            <AtHomeVisitStatus
-              visitStatus={selectedAppointment.visit_status}
-              selectedAppointment={selectedAppointment}
-            />
-          )}
-
-          <div className="pt-4 border-t space-y-4">
-            <div className="space-y-1 ">
-              <p className="font-semibold">Need help?</p>
-              <button
-                onClick={copyHelpline}
-                className="flex items-center gap-2 text-secondary-1 font-medium"
-              >
-                <Phone size={16} />
-                Call us
-              </button>
-            </div>
-
-            <div className="flex items-center gap-2 text-red-600 font-semibold">
-              <AlertTriangle size={18} />
-              Emergency
-            </div>
-
-            <div className="border border-red-300 rounded-lg p-4 space-y-3">
-              <div>
-                <p className="font-semibold text-red-700">
-                  Reschedule & Cancel
+            <div className="pt-4 border-t space-y-4">
+              <div className="space-y-1 ">
+                <p className="font-semibold">
+                  {isVisitFinished
+                    ? "Let us know if we can help with anything!"
+                    : "Need help?"}
                 </p>
-                <p className="text-sm text-red-600">
-                  Free cancellation up to 24 hours before the appointment. A
-                  100% cancellation fee will be charged otherwise.
-                </p>
+                <div className=" flex flex-wrap justify-between items-start gap-3">
+                  <button
+                    onClick={copyHelpline}
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg border border-secondary-1 text-secondary-1 hover:bg-secondary-1 hover:text-white transition"
+                  >
+                    <Phone size={16} />
+                    Call us
+                  </button>
+
+                  <button
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg
+      border border-red-600 text-red-600
+      hover:bg-red-600 hover:text-white transition"
+                  >
+                    <AlertTriangle size={18} />
+                    SOS
+                  </button>
+                </div>
               </div>
 
-              <button className="flex items-center gap-2 text-secondary-1 font-medium">
-                <RotateCcw size={16} />
-                Reschedule for free
-              </button>
+              {canShowCancelActions && (
+                <div className="border border-red-300 rounded-lg p-4 space-y-3">
+                  <div>
+                    <p className="font-semibold text-red-700">
+                      Reschedule & Cancel
+                    </p>
 
-              <button className="flex items-center gap-2 text-red-600 font-medium">
-                <XCircle size={16} />
-                Cancel for free
-              </button>
+                    {isFreeCancellation() ? (
+                      <p className="text-sm text-gray-600">
+                        Free cancellation available up to 24 hours before the
+                        appointment.
+                      </p>
+                    ) : (
+                      <p className="text-sm text-red-600">
+                        Cancellation within 24 hours of the appointment will
+                        incur a 100% cancellation fee.
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="flex flex-col lg:flex-row lg:justify-between gap-3">
+                    <button
+                      onClick={() => openConfirmationView("RESCHEDULE")}
+                      className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-secondary-1 text-secondary-1 hover:bg-secondary-1 hover:text-white transition"
+                    >
+                      <RotateCcw size={16} />
+                      Reschedule
+                    </button>
+
+                    <button
+                      onClick={() => openConfirmationView("CANCEL")}
+                      className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-red-600 text-red-600 hover:bg-red-600 hover:text-white transition"
+                    >
+                      <XCircle size={16} />
+                      {isFreeCancellation()
+                        ? "Cancel for free"
+                        : "Cancel with 100% fee"}
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   )
 }

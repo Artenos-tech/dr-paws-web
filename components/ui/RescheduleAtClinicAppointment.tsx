@@ -18,7 +18,7 @@ type ReschedulingProps = {
   onError: () => void
 }
 
-const RescheduleAppointment: React.FC<ReschedulingProps> = ({
+const RescheduleAtClinicAppointment: React.FC<ReschedulingProps> = ({
   existingAppointment,
   onBack,
   onDone,
@@ -177,4 +177,4 @@ const RescheduleAppointment: React.FC<ReschedulingProps> = ({
   )
 }
 
-export default RescheduleAppointment
+export default RescheduleAtClinicAppointment
