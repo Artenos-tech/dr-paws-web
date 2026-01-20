@@ -4,20 +4,15 @@ import AddressForm from "@/components/ui/AddressForm"
 import UnserviceableModal from "@/components/ui/UnserviceableModal"
 import { useAPICall } from "@/hooks/apicall"
 import { mockAtHomeClient } from "@/services/api.athome"
-import {
-  Autocomplete,
-  GoogleMap,
-  Marker,
-  useJsApiLoader,
-} from "@react-google-maps/api"
+import { useJsApiLoader } from "@react-google-maps/api"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md"
 import { ClipLoader } from "react-spinners"
 import toast from "react-hot-toast"
 import { AddressFormValues } from "@/model/typeDefinitions"
-import { Search } from "lucide-react"
-import { GrClose } from "react-icons/gr"
+import MapSearchBar from "@/components/ui/MapSearchBar"
+import AddressMap from "@/components/ui/AddressMap"
 
 const DEFAULT_PIN = { lat: 12.97, lng: 77.59 }
 
@@ -270,58 +265,20 @@ const AddressPage = () => {
         </div>
       ) : (
         <>
-          <div className="relative w-full">
-            {!showSearch && (
-              <button
-                onClick={() => setShowSearch(true)}
-                className=" absolute top-2 right-14 md:right-16 z-20 rounded-full bg-white p-2 shadow-md lg:hidden "
-              >
-                <Search />
-              </button>
-            )}
+          <MapSearchBar
+            showSearch={showSearch}
+            setShowSearch={setShowSearch}
+            searchText={searchText}
+            setSearchText={setSearchText}
+            setAutocomplete={setAutocomplete}
+            onPlaceChanged={onPlaceChanged}
+          />
 
-            <div className="absolute top-2 left-1/2 lg:left-1/2  z-20 w-[60%]  -translate-x-1/2">
-              <div className={` ${showSearch ? "block" : "hidden"} lg:block `}>
-                <Autocomplete
-                  onLoad={(auto) => setAutocomplete(auto)}
-                  onPlaceChanged={onPlaceChanged}
-                >
-                  <div className="relative">
-                    <input
-                      value={searchText}
-                      onChange={(e) => setSearchText(e.target.value)}
-                      type="text"
-                      placeholder="Search for your area, street, or landmark"
-                      className=" w-full lg:w-full rounded-full border px-4 py-2 pr-10 shadow-md focus:outline-none focus:ring-2 focus:ring-secondary-1 bg-white "
-                    />
-
-                    <button
-                      onClick={() => {
-                        if (searchText) {
-                          setSearchText("")
-                        } else {
-                          setShowSearch(false)
-                        }
-                      }}
-                      className="absolute right-3 top-1/2 lg:right-[3%]  -translate-y-1/2 text-gray-500 "
-                    >
-                      <GrClose />
-                    </button>
-                  </div>
-                </Autocomplete>
-              </div>
-            </div>
-
-            <GoogleMap
-              center={pin}
-              zoom={15}
-              mapContainerStyle={{ width: "100%", height: "400px" }}
-              onClick={setLocation}
-              options={mapOptions}
-            >
-              <Marker draggable position={pin} onDragEnd={setLocation} />
-            </GoogleMap>
-          </div>
+          <AddressMap
+            pin={pin}
+            setLocation={setLocation}
+            mapOptions={mapOptions}
+          />
 
           <div className="w-full mt-3 bg-gray-200 p-2 rounded-lg">
             <p className="text-sm text-gray-600">Selected location</p>

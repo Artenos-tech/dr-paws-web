@@ -15,6 +15,7 @@ type AddressFormProps = {
   pincode: string | null
   isSubmitting?: boolean
   onValidityChange: (isValid: boolean) => void
+  readOnly?: boolean
 }
 
 const inputBaseClasses =
@@ -28,6 +29,7 @@ const AddressForm = ({
   pincode,
   isSubmitting = false,
   onValidityChange,
+  readOnly = false,
 }: AddressFormProps) => {
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [touched, setTouched] = useState<Record<string, boolean>>({})
@@ -38,6 +40,10 @@ const AddressForm = ({
   }, [onValidityChange])
 
   useEffect(() => {
+    if (readOnly) {
+      onValidityChangeRef.current(true)
+      return
+    }
     const result = addressSchema.safeParse(addressDetails)
 
     if (result.success) {
@@ -58,8 +64,9 @@ const AddressForm = ({
   const handleChange =
     (field: keyof AddressFormValues) =>
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      const value = e.target.value
+      if (readOnly) return
 
+      const value = e.target.value
       setAddressDetails((prev) => ({
         ...prev,
         [field]: value,
@@ -67,6 +74,8 @@ const AddressForm = ({
     }
 
   const handleBlur = (field: keyof AddressFormValues) => () => {
+    if (readOnly) return
+
     setTouched((prev) => ({ ...prev, [field]: true }))
 
     setAddressDetails((prev) => ({
@@ -91,7 +100,7 @@ const AddressForm = ({
     <div className="mt-6 w-full flex flex-col gap-4">
       <div>
         {pincode && (
-          <div>
+          <div className="my-1">
             <label className={labelClasses}>Selected pincode</label>
             <input
               type="text"
@@ -112,7 +121,7 @@ const AddressForm = ({
           onChange={handleChange("address_line1")}
           onBlur={handleBlur("address_line1")}
           className={getInputClasses("address_line1")}
-          disabled={isSubmitting}
+          disabled={isSubmitting || readOnly}
           maxLength={200}
           placeholder="123 Main Street"
           autoComplete="address-line1"
@@ -135,7 +144,7 @@ const AddressForm = ({
           onChange={handleChange("address_line2")}
           onBlur={handleBlur("address_line2")}
           className={getInputClasses("address_line2")}
-          disabled={isSubmitting}
+          disabled={isSubmitting || readOnly}
           maxLength={200}
           placeholder="Apartment, suite, floor, etc."
           autoComplete="address-line2"
@@ -158,7 +167,7 @@ const AddressForm = ({
           onChange={handleChange("tag")}
           onBlur={handleBlur("tag")}
           className={getInputClasses("tag")}
-          disabled={isSubmitting}
+          disabled={isSubmitting || readOnly}
           maxLength={50}
           placeholder="e.g., Home, Office, Apartment"
           autoComplete="off"
@@ -179,7 +188,7 @@ const AddressForm = ({
           onChange={handleChange("directions")}
           onBlur={handleBlur("directions")}
           className={`${getInputClasses("directions")} resize-y`}
-          disabled={isSubmitting}
+          disabled={isSubmitting || readOnly}
           maxLength={500}
           placeholder="Additional directions to help us find you"
         />
