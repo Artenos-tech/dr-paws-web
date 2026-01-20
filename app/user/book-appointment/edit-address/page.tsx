@@ -130,7 +130,7 @@ const AddressPage = () => {
           return
         }
 
-        const address = res.value.body.data.address_book
+        const address = res.value.body.data.address
 
         setAddressDetails({
           tag: address.tag,

@@ -11,15 +11,24 @@ import { ClipLoader } from "react-spinners"
 export type BookingDetailsProps = {
   goBack: (refetch: boolean) => void
   appointmentId: string
+  subBookingId: string
 }
 
-const BookingDetails = ({ appointmentId, goBack }: BookingDetailsProps) => {
-  const { call, result } = useAPICall(mockAtHomeClient.getAppointmentDetails)
+const BookingDetails = ({
+  appointmentId,
+  subBookingId,
+  goBack,
+}: BookingDetailsProps) => {
+  const { call: getAppointmentDetails, result: getAppointmentDetailsResult } =
+    useAPICall(mockAtHomeClient.getAppointmentDetails)
   useEffect(() => {
-    call({ appointment_id: appointmentId })
+    getAppointmentDetails({
+      appointment_id: appointmentId,
+      sub_booking_id: subBookingId,
+    })
   }, [])
 
-  if (!result?.ok) {
+  if (!getAppointmentDetailsResult?.ok) {
     return (
       <div className="flex justify-center items-center py-20">
         <ClipLoader />
@@ -27,7 +36,7 @@ const BookingDetails = ({ appointmentId, goBack }: BookingDetailsProps) => {
     )
   }
   const selectedAppointment: AppointmentDetails =
-    result.value.body.data.appointment
+    getAppointmentDetailsResult.value.body.data.appointment
 
   return (
     <>

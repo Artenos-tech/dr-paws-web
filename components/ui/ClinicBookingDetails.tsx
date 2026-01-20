@@ -44,7 +44,7 @@ import RescheduleAtClinicAppointment from "@/components/ui/RescheduleAtClinicApp
 //   "My pet needs the treatment later",
 // ]
 
-type BookingDetailsProps = {
+type ClinicBookingDetailsProps = {
   goBack: (refetch: boolean) => void
   selectedAppointment: AppointmentDetails
 }
@@ -52,7 +52,7 @@ type BookingDetailsProps = {
 const ClinicBookingDetails = ({
   selectedAppointment,
   goBack,
-}: BookingDetailsProps) => {
+}: ClinicBookingDetailsProps) => {
   const [loadingInvoiceView, setLoadingInvoiceView] = useState(false)
   const [loadingInvoiceDownload, setLoadingInvoiceDownload] = useState(false)
   const [showInvoicePdfModal, setShowInvoicePdfModal] = useState(false)

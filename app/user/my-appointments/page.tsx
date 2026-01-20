@@ -212,6 +212,7 @@ const MyAppointmentsPage = () => {
         {selectedAppointment ? (
           <BookingDetails
             appointmentId={selectedAppointment.id}
+            subBookingId={selectedAppointment.sub_booking_id}
             goBack={(refetch) => {
               setSelectedAppointment(null)
               if (refetch) {

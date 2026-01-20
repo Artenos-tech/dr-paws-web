@@ -122,7 +122,7 @@ const AddressPage = () => {
         toast.error("Failed to load address")
         return
       }
-      const address = res.value.body.data.address_book
+      const address = res.value.body.data.address
       setAddressDetails({
         tag: address.tag,
         address_line1: address.address_line1,

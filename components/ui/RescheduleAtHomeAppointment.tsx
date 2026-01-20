@@ -9,8 +9,9 @@ import SelectDateTimeForVisit from "./SelectDateTimeForVisit"
 import ConfirmationModal from "./ConfirmationModal"
 import { VISIT_REASONS } from "./ReasonForVisit"
 
-type Props = {
+type RescheduleHomeVistProps = {
   appointmentId: string
+  subBookingId: string
 }
 
 type BookingDetails = {
@@ -25,7 +26,10 @@ type BookingDetails = {
   couponCode: string | null
 }
 
-const RescheduleAtHomeAppointment = ({ appointmentId }: Props) => {
+const RescheduleAtHomeAppointment = ({
+  appointmentId,
+  subBookingId,
+}: RescheduleHomeVistProps) => {
   const [appointment, setAppointment] = useState<AppointmentDetails | null>(
     null,
   )
@@ -46,7 +50,10 @@ const RescheduleAtHomeAppointment = ({ appointmentId }: Props) => {
     useAPICall(mockAtHomeClient.rescheduleAtHomeAppointment)
 
   useEffect(() => {
-    getAppointmentDetails({ appointment_id: appointmentId })
+    getAppointmentDetails({
+      appointment_id: appointmentId,
+      sub_booking_id: subBookingId,
+    })
   }, [appointmentId])
 
   useEffect(() => {

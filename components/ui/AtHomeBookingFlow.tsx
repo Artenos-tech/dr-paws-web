@@ -155,7 +155,7 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
       return
     }
 
-    const address = response.value.body.data.address_book || null
+    const address = response.value.body.data.address || null
     if (!address) {
       dispatch({ type: "SET_LOADING", payload: false })
       return
