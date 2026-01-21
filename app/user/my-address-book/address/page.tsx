@@ -59,6 +59,18 @@ const AddressPage = () => {
     address_line2: "",
     directions: undefined,
   })
+  useEffect(() => {
+    if (!addressId) {
+      setMode("add")
+      return
+    }
+
+    if (modeParam === "edit") {
+      setMode("edit")
+    } else {
+      setMode("view")
+    }
+  }, [addressId, modeParam])
 
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
@@ -158,7 +170,9 @@ const AddressPage = () => {
       setIsPinSelected(true)
       return
     }
+
     const { tag, address_line1, address_line2 } = addressDetails
+
     if (!tag || !address_line1 || !address_line2 || !pincode) {
       toast.error("Please fill all required fields")
       return
@@ -166,21 +180,56 @@ const AddressPage = () => {
 
     const payload = {
       tag,
-      location: { lat: pin.lat, long: pin.lng },
+      location: {
+        lat: pin.lat,
+        long: pin.lng,
+      },
       address_line1,
       address_line2,
       directions: addressDetails.directions,
     }
-    const res = isAddMode
-      ? await addAddress({ address: payload })
-      : await updateAddress({ addressid: addressId!, address: payload })
-    if (!res.ok) {
-      toast.error("Failed to save address")
-      return
-    }
-    toast.success(isAddMode ? "Address saved" : "Address updated")
 
-    setMode("view")
+    try {
+      if (isAddMode) {
+        const res = await addAddress({ address: payload })
+
+        if (!res.ok) {
+          toast.error("Failed to save address")
+          return
+        }
+
+        const newAddressId = res.value.body.data.address.id
+
+        toast.success("Address saved")
+
+        router.replace(
+          `/user/my-address-book/address?addressId=${newAddressId}&mode=view`,
+        )
+
+        return
+      }
+
+      if (!addressId) {
+        toast.error("Invalid address")
+        return
+      }
+
+      const res = await updateAddress({
+        addressid: addressId,
+        address: payload,
+      })
+
+      if (!res.ok) {
+        toast.error("Failed to update address")
+        return
+      }
+
+      toast.success("Address updated")
+      setMode("view")
+    } catch (error) {
+      toast.error("Something went wrong")
+      console.error(error)
+    }
   }
 
   const mapOptions = {
@@ -239,6 +288,7 @@ const AddressPage = () => {
             pin={pin}
             setLocation={setLocation}
             mapOptions={mapOptions}
+            isEditMode={isEditMode}
           />
           {(isAddMode || isEditMode) && (
             <div className="w-full mt-3 bg-gray-200 p-2 rounded-lg">
