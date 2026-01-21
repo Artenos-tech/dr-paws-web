@@ -2,12 +2,14 @@ import React, { useReducer } from "react"
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md"
 import SelectAddress from "./SelectAddress"
 import SelectPet from "./SelectPet"
-import ReasonForVisit from "./ReasonForVisit"
+import ReasonForVisit, { VISIT_REASONS } from "./ReasonForVisit"
 import SelectDateTimeForVisit from "./SelectDateTimeForVisit"
 import ConfirmationModal from "./ConfirmationModal"
 import { useAPICall } from "@/hooks/apicall"
 import atHomeApiClient from "@/services/api.athome"
-
+import { ReasonForVisitEnum } from "@/model/typeDefinitions"
+import { load } from "@cashfreepayments/cashfree-js"
+import toast from "react-hot-toast"
 interface AtHomeBookingFlowProps {
   onBackToStart: () => void
 }
@@ -28,7 +30,7 @@ type AtHomeAppointmentData = {
   }
 }
 
-type BookingState = {
+type AtHomeBookingState = {
   currentStep: number
   showConfirmationModal: boolean
   isLoading: boolean
@@ -36,7 +38,7 @@ type BookingState = {
   appointmentData: AtHomeAppointmentData
 }
 
-type BookingAction =
+type AtHomeBookingAction =
   | {
       type: "SET_ADDRESS"
       payload: { addressId: string; location: string }
@@ -60,7 +62,7 @@ type BookingAction =
   | { type: "CONFIRM_BOOKING" }
   | { type: "SET_LOADING"; payload: boolean }
 
-const initialState: BookingState = {
+const initialState: AtHomeBookingState = {
   currentStep: 1,
   showConfirmationModal: false,
   isLoading: false,
@@ -68,10 +70,10 @@ const initialState: BookingState = {
   appointmentData: {},
 }
 
-function bookingReducer(
-  state: BookingState,
-  action: BookingAction,
-): BookingState {
+function atHomeBookingReducer(
+  state: AtHomeBookingState,
+  action: AtHomeBookingAction,
+): AtHomeBookingState {
   switch (action.type) {
     case "SET_ADDRESS":
       return {
@@ -136,7 +138,7 @@ function bookingReducer(
 const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
   onBackToStart,
 }) => {
-  const [state, dispatch] = useReducer(bookingReducer, initialState)
+  const [state, dispatch] = useReducer(atHomeBookingReducer, initialState)
   const {
     currentStep,
     showConfirmationModal,
@@ -145,6 +147,8 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
     appointmentData,
   } = state
   const { call: getAddress } = useAPICall(atHomeApiClient.getAddress)
+  const { call: createPaymentOrder } =
+    useAPICall(atHomeApiClient.createPaymentOrder)
 
   const handleAddressConfirm = async (addressId: string) => {
     dispatch({ type: "SET_LOADING", payload: true })
@@ -190,8 +194,38 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
     dispatch({ type: "SET_DATE_TIME", payload: { date, slot } })
   }
 
-  const handleConfirmBooking = () => {
+  const handleConfirmBooking = async () => {
     dispatch({ type: "CONFIRM_BOOKING" })
+    const reasonForVisit = VISIT_REASONS.find(
+      (reason) => reason.label === bookingDetails.reasonForVisit,
+    )?.key
+    const createPaymentOrderResult = await createPaymentOrder({
+      pet_id: appointmentData.petId as string,
+      address_id: appointmentData.addressId as string,
+      appt_start: appointmentData.slot?.startTime as string,
+      booking_date: appointmentData.date as string,
+      reason_for_visit: reasonForVisit as ReasonForVisitEnum,
+      notes: bookingDetails.reasonDescription as string,
+    })
+    if (createPaymentOrderResult?.ok) {
+      const { paymentSessionId, orderId } =
+        createPaymentOrderResult.value.body.data.order
+      handlePayment(paymentSessionId, orderId)
+    } else {
+      toast.error("Could not initiate payment. Please try again later.")
+    }
+  }
+
+  const handlePayment = async (paymentSessionId: string, orderId: string) => {
+    const cashfreeSession = await initializeSDK()
+    const result = await cashfreeSession.checkout({
+      paymentSessionId,
+      returnUrl:
+        window.location.origin +
+        `/user/book-appointment/home-visit/payment?order_id=` +
+        orderId,
+    })
+    console.log("Cashfree checkout result: ", result)
   }
 
   const handleBack = () => {
@@ -199,6 +233,24 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
       dispatch({ type: "GO_BACK" })
     } else {
       onBackToStart()
+    }
+  }
+
+  const initializeSDK = async function () {
+    const cashfreeEnv = process.env.NEXT_PUBLIC_CASHFREE_ENVIRONMENT as
+      | "sandbox"
+      | "production"
+    if (!cashfreeEnv) {
+      throw new Error(
+        "Cashfree environment is not set. Cannot proceed with payment",
+      )
+    } else {
+      const cashfree = await load({
+        mode: process.env.NEXT_PUBLIC_CASHFREE_ENVIRONMENT as
+          | "sandbox"
+          | "production",
+      })
+      return cashfree
     }
   }
 

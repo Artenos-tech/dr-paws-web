@@ -1370,7 +1370,7 @@ const endpointConfig = {
 
   getAppointmentDetails: {
     method: "GET" as const,
-    path: "/user/appointment/{appointment_id}?sub_booking_id={sub_booking_id1}",
+    path: "/user/appointment/{appointment_id}?sub_booking_id={sub_booking_id}",
     pathParamsSchema: z.object({
       appointment_id: z.string().uuid(),
       sub_booking_id: z.string().uuid(),
