@@ -110,6 +110,7 @@ const BookingTypeSelection: React.FC<BookingTypeSelectionProps> = ({
 
           return (
             <div
+              key={bookingType.id}
               onClick={() => handleCardClick(bookingType.id)}
               className={`flex flex-col items-center p-8 rounded-md cursor-pointer transition-all ${
                 isSelected

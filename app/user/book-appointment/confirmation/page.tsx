@@ -15,7 +15,7 @@ import { MdOutlineAccessTime } from "react-icons/md"
 
 const BookingConfirmationPage: React.FC = () => {
   const searchParams = useSearchParams()
-  const navigate = useRouter()
+  // const navigate = useRouter()
   const appointmentId = searchParams.get("appointment_id")
   const subBookingId = searchParams.get("sub_booking_id")
   const [confirmedAppointment, setConfirmedAppointment] =
