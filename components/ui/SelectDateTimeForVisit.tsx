@@ -68,7 +68,7 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
   slot: initialSlot,
   isConfirmationModalOpen,
   isConfirming,
-  isReschedule
+  isReschedule,
 }) => {
   const {
     call: getAtHomeSlots,
@@ -234,7 +234,11 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
           className="btn rounded-full text-white px-10 py-2 tracking-wider bg-secondary-1 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
         >
           {isProcessing && <ClipLoader size={16} color="#ffffff" />}
-          {isProcessing ? "Processing..." : isReschedule ? "Reschedule" : "Proceed to Pay"}
+          {isProcessing
+            ? "Processing..."
+            : isReschedule
+              ? "Reschedule"
+              : "Proceed to Pay"}
         </button>
       </div>
     </div>

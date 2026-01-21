@@ -101,9 +101,12 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
       {/* Status and Reason */}
       <div className="text-xs flex justify-between">
         <p className={`${text}`}>
-          {getAppointmentCategoryLabel(appointment.booking_type === "HOME_VISIT" && appointment.visit_status === "VISIT_STARTED"
-            ? "ACTIVE" as const
-            : appointment.category)}
+          {getAppointmentCategoryLabel(
+            appointment.booking_type === "HOME_VISIT" &&
+              appointment.visit_status === "VISIT_STARTED"
+              ? ("ACTIVE" as const)
+              : appointment.category,
+          )}
         </p>
         {appointment.appt_type === "HOME_VISIT" && appointment.visit_status && (
           <span

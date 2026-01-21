@@ -147,8 +147,9 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
     appointmentData,
   } = state
   const { call: getAddress } = useAPICall(atHomeApiClient.getAddress)
-  const { call: createPaymentOrder } =
-    useAPICall(atHomeApiClient.createPaymentOrder)
+  const { call: createPaymentOrder } = useAPICall(
+    atHomeApiClient.createPaymentOrder,
+  )
 
   const handleAddressConfirm = async (addressId: string) => {
     dispatch({ type: "SET_LOADING", payload: true })
