@@ -1,7 +1,7 @@
 "use client"
 
 import { useAPICall } from "@/hooks/apicall"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 import atHomeAPIClient from "@/services/api.athome"
 import { Suspense, useEffect, useState } from "react"
 import { AppointmentDetails } from "@/model/typeDefinitions"
