@@ -32,6 +32,7 @@ const BookingTypeSelection: React.FC<BookingTypeSelectionProps> = ({
     result: getServiceablePincodesResult,
     loading: getServiceablePincodesLoading,
   } = useAPICall(atHomeApiClient.getServiceablePincodes)
+
   useEffect(() => {
     if (getServiceablePincodesResult?.ok) {
       setAvailablePincodes(
@@ -108,21 +109,21 @@ const BookingTypeSelection: React.FC<BookingTypeSelectionProps> = ({
           const isSelected = selectedTypeId === bookingType.id
 
           return (
-            <Tooltip
-              key={bookingType.id}
-              title={
-                bookingType.type === "HOME_VISIT" && availablePincodesTooltip
-              }
-              color="#f7f1de"
-              styles={{ body: { color: "#33495f" } }}
+            <div
+              onClick={() => handleCardClick(bookingType.id)}
+              className={`flex flex-col items-center p-8 rounded-md cursor-pointer transition-all ${
+                isSelected
+                  ? "outline outline-2 outline-secondary-1"
+                  : "shadow-md"
+              } bg-primary-3`}
             >
-              <div
-                onClick={() => handleCardClick(bookingType.id)}
-                className={`flex flex-col items-center p-8 rounded-md cursor-pointer transition-all ${
-                  isSelected
-                    ? "outline outline-2 outline-secondary-1"
-                    : "shadow-md"
-                } bg-primary-3`}
+              <Tooltip
+                key={bookingType.id}
+                title={
+                  bookingType.type === "HOME_VISIT" && availablePincodesTooltip
+                }
+                color="#f7f1de"
+                styles={{ body: { color: "#33495f" } }}
               >
                 <div className="w-20 h-20 flex items-center justify-center mb-4 rounded-full bg-white">
                   <Icon
@@ -132,14 +133,14 @@ const BookingTypeSelection: React.FC<BookingTypeSelectionProps> = ({
                     }
                   />
                 </div>
-                <h2 className="text-xl font-semibold text-primary-1 mb-2">
-                  {bookingType.title}
-                </h2>
-                <p className="text-center text-gray-600 text-sm">
-                  {bookingType.description}
-                </p>
-              </div>
-            </Tooltip>
+              </Tooltip>
+              <h2 className="text-xl font-semibold text-primary-1 mb-2">
+                {bookingType.title}
+              </h2>
+              <p className="text-center text-gray-600 text-sm">
+                {bookingType.description}
+              </p>
+            </div>
           )
         })}
       </div>

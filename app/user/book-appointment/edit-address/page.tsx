@@ -215,7 +215,6 @@ const AddressPage = () => {
           ? "Address updated successfully"
           : "Address saved successfully",
       )
-      console.log(serviceRes)
       if (serviceRes.ok && !serviceRes.value.body.data.serviceable) {
         setShowUnserviceableModal(true)
         return

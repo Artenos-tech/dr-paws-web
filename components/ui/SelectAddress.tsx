@@ -51,11 +51,6 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
     return addresses.filter((addr) => !checkedAddressIds.has(addr.id))
   }, [addresses, checkedAddressIds])
 
-  console.log("SELECTED ADDRESS ID", selectedAddressId)
-  console.log("SERVICEABLE IDS", serviceableIds)
-  console.log("CHECKED ADDRESS IDS", checkedAddressIds)
-  console.log("checkingServiceability", checkingServiceability)
-
   useEffect(() => {
     getAddressBook({})
   }, [])
@@ -85,7 +80,6 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
                 { location: address.location },
                 { abortSignal: abortController.signal },
               )
-              console.log("SERVICEABILITY CHECK: ", result)
               if (!isActive || abortController.signal.aborted) return
 
               if (result?.ok) {

@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react"
 import { useAPICall } from "@/hooks/apicall"
 import atHomeApiClient from "@/services/api.athome"
-import { AppointmentDetails, ReasonForVisit } from "@/model/typeDefinitions"
+import { AppointmentDetails, ReasonForVisitEnum } from "@/model/typeDefinitions"
 import { ClipLoader } from "react-spinners"
 import SelectDateTimeForVisit from "./SelectDateTimeForVisit"
 import ConfirmationModal from "./ConfirmationModal"
@@ -62,26 +62,18 @@ const RescheduleAtHomeAppointment = ({
     }
   }, [getAppointmentDetailsResult])
 
-  const handleReschedule = (
+  const handleConfirmSlots = (
     date: string,
     slot: { startTime: string; endTime: string },
   ) => {
     if (!appointment?.sub_booking_id) return
-
-    rescheduleAtHomeAppointment({
-      appointment_id: appointment.id,
-      sub_booking_id: appointment.sub_booking_id,
-      booking_date: date,
-      appt_start: slot.startTime,
-      appt_end: slot.endTime,
-    })
 
     setBookingDetails({
       petName: appointment.pet_name ?? "",
       service: "Home Visit",
       doctorName: appointment.vet_name ?? undefined,
       reasonForVisit: getReasonByKey(
-        appointment.reason_for_visit as ReasonForVisit,
+        appointment.reason_for_visit as ReasonForVisitEnum,
       ),
       reasonDescription: appointment.notes as string,
       location: [
@@ -97,7 +89,19 @@ const RescheduleAtHomeAppointment = ({
 
     setIsConfirmationModalOpen(true)
   }
-  const getReasonByKey = (key: ReasonForVisit): string => {
+
+  const handleConfirmReschedule = async () => {
+    if (!appointment || !bookingDetails) return
+    await rescheduleAtHomeAppointment({
+      appointment_id: appointment.id,
+      sub_booking_id: appointment.sub_booking_id,
+      booking_date: bookingDetails?.date.toISOString(),
+      appt_start: bookingDetails.slot.split(" - ")[0].replace(":", ""),
+      appt_end: bookingDetails.slot.split(" - ")[1].replace(":", ""),
+    })
+  }
+
+  const getReasonByKey = (key: ReasonForVisitEnum): string => {
     return VISIT_REASONS.find((r) => r.key === key)?.label ?? "Unknown reason"
   }
 
@@ -112,18 +116,19 @@ const RescheduleAtHomeAppointment = ({
   return (
     <div className="w-full pt-4">
       <SelectDateTimeForVisit
-        addressId={appointment.address?.id}
+        addressId={appointment.address?.id as string}
         petId={appointment.pet_id}
         isConfirmationModalOpen={isConfirmationModalOpen}
         isConfirming={rescheduleLoading}
-        onConfirm={handleReschedule}
+        onConfirm={handleConfirmSlots}
+        isReschedule={true}
       />
 
-      {bookingDetails && (
+      {bookingDetails && appointment && (
         <ConfirmationModal
           isOpen={isConfirmationModalOpen}
           onClose={() => setIsConfirmationModalOpen(false)}
-          onConfirm={() => {}}
+          onConfirm={handleConfirmReschedule}
           bookingDetails={bookingDetails}
         />
       )}

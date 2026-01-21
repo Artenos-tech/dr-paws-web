@@ -1318,7 +1318,7 @@ const endpointConfig = {
     path: "/booking/at-home/payments/orders",
     pathParamsSchema: z.object({}),
     requestSchema: z.object({
-      pet_id: z.string().uuid(),
+      pet_id: z.string(),
       appt_start: z.string(),
       booking_date: z.string(),
       address_id: z.string(),
