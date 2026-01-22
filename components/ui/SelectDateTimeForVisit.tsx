@@ -7,6 +7,7 @@ import atHomeApiClient from "@/services/api.athome"
 import { z } from "zod"
 import ClipLoader from "react-spinners/ClipLoader"
 import toast from "react-hot-toast"
+import { Tooltip } from "antd"
 
 type Slot = { startTime: string; endTime: string }
 type SlotWithAvailability = Slot & { available: boolean }
@@ -192,7 +193,7 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
         )}
 
         {!loadingSlots && activeDay && activeDay.slots?.length > 0 && (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 lg:grid-cols-4 md:grid-cols-3 gap-3">
             {activeDay.slots.map((slot) => {
               const isSelected = selectedSlot?.startTime === slot.startTime
               return (
@@ -200,7 +201,7 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
                   key={`${slot.startTime}-${slot.endTime}`}
                   onClick={() => setSelectedSlot(slot)}
                   className={clsx(
-                    "flex flex-col items-center justify-center rounded-lg border-2 px-2 py-3 text-xs sm:text-sm transition duration-150",
+                    "flex items-center justify-center gap-1 rounded-lg border-2 px-3 py-2 text-xs sm:text-sm transition duration-150",
                     isSelected
                       ? "border-secondary-1 bg-secondary-1/10 shadow-md"
                       : slot.available
@@ -208,18 +209,10 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
                         : "border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed opacity-60",
                   )}
                   disabled={!slot.available}
-                  aria-label={`Slot ${formatTime(slot.startTime)} to ${formatTime(slot.endTime)}${!slot.available ? " (Unavailable)" : ""}`}
                 >
-                  <span className="font-semibold">
-                    {formatTime(slot.startTime)}
-                  </span>
-                  <span className="mx-1">-</span>
+                  <span>{formatTime(slot.startTime)}</span>
+                  <span>-</span>
                   <span>{formatTime(slot.endTime)}</span>
-                  {!slot.available && (
-                    <span className="text-[10px] mt-1 text-red-400">
-                      Unavailable
-                    </span>
-                  )}
                 </button>
               )
             })}
@@ -228,18 +221,24 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
       </div>
 
       <div className="flex justify-center mb-10">
-        <button
-          disabled={!selectedDate || !selectedSlot || isProcessing}
-          onClick={handleProceedClick}
-          className="btn rounded-full text-white px-10 py-2 tracking-wider bg-secondary-1 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+        <Tooltip
+          color="#f7f1de"
+          styles={{ body: { color: "#33495f" } }}
+          title={!selectedSlot ? "Select time slot to proceed" : ""}
         >
-          {isProcessing && <ClipLoader size={16} color="#ffffff" />}
-          {isProcessing
-            ? "Processing..."
-            : isReschedule
-              ? "Reschedule"
-              : "Proceed to Pay"}
-        </button>
+          <button
+            disabled={!selectedDate || !selectedSlot || isProcessing}
+            onClick={handleProceedClick}
+            className="btn rounded-full text-white px-10 py-2 tracking-wider bg-secondary-1 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          >
+            {isProcessing && <ClipLoader size={16} color="#ffffff" />}
+            {isProcessing
+              ? "Processing..."
+              : isReschedule
+                ? "Reschedule"
+                : "Proceed to Pay"}
+          </button>
+        </Tooltip>
       </div>
     </div>
   )
