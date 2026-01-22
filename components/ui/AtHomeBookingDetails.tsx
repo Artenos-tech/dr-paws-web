@@ -23,6 +23,7 @@ import CancelledBookingCard from "./CancelBookingCard"
 import { useAPICall } from "@/hooks/apicall"
 import atHomeApiClient from "@/services/api.athome"
 import RescheduleAtHomeAppointment from "./RescheduleAtHomeAppointment"
+import SupportActions from "./SupportActions"
 
 type AtHomeBookingDetailsProps = {
   goBack: (refetch: boolean) => void
@@ -260,6 +261,11 @@ const AtHomeBookingDetails = ({
                     Please feel free to call us about issues or feedback.
                   </p>
                 </div>
+                <SupportActions
+                  isVisitFinished
+                  onCallUs={copyHelpline}
+                  onSOS={() => {}}
+                />
 
                 <AtHomeVisitStatus
                   visitStatus={selectedAppointment.visit_status}
@@ -304,31 +310,9 @@ const AtHomeBookingDetails = ({
             )}
 
             <div className="pt-4 border-t space-y-4">
-              <div className="space-y-1 ">
-                <p className="font-semibold">
-                  {isVisitFinished
-                    ? "Let us know if we can help with anything!"
-                    : "Need help?"}
-                </p>
-                <div className=" flex flex-wrap justify-between items-start gap-3">
-                  <button
-                    onClick={copyHelpline}
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg border border-secondary-1 text-secondary-1 hover:bg-secondary-1 hover:text-white transition"
-                  >
-                    <Phone size={16} />
-                    Call us
-                  </button>
-
-                  <button
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg
-      border border-red-600 text-red-600
-      hover:bg-red-600 hover:text-white transition"
-                  >
-                    <AlertTriangle size={18} />
-                    SOS
-                  </button>
-                </div>
-              </div>
+              {!isVisitFinished && (
+                <SupportActions onCallUs={copyHelpline} onSOS={() => {}} />
+              )}
 
               {canShowCancelActions && (
                 <div className="border border-red-300 rounded-lg p-4 space-y-3">
