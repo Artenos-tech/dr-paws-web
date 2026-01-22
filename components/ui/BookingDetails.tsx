@@ -4,41 +4,91 @@ import { AppointmentDetails } from "@/model/typeDefinitions"
 import ClinicBookingDetails from "./ClinicBookingDetails"
 import AtHomeBookingDetails from "./AtHomeBookingDetails"
 import { useAPICall } from "@/hooks/apicall"
-import { mockAtHomeClient } from "@/services/api.athome"
-import { useEffect } from "react"
+import atHomeApiClient from "@/services/api.athome"
+import { useEffect, useRef, useState } from "react"
 import { ClipLoader } from "react-spinners"
+
+const POLLING_INTERVAL_MS = 5000
 
 export type BookingDetailsProps = {
   goBack: (refetch: boolean) => void
   appointmentId: string
+  subBookingId: string
 }
 
-const BookingDetails = ({ appointmentId, goBack }: BookingDetailsProps) => {
-  const { call, result } = useAPICall(mockAtHomeClient.getAppointmentDetails)
+const BookingDetails = ({
+  appointmentId,
+  subBookingId,
+  goBack,
+}: BookingDetailsProps) => {
+  const { call: getAppointmentDetails, result: getAppointmentDetailsResult } =
+    useAPICall(atHomeApiClient.getAppointmentDetails)
+  const [appointment, setAppointment] = useState<AppointmentDetails | null>(
+    null,
+  )
+  const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null)
+  const getAppointmentDetailsRef = useRef(getAppointmentDetails)
+
   useEffect(() => {
-    call({ appointment_id: appointmentId })
+    getAppointmentDetailsRef.current = getAppointmentDetails
+  }, [getAppointmentDetails])
+
+  useEffect(() => {
+    getAppointmentDetails({
+      appointment_id: appointmentId,
+      sub_booking_id: subBookingId,
+    })
+
+    return () => {
+      if (pollingIntervalRef.current) {
+        clearInterval(pollingIntervalRef.current)
+      }
+    }
   }, [])
 
-  if (!result?.ok) {
+  useEffect(() => {
+    if (!getAppointmentDetailsResult?.ok) return
+
+    const fetchedAppointment =
+      getAppointmentDetailsResult.value.body.data.appointment
+    setAppointment(fetchedAppointment)
+
+    const shouldPoll =
+      fetchedAppointment.booking_type === "HOME_VISIT" &&
+      fetchedAppointment.visit_status !== "CANCELLED" &&
+      fetchedAppointment.visit_status !== "VISIT_FINISHED"
+
+    if (shouldPoll && !pollingIntervalRef.current) {
+      pollingIntervalRef.current = setInterval(() => {
+        getAppointmentDetailsRef.current({
+          appointment_id: appointmentId,
+          sub_booking_id: subBookingId,
+        })
+      }, POLLING_INTERVAL_MS)
+    } else if (!shouldPoll && pollingIntervalRef.current) {
+      clearInterval(pollingIntervalRef.current)
+      pollingIntervalRef.current = null
+    }
+  }, [getAppointmentDetailsResult])
+
+  if (!appointment) {
     return (
       <div className="flex justify-center items-center py-20">
         <ClipLoader />
       </div>
     )
   }
-  const selectedAppointment: AppointmentDetails =
-    result.value.body.data.appointment
 
   return (
     <>
-      {selectedAppointment.appt_type === "HOME_VISIT" ? (
+      {appointment.booking_type === "HOME_VISIT" ? (
         <AtHomeBookingDetails
-          selectedAppointment={selectedAppointment}
+          selectedAppointment={appointment}
           goBack={goBack}
         />
       ) : (
         <ClinicBookingDetails
-          selectedAppointment={selectedAppointment}
+          selectedAppointment={appointment}
           goBack={goBack}
         />
       )}
