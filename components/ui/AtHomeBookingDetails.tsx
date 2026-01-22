@@ -21,10 +21,10 @@ import defaultVetImage from "@/public/assets/images/clinic/doctorFemale.webp"
 import ConfirmActionCard from "./CancelConfirmationCard"
 import CancelledBookingCard from "./CancelBookingCard"
 import { useAPICall } from "@/hooks/apicall"
-import { mockAtHomeClient } from "@/services/api.athome"
+import atHomeApiClient from "@/services/api.athome"
 import RescheduleAtHomeAppointment from "./RescheduleAtHomeAppointment"
 
-type BookingDetailsProps = {
+type AtHomeBookingDetailsProps = {
   goBack: (refetch: boolean) => void
   selectedAppointment: AppointmentDetails
 }
@@ -34,14 +34,14 @@ const APPOINTMENT_CANCEL_WINDOW_HOURS = 24
 const AtHomeBookingDetails = ({
   selectedAppointment,
   goBack,
-}: BookingDetailsProps) => {
+}: AtHomeBookingDetailsProps) => {
   const [view, setView] = useState<ViewState>("DETAILS")
   const [confirmationType, setConfirmationType] = useState<
     "CANCEL" | "RESCHEDULE" | null
   >(null)
   const [refundStatus, setRefundStatus] = useState<RefundStatus>()
   const { call: cancelAppointment, result: cancelAppointmentResult } =
-    useAPICall(mockAtHomeClient.cancelAppointmentV2)
+    useAPICall(atHomeApiClient.cancelAppointmentV2)
   const parsedDate = parseISO(selectedAppointment.booking_date)
 
   const getSlotStartDateTime = () => {
@@ -200,7 +200,10 @@ const AtHomeBookingDetails = ({
         />
       )}
       {view === "RESCHEDULE" && (
-        <RescheduleAtHomeAppointment appointmentId={selectedAppointment.id} />
+        <RescheduleAtHomeAppointment
+          appointmentId={selectedAppointment.id}
+          subBookingId={selectedAppointment.sub_booking_id}
+        />
       )}
       {view === "DETAILS" && (
         <div className="flex flex-col items-center gap-6 mt-6">

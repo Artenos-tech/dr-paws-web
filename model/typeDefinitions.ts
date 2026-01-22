@@ -132,7 +132,7 @@ export interface AppointmentListItem {
   vet_image?: string | null
   vet_contact?: string | null
 
-  address?: Address
+  address?: AddressWithPincode
 
   visit_status?: VisitStatus
 
@@ -150,10 +150,10 @@ export interface AppointmentDetails extends AppointmentListItem {
   payment_status: "PAID" | "UNPAID" | "NO_BILL" | "PARTIALLY_PAID" | "OVERPAID"
   vet_id?: string | null
   refund_status?: RefundStatus
-  reason_for_visit?: ReasonForVisit
+  reason_for_visit?: ReasonForVisitEnum
   notes?: string
 }
-export type ReasonForVisit =
+export type ReasonForVisitEnum =
   | "VACCINATION"
   | "CHECK-UP"
   | "SICK"
@@ -208,7 +208,10 @@ export type Address = {
   address_line1: string
   address_line2: string
   directions?: string
-  pincode?: string
+}
+
+export type AddressWithPincode = Address & {
+  pincode: string
 }
 
 export type AddressFormValues = Omit<Address, "id" | "location" | "pincode">
