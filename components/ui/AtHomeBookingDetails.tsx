@@ -2,11 +2,7 @@
 
 import React, { useEffect, useState } from "react"
 import BackButton from "./BackButton"
-import {
-  CalendarDays,
-  RotateCcw,
-  XCircle,
-} from "lucide-react"
+import { CalendarDays, RotateCcw, XCircle } from "lucide-react"
 import { MdOutlineAccessTime } from "react-icons/md"
 import { GrLocation } from "react-icons/gr"
 import { format, parseISO } from "date-fns"
