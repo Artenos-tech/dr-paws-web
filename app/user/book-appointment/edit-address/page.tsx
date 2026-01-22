@@ -3,7 +3,7 @@
 import AddressForm from "@/components/ui/AddressForm"
 import UnserviceableModal from "@/components/ui/UnserviceableModal"
 import { useAPICall } from "@/hooks/apicall"
-import { mockAtHomeClient } from "@/services/api.athome"
+import atHomeApiClient from "@/services/api.athome"
 import { useJsApiLoader } from "@react-google-maps/api"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
@@ -48,16 +48,16 @@ const AddressPage = () => {
   })
 
   const { call: checkServiceability, loading: loadingCheck } = useAPICall(
-    mockAtHomeClient.checkLocationServiceability,
+    atHomeApiClient.checkLocationServiceability,
   )
   const { call: addAddress, loading: loadingAdd } = useAPICall(
-    mockAtHomeClient.addAddress,
+    atHomeApiClient.addAddress,
   )
   const { call: updateAddress, loading: loadingUpdate } = useAPICall(
-    mockAtHomeClient.updateAddress,
+    atHomeApiClient.updateAddress,
   )
   const { call: getAddress, loading: loadingGet } = useAPICall(
-    mockAtHomeClient.getAddress,
+    atHomeApiClient.getAddress,
   )
 
   useEffect(() => {
@@ -130,7 +130,7 @@ const AddressPage = () => {
           return
         }
 
-        const address = res.value.body.data.address_book
+        const address = res.value.body.data.address
 
         setAddressDetails({
           tag: address.tag,
@@ -215,8 +215,7 @@ const AddressPage = () => {
           ? "Address updated successfully"
           : "Address saved successfully",
       )
-
-      if (!serviceRes.ok || !serviceRes.value.body.data.serviceable) {
+      if (serviceRes.ok && !serviceRes.value.body.data.serviceable) {
         setShowUnserviceableModal(true)
         return
       }

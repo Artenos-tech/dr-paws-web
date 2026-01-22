@@ -8,7 +8,7 @@ import Loader from "@/components/ui/Loader"
 import NoAppointments from "@/components/ui/NoAppointments"
 import { useAPICall } from "@/hooks/apicall"
 import { AppointmentListItem } from "@/model/typeDefinitions"
-import { mockAtHomeClient } from "@/services/api.athome"
+import atHomeApiClient from "@/services/api.athome"
 
 const TABS = {
   ALL: { label: "All" },
@@ -30,7 +30,7 @@ const MyAppointmentsPage = () => {
     call: getAppointments,
     loading,
     result: getAppointmentsResult,
-  } = useAPICall(mockAtHomeClient.getAppointmentsV2)
+  } = useAPICall(atHomeApiClient.getAppointmentsV2)
 
   const [allAppointments, setAllAppointments] = useState<AppointmentListItem[]>(
     [],
@@ -174,7 +174,6 @@ const MyAppointmentsPage = () => {
         appt.booking_type === "CLINIC_VISIT" ||
         appt.booking_type === "HOME_VISIT",
     )
-    console.log(allAppointments, "data is ")
 
     let sortedAppointments: AppointmentListItem[] = []
 
@@ -212,6 +211,7 @@ const MyAppointmentsPage = () => {
         {selectedAppointment ? (
           <BookingDetails
             appointmentId={selectedAppointment.id}
+            subBookingId={selectedAppointment.sub_booking_id}
             goBack={(refetch) => {
               setSelectedAppointment(null)
               if (refetch) {

@@ -1,7 +1,7 @@
 "use client"
 import { useAPICall } from "@/hooks/apicall"
-import { Address } from "@/model/typeDefinitions"
-import { mockAtHomeClient } from "@/services/api.athome"
+import { AddressWithPincode } from "@/model/typeDefinitions"
+import atHomeApiClient from "@/services/api.athome"
 import { useRouter } from "next/navigation"
 import React, { useEffect, useState } from "react"
 import toast from "react-hot-toast"
@@ -18,17 +18,17 @@ const MyAddressBookPage = () => {
     call: getAddressBook,
     result: getAddressBookResult,
     loading: getAddressBookLoading,
-  } = useAPICall(mockAtHomeClient.getAddressBook)
+  } = useAPICall(atHomeApiClient.getAddressBook)
 
   const { call: deleteAddress, loading: deleteAddressLoading } = useAPICall(
-    mockAtHomeClient.deleteAddress,
+    atHomeApiClient.deleteAddress,
   )
 
   useEffect(() => {
     getAddressBook({})
   }, [])
 
-  const addresses: Address[] =
+  const addresses: AddressWithPincode[] =
     (getAddressBookResult?.ok &&
       getAddressBookResult.value.body.data.address_book) ||
     []
@@ -78,12 +78,15 @@ const MyAddressBookPage = () => {
             <p className="text-gray-500 mb-4">
               No addresses yet. Add one to get started.
             </p>
-            <button
-              onClick={() => router.push("/user/my-address-book/address")}
-              className="rounded-full px-8 py-3 bg-secondary-1 text-white hover:bg-secondary-2 transition"
-            >
-              Add Address
-            </button>
+            <div className="rounded-lg p-2 flex flex-col items-center justify-center">
+              <div
+                onClick={() => router.push("/user/my-address-book/address")}
+                className="w-12 h-12 flex items-center justify-center rounded-full border-2 border-dashed cursor-pointer hover:border-secondary-1 transition"
+              >
+                <span className="text-2xl font-semibold">+</span>
+              </div>
+              <span className="font-medium mt-1">Add</span>
+            </div>
           </div>
         ) : (
           <div className="grid grid-cols-1 py-4 gap-4 overflow-x-auto lg:w-4/5 lg:mx-auto">

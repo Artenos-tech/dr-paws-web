@@ -51,7 +51,7 @@ const BookingTypeSchema = z.object({
   id: z.string(),
   title: z.string(),
   description: z.string(),
-  image: z.string(),
+  image: z.string().nullable(),
   displayOrder: z.number(),
   type: z.enum(["HOME_VISIT", "CLINIC_VISIT"]),
 })
@@ -222,7 +222,7 @@ export type AtHomeAPIClient = {
         status: number
         message: string
         data: {
-          address_book: z.infer<typeof AddressSchema>
+          address: z.infer<typeof AddressSchema>
         }
       }>,
       any
@@ -349,7 +349,7 @@ export type AtHomeAPIClient = {
   >
 
   getAtHomeSlots: (
-    params: { addressid: string },
+    params: { addressid: string; petid: string },
     opts?: { abortSignal?: AbortSignal },
   ) => Promise<
     Result<
@@ -428,7 +428,7 @@ export type AtHomeAPIClient = {
   >
 
   getAppointmentDetails: (
-    params: { appointment_id: string },
+    params: { appointment_id: string; sub_booking_id: string },
     opts?: { abortSignal?: AbortSignal },
   ) => Promise<
     Result<
@@ -657,7 +657,7 @@ export const mockAtHomeClient: AtHomeAPIClient = {
         status: 200,
         message: "Address fetched successfully",
         data: {
-          address_book: address,
+          address: address,
         },
       },
     })
@@ -1032,7 +1032,7 @@ export const mockAtHomeClient: AtHomeAPIClient = {
 
     const appointment = {
       id: params.appointment_id,
-      sub_booking_id: generateUUID(),
+      sub_booking_id: params.sub_booking_id,
       clinic_id: generateUUID(),
       clinic_contact: "+91-9876543210",
       pet_id: generateUUID(),
@@ -1171,7 +1171,7 @@ const endpointConfig = {
     requestSchema: z.object({}),
     responseSchema: z.object({
       data: z.object({
-        address_book: AddressSchema,
+        address: AddressSchema,
       }),
     }),
     errorResponseSchema: z.object({}),
@@ -1268,7 +1268,7 @@ const endpointConfig = {
 
   checkLocationServiceability: {
     method: "POST" as const,
-    path: "/booking/location/serviceability",
+    path: "/booking/at-home/location/serviceability",
     pathParamsSchema: z.object({}),
     requestSchema: z.object({
       location: z.object({
@@ -1277,7 +1277,9 @@ const endpointConfig = {
       }),
     }),
     responseSchema: z.object({
-      serviceable: z.boolean(),
+      data: z.object({
+        serviceable: z.boolean(),
+      }),
     }),
     errorResponseSchema: z.object({}),
   },
@@ -1297,8 +1299,11 @@ const endpointConfig = {
 
   getAtHomeSlots: {
     method: "GET" as const,
-    path: "/booking/at-home/slots?addressid={addressid}",
-    pathParamsSchema: z.object({ addressid: z.string().uuid() }),
+    path: "/booking/at-home/slots?addressid={addressid}&petid={petid}",
+    pathParamsSchema: z.object({
+      addressid: z.string().uuid(),
+      petid: z.string(),
+    }),
     requestSchema: z.object({}),
     responseSchema: z.object({
       data: z.object({
@@ -1313,7 +1318,7 @@ const endpointConfig = {
     path: "/booking/at-home/payments/orders",
     pathParamsSchema: z.object({}),
     requestSchema: z.object({
-      pet_id: z.string().uuid(),
+      pet_id: z.string(),
       appt_start: z.string(),
       booking_date: z.string(),
       address_id: z.string(),
@@ -1328,7 +1333,9 @@ const endpointConfig = {
       notes: z.string(),
     }),
     responseSchema: z.object({
-      order: PaymentOrderSchema,
+      data: z.object({
+        order: PaymentOrderSchema,
+      }),
     }),
     errorResponseSchema: z.object({}),
   },
@@ -1339,8 +1346,10 @@ const endpointConfig = {
     pathParamsSchema: z.object({ orderid: z.string().uuid() }),
     requestSchema: z.object({}),
     responseSchema: z.object({
-      order_payment: OrderStatusSchema,
-      appointment: OrderAppointmentSchema.nullable(),
+      data: z.object({
+        order_payment: OrderStatusSchema,
+        appointment: OrderAppointmentSchema.nullable(),
+      }),
     }),
     errorResponseSchema: z.object({}),
   },
@@ -1361,8 +1370,11 @@ const endpointConfig = {
 
   getAppointmentDetails: {
     method: "GET" as const,
-    path: "/user/appointment/{appointment_id}",
-    pathParamsSchema: z.object({ appointment_id: z.string().uuid() }),
+    path: "/user/appointment/{appointment_id}?sub_booking_id={sub_booking_id}",
+    pathParamsSchema: z.object({
+      appointment_id: z.string().uuid(),
+      sub_booking_id: z.string().uuid(),
+    }),
     requestSchema: z.object({}),
     responseSchema: z.object({
       data: z.object({

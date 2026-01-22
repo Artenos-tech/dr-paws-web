@@ -44,7 +44,7 @@ import RescheduleAtClinicAppointment from "@/components/ui/RescheduleAtClinicApp
 //   "My pet needs the treatment later",
 // ]
 
-type BookingDetailsProps = {
+type ClinicBookingDetailsProps = {
   goBack: (refetch: boolean) => void
   selectedAppointment: AppointmentDetails
 }
@@ -52,7 +52,7 @@ type BookingDetailsProps = {
 const ClinicBookingDetails = ({
   selectedAppointment,
   goBack,
-}: BookingDetailsProps) => {
+}: ClinicBookingDetailsProps) => {
   const [loadingInvoiceView, setLoadingInvoiceView] = useState(false)
   const [loadingInvoiceDownload, setLoadingInvoiceDownload] = useState(false)
   const [showInvoicePdfModal, setShowInvoicePdfModal] = useState(false)
@@ -306,15 +306,15 @@ const ClinicBookingDetails = ({
                 <p className="text-lg font-semibold mt-4 text-center">
                   {isCancelled
                     ? selectedAppointment.appt_type === "GROOMING"
-                      ? `${selectedAppointment.pet_name} was scheduled for a ${selectedAppointment.appt_type} session`
+                      ? `${selectedAppointment.pet_name} was scheduled for a ${selectedAppointment.appt_type_title} session`
                       : `${selectedAppointment.pet_name} was scheduled with ${selectedAppointment.vet_name} for a ${selectedAppointment.appt_type}`
                     : isCompleted
                       ? selectedAppointment.appt_type === "GROOMING"
-                        ? `${selectedAppointment.pet_name} had a ${selectedAppointment.appt_type} session`
+                        ? `${selectedAppointment.pet_name} had a ${selectedAppointment.appt_type_title} session`
                         : `${selectedAppointment.pet_name} visited ${selectedAppointment.vet_name} for a ${selectedAppointment.appt_type}`
                       : selectedAppointment.appt_type === "GROOMING"
-                        ? `${selectedAppointment.pet_name} is scheduled for a ${selectedAppointment.appt_type} session`
-                        : `${selectedAppointment.pet_name} is scheduled for a ${selectedAppointment.appt_type} with ${selectedAppointment.vet_name}`}
+                        ? `${selectedAppointment.pet_name} is scheduled for a ${selectedAppointment.appt_type_title} session`
+                        : `${selectedAppointment.pet_name} is scheduled for a ${selectedAppointment.appt_type_title} with ${selectedAppointment.vet_name}`}
                 </p>
                 <div className="flex items-center my-4 relative">
                   {

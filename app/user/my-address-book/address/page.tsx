@@ -1,11 +1,10 @@
 "use client"
 
 import AddressForm from "@/components/ui/AddressForm"
-import UnserviceableModal from "@/components/ui/UnserviceableModal"
 import MapSearchBar from "@/components/ui/MapSearchBar"
 import AddressMap from "@/components/ui/AddressMap"
 import { useAPICall } from "@/hooks/apicall"
-import { mockAtHomeClient } from "@/services/api.athome"
+import atHomeApiClient from "@/services/api.athome"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md"
@@ -44,7 +43,6 @@ const AddressPage = () => {
   const [pin, setPin] = useState(DEFAULT_PIN)
   const [isPinSelected, setIsPinSelected] = useState(false)
   const [locationDescription, setLocationDescription] = useState("")
-  const [showUnserviceableModal, setShowUnserviceableModal] = useState(false)
   const [pincode, setPincode] = useState<string | null>(null)
   const [isFormValid, setIsFormValid] = useState(false)
   const [autocomplete, setAutocomplete] =
@@ -78,13 +76,13 @@ const AddressPage = () => {
   })
 
   const { call: addAddress, loading: loadingAdd } = useAPICall(
-    mockAtHomeClient.addAddress,
+    atHomeApiClient.addAddress,
   )
   const { call: updateAddress, loading: loadingUpdate } = useAPICall(
-    mockAtHomeClient.updateAddress,
+    atHomeApiClient.updateAddress,
   )
   const { call: getAddress, loading: loadingGet } = useAPICall(
-    mockAtHomeClient.getAddress,
+    atHomeApiClient.getAddress,
   )
 
   useEffect(() => {
@@ -134,7 +132,7 @@ const AddressPage = () => {
         toast.error("Failed to load address")
         return
       }
-      const address = res.value.body.data.address_book
+      const address = res.value.body.data.address
       setAddressDetails({
         tag: address.tag,
         address_line1: address.address_line1,
@@ -348,13 +346,6 @@ const AddressPage = () => {
             </div>
           )}
         </>
-      )}
-
-      {showUnserviceableModal && (
-        <UnserviceableModal
-          isOpen={showUnserviceableModal}
-          onClose={() => setShowUnserviceableModal(false)}
-        />
       )}
     </main>
   )
