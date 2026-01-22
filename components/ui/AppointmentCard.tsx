@@ -127,7 +127,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
         )}
         <span className="flex items-center text-sm">
           <Icon size={20} className="mr-1" />
-          <span>
+          <span className="hidden sm:inline">
             {appointment.booking_type === "HOME_VISIT"
               ? "Home Visit"
               : "Clinic Visit"}
