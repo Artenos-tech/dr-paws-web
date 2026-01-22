@@ -192,7 +192,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
           {appointment.appt_end}
         </p>
       </div>
-      <div className="self-end">
+      <div className="mt-auto self-end">
         <OutlineButton outlineBtnText="View Details" outlineBtnLink={onClick} />
       </div>
     </div>
