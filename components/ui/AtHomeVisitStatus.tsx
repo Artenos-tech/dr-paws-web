@@ -7,6 +7,7 @@ import defaultVetImage from "@/public/assets/images/clinic/doctorFemale.webp"
 import { AppointmentDetails } from "@/model/typeDefinitions"
 import toast from "react-hot-toast"
 import { VisitStatus } from "@/model/typeDefinitions"
+import { Tooltip } from "antd"
 
 type AtHomeVisitStatusProps = {
   selectedAppointment: AppointmentDetails
@@ -46,12 +47,18 @@ const AtHomeVisitStatus = ({
       </div>
 
       {vet_contact && visitStatus !== "VISIT_FINISHED" && (
-        <button
-          onClick={copyNumber}
-          className="p-2 rounded-full bg-white shadow"
+        <Tooltip
+          title={"Click to copy helpline number"}
+          color="#f7f1de"
+          styles={{ body: { color: "#33495f" } }}
         >
-          <Phone size={16} />
-        </button>
+          <button
+            onClick={copyNumber}
+            className="p-2 rounded-full bg-white shadow"
+          >
+            <Phone size={16} />
+          </button>
+        </Tooltip>
       )}
     </div>
   )
@@ -99,7 +106,7 @@ const AtHomeVisitStatus = ({
             Please share the following OTP to start the appointment.
           </p>
           {start_otp && (
-            <div className="mt-3 flex justify-center">
+            <div className="mt-3 flex justify-center lg:justify-start">
               <span className="px-4 py-2 rounded-md bg-white border border-dashed border-gray-400 text-lg font-bold tracking-widest text-primary-1">
                 {start_otp}
               </span>

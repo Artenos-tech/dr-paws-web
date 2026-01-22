@@ -289,14 +289,20 @@ const ReasonForVisit = ({
       </div>
 
       <div className="flex justify-center mb-10 mt-6 ">
-        <button
-          disabled={!isValid || isProcessing}
-          onClick={handleProceedClick}
-          className="font-open-sans btn rounded-full text-white px-4 md:px-10 py-2 tracking-wider text-xs md:text-base bg-secondary-1 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+        <Tooltip
+          color="#f7f1de"
+          styles={{ body: { color: "#33495f" } }}
+          title={!isValid ? "Select reason and filled notes to proceed" : ""}
         >
-          {isProcessing && <ClipLoader size={16} color="#ffffff" />}
-          {isProcessing ? "Processing..." : "Proceed"}
-        </button>
+          <button
+            disabled={!isValid || isProcessing}
+            onClick={handleProceedClick}
+            className="font-open-sans btn rounded-full text-white px-4 md:px-10 py-2 tracking-wider text-xs md:text-base bg-secondary-1 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          >
+            {isProcessing && <ClipLoader size={16} color="#ffffff" />}
+            {isProcessing ? "Processing..." : "Proceed"}
+          </button>
+        </Tooltip>
       </div>
     </div>
   )

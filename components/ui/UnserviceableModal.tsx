@@ -37,7 +37,7 @@ const UnserviceableModal: FC<UnserviceableModalProps> = ({
             router.replace("/user/book-appointment?clinic=true")
           }}
         >
-          Book clinic visit
+          Book Clinic Visit
         </button>
 
         <button
@@ -47,7 +47,7 @@ const UnserviceableModal: FC<UnserviceableModalProps> = ({
             router.replace("/user/book-appointment?home=true")
           }}
         >
-          Select another address
+          Select Another Address
         </button>
       </div>
     </Modal>

@@ -127,7 +127,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
         )}
         <span className="flex items-center text-sm">
           <Icon size={20} className="mr-1" />
-          <span>
+          <span className="hidden sm:inline">
             {appointment.booking_type === "HOME_VISIT"
               ? "Home Visit"
               : "Clinic Visit"}
@@ -192,7 +192,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
           {appointment.appt_end}
         </p>
       </div>
-      <div className="self-end">
+      <div className="mt-auto self-end">
         <OutlineButton outlineBtnText="View Details" outlineBtnLink={onClick} />
       </div>
     </div>
