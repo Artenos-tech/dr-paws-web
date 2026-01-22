@@ -192,7 +192,7 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
         )}
 
         {!loadingSlots && activeDay && activeDay.slots?.length > 0 && (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 lg:grid-cols-4 md:grid-cols-3 gap-3">
             {activeDay.slots.map((slot) => {
               const isSelected = selectedSlot?.startTime === slot.startTime
               return (
@@ -212,11 +212,6 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
                   <span>{formatTime(slot.startTime)}</span>
                   <span>-</span>
                   <span>{formatTime(slot.endTime)}</span>
-                  {!slot.available && (
-                    <span className="ml-1 text-[10px] text-red-400">
-                      (Unavailable)
-                    </span>
-                  )}
                 </button>
               )
             })}
