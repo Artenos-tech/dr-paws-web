@@ -4,8 +4,6 @@ import React, { useEffect, useState } from "react"
 import BackButton from "./BackButton"
 import {
   CalendarDays,
-  Phone,
-  AlertTriangle,
   RotateCcw,
   XCircle,
 } from "lucide-react"
