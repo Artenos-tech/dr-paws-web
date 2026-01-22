@@ -24,7 +24,7 @@ const BookingDetails = ({
   const { call: getAppointmentDetails, result: getAppointmentDetailsResult } =
     useAPICall(atHomeApiClient.getAppointmentDetails)
   const [appointment, setAppointment] = useState<AppointmentDetails | null>(
-    null
+    null,
   )
   const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null)
   const getAppointmentDetailsRef = useRef(getAppointmentDetails)
@@ -82,9 +82,15 @@ const BookingDetails = ({
   return (
     <>
       {appointment.booking_type === "HOME_VISIT" ? (
-        <AtHomeBookingDetails selectedAppointment={appointment} goBack={goBack} />
+        <AtHomeBookingDetails
+          selectedAppointment={appointment}
+          goBack={goBack}
+        />
       ) : (
-        <ClinicBookingDetails selectedAppointment={appointment} goBack={goBack} />
+        <ClinicBookingDetails
+          selectedAppointment={appointment}
+          goBack={goBack}
+        />
       )}
     </>
   )
