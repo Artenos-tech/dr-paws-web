@@ -8,6 +8,7 @@ import PetSelectItem from "./PetSelectionItem"
 import AddPetModal from "./AddPetModal"
 import toast from "react-hot-toast"
 import { BookingPet } from "@/model/typeDefinitions"
+import { Tooltip } from "antd"
 
 interface SelectPetProps {
   handleConfirm: (petId: string, petName: string) => void
@@ -119,14 +120,20 @@ const SelectPet: React.FC<SelectPetProps> = ({ handleConfirm, petId }) => {
       )}
 
       <div className="flex justify-center mb-10 mt-6">
-        <button
-          disabled={!selectedPetId || isConfirming}
-          onClick={handleConfirmClick}
-          className="font-open-sans btn rounded-full text-white px-4 md:px-10 py-2 tracking-wider text-xs md:text-base bg-secondary-1 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+        <Tooltip
+          color="#f7f1de"
+          styles={{ body: { color: "#33495f" } }}
+          title={!selectedPetId ? "Select pet to proceed" : ""}
         >
-          {isConfirming && <ClipLoader size={16} color="#ffffff" />}
-          {isConfirming ? "Confirming..." : "Confirm"}
-        </button>
+          <button
+            disabled={!selectedPetId || isConfirming}
+            onClick={handleConfirmClick}
+            className="font-open-sans btn rounded-full text-white px-4 md:px-10 py-2 tracking-wider text-xs md:text-base bg-secondary-1 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          >
+            {isConfirming && <ClipLoader size={16} color="#ffffff" />}
+            {isConfirming ? "Confirming..." : "Confirm"}
+          </button>
+        </Tooltip>
       </div>
 
       <AddPetModal

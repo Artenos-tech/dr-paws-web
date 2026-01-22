@@ -7,6 +7,7 @@ import { useAPICall } from "@/hooks/apicall"
 import atHomeApiClient from "@/services/api.athome"
 import { Tooltip } from "antd"
 import { ClipLoader } from "react-spinners"
+import { MdOutlineInfo } from "react-icons/md"
 
 export type BookingType = {
   id: string
@@ -112,35 +113,55 @@ const BookingTypeSelection: React.FC<BookingTypeSelectionProps> = ({
             <div
               key={bookingType.id}
               onClick={() => handleCardClick(bookingType.id)}
-              className={`flex flex-col items-center p-8 rounded-md cursor-pointer transition-all ${
+              className={`relative flex flex-col items-center p-8 rounded-md cursor-pointer transition-all ${
                 isSelected
                   ? "outline outline-2 outline-secondary-1"
                   : "shadow-md"
               } bg-primary-3`}
             >
-              <Tooltip
-                key={bookingType.id}
-                title={
-                  bookingType.type === "HOME_VISIT" && availablePincodesTooltip
-                }
-                color="#f7f1de"
-                styles={{ body: { color: "#33495f" } }}
-              >
-                <div className="w-20 h-20 flex items-center justify-center mb-4 rounded-full bg-white">
-                  <Icon
-                    size={48}
-                    className={
-                      isSelected ? "text-secondary-1" : "text-primary-1"
-                    }
-                  />
-                </div>
-              </Tooltip>
+              {bookingType.type === "HOME_VISIT" && (
+                <Tooltip
+                  title={availablePincodesTooltip}
+                  color="#f7f1de"
+                  styles={{ body: { color: "#33495f" } }}
+                >
+                  <button
+                    onClick={(e) => e.stopPropagation()}
+                    className="absolute top-3 right-3 text-gray-600 "
+                  >
+                    <MdOutlineInfo className="hover:text-primary-1" size={18} />
+                  </button>
+                </Tooltip>
+              )}
+
+              <div className="w-20 h-20 flex items-center justify-center mb-4 rounded-full bg-white">
+                <Icon
+                  size={48}
+                  className={isSelected ? "text-secondary-1" : "text-primary-1"}
+                />
+              </div>
               <h2 className="text-xl font-semibold text-primary-1 mb-2">
                 {bookingType.title}
               </h2>
               <p className="text-center text-gray-600 text-sm">
                 {bookingType.description}
               </p>
+              {bookingType.type === "HOME_VISIT" && (
+                <p className="text-center  text-gray-600 text-sm">
+                  Home Visits are currently available in{" "}
+                  <Tooltip
+                    key={bookingType.id}
+                    title={
+                      bookingType.type === "HOME_VISIT" &&
+                      availablePincodesTooltip
+                    }
+                    color="#f7f1de"
+                    styles={{ body: { color: "#33495f" } }}
+                  >
+                    <span className="text-secondary-1">selected locations</span>
+                  </Tooltip>
+                </p>
+              )}
             </div>
           )
         })}
