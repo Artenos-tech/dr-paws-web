@@ -125,18 +125,18 @@ const AtHomeBookingDetails = ({
   let appointmentText = ""
 
   if (isCancelled) {
-    appointmentText = `${selectedAppointment.pet_name} was scheduled for a Home Visit with ${selectedAppointment.vet_name}`
+    appointmentText = `${selectedAppointment.pet_name} was scheduled for a Home Visit.`
   } else if (isVisitFinished) {
-    appointmentText = `${selectedAppointment.pet_name} had a Home Visit with ${selectedAppointment.vet_name}`
+    appointmentText = `${selectedAppointment.pet_name} had a Home Visit with ${selectedAppointment.vet_name}.`
   } else if (isConfirmed) {
     appointmentText = selectedAppointment.vet_name
-      ? `${selectedAppointment.pet_name} is scheduled for a Home Visit with ${selectedAppointment.vet_name}`
+      ? `${selectedAppointment.pet_name} is scheduled for a Home Visit with ${selectedAppointment.vet_name}.`
       : `${selectedAppointment.pet_name} is scheduled for a Home Visit`
   } else {
     appointmentText =
       selectedAppointment.visit_status === "UNCONFIRMED"
-        ? `${selectedAppointment.pet_name} is scheduled for a Home Visit`
-        : `${selectedAppointment.pet_name} is scheduled for a Home Visit with ${selectedAppointment.vet_name}`
+        ? `${selectedAppointment.pet_name} is scheduled for a Home Visit.`
+        : `${selectedAppointment.pet_name} is scheduled for a Home Visit with ${selectedAppointment.vet_name}.`
   }
 
   const defaultPetImageByType =
@@ -222,7 +222,7 @@ const AtHomeBookingDetails = ({
           <h1 className="text-2xl sm:text-3xl font-semibold text-primary-1">
             {selectedAppointment.visit_status === "VISIT_STARTED"
               ? "Home Visit Started"
-              : isVisitFinished
+              :isCancelled?'Home Visit Cancelled': isVisitFinished
                 ? "Home Visit Finished"
                 : "Home Visit Scheduled"}
           </h1>
@@ -246,7 +246,7 @@ const AtHomeBookingDetails = ({
                       priority
                     />
                   </div>
-                  {selectedAppointment.visit_status !== "UNCONFIRMED" && (
+                  {(selectedAppointment.visit_status !== "UNCONFIRMED" && selectedAppointment.visit_status !== 'CANCELLED') && (
                     <div className="relative w-32 h-32 rounded-full overflow-hidden bg-white -ml-8 border-4 border-white flex justify-center items-center">
                       <Image
                         src={vetImage}
@@ -313,7 +313,7 @@ const AtHomeBookingDetails = ({
               </div>
             </div>
 
-            {!isVisitFinished && (
+            {(!isVisitFinished&& !isCancelled) && (
               <AtHomeVisitStatus
                 visitStatus={selectedAppointment.visit_status}
                 selectedAppointment={selectedAppointment}
