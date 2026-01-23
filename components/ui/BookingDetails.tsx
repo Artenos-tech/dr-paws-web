@@ -33,6 +33,13 @@ const BookingDetails = ({
     getAppointmentDetailsRef.current = getAppointmentDetails
   }, [getAppointmentDetails])
 
+  const refetchAppointment = () => {
+    getAppointmentDetails({
+      appointment_id: appointmentId,
+      sub_booking_id: subBookingId,
+    })
+  }
+
   useEffect(() => {
     getAppointmentDetails({
       appointment_id: appointmentId,
@@ -85,6 +92,7 @@ const BookingDetails = ({
         <AtHomeBookingDetails
           selectedAppointment={appointment}
           goBack={goBack}
+          refetchAppointment={refetchAppointment}
         />
       ) : (
         <ClinicBookingDetails

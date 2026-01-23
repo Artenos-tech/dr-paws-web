@@ -22,6 +22,7 @@ import SupportActions from "./SupportActions"
 type AtHomeBookingDetailsProps = {
   goBack: (refetch: boolean) => void
   selectedAppointment: AppointmentDetails
+  refetchAppointment: () => void
 }
 type ViewState = "DETAILS" | "CONFIRM_ACTION" | "CANCELLED" | "RESCHEDULE"
 
@@ -29,6 +30,7 @@ const APPOINTMENT_CANCEL_WINDOW_HOURS = 24
 const AtHomeBookingDetails = ({
   selectedAppointment,
   goBack,
+  refetchAppointment
 }: AtHomeBookingDetailsProps) => {
   const [view, setView] = useState<ViewState>("DETAILS")
   const [confirmationType, setConfirmationType] = useState<
@@ -40,10 +42,18 @@ const AtHomeBookingDetails = ({
   const parsedDate = parseISO(selectedAppointment.booking_date)
 
   const getSlotStartDateTime = () => {
-    // assuming booking_date = YYYY-MM-DD and appt_start = HH:mm
-    return new Date(
-      `${selectedAppointment.booking_date}T${selectedAppointment.appt_start}`,
-    )
+    const bookingDate = parseISO(selectedAppointment.booking_date)
+    const [hours, minutes] = selectedAppointment.appt_start.split(":").map(Number)
+    const slotStart = new Date(Date.UTC(
+      bookingDate.getUTCFullYear(),
+      bookingDate.getUTCMonth(),
+      bookingDate.getUTCDate(),
+      hours,
+      minutes,
+      0,
+      0
+    ))
+    return slotStart
   }
 
   const canShowCancelActions =
@@ -148,6 +158,7 @@ const AtHomeBookingDetails = ({
   const proceedConfirmationView = async () => {
     if (confirmationType === "CANCEL") {
       await handleCancelAppointment()
+      await refetchAppointment()
       setView("CANCELLED")
     } else {
       setView("RESCHEDULE")
@@ -156,11 +167,12 @@ const AtHomeBookingDetails = ({
 
   const handleCancelAppointment = async () => {
     await cancelAppointment({
-      appointmentid: selectedAppointment.id,
+      appointment_id: selectedAppointment.id,
       clinic_id: selectedAppointment.clinic_id,
       sub_booking_id: selectedAppointment.sub_booking_id,
     })
   }
+
   useEffect(() => {
     if (cancelAppointmentResult?.ok) {
       const status =
@@ -168,6 +180,7 @@ const AtHomeBookingDetails = ({
       setRefundStatus(status)
     }
   }, [cancelAppointmentResult])
+
   const handleNavigation = () => {
     if (view === "CONFIRM_ACTION" || view === "RESCHEDULE") {
       setView("DETAILS")

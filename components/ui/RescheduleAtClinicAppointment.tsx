@@ -39,7 +39,7 @@ const RescheduleAtClinicAppointment: React.FC<ReschedulingProps> = ({
     selectedSlotEnd: string | null
   }>({
     selectedServiceId: existingAppointment.appt_type ?? null,
-    selectedService: existingAppointment.appt_type,
+    selectedService: existingAppointment.appt_type_title,
     selectedSubtype: null,
     groomingCatalogueKeys: [],
     selectedPet: {
