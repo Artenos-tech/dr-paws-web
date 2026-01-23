@@ -103,15 +103,18 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
         <p className={`${text}`}>
           {getAppointmentCategoryLabel(appointment.category)}
         </p>
-        {appointment.appt_type === "HOME_VISIT" && appointment.visit_status &&(appointment.visit_status!=='UNCONFIRMED'&&appointment.visit_status!=='VET_CONFIRMED') && (
-          <span
-            className={`px-3 py-1 rounded-full text-xs font-semibold ${
-              visitStatusStyles[appointment.visit_status].bg
-            } ${visitStatusStyles[appointment.visit_status].text}`}
-          >
-            {appointment.visit_status.replace("_", " ")}
-          </span>
-        )}
+        {appointment.appt_type === "HOME_VISIT" &&
+          appointment.visit_status &&
+          appointment.visit_status !== "UNCONFIRMED" &&
+          appointment.visit_status !== "VET_CONFIRMED" && (
+            <span
+              className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                visitStatusStyles[appointment.visit_status].bg
+              } ${visitStatusStyles[appointment.visit_status].text}`}
+            >
+              {appointment.visit_status.replace("_", " ")}
+            </span>
+          )}
         {appointment.appt_type !== "HOME_VISIT" && (
           <p
             className={`px-2 py-1 rounded-md flex ${
