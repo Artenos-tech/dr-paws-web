@@ -68,8 +68,8 @@ const SelectPet: React.FC<SelectPetProps> = ({ handleConfirm, petId }) => {
     if (!selectedPetId) return
     setIsConfirming(true)
     const selectedPet = pets.find((pet) => pet.id === selectedPetId)
-    const selectedPetName = selectedPet ? selectedPet.name : ""
-    handleConfirm(selectedPetId, selectedPetName)
+    if (!selectedPet) return
+    handleConfirm(selectedPetId, selectedPet.name)
   }
 
   return (

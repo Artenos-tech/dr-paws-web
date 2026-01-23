@@ -10,6 +10,7 @@ import atHomeApiClient from "@/services/api.athome"
 import { ReasonForVisitEnum } from "@/model/typeDefinitions"
 import { load } from "@cashfreepayments/cashfree-js"
 import toast from "react-hot-toast"
+
 interface AtHomeBookingFlowProps {
   onBackToStart: () => void
 }
@@ -43,7 +44,10 @@ type AtHomeBookingAction =
       type: "SET_ADDRESS"
       payload: { addressId: string; location: string }
     }
-  | { type: "SET_PET"; payload: { petId: string; petName: string } }
+  | {
+      type: "SET_PET"
+      payload: { petId: string; petName: string }
+    }
   | {
       type: "SET_REASON_FOR_VISIT"
       payload: {
@@ -208,12 +212,12 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
       reason_for_visit: reasonForVisit as ReasonForVisitEnum,
       notes: bookingDetails.reasonDescription as string,
     })
+
     if (createPaymentOrderResult?.ok) {
-      const { paymentSessionId, orderId } =
-        createPaymentOrderResult.value.body.data.order
-      handlePayment(paymentSessionId, orderId)
+      // dispatch({ type: "BOOKING_CONFIRMED" })
     } else {
-      toast.error("Could not initiate payment. Please try again later.")
+      dispatch({ type: "HIDE_CONFIRMATION_MODAL" })
+      toast.error("Could not complete booking. Please try again later.")
     }
   }
 
