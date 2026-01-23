@@ -160,7 +160,7 @@ const AppointmentDetailSchema = z
     reason_for_visit: z
       .enum([
         "VACCINATION",
-        "CHECK-UP",
+        "CHECK_UP",
         "SICK",
         "DIAGNOSTICS",
         "FOLLOW_UP",
@@ -372,7 +372,7 @@ export type AtHomeAPIClient = {
       address_id: string
       reason_for_visit:
         | "VACCINATION"
-        | "CHECK-UP"
+        | "CHECK_UP"
         | "SICK"
         | "DIAGNOSTICS"
         | "FOLLOW_UP"
@@ -1063,7 +1063,7 @@ export const mockAtHomeClient: AtHomeAPIClient = {
         status: "NOT_APPLICABLE" as const,
       },
       sos_status: "INACTIVE" as const,
-      reason_for_visit: "CHECK-UP" as const,
+      reason_for_visit: "CHECK_UP" as const,
       notes: "my pet need check up",
     }
 
@@ -1324,7 +1324,7 @@ const endpointConfig = {
       address_id: z.string(),
       reason_for_visit: z.enum([
         "VACCINATION",
-        "CHECK-UP",
+        "CHECK_UP",
         "SICK",
         "DIAGNOSTICS",
         "FOLLOW_UP",

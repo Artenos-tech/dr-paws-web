@@ -155,7 +155,7 @@ export interface AppointmentDetails extends AppointmentListItem {
 }
 export type ReasonForVisitEnum =
   | "VACCINATION"
-  | "CHECK-UP"
+  | "CHECK_UP"
   | "SICK"
   | "DIAGNOSTICS"
   | "FOLLOW_UP"
