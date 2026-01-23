@@ -8,7 +8,7 @@ import ConfirmationModal from "./ConfirmationModal"
 import { useAPICall } from "@/hooks/apicall"
 import atHomeApiClient from "@/services/api.athome"
 import { ReasonForVisitEnum } from "@/model/typeDefinitions"
-import { load } from "@cashfreepayments/cashfree-js"
+// import { load } from "@cashfreepayments/cashfree-js"
 import toast from "react-hot-toast"
 
 interface AtHomeBookingFlowProps {
@@ -221,17 +221,17 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
     }
   }
 
-  const handlePayment = async (paymentSessionId: string, orderId: string) => {
-    const cashfreeSession = await initializeSDK()
-    const result = await cashfreeSession.checkout({
-      paymentSessionId,
-      returnUrl:
-        window.location.origin +
-        `/user/book-appointment/home-visit/payment?order_id=` +
-        orderId,
-    })
-    console.log("Cashfree checkout result: ", result)
-  }
+  // const handlePayment = async (paymentSessionId: string, orderId: string) => {
+  //   const cashfreeSession = await initializeSDK()
+  //   const result = await cashfreeSession.checkout({
+  //     paymentSessionId,
+  //     returnUrl:
+  //       window.location.origin +
+  //       `/user/book-appointment/home-visit/payment?order_id=` +
+  //       orderId,
+  //   })
+  //   console.log("Cashfree checkout result: ", result)
+  // }
 
   const handleBack = () => {
     if (currentStep > 1) {
@@ -241,23 +241,23 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
     }
   }
 
-  const initializeSDK = async function () {
-    const cashfreeEnv = process.env.NEXT_PUBLIC_CASHFREE_ENVIRONMENT as
-      | "sandbox"
-      | "production"
-    if (!cashfreeEnv) {
-      throw new Error(
-        "Cashfree environment is not set. Cannot proceed with payment",
-      )
-    } else {
-      const cashfree = await load({
-        mode: process.env.NEXT_PUBLIC_CASHFREE_ENVIRONMENT as
-          | "sandbox"
-          | "production",
-      })
-      return cashfree
-    }
-  }
+  // const initializeSDK = async function () {
+  //   const cashfreeEnv = process.env.NEXT_PUBLIC_CASHFREE_ENVIRONMENT as
+  //     | "sandbox"
+  //     | "production"
+  //   if (!cashfreeEnv) {
+  //     throw new Error(
+  //       "Cashfree environment is not set. Cannot proceed with payment",
+  //     )
+  //   } else {
+  //     const cashfree = await load({
+  //       mode: process.env.NEXT_PUBLIC_CASHFREE_ENVIRONMENT as
+  //         | "sandbox"
+  //         | "production",
+  //     })
+  //     return cashfree
+  //   }
+  // }
 
   const bookingDetails = React.useMemo(() => {
     return {
