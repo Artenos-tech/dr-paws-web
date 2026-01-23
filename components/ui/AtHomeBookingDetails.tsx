@@ -30,7 +30,7 @@ const APPOINTMENT_CANCEL_WINDOW_HOURS = 24
 const AtHomeBookingDetails = ({
   selectedAppointment,
   goBack,
-  refetchAppointment
+  refetchAppointment,
 }: AtHomeBookingDetailsProps) => {
   const [view, setView] = useState<ViewState>("DETAILS")
   const [confirmationType, setConfirmationType] = useState<
@@ -43,16 +43,20 @@ const AtHomeBookingDetails = ({
 
   const getSlotStartDateTime = () => {
     const bookingDate = parseISO(selectedAppointment.booking_date)
-    const [hours, minutes] = selectedAppointment.appt_start.split(":").map(Number)
-    const slotStart = new Date(Date.UTC(
-      bookingDate.getUTCFullYear(),
-      bookingDate.getUTCMonth(),
-      bookingDate.getUTCDate(),
-      hours,
-      minutes,
-      0,
-      0
-    ))
+    const [hours, minutes] = selectedAppointment.appt_start
+      .split(":")
+      .map(Number)
+    const slotStart = new Date(
+      Date.UTC(
+        bookingDate.getUTCFullYear(),
+        bookingDate.getUTCMonth(),
+        bookingDate.getUTCDate(),
+        hours,
+        minutes,
+        0,
+        0,
+      ),
+    )
     return slotStart
   }
 
