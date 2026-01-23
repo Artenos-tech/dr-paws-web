@@ -307,11 +307,11 @@ const ClinicBookingDetails = ({
                   {isCancelled
                     ? selectedAppointment.appt_type === "GROOMING"
                       ? `${selectedAppointment.pet_name} was scheduled for a ${selectedAppointment.appt_type_title} session`
-                      : `${selectedAppointment.pet_name} was scheduled with ${selectedAppointment.vet_name} for a ${selectedAppointment.appt_type}`
+                      : `${selectedAppointment.pet_name} was scheduled with ${selectedAppointment.vet_name} for a ${selectedAppointment.appt_type_title}`
                     : isCompleted
                       ? selectedAppointment.appt_type === "GROOMING"
                         ? `${selectedAppointment.pet_name} had a ${selectedAppointment.appt_type_title} session`
-                        : `${selectedAppointment.pet_name} visited ${selectedAppointment.vet_name} for a ${selectedAppointment.appt_type}`
+                        : `${selectedAppointment.pet_name} visited ${selectedAppointment.vet_name} for a ${selectedAppointment.appt_type_title}`
                       : selectedAppointment.appt_type === "GROOMING"
                         ? `${selectedAppointment.pet_name} is scheduled for a ${selectedAppointment.appt_type_title} session`
                         : `${selectedAppointment.pet_name} is scheduled for a ${selectedAppointment.appt_type_title} with ${selectedAppointment.vet_name}`}

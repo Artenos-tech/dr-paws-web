@@ -445,7 +445,7 @@ export type AtHomeAPIClient = {
 
   cancelAppointmentV2: (
     params: {
-      appointmentid: string
+      appointment_id: string
       clinic_id: string
       sub_booking_id: string
     },
@@ -1092,7 +1092,7 @@ export const mockAtHomeClient: AtHomeAPIClient = {
         message: "Appointment cancelled successfully",
         data: {
           appointment: {
-            id: params.appointmentid,
+            id: params.appointment_id,
             refund: hasRefund
               ? { status: "PENDING" as const, id: generateUUID(), amount: 500 }
               : undefined,
@@ -1386,8 +1386,8 @@ const endpointConfig = {
 
   cancelAppointmentV2: {
     method: "PUT" as const,
-    path: "/user/appointment/{appointmentid}/cancel/v2",
-    pathParamsSchema: z.object({ appointmentid: z.string().uuid() }),
+    path: "/user/appointment/{appointment_id}/cancel/v2",
+    pathParamsSchema: z.object({ appointment_id: z.string().uuid() }),
     requestSchema: z.object({
       clinic_id: z.string().uuid(),
       sub_booking_id: z.string().uuid(),

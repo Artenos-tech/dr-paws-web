@@ -55,7 +55,7 @@ const CancelledBookingCard = ({ appointment, refundStatus, onDone }: Props) => {
   } else {
     appointmentText =
       appointment.appt_type === "GROOMING"
-        ? `${appointment.pet_name} was scheduled for a ${appointment.appt_type} session`
+        ? `${appointment.pet_name} was scheduled for a ${appointment.appt_type_title} session`
         : `${appointment.pet_name} was scheduled with ${appointment.vet_name} for a ${appointment.appt_type_title}`
   }
 
