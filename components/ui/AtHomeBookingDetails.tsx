@@ -193,6 +193,10 @@ const AtHomeBookingDetails = ({
     }
     goBack(true)
   }
+  const cancelledTextClass = isCancelled
+  ? "line-through text-gray-400"
+  : "";
+
 
   return (
     <div className="w-full">
@@ -285,14 +289,14 @@ const AtHomeBookingDetails = ({
               </>
             )}
 
-            <div className="flex items-center gap-3">
+            <div className={`flex items-center gap-3 ${isCancelled&&'line-through'} `}>
               <CalendarDays className="text-secondary-1" />
               <span className="text-base font-medium">
                 {format(parsedDate, "EEE, dd MMM")}
               </span>
             </div>
 
-            <div className="flex items-center gap-3">
+          <div className={`flex items-center gap-3 ${isCancelled&&'line-through'} `}>
               <MdOutlineAccessTime className="text-secondary-1 text-xl" />
               <span className="text-base font-medium">
                 {selectedAppointment.appt_start} –{" "}
@@ -305,7 +309,7 @@ const AtHomeBookingDetails = ({
                 <GrLocation className="text-secondary-1 text-xl mt-1" />
               </div>
 
-              <div className="flex flex-col">
+              <div className={`flex flex-col ${isCancelled&&'line-through'}`}>
                 <span className="font-medium">
                   {selectedAppointment.address?.tag}
                 </span>
