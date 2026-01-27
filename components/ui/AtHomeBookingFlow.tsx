@@ -154,24 +154,21 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
   const { call: createPaymentOrder } = useAPICall(
     atHomeApiClient.createPaymentOrder,
   )
-useEffect(() => {
-  if (!isConfirming) return
+  useEffect(() => {
+    if (!isConfirming) return
 
-  const blockBack = () => {
-    // Immediately push state again
+    const blockBack = () => {
+      history.pushState(null, "", window.location.href)
+    }
+
     history.pushState(null, "", window.location.href)
-  }
 
-  // Push initial lock state
-  history.pushState(null, "", window.location.href)
+    window.addEventListener("popstate", blockBack)
 
-  window.addEventListener("popstate", blockBack)
-
-  return () => {
-    window.removeEventListener("popstate", blockBack)
-  }
-}, [isConfirming])
-
+    return () => {
+      window.removeEventListener("popstate", blockBack)
+    }
+  }, [isConfirming])
 
   const handleAddressConfirm = async (addressId: string) => {
     dispatch({ type: "SET_LOADING", payload: true })

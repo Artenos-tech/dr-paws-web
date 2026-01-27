@@ -28,11 +28,8 @@ const BookingTypeSelection: React.FC<BookingTypeSelectionProps> = ({
 }) => {
   const [selectedTypeId, setSelectedTypeId] = useState<string | null>(null)
   const [availablePincodes, setAvailablePincodes] = useState<string[]>([])
-  const {
-    call: getServiceablePincodes,
-    result: getServiceablePincodesResult,
-    loading: getServiceablePincodesLoading,
-  } = useAPICall(atHomeApiClient.getServiceablePincodes)
+  const { call: getServiceablePincodes, result: getServiceablePincodesResult } =
+    useAPICall(atHomeApiClient.getServiceablePincodes)
 
   useEffect(() => {
     if (getServiceablePincodesResult?.ok) {

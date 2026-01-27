@@ -122,12 +122,6 @@ const RescheduleAtHomeAppointment = ({
     )
   }
 
-  const oldValues = {
-    oldDate: new Date(appointment.booking_date),
-    oldSlot: appointment.appt_start,
-    oldSlotEnd: appointment.appt_end,
-  }
-
   return (
     <div className="w-full pt-1">
       {view === "SELECT_SLOT" && (
