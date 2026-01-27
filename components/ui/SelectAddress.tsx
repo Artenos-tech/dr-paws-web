@@ -220,7 +220,7 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
             const isSelected = selectedAddressId === address.id
             const isChecking =
               checkingServiceability && !checkedAddressIds.has(address.id)
-            const fullAddress = `${address.address_line1},${address.address_line2}`
+            const fullAddress = `${address.address_line1}, ${address.address_line2}`
 
             return (
               <div

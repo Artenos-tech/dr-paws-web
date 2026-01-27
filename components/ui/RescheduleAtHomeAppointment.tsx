@@ -123,7 +123,7 @@ const RescheduleAtHomeAppointment = ({
   }
 
   return (
-    <div className="w-full pt-1">
+    <div className="w-full pt-0">
       {view === "SELECT_SLOT" && (
         <>
           <SelectDateTimeForVisit
