@@ -234,19 +234,33 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
                   <h2 className="font-semibold primary-text">{address.tag}</h2>
 
                   <div className="flex items-center gap-2">
-                    <FaPen
-                      className="cursor-pointer hover:text-secondary-1 transition"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        router.push(
-                          `/user/book-appointment/edit-address?addressId=${address.id}`,
-                        )
-                      }}
-                    />
-                    <FaTrash
-                      className="cursor-pointer hover:text-red-600 transition"
-                      onClick={(e) => handleDeleteClick(address.id, e)}
-                    />
+                    <Tooltip
+                      title={'Edit Address'}
+                      color="#f7f1de"
+                      styles={{ body: { color: "#33495f" } }}
+                    >
+                      <FaPen
+                        className="cursor-pointer hover:text-secondary-1 transition"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          router.push(
+                            `/user/book-appointment/edit-address?addressId=${address.id}`,
+                          )
+                        }}
+                      />
+                    </Tooltip>
+
+                    <Tooltip
+                      title={'Delete Address'}
+                      color="#f7f1de"
+                      styles={{ body: { color: "#33495f" } }}
+                    >
+                      {" "}
+                      <FaTrash
+                        className="cursor-pointer hover:text-red-600 transition"
+                        onClick={(e) => handleDeleteClick(address.id, e)}
+                      />
+                    </Tooltip>
 
                     {isChecking ? (
                       <ClipLoader size={12} color="#33495f" />
