@@ -123,11 +123,10 @@ const RescheduleAtHomeAppointment = ({
   }
 
   return (
-<<<<<<< HEAD
+
+
+
     <div className="w-full pt-0">
-=======
-    <div className="w-full pt-1">
->>>>>>> 9bd0f17 (fix the space between title and back button)
       {view === "SELECT_SLOT" && (
         <>
           <SelectDateTimeForVisit
