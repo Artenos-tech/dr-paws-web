@@ -66,7 +66,7 @@ const BookingTypeSelection: React.FC<BookingTypeSelectionProps> = ({
     (a, b) => a.displayOrder - b.displayOrder,
   )
 
-<<<<<<< HEAD
+
   const availablePincodesTooltip = useMemo(() => {
     if (!availablePincodes.length) {
       return (
@@ -103,7 +103,7 @@ const BookingTypeSelection: React.FC<BookingTypeSelectionProps> = ({
       </div>
     )
   }, [availablePincodes])
-=======
+
 const availablePincodesTooltip = useMemo(() => {
   if (!availablePincodes.length) {
     return (
@@ -113,9 +113,9 @@ const availablePincodesTooltip = useMemo(() => {
     )
   }
 
-  return (
-    <div
-      className="
+    return (
+      <div
+        className="
         w-64
         max-h-32
         overflow-y-auto
@@ -123,24 +123,23 @@ const availablePincodesTooltip = useMemo(() => {
         p-3
         scrollbar-thin
       "
-    >
-      <p className="font-semibold mb-2">
-        Home Visit is currently available in the following pincodes:
-      </p>
+      >
+        <p className="font-semibold mb-2">
+          Home Visit is currently available in the following pincodes:
+        </p>
 
-      <ul className="list-disc pl-5 space-y-1">
-        {availablePincodes.map((pincode) => (
-          <li key={pincode}>{pincode}</li>
-        ))}
-      </ul>
+        <ul className="list-disc pl-5 space-y-1">
+          {availablePincodes.map((pincode) => (
+            <li key={pincode}>{pincode}</li>
+          ))}
+        </ul>
 
-      <p className="mt-3 text-xs text-gray-600">
-        We are actively adding more serviceable areas.
-      </p>
-    </div>
-  )
-}, [availablePincodes])
->>>>>>> 727fdee (Keep fix size for all popover content)
+        <p className="mt-3 text-xs text-gray-600">
+          We are actively adding more serviceable areas.
+        </p>
+      </div>
+    )
+  }, [availablePincodes])
 
   return (
     <div className="w-full">
