@@ -156,7 +156,7 @@ const availablePincodesTooltip = useMemo(() => {
                 {bookingType.description}
               </p>
               {bookingType.type === "HOME_VISIT" && (
-                <p className="text-center  text-gray-600 text-sm">
+                <p className="text-center  text-gray-600 text-[10px]">
                   Home Visits are currently available in{" "}
                   <Tooltip
                     key={bookingType.id}
