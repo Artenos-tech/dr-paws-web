@@ -60,6 +60,7 @@ const AddressForm = ({
       onValidityChangeRef.current(false)
     }
   }, [addressDetails])
+  const cleanAddressLine = (value: string) => value.replace(/,+$/, "").trim()
 
   const handleChange =
     (field: keyof AddressFormValues) =>
@@ -78,11 +79,23 @@ const AddressForm = ({
 
     setTouched((prev) => ({ ...prev, [field]: true }))
 
-    setAddressDetails((prev) => ({
-      ...prev,
-      [field]:
-        typeof prev[field] === "string" ? prev[field].trim() : prev[field],
-    }))
+    setAddressDetails((prev) => {
+      if (field === "address_line1" || field === "address_line2") {
+        return {
+          ...prev,
+          [field]:
+            typeof prev[field] === "string"
+              ? cleanAddressLine(prev[field])
+              : prev[field],
+        }
+      }
+
+      return {
+        ...prev,
+        [field]:
+          typeof prev[field] === "string" ? prev[field].trim() : prev[field],
+      }
+    })
   }
 
   const getInputClasses = (field: keyof AddressFormValues) => {
