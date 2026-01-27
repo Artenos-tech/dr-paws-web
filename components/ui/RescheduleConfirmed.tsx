@@ -84,8 +84,6 @@ const RescheduleConfirmed: React.FC<RescheduleConfirmedProps> = ({
     .filter(Boolean)
     .join(", ")
 
-  let titleText = "Booking Rescheduled"
-
   let appointmentText = ""
 
   if (isHomeVisit) {
@@ -101,7 +99,9 @@ const RescheduleConfirmed: React.FC<RescheduleConfirmedProps> = ({
   return (
     <div className="flex flex-col justify-center gap-4 items-center w-full">
       <div className="flex items-center gap-3">
-        <h1 className="text-2xl sm:text-3xl font-semibold">{titleText}</h1>
+        <h1 className="text-2xl sm:text-3xl font-semibold">
+          Booking Rescheduled
+        </h1>
         <BsCheckCircleFill fill="#5281a2" size={32} />
       </div>
 
