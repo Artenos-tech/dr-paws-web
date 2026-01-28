@@ -66,7 +66,6 @@ const BookingTypeSelection: React.FC<BookingTypeSelectionProps> = ({
     (a, b) => a.displayOrder - b.displayOrder,
   )
 
-
   const availablePincodesTooltip = useMemo(() => {
     if (!availablePincodes.length) {
       return (
@@ -75,43 +74,6 @@ const BookingTypeSelection: React.FC<BookingTypeSelectionProps> = ({
         </div>
       )
     }
-
-    return (
-      <div
-        className="
-        w-64
-        max-h-32
-        overflow-y-auto
-        text-sm
-        p-3
-        scrollbar-thin
-      "
-      >
-        <p className="font-semibold mb-2">
-          Home Visit is currently available in the following pincodes:
-        </p>
-
-        <ul className="list-disc pl-5 space-y-1">
-          {availablePincodes.map((pincode) => (
-            <li key={pincode}>{pincode}</li>
-          ))}
-        </ul>
-
-        <p className="mt-3 text-xs text-gray-600">
-          We are actively adding more serviceable areas.
-        </p>
-      </div>
-    )
-  }, [availablePincodes])
-
-const availablePincodesTooltip = useMemo(() => {
-  if (!availablePincodes.length) {
-    return (
-      <div className="flex justify-center items-center h-32">
-        <ClipLoader size={16} color="#33495f" />
-      </div>
-    )
-  }
 
     return (
       <div

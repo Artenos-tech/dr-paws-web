@@ -205,11 +205,6 @@ const AtHomeBookingDetails = ({
     : isCompleted
       ? CircleCheck
       : CalendarDays
-  const cancelledTextClass = isCancelled
-  ? "line-through text-gray-400"
-  : "";
-
-
   return (
     <div className="w-full">
       <BackButton navigateBack={handleNavigation} />
