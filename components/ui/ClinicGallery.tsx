@@ -10,12 +10,13 @@ import CustomButton from "@/components/ui/CustomButton"
 import { useUserContext } from "@/context/UserContext"
 
 interface ClinicGalleryProps {
+  clinicId: string
   name: string
   services: string
   gallery: Array<string>
 }
 
-function ClinicGallery({ name, services, gallery }: ClinicGalleryProps) {
+function ClinicGallery({ clinicId, name, services, gallery }: ClinicGalleryProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [currentIndex, setCurrentIndex] = useState(0)
   const limitedGalleryItems = gallery.slice(0, 7) ?? []
@@ -43,9 +44,10 @@ function ClinicGallery({ name, services, gallery }: ClinicGalleryProps) {
   }
 
   const handleBookAVisit = () => {
+    const bookingPath = `/user/book-appointment?clinicId=${clinicId}`
     return isLoggedIn
-      ? navigate.push("/user/book-appointment")
-      : initiateLogin("Book a Visit", "/user/book-appointment")
+      ? navigate.push(bookingPath)
+      : initiateLogin("Book a Visit", bookingPath)
   }
 
   if (!isMounted) {
