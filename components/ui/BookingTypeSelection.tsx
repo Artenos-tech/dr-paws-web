@@ -28,11 +28,8 @@ const BookingTypeSelection: React.FC<BookingTypeSelectionProps> = ({
 }) => {
   const [selectedTypeId, setSelectedTypeId] = useState<string | null>(null)
   const [availablePincodes, setAvailablePincodes] = useState<string[]>([])
-  const {
-    call: getServiceablePincodes,
-    result: getServiceablePincodesResult,
-    loading: getServiceablePincodesLoading,
-  } = useAPICall(atHomeApiClient.getServiceablePincodes)
+  const { call: getServiceablePincodes, result: getServiceablePincodesResult } =
+    useAPICall(atHomeApiClient.getServiceablePincodes)
 
   useEffect(() => {
     if (getServiceablePincodesResult?.ok) {
@@ -72,14 +69,23 @@ const BookingTypeSelection: React.FC<BookingTypeSelectionProps> = ({
   const availablePincodesTooltip = useMemo(() => {
     if (!availablePincodes.length) {
       return (
-        <div className="flex justify-center items-center p-3">
+        <div className="flex justify-center items-center h-32">
           <ClipLoader size={16} color="#33495f" />
         </div>
       )
     }
 
     return (
-      <div className="max-w-xs text-sm p-2">
+      <div
+        className="
+        w-64
+        max-h-32
+        overflow-y-auto
+        text-sm
+        p-3
+        scrollbar-thin
+      "
+      >
         <p className="font-semibold mb-2">
           Home Visit is currently available in the following pincodes:
         </p>
@@ -90,12 +96,12 @@ const BookingTypeSelection: React.FC<BookingTypeSelectionProps> = ({
           ))}
         </ul>
 
-        <p className="mt-2 text-xs text-gray-600">
+        <p className="mt-3 text-xs text-gray-600">
           We are actively adding more serviceable areas.
         </p>
       </div>
     )
-  }, [availablePincodes, getServiceablePincodesLoading])
+  }, [availablePincodes])
 
   return (
     <div className="w-full">
@@ -147,7 +153,7 @@ const BookingTypeSelection: React.FC<BookingTypeSelectionProps> = ({
                 {bookingType.description}
               </p>
               {bookingType.type === "HOME_VISIT" && (
-                <p className="text-center  text-gray-600 text-sm">
+                <p className="text-center  text-gray-600 text-[10px]">
                   Home Visits are currently available in{" "}
                   <Tooltip
                     key={bookingType.id}

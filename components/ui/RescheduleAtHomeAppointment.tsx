@@ -8,6 +8,7 @@ import { ClipLoader } from "react-spinners"
 import SelectDateTimeForVisit from "./SelectDateTimeForVisit"
 import ConfirmationModal from "./ConfirmationModal"
 import { VISIT_REASONS } from "./ReasonForVisit"
+import RescheduleConfirmed from "./RescheduleConfirmed"
 
 type RescheduleHomeVistProps = {
   appointmentId: string
@@ -25,6 +26,7 @@ type BookingDetails = {
   slot: string
   couponCode: string | null
 }
+type ViewState = "SELECT_SLOT" | "CONFIRMED"
 
 const RescheduleAtHomeAppointment = ({
   appointmentId,
@@ -39,6 +41,7 @@ const RescheduleAtHomeAppointment = ({
   const [bookingDetails, setBookingDetails] = useState<BookingDetails | null>(
     null,
   )
+  const [view, setView] = useState<ViewState>("SELECT_SLOT")
 
   const {
     call: getAppointmentDetails,
@@ -92,13 +95,19 @@ const RescheduleAtHomeAppointment = ({
 
   const handleConfirmReschedule = async () => {
     if (!appointment || !bookingDetails) return
-    await rescheduleAtHomeAppointment({
+
+    const res = await rescheduleAtHomeAppointment({
       appointment_id: appointment.id,
       sub_booking_id: appointment.sub_booking_id,
-      booking_date: bookingDetails?.date.toISOString(),
+      booking_date: bookingDetails.date.toISOString(),
       appt_start: bookingDetails.slot.split(" - ")[0].replace(":", ""),
       appt_end: bookingDetails.slot.split(" - ")[1].replace(":", ""),
     })
+
+    if (res?.ok) {
+      setIsConfirmationModalOpen(false)
+      setView("CONFIRMED")
+    }
   }
 
   const getReasonByKey = (key: ReasonForVisitEnum): string => {
@@ -114,22 +123,86 @@ const RescheduleAtHomeAppointment = ({
   }
 
   return (
-    <div className="w-full pt-4">
-      <SelectDateTimeForVisit
-        addressId={appointment.address?.id as string}
-        petId={appointment.pet_id}
-        isConfirmationModalOpen={isConfirmationModalOpen}
-        isConfirming={rescheduleLoading}
-        onConfirm={handleConfirmSlots}
-        isReschedule={true}
-      />
+    <div className="w-full pt-0">
+      {view === "SELECT_SLOT" && (
+        <>
+          <SelectDateTimeForVisit
+            addressId={appointment.address?.id as string}
+            petId={appointment.pet_id}
+            isConfirmationModalOpen={isConfirmationModalOpen}
+            isConfirming={rescheduleLoading}
+            onConfirm={handleConfirmSlots}
+            isReschedule
+          />
 
-      {bookingDetails && appointment && (
-        <ConfirmationModal
-          isOpen={isConfirmationModalOpen}
-          onClose={() => setIsConfirmationModalOpen(false)}
-          onConfirm={handleConfirmReschedule}
-          bookingDetails={bookingDetails}
+          {bookingDetails && (
+            <ConfirmationModal
+              isOpen={isConfirmationModalOpen}
+              onClose={() => setIsConfirmationModalOpen(false)}
+              onConfirm={handleConfirmReschedule}
+              bookingDetails={bookingDetails}
+            />
+          )}
+        </>
+      )}
+
+      {view === "CONFIRMED" && bookingDetails && (
+        <RescheduleConfirmed
+          isHomeVisit
+          isGroomingAppointment={false}
+          updatedValues={{
+            selectedSvcId: appointment.appt_type,
+            selectedPet: {
+              id: appointment.pet_id,
+              name: appointment.pet_name,
+              type: appointment.pet_type ?? null,
+
+              breedId: null,
+              breed: null,
+              gender: null,
+              dob: null,
+
+              profileImage: appointment.pet_profile_image ?? null,
+            },
+
+            selectedService: appointment.appt_type_title,
+
+            selectedVet: appointment.vet_name
+              ? {
+                  id: appointment.vet_id ?? null,
+                  name: appointment.vet_name ?? null,
+                }
+              : null,
+
+            selectedDoctorImage: appointment.vet_image ?? null,
+
+            selectedDate: bookingDetails.date,
+            selectedSlot: bookingDetails.slot.split(" - ")[0],
+            selectedSlotEnd: bookingDetails.slot.split(" - ")[1],
+
+            address: appointment.address
+              ? {
+                  tag: appointment.address.tag ?? "",
+                  address_line1: appointment.address.address_line1 ?? "",
+                  address_line2: appointment.address.address_line2 ?? "",
+                }
+              : undefined,
+          }}
+          oldValues={{
+            oldVet: appointment.vet_name
+              ? {
+                  id: appointment.vet_id ?? null,
+                  name: appointment.vet_name ?? null,
+                }
+              : { id: null, name: null },
+
+            oldDoctorImage: appointment.vet_image ?? null,
+
+            oldDate: new Date(appointment.booking_date),
+            oldSlot: appointment.appt_start,
+            oldSlotEnd: appointment.appt_end,
+          }}
+          onDone={() => window.location.reload()}
         />
       )}
     </div>

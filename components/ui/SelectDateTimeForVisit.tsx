@@ -164,10 +164,10 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
                 setSelectedSlot(null)
               }}
               className={clsx(
-                "rounded-lg border-2 p-2 text-center text-sm transition",
+                "bg-primary-3 rounded-lg p-2 text-center text-sm transition border-2",
                 isActive
                   ? "border-secondary-1"
-                  : "border-gray-300 hover:border-secondary-1",
+                  : "border-transparent hover:border-secondary-1",
               )}
             >
               <div className="font-semibold">{formatted.day}</div>
@@ -200,15 +200,15 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
                 <button
                   key={`${slot.startTime}-${slot.endTime}`}
                   onClick={() => setSelectedSlot(slot)}
+                  disabled={!slot.available}
                   className={clsx(
-                    "flex items-center justify-center gap-1 rounded-lg border-2 px-3 py-2 text-xs sm:text-sm transition duration-150",
+                    "bg-primary-3 flex items-center justify-center gap-1 rounded-lg border-2 px-3 py-2 text-xs sm:text-sm transition duration-150",
                     isSelected
                       ? "border-secondary-1 bg-secondary-1/10 shadow-md"
                       : slot.available
-                        ? "border-gray-300 hover:border-secondary-1 hover:bg-secondary-1/5"
-                        : "border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed opacity-60",
+                        ? "border-transparent hover:border-secondary-1 hover:bg-secondary-1/5"
+                        : "border-transparent bg-gray-100 text-gray-400 cursor-not-allowed opacity-60",
                   )}
-                  disabled={!slot.available}
                 >
                   <span>{formatTime(slot.startTime)}</span>
                   <span>-</span>
@@ -220,7 +220,7 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
         )}
       </div>
 
-      <div className="flex justify-center mb-10">
+      <div className="flex flex-col items-center justify-center mb-10">
         <Tooltip
           color="#f7f1de"
           styles={{ body: { color: "#33495f" } }}
@@ -239,6 +239,11 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
                 : "Proceed to Pay"}
           </button>
         </Tooltip>
+        {isProcessing && (
+          <p className="mt-2 text-xs text-gray-500">
+            Do not go back. Initiating payment
+          </p>
+        )}
       </div>
     </div>
   )

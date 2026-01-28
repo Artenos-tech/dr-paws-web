@@ -2,7 +2,13 @@
 
 import React, { useEffect, useState } from "react"
 import BackButton from "./BackButton"
-import { CalendarDays, RotateCcw, XCircle } from "lucide-react"
+import {
+  CalendarDays,
+  CircleCheck,
+  CircleX,
+  RotateCcw,
+  XCircle,
+} from "lucide-react"
 import { MdOutlineAccessTime } from "react-icons/md"
 import { GrLocation } from "react-icons/gr"
 import { format, parseISO } from "date-fns"
@@ -120,23 +126,24 @@ const AtHomeBookingDetails = ({
   }
 
   const isConfirmed = selectedAppointment.visit_status === "VET_CONFIRMED"
+  const isCompleted = selectedAppointment.visit_status === "VISIT_FINISHED"
   const isCancelled = selectedAppointment.visit_status === "CANCELLED"
 
   let appointmentText = ""
 
   if (isCancelled) {
-    appointmentText = `${selectedAppointment.pet_name} was scheduled for a Home Visit with ${selectedAppointment.vet_name}`
+    appointmentText = `${selectedAppointment.pet_name} was scheduled for a Home Visit.`
   } else if (isVisitFinished) {
-    appointmentText = `${selectedAppointment.pet_name} had a Home Visit with ${selectedAppointment.vet_name}`
+    appointmentText = `${selectedAppointment.pet_name} had a Home Visit with ${selectedAppointment.vet_name}.`
   } else if (isConfirmed) {
     appointmentText = selectedAppointment.vet_name
-      ? `${selectedAppointment.pet_name} is scheduled for a Home Visit with ${selectedAppointment.vet_name}`
+      ? `${selectedAppointment.pet_name} is scheduled for a Home Visit with ${selectedAppointment.vet_name}.`
       : `${selectedAppointment.pet_name} is scheduled for a Home Visit`
   } else {
     appointmentText =
       selectedAppointment.visit_status === "UNCONFIRMED"
-        ? `${selectedAppointment.pet_name} is scheduled for a Home Visit`
-        : `${selectedAppointment.pet_name} is scheduled for a Home Visit with ${selectedAppointment.vet_name}`
+        ? `${selectedAppointment.pet_name} is scheduled for a Home Visit.`
+        : `${selectedAppointment.pet_name} is scheduled for a Home Visit with ${selectedAppointment.vet_name}.`
   }
 
   const defaultPetImageByType =
@@ -193,6 +200,11 @@ const AtHomeBookingDetails = ({
     }
     goBack(true)
   }
+  const HeaderIcon = isCancelled
+    ? CircleX
+    : isCompleted
+      ? CircleCheck
+      : CalendarDays
 
   return (
     <div className="w-full">
@@ -219,13 +231,23 @@ const AtHomeBookingDetails = ({
       )}
       {view === "DETAILS" && (
         <div className="flex flex-col items-center gap-6 mt-6">
-          <h1 className="text-2xl sm:text-3xl font-semibold text-primary-1">
-            {selectedAppointment.visit_status === "VISIT_STARTED"
-              ? "Home Visit Started"
-              : isVisitFinished
-                ? "Home Visit Finished"
-                : "Home Visit Scheduled"}
-          </h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl sm:text-3xl font-semibold text-primary-1">
+              {selectedAppointment.visit_status === "VISIT_STARTED"
+                ? "Home Visit Started"
+                : isCancelled
+                  ? "Home Visit Cancelled"
+                  : isVisitFinished
+                    ? "Home Visit Finished"
+                    : "Home Visit Scheduled"}
+            </h1>
+            <HeaderIcon
+              size={40}
+              fill="#5281a2"
+              stroke="white"
+              strokeWidth={2}
+            />
+          </div>
 
           <div
             className={`${bg} ${text}  w-full  sm:w-full   md:w-full lg:w-4/5  xl:w-3/4  2xl:w-2/3  shadow-md rounded-lg  px-6 py-4 md:py-12 md:px-24 space-y-5`}
@@ -246,18 +268,19 @@ const AtHomeBookingDetails = ({
                       priority
                     />
                   </div>
-                  {selectedAppointment.visit_status !== "UNCONFIRMED" && (
-                    <div className="relative w-32 h-32 rounded-full overflow-hidden bg-white -ml-8 border-4 border-white flex justify-center items-center">
-                      <Image
-                        src={vetImage}
-                        alt={`Dr. ${selectedAppointment.vet_name}'s profile`}
-                        objectFit="cover"
-                        sizes="80px"
-                        width={80}
-                        height={80}
-                      />
-                    </div>
-                  )}
+                  {selectedAppointment.visit_status !== "UNCONFIRMED" &&
+                    selectedAppointment.visit_status !== "CANCELLED" && (
+                      <div className="relative w-32 h-32 rounded-full overflow-hidden bg-white -ml-8 border-4 border-white flex justify-center items-center">
+                        <Image
+                          src={vetImage}
+                          alt={`Dr. ${selectedAppointment.vet_name}'s profile`}
+                          objectFit="cover"
+                          sizes="80px"
+                          width={80}
+                          height={80}
+                        />
+                      </div>
+                    )}
                 </>
               }
             </div>
@@ -285,14 +308,18 @@ const AtHomeBookingDetails = ({
               </>
             )}
 
-            <div className="flex items-center gap-3">
+            <div
+              className={`flex items-center gap-3 ${isCancelled && "line-through"} `}
+            >
               <CalendarDays className="text-secondary-1" />
               <span className="text-base font-medium">
                 {format(parsedDate, "EEE, dd MMM")}
               </span>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div
+              className={`flex items-center gap-3 ${isCancelled && "line-through"} `}
+            >
               <MdOutlineAccessTime className="text-secondary-1 text-xl" />
               <span className="text-base font-medium">
                 {selectedAppointment.appt_start} –{" "}
@@ -305,7 +332,7 @@ const AtHomeBookingDetails = ({
                 <GrLocation className="text-secondary-1 text-xl mt-1" />
               </div>
 
-              <div className="flex flex-col">
+              <div className={`flex flex-col ${isCancelled && "line-through"}`}>
                 <span className="font-medium">
                   {selectedAppointment.address?.tag}
                 </span>
@@ -313,7 +340,7 @@ const AtHomeBookingDetails = ({
               </div>
             </div>
 
-            {!isVisitFinished && (
+            {!isVisitFinished && !isCancelled && (
               <AtHomeVisitStatus
                 visitStatus={selectedAppointment.visit_status}
                 selectedAppointment={selectedAppointment}
