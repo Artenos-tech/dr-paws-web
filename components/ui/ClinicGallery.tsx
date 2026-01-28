@@ -16,7 +16,12 @@ interface ClinicGalleryProps {
   gallery: Array<string>
 }
 
-function ClinicGallery({ clinicId, name, services, gallery }: ClinicGalleryProps) {
+function ClinicGallery({
+  clinicId,
+  name,
+  services,
+  gallery,
+}: ClinicGalleryProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [currentIndex, setCurrentIndex] = useState(0)
   const limitedGalleryItems = gallery.slice(0, 7) ?? []
