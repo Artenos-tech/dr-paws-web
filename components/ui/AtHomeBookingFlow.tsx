@@ -1,4 +1,4 @@
-import React, { useReducer } from "react"
+import React, { useEffect, useReducer } from "react"
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md"
 import SelectAddress from "./SelectAddress"
 import SelectPet from "./SelectPet"
@@ -154,6 +154,21 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
   const { call: createPaymentOrder } = useAPICall(
     atHomeApiClient.createPaymentOrder,
   )
+  useEffect(() => {
+    if (!isConfirming) return
+
+    const blockBack = () => {
+      history.pushState(null, "", window.location.href)
+    }
+
+    history.pushState(null, "", window.location.href)
+
+    window.addEventListener("popstate", blockBack)
+
+    return () => {
+      window.removeEventListener("popstate", blockBack)
+    }
+  }, [isConfirming])
 
   const handleAddressConfirm = async (addressId: string) => {
     dispatch({ type: "SET_LOADING", payload: true })
@@ -234,6 +249,8 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
   // }
 
   const handleBack = () => {
+    if (isConfirming) return
+
     if (currentStep > 1) {
       dispatch({ type: "GO_BACK" })
     } else {
@@ -279,8 +296,9 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
       <button
         type="button"
         onClick={handleBack}
-        disabled={isLoading}
-        className="flex gap-1 mb-4 items-center self-start disabled:opacity-50"
+        disabled={isLoading || isConfirming}
+        className="flex gap-1 mb-4 items-center self-start 
+             disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <MdOutlineKeyboardArrowLeft /> Back
       </button>
