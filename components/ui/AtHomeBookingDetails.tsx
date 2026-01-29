@@ -347,53 +347,55 @@ const AtHomeBookingDetails = ({
               />
             )}
 
-            <div className="pt-4 border-t space-y-4">
-              {!isVisitFinished && (
-                <SupportActions onCallUs={copyHelpline} onSOS={() => {}} />
-              )}
+            {(!isVisitFinished || canShowCancelActions) && (
+              <div className="pt-4 border-t space-y-4">
+                {!isVisitFinished && (
+                  <SupportActions onCallUs={copyHelpline} onSOS={() => {}} />
+                )}
 
-              {canShowCancelActions && (
-                <div className="border border-red-300 rounded-lg p-4 space-y-3">
-                  <div>
-                    <p className="font-semibold text-red-700">
-                      Reschedule & Cancel
-                    </p>
-
-                    {isFreeCancellation() ? (
-                      <p className="text-sm text-gray-600">
-                        Free cancellation available up to 24 hours before the
-                        appointment.
+                {canShowCancelActions && (
+                  <div className="border border-red-300 rounded-lg p-4 space-y-3">
+                    <div>
+                      <p className="font-semibold text-red-700">
+                        Reschedule & Cancel
                       </p>
-                    ) : (
-                      <p className="text-sm text-red-600">
-                        Cancellation within 24 hours of the appointment will
-                        incur a 100% cancellation fee.
-                      </p>
-                    )}
-                  </div>
 
-                  <div className="flex flex-col lg:flex-row lg:justify-between gap-3">
-                    <button
-                      onClick={() => openConfirmationView("RESCHEDULE")}
-                      className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-secondary-1 text-secondary-1 hover:bg-secondary-1 hover:text-white transition"
-                    >
-                      <RotateCcw size={16} />
-                      Reschedule
-                    </button>
+                      {isFreeCancellation() ? (
+                        <p className="text-sm text-gray-600">
+                          Free cancellation available up to 24 hours before the
+                          appointment.
+                        </p>
+                      ) : (
+                        <p className="text-sm text-red-600">
+                          Cancellation within 24 hours of the appointment will
+                          incur a 100% cancellation fee.
+                        </p>
+                      )}
+                    </div>
 
-                    <button
-                      onClick={() => openConfirmationView("CANCEL")}
-                      className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-red-600 text-red-600 hover:bg-red-600 hover:text-white transition"
-                    >
-                      <XCircle size={16} />
-                      {isFreeCancellation()
-                        ? "Cancel for free"
-                        : "Cancel with 100% fee"}
-                    </button>
+                    <div className="flex flex-col lg:flex-row lg:justify-between gap-3">
+                      <button
+                        onClick={() => openConfirmationView("RESCHEDULE")}
+                        className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-secondary-1 text-secondary-1 hover:bg-secondary-1 hover:text-white transition"
+                      >
+                        <RotateCcw size={16} />
+                        Reschedule
+                      </button>
+
+                      <button
+                        onClick={() => openConfirmationView("CANCEL")}
+                        className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-red-600 text-red-600 hover:bg-red-600 hover:text-white transition"
+                      >
+                        <XCircle size={16} />
+                        {isFreeCancellation()
+                          ? "Cancel for free"
+                          : "Cancel with 100% fee"}
+                      </button>
+                    </div>
                   </div>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       )}
