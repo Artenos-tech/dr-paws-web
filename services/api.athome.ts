@@ -1014,7 +1014,6 @@ export const mockAtHomeClient: AtHomeAPIClient = {
         sos_status: "INACTIVE" as const,
       },
     ]
-
     return ok({
       status: 200,
       body: {
