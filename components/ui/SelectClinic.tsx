@@ -7,7 +7,7 @@ import { useAPICall } from "@/hooks/apicall"
 import api from "@/services/api"
 import { ClipLoader } from "react-spinners"
 import { Pet } from "@/context/UserContext"
-import { Select } from "antd"
+import { Input, Select } from "antd"
 
 interface SelectClinicProps {
   onNext: () => void // Prop for navigation
@@ -38,6 +38,10 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
   >({})
   const [isFormComplete, setIsFormComplete] = useState(
     selectedClinic ? true : false,
+  )
+  const [clinicSearch, setClinicSearch] = useState("")
+  const [selectedLocation, setSelectedLocation] = useState<string | undefined>(
+    undefined,
   )
 
   const {
@@ -219,6 +223,21 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
   const clinics = getClinicsResult?.ok
     ? getClinicsResult.value.body.clinics
     : []
+  const locationOptions = Array.from(
+    new Set(
+      clinics.map((clinic) => clinic.location).filter((loc) => Boolean(loc)),
+    ),
+  )
+
+  const filteredClinics = clinics.filter((clinic) => {
+    const matchesName = clinicSearch.trim()
+      ? clinic.name.toLowerCase().includes(clinicSearch.trim().toLowerCase())
+      : true
+    const matchesLocation = selectedLocation
+      ? clinic.location === selectedLocation
+      : true
+    return matchesName && matchesLocation
+  })
 
   if (loadingClinics) {
     return (
@@ -231,11 +250,31 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
   return (
     <div className=" flex flex-col">
       <h1 className="text-2xl mb-2">Select a Clinic</h1>
-      <p className="text-gray-600 mb-12">
+      <p className="text-gray-600 mb-2">
         Book an appointment at one of our state-of-the-art clinics
       </p>
+      <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+        <Input.Search
+          allowClear
+          placeholder="Search clinic by name"
+          value={clinicSearch}
+          onChange={(event) => setClinicSearch(event.target.value)}
+          className="sm:max-w-md"
+        />
+        <Select
+          allowClear
+          placeholder="Filter by location"
+          className="sm:w-64"
+          value={selectedLocation}
+          onChange={(value) => setSelectedLocation(value)}
+          options={locationOptions.map((location) => ({
+            label: location,
+            value: location,
+          }))}
+        />
+      </div>
       <div className="h-full grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-12 ">
-        {clinics.map((item) => (
+        {filteredClinics.map((item) => (
           <div key={item.id} className="h-full ">
             <SelectClinicCard
               key={item.id}
@@ -248,6 +287,9 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
             />
           </div>
         ))}
+        {!filteredClinics.length && (
+          <div className="text-gray-500">No clinics match your search.</div>
+        )}
       </div>
       <div className="my-16 flex justify-center">
         <CustomButton
