@@ -20,9 +20,7 @@ const BestAvailableVetCard: React.FC<BestAvailableVetCardProps> = ({
     <div
       onClick={handleCardClick}
       className={`group cursor-pointer min-w-[160px] min-h-[260px] flex flex-col items-center justify-between rounded-xl px-2 pt-2 gap-4 bg-gradient-to-br from-amber-50 to-orange-50 border-2 ${
-        isSelected
-          ? `border-secondary-1 shadow-lg`
-          : `border-amber-200`
+        isSelected ? `border-secondary-1 shadow-lg` : `border-amber-200`
       }`}
     >
       <div className="w-full flex justify-end">
