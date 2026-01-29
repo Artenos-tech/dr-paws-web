@@ -10,10 +10,12 @@ import CustomButton from "./CustomButton"
 import defaultVetImage from "@/public/assets/images/clinic/doctorFemale.webp"
 import { petImageByType } from "./PetCard"
 import { Pet } from "@/context/UserContext"
+import { VisitStatus } from "@/model/typeDefinitions"
 
 type RescheduleConfirmedProps = {
   isGroomingAppointment: boolean
   isHomeVisit?: boolean
+  visitStatus?: VisitStatus
 
   updatedValues: {
     selectedPet: Pet
@@ -54,6 +56,7 @@ type RescheduleConfirmedProps = {
 const RescheduleConfirmed: React.FC<RescheduleConfirmedProps> = ({
   isGroomingAppointment,
   isHomeVisit,
+  visitStatus,
   updatedValues,
   oldValues,
   onDone,
@@ -87,9 +90,13 @@ const RescheduleConfirmed: React.FC<RescheduleConfirmedProps> = ({
   let appointmentText = ""
 
   if (isHomeVisit) {
-    appointmentText = updatedValues.selectedVet?.name
-      ? `${updatedValues.selectedPet.name} is scheduled for a Home Visit with ${updatedValues.selectedVet.name}.`
-      : `${updatedValues.selectedPet.name} is scheduled for a Home Visit.`
+    appointmentText =
+      visitStatus &&
+      visitStatus !== "CANCELLED" &&
+      visitStatus !== "UNCONFIRMED" &&
+      updatedValues.selectedVet
+        ? `${updatedValues.selectedPet.name} is scheduled for a Home Visit with ${updatedValues.selectedVet.name}.`
+        : `${updatedValues.selectedPet.name} is scheduled for a Home Visit.`
   } else if (isGroomingAppointment && updatedValues.selectedSubtype) {
     appointmentText = `${updatedValues.selectedPet.name} is scheduled for a ${updatedValues.selectedSubtype}.`
   } else {
@@ -105,7 +112,7 @@ const RescheduleConfirmed: React.FC<RescheduleConfirmedProps> = ({
         <BsCheckCircleFill fill="#5281a2" size={32} />
       </div>
 
-      <div className="p-4 text-primary-1 w-11/12 md:w-4/5 lg:w-[50%] shadow-md my-5 flex flex-col gap-4 items-center bg-[#FFFCF3] rounded-lg">
+      <div className="p-10 text-primary-1 w-11/12 md:w-4/5 lg:w-[50%] shadow-md my-5 flex flex-col gap-4 items-center bg-[#FFFCF3] rounded-lg">
         <p className="text-lg font-semibold text-center">{appointmentText}</p>
 
         <div className="flex items-center my-4 relative">
@@ -113,8 +120,11 @@ const RescheduleConfirmed: React.FC<RescheduleConfirmedProps> = ({
             <Image src={petImage} alt="Pet" fill sizes="128px" />
           </div>
 
-          {(!isGroomingAppointment || isHomeVisit) &&
-            updatedValues.selectedVet?.id && (
+          {!isGroomingAppointment &&
+            isHomeVisit &&
+            visitStatus &&
+            visitStatus !== "CANCELLED" &&
+            visitStatus !== "UNCONFIRMED" && (
               <div className="relative w-32 h-32 rounded-full overflow-hidden bg-white -ml-8 border-4 border-white p-3">
                 <Image src={vetImage} alt="Vet" fill sizes="128px" />
               </div>
