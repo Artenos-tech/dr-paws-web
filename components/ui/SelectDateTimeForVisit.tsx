@@ -239,7 +239,7 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
                 : "Proceed to Pay"}
           </button>
         </Tooltip>
-        {isProcessing && (
+        {isProcessing &&!isReschedule&& (
           <p className="mt-2 text-xs text-gray-500">
             Do not go back. Initiating payment
           </p>
