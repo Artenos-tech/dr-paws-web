@@ -205,7 +205,6 @@ const AtHomeBookingDetails = ({
     : isCompleted
       ? CircleCheck
       : CalendarDays
-
   return (
     <div className="w-full">
       <BackButton navigateBack={handleNavigation} />
