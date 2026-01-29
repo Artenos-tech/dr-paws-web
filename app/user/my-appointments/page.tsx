@@ -22,7 +22,7 @@ const determinePageSize = () => {
   const width = window.innerWidth
   if (width < 640) return 1
   if (width < 1024) return 4
-  return 9
+  return 4
 }
 
 const MyAppointmentsPage = () => {

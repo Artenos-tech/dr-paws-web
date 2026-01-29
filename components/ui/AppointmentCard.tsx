@@ -106,7 +106,8 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
         {appointment.appt_type === "HOME_VISIT" &&
           appointment.visit_status &&
           appointment.visit_status !== "UNCONFIRMED" &&
-          appointment.visit_status !== "VET_CONFIRMED" && (
+          appointment.visit_status !== "VET_CONFIRMED" &&
+          appointment.visit_status !== "VISIT_FINISHED" && (
             <span
               className={`px-3 py-1 rounded-full text-xs font-semibold ${
                 visitStatusStyles[appointment.visit_status].bg
