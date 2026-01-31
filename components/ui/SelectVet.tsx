@@ -20,6 +20,7 @@ import { ClipLoader } from "react-spinners"
 import { BookingCategory } from "./SelectService"
 import BestAvailableVetCard from "./BestAvailableVetCard"
 import ConfirmationModal from "./ConfirmationModal"
+import { Input } from "antd"
 
 export interface SelectedVet {
   id: string
@@ -80,6 +81,7 @@ const SelectVet: React.FC<selectVetProps> = ({
   const [couponCode, setCouponCode] = useState<string>("")
   const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null)
   const [couponError, setCouponError] = useState<string | null>(null)
+  const [vetSearch, setVetSearch] = useState("")
   const {
     call: getSlotsForStaff,
     result: slotsForStaffResult,
@@ -515,6 +517,11 @@ const SelectVet: React.FC<selectVetProps> = ({
   }
 
   const doctors = doctorsResult?.ok ? doctorsResult.value.body.staff : []
+  const filteredDoctors = vetSearch.trim()
+    ? doctors.filter((doctor) =>
+        doctor.name.toLowerCase().includes(vetSearch.trim().toLowerCase()),
+      )
+    : doctors
 
   const availableSlotsLoading =
     loadingSlotsForStaff ||
@@ -557,17 +564,30 @@ const SelectVet: React.FC<selectVetProps> = ({
       {!isGrooming && (
         <div>
           <h1 className="text-2xl mb-2">Select Vet</h1>
-          <p className="text-gray-600 mb-12">
+          <p className="text-gray-600 mb-2">
             Which of our experts would you like to see?
           </p>
+          <div className="mb-12 max-w-md">
+            <Input.Search
+              allowClear
+              placeholder="Search vet by name"
+              value={vetSearch}
+              onChange={(event) => setVetSearch(event.target.value)}
+            />
+          </div>
           <DoctorSelectionCarousel
-            options={doctors}
+            options={filteredDoctors}
             selectedDoctor={selectedDoctor}
             onDoctorSelected={(doctor) => {
               setSelectedDoctor(doctor)
               setSelectedDate(new Date()) // Reset date and slot on doctor change
             }}
           />
+          {!filteredDoctors.length && (
+            <p className="mt-4 text-gray-500 text-sm">
+              No vets match your search.
+            </p>
+          )}
         </div>
       )}
       <div className="flex flex-col gap-8">
