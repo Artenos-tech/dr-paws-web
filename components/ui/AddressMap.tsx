@@ -15,7 +15,6 @@ const AddressMap = ({
   mapOptions,
   isEditMode = true,
 }: AddressMapProps) => {
-
   return (
     <GoogleMap
       center={pin}

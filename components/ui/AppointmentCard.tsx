@@ -82,13 +82,9 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
     petImageByType[appointment.pet_type?.toLowerCase() || "other"] ||
     petImageByType.other
 
-  const petImage =
-    appointment.pet_profile_image ||
-    defaultPetImageByType
+  const petImage = appointment.pet_profile_image || defaultPetImageByType
 
-  const vetImage =
-    appointment.vet_image ||
-    defaultVetImage
+  const vetImage = appointment.vet_image || defaultVetImage
 
   const parsedDate = parseISO(appointment.booking_date)
   const Icon = appointment.booking_type === "HOME_VISIT" ? Home : Building2

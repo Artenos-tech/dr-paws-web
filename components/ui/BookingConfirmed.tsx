@@ -100,7 +100,9 @@ const BookingConfirmed: React.FC<BookingConfirmedProps> = ({
               </div>
 
               {selectedAppointment.selectedAddressDetails && (
-                <p className="text-sm">{selectedAppointment.selectedAddressDetails}</p>
+                <p className="text-sm">
+                  {selectedAppointment.selectedAddressDetails}
+                </p>
               )}
             </div>
             <p className={`flex items-center gap-2`}>

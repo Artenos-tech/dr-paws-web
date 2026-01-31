@@ -38,7 +38,8 @@ const BookingConfirmationContent: React.FC = () => {
     return (
       <div className="flex flex-col justify-center items-center space-y-4">
         <Loader2 className="h-5 w-5 animate-spin" />
-      </div>)
+      </div>
+    )
   }
 
   return (
@@ -56,14 +57,14 @@ const BookingConfirmationContent: React.FC = () => {
             breedId: null,
             breed: null,
             gender: null,
-            dob: null
+            dob: null,
           },
           selectedClinic: confirmedAppointment.clinic_id,
           selectedLocation: confirmedAppointment.address?.tag as string,
           selectedAddressDetails: [
             confirmedAppointment.address?.address_line1,
             confirmedAppointment.address?.address_line2,
-            ]
+          ]
             .filter(Boolean)
             .join(", "),
           selectedClinicContact: confirmedAppointment.clinic_contact,
@@ -72,7 +73,7 @@ const BookingConfirmationContent: React.FC = () => {
           selectedDate: new Date(confirmedAppointment.booking_date),
           selectedSlot: confirmedAppointment.appt_start,
           selectedSlotEnd: confirmedAppointment.appt_end,
-          appliedCoupon: null
+          appliedCoupon: null,
         }}
       />
     </main>
