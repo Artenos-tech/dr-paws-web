@@ -101,6 +101,13 @@ const Booking: React.FC = () => {
           {currentStep === 1 && (
             <SelectService
               selectedPet={selectedAppointment.selectedPet}
+              setSelectedPet={(pet) => {
+                setSelectedAppointmentState((prev) => ({
+                  ...prev,
+                  selectedPet: pet,
+                }))
+              }}
+              selectedServiceId={selectedAppointment.selectedServiceId}
               setServiceOptions={(
                 svcId,
                 svcTitle,

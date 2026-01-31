@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useEffect, useState } from "react"
+import { Tooltip } from "antd"
 import BookingCard from "@/components/ui/BookingCard"
 import GroomingSubtypeModal from "@/components/ui/GroomingSubtypeModal"
 import CustomButton from "./CustomButton"
@@ -18,6 +19,8 @@ export interface BookingCategory {
 
 interface SelectServiceProps {
   selectedPet: Pet | null
+  setSelectedPet: (pet: Pet | null) => void
+  selectedServiceId: string | null
   setServiceOptions: (
     selectedSvcId: string | null,
     serviceTitle: string | null,
@@ -34,6 +37,8 @@ interface SelectServiceProps {
 
 const SelectService: React.FC<SelectServiceProps> = ({
   selectedPet,
+  setSelectedPet,
+  selectedServiceId,
   setServiceOptions,
   openCard,
   setOpenCard,
@@ -81,13 +86,19 @@ const SelectService: React.FC<SelectServiceProps> = ({
     fetchPets()
   }, [])
 
-  const pets =
-    getPetsAPIResult?.ok &&
-    getPetsAPIResult.value.body.pets.map((pet) => ({
-      ...pet,
-      profileImage: pet.profile_image,
-      id: pet.id,
-    }))
+  const pets = getPetsAPIResult?.ok
+    ? getPetsAPIResult.value.body.pets.map((pet) => ({
+        ...pet,
+        profileImage: pet.profile_image,
+        id: pet.id,
+      }))
+    : []
+
+  useEffect(() => {
+    if (!selectedPet && pets.length === 1) {
+      setSelectedPet(pets[0])
+    }
+  }, [pets, selectedPet, setSelectedPet])
 
   const appointmentTypes = getAppointmentServicesResult?.ok
     ? getAppointmentServicesResult.value.body.appointmentTypes
@@ -118,6 +129,15 @@ const SelectService: React.FC<SelectServiceProps> = ({
       const selectedCard = appointmentTypes.find(
         (category) => category.id === cardId,
       )
+      if (selectedCard && prevOpenCard !== cardId) {
+        setServiceOptions(
+          selectedCard.id,
+          selectedCard.title,
+          selectedPet,
+          isGrooming,
+          selectedSubtype,
+        )
+      }
       if (
         selectedCard &&
         // selectedCard.isGrooming &&
@@ -175,12 +195,26 @@ const SelectService: React.FC<SelectServiceProps> = ({
           ))}
       </div>
       <div className="my-16 w-full flex item-center justify-center">
-        <CustomButton
-          buttonText="Next"
-          buttonBackground="bg-secondary-1"
-          buttonClickEvent={handleNext}
-          disabled={!selectedPet}
-        />
+        <Tooltip
+          title={
+            !selectedServiceId
+              ? "Select a service to proceed"
+              : !selectedPet
+                ? "Select a pet to proceed to the next step."
+                : null
+          }
+          color="var(--primary-3)"
+          styles={{ body: { color: "var(--primary-1)" } }}
+        >
+          <span>
+            <CustomButton
+              buttonText="Next"
+              buttonBackground="bg-secondary-1"
+              buttonClickEvent={handleNext}
+              disabled={!selectedPet || !selectedServiceId}
+            />
+          </span>
+        </Tooltip>
       </div>
 
       <GroomingSubtypeModal

@@ -84,7 +84,13 @@ const BookingCard: React.FC<BookingCardProps> = ({
 
       {isOpen && (
         <div className="p-4 ">
-          <h3 className="text-lg font-medium mb-2">Select your Pet:</h3>
+          <h3 className="text-lg font-medium">Select your Pet:</h3>
+          <p className="text-sm text-gray-600 mb-3">
+            <span className="text-red-500 font-semibold">Required</span> •
+            Please select a pet to continue to the next step.
+            <br />
+            Don’t see your pet? Tap Add Pet to add one.
+          </p>
           <div className="flex gap-3 flex-wrap justify-center items-center">
             {pets &&
               pets.map((pet) => {
