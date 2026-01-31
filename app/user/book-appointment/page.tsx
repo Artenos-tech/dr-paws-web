@@ -151,7 +151,7 @@ const Booking: React.FC = () => {
             <SelectClinic
               onNext={goToNextStep}
               selectedClinic={selectedAppointment.selectedClinic}
-              selectedLocation={selectedAppointment.selectedLocation}
+              selectedClinicLocation={selectedAppointment.selectedLocation}
               selectedClinicContact={selectedAppointment.selectClinicContact}
               handleClinicSelection={handleClinicSelection}
               selectedPet={notNull(selectedAppointment.selectedPet)}
