@@ -225,7 +225,7 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
       ),
     ).toISOString()
   }
-  
+
   const handleConfirmBooking = async () => {
     dispatch({ type: "CONFIRM_BOOKING" })
     const reasonForVisit = VISIT_REASONS.find(

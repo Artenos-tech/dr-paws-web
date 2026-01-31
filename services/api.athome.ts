@@ -1387,10 +1387,12 @@ const endpointConfig = {
     responseSchema: z.object({
       data: z.object({
         order_payment: OrderStatusSchema,
-        appointment: z.object({
-          id: z.string(),
-          sub_booking_id: z.string()
-        }).nullable(),
+        appointment: z
+          .object({
+            id: z.string(),
+            sub_booking_id: z.string(),
+          })
+          .nullable(),
       }),
     }),
     errorResponseSchema: z.object({}),
