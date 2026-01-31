@@ -7,7 +7,6 @@ import { MdOutlineKeyboardArrowLeft } from "react-icons/md"
 import SelectVet, { SelectedVet } from "@/components/ui/SelectVet"
 import { Pet } from "@/context/UserContext"
 import { useRouter, useSearchParams } from "next/navigation"
-import BookingConfirmed from "@/components/ui/BookingConfirmed"
 
 interface ClinicBookingFlowProps {
   onBackToStart?: () => void
@@ -54,14 +53,27 @@ const ClinicBookingFlow: React.FC<ClinicBookingFlowProps> = ({
   const [isDisclaimerModalOpen, setIsDisclaimerModalOpen] = useState(false)
   const [currentStep, setCurrentStep] = useState<number>(1)
 
+  useEffect(() => {
+    const clinicId = searchParams.get("clinicId")
+    if (!clinicId) return
+    setSelectedAppointmentState((prev) => {
+      if (prev.selectedClinic) return prev
+      return {
+        ...prev,
+        selectedClinic: clinicId,
+      }
+    })
+  }, [searchParams])
+
   const handleClinicSelection = (
     clinicId: string,
     location: string,
     contact: string,
+    options?: { skipToggle?: boolean },
   ) => {
     setSelectedAppointmentState((prev) => {
       // Toggle selection: if the clicked clinic is already selected, deselect it.
-      if (prev.selectedClinic === clinicId) {
+      if (!options?.skipToggle && prev.selectedClinic === clinicId) {
         return {
           ...prev,
           selectedClinic: null,
