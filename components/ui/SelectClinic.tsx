@@ -12,10 +12,13 @@ import { Select } from "antd"
 interface SelectClinicProps {
   onNext: () => void // Prop for navigation
   selectedClinic: string | null
+  selectedLocation: string | null
+  selectedClinicContact: string | null
   handleClinicSelection: (
     clinicId: string,
     location: string,
     contact: string,
+    options?: { skipToggle?: boolean },
   ) => void
   selectedPet: Pet
   isGrooming: boolean
@@ -24,6 +27,8 @@ interface SelectClinicProps {
 const SelectClinic: React.FC<SelectClinicProps> = ({
   onNext,
   selectedClinic,
+  selectedLocation,
+  selectedClinicContact,
   handleClinicSelection,
   selectedPet,
   isGrooming,
@@ -219,6 +224,22 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
   const clinics = getClinicsResult?.ok
     ? getClinicsResult.value.body.clinics
     : []
+
+  useEffect(() => {
+    if (!selectedClinic || clinics.length === 0) return
+    if (selectedLocation && selectedClinicContact) return
+    const selected = clinics.find((item) => item.id === selectedClinic)
+    if (!selected) return
+    handleClinicSelection(selected.id, selected.location, selected.contact, {
+      skipToggle: true,
+    })
+  }, [
+    clinics,
+    handleClinicSelection,
+    selectedClinic,
+    selectedClinicContact,
+    selectedLocation,
+  ])
 
   if (loadingClinics) {
     return (

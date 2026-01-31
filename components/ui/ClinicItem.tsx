@@ -40,9 +40,10 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
       }
       return
     }
+    const bookingPath = `/user/book-appointment?clinicId=${id}`
     return isLoggedIn
-      ? router.push("/user/book-appointment")
-      : initiateLogin("Book a Visit", "/user/book-appointment")
+      ? router.push(bookingPath)
+      : initiateLogin("Book a Visit", bookingPath)
   }
 
   const closeModal = () => {

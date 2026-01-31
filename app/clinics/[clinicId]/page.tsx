@@ -97,6 +97,7 @@ const ClinicDetails: React.FC<ClinicDetailsProps> = ({ params }) => {
     <div className="flex flex-col w-full h-full items-center justify-items-center font-roca pb-20 flex-grow px-8 md:px-32 lg:px-20 xl:px-40">
       <main className="w-full flex flex-col gap-[80px] row-start-2 items-center">
         <ClinicGallery
+          clinicId={clinicId}
           name={clinic.name}
           services={clinic.services}
           gallery={clinic.gallery}
