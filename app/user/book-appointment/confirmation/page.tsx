@@ -5,17 +5,11 @@ import { useSearchParams } from "next/navigation"
 import atHomeAPIClient from "@/services/api.athome"
 import { Suspense, useEffect, useState } from "react"
 import { AppointmentDetails } from "@/model/typeDefinitions"
-import { petImageByType } from "@/components/ui/PetCard"
-import { BsCheckCircleFill } from "react-icons/bs"
-import Image from "next/image"
-import { GrLocation } from "react-icons/gr"
-import { HiOutlineCalendar } from "react-icons/hi"
-import { parse } from "date-fns"
-import { MdOutlineAccessTime } from "react-icons/md"
+import BookingConfirmed from "@/components/ui/BookingConfirmed"
+import { Loader2 } from "lucide-react"
 
-const BookingConfirmationPage: React.FC = () => {
+const BookingConfirmationContent: React.FC = () => {
   const searchParams = useSearchParams()
-  // const navigate = useRouter()
   const appointmentId = searchParams.get("appointment_id")
   const subBookingId = searchParams.get("sub_booking_id")
   const [confirmedAppointment, setConfirmedAppointment] =
@@ -40,79 +34,55 @@ const BookingConfirmationPage: React.FC = () => {
     }
   }, [getBookingByIdResult])
 
-  const defaultPetImageByType =
-    petImageByType[confirmedAppointment?.pet_type?.toLowerCase() || "other"] ||
-    petImageByType.other
-
   if (loadingGetBookingById || !confirmedAppointment) {
-    return
+    return (
+      <div className="flex flex-col justify-center items-center space-y-4">
+        <Loader2 className="h-5 w-5 animate-spin" />
+      </div>)
   }
 
   return (
-    <Suspense>
-      <div className="w-full h-full">
-        <div className="flex flex-col justify-center gap-4 items-center">
-          <h1 className="text-3xl flex items-center gap-4">
-            Booking Confirmed <BsCheckCircleFill fill="#5281a2" />
-          </h1>
-          <div
-            className={`p-4 text-primary-1 shadow-md my-5 flex flex-col gap-2 items-center
-                bg-[#FFFCF3]`}
-          >
-            <p className="text-lg font-semibold mt-4 text-center">
-              {confirmedAppointment?.pet_name} is scheduled for a{" "}
-              {confirmedAppointment?.appt_type_title}
-            </p>
-            <div className="flex items-center my-4 relative">
-              <div className="relative w-32 h-32 rounded-full overflow-hidden bg-whitep-3 flex justify-center items-center">
-                <Image
-                  src={
-                    confirmedAppointment?.pet_profile_image ||
-                    defaultPetImageByType
-                  }
-                  alt={`${confirmedAppointment?.pet_name}'s profile`}
-                  layout="fill"
-                  objectFit="cover"
-                  sizes="128px"
-                  priority
-                />
-              </div>
-              <div className="my-4 space-y-3">
-                <p className={`flex items-center gap-2`}>
-                  <span className="text-secondary-1">
-                    <GrLocation />
-                  </span>{" "}
-                  {confirmedAppointment?.address?.tag}
-                </p>
-                <p className={`flex items-center gap-2`}>
-                  <span className="text-secondary-1">
-                    <HiOutlineCalendar />
-                  </span>
-                  {parse(
-                    confirmedAppointment.booking_date,
-                    "dd-MM-yyyy",
-                    new Date(),
-                  ).toLocaleDateString("en-IN", {
-                    weekday: "long",
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </p>
-                <p className={`flex items-center gap-2`}>
-                  <span className="text-secondary-1">
-                    <MdOutlineAccessTime />
-                  </span>
-                  {confirmedAppointment.appt_start} -{" "}
-                  {confirmedAppointment.appt_end}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </Suspense>
+    <main className="flex flex-col items-center w-full mt-8 mb-8 px-8 md:px-32 lg:px-20 xl:px-40">
+      <BookingConfirmed
+        bookingType={confirmedAppointment.booking_type}
+        isGroomingAppointment={false}
+        selectedAppointment={{
+          selectedSvcId: confirmedAppointment.appt_type,
+          selectedPet: {
+            id: confirmedAppointment.pet_id,
+            name: confirmedAppointment.pet_name,
+            type: confirmedAppointment.pet_type,
+            profileImage: confirmedAppointment.pet_profile_image,
+            breedId: null,
+            breed: null,
+            gender: null,
+            dob: null
+          },
+          selectedClinic: confirmedAppointment.clinic_id,
+          selectedLocation: confirmedAppointment.address?.tag as string,
+          selectedAddressDetails: [
+            confirmedAppointment.address?.address_line1,
+            confirmedAppointment.address?.address_line2,
+            ]
+            .filter(Boolean)
+            .join(", "),
+          selectedClinicContact: confirmedAppointment.clinic_contact,
+          selectedService: confirmedAppointment.appt_type_title,
+          selectedVet: null,
+          selectedDate: new Date(confirmedAppointment.booking_date),
+          selectedSlot: confirmedAppointment.appt_start,
+          selectedSlotEnd: confirmedAppointment.appt_end,
+          appliedCoupon: null
+        }}
+      />
+    </main>
   )
 }
 
-export default BookingConfirmationPage
+export default function BookingConfirmationPage() {
+  return (
+    <Suspense fallback={<Loader2 />}>
+      <BookingConfirmationContent />
+    </Suspense>
+  )
+}

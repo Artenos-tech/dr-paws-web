@@ -11,12 +11,14 @@ import { petImageByType } from "./PetCard"
 import { SelectedVet } from "./SelectVet"
 
 type BookingConfirmedProps = {
+  bookingType: "HOME_VISIT" | "CLINIC_VISIT"
   isGroomingAppointment: boolean
   selectedAppointment: {
     selectedSvcId: string
     selectedPet: Pet
     selectedClinic: string
     selectedLocation: string
+    selectedAddressDetails?: string
     selectedClinicContact: string
     selectedService: string
     selectedSubtype?: string
@@ -28,6 +30,7 @@ type BookingConfirmedProps = {
   }
 }
 const BookingConfirmed: React.FC<BookingConfirmedProps> = ({
+  bookingType,
   isGroomingAppointment,
   selectedAppointment,
 }) => {
@@ -45,7 +48,7 @@ const BookingConfirmed: React.FC<BookingConfirmedProps> = ({
           Booking Confirmed <BsCheckCircleFill fill="#5281a2" />
         </h1>
         <div
-          className={`p-4 text-primary-1 shadow-md my-5 flex flex-col gap-2 items-center
+          className={`p-4 px-10 text-primary-1 shadow-md my-8 mb-10 flex flex-col gap-2 items-center
               bg-[#FFFCF3]`}
         >
           <p className="text-lg font-semibold mt-4 text-center">
@@ -53,7 +56,7 @@ const BookingConfirmed: React.FC<BookingConfirmedProps> = ({
             {isGroomingAppointment && selectedAppointment.selectedSubtype
               ? `${selectedAppointment.selectedSubtype}`
               : `${selectedAppointment.selectedService}`}
-            {isGroomingAppointment
+            {isGroomingAppointment || bookingType === "HOME_VISIT"
               ? ""
               : ` with ${selectedAppointment.selectedVet!.name}`}
           </p>
@@ -71,7 +74,7 @@ const BookingConfirmed: React.FC<BookingConfirmedProps> = ({
                 priority
               />
             </div>
-            {!isGroomingAppointment && (
+            {(!isGroomingAppointment || bookingType === "CLINIC_VISIT") && (
               <div className="relative w-32 h-32 rounded-full overflow-hidden bg-white p-8 ml-[-30px] flex justify-center items-center">
                 <Image
                   src={
@@ -87,13 +90,19 @@ const BookingConfirmed: React.FC<BookingConfirmedProps> = ({
               </div>
             )}
           </div>
-          <div className="my-4 space-y-3">
-            <p className={`flex items-center gap-2`}>
-              <span className="text-secondary-1">
-                <GrLocation />
-              </span>{" "}
-              {selectedAppointment.selectedLocation}
-            </p>
+          <div className="my-4 space-y-3 w-fit max-w-72">
+            <div className="flex flex-col justify-center">
+              <div className="flex">
+                <GrLocation className="mt-1 mr-1" size={14} />
+                <span className="font-semibold">
+                  {selectedAppointment.selectedLocation}
+                </span>
+              </div>
+
+              {selectedAppointment.selectedAddressDetails && (
+                <p className="text-sm">{selectedAppointment.selectedAddressDetails}</p>
+              )}
+            </div>
             <p className={`flex items-center gap-2`}>
               <span className="text-secondary-1">
                 <HiOutlineCalendar />
@@ -125,8 +134,11 @@ const BookingConfirmed: React.FC<BookingConfirmedProps> = ({
             <p className="italic text-gray-400 text-sm text-center w-full max-w-md justify-self-center">
               You’ll receive a confirmation via WhatsApp. You can cancel or
               reschedule your appointment through the app/website or by
-              contacting our {selectedAppointment.selectedLocation} clinic at{" "}
-              {selectedAppointment.selectedClinicContact}. You’ll receive a
+              contacting{" "}
+              {bookingType === "CLINIC_VISIT"
+                ? `our ${selectedAppointment.selectedLocation} clinic`
+                : `us`}{" "}
+              at {selectedAppointment.selectedClinicContact}. You’ll receive a
               WhatsApp message confirming any changes.
             </p>
           </div>

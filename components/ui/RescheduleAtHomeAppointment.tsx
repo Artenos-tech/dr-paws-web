@@ -132,7 +132,7 @@ const RescheduleAtHomeAppointment = ({
             isConfirmationModalOpen={isConfirmationModalOpen}
             isConfirming={rescheduleLoading}
             onConfirm={handleConfirmSlots}
-            isReschedule
+            isReschedule={true}
           />
 
           {bookingDetails && (

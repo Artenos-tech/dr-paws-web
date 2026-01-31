@@ -77,6 +77,12 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
     loading: loadingSlots,
   } = useAPICall(atHomeApiClient.getAtHomeSlots)
 
+  const {
+    call: getHomeVisitPaymentAmount,
+    result: homeVisitPaymentAmountResult,
+    loading: homeVisitPaymentAmountLoading,
+  } = useAPICall(atHomeApiClient.getHomeVisitPaymentAmount)
+
   const [selectedDate, setSelectedDate] = useState<string | null>(
     initialDate || null,
   )
@@ -85,6 +91,18 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
   )
   const [days, setDays] = useState<DaySlots[]>([])
   const [isProcessing, setIsProcessing] = useState(false)
+
+  // Convert date (YYYY-MM-DD) to UTC ISO string
+  function convertBookingDateToIso(date: string) {
+    const dateParts = date.split("-")
+    return new Date(
+      Date.UTC(
+        Number(dateParts[0]),
+        Number(dateParts[1]) - 1,
+        Number(dateParts[2]),
+      ),
+    ).toISOString()
+  }
 
   useEffect(() => {
     if (!isConfirmationModalOpen && isProcessing && !isConfirming) {
@@ -115,6 +133,16 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
       setDays([])
     }
   }, [atHomeSlotsResult])
+
+  useEffect(() => {
+    if (!addressId || !selectedDate || !selectedSlot) return
+    getHomeVisitPaymentAmount({
+      address_id: addressId,
+      pet_id: petId,
+      booking_date: convertBookingDateToIso(selectedDate),
+      appt_start: selectedSlot.startTime,
+    })
+  }, [addressId, selectedDate, selectedSlot])
 
   useEffect(() => {
     if (days.length && !selectedDate && !initialDate) {
@@ -219,6 +247,31 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
           </div>
         )}
       </div>
+
+      {selectedDate && selectedSlot && (
+        <div className="mb-8">
+          <p className="font-bold text-gray-600 mb-3">Amount</p>
+          {homeVisitPaymentAmountLoading && (
+            <div className="flex justify-center items-center py-6">
+              <ClipLoader color="#4f46e5" size={24} />
+            </div>
+          )}
+          {!homeVisitPaymentAmountLoading &&
+            !homeVisitPaymentAmountResult?.ok && (
+              <p className="text-sm text-gray-500">
+                Payment information could not be retrieved. Please try again
+                later.
+              </p>
+            )}
+          {!homeVisitPaymentAmountLoading &&
+            homeVisitPaymentAmountResult &&
+            homeVisitPaymentAmountResult.ok && (
+              <p className="font-bold text-gray-600 mb-3">
+                INR {homeVisitPaymentAmountResult.value.body.data.amount}
+              </p>
+            )}
+        </div>
+      )}
 
       <div className="flex flex-col items-center justify-center mb-10">
         <Tooltip

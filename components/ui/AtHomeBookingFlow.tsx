@@ -8,7 +8,7 @@ import ConfirmationModal from "./ConfirmationModal"
 import { useAPICall } from "@/hooks/apicall"
 import atHomeApiClient from "@/services/api.athome"
 import { ReasonForVisitEnum } from "@/model/typeDefinitions"
-// import { load } from "@cashfreepayments/cashfree-js"
+import { load } from "@cashfreepayments/cashfree-js"
 import toast from "react-hot-toast"
 
 interface AtHomeBookingFlowProps {
@@ -64,6 +64,7 @@ type AtHomeBookingAction =
   | { type: "SHOW_CONFIRMATION_MODAL" }
   | { type: "HIDE_CONFIRMATION_MODAL" }
   | { type: "CONFIRM_BOOKING" }
+  | { type: "BOOKING_CONFIRMED" }
   | { type: "SET_LOADING"; payload: boolean }
 
 const initialState: AtHomeBookingState = {
@@ -213,7 +214,18 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
   ) => {
     dispatch({ type: "SET_DATE_TIME", payload: { date, slot } })
   }
-
+  // Convert date (YYYY-MM-DD) to UTC ISO string
+  const convertBookingDateToIso = (date: string) => {
+    const dateParts = date.split("-")
+    return new Date(
+      Date.UTC(
+        Number(dateParts[0]),
+        Number(dateParts[1]) - 1,
+        Number(dateParts[2]),
+      ),
+    ).toISOString()
+  }
+  
   const handleConfirmBooking = async () => {
     dispatch({ type: "CONFIRM_BOOKING" })
     const reasonForVisit = VISIT_REASONS.find(
@@ -223,30 +235,41 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
       pet_id: appointmentData.petId as string,
       address_id: appointmentData.addressId as string,
       appt_start: appointmentData.slot?.startTime as string,
-      booking_date: appointmentData.date as string,
+      booking_date: convertBookingDateToIso(appointmentData.date as string),
       reason_for_visit: reasonForVisit as ReasonForVisitEnum,
       notes: bookingDetails.reasonDescription as string,
     })
 
     if (createPaymentOrderResult?.ok) {
-      // dispatch({ type: "BOOKING_CONFIRMED" })
+      dispatch({ type: "BOOKING_CONFIRMED" })
+      const { paymentSessionId, orderId } =
+        createPaymentOrderResult.value.body.data.order
+      handlePayment(paymentSessionId, orderId)
     } else {
       dispatch({ type: "HIDE_CONFIRMATION_MODAL" })
       toast.error("Could not complete booking. Please try again later.")
     }
   }
 
-  // const handlePayment = async (paymentSessionId: string, orderId: string) => {
-  //   const cashfreeSession = await initializeSDK()
-  //   const result = await cashfreeSession.checkout({
-  //     paymentSessionId,
-  //     returnUrl:
-  //       window.location.origin +
-  //       `/user/book-appointment/home-visit/payment?order_id=` +
-  //       orderId,
-  //   })
-  //   console.log("Cashfree checkout result: ", result)
-  // }
+  const handlePayment = async (paymentSessionId: string, orderId: string) => {
+    try {
+      const cashfreeSession = await initializeSDK()
+      console.log(paymentSessionId, orderId)
+      const result = await cashfreeSession.checkout({
+        paymentSessionId,
+        returnUrl:
+          window.location.origin +
+          `/user/book-appointment/home-visit/payment?order_id=` +
+          orderId +
+          `&service=Home_Visit`,
+        redirectTarget: "_self",
+      })
+      console.log("Cashfree checkout result: ", result)
+    } catch (e) {
+      console.error("Error initiating payment on Cashfree")
+      console.error(e)
+    }
+  }
 
   const handleBack = () => {
     if (isConfirming) return
@@ -258,23 +281,23 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
     }
   }
 
-  // const initializeSDK = async function () {
-  //   const cashfreeEnv = process.env.NEXT_PUBLIC_CASHFREE_ENVIRONMENT as
-  //     | "sandbox"
-  //     | "production"
-  //   if (!cashfreeEnv) {
-  //     throw new Error(
-  //       "Cashfree environment is not set. Cannot proceed with payment",
-  //     )
-  //   } else {
-  //     const cashfree = await load({
-  //       mode: process.env.NEXT_PUBLIC_CASHFREE_ENVIRONMENT as
-  //         | "sandbox"
-  //         | "production",
-  //     })
-  //     return cashfree
-  //   }
-  // }
+  const initializeSDK = async function () {
+    const cashfreeEnv = process.env.NEXT_PUBLIC_CASHFREE_ENVIRONMENT as
+      | "sandbox"
+      | "production"
+    if (!cashfreeEnv) {
+      throw new Error(
+        "Cashfree environment is not set. Cannot proceed with payment",
+      )
+    } else {
+      const cashfree = await load({
+        mode: process.env.NEXT_PUBLIC_CASHFREE_ENVIRONMENT as
+          | "sandbox"
+          | "production",
+      })
+      return cashfree
+    }
+  }
 
   const bookingDetails = React.useMemo(() => {
     return {

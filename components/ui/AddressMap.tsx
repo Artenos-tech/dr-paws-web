@@ -15,7 +15,6 @@ const AddressMap = ({
   mapOptions,
   isEditMode = true,
 }: AddressMapProps) => {
-  console.log("map", mapOptions)
 
   return (
     <GoogleMap
