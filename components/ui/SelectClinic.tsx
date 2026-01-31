@@ -12,7 +12,7 @@ import { Input, Select } from "antd"
 interface SelectClinicProps {
   onNext: () => void // Prop for navigation
   selectedClinic: string | null
-  selectedLocation: string | null
+  selectedClinicLocation: string | null
   selectedClinicContact: string | null
   handleClinicSelection: (
     clinicId: string,
@@ -27,7 +27,7 @@ interface SelectClinicProps {
 const SelectClinic: React.FC<SelectClinicProps> = ({
   onNext,
   selectedClinic,
-  selectedLocation,
+  selectedClinicLocation,
   selectedClinicContact,
   handleClinicSelection,
   selectedPet,
@@ -246,7 +246,7 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
 
   useEffect(() => {
     if (!selectedClinic || clinics.length === 0) return
-    if (selectedLocation && selectedClinicContact) return
+    if (selectedClinicLocation && selectedClinicContact) return
     const selected = clinics.find((item) => item.id === selectedClinic)
     if (!selected) return
     handleClinicSelection(selected.id, selected.location, selected.contact, {
@@ -257,7 +257,7 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
     handleClinicSelection,
     selectedClinic,
     selectedClinicContact,
-    selectedLocation,
+    selectedClinicLocation,
   ])
 
   if (loadingClinics) {
