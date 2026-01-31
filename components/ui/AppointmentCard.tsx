@@ -83,13 +83,11 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
     petImageByType.other
 
   const petImage =
-    //uncomment below line to use actual pet image
-    // appointment.pet_profile_image ||
+    appointment.pet_profile_image ||
     defaultPetImageByType
 
   const vetImage =
-    //uncomment below line to use actual vet image
-    // appointment.vet_image ||
+    appointment.vet_image ||
     defaultVetImage
 
   const parsedDate = parseISO(appointment.booking_date)

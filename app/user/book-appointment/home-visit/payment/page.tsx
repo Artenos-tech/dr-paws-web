@@ -1,31 +1,56 @@
 "use client"
-import { Suspense, useEffect, useState } from "react"
+import { Suspense, useEffect, useRef, useState } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import { useAPICall } from "@/hooks/apicall"
 import atHomeClient from "@/services/api.athome"
 import { Loader2, AlertCircle } from "lucide-react"
+
+const POLL_INTERVAL_MS = 3000
 
 const HomeVisitPaymentStatus: React.FC = () => {
   const searchParams = useSearchParams()
   const router = useRouter()
   const [status, setStatus] = useState("loading")
   const { call: getOrderStatus } = useAPICall(atHomeClient.getOrderStatus)
+  const pollingRef = useRef<NodeJS.Timeout | null>(null)
+  const hasRedirectedRef = useRef(false)
+  const getOrderStatusRef = useRef(getOrderStatus)
+  getOrderStatusRef.current = getOrderStatus
+
+  const orderId = searchParams.get("order_id")
 
   useEffect(() => {
-    const verifyPaymentForOrder = async (orderid: string) => {
+    if (!orderId) {
+      setStatus("error")
+      return
+    }
+
+    const stopPolling = () => {
+      if (pollingRef.current) {
+        clearInterval(pollingRef.current)
+        pollingRef.current = null
+      }
+    }
+
+    const verifyPaymentForOrder = async () => {
+      if (hasRedirectedRef.current) return
+
       try {
-        const result = await getOrderStatus({ orderid })
+        const result = await getOrderStatusRef.current({ orderid: orderId })
         console.log("Payment verification result", result)
         if (!result.ok) {
           console.log("Error message from API", result.error)
+          stopPolling()
           setStatus("error")
           return
         }
         const paymentStatus = result.value.body.data.order_payment.status
         const appointmentDetails = result.value.body.data.appointment
         setStatus(paymentStatus)
+
         if (paymentStatus === "PAID" && appointmentDetails) {
-          // Add a small delay before redirect for better UX
+          hasRedirectedRef.current = true
+          stopPolling()
           setTimeout(() => {
             router.push(
               "/user/book-appointment/confirmation?appointment_id=" +
@@ -37,17 +62,24 @@ const HomeVisitPaymentStatus: React.FC = () => {
         }
       } catch {
         console.error("Failed to verify payment")
+        stopPolling()
         setStatus("error")
       }
     }
-    const orderId = searchParams.get("order_id")
-    console.log("Payment status page", orderId)
-    if (orderId) {
-      verifyPaymentForOrder(orderId)
-    } else {
-      setStatus("error")
+
+    verifyPaymentForOrder()
+    pollingRef.current = setInterval(verifyPaymentForOrder, POLL_INTERVAL_MS)
+
+    return () => {
+      if (pollingRef.current) {
+        clearInterval(pollingRef.current)
+        pollingRef.current = null
+      }
     }
-  }, [])
+  }, [orderId, router])
+
+  const service = searchParams.get("service") || null
+
   const renderContent = () => {
     switch (status) {
       case "loading":
@@ -111,7 +143,9 @@ const HomeVisitPaymentStatus: React.FC = () => {
   }
   return (
     <div className="container mx-auto py-8 max-w-md">
-      <h1 className="text-2xl font-bold mb-6 text-center">Payment Status</h1>
+      <h1 className="text-2xl font-bold mb-6 text-center">
+        Payment Status {service ? `for ${service.replace("_", " ")} booking` : ``}{" "}
+      </h1>
       {renderContent()}
     </div>
   )
@@ -119,7 +153,7 @@ const HomeVisitPaymentStatus: React.FC = () => {
 
 export default function HomeVisitPaymentStatusPage() {
   return (
-    <Suspense>
+    <Suspense fallback={<Loader2 />}>
       <HomeVisitPaymentStatus />
     </Suspense>
   )

@@ -175,22 +175,6 @@ const AppointmentDetailSchema = z
     }),
   )
 
-const OrderAppointmentSchema = z.object({
-  id: z.string().uuid(),
-  sub_booking_id: z.string().uuid(),
-  pet_name: z.string(),
-  pet_type: z.enum(["DOG", "CAT", "OTHER"]).nullable(),
-  pet_profile_image: z.string().nullable(),
-  clinic_id: z.string().uuid(),
-  booking_date: z.string(),
-  appt_start: z.string(),
-  appt_end: z.string(),
-  appt_type_title: z.enum(["Vet Consultation", "Grooming", "Home Visit"]),
-  appt_type: z.enum(["VET_CONSULTATION", "GROOMING", "HOME_VISIT"]),
-  address: AddressSchema,
-  sos_status: z.enum(["ACTIVE", "INACTIVE"]),
-})
-
 // ============================================================================
 // TYPE DEFINITION
 // ============================================================================
@@ -364,6 +348,27 @@ export type AtHomeAPIClient = {
     >
   >
 
+  getHomeVisitPaymentAmount: (
+    params: {
+      address_id: string
+      pet_id: string
+      appt_start: string
+      booking_date: string
+    },
+    opts?: { abortSignal?: AbortSignal },
+  ) => Promise<
+    Result<
+      APIResponse<{
+        status: number
+        message: string
+        data: {
+          amount: number
+        }
+      }>,
+      any
+    >
+  >
+
   createPaymentOrder: (
     params: {
       pet_id: string
@@ -403,7 +408,10 @@ export type AtHomeAPIClient = {
         message: string
         data: {
           order_payment: z.infer<typeof OrderStatusSchema>
-          appointment: z.infer<typeof OrderAppointmentSchema> | null
+          appointment: {
+            id: string
+            sub_booking_id: string
+          } | null
         }
       }>,
       any
@@ -862,6 +870,20 @@ export const mockAtHomeClient: AtHomeAPIClient = {
     })
   },
 
+  getHomeVisitPaymentAmount: async (params, opts) => {
+    await delay(500, opts?.abortSignal)
+    return ok({
+      status: 200,
+      body: {
+        status: 200,
+        message: "Fetched home visit payment amount successfully",
+        data: {
+          amount: 799,
+        },
+      },
+    })
+  },
+
   createPaymentOrder: async (params, opts) => {
     await delay(500, opts?.abortSignal)
     return ok({
@@ -1312,6 +1334,24 @@ const endpointConfig = {
     errorResponseSchema: z.object({}),
   },
 
+  getHomeVisitPaymentAmount: {
+    method: "GET" as const,
+    path: "/booking/at-home/payments/amount/{address_id}?pet_id={pet_id}&booking_date={booking_date}&appt_start={appt_start}",
+    pathParamsSchema: z.object({
+      address_id: z.string(),
+      pet_id: z.string(),
+      booking_date: z.string(),
+      appt_start: z.string(),
+    }),
+    requestSchema: z.object({}),
+    responseSchema: z.object({
+      data: z.object({
+        amount: z.number(),
+      }),
+    }),
+    errorResponseSchema: z.object({}),
+  },
+
   createPaymentOrder: {
     method: "POST" as const,
     path: "/booking/at-home/payments/orders",
@@ -1347,7 +1387,10 @@ const endpointConfig = {
     responseSchema: z.object({
       data: z.object({
         order_payment: OrderStatusSchema,
-        appointment: OrderAppointmentSchema.nullable(),
+        appointment: z.object({
+          id: z.string(),
+          sub_booking_id: z.string()
+        }).nullable(),
       }),
     }),
     errorResponseSchema: z.object({}),

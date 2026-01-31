@@ -194,6 +194,7 @@ const ClinicBookingFlow: React.FC<ClinicBookingFlowProps> = ({
 
       {/* {currentStep === 4 && (
         <BookingConfirmed
+          bookingType="CLINIC_VISIT"
           isGroomingAppointment={selectedAppointment.isGrooming}
           selectedAppointment={{
             selectedSvcId: notNull(selectedAppointment.selectedServiceId),
