@@ -20,12 +20,13 @@ import { ClipLoader } from "react-spinners"
 import { BookingCategory } from "./SelectService"
 import BestAvailableVetCard from "./BestAvailableVetCard"
 import ConfirmationModal from "./ConfirmationModal"
-import { Input } from "antd"
+import { Input, Modal } from "antd"
 
 export interface SelectedVet {
   id: string
   name: string
   displayImage: string | null
+  tier?: "NORMAL" | "SENIOR"
 }
 
 interface selectVetProps {
@@ -53,6 +54,9 @@ interface selectVetProps {
 }
 
 const BEST_AVAILABLE_VET_ID = "best-available"
+const CONSULTATION_SERVICE_ID = "opd-consult"
+const CONSULTATION_NORMAL_SUBTYPE = "vet-consultation-with-staff"
+const CONSULTATION_SENIOR_SUBTYPE = "vet-consultation-with-senior-staff"
 
 const SelectVet: React.FC<selectVetProps> = ({
   selectedClinic,
@@ -77,6 +81,7 @@ const SelectVet: React.FC<selectVetProps> = ({
     endTime: string
   } | null>(null)
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false)
+  const [isSeniorModalOpen, setIsSeniorModalOpen] = useState(false)
   const [chosenVetId, setChosenVetId] = useState<string | null>(null)
   const [couponCode, setCouponCode] = useState<string>("")
   const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null)
@@ -116,13 +121,20 @@ const SelectVet: React.FC<selectVetProps> = ({
 
   const { call: getDoctor } = useAPICall(api.getDoctor)
 
+  const isConsultation =
+    selectedSvcId === CONSULTATION_SERVICE_ID && !isGrooming
+
   const fetchSlotsForStaff = useCallback(async () => {
     if (!selectedDoctor) {
       throw new Error("Doctor must be selected")
     }
+    const selectedConsultationSubtype =
+      selectedDoctor.tier === "SENIOR"
+        ? CONSULTATION_SENIOR_SUBTYPE
+        : CONSULTATION_NORMAL_SUBTYPE
     if (
       selectedSvcId &&
-      selectedSubtype &&
+      (selectedSubtype || isConsultation) &&
       selectedClinic &&
       selectedPet &&
       !isGrooming
@@ -131,7 +143,9 @@ const SelectVet: React.FC<selectVetProps> = ({
         await getSlotsForStaff({
           staffid: selectedDoctor.id,
           clinicid: selectedClinic,
-          catalogue: selectedSubtype.id,
+          catalogue: isConsultation
+            ? selectedConsultationSubtype
+            : (selectedSubtype?.id as string),
           petid: selectedPet.id,
           pettype: selectedPet.type as "DOG" | "CAT" | "OTHER",
           date: format(selectedDate, "dd/MM/yyyy"),
@@ -180,11 +194,18 @@ const SelectVet: React.FC<selectVetProps> = ({
   ])
 
   const fetchBestAvailableVetSlots = useCallback(async () => {
-    if (selectedSvcId && selectedSubtype && selectedClinic && selectedPet) {
+    if (
+      selectedSvcId &&
+      (selectedSubtype || isConsultation) &&
+      selectedClinic &&
+      selectedPet
+    ) {
       try {
         await getBestAvailableVetSchedule({
           clinicid: selectedClinic,
-          catalogue: selectedSubtype.id,
+          catalogue: isConsultation
+            ? CONSULTATION_NORMAL_SUBTYPE
+            : (selectedSubtype?.id as string),
           petid: selectedPet.id,
           pettype: selectedPet.type as "DOG" | "CAT" | "OTHER",
           date: format(selectedDate, "dd/MM/yyyy"),
@@ -199,12 +220,14 @@ const SelectVet: React.FC<selectVetProps> = ({
   }, [selectedClinic, selectedSvcId, selectedDate])
 
   const fetchDoctors = useCallback(async () => {
-    if (selectedSubtype && selectedPet) {
+    if ((selectedSubtype || isConsultation) && selectedPet) {
       try {
         await getDoctorsForClinic({
           clinicid: selectedClinic,
           grooming: isGrooming ? "y" : "n",
-          catalogue: selectedSubtype?.id,
+          catalogue: isConsultation
+            ? `${CONSULTATION_NORMAL_SUBTYPE},${CONSULTATION_SENIOR_SUBTYPE}`
+            : (selectedSubtype?.id as string),
           date: format(selectedDate, "dd/MM/yyyy"),
           petid: selectedPet.id,
           pettype: selectedPet.type as "DOG" | "CAT" | "OTHER",
@@ -340,6 +363,14 @@ const SelectVet: React.FC<selectVetProps> = ({
     if (!isReschedule) {
       setIsConfirmationModalOpen(false)
       if (user && selectedSlot && selectedDate && selectedDoctor) {
+        const bookingDoctor =
+          selectedDoctor.id === BEST_AVAILABLE_VET_ID
+            ? doctors.find((doc) => doc.id === chosenVetId)
+            : selectedDoctor
+        const consultationSubtype =
+          bookingDoctor?.tier === "SENIOR"
+            ? CONSULTATION_SENIOR_SUBTYPE
+            : CONSULTATION_NORMAL_SUBTYPE
         try {
           const response = await createAnAppointment({
             vet_id:
@@ -353,7 +384,9 @@ const SelectVet: React.FC<selectVetProps> = ({
             appt_end: selectedSlot.endTime.replace(":", ""),
             booking_date: format(selectedDate, "dd/MM/yyyy"),
             appt_type_id: selectedSvcId,
-            subtype_id: selectedSubtype?.id as string,
+            subtype_id: isConsultation
+              ? consultationSubtype
+              : (selectedSubtype?.id as string),
             pet_type: selectedPet.type as "DOG" | "CAT" | "OTHER",
             is_grooming: isGrooming,
             ...(appliedCoupon && {
@@ -396,6 +429,14 @@ const SelectVet: React.FC<selectVetProps> = ({
         selectedDoctor &&
         existingAppointment
       ) {
+        const bookingDoctor =
+          selectedDoctor.id === BEST_AVAILABLE_VET_ID
+            ? doctors.find((doc) => doc.id === chosenVetId)
+            : selectedDoctor
+        const consultationSubtype =
+          bookingDoctor?.tier === "SENIOR"
+            ? CONSULTATION_SENIOR_SUBTYPE
+            : CONSULTATION_NORMAL_SUBTYPE
         try {
           const response = await rescheduleAppointment({
             appointmentid: existingAppointment.appointmentId,
@@ -408,7 +449,9 @@ const SelectVet: React.FC<selectVetProps> = ({
             appt_end: selectedSlot.endTime.replace(":", ""),
             booking_date: format(selectedDate, "dd/MM/yyyy"),
             service_id: selectedSvcId,
-            catalogue_id: selectedSubtype?.id as string,
+            catalogue_id: isConsultation
+              ? consultationSubtype
+              : (selectedSubtype?.id as string),
             clinic_id: selectedClinic,
             is_grooming: isGrooming,
             pet_type: selectedPet.type as "DOG" | "CAT" | "OTHER",
@@ -581,6 +624,11 @@ const SelectVet: React.FC<selectVetProps> = ({
             onDoctorSelected={(doctor) => {
               setSelectedDoctor(doctor)
               setSelectedDate(new Date()) // Reset date and slot on doctor change
+              if (isConsultation && !isGrooming && doctor.tier === "SENIOR") {
+                setIsSeniorModalOpen(true)
+              } else {
+                setIsSeniorModalOpen(false)
+              }
             }}
           />
           {!filteredDoctors.length && (
@@ -709,6 +757,19 @@ const SelectVet: React.FC<selectVetProps> = ({
           }}
         />
       )}
+      <Modal
+        open={isSeniorModalOpen}
+        onCancel={() => setIsSeniorModalOpen(false)}
+        footer={null}
+        centered
+        destroyOnClose
+        title="Senior Vet Selected"
+      >
+        <p className="text-sm text-gray-700">
+          This is a senior vet and the consultation charge will be higher at
+          ₹800.
+        </p>
+      </Modal>
       <Toaster />
     </div>
   )
@@ -750,7 +811,7 @@ const DoctorSelectionCarousel = ({
               doctor={doctor}
               isSelected={selectedDoctor?.id === doctor.id}
               onDoctorSelect={(id, name, displayImage) => {
-                onDoctorSelected({ id, name, displayImage })
+                onDoctorSelected({ id, name, displayImage, tier: doctor.tier })
               }}
             />
           </CarouselItem>

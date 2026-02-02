@@ -528,6 +528,7 @@ export default createAPIClient({
             id: z.string(),
             name: z.string(),
             displayImage: z.string().url().nullable(),
+            tier: z.enum(["NORMAL", "SENIOR"]).optional(),
           }),
         ),
       }),

@@ -142,6 +142,7 @@ const SelectService: React.FC<SelectServiceProps> = ({
         selectedCard &&
         // selectedCard.isGrooming &&
         selectedCard.subtypes &&
+        selectedCard.subtypes.length > 0 &&
         prevOpenCard !== cardId
       ) {
         setSubtypes(selectedCard.subtypes)
