@@ -140,16 +140,24 @@ const SelectVet: React.FC<selectVetProps> = ({
       !isGrooming
     ) {
       try {
-        await getSlotsForStaff({
+        const params: {
+          staffid: string
+          clinicid: string
+          petid: string
+          pettype: "DOG" | "CAT" | "OTHER"
+          date: string
+          catalogue?: string
+        } = {
           staffid: selectedDoctor.id,
           clinicid: selectedClinic,
-          catalogue: isConsultation
-            ? selectedConsultationSubtype
-            : (selectedSubtype?.id as string),
           petid: selectedPet.id,
           pettype: selectedPet.type as "DOG" | "CAT" | "OTHER",
           date: format(selectedDate, "dd/MM/yyyy"),
-        })
+        }
+        if (!isConsultation) {
+          params.catalogue = selectedSubtype?.id as string
+        }
+        await getSlotsForStaff(params)
       } catch (error) {
         console.error("Error fetching slots for staff:", error)
         toast.error("Failed to load slots for staff. Please try again later.")

@@ -561,7 +561,7 @@ export default createAPIClient({
       pathParamsSchema: z.object({
         staffid: z.string().uuid(),
         clinicid: z.string().uuid(),
-        catalogue: z.string(),
+        catalogue: z.string().optional(),
         petid: z.string().uuid(),
         pettype: z.enum(["DOG", "CAT", "OTHER"]),
         date: z.string(),
