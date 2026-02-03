@@ -128,10 +128,6 @@ const SelectVet: React.FC<selectVetProps> = ({
     if (!selectedDoctor) {
       throw new Error("Doctor must be selected")
     }
-    const selectedConsultationSubtype =
-      selectedDoctor.tier === "SENIOR"
-        ? CONSULTATION_SENIOR_SUBTYPE
-        : CONSULTATION_NORMAL_SUBTYPE
     if (
       selectedSvcId &&
       (selectedSubtype || isConsultation) &&
@@ -209,15 +205,22 @@ const SelectVet: React.FC<selectVetProps> = ({
       selectedPet
     ) {
       try {
-        await getBestAvailableVetSchedule({
+        const params: {
+          clinicid: string
+          petid: string
+          pettype: "DOG" | "CAT" | "OTHER"
+          date: string
+          catalogue?: string
+        } = {
           clinicid: selectedClinic,
-          catalogue: isConsultation
-            ? CONSULTATION_NORMAL_SUBTYPE
-            : (selectedSubtype?.id as string),
           petid: selectedPet.id,
           pettype: selectedPet.type as "DOG" | "CAT" | "OTHER",
           date: format(selectedDate, "dd/MM/yyyy"),
-        })
+        }
+        if (!isConsultation) {
+          params.catalogue = selectedSubtype?.id as string
+        }
+        await getBestAvailableVetSchedule(params)
       } catch (error) {
         console.error("Error fetching best available vet slots:", error)
         toast.error(
@@ -374,12 +377,20 @@ const SelectVet: React.FC<selectVetProps> = ({
           selectedDoctor.id === BEST_AVAILABLE_VET_ID
             ? doctors.find((doc) => doc.id === chosenVetId)
             : selectedDoctor
-        const consultationSubtype =
-          bookingDoctor?.tier === "SENIOR"
-            ? CONSULTATION_SENIOR_SUBTYPE
-            : CONSULTATION_NORMAL_SUBTYPE
         try {
-          const response = await createAnAppointment({
+          const payload: {
+            vet_id: string
+            pet_id: string
+            clinic_id: string
+            appt_start: string
+            appt_end: string
+            booking_date: string
+            appt_type_id: string
+            subtype_id?: string
+            pet_type: "DOG" | "CAT" | "OTHER"
+            is_grooming: boolean
+            coupon_code?: string
+          } = {
             vet_id:
               selectedDoctor.id === BEST_AVAILABLE_VET_ID && chosenVetId
                 ? chosenVetId
@@ -391,15 +402,16 @@ const SelectVet: React.FC<selectVetProps> = ({
             appt_end: selectedSlot.endTime.replace(":", ""),
             booking_date: format(selectedDate, "dd/MM/yyyy"),
             appt_type_id: selectedSvcId,
-            subtype_id: isConsultation
-              ? consultationSubtype
-              : (selectedSubtype?.id as string),
             pet_type: selectedPet.type as "DOG" | "CAT" | "OTHER",
             is_grooming: isGrooming,
             ...(appliedCoupon && {
               coupon_code: appliedCoupon,
             }),
-          })
+          }
+          if (!isConsultation) {
+            payload.subtype_id = selectedSubtype?.id as string
+          }
+          const response = await createAnAppointment(payload)
           if (response.ok) {
             toast.success("Appointment created successfully!", {
               duration: 3000,
@@ -436,16 +448,20 @@ const SelectVet: React.FC<selectVetProps> = ({
         selectedDoctor &&
         existingAppointment
       ) {
-        const bookingDoctor =
-          selectedDoctor.id === BEST_AVAILABLE_VET_ID
-            ? doctors.find((doc) => doc.id === chosenVetId)
-            : selectedDoctor
-        const consultationSubtype =
-          bookingDoctor?.tier === "SENIOR"
-            ? CONSULTATION_SENIOR_SUBTYPE
-            : CONSULTATION_NORMAL_SUBTYPE
         try {
-          const response = await rescheduleAppointment({
+          const payload: {
+            appointmentid: string
+            sub_booking_id: string
+            vet_id: string
+            appt_start: string
+            appt_end: string
+            booking_date: string
+            service_id: string
+            catalogue_id?: string
+            clinic_id: string
+            is_grooming: boolean
+            pet_type: "DOG" | "CAT" | "OTHER"
+          } = {
             appointmentid: existingAppointment.appointmentId,
             sub_booking_id: existingAppointment.subBookingId,
             vet_id:
@@ -456,13 +472,14 @@ const SelectVet: React.FC<selectVetProps> = ({
             appt_end: selectedSlot.endTime.replace(":", ""),
             booking_date: format(selectedDate, "dd/MM/yyyy"),
             service_id: selectedSvcId,
-            catalogue_id: isConsultation
-              ? consultationSubtype
-              : (selectedSubtype?.id as string),
             clinic_id: selectedClinic,
             is_grooming: isGrooming,
             pet_type: selectedPet.type as "DOG" | "CAT" | "OTHER",
-          })
+          }
+          if (!isConsultation) {
+            payload.catalogue_id = selectedSubtype?.id as string
+          }
+          const response = await rescheduleAppointment(payload)
           if (response.ok) {
             toast.success("Appointment rescheduled successfully!", {
               duration: 3000,
