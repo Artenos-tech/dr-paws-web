@@ -435,8 +435,10 @@ export default createAPIClient({
 
     getAppointmentServices: {
       method: "GET",
-      path: "/booking/appointmenttypes",
-      pathParamsSchema: z.object({}),
+      path: "/booking/appointmenttypes?hide_consult_subtypes={hide_consult_subtypes}",
+      pathParamsSchema: z.object({
+        hide_consult_subtypes: z.enum(["true", "false"]).optional(),
+      }),
       requestSchema: z.object({}),
       responseSchema: z.object({
         appointmentTypes: z.array(
@@ -512,11 +514,12 @@ export default createAPIClient({
 
     getDoctorsForClinic: {
       method: "GET",
-      path: "/booking/clinic/{clinicid}/staff?grooming={grooming}&catalogue={catalogue}&date={date}&petid={petid}&pettype={pettype}",
+      path: "/booking/clinic/{clinicid}/staff?grooming={grooming}&catalogue={catalogue}&include_all_consultation={include_all_consultation}&date={date}&petid={petid}&pettype={pettype}",
       pathParamsSchema: z.object({
         clinicid: z.string().uuid(),
         grooming: z.enum(["y", "n"]),
-        catalogue: z.string(),
+        catalogue: z.string().optional(),
+        include_all_consultation: z.enum(["true", "false"]).optional(),
         date: z.string(),
         petid: z.string().uuid(),
         pettype: z.enum(["DOG", "CAT", "OTHER"]),

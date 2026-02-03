@@ -225,9 +225,8 @@ const SelectVet: React.FC<selectVetProps> = ({
         await getDoctorsForClinic({
           clinicid: selectedClinic,
           grooming: isGrooming ? "y" : "n",
-          catalogue: isConsultation
-            ? `${CONSULTATION_NORMAL_SUBTYPE},${CONSULTATION_SENIOR_SUBTYPE}`
-            : (selectedSubtype?.id as string),
+          catalogue: isConsultation ? "" : (selectedSubtype?.id as string),
+          include_all_consultation: isConsultation ? "true" : "false",
           date: format(selectedDate, "dd/MM/yyyy"),
           petid: selectedPet.id,
           pettype: selectedPet.type as "DOG" | "CAT" | "OTHER",
