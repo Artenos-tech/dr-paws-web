@@ -220,8 +220,8 @@ const SelectVet: React.FC<selectVetProps> = ({
         }
         if (!isConsultation) {
           params.catalogue = selectedSubtype?.id as string
-        } else if (showSeniorOnly) {
-          params.senior_only = "true"
+        } else {
+          params.senior_only = showSeniorOnly ? "true" : "false"
         }
         await getBestAvailableVetSchedule(params)
       } catch (error) {
@@ -231,7 +231,15 @@ const SelectVet: React.FC<selectVetProps> = ({
         )
       }
     }
-  }, [selectedClinic, selectedSvcId, selectedDate])
+  }, [
+    selectedClinic,
+    selectedSvcId,
+    selectedDate,
+    selectedSubtype,
+    selectedPet,
+    isConsultation,
+    showSeniorOnly,
+  ])
 
   const fetchDoctors = useCallback(async () => {
     if ((selectedSubtype || isConsultation) && selectedPet) {
@@ -266,6 +274,14 @@ const SelectVet: React.FC<selectVetProps> = ({
     if (isBestAvailable) fetchBestAvailableVetSlots()
     else fetchSlotsForStaff()
   }, [selectedDoctor])
+
+  useEffect(() => {
+    if (!selectedDoctor || isGrooming) return
+    if (selectedDoctor.id !== BEST_AVAILABLE_VET_ID) return
+    setSelectedSlot(null)
+    setChosenVetId(null)
+    fetchBestAvailableVetSlots()
+  }, [showSeniorOnly])
 
   // for best available vet
   useEffect(() => {
@@ -663,9 +679,19 @@ const SelectVet: React.FC<selectVetProps> = ({
                   setSelectedDoctor(null)
                   setSelectedSlot(null)
                 }
+                if (!checked && selectedDoctor?.id === BEST_AVAILABLE_VET_ID) {
+                  setSelectedDoctor(null)
+                  setSelectedSlot(null)
+                  setChosenVetId(null)
+                }
               }}
             />
           </div>
+          {showSeniorOnly && (
+            <p className="-mt-4 mb-6 text-sm text-amber-700">
+              Senior vets will be charged higher at ₹900.
+            </p>
+          )}
           <DoctorSelectionCarousel
             options={filteredDoctors}
             selectedDoctor={selectedDoctor}
@@ -673,8 +699,8 @@ const SelectVet: React.FC<selectVetProps> = ({
               if (
                 isConsultation &&
                 !isGrooming &&
-                (doctor.tier === "SENIOR" ||
-                  (showSeniorOnly && doctor.id === BEST_AVAILABLE_VET_ID))
+                !showSeniorOnly &&
+                doctor.tier === "SENIOR"
               ) {
                 setPendingSeniorDoctor(doctor)
                 setIsSeniorModalOpen(true)
@@ -811,6 +837,12 @@ const SelectVet: React.FC<selectVetProps> = ({
                 : !isGrooming
                   ? selectedDoctor?.name
                   : undefined,
+            isSenior: !isGrooming
+              ? selectedDoctor?.id === BEST_AVAILABLE_VET_ID
+                ? doctors.find((doc) => doc.id === chosenVetId)?.tier ===
+                  "SENIOR"
+                : selectedDoctor?.tier === "SENIOR"
+              : false,
             location: selectedLocation,
             date: selectedDate,
             slot: selectedSlot.startTime,
@@ -834,14 +866,10 @@ const SelectVet: React.FC<selectVetProps> = ({
             <PawPrint className="h-6 w-6" />
           </div>
           <h3 className="text-lg font-semibold text-gray-900">
-            {pendingSeniorDoctor?.id === BEST_AVAILABLE_VET_ID
-              ? "A senior Vet will be selected"
-              : "Senior Vet Selected"}
+            Senior Vet Selected
           </h3>
           <p className="text-sm text-gray-700 pb-4">
-            {pendingSeniorDoctor?.id === BEST_AVAILABLE_VET_ID
-    ? "Senior vet charges will be higher at ₹900"
-    : "This is a senior vet and the charge will be higher at ₹900"}
+            This is a senior vet and the charge will be higher at ₹900.
             <br />
           </p>
           <CustomButton

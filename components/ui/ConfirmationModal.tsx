@@ -18,6 +18,7 @@ interface ConfirmationModalProps {
     petName: string
     service: string
     doctorName?: string
+    isSenior?: boolean
     location: string
     date: Date
     slot: string
@@ -31,7 +32,16 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   onConfirm,
   bookingDetails,
 }) => {
-  const { petName, service, doctorName, location, date, slot, couponCode } =
+  const {
+    petName,
+    service,
+    doctorName,
+    isSenior,
+    location,
+    date,
+    slot,
+    couponCode,
+  } =
     bookingDetails
 
   return (
@@ -76,6 +86,12 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                 Discount redeemable at checkout
               </DialogDescription>
             </div>
+          )}
+          {isSenior && (
+            <DialogDescription className="text-sm font-medium text-amber-700">
+              Senior vet has been selected and the charge will be higher at
+              ₹900.
+            </DialogDescription>
           )}
           <DialogDescription className="text-sm font-medium text-gray-900">
             Are you sure you want to proceed with booking this appointment?
