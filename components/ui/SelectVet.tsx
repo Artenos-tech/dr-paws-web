@@ -21,6 +21,7 @@ import { BookingCategory } from "./SelectService"
 import BestAvailableVetCard from "./BestAvailableVetCard"
 import ConfirmationModal from "./ConfirmationModal"
 import { Input, Modal, Switch } from "antd"
+import { PawPrint, Sparkles } from "lucide-react"
 
 export interface SelectedVet {
   id: string
@@ -79,6 +80,8 @@ const SelectVet: React.FC<selectVetProps> = ({
   } | null>(null)
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false)
   const [isSeniorModalOpen, setIsSeniorModalOpen] = useState(false)
+  const [pendingSeniorDoctor, setPendingSeniorDoctor] =
+    useState<SelectedVet | null>(null)
   const [chosenVetId, setChosenVetId] = useState<string | null>(null)
   const [couponCode, setCouponCode] = useState<string>("")
   const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null)
@@ -667,13 +670,20 @@ const SelectVet: React.FC<selectVetProps> = ({
             options={filteredDoctors}
             selectedDoctor={selectedDoctor}
             onDoctorSelected={(doctor) => {
+              if (
+                isConsultation &&
+                !isGrooming &&
+                (doctor.tier === "SENIOR" ||
+                  (showSeniorOnly && doctor.id === BEST_AVAILABLE_VET_ID))
+              ) {
+                setPendingSeniorDoctor(doctor)
+                setIsSeniorModalOpen(true)
+                return
+              }
+              setPendingSeniorDoctor(null)
               setSelectedDoctor(doctor)
               setSelectedDate(new Date()) // Reset date and slot on doctor change
-              if (isConsultation && !isGrooming && doctor.tier === "SENIOR") {
-                setIsSeniorModalOpen(true)
-              } else {
-                setIsSeniorModalOpen(false)
-              }
+              setIsSeniorModalOpen(false)
             }}
             hideBestAvailable={showNoSeniorMessage}
           />
@@ -810,16 +820,43 @@ const SelectVet: React.FC<selectVetProps> = ({
       )}
       <Modal
         open={isSeniorModalOpen}
-        onCancel={() => setIsSeniorModalOpen(false)}
+        onCancel={() => {
+          setIsSeniorModalOpen(false)
+          setPendingSeniorDoctor(null)
+        }}
         footer={null}
         centered
         destroyOnClose
-        title="Senior Vet Selected"
+        title={null}
       >
-        <p className="text-sm text-gray-700">
-          This is a senior vet and the consultation charge will be higher at
-          ₹800.
-        </p>
+        <div className="flex flex-col items-center text-center gap-3 py-2">
+          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-amber-100 text-amber-700">
+            <PawPrint className="h-6 w-6" />
+          </div>
+          <h3 className="text-lg font-semibold text-gray-900">
+            {pendingSeniorDoctor?.id === BEST_AVAILABLE_VET_ID
+              ? "A senior Vet will be selected"
+              : "Senior Vet Selected"}
+          </h3>
+          <p className="text-sm text-gray-700 pb-4">
+            {pendingSeniorDoctor?.id === BEST_AVAILABLE_VET_ID
+    ? "Senior vet charges will be higher at ₹900"
+    : "This is a senior vet and the charge will be higher at ₹900"}
+            <br />
+          </p>
+          <CustomButton
+            buttonText="Proceed"
+            buttonBackground="bg-secondary-1"
+            buttonClickEvent={() => {
+              if (!pendingSeniorDoctor) return
+              setSelectedDoctor(pendingSeniorDoctor)
+              setSelectedDate(new Date())
+              setSelectedSlot(null)
+              setIsSeniorModalOpen(false)
+              setPendingSeniorDoctor(null)
+            }}
+          />
+        </div>
       </Modal>
       <Toaster />
     </div>
