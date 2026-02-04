@@ -149,7 +149,11 @@ export interface AppointmentDetails extends AppointmentListItem {
   total_billing_amount: number
   payment_status: "PAID" | "UNPAID" | "NO_BILL" | "PARTIALLY_PAID" | "OVERPAID"
   vet_id?: string | null
-  refund_status?: RefundStatus
+  refund?: {
+    id: string | null
+    status: RefundStatus
+    amount: number
+  }
   reason_for_visit?: ReasonForVisitEnum
   notes?: string
 }
