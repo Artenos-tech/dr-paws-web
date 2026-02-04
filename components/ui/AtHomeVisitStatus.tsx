@@ -18,7 +18,7 @@ const AtHomeVisitStatus = ({
   selectedAppointment,
   visitStatus,
 }: AtHomeVisitStatusProps) => {
-  const { vet_name, vet_contact, start_otp } = selectedAppointment
+  const { vet_name, vet_contact, vet_image, start_otp } = selectedAppointment
 
   const copyNumber = () => {
     if (!vet_contact) return
@@ -26,10 +26,7 @@ const AtHomeVisitStatus = ({
     toast.success(`Vet contact ${vet_contact} copied to clipboard`)
   }
 
-  const vetImageSrc =
-    //uncomment the line below if vet_image can be null
-    //   vet_image ||
-    defaultVetImage
+  const vetImageSrc = vet_image || defaultVetImage
 
   const VetRow = () => (
     <div className="flex items-center gap-3 mt-3">
