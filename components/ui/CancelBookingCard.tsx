@@ -28,14 +28,8 @@ const CancelledBookingCard = ({ appointment, refundStatus, onDone }: Props) => {
     petImageByType[appointment.pet_type?.toLowerCase() || "other"] ||
     petImageByType.other
 
-  const petImage =
-    //   uncomment below code for real image
-    //   appointment.pet_profile_image ||
-    defaultPetImage
-  const vetImage =
-    //   uncomment below code for real image
-    //   appointment.vet_image ||
-    defaultVetImage
+  const petImage = appointment.pet_profile_image || defaultPetImage
+  const vetImage = appointment.vet_image || defaultVetImage
 
   const fullAddress = [
     appointment.address?.address_line1,

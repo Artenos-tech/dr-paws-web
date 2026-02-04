@@ -151,13 +151,8 @@ const AtHomeBookingDetails = ({
     petImageByType.other
 
   const petImage =
-    //uncomment below line to use actual pet image
-    // selectedAppointment.pet_profile_image ||
-    defaultPetImageByType
-  const vetImage =
-    //uncomment below line to use actual vet image
-    //   selectedAppointment?.vet_image ||
-    defaultVetImage
+    selectedAppointment.pet_profile_image || defaultPetImageByType
+  const vetImage = selectedAppointment?.vet_image || defaultVetImage
 
   const openConfirmationView = (action: "CANCEL" | "RESCHEDULE") => {
     setConfirmationType(action)

@@ -273,13 +273,8 @@ const ClinicBookingDetails = ({
 
   const parsedDate = parseISO(selectedAppointment.booking_date)
   const petImage =
-    //uncomment below line to use actual pet image
-    // selectedAppointment.pet_profile_image ||
-    defaultPetImageByType
-  const vetImage =
-    //uncomment below line to use actual vet image
-    //   selectedAppointment?.vet_image ||
-    defaultVetImage
+    selectedAppointment.pet_profile_image || defaultPetImageByType
+  const vetImage = selectedAppointment?.vet_image || defaultVetImage
 
   return (
     <div className="w-full">

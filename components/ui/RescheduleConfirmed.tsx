@@ -72,16 +72,9 @@ const RescheduleConfirmed: React.FC<RescheduleConfirmedProps> = ({
   const groomingHasHaircut =
     updatedValues.groomingCatalogueKeys?.includes("haircut") || false
 
-  const petImage =
-    //   uncomment below code for real image
-    // updatedValues.selectedPet.profileImage ||
-    defaultPetImage
+  const petImage = updatedValues.selectedPet.profileImage || defaultPetImage
 
-  const vetImage =
-    //   uncomment below code for real image
-
-    // updatedValues.selectedDoctorImage ||
-    defaultVetImage
+  const vetImage = updatedValues.selectedDoctorImage || defaultVetImage
 
   const fullAddress = [
     updatedValues.address?.address_line1,

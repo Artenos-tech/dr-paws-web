@@ -18,8 +18,7 @@ const PetSelectItem = ({
   onSelect,
 }: PetSelectItemProps) => {
   const petImage =
-    //TODO: uncomment once api is integrated
-    // pet.profile_image ||
+    pet.profile_image ||
     petImageByType[pet.type?.toLowerCase() || "other"]?.src ||
     petImageByType.other.src
 
