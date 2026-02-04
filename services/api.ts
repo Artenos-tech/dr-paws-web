@@ -602,10 +602,11 @@ export default createAPIClient({
 
     getBestAvailableVetSchedule: {
       method: "GET",
-      path: "/booking/schedule/best?clinicid={clinicid}&catalogue={catalogue}&petid={petid}&pettype={pettype}&date={date}",
+      path: "/booking/schedule/best?clinicid={clinicid}&catalogue={catalogue}&senior_only={senior_only}&petid={petid}&pettype={pettype}&date={date}",
       pathParamsSchema: z.object({
         clinicid: z.string().uuid(),
         catalogue: z.string().optional(),
+        senior_only: z.enum(["true", "false"]).optional(),
         petid: z.string().uuid(),
         pettype: z.enum(["DOG", "CAT", "OTHER"]),
         date: z.string(),

@@ -20,7 +20,7 @@ import { ClipLoader } from "react-spinners"
 import { BookingCategory } from "./SelectService"
 import BestAvailableVetCard from "./BestAvailableVetCard"
 import ConfirmationModal from "./ConfirmationModal"
-import { Input, Modal } from "antd"
+import { Input, Modal, Switch } from "antd"
 
 export interface SelectedVet {
   id: string
@@ -54,9 +54,6 @@ interface selectVetProps {
 }
 
 const BEST_AVAILABLE_VET_ID = "best-available"
-const CONSULTATION_SERVICE_ID = "opd-consult"
-const CONSULTATION_NORMAL_SUBTYPE = "vet-consultation-with-staff"
-const CONSULTATION_SENIOR_SUBTYPE = "vet-consultation-with-senior-staff"
 
 const SelectVet: React.FC<selectVetProps> = ({
   selectedClinic,
@@ -87,6 +84,7 @@ const SelectVet: React.FC<selectVetProps> = ({
   const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null)
   const [couponError, setCouponError] = useState<string | null>(null)
   const [vetSearch, setVetSearch] = useState("")
+  const [showSeniorOnly, setShowSeniorOnly] = useState(false)
   const {
     call: getSlotsForStaff,
     result: slotsForStaffResult,
@@ -121,8 +119,7 @@ const SelectVet: React.FC<selectVetProps> = ({
 
   const { call: getDoctor } = useAPICall(api.getDoctor)
 
-  const isConsultation =
-    selectedSvcId === CONSULTATION_SERVICE_ID && !isGrooming
+  const isConsultation = !isGrooming
 
   const fetchSlotsForStaff = useCallback(async () => {
     if (!selectedDoctor) {
@@ -211,6 +208,7 @@ const SelectVet: React.FC<selectVetProps> = ({
           pettype: "DOG" | "CAT" | "OTHER"
           date: string
           catalogue?: string
+          senior_only?: "true" | "false"
         } = {
           clinicid: selectedClinic,
           petid: selectedPet.id,
@@ -219,6 +217,8 @@ const SelectVet: React.FC<selectVetProps> = ({
         }
         if (!isConsultation) {
           params.catalogue = selectedSubtype?.id as string
+        } else if (showSeniorOnly) {
+          params.senior_only = "true"
         }
         await getBestAvailableVetSchedule(params)
       } catch (error) {
@@ -584,11 +584,15 @@ const SelectVet: React.FC<selectVetProps> = ({
   }
 
   const doctors = doctorsResult?.ok ? doctorsResult.value.body.staff : []
-  const filteredDoctors = vetSearch.trim()
-    ? doctors.filter((doctor) =>
-        doctor.name.toLowerCase().includes(vetSearch.trim().toLowerCase()),
-      )
-    : doctors
+  const filteredDoctors = doctors
+    .filter((doctor) =>
+      vetSearch.trim()
+        ? doctor.name.toLowerCase().includes(vetSearch.trim().toLowerCase())
+        : true,
+    )
+    .filter((doctor) => (showSeniorOnly ? doctor.tier === "SENIOR" : true))
+  const hasSeniorDoctors = doctors.some((doctor) => doctor.tier === "SENIOR")
+  const showNoSeniorMessage = showSeniorOnly && !hasSeniorDoctors
 
   const availableSlotsLoading =
     loadingSlotsForStaff ||
@@ -642,6 +646,23 @@ const SelectVet: React.FC<selectVetProps> = ({
               onChange={(event) => setVetSearch(event.target.value)}
             />
           </div>
+          <div className="mb-6 flex items-center gap-3">
+            <span className="text-sm text-gray-700">Senior only</span>
+            <Switch
+              checked={showSeniorOnly}
+              onChange={(checked) => {
+                setShowSeniorOnly(checked)
+                if (
+                  checked &&
+                  selectedDoctor &&
+                  selectedDoctor.tier !== "SENIOR"
+                ) {
+                  setSelectedDoctor(null)
+                  setSelectedSlot(null)
+                }
+              }}
+            />
+          </div>
           <DoctorSelectionCarousel
             options={filteredDoctors}
             selectedDoctor={selectedDoctor}
@@ -654,8 +675,14 @@ const SelectVet: React.FC<selectVetProps> = ({
                 setIsSeniorModalOpen(false)
               }
             }}
+            hideBestAvailable={showNoSeniorMessage}
           />
-          {!filteredDoctors.length && (
+          {showNoSeniorMessage && (
+            <p className="mt-4 text-gray-500 text-sm">
+              No senior vets available.
+            </p>
+          )}
+          {!showNoSeniorMessage && !filteredDoctors.length && (
             <p className="mt-4 text-gray-500 text-sm">
               No vets match your search.
             </p>
@@ -803,29 +830,33 @@ const DoctorSelectionCarousel = ({
   options,
   selectedDoctor,
   onDoctorSelected,
+  hideBestAvailable,
 }: {
   options: SelectedVet[]
   selectedDoctor: SelectedVet | null
   onDoctorSelected: (doctor: SelectedVet) => void
+  hideBestAvailable?: boolean
 }) => {
   return (
     <Carousel className="pr-1 w-[90%] sm:w-full mx-auto">
       <CarouselContent className="-ml-1">
-        <CarouselItem
-          key={"best"}
-          className="basis-full sm:basis-5/12 lg:basis-1/4 xl:basis-1/5"
-        >
-          <BestAvailableVetCard
-            isSelected={selectedDoctor?.id === BEST_AVAILABLE_VET_ID}
-            onSelected={() =>
-              onDoctorSelected({
-                id: BEST_AVAILABLE_VET_ID,
-                name: "Best Available Vet",
-                displayImage: null,
-              })
-            }
-          />
-        </CarouselItem>
+        {!hideBestAvailable && (
+          <CarouselItem
+            key={"best"}
+            className="basis-full sm:basis-5/12 lg:basis-1/4 xl:basis-1/5"
+          >
+            <BestAvailableVetCard
+              isSelected={selectedDoctor?.id === BEST_AVAILABLE_VET_ID}
+              onSelected={() =>
+                onDoctorSelected({
+                  id: BEST_AVAILABLE_VET_ID,
+                  name: "Best Available Vet",
+                  displayImage: null,
+                })
+              }
+            />
+          </CarouselItem>
+        )}
         {options.map((doctor) => (
           <CarouselItem
             key={doctor.id}
