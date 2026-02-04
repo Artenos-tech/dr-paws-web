@@ -26,6 +26,7 @@ const BookingDetails = ({
   const [appointment, setAppointment] = useState<AppointmentDetails | null>(
     null,
   )
+  const [isPollingPaused, setIsPollingPaused] = useState(false)
   const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null)
   const getAppointmentDetailsRef = useRef(getAppointmentDetails)
 
@@ -63,7 +64,8 @@ const BookingDetails = ({
     const shouldPoll =
       fetchedAppointment.booking_type === "HOME_VISIT" &&
       fetchedAppointment.visit_status !== "CANCELLED" &&
-      fetchedAppointment.visit_status !== "VISIT_FINISHED"
+      fetchedAppointment.visit_status !== "VISIT_FINISHED" &&
+      !isPollingPaused
 
     if (shouldPoll && !pollingIntervalRef.current) {
       pollingIntervalRef.current = setInterval(() => {
@@ -76,7 +78,7 @@ const BookingDetails = ({
       clearInterval(pollingIntervalRef.current)
       pollingIntervalRef.current = null
     }
-  }, [getAppointmentDetailsResult])
+  }, [getAppointmentDetailsResult, isPollingPaused])
 
   if (!appointment) {
     return (
@@ -93,6 +95,7 @@ const BookingDetails = ({
           selectedAppointment={appointment}
           goBack={goBack}
           refetchAppointment={refetchAppointment}
+          onPausePolling={setIsPollingPaused}
         />
       ) : (
         <ClinicBookingDetails
