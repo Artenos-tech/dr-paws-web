@@ -81,18 +81,46 @@ const CancelledBookingCard = ({ appointment, refundStatus, onDone }: Props) => {
               </div>
             )}
         </div>
-        {refundStatus === "PENDING" && (
-          <p className="text-sm text-gray-600 max-w-md leading-relaxed">
-            A full refund will be processed and sent back to your original
-            payment method.
-          </p>
-        )}
 
-        {refundStatus === "SUCCESS" && (
-          <p className="text-sm text-gray-600 max-w-md leading-relaxed">
-            Refund has been successfully processed and credited to your original
-            payment method.
-          </p>
+        {refundStatus && (
+          <div className="border border-gray-300 rounded-lg p-4 space-y-2">
+            <p className="font-semibold text-primary-1">Refund Details</p>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-600">Status:</span>
+              <span
+                className={`text-sm font-medium px-2 py-1 rounded ${
+                  refundStatus === "SUCCESS"
+                    ? "bg-green-100 text-green-700"
+                    : refundStatus === "FAILED" || refundStatus === "REJECTED"
+                      ? "bg-red-100 text-red-700"
+                      : refundStatus === "PROCESSED"
+                        ? "bg-blue-100 text-blue-700"
+                        : "bg-yellow-100 text-yellow-700"
+                }`}
+              >
+                {refundStatus.replace(/_/g, " ")}
+              </span>
+            </div>
+            {(refundStatus === "PENDING" ||
+              refundStatus === "REQUESTED" ||
+              refundStatus === "APPROVED") && (
+              <p className="text-sm text-gray-500">
+                A full refund will be processed and sent back to your original
+                payment method. It may take 5-7 business days to reflect in your
+                account.
+              </p>
+            )}
+            {refundStatus === "SUCCESS" && (
+              <p className="text-sm text-gray-500">
+                Your refund has been successfully processed.
+              </p>
+            )}
+            {refundStatus === "FAILED" && (
+              <p className="text-sm text-gray-500">
+                Refund processing failed. Please contact support for assistance.
+              </p>
+            )}
+          </div>
         )}
 
         <div className="my-4 space-y-3 text-sm">
