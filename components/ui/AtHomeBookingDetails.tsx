@@ -29,6 +29,7 @@ type AtHomeBookingDetailsProps = {
   goBack: (refetch: boolean) => void
   selectedAppointment: AppointmentDetails
   refetchAppointment: () => void
+  onPausePolling?: (paused: boolean) => void
 }
 type ViewState = "DETAILS" | "CONFIRM_ACTION" | "CANCELLED" | "RESCHEDULE"
 
@@ -37,6 +38,7 @@ const AtHomeBookingDetails = ({
   selectedAppointment,
   goBack,
   refetchAppointment,
+  onPausePolling,
 }: AtHomeBookingDetailsProps) => {
   const [view, setView] = useState<ViewState>("DETAILS")
   const [confirmationType, setConfirmationType] = useState<
@@ -52,6 +54,10 @@ const AtHomeBookingDetails = ({
       setRefundStatus(selectedAppointment.refund.status)
     }
   }, [])
+
+  useEffect(() => {
+    onPausePolling?.(view !== "DETAILS")
+  }, [view, onPausePolling])
 
   const getSlotStartDateTime = () => {
     const bookingDate = parseISO(selectedAppointment.booking_date)
