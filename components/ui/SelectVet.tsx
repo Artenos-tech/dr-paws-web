@@ -21,7 +21,7 @@ import { BookingCategory } from "./SelectService"
 import BestAvailableVetCard from "./BestAvailableVetCard"
 import ConfirmationModal from "./ConfirmationModal"
 import { Input, Modal, Switch } from "antd"
-import { PawPrint, Sparkles } from "lucide-react"
+import { PawPrint } from "lucide-react"
 
 export interface SelectedVet {
   id: string
@@ -392,10 +392,6 @@ const SelectVet: React.FC<selectVetProps> = ({
     if (!isReschedule) {
       setIsConfirmationModalOpen(false)
       if (user && selectedSlot && selectedDate && selectedDoctor) {
-        const bookingDoctor =
-          selectedDoctor.id === BEST_AVAILABLE_VET_ID
-            ? doctors.find((doc) => doc.id === chosenVetId)
-            : selectedDoctor
         try {
           const payload: {
             vet_id: string

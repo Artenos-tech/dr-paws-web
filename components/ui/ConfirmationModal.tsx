@@ -41,8 +41,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
     date,
     slot,
     couponCode,
-  } =
-    bookingDetails
+  } = bookingDetails
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
