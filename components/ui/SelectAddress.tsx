@@ -47,7 +47,9 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
   const addresses: AddressWithPincode[] =
     (addressBookResult?.ok && addressBookResult.value.body.data.address_book) ||
     []
-useAPIErrorToastFromResult(addressBookResult,{fallbackMessage:'Failed to fetch address book'})
+  useAPIErrorToastFromResult(addressBookResult, {
+    fallbackMessage: "Failed to fetch address book",
+  })
   const uncheckedAddresses = useMemo(() => {
     return addresses.filter((addr) => !checkedAddressIds.has(addr.id))
   }, [addresses, checkedAddressIds])
@@ -291,16 +293,23 @@ useAPIErrorToastFromResult(addressBookResult,{fallbackMessage:'Failed to fetch a
               </div>
             )
           })}
-
-          <div className="rounded-lg p-2 flex flex-col items-center justify-center">
-            <div
-              onClick={() => router.push(`/user/book-appointment/edit-address`)}
-              className="w-12 h-12 flex items-center justify-center rounded-full border-2 border-dashed cursor-pointer"
-            >
-              <span className="text-2xl font-semibold">+</span>
+          <Tooltip
+            title={"Add new address"}
+            color="#f7f1de"
+            styles={{ body: { color: "#33495f" } }}
+          >
+            <div className="rounded-lg p-2 flex flex-col items-center justify-center">
+              <div
+                onClick={() =>
+                  router.push(`/user/book-appointment/edit-address`)
+                }
+                className="w-12 h-12 flex items-center justify-center rounded-full border-2 border-dashed cursor-pointer"
+              >
+                <span className="text-2xl font-semibold">+</span>
+              </div>
+              <span className="font-medium mt-1">Add</span>
             </div>
-            <span className="font-medium mt-1">Add</span>
-          </div>
+          </Tooltip>
         </div>
       )}
 
