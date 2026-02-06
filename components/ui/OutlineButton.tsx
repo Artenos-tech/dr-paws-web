@@ -22,7 +22,7 @@ const OutlineButton: React.FC<outlineProps> = ({
   return (
     <button
       type="button"
-  className="
+      className="
     btn border border-secondary-1 text-secondary-1 px-4 py-2 flex items-center gap-1 text-xs rounded-full
     cursor-pointer
     transition-all duration-200

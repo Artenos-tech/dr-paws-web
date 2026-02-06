@@ -39,7 +39,9 @@ const BookingTypeSelection: React.FC<BookingTypeSelectionProps> = ({
       )
     }
   }, [getServiceablePincodesResult])
-  useAPIErrorToastFromResult(getServiceablePincodesResult,{fallbackMessage:'Failed to fetch serviceable pincodes'})
+  useAPIErrorToastFromResult(getServiceablePincodesResult, {
+    fallbackMessage: "Failed to fetch serviceable pincodes",
+  })
 
   useEffect(() => {
     getServiceablePincodes({})

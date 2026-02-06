@@ -199,7 +199,9 @@ const AtHomeBookingDetails = ({
       setRefundStatus(status)
     }
   }, [cancelAppointmentResult])
-  useAPIErrorToastFromResult(cancelAppointmentResult,{fallbackMessage:'Failed to cancel appointment'})
+  useAPIErrorToastFromResult(cancelAppointmentResult, {
+    fallbackMessage: "Failed to cancel appointment",
+  })
 
   const handleNavigation = () => {
     if (view === "CONFIRM_ACTION" || view === "RESCHEDULE") {

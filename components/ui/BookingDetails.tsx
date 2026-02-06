@@ -80,7 +80,9 @@ const BookingDetails = ({
       pollingIntervalRef.current = null
     }
   }, [getAppointmentDetailsResult, isPollingPaused])
-  useAPIErrorToastFromResult(getAppointmentDetailsResult,{fallbackMessage:'Failed to fetch appointment'})
+  useAPIErrorToastFromResult(getAppointmentDetailsResult, {
+    fallbackMessage: "Failed to fetch appointment",
+  })
 
   if (!appointment) {
     return (

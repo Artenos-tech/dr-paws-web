@@ -34,7 +34,9 @@ const BookingConfirmationContent: React.FC = () => {
       setConfirmedAppointment(getBookingByIdResult.value.body.data.appointment)
     }
   }, [getBookingByIdResult])
-  useAPIErrorToastFromResult(getBookingByIdResult,{fallbackMessage:'Failed to fetch booking'})
+  useAPIErrorToastFromResult(getBookingByIdResult, {
+    fallbackMessage: "Failed to fetch booking",
+  })
 
   if (loadingGetBookingById || !confirmedAppointment) {
     return (

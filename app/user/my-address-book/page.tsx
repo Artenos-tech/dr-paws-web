@@ -33,7 +33,9 @@ const MyAddressBookPage = () => {
     (getAddressBookResult?.ok &&
       getAddressBookResult.value.body.data.address_book) ||
     []
-    useAPIErrorToastFromResult(getAddressBookResult,{fallbackMessage:'Failed to fetch address book'})
+  useAPIErrorToastFromResult(getAddressBookResult, {
+    fallbackMessage: "Failed to fetch address book",
+  })
 
   if (getAddressBookLoading) {
     return (

@@ -34,7 +34,9 @@ const Booking: React.FC = () => {
       []
     )
   }, [getBookingTypesResult])
-  useAPIErrorToastFromResult(getBookingTypesResult,{fallbackMessage:'Failed to get booking types'})
+  useAPIErrorToastFromResult(getBookingTypesResult, {
+    fallbackMessage: "Failed to get booking types",
+  })
 
   const atHomeBookingType = useMemo(() => {
     return bookingTypes.find((bookingType) => bookingType.type === "HOME_VISIT")
