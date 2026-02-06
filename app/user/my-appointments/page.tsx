@@ -9,6 +9,7 @@ import NoAppointments from "@/components/ui/NoAppointments"
 import { useAPICall } from "@/hooks/apicall"
 import { AppointmentListItem } from "@/model/typeDefinitions"
 import atHomeApiClient from "@/services/api.athome"
+import { useAPIErrorToastFromResult } from "@/hooks/useAPIErrorToast"
 
 const TABS = {
   ALL: { label: "All" },
@@ -140,6 +141,9 @@ const MyAppointmentsPage = () => {
       setAllAppointments(all)
     }
   }, [getAppointmentsResult])
+  useAPIErrorToastFromResult(getAppointmentsResult, {
+    fallbackMessage: "Failed to fetch appointments",
+  })
 
   useEffect(() => {
     let filtered: AppointmentListItem[] = []
@@ -221,20 +225,6 @@ const MyAppointmentsPage = () => {
           />
         ) : (
           <>
-            {!getAppointmentsResult?.ok &&
-              (getAppointmentsResult?.error.apiClientErrorType ===
-              "ErrorResponseAPIError" ? (
-                <div>{getAppointmentsResult.error.message}</div>
-              ) : (
-                <>
-                  {console.error(
-                    "Error fetching appointments",
-                    getAppointmentsResult?.error.message,
-                  )}
-                  <div>Something went wrong fetching your appointments</div>
-                </>
-              ))}
-
             <ClinicTabBar
               tabs={TABS}
               activeTabId={activeTab}
@@ -264,7 +254,6 @@ const MyAppointmentsPage = () => {
                   ))}
                 </div>
 
-                {/* Pagination */}
                 <div className="flex justify-center items-center gap-4 mt-6">
                   <button
                     onClick={() =>

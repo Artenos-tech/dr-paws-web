@@ -11,6 +11,7 @@ import { useAPICall } from "@/hooks/apicall"
 import { ClipLoader } from "react-spinners"
 import toast from "react-hot-toast"
 import { useRouter, useSearchParams } from "next/navigation"
+import { useAPIErrorToastFromResult } from "@/hooks/useAPIErrorToast"
 
 const Booking: React.FC = () => {
   const [selectedBookingType, setSelectedBookingType] =
@@ -33,6 +34,7 @@ const Booking: React.FC = () => {
       []
     )
   }, [getBookingTypesResult])
+  useAPIErrorToastFromResult(getBookingTypesResult,{fallbackMessage:'Failed to get booking types'})
 
   const atHomeBookingType = useMemo(() => {
     return bookingTypes.find((bookingType) => bookingType.type === "HOME_VISIT")

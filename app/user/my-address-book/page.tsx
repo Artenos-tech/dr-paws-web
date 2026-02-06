@@ -8,6 +8,7 @@ import toast from "react-hot-toast"
 import { FaPen, FaTrash } from "react-icons/fa6"
 import { ClipLoader } from "react-spinners"
 import DeleteModal from "@/components/ui/DeleteModal"
+import { useAPIErrorToastFromResult } from "@/hooks/useAPIErrorToast"
 
 const MyAddressBookPage = () => {
   const router = useRouter()
@@ -32,6 +33,7 @@ const MyAddressBookPage = () => {
     (getAddressBookResult?.ok &&
       getAddressBookResult.value.body.data.address_book) ||
     []
+    useAPIErrorToastFromResult(getAddressBookResult,{fallbackMessage:'Failed to fetch address book'})
 
   if (getAddressBookLoading) {
     return (

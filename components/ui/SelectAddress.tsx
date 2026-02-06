@@ -10,6 +10,7 @@ import toast from "react-hot-toast"
 import { AddressWithPincode } from "@/model/typeDefinitions"
 import { Tooltip } from "antd"
 import DeleteModal from "./DeleteModal"
+import { useAPIErrorToastFromResult } from "@/hooks/useAPIErrorToast"
 
 interface SelectAddressProps {
   handleConfirm: (addressId: string) => void
@@ -46,7 +47,7 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
   const addresses: AddressWithPincode[] =
     (addressBookResult?.ok && addressBookResult.value.body.data.address_book) ||
     []
-
+useAPIErrorToastFromResult(addressBookResult,{fallbackMessage:'Failed to fetch address book'})
   const uncheckedAddresses = useMemo(() => {
     return addresses.filter((addr) => !checkedAddressIds.has(addr.id))
   }, [addresses, checkedAddressIds])

@@ -24,6 +24,7 @@ import { useAPICall } from "@/hooks/apicall"
 import atHomeApiClient from "@/services/api.athome"
 import RescheduleAtHomeAppointment from "./RescheduleAtHomeAppointment"
 import SupportActions from "./SupportActions"
+import { useAPIErrorToastFromResult } from "@/hooks/useAPIErrorToast"
 
 type AtHomeBookingDetailsProps = {
   goBack: (refetch: boolean) => void
@@ -198,6 +199,7 @@ const AtHomeBookingDetails = ({
       setRefundStatus(status)
     }
   }, [cancelAppointmentResult])
+  useAPIErrorToastFromResult(cancelAppointmentResult,{fallbackMessage:'Failed to cancel appointment'})
 
   const handleNavigation = () => {
     if (view === "CONFIRM_ACTION" || view === "RESCHEDULE") {

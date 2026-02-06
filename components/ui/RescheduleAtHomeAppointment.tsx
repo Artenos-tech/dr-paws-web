@@ -9,6 +9,8 @@ import SelectDateTimeForVisit from "./SelectDateTimeForVisit"
 import ConfirmationModal from "./ConfirmationModal"
 import { VISIT_REASONS } from "./ReasonForVisit"
 import RescheduleConfirmed from "./RescheduleConfirmed"
+import { useAPIErrorToastFromResult } from "@/hooks/useAPIErrorToast"
+import toast from "react-hot-toast"
 
 type RescheduleHomeVistProps = {
   appointmentId: string
@@ -64,6 +66,9 @@ const RescheduleAtHomeAppointment = ({
       setAppointment(getAppointmentDetailsResult.value.body.data.appointment)
     }
   }, [getAppointmentDetailsResult])
+  useAPIErrorToastFromResult(getAppointmentDetailsResult, {
+    fallbackMessage: "Failed to fetch appointment details",
+  })
 
   const handleConfirmSlots = (
     date: string,
@@ -107,6 +112,8 @@ const RescheduleAtHomeAppointment = ({
     if (res?.ok) {
       setIsConfirmationModalOpen(false)
       setView("CONFIRMED")
+    } else {
+      toast.error("Failed to reschedule appointment")
     }
   }
 
