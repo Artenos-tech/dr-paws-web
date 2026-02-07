@@ -25,7 +25,7 @@ interface ConfirmationModalProps {
     slot: string
     couponCode: string | null
   }
-  paymentAmount?: number | null
+  paymentAmount: number | null
 }
 
 const DESC_TRUNCATE_LENGTH = 90
@@ -123,7 +123,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
             {paymentAmount && (
               <div className="text-sm text-gray-800 font-medium mt-2">
                 Payment Amount:{" "}
-                <span className="text-lg font-semibold">₹{paymentAmount}</span>
+                <span className="text-md font-semibold">₹{paymentAmount}</span>
               </div>
             )}
           </div>
