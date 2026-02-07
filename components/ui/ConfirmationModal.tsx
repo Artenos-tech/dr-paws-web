@@ -25,7 +25,7 @@ interface ConfirmationModalProps {
     slot: string
     couponCode: string | null
   }
-  paymentAmount: number | null
+  paymentAmount?: number | null
 }
 
 const DESC_TRUNCATE_LENGTH = 90
