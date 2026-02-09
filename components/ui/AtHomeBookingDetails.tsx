@@ -27,6 +27,8 @@ import SupportActions from "./SupportActions"
 import SOSActivatedBanner from "./SOSActivatedBanner"
 import SOSConfirmationModal from "./SOSConfirmationModal"
 import { useAPIErrorToastFromResult } from "@/hooks/useAPIErrorToast"
+import SOSActivatedBanner from "./SOSActivatedBanner"
+import SOSConfirmationModal from "./SOSConfirmationModal"
 
 type AtHomeBookingDetailsProps = {
   goBack: (refetch: boolean) => void
@@ -50,6 +52,7 @@ const AtHomeBookingDetails = ({
   const [refundStatus, setRefundStatus] = useState<RefundStatus>()
   const { call: cancelAppointment, result: cancelAppointmentResult } =
     useAPICall(atHomeApiClient.cancelAppointmentV2)
+<<<<<<< HEAD
   const { call: raiseSOS, loading: raiseSOSLoading } = useAPICall(
     atHomeApiClient.raiseSOSAlert,
   )
@@ -58,6 +61,19 @@ const AtHomeBookingDetails = ({
   )
   const [showSOSModal, setShowSOSModal] = useState(false)
   const [SOSActive, setSOSActive] = useState(false)
+=======
+  const {
+    call: raiseSOS,
+    result: raiseSOSResult,
+    loading: raiseSOSLoading,
+  } = useAPICall(atHomeApiClient.raiseSOSAlert)
+  const {
+    call: cancelSOS,
+    result: cancelSOSResult,
+    loading: cancelSOSLoading,
+  } = useAPICall(atHomeApiClient.cancelSOSAlert)
+  const [showSOSModal, setShowSOSModal] = useState(false)
+>>>>>>> d3c06ab (Added sos raise and cancel flow)
 
   const parsedDate = parseISO(selectedAppointment.booking_date)
 
@@ -210,7 +226,10 @@ const AtHomeBookingDetails = ({
           </p>
         </div>
       ))
+<<<<<<< HEAD
       setSOSActive(true)
+=======
+>>>>>>> d3c06ab (Added sos raise and cancel flow)
 
       setShowSOSModal(false)
     } else {
@@ -223,8 +242,11 @@ const AtHomeBookingDetails = ({
       appointment_id: selectedAppointment.id,
     })
     if (res.ok) {
+<<<<<<< HEAD
       setSOSActive(false)
 
+=======
+>>>>>>> d3c06ab (Added sos raise and cancel flow)
       toast.success("SOS alert cancel successfully")
     } else {
       toast.error("Failed to cancel SOS please try again")
@@ -288,7 +310,11 @@ const AtHomeBookingDetails = ({
       )}
       {view === "DETAILS" && (
         <div className="flex flex-col items-center gap-6 mt-6">
+<<<<<<< HEAD
           {SOSActive && (
+=======
+          {selectedAppointment.sos_status === "ACTIVE" && (
+>>>>>>> d3c06ab (Added sos raise and cancel flow)
             <SOSActivatedBanner
               onCancelSOS={handleCancelSOS}
               loading={cancelSOSLoading}
@@ -460,7 +486,10 @@ const AtHomeBookingDetails = ({
               <div className="pt-4 border-t space-y-4">
                 {!isVisitFinished && (
                   <SupportActions
+<<<<<<< HEAD
                     SOSActive={SOSActive}
+=======
+>>>>>>> d3c06ab (Added sos raise and cancel flow)
                     onCallUs={copyHelpline}
                     onSOS={() => setShowSOSModal(true)}
                   />
