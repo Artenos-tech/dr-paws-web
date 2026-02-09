@@ -163,7 +163,7 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
       }
       toast.success("Address deleted successfully")
     } else {
-      toast.error("Failed to delete address")
+      toast.error(result.error.message)
     }
 
     setShowDeleteModal(false)
