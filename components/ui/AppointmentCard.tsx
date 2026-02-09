@@ -91,7 +91,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
   const isSOSActive = appointment.sos_status === "ACTIVE"
   return (
     <div
-      className={`p-4 ${border}  ${isSOSActive ? "bg-red-100" : bg} flex flex-col gap-3 rounded-lg shadow-md w-full`}
+      className={`p-4 ${border}  ${bg} flex flex-col gap-3 rounded-lg shadow-md w-full`}
     >
       {/* Status and Reason */}
       <div className="text-xs flex justify-between">
@@ -193,8 +193,19 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
           {appointment.appt_end}
         </p>
       </div>
-      <div className="mt-auto self-end">
-        <OutlineButton outlineBtnText="View Details" outlineBtnLink={onClick} />
+      <div className="mt-auto relative flex items-center">
+        {isSOSActive && (
+          <span className="absolute left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-red-600 text-white text-xs font-semibold">
+            SOS
+          </span>
+        )}
+
+        <div className="ml-auto">
+          <OutlineButton
+            outlineBtnText="View Details"
+            outlineBtnLink={onClick}
+          />
+        </div>
       </div>
     </div>
   )

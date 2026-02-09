@@ -15,12 +15,8 @@ const SOSActivatedBanner = ({ onCancelSOS, loading, onCallUs }: Props) => {
 
       <p>
         Help is on the way — the support team has been notified and will contact
-        you shortly.
-      </p>
-
-      <p>
-        If you need immediate assistance, you can also use one of the options
-        below
+        you shortly. If you need immediate assistance, you can also use one of
+        the options below
       </p>
 
       <div className="space-y-2">
