@@ -91,7 +91,11 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
   const isSOSActive = appointment.sos_status === "ACTIVE"
   return (
     <div
+<<<<<<< HEAD
       className={`p-4 ${border}  ${bg} flex flex-col gap-3 rounded-lg shadow-md w-full`}
+=======
+      className={`p-4 ${border}  ${isSOSActive ? "bg-red-100" : bg} flex flex-col gap-3 rounded-lg shadow-md w-full`}
+>>>>>>> d3c06ab (Added sos raise and cancel flow)
     >
       {/* Status and Reason */}
       <div className="text-xs flex justify-between">
