@@ -49,16 +49,12 @@ const AtHomeBookingDetails = ({
   const [refundStatus, setRefundStatus] = useState<RefundStatus>()
   const { call: cancelAppointment, result: cancelAppointmentResult } =
     useAPICall(atHomeApiClient.cancelAppointmentV2)
-  const {
-    call: raiseSOS,
-    result: raiseSOSResult,
-    loading: raiseSOSLoading,
-  } = useAPICall(atHomeApiClient.raiseSOSAlert)
-  const {
-    call: cancelSOS,
-    result: cancelSOSResult,
-    loading: cancelSOSLoading,
-  } = useAPICall(atHomeApiClient.cancelSOSAlert)
+  const { call: raiseSOS, loading: raiseSOSLoading } = useAPICall(
+    atHomeApiClient.raiseSOSAlert,
+  )
+  const { call: cancelSOS, loading: cancelSOSLoading } = useAPICall(
+    atHomeApiClient.cancelSOSAlert,
+  )
   const [showSOSModal, setShowSOSModal] = useState(false)
 
   const parsedDate = parseISO(selectedAppointment.booking_date)

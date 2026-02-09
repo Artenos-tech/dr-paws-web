@@ -1,15 +1,14 @@
 "use client"
 
-import { PhoneCall, MessageCircle } from "lucide-react"
+import { PhoneCall } from "lucide-react"
 
 type Props = {
   onCancelSOS: () => void
   loading?: boolean
-  onCallUs:()=>void
+  onCallUs: () => void
 }
 
-const SOSActivatedBanner = ({ onCancelSOS, loading,onCallUs }: Props) => {
-    
+const SOSActivatedBanner = ({ onCancelSOS, loading, onCallUs }: Props) => {
   return (
     <div className="bg-red-700 w-[100%] text-white rounded-xl p-6 space-y-4 mb-6">
       <h2 className="text-2xl font-bold text-white">SOS Mode Activated</h2>
@@ -25,7 +24,6 @@ const SOSActivatedBanner = ({ onCancelSOS, loading,onCallUs }: Props) => {
       </p>
 
       <div className="space-y-2">
-      
         <div className="flex items-center gap-2 cursor-pointer">
           <PhoneCall onClick={onCallUs} /> Call Us
         </div>
