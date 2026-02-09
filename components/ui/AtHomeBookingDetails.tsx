@@ -28,6 +28,7 @@ import SOSActivatedBanner from "./SOSActivatedBanner"
 import SOSConfirmationModal from "./SOSConfirmationModal"
 import { useAPIErrorToastFromResult } from "@/hooks/useAPIErrorToast"
 
+
 type AtHomeBookingDetailsProps = {
   goBack: (refetch: boolean) => void
   selectedAppointment: AppointmentDetails
