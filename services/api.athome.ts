@@ -1083,7 +1083,7 @@ export const mockAtHomeClient: AtHomeAPIClient = {
         amount: 0,
         status: "NOT_APPLICABLE" as const,
       },
-      sos_status: "INACTIVE" as const,
+      sos_status: "ACTIVE" as const,
       reason_for_visit: "CHECK_UP" as const,
       notes: "my pet need check up",
     }

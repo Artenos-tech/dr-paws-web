@@ -25,6 +25,8 @@ import atHomeApiClient from "@/services/api.athome"
 import RescheduleAtHomeAppointment from "./RescheduleAtHomeAppointment"
 import SupportActions from "./SupportActions"
 import { useAPIErrorToastFromResult } from "@/hooks/useAPIErrorToast"
+import SOSActivatedBanner from "./SOSActivatedBanner"
+import SOSConfirmationModal from "./SOSConfirmationModal"
 
 type AtHomeBookingDetailsProps = {
   goBack: (refetch: boolean) => void
@@ -48,6 +50,18 @@ const AtHomeBookingDetails = ({
   const [refundStatus, setRefundStatus] = useState<RefundStatus>()
   const { call: cancelAppointment, result: cancelAppointmentResult } =
     useAPICall(atHomeApiClient.cancelAppointmentV2)
+  const {
+    call: raiseSOS,
+    result: raiseSOSResult,
+    loading: raiseSOSLoading,
+  } = useAPICall(atHomeApiClient.raiseSOSAlert)
+  const {
+    call: cancelSOS,
+    result: cancelSOSResult,
+    loading: cancelSOSLoading,
+  } = useAPICall(atHomeApiClient.cancelSOSAlert)
+  const [showSOSModal, setShowSOSModal] = useState(false)
+
   const parsedDate = parseISO(selectedAppointment.booking_date)
 
   useEffect(() => {
@@ -184,6 +198,39 @@ const AtHomeBookingDetails = ({
     }
   }
 
+  const handleRaiseSOS = async (description?: string) => {
+    const res = await raiseSOS({
+      appointment_id: selectedAppointment.id,
+      description,
+    })
+
+    if (res?.ok) {
+      toast.custom(() => (
+        <div className="bg-red-600 text-white px-4 py-3 rounded-lg shadow-lg">
+          <p className="font-semibold">SOS Mode Activated</p>
+          <p className="text-sm">
+            We have alerted the support team they will get in touch with shortly
+          </p>
+        </div>
+      ))
+
+      setShowSOSModal(false)
+    } else {
+      toast.error("Failed to raise SOS please try again")
+    }
+  }
+
+  const handleCancelSOS = async () => {
+    const res = await cancelSOS({
+      appointment_id: selectedAppointment.id,
+    })
+    if (res.ok) {
+      toast.success("SOS alert cancel successfully")
+    } else {
+      toast.error("Failed to cancel SOS please try again")
+    }
+  }
+
   const handleCancelAppointment = async () => {
     await cancelAppointment({
       appointment_id: selectedAppointment.id,
@@ -241,6 +288,13 @@ const AtHomeBookingDetails = ({
       )}
       {view === "DETAILS" && (
         <div className="flex flex-col items-center gap-6 mt-6">
+          {selectedAppointment.sos_status === "ACTIVE" && (
+            <SOSActivatedBanner
+              onCancelSOS={handleCancelSOS}
+              loading={cancelSOSLoading}
+              onCallUs={copyHelpline}
+            />
+          )}
           <div className="flex items-center gap-2">
             <h1 className="text-2xl sm:text-3xl font-semibold text-primary-1">
               {selectedAppointment.visit_status === "VISIT_STARTED"
@@ -404,7 +458,10 @@ const AtHomeBookingDetails = ({
             {(!isVisitFinished || canShowCancelActions) && (
               <div className="pt-4 border-t space-y-4">
                 {!isVisitFinished && (
-                  <SupportActions onCallUs={copyHelpline} onSOS={() => {}} />
+                  <SupportActions
+                    onCallUs={copyHelpline}
+                    onSOS={() => setShowSOSModal(true)}
+                  />
                 )}
 
                 {canShowCancelActions && (
@@ -453,6 +510,12 @@ const AtHomeBookingDetails = ({
           </div>
         </div>
       )}
+      <SOSConfirmationModal
+        open={showSOSModal}
+        loading={raiseSOSLoading}
+        onCancel={() => setShowSOSModal(false)}
+        onConfirm={handleRaiseSOS}
+      />
     </div>
   )
 }
