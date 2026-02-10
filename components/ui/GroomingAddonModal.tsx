@@ -42,6 +42,12 @@ export default function GroomingAddonModal({
                   <span className="text-sm sm:text-base font-medium">
                     Spa Bath
                   </span>
+                  <span className="text-xs sm:text-sm text-gray-600">
+                    Our package that covers everything for short-coat breeds.
+                    Includes shampoo & conditioning bath, ear cleaning, teeth
+                    brushing, nail cutting, sanitary trimming, paw-pad
+                    trimming, blow-drying & perfuming.
+                  </span>
                 </div>
               </div>
             </label>
@@ -66,6 +72,10 @@ export default function GroomingAddonModal({
                 <div className="flex flex-col gap-1">
                   <span className="text-sm sm:text-base font-medium">
                     Spa Bath + Haircut
+                  </span>
+                  <span className="text-xs sm:text-sm text-gray-600">
+                    Useful for long-coat breeds like shih-tzus & golden
+                    retrievers.
                   </span>
                 </div>
               </div>

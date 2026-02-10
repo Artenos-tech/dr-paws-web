@@ -17,6 +17,7 @@ interface ConfirmationModalProps {
   bookingDetails: {
     petName: string
     service: string
+    haircutAddOn?: boolean
     doctorName?: string
     location: string
     date: Date
@@ -31,8 +32,17 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   onConfirm,
   bookingDetails,
 }) => {
-  const { petName, service, doctorName, location, date, slot, couponCode } =
-    bookingDetails
+  const {
+    petName,
+    service,
+    haircutAddOn,
+    doctorName,
+    location,
+    date,
+    slot,
+    couponCode,
+  } = bookingDetails
+  const showHaircutAddOn = Boolean(haircutAddOn)
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -50,6 +60,11 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
             <p className="text-sm text-gray-700 mb-2">
               <span className="font-medium">{service}</span>
             </p>
+            {showHaircutAddOn && (
+              <p className="text-xs sm:text-sm text-[#8b5a00] font-semibold mb-2">
+                Haircut add-on: + ₹999
+              </p>
+            )}
             {doctorName && (
               <div className="flex items-center text-sm text-gray-600 mb-1">
                 <UserIcon className="w-4 h-4 mr-2" />

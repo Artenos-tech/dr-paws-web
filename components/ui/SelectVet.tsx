@@ -711,6 +711,8 @@ const SelectVet: React.FC<selectVetProps> = ({
                 ? "Spa Bath + Haircut"
                 : "Spa Bath"
               : selectedSubtype?.title || selectedService,
+            haircutAddOn:
+              isGrooming && groomingCatalogueKeys.includes("haircut"),
             doctorName:
               selectedDoctor && selectedDoctor.id === BEST_AVAILABLE_VET_ID
                 ? doctors.find((doc) => {
