@@ -696,7 +696,8 @@ const SelectVet: React.FC<selectVetProps> = ({
                 isConsultation &&
                 !isGrooming &&
                 !showSeniorOnly &&
-                doctor.tier === "SENIOR"
+                doctor.tier === "SENIOR" &&
+                selectedDoctor?.tier !== "SENIOR"
               ) {
                 setPendingSeniorDoctor(doctor)
                 setIsSeniorModalOpen(true)
