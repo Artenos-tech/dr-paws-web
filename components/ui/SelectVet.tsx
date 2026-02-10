@@ -152,12 +152,7 @@ const SelectVet: React.FC<selectVetProps> = ({
   ])
 
   const fetchGroomingSlots = useCallback(async () => {
-    if (
-      selectedSvcId &&
-      selectedClinic &&
-      selectedPet &&
-      isGrooming
-    ) {
+    if (selectedSvcId && selectedClinic && selectedPet && isGrooming) {
       try {
         const catalogueKeys =
           groomingCatalogueKeys.length > 0

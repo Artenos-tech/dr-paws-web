@@ -149,7 +149,14 @@ const SelectService: React.FC<SelectServiceProps> = ({
     setSelectedSubtype(null)
     setGroomingAddHaircut(false)
     setGroomingCatalogueKeys([])
-    setServiceOptions(card.id, card.title, selectedPet, card.isGrooming, null, [])
+    setServiceOptions(
+      card.id,
+      card.title,
+      selectedPet,
+      card.isGrooming,
+      null,
+      [],
+    )
 
     if (card.isGrooming) {
       setModalKind("grooming-addon")
@@ -164,7 +171,7 @@ const SelectService: React.FC<SelectServiceProps> = ({
     }
   }
 
-  const toggleCard = (cardId: string, _isGrooming: boolean) => {
+  const toggleCard = (cardId: string) => {
     if (openCard === cardId) {
       resetSelection()
       return

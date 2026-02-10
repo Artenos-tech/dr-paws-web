@@ -190,7 +190,8 @@ const Booking: React.FC = () => {
                 selectedSvcId: notNull(selectedAppointment.selectedServiceId),
                 selectedService: notNull(selectedAppointment.selectedService),
                 selectedSubtype: selectedAppointment.selectedSubtype?.title,
-                groomingCatalogueKeys: selectedAppointment.groomingCatalogueKeys,
+                groomingCatalogueKeys:
+                  selectedAppointment.groomingCatalogueKeys,
                 selectedPet: notNull(selectedAppointment.selectedPet),
                 selectedClinic: notNull(selectedAppointment.selectedClinic),
                 selectedLocation: notNull(selectedAppointment.selectedLocation),
