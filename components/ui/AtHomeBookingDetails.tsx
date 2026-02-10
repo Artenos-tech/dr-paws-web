@@ -56,6 +56,7 @@ const AtHomeBookingDetails = ({
     atHomeApiClient.cancelSOSAlert,
   )
   const [showSOSModal, setShowSOSModal] = useState(false)
+  const [SOSActive, setSOSActive] = useState(false)
 
   const parsedDate = parseISO(selectedAppointment.booking_date)
 
@@ -208,6 +209,7 @@ const AtHomeBookingDetails = ({
           </p>
         </div>
       ))
+      setSOSActive(true)
 
       setShowSOSModal(false)
     } else {
@@ -220,6 +222,8 @@ const AtHomeBookingDetails = ({
       appointment_id: selectedAppointment.id,
     })
     if (res.ok) {
+      setSOSActive(false)
+
       toast.success("SOS alert cancel successfully")
     } else {
       toast.error("Failed to cancel SOS please try again")
@@ -280,7 +284,7 @@ const AtHomeBookingDetails = ({
       )}
       {view === "DETAILS" && (
         <div className="flex flex-col items-center gap-6 mt-6">
-          {selectedAppointment.sos_status === "ACTIVE" && (
+          {SOSActive && (
             <SOSActivatedBanner
               onCancelSOS={handleCancelSOS}
               loading={cancelSOSLoading}
@@ -352,6 +356,7 @@ const AtHomeBookingDetails = ({
                   </p>
                 </div>
                 <SupportActions
+                  SOSActive={SOSActive}
                   isVisitFinished
                   onCallUs={copyHelpline}
                   onSOS={() => {}}
@@ -451,6 +456,7 @@ const AtHomeBookingDetails = ({
               <div className="pt-4 border-t space-y-4">
                 {!isVisitFinished && (
                   <SupportActions
+                    SOSActive={SOSActive}
                     onCallUs={copyHelpline}
                     onSOS={() => setShowSOSModal(true)}
                   />
