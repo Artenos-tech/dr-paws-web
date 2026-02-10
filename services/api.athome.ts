@@ -974,7 +974,7 @@ export const mockAtHomeClient: AtHomeAPIClient = {
         clinic_id: generateUUID(),
         pet_name: mockPets[1].name,
         pet_type: mockPets[1].type,
-        pet_profile_image:null,
+        pet_profile_image: null,
         booking_date: "2024-12-10",
         appt_start: "14:00",
         appt_end: "15:00",
