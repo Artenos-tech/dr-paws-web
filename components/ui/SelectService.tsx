@@ -63,7 +63,7 @@ const SelectService: React.FC<SelectServiceProps> = ({
 
   const fetchAppointmentServices = async () => {
     try {
-      await getAppointmentServices({})
+      await getAppointmentServices({ hide_consult_subtypes: "true" })
     } catch (error) {
       console.error("Error fetching appointment services:", error)
       toast.error(
@@ -142,6 +142,7 @@ const SelectService: React.FC<SelectServiceProps> = ({
         selectedCard &&
         // selectedCard.isGrooming &&
         selectedCard.subtypes &&
+        selectedCard.subtypes.length > 0 &&
         prevOpenCard !== cardId
       ) {
         setSubtypes(selectedCard.subtypes)
