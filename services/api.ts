@@ -435,8 +435,10 @@ export default createAPIClient({
 
     getAppointmentServices: {
       method: "GET",
-      path: "/booking/appointmenttypes",
-      pathParamsSchema: z.object({}),
+      path: "/booking/appointmenttypes?hide_consult_subtypes={hide_consult_subtypes}",
+      pathParamsSchema: z.object({
+        hide_consult_subtypes: z.enum(["true", "false"]).optional(),
+      }),
       requestSchema: z.object({}),
       responseSchema: z.object({
         appointmentTypes: z.array(
@@ -512,11 +514,12 @@ export default createAPIClient({
 
     getDoctorsForClinic: {
       method: "GET",
-      path: "/booking/clinic/{clinicid}/staff?grooming={grooming}&catalogue={catalogue}&date={date}&petid={petid}&pettype={pettype}",
+      path: "/booking/clinic/{clinicid}/staff?grooming={grooming}&catalogue={catalogue}&include_all_consultation={include_all_consultation}&date={date}&petid={petid}&pettype={pettype}",
       pathParamsSchema: z.object({
         clinicid: z.string().uuid(),
         grooming: z.enum(["y", "n"]),
-        catalogue: z.string(),
+        catalogue: z.string().optional(),
+        include_all_consultation: z.enum(["true", "false"]).optional(),
         date: z.string(),
         petid: z.string().uuid(),
         pettype: z.enum(["DOG", "CAT", "OTHER"]),
@@ -528,6 +531,7 @@ export default createAPIClient({
             id: z.string(),
             name: z.string(),
             displayImage: z.string().url().nullable(),
+            tier: z.enum(["NORMAL", "SENIOR"]).optional(),
           }),
         ),
       }),
@@ -557,7 +561,7 @@ export default createAPIClient({
       pathParamsSchema: z.object({
         staffid: z.string().uuid(),
         clinicid: z.string().uuid(),
-        catalogue: z.string(),
+        catalogue: z.string().optional(),
         petid: z.string().uuid(),
         pettype: z.enum(["DOG", "CAT", "OTHER"]),
         date: z.string(),
@@ -598,10 +602,11 @@ export default createAPIClient({
 
     getBestAvailableVetSchedule: {
       method: "GET",
-      path: "/booking/schedule/best?clinicid={clinicid}&catalogue={catalogue}&petid={petid}&pettype={pettype}&date={date}",
+      path: "/booking/schedule/best?clinicid={clinicid}&catalogue={catalogue}&senior_only={senior_only}&petid={petid}&pettype={pettype}&date={date}",
       pathParamsSchema: z.object({
         clinicid: z.string().uuid(),
-        catalogue: z.string(),
+        catalogue: z.string().optional(),
+        senior_only: z.enum(["true", "false"]).optional(),
         petid: z.string().uuid(),
         pettype: z.enum(["DOG", "CAT", "OTHER"]),
         date: z.string(),

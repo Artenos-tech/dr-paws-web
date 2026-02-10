@@ -1,5 +1,6 @@
 import React from "react"
 import Image from "next/image"
+import { Sparkles } from "lucide-react"
 import defaultVetImg from "@/public/assets/images/clinic/doctorFemale.webp"
 import { SelectedVet } from "./SelectVet"
 
@@ -18,7 +19,7 @@ const SelectDoctorCard: React.FC<SelectDoctorCardProps> = ({
   isSelected,
   onDoctorSelect,
 }) => {
-  const { name, id, displayImage } = doctor
+  const { name, id, displayImage, tier } = doctor
 
   const handleCardClick = () => {
     onDoctorSelect(id, name, displayImage)
@@ -27,10 +28,22 @@ const SelectDoctorCard: React.FC<SelectDoctorCardProps> = ({
   return (
     <div
       onClick={handleCardClick}
-      className={`cursor-pointer min-w-[160px] min-h-[260px]  flex flex-col items-center justify-between rounded-lg px-4 pt-6 gap-4 bg-primary-3 border-2 ${
-        isSelected ? `border-secondary-1` : ``
+      className={`relative cursor-pointer min-w-[160px] min-h-[260px] flex flex-col items-center justify-between rounded-lg px-4 pt-6 gap-4 border-2 ${
+        tier === "SENIOR" ? "bg-amber-50" : "bg-primary-3"
+      } ${
+        isSelected
+          ? "border-secondary-1"
+          : tier === "SENIOR"
+            ? "border-amber-200"
+            : "border-transparent"
       }`}
     >
+      {tier === "SENIOR" && (
+        <span className="absolute right-2 top-2 flex items-center gap-1 rounded-full bg-[#74A7B3]  px-2 py-0.5 text-[10px] font-semibold text-white shadow-md">
+          <Sparkles className="h-2.5 w-2.5" />
+          Senior
+        </span>
+      )}
       <Image
         src={displayImage ?? defaultVetImg}
         alt={name}

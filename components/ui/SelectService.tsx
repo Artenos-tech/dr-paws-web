@@ -68,7 +68,7 @@ const SelectService: React.FC<SelectServiceProps> = ({
 
   const fetchAppointmentServices = async () => {
     try {
-      await getAppointmentServices({})
+      await getAppointmentServices({ hide_consult_subtypes: "true" })
     } catch (error) {
       console.error("Error fetching appointment services:", error)
       toast.error(
@@ -130,6 +130,8 @@ const SelectService: React.FC<SelectServiceProps> = ({
     setGroomingAddHaircut(false)
     setGroomingCatalogueKeys([])
     setOpenCard(null)
+    setModalKind(null)
+    setIsModalOpen(false)
     setServiceOptions(null, null, null, false, null, [])
   }
 
@@ -139,39 +141,7 @@ const SelectService: React.FC<SelectServiceProps> = ({
     return keys
   }
 
-  const openServiceCard = (card: {
-    id: string
-    title: string
-    isGrooming: boolean
-    subtypes?: BookingCategory[]
-  }) => {
-    setOpenCard(card.id)
-    setSelectedSubtype(null)
-    setGroomingAddHaircut(false)
-    setGroomingCatalogueKeys([])
-    setServiceOptions(
-      card.id,
-      card.title,
-      selectedPet,
-      card.isGrooming,
-      null,
-      [],
-    )
-
-    if (card.isGrooming) {
-      setModalKind("grooming-addon")
-      setIsModalOpen(true)
-      return
-    }
-
-    if (card.subtypes?.length) {
-      setSubtypes(card.subtypes)
-      setModalKind("subtype")
-      setIsModalOpen(true)
-    }
-  }
-
-  const toggleCard = (cardId: string) => {
+  const toggleCard = (cardId: string, isGrooming: boolean) => {
     if (openCard === cardId) {
       resetSelection()
       return
@@ -179,8 +149,31 @@ const SelectService: React.FC<SelectServiceProps> = ({
     const selectedCard = appointmentTypes.find(
       (category) => category.id === cardId,
     )
-    if (selectedCard) {
-      openServiceCard(selectedCard)
+    if (!selectedCard) return
+
+    setOpenCard(cardId)
+    setSelectedSubtype(null)
+    setGroomingAddHaircut(false)
+    setGroomingCatalogueKeys([])
+    setServiceOptions(
+      selectedCard.id,
+      selectedCard.title,
+      selectedPet,
+      isGrooming,
+      null,
+      [],
+    )
+
+    if (isGrooming) {
+      setModalKind("grooming-addon")
+      setIsModalOpen(true)
+      return
+    }
+
+    if (selectedCard.subtypes?.length) {
+      setSubtypes(selectedCard.subtypes)
+      setModalKind("subtype")
+      setIsModalOpen(true)
     }
   }
 
