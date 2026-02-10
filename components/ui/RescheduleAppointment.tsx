@@ -28,6 +28,7 @@ const RescheduleAppointment: React.FC<ReschedulingProps> = ({
     selectedServiceId: string | null
     selectedService: string | null
     selectedSubtype: BookingCategory | null
+    groomingCatalogueKeys: string[]
     selectedPet: Pet | null
     isGrooming: boolean
     selectedClinic: string | null
@@ -40,6 +41,7 @@ const RescheduleAppointment: React.FC<ReschedulingProps> = ({
     selectedServiceId: existingAppointment.appt_type_id,
     selectedService: existingAppointment.appt_type,
     selectedSubtype: null,
+    groomingCatalogueKeys: [],
     selectedPet: {
       name: existingAppointment.pet_name,
       type: existingAppointment.pet_type || null,
@@ -91,6 +93,10 @@ const RescheduleAppointment: React.FC<ReschedulingProps> = ({
   if (!apptServiceDetails?.ok) {
     return
   }
+  const serviceDetails = apptServiceDetails.value.body.serviceDetails
+  const rescheduleCatalogueKeys = selectedAppointment.isGrooming
+    ? serviceDetails.catalogue_keys || []
+    : []
 
   return (
     <div className="font-roca pb-20 h-full w-full">
@@ -113,9 +119,12 @@ const RescheduleAppointment: React.FC<ReschedulingProps> = ({
                 selectedPet={notNull(selectedAppointment.selectedPet)}
                 selectedLocation={notNull(selectedAppointment.selectedLocation)}
                 selectedService={notNull(selectedAppointment.selectedService)}
-                selectedSubtype={notNull(
-                  apptServiceDetails.value.body.serviceDetails.subtype,
-                )}
+                selectedSubtype={
+                  selectedAppointment.isGrooming
+                    ? null
+                    : notNull(serviceDetails.subtype)
+                }
+                groomingCatalogueKeys={rescheduleCatalogueKeys}
                 isGrooming={selectedAppointment.isGrooming}
                 isReschedule={true}
                 setFinalAppointmentData={(appData) => {
@@ -138,6 +147,7 @@ const RescheduleAppointment: React.FC<ReschedulingProps> = ({
                 selectedSvcId: notNull(selectedAppointment.selectedServiceId),
                 selectedService: notNull(selectedAppointment.selectedService),
                 selectedSubtype: selectedAppointment.selectedSubtype?.title,
+                groomingCatalogueKeys: rescheduleCatalogueKeys,
                 selectedPet: notNull(selectedAppointment.selectedPet),
                 selectedClinic: notNull(selectedAppointment.selectedClinic),
                 selectedLocation: notNull(selectedAppointment.selectedLocation),

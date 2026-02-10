@@ -575,10 +575,10 @@ export default createAPIClient({
 
     getSlotsForGrooming: {
       method: "GET",
-      path: "/booking/slots/grooming?clinicid={clinicid}&catalogue={catalogue}&petid={petid}&pettype={pettype}&date={date}",
+      path: "/booking/slots/grooming?clinicid={clinicid}&catalogue_keys={catalogue_keys}&petid={petid}&pettype={pettype}&date={date}",
       pathParamsSchema: z.object({
         clinicid: z.string().uuid(),
-        catalogue: z.string(),
+        catalogue_keys: z.string().optional(),
         petid: z.string().uuid(),
         pettype: z.enum(["DOG", "CAT", "OTHER"]),
         date: z.string(),
@@ -664,7 +664,8 @@ export default createAPIClient({
         booking_date: z.string(),
         clinic_id: z.string().uuid(),
         appt_type_id: z.string(),
-        subtype_id: z.string(),
+        subtype_id: z.string().optional(),
+        catalogue_keys: z.array(z.string()).optional(),
         pet_type: z.enum(["DOG", "CAT", "OTHER"]),
         is_grooming: z.boolean(),
         coupon_code: z.string().optional(),
@@ -777,6 +778,7 @@ export default createAPIClient({
           title: z.string(),
           description: z.string(),
           isGrooming: z.boolean(),
+          catalogue_keys: z.array(z.string()).optional(),
           subtype: z
             .object({
               id: z.string(),
@@ -800,7 +802,8 @@ export default createAPIClient({
         appt_end: z.string(),
         booking_date: z.string(),
         service_id: z.string(),
-        catalogue_id: z.string(),
+        catalogue_id: z.string().optional(),
+        catalogue_keys: z.array(z.string()).optional(),
         clinic_id: z.string().uuid(),
         is_grooming: z.boolean(),
         pet_type: z.enum(["DOG", "CAT", "OTHER"]),
