@@ -45,8 +45,8 @@ export default function GroomingAddonModal({
                   <span className="text-xs sm:text-sm text-gray-600">
                     Our package that covers everything for short-coat breeds.
                     Includes shampoo & conditioning bath, ear cleaning, teeth
-                    brushing, nail cutting, sanitary trimming, paw-pad
-                    trimming, blow-drying & perfuming.
+                    brushing, nail cutting, sanitary trimming, paw-pad trimming,
+                    blow-drying & perfuming.
                   </span>
                 </div>
               </div>
