@@ -238,7 +238,7 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
 
                   <div className="flex items-center gap-2">
                     <Tooltip
-                      title={"Edit Address"}
+                      title={"Edit address"}
                       color="#f7f1de"
                       styles={{ body: { color: "#33495f" } }}
                     >
@@ -254,7 +254,7 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
                     </Tooltip>
 
                     <Tooltip
-                      title={"Delete Address"}
+                      title={"Delete address"}
                       color="#f7f1de"
                       styles={{ body: { color: "#33495f" } }}
                     >
