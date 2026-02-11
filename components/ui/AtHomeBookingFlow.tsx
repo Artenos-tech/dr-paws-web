@@ -144,6 +144,8 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
   onBackToStart,
 }) => {
   const [state, dispatch] = useReducer(atHomeBookingReducer, initialState)
+  const [paymentAmount, setPaymentAmount] = React.useState<number | null>(null)
+
   const {
     currentStep,
     showConfirmationModal,
@@ -314,6 +316,44 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
     }
   }, [appointmentData])
 
+  const { call: getHomeVisitPaymentAmount } = useAPICall(
+    atHomeApiClient.getHomeVisitPaymentAmount,
+  )
+  useEffect(() => {
+    const fetchPaymentAmount = async () => {
+      if (
+        !appointmentData.addressId ||
+        !appointmentData.petId ||
+        !appointmentData.date ||
+        !appointmentData.slot?.startTime
+      ) {
+        setPaymentAmount(null)
+        return
+      }
+
+      const result = await getHomeVisitPaymentAmount({
+        address_id: appointmentData.addressId,
+        pet_id: appointmentData.petId,
+        booking_date: convertBookingDateToIso(appointmentData.date),
+        appt_start: appointmentData.slot.startTime,
+      })
+
+      if (result?.ok) {
+        setPaymentAmount(result.value.body.data.amount)
+      } else {
+        toast.error("Failed to fetch payment amount")
+        setPaymentAmount(null)
+      }
+    }
+
+    fetchPaymentAmount()
+  }, [
+    appointmentData.addressId,
+    appointmentData.petId,
+    appointmentData.date,
+    appointmentData.slot?.startTime,
+  ])
+
   return (
     <div className="w-full">
       <button
@@ -372,6 +412,7 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
               onClose={() => dispatch({ type: "HIDE_CONFIRMATION_MODAL" })}
               onConfirm={handleConfirmBooking}
               bookingDetails={bookingDetails}
+              paymentAmount={paymentAmount}
             />
           </>
         )}

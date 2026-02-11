@@ -7,6 +7,7 @@ import { Suspense, useEffect, useState } from "react"
 import { AppointmentDetails } from "@/model/typeDefinitions"
 import BookingConfirmed from "@/components/ui/BookingConfirmed"
 import { Loader2 } from "lucide-react"
+import { useAPIErrorToastFromResult } from "@/hooks/useAPIErrorToast"
 
 const BookingConfirmationContent: React.FC = () => {
   const searchParams = useSearchParams()
@@ -33,6 +34,9 @@ const BookingConfirmationContent: React.FC = () => {
       setConfirmedAppointment(getBookingByIdResult.value.body.data.appointment)
     }
   }, [getBookingByIdResult])
+  useAPIErrorToastFromResult(getBookingByIdResult, {
+    fallbackMessage: "Failed to fetch booking",
+  })
 
   if (loadingGetBookingById || !confirmedAppointment) {
     return (

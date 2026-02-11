@@ -59,25 +59,41 @@ function ClinicTabBar<T extends string>({
           // Horizontal tab version
           <div className="pb-2 overflow-x-auto">
             <div className="flex items-center space-x-8 justify-start">
-              {tabEntries.map(([id, tab]) => (
-                <button
-                  key={id}
-                  className={`relative text-lg whitespace-nowrap ${
-                    activeTabId === id
-                      ? "text-primary-1 font-semibold"
-                      : "text-primary-1 font-normal"
-                  }`}
-                  onClick={() => handleTabClick(id)}
-                >
-                  {tab.label}
-                  {activeTabId === id && (
+              {tabEntries.map(([id, tab]) => {
+                const isActive = activeTabId === id
+
+                return (
+                  <button
+                    key={id}
+                    onClick={() => handleTabClick(id)}
+                    className={`
+        group relative text-lg whitespace-nowrap
+        transition-all duration-200
+        ${
+          isActive
+            ? "text-primary-1 font-semibold"
+            : "text-primary-1/70 hover:text-primary-1"
+        }
+        active:scale-[0.97]
+      `}
+                  >
+                    {tab.label}
+
+                    {/* Underline */}
                     <span
-                      className="absolute left-0 bottom-0 w-full h-[6px] bg-secondary-1"
-                      style={{ transform: "translateY(8px)" }}
-                    ></span>
-                  )}
-                </button>
-              ))}
+                      className={`
+          absolute left-0 bottom-0 h-[6px] w-full
+          transition-all duration-200 translate-y-2
+          ${
+            isActive
+              ? "bg-secondary-1 opacity-100"
+              : "bg-secondary-1 opacity-0 group-hover:opacity-60"
+          }
+        `}
+                    />
+                  </button>
+                )
+              })}
             </div>
           </div>
         )}

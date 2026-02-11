@@ -126,7 +126,7 @@ const AddressPage = () => {
         const res = await getAddress({ addressid: addressId })
 
         if (!res.ok) {
-          toast.error("Failed to load address. Please retry.")
+          toast.error(res.error.message)
           return
         }
 
@@ -206,7 +206,7 @@ const AddressPage = () => {
         : await addAddress({ address: payload })
 
       if (!res.ok) {
-        toast.error("Failed to save address")
+        if (res.error.status) toast.error(res.error.message)
         return
       }
 

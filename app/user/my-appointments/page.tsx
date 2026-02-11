@@ -9,6 +9,7 @@ import NoAppointments from "@/components/ui/NoAppointments"
 import { useAPICall } from "@/hooks/apicall"
 import { AppointmentListItem } from "@/model/typeDefinitions"
 import atHomeApiClient from "@/services/api.athome"
+import { useAPIErrorToastFromResult } from "@/hooks/useAPIErrorToast"
 
 const TABS = {
   ALL: { label: "All" },
@@ -140,6 +141,9 @@ const MyAppointmentsPage = () => {
       setAllAppointments(all)
     }
   }, [getAppointmentsResult])
+  useAPIErrorToastFromResult(getAppointmentsResult, {
+    fallbackMessage: "Failed to fetch appointments",
+  })
 
   useEffect(() => {
     let filtered: AppointmentListItem[] = []
@@ -221,20 +225,6 @@ const MyAppointmentsPage = () => {
           />
         ) : (
           <>
-            {!getAppointmentsResult?.ok &&
-              (getAppointmentsResult?.error.apiClientErrorType ===
-              "ErrorResponseAPIError" ? (
-                <div>{getAppointmentsResult.error.message}</div>
-              ) : (
-                <>
-                  {console.error(
-                    "Error fetching appointments",
-                    getAppointmentsResult?.error.message,
-                  )}
-                  <div>Something went wrong fetching your appointments</div>
-                </>
-              ))}
-
             <ClinicTabBar
               tabs={TABS}
               activeTabId={activeTab}
@@ -263,29 +253,31 @@ const MyAppointmentsPage = () => {
                     />
                   ))}
                 </div>
-
-                {/* Pagination */}
                 <div className="flex justify-center items-center gap-4 mt-6">
                   <button
                     onClick={() =>
                       setCurrentPage((prev) => Math.max(prev - 1, 1))
                     }
                     disabled={currentPage === 1}
-                    className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+                    className="
+      px-4 py-1.5 rounded-md text-sm font-medium bg-gray-100 text-gray-700 border border-gray-300 transition-all duration-200 hover:bg-gray-200 hover:shadow-sm hover:border-gray-400 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-gray-100 disabled:hover:border-gray-300
+    "
                   >
                     Prev
                   </button>
-                  <span className="text-sm font-medium">
+                  <span className="text-sm font-medium text-gray-700">
                     Page {currentPage} of {totalPages}
                   </span>
                   <button
                     onClick={() => setCurrentPage((prev) => prev + 1)}
                     disabled={currentPage >= totalPages}
-                    className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+                    className="
+      px-4 py-1.5 rounded-md text-sm font-medium bg-gray-100 text-gray-700 border border-gray-300 transition-all duration-200 hover:bg-gray-200 hover:shadow-sm hover:border-gray-400 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-gray-100 disabled:hover:border-gray-300 "
                   >
-                    Next
-                  </button>
-                </div>
+                    {" "}
+                    Next{" "}
+                  </button>{" "}
+                </div>{" "}
               </>
             )}
           </>
