@@ -9,6 +9,8 @@ import SelectDateTimeForVisit from "./SelectDateTimeForVisit"
 import ConfirmationModal from "./ConfirmationModal"
 import { VISIT_REASONS } from "./ReasonForVisit"
 import RescheduleConfirmed from "./RescheduleConfirmed"
+import { useAPIErrorToastFromResult } from "@/hooks/useAPIErrorToast"
+import toast from "react-hot-toast"
 
 type RescheduleHomeVistProps = {
   appointmentId: string
@@ -42,6 +44,7 @@ const RescheduleAtHomeAppointment = ({
     null,
   )
   const [view, setView] = useState<ViewState>("SELECT_SLOT")
+  const [paymentAmount, setPaymentAmount] = React.useState<number | null>(null)
 
   const {
     call: getAppointmentDetails,
@@ -64,6 +67,9 @@ const RescheduleAtHomeAppointment = ({
       setAppointment(getAppointmentDetailsResult.value.body.data.appointment)
     }
   }, [getAppointmentDetailsResult])
+  useAPIErrorToastFromResult(getAppointmentDetailsResult, {
+    fallbackMessage: "Failed to fetch appointment details",
+  })
 
   const handleConfirmSlots = (
     date: string,
@@ -107,8 +113,42 @@ const RescheduleAtHomeAppointment = ({
     if (res?.ok) {
       setIsConfirmationModalOpen(false)
       setView("CONFIRMED")
+    } else {
+      toast.error("Failed to reschedule appointment")
     }
   }
+  const { call: getHomeVisitPaymentAmount } = useAPICall(
+    atHomeApiClient.getHomeVisitPaymentAmount,
+  )
+  useEffect(() => {
+    const fetchPaymentAmount = async () => {
+      if (
+        !appointment?.address?.id ||
+        !appointment.pet_id ||
+        !bookingDetails?.date ||
+        !bookingDetails.slot
+      ) {
+        setPaymentAmount(null)
+        return
+      }
+
+      const result = await getHomeVisitPaymentAmount({
+        address_id: appointment?.address?.id,
+        pet_id: appointment?.pet_id,
+        booking_date: bookingDetails.date.toISOString(),
+        appt_start: bookingDetails.slot.split(" - ")[0],
+      })
+
+      if (result?.ok) {
+        setPaymentAmount(result.value.body.data.amount)
+      } else {
+        toast.error("Failed to fetch payment amount")
+        setPaymentAmount(null)
+      }
+    }
+
+    fetchPaymentAmount()
+  }, [appointment?.id])
 
   const getReasonByKey = (key: ReasonForVisitEnum): string => {
     return VISIT_REASONS.find((r) => r.key === key)?.label ?? "Unknown reason"
@@ -141,6 +181,7 @@ const RescheduleAtHomeAppointment = ({
               onClose={() => setIsConfirmationModalOpen(false)}
               onConfirm={handleConfirmReschedule}
               bookingDetails={bookingDetails}
+              paymentAmount={paymentAmount}
             />
           )}
         </>

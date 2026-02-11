@@ -26,6 +26,7 @@ import RescheduleAtHomeAppointment from "./RescheduleAtHomeAppointment"
 import SupportActions from "./SupportActions"
 import SOSActivatedBanner from "./SOSActivatedBanner"
 import SOSConfirmationModal from "./SOSConfirmationModal"
+import { useAPIErrorToastFromResult } from "@/hooks/useAPIErrorToast"
 
 type AtHomeBookingDetailsProps = {
   goBack: (refetch: boolean) => void
@@ -245,6 +246,9 @@ const AtHomeBookingDetails = ({
       setRefundStatus(status)
     }
   }, [cancelAppointmentResult])
+  useAPIErrorToastFromResult(cancelAppointmentResult, {
+    fallbackMessage: "Failed to cancel appointment",
+  })
 
   const handleNavigation = () => {
     if (view === "CONFIRM_ACTION" || view === "RESCHEDULE") {

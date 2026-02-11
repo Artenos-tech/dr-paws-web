@@ -105,17 +105,22 @@ const SelectPet: React.FC<SelectPetProps> = ({ handleConfirm, petId }) => {
               onSelect={() => handleSelect(pet.id, pet.serviceable)}
             />
           ))}
-
-          <div className="flex flex-col items-center justify-center gap-3">
-            <button
-              type="button"
-              className="flex flex-col items-center rounded-full justify-center cursor-pointer border border-dashed border-gray-400 w-[100px] h-[100px] text-gray-500 hover:border-secondary-1 hover:text-secondary-1 transition"
-              onClick={() => setIsAddPetModalOpen(true)}
-            >
-              <span className="text-2xl font-bold">+</span>
-            </button>
-            <div className="text-sm">Add Pet</div>
-          </div>
+          <Tooltip
+            title={"Add New Pet"}
+            color="#f7f1de"
+            styles={{ body: { color: "#33495f" } }}
+          >
+            <div className="flex flex-col items-center justify-center gap-3">
+              <button
+                type="button"
+                className="flex flex-col items-center rounded-full justify-center cursor-pointer border border-dashed border-gray-400 w-[100px] h-[100px] text-gray-500 hover:border-secondary-1 hover:text-secondary-1 transition"
+                onClick={() => setIsAddPetModalOpen(true)}
+              >
+                <span className="text-2xl font-bold">+</span>
+              </button>
+              <div className="text-sm">Add Pet</div>
+            </div>
+          </Tooltip>
         </div>
       )}
 
