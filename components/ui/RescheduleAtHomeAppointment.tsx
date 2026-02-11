@@ -175,7 +175,7 @@ const RescheduleAtHomeAppointment = ({
             isReschedule={true}
           />
 
-          {bookingDetails && (
+          {bookingDetails && paymentAmount !== null && (
             <ConfirmationModal
               isOpen={isConfirmationModalOpen}
               onClose={() => setIsConfirmationModalOpen(false)}
