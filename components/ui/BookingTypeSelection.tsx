@@ -8,6 +8,7 @@ import atHomeApiClient from "@/services/api.athome"
 import { Tooltip } from "antd"
 import { ClipLoader } from "react-spinners"
 import { MdOutlineInfo } from "react-icons/md"
+import { useAPIErrorToastFromResult } from "@/hooks/useAPIErrorToast"
 
 export type BookingType = {
   id: string
@@ -38,6 +39,9 @@ const BookingTypeSelection: React.FC<BookingTypeSelectionProps> = ({
       )
     }
   }, [getServiceablePincodesResult])
+  useAPIErrorToastFromResult(getServiceablePincodesResult, {
+    fallbackMessage: "Failed to fetch serviceable pincodes",
+  })
 
   useEffect(() => {
     getServiceablePincodes({})

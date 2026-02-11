@@ -7,6 +7,7 @@ import { useAPICall } from "@/hooks/apicall"
 import atHomeApiClient from "@/services/api.athome"
 import { useEffect, useRef, useState } from "react"
 import { ClipLoader } from "react-spinners"
+import { useAPIErrorToastFromResult } from "@/hooks/useAPIErrorToast"
 
 const POLLING_INTERVAL_MS = 5000
 
@@ -79,6 +80,9 @@ const BookingDetails = ({
       pollingIntervalRef.current = null
     }
   }, [getAppointmentDetailsResult, isPollingPaused])
+  useAPIErrorToastFromResult(getAppointmentDetailsResult, {
+    fallbackMessage: "Failed to fetch appointment",
+  })
 
   if (!appointment) {
     return (

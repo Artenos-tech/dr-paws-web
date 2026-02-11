@@ -10,6 +10,7 @@ import toast from "react-hot-toast"
 import { AddressWithPincode } from "@/model/typeDefinitions"
 import { Tooltip } from "antd"
 import DeleteModal from "./DeleteModal"
+import { useAPIErrorToastFromResult } from "@/hooks/useAPIErrorToast"
 
 interface SelectAddressProps {
   handleConfirm: (addressId: string) => void
@@ -46,7 +47,9 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
   const addresses: AddressWithPincode[] =
     (addressBookResult?.ok && addressBookResult.value.body.data.address_book) ||
     []
-
+  useAPIErrorToastFromResult(addressBookResult, {
+    fallbackMessage: "Failed to fetch address book",
+  })
   const uncheckedAddresses = useMemo(() => {
     return addresses.filter((addr) => !checkedAddressIds.has(addr.id))
   }, [addresses, checkedAddressIds])
@@ -160,7 +163,7 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
       }
       toast.success("Address deleted successfully")
     } else {
-      toast.error("Failed to delete address")
+      toast.error(result.error.message)
     }
 
     setShowDeleteModal(false)
@@ -235,7 +238,7 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
 
                   <div className="flex items-center gap-2">
                     <Tooltip
-                      title={"Edit Address"}
+                      title={"Edit address"}
                       color="#f7f1de"
                       styles={{ body: { color: "#33495f" } }}
                     >
@@ -251,7 +254,7 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
                     </Tooltip>
 
                     <Tooltip
-                      title={"Delete Address"}
+                      title={"Delete address"}
                       color="#f7f1de"
                       styles={{ body: { color: "#33495f" } }}
                     >
@@ -290,16 +293,23 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
               </div>
             )
           })}
-
-          <div className="rounded-lg p-2 flex flex-col items-center justify-center">
-            <div
-              onClick={() => router.push(`/user/book-appointment/edit-address`)}
-              className="w-12 h-12 flex items-center justify-center rounded-full border-2 border-dashed cursor-pointer"
-            >
-              <span className="text-2xl font-semibold">+</span>
+          <Tooltip
+            title={"Add new address"}
+            color="#f7f1de"
+            styles={{ body: { color: "#33495f" } }}
+          >
+            <div className="rounded-lg p-2 flex flex-col items-center justify-center">
+              <div
+                onClick={() =>
+                  router.push(`/user/book-appointment/edit-address`)
+                }
+                className="w-12 h-12 flex items-center justify-center rounded-full border-2 border-dashed cursor-pointer"
+              >
+                <span className="text-2xl font-semibold">+</span>
+              </div>
+              <span className="font-medium mt-1">Add</span>
             </div>
-            <span className="font-medium mt-1">Add</span>
-          </div>
+          </Tooltip>
         </div>
       )}
 

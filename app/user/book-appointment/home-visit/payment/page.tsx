@@ -4,6 +4,7 @@ import { useSearchParams, useRouter } from "next/navigation"
 import { useAPICall } from "@/hooks/apicall"
 import atHomeClient from "@/services/api.athome"
 import { Loader2, AlertCircle } from "lucide-react"
+import toast from "react-hot-toast"
 
 const POLL_INTERVAL_MS = 3000
 
@@ -61,7 +62,7 @@ const HomeVisitPaymentStatus: React.FC = () => {
           }, 1500)
         }
       } catch {
-        console.error("Failed to verify payment")
+        toast.error("Failed to verify payment")
         stopPolling()
         setStatus("error")
       }
