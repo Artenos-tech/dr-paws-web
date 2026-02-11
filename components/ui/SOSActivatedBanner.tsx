@@ -1,6 +1,6 @@
 "use client"
 
-import { PhoneCall, MessageCircle } from "lucide-react"
+import { PhoneCall } from "lucide-react"
 
 type Props = {
   onCancelSOS: () => void
