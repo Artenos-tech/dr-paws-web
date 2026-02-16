@@ -15,6 +15,7 @@ const Booking: React.FC = () => {
     selectedServiceId: string | null
     selectedService: string | null
     selectedSubtype: BookingCategory | null
+    groomingCatalogueKeys: string[]
     selectedPet: Pet | null
     isGrooming: boolean
     selectedClinic: string | null
@@ -29,6 +30,7 @@ const Booking: React.FC = () => {
     selectedServiceId: null,
     selectedService: null,
     selectedSubtype: null,
+    groomingCatalogueKeys: [],
     selectedPet: null,
     isGrooming: false,
     selectedClinic: null,
@@ -129,6 +131,7 @@ const Booking: React.FC = () => {
                 pet,
                 isGrooming,
                 selectedSubtype,
+                groomingCatalogueKeys,
               ) => {
                 setSelectedAppointmentState((prev) => ({
                   ...prev,
@@ -137,6 +140,7 @@ const Booking: React.FC = () => {
                   selectedPet: pet,
                   isGrooming: isGrooming,
                   selectedSubtype,
+                  groomingCatalogueKeys,
                 }))
               }}
               openCard={openCard}
@@ -168,6 +172,7 @@ const Booking: React.FC = () => {
               selectedLocation={notNull(selectedAppointment.selectedLocation)}
               selectedService={notNull(selectedAppointment.selectedService)}
               selectedSubtype={selectedAppointment.selectedSubtype}
+              groomingCatalogueKeys={selectedAppointment.groomingCatalogueKeys}
               isGrooming={selectedAppointment.isGrooming}
               isReschedule={false}
               setFinalAppointmentData={(appData) => {
@@ -185,6 +190,8 @@ const Booking: React.FC = () => {
                 selectedSvcId: notNull(selectedAppointment.selectedServiceId),
                 selectedService: notNull(selectedAppointment.selectedService),
                 selectedSubtype: selectedAppointment.selectedSubtype?.title,
+                groomingCatalogueKeys:
+                  selectedAppointment.groomingCatalogueKeys,
                 selectedPet: notNull(selectedAppointment.selectedPet),
                 selectedClinic: notNull(selectedAppointment.selectedClinic),
                 selectedLocation: notNull(selectedAppointment.selectedLocation),

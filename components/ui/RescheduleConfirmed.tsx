@@ -18,6 +18,7 @@ type RescheduleConfirmedProps = {
     selectedLocation: string
     selectedService: string
     selectedSubtype?: string
+    groomingCatalogueKeys?: string[]
     selectedVet: {
       id: string
       name: string
@@ -55,6 +56,8 @@ const RescheduleConfirmed: React.FC<RescheduleConfirmedProps> = ({
   const defaultPetImageByType =
     petImageByType[updatedValues.selectedPet.type?.toLowerCase() || "other"] ||
     petImageByType.other
+  const groomingHasHaircut =
+    updatedValues.groomingCatalogueKeys?.includes("haircut") || false
 
   return (
     <div className="w-full h-full">
@@ -68,8 +71,10 @@ const RescheduleConfirmed: React.FC<RescheduleConfirmedProps> = ({
         >
           <p className="text-lg font-semibold mt-4 text-center">
             {updatedValues.selectedPet.name} is scheduled for a{" "}
-            {isGroomingAppointment && updatedValues.selectedSubtype
-              ? `${updatedValues.selectedSubtype}!`
+            {isGroomingAppointment
+              ? groomingHasHaircut
+                ? "Spa Bath + Haircut"
+                : "Spa Bath"
               : `${updatedValues.selectedService}`}
             {isGroomingAppointment
               ? ""

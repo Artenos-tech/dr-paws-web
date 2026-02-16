@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react"
 import { Tooltip } from "antd"
 import BookingCard from "@/components/ui/BookingCard"
 import GroomingSubtypeModal from "@/components/ui/GroomingSubtypeModal"
+import GroomingAddonModal from "@/components/ui/GroomingAddonModal"
 import CustomButton from "./CustomButton"
 import { Pet } from "@/context/UserContext"
 import { useAPICall } from "@/hooks/apicall"
@@ -27,6 +28,7 @@ interface SelectServiceProps {
     selectedPet: Pet | null,
     isGrooming: boolean,
     selectedSubtype: BookingCategory | null,
+    groomingCatalogueKeys: string[],
   ) => void
   openCard: string | null
   setOpenCard: React.Dispatch<React.SetStateAction<string | null>>
@@ -49,9 +51,12 @@ const SelectService: React.FC<SelectServiceProps> = ({
   const [subtypes, setSubtypes] = useState<BookingCategory[]>([])
   const [selectedSubtype, setSelectedSubtype] =
     useState<BookingCategory | null>(null)
-  const [selectedCardId, setSelectedCardId] = useState<string>()
-  const [selectedServiceType, setSelectedServiceType] = useState<
-    "Consultation" | "Grooming" | null
+  const [groomingAddHaircut, setGroomingAddHaircut] = useState(false)
+  const [groomingCatalogueKeys, setGroomingCatalogueKeys] = useState<string[]>(
+    [],
+  )
+  const [modalKind, setModalKind] = useState<
+    "grooming-addon" | "subtype" | null
   >(null)
   const { call: getPetsAPI, result: getPetsAPIResult } = useAPICall(api.getPets)
 
@@ -116,41 +121,60 @@ const SelectService: React.FC<SelectServiceProps> = ({
       selectedPet,
       isGrooming,
       selectedSubtype,
+      groomingCatalogueKeys,
     )
   }
 
-  const toggleCard = (cardId: string, isGrooming: boolean) => {
-    setSelectedCardId(cardId)
+  const resetSelection = () => {
     setSelectedSubtype(null)
-    setOpenCard((prevOpenCard) => {
-      if (prevOpenCard !== null) {
-        setServiceOptions(null, null, null, isGrooming, selectedSubtype)
-      }
-      const selectedCard = appointmentTypes.find(
-        (category) => category.id === cardId,
-      )
-      if (selectedCard && prevOpenCard !== cardId) {
-        setServiceOptions(
-          selectedCard.id,
-          selectedCard.title,
-          selectedPet,
-          isGrooming,
-          selectedSubtype,
-        )
-      }
-      if (
-        selectedCard &&
-        // selectedCard.isGrooming &&
-        selectedCard.subtypes &&
-        selectedCard.subtypes.length > 0 &&
-        prevOpenCard !== cardId
-      ) {
-        setSubtypes(selectedCard.subtypes)
-        setIsModalOpen(true)
-      }
-      return prevOpenCard === cardId ? null : cardId
-    })
-    setSelectedServiceType(isGrooming ? "Grooming" : "Consultation")
+    setGroomingAddHaircut(false)
+    setGroomingCatalogueKeys([])
+    setOpenCard(null)
+    setModalKind(null)
+    setIsModalOpen(false)
+    setServiceOptions(null, null, null, false, null, [])
+  }
+
+  const buildGroomingCatalogueKeys = (includeHaircut: boolean) => {
+    const keys = ["spa-bath"]
+    if (includeHaircut) keys.push("haircut")
+    return keys
+  }
+
+  const toggleCard = (cardId: string, isGrooming: boolean) => {
+    if (openCard === cardId) {
+      resetSelection()
+      return
+    }
+    const selectedCard = appointmentTypes.find(
+      (category) => category.id === cardId,
+    )
+    if (!selectedCard) return
+
+    setOpenCard(cardId)
+    setSelectedSubtype(null)
+    setGroomingAddHaircut(false)
+    setGroomingCatalogueKeys([])
+    setServiceOptions(
+      selectedCard.id,
+      selectedCard.title,
+      selectedPet,
+      isGrooming,
+      null,
+      [],
+    )
+
+    if (isGrooming) {
+      setModalKind("grooming-addon")
+      setIsModalOpen(true)
+      return
+    }
+
+    if (selectedCard.subtypes?.length) {
+      setSubtypes(selectedCard.subtypes)
+      setModalKind("subtype")
+      setIsModalOpen(true)
+    }
   }
 
   const handleNext = () => {
@@ -218,21 +242,66 @@ const SelectService: React.FC<SelectServiceProps> = ({
         </Tooltip>
       </div>
 
-      <GroomingSubtypeModal
-        isOpen={isModalOpen}
-        subtypes={subtypes}
-        setSelectedSubtype={setSelectedSubtype}
-        selectedServiceType={selectedServiceType}
-        onClose={(subtypeSelected: boolean) => {
-          if (!subtypeSelected) {
-            setSelectedSubtype(null)
-            toggleCard(selectedCardId as string, false)
-            setSelectedServiceType(null)
-          }
-          setIsModalOpen(false)
-        }}
-        selectedSubtype={selectedSubtype}
-      />
+      {modalKind === "subtype" && (
+        <GroomingSubtypeModal
+          isOpen={isModalOpen}
+          subtypes={subtypes}
+          setSelectedSubtype={setSelectedSubtype}
+          selectedServiceType="Consultation"
+          onClose={(subtypeSelected: boolean) => {
+            if (!subtypeSelected) {
+              resetSelection()
+            } else {
+              const selectedCard = appointmentTypes.find(
+                (category) => category.id === openCard,
+              )
+              if (selectedCard) {
+                setServiceOptions(
+                  selectedCard.id,
+                  selectedCard.title,
+                  selectedPet,
+                  selectedCard.isGrooming,
+                  selectedSubtype,
+                  groomingCatalogueKeys,
+                )
+              }
+            }
+            setIsModalOpen(false)
+            setModalKind(null)
+          }}
+          selectedSubtype={selectedSubtype}
+        />
+      )}
+      {modalKind === "grooming-addon" && (
+        <GroomingAddonModal
+          isOpen={isModalOpen}
+          addHaircut={groomingAddHaircut}
+          setAddHaircut={setGroomingAddHaircut}
+          onClose={(confirmed: boolean) => {
+            if (!confirmed) {
+              resetSelection()
+            } else {
+              const selectedCard = appointmentTypes.find(
+                (category) => category.id === openCard,
+              )
+              if (selectedCard) {
+                const keys = buildGroomingCatalogueKeys(groomingAddHaircut)
+                setServiceOptions(
+                  selectedCard.id,
+                  selectedCard.title,
+                  selectedPet,
+                  selectedCard.isGrooming,
+                  null,
+                  keys,
+                )
+                setGroomingCatalogueKeys(keys)
+              }
+            }
+            setIsModalOpen(false)
+            setModalKind(null)
+          }}
+        />
+      )}
       <Toaster />
     </div>
   )

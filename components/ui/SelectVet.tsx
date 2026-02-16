@@ -37,6 +37,7 @@ interface selectVetProps {
   selectedLocation: string
   selectedService: string
   selectedSubtype: BookingCategory | null
+  groomingCatalogueKeys: string[]
   isGrooming: boolean
   isReschedule: boolean
   existingAppointment?: {
@@ -61,6 +62,7 @@ const SelectVet: React.FC<selectVetProps> = ({
   selectedSvcId,
   selectedPet,
   selectedSubtype,
+  groomingCatalogueKeys,
   selectedLocation,
   selectedService,
   setFinalAppointmentData,
@@ -168,17 +170,17 @@ const SelectVet: React.FC<selectVetProps> = ({
   ])
 
   const fetchGroomingSlots = useCallback(async () => {
-    if (
-      selectedSvcId &&
-      selectedSubtype &&
-      selectedClinic &&
-      selectedPet &&
-      isGrooming
-    ) {
+    if (selectedSvcId && selectedClinic && selectedPet && isGrooming) {
       try {
+        const catalogueKeys =
+          groomingCatalogueKeys.length > 0
+            ? groomingCatalogueKeys
+            : selectedSubtype
+              ? [selectedSubtype.id]
+              : []
         await getGroomingSlots({
           clinicid: selectedClinic,
-          catalogue: selectedSubtype.id,
+          catalogue_keys: catalogueKeys.join(","),
           petid: selectedPet.id,
           pettype: selectedPet.type as "DOG" | "CAT" | "OTHER",
           date: format(selectedDate, "dd/MM/yyyy"),
@@ -190,11 +192,12 @@ const SelectVet: React.FC<selectVetProps> = ({
     }
   }, [
     selectedSvcId,
-    selectedSubtype,
     selectedClinic,
     selectedPet,
     selectedDate,
     isGrooming,
+    groomingCatalogueKeys,
+    selectedSubtype,
   ])
 
   const fetchBestAvailableVetSlots = useCallback(async () => {
@@ -402,6 +405,7 @@ const SelectVet: React.FC<selectVetProps> = ({
             booking_date: string
             appt_type_id: string
             subtype_id?: string
+            catalogue_keys?: string[]
             pet_type: "DOG" | "CAT" | "OTHER"
             is_grooming: boolean
             coupon_code?: string
@@ -422,6 +426,9 @@ const SelectVet: React.FC<selectVetProps> = ({
             ...(appliedCoupon && {
               coupon_code: appliedCoupon,
             }),
+          }
+          if (isGrooming && groomingCatalogueKeys.length > 0) {
+            payload.catalogue_keys = groomingCatalogueKeys
           }
           if (!isConsultation) {
             payload.subtype_id = selectedSubtype?.id as string
@@ -473,6 +480,7 @@ const SelectVet: React.FC<selectVetProps> = ({
             booking_date: string
             service_id: string
             catalogue_id?: string
+            catalogue_keys?: string[]
             clinic_id: string
             is_grooming: boolean
             pet_type: "DOG" | "CAT" | "OTHER"
@@ -490,6 +498,9 @@ const SelectVet: React.FC<selectVetProps> = ({
             clinic_id: selectedClinic,
             is_grooming: isGrooming,
             pet_type: selectedPet.type as "DOG" | "CAT" | "OTHER",
+          }
+          if (isGrooming && groomingCatalogueKeys.length > 0) {
+            payload.catalogue_keys = groomingCatalogueKeys
           }
           if (!isConsultation) {
             payload.catalogue_id = selectedSubtype?.id as string
@@ -825,7 +836,13 @@ const SelectVet: React.FC<selectVetProps> = ({
           onConfirm={handleConfirmBooking}
           bookingDetails={{
             petName: selectedPet.name,
-            service: selectedSubtype?.title || selectedService,
+            service: isGrooming
+              ? groomingCatalogueKeys.includes("haircut")
+                ? "Spa Bath + Haircut"
+                : "Spa Bath"
+              : selectedSubtype?.title || selectedService,
+            haircutAddOn:
+              isGrooming && groomingCatalogueKeys.includes("haircut"),
             doctorName:
               selectedDoctor && selectedDoctor.id === BEST_AVAILABLE_VET_ID
                 ? doctors.find((doc) => {

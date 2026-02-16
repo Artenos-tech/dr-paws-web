@@ -20,6 +20,7 @@ type BookingConfirmedProps = {
     selectedClinicContact: string
     selectedService: string
     selectedSubtype?: string
+    groomingCatalogueKeys?: string[]
     selectedVet: SelectedVet | null
     selectedDate: Date
     selectedSlot: string
@@ -37,6 +38,8 @@ const BookingConfirmed: React.FC<BookingConfirmedProps> = ({
     petImageByType[
       selectedAppointment.selectedPet.type?.toLowerCase() || "other"
     ] || petImageByType.other
+  const groomingHasHaircut =
+    selectedAppointment.groomingCatalogueKeys?.includes("haircut") || false
 
   return (
     <div className="w-full h-full">
@@ -50,8 +53,10 @@ const BookingConfirmed: React.FC<BookingConfirmedProps> = ({
         >
           <p className="text-lg font-semibold mt-4 text-center">
             {selectedAppointment.selectedPet.name} is scheduled for a{" "}
-            {isGroomingAppointment && selectedAppointment.selectedSubtype
-              ? `${selectedAppointment.selectedSubtype}`
+            {isGroomingAppointment
+              ? groomingHasHaircut
+                ? "Spa Bath + Haircut"
+                : "Spa Bath"
               : `${selectedAppointment.selectedService}`}
             {isGroomingAppointment
               ? ""
