@@ -35,6 +35,10 @@ const Footer = () => {
               <div>HSR Clinic</div>
               <div>+91 7204996902</div>
             </div>
+            <div className="block mt-1 text-primary-1">
+              <div>Thanisandra Clinic</div>
+              <div>+91 9108467651</div>
+            </div>
           </div>
           <div>
             <h6 className="font-sans text-primary-1 font-semibold mb-2">
