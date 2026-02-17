@@ -52,7 +52,10 @@ interface selectVetProps {
     selectedSlotEnd: string | null
     appliedCoupon: string | null
   }) => void
-  onNext?: () => void
+  onNext?: (createdAppointment?: {
+    appointmentId: string
+    subBookingId: string
+  }) => void
 }
 
 const BEST_AVAILABLE_VET_ID = "best-available"
@@ -440,7 +443,10 @@ const SelectVet: React.FC<selectVetProps> = ({
               position: "bottom-right",
             })
             if (onNext) {
-              onNext() // Navigate to the next page only if the API succeeds
+              onNext({
+                appointmentId: response.value.body.appointment.appointment_id,
+                subBookingId: response.value.body.appointment.sub_booking_id,
+              }) // Navigate to the next page only if the API succeeds
             }
           } else {
             toast.error("Failed to create appointment. Please try again.", {
