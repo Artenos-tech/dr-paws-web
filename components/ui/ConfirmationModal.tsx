@@ -9,11 +9,13 @@ import {
 } from "@/components/ui/dialog"
 import { format } from "date-fns"
 import { CalendarIcon, MapPinIcon, UserIcon } from "lucide-react"
+import { ClipLoader } from "react-spinners"
 
 interface ConfirmationModalProps {
   isOpen: boolean
   onClose: () => void
   onConfirm: () => void
+  isSubmitting?: boolean
   bookingDetails: {
     petName: string
     service: string
@@ -31,6 +33,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   isOpen,
   onClose,
   onConfirm,
+  isSubmitting = false,
   bookingDetails,
 }) => {
   const {
@@ -47,7 +50,13 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   const showHaircutAddOn = Boolean(haircutAddOn)
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open && isSubmitting) return
+        onClose()
+      }}
+    >
       <DialogContent className="sm:max-w-[425px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-xl sm:text-2xl font-semibold text-secondary-1">
@@ -107,15 +116,24 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
         <DialogFooter className="mt-6 flex flex-col sm:flex-row gap-2">
           <button
             onClick={onClose}
+            disabled={isSubmitting}
             className="px-3 py-2 sm:px-4 sm:py-2 rounded-md text-[#5281a2] border border-[#5281a2] hover:bg-[#5281a2] hover:text-white transition-colors text-sm sm:text-base flex-1"
           >
             Cancel
           </button>
           <button
             onClick={onConfirm}
+            disabled={isSubmitting}
             className={`px-3 py-2 sm:px-4 sm:py-2 rounded-md text-white text-sm sm:text-base flex-1 bg-[#5281a2] hover:bg-[#3a6d8e] transition-colors`}
           >
-            Confirm
+            {isSubmitting ? (
+              <span className="flex justify-center items-center gap-2">
+                <ClipLoader size={16} color="white" />
+                Confirming...
+              </span>
+            ) : (
+              "Confirm"
+            )}
           </button>
         </DialogFooter>
       </DialogContent>

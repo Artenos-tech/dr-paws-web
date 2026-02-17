@@ -396,7 +396,6 @@ const SelectVet: React.FC<selectVetProps> = ({
 
   const handleConfirmBooking = async () => {
     if (!isReschedule) {
-      setIsConfirmationModalOpen(false)
       if (user && selectedSlot && selectedDate && selectedDoctor) {
         try {
           const payload: {
@@ -438,6 +437,7 @@ const SelectVet: React.FC<selectVetProps> = ({
           }
           const response = await createAnAppointment(payload)
           if (response.ok) {
+            setIsConfirmationModalOpen(false)
             toast.success("Appointment created successfully!", {
               duration: 3000,
               position: "bottom-right",
@@ -468,7 +468,6 @@ const SelectVet: React.FC<selectVetProps> = ({
         })
       }
     } else {
-      setIsConfirmationModalOpen(false)
       if (
         user &&
         selectedSlot &&
@@ -513,6 +512,7 @@ const SelectVet: React.FC<selectVetProps> = ({
           }
           const response = await rescheduleAppointment(payload)
           if (response.ok) {
+            setIsConfirmationModalOpen(false)
             toast.success("Appointment rescheduled successfully!", {
               duration: 3000,
               position: "bottom-right",
@@ -635,6 +635,8 @@ const SelectVet: React.FC<selectVetProps> = ({
     slotsForStaffResult?.ok === false ||
     bestAvailableVetScheduleResult?.ok === false ||
     groomingSlotsResult?.ok === false
+  const isSubmittingBookingAction =
+    loadingAppointmentCreation || loadingRescheduleAppointment
 
   const availableSlots =
     selectedDoctor && !isGrooming
@@ -838,8 +840,12 @@ const SelectVet: React.FC<selectVetProps> = ({
       {selectedDate && selectedSlot && (
         <ConfirmationModal
           isOpen={isConfirmationModalOpen}
-          onClose={() => setIsConfirmationModalOpen(false)}
+          onClose={() => {
+            if (isSubmittingBookingAction) return
+            setIsConfirmationModalOpen(false)
+          }}
           onConfirm={handleConfirmBooking}
+          isSubmitting={isSubmittingBookingAction}
           bookingDetails={{
             petName: selectedPet.name,
             service: isGrooming
