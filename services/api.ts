@@ -473,6 +473,7 @@ export default createAPIClient({
         clinics: z.array(
           z.object({
             id: z.string(),
+            dbClinicId: z.string().optional(),
             name: z.string(),
             services: z.string(),
             image: z.object({
