@@ -52,7 +52,10 @@ interface selectVetProps {
     selectedSlotEnd: string | null
     appliedCoupon: string | null
   }) => void
-  onNext?: () => void
+  onNext?: (createdAppointment?: {
+    appointmentId: string
+    subBookingId: string
+  }) => void
 }
 
 const BEST_AVAILABLE_VET_ID = "best-available"
@@ -393,7 +396,6 @@ const SelectVet: React.FC<selectVetProps> = ({
 
   const handleConfirmBooking = async () => {
     if (!isReschedule) {
-      setIsConfirmationModalOpen(false)
       if (user && selectedSlot && selectedDate && selectedDoctor) {
         try {
           const payload: {
@@ -435,12 +437,16 @@ const SelectVet: React.FC<selectVetProps> = ({
           }
           const response = await createAnAppointment(payload)
           if (response.ok) {
+            setIsConfirmationModalOpen(false)
             toast.success("Appointment created successfully!", {
               duration: 3000,
               position: "bottom-right",
             })
             if (onNext) {
-              onNext() // Navigate to the next page only if the API succeeds
+              onNext({
+                appointmentId: response.value.body.appointment.appointment_id,
+                subBookingId: response.value.body.appointment.sub_booking_id,
+              }) // Navigate to the next page only if the API succeeds
             }
           } else {
             toast.error("Failed to create appointment. Please try again.", {
@@ -462,7 +468,6 @@ const SelectVet: React.FC<selectVetProps> = ({
         })
       }
     } else {
-      setIsConfirmationModalOpen(false)
       if (
         user &&
         selectedSlot &&
@@ -507,6 +512,7 @@ const SelectVet: React.FC<selectVetProps> = ({
           }
           const response = await rescheduleAppointment(payload)
           if (response.ok) {
+            setIsConfirmationModalOpen(false)
             toast.success("Appointment rescheduled successfully!", {
               duration: 3000,
               position: "bottom-right",
@@ -629,6 +635,8 @@ const SelectVet: React.FC<selectVetProps> = ({
     slotsForStaffResult?.ok === false ||
     bestAvailableVetScheduleResult?.ok === false ||
     groomingSlotsResult?.ok === false
+  const isSubmittingBookingAction =
+    loadingAppointmentCreation || loadingRescheduleAppointment
 
   const availableSlots =
     selectedDoctor && !isGrooming
@@ -832,8 +840,12 @@ const SelectVet: React.FC<selectVetProps> = ({
       {selectedDate && selectedSlot && (
         <ConfirmationModal
           isOpen={isConfirmationModalOpen}
-          onClose={() => setIsConfirmationModalOpen(false)}
+          onClose={() => {
+            if (isSubmittingBookingAction) return
+            setIsConfirmationModalOpen(false)
+          }}
           onConfirm={handleConfirmBooking}
+          isSubmitting={isSubmittingBookingAction}
           bookingDetails={{
             petName: selectedPet.name,
             service: isGrooming

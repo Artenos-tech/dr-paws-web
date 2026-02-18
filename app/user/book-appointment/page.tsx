@@ -6,10 +6,10 @@ import SelectClinic from "@/components/ui/SelectClinic"
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md"
 import SelectVet, { SelectedVet } from "@/components/ui/SelectVet"
 import { Pet } from "@/context/UserContext"
-import BookingConfirmed from "@/components/ui/BookingConfirmed"
-import { useSearchParams } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 
 const Booking: React.FC = () => {
+  const router = useRouter()
   const searchParams = useSearchParams()
   const [selectedAppointment, setSelectedAppointmentState] = useState<{
     selectedServiceId: string | null
@@ -105,7 +105,7 @@ const Booking: React.FC = () => {
     <div className="font-roca h-full w-full">
       <main className="flex flex-col items-center w-full mt-4 px-8 md:px-32 lg:px-20 xl:px-40">
         <div className="w-full">
-          {currentStep > 1 && currentStep !== 4 && (
+          {currentStep > 1 && (
             <button
               type="button"
               onClick={goToPrevStep}
@@ -165,7 +165,20 @@ const Booking: React.FC = () => {
 
           {currentStep === 3 && (
             <SelectVet
-              onNext={goToNextStep}
+              onNext={(createdAppointment) => {
+                if (
+                  !createdAppointment?.appointmentId ||
+                  !createdAppointment.subBookingId
+                ) {
+                  router.push("/user/my-appointments")
+                  return
+                }
+                const params = new URLSearchParams({
+                  appointmentId: createdAppointment.appointmentId,
+                  subBookingId: createdAppointment.subBookingId,
+                })
+                router.push(`/user/thank-you?${params.toString()}`)
+              }}
               selectedClinic={notNull(selectedAppointment.selectedClinic)}
               selectedSvcId={notNull(selectedAppointment.selectedServiceId)}
               selectedPet={notNull(selectedAppointment.selectedPet)}
@@ -180,29 +193,6 @@ const Booking: React.FC = () => {
                   ...prev,
                   ...appData,
                 }))
-              }}
-            />
-          )}
-          {currentStep === 4 && (
-            <BookingConfirmed
-              isGroomingAppointment={selectedAppointment.isGrooming}
-              selectedAppointment={{
-                selectedSvcId: notNull(selectedAppointment.selectedServiceId),
-                selectedService: notNull(selectedAppointment.selectedService),
-                selectedSubtype: selectedAppointment.selectedSubtype?.title,
-                groomingCatalogueKeys:
-                  selectedAppointment.groomingCatalogueKeys,
-                selectedPet: notNull(selectedAppointment.selectedPet),
-                selectedClinic: notNull(selectedAppointment.selectedClinic),
-                selectedLocation: notNull(selectedAppointment.selectedLocation),
-                selectedClinicContact: notNull(
-                  selectedAppointment.selectClinicContact,
-                ),
-                selectedVet: selectedAppointment.selectedDoctor,
-                selectedDate: notNull(selectedAppointment.selectedDate),
-                selectedSlot: notNull(selectedAppointment.selectedSlot),
-                selectedSlotEnd: notNull(selectedAppointment.selectedSlotEnd),
-                appliedCoupon: selectedAppointment.appliedCoupon,
               }}
             />
           )}
