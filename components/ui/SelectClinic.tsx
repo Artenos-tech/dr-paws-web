@@ -41,9 +41,7 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
   const [formData, setFormData] = useState<
     Record<string, { id: string; name: string }>
   >({})
-  const [isFormComplete, setIsFormComplete] = useState(
-    selectedClinic ? true : false,
-  )
+  const [isFormComplete, setIsFormComplete] = useState(false)
   const [clinicSearch, setClinicSearch] = useState("")
   const [selectedLocation, setSelectedLocation] = useState<string | undefined>(
     undefined,
@@ -62,9 +60,6 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
 
   useEffect(() => {
     getClinicsForBooking({})
-    if (selectedClinic) {
-      onClinicSelect(selectedClinic)
-    }
   }, [])
 
   const ATTRIBUTE_OPTIONS_CONFIG = {
@@ -246,12 +241,21 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
 
   useEffect(() => {
     if (!selectedClinic || clinics.length === 0) return
-    if (selectedClinicLocation && selectedClinicContact) return
-    const selected = clinics.find((item) => item.id === selectedClinic)
+    const selected =
+      clinics.find((item) => item.id === selectedClinic) ||
+      clinics.find((item) => item.dbClinicId === selectedClinic)
     if (!selected) return
+    if (
+      selectedClinic === selected.id &&
+      selectedClinicLocation &&
+      selectedClinicContact
+    ) {
+      return
+    }
     handleClinicSelection(selected.id, selected.location, selected.contact, {
       skipToggle: true,
     })
+    onClinicSelect(selected.id)
   }, [
     clinics,
     handleClinicSelection,
@@ -316,7 +320,12 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
         <CustomButton
           buttonText="Next"
           buttonBackground="bg-secondary-1"
-          disabled={!selectedClinic || !isFormComplete}
+          disabled={
+            !selectedClinic ||
+            !selectedClinicLocation ||
+            !selectedClinicContact ||
+            !isFormComplete
+          }
           buttonClickEvent={onNext}
         />
       </div>
