@@ -1,202 +1,147 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
-import SelectService, { BookingCategory } from "@/components/ui/SelectService"
-import SelectClinic from "@/components/ui/SelectClinic"
-import { MdOutlineKeyboardArrowLeft } from "react-icons/md"
-import SelectVet, { SelectedVet } from "@/components/ui/SelectVet"
-import { Pet } from "@/context/UserContext"
+import React, { useEffect, useState, useMemo } from "react"
+import BookingTypeSelection, {
+  BookingType,
+} from "@/components/ui/BookingTypeSelection"
+import ClinicBookingFlow from "@/components/ui/ClinicBookingFlow"
+import AtHomeBookingFlow from "@/components/ui/AtHomeBookingFlow"
+import atHomeClient from "@/services/api.athome"
+import { useAPICall } from "@/hooks/apicall"
+import { ClipLoader } from "react-spinners"
+import toast from "react-hot-toast"
 import { useRouter, useSearchParams } from "next/navigation"
+import { useAPIErrorToastFromResult } from "@/hooks/useAPIErrorToast"
+
+const isHomeVisitEnabled =
+  process.env.NEXT_PUBLIC_HOME_VISIT_ENABLED === "true"
 
 const Booking: React.FC = () => {
+  const [selectedBookingType, setSelectedBookingType] =
+    useState<BookingType | null>(null)
   const router = useRouter()
   const searchParams = useSearchParams()
-  const [selectedAppointment, setSelectedAppointmentState] = useState<{
-    selectedServiceId: string | null
-    selectedService: string | null
-    selectedSubtype: BookingCategory | null
-    groomingCatalogueKeys: string[]
-    selectedPet: Pet | null
-    isGrooming: boolean
-    selectedClinic: string | null
-    selectedLocation: string | null
-    selectClinicContact: string | null
-    selectedDoctor: SelectedVet | null
-    selectedDate: Date | null
-    selectedSlot: string | null
-    selectedSlotEnd: string | null
-    appliedCoupon: string | null
-  }>({
-    selectedServiceId: null,
-    selectedService: null,
-    selectedSubtype: null,
-    groomingCatalogueKeys: [],
-    selectedPet: null,
-    isGrooming: false,
-    selectedClinic: null,
-    selectedLocation: null,
-    selectClinicContact: null,
-    selectedDoctor: null,
-    selectedDate: null,
-    selectedSlot: null,
-    selectedSlotEnd: null,
-    appliedCoupon: null,
+  const home = searchParams.get("home")
+  const clinic = searchParams.get("clinic")
+
+  const {
+    call: getBookingTypes,
+    loading: loadingBookingTypes,
+    result: getBookingTypesResult,
+  } = useAPICall(atHomeClient.getBookingTypes)
+
+  const bookingTypes = useMemo(() => {
+    return (
+      (getBookingTypesResult?.ok &&
+        getBookingTypesResult.value.body.data.bookingTypes) ||
+      []
+    )
+  }, [getBookingTypesResult])
+  useAPIErrorToastFromResult(getBookingTypesResult, {
+    fallbackMessage: "Failed to get booking types",
   })
 
-  const [openCard, setOpenCard] = useState<string | null>(null)
-  const [isDisclaimerModalOpen, setIsDisclaimerModalOpen] = useState(false)
-  const [currentStep, setCurrentStep] = useState<number>(1)
+  const atHomeBookingType = useMemo(() => {
+    return bookingTypes.find((bookingType) => bookingType.type === "HOME_VISIT")
+  }, [bookingTypes])
+
+  const clinicBookingType = useMemo(() => {
+    return bookingTypes.find(
+      (bookingType) => bookingType.type === "CLINIC_VISIT",
+    )
+  }, [bookingTypes])
 
   useEffect(() => {
-    const clinicId = searchParams.get("clinicId")
-    if (!clinicId) return
-    setSelectedAppointmentState((prev) => {
-      if (prev.selectedClinic) return prev
-      return {
-        ...prev,
-        selectedClinic: clinicId,
-      }
-    })
-  }, [searchParams])
+    if (!isHomeVisitEnabled) return
 
-  const handleClinicSelection = (
-    clinicId: string,
-    location: string,
-    contact: string,
-    options?: { skipToggle?: boolean },
-  ) => {
-    setSelectedAppointmentState((prev) => {
-      // Toggle selection: if the clicked clinic is already selected, deselect it.
-      if (!options?.skipToggle && prev.selectedClinic === clinicId) {
-        return {
-          ...prev,
-          selectedClinic: null,
-          selectedLocation: null,
-          selectClinicContact: null,
-        }
+    const fetchBookingTypes = async () => {
+      try {
+        await getBookingTypes({})
+      } catch (error) {
+        console.error("Error fetching booking types:", error)
+        toast.error("Failed to load booking types. Please try again later.")
       }
-      return {
-        ...prev,
-        selectedClinic: clinicId,
-        selectedLocation: location,
-        selectClinicContact: contact,
-      }
-    })
-  }
-
-  const goToNextStep = () => {
-    setCurrentStep((prevStep) => prevStep + 1)
-  }
-
-  const goToPrevStep = () => {
-    if (currentStep > 1) {
-      setCurrentStep((prevStep) => prevStep - 1)
     }
+
+    fetchBookingTypes()
+  }, [])
+
+  useEffect(() => {
+    if (!isHomeVisitEnabled) return
+    if (!getBookingTypesResult?.ok) return
+    if (selectedBookingType) return
+
+    if (home === "true" && atHomeBookingType) {
+      setSelectedBookingType(atHomeBookingType)
+      router.replace("/user/book-appointment", { scroll: false })
+      return
+    }
+
+    if (clinic === "true" && clinicBookingType) {
+      setSelectedBookingType(clinicBookingType)
+      router.replace("/user/book-appointment", { scroll: false })
+    }
+  }, [
+    home,
+    clinic,
+    selectedBookingType,
+    getBookingTypesResult,
+    router,
+    atHomeBookingType,
+    clinicBookingType,
+  ])
+
+  const handleBookingTypeSelect = (bookingType: BookingType) => {
+    setSelectedBookingType(bookingType)
   }
 
-  function notNull<T>(value: T | null): Exclude<T, null> {
-    if (value === null) {
-      throw new Error(`Value must not be null, got ${value}`)
+  const handleBackToSelection = () => {
+    setSelectedBookingType(null)
+  }
+
+  const renderFlow = () => {
+    if (!selectedBookingType) return null
+
+    if (selectedBookingType.type === "CLINIC_VISIT") {
+      return <ClinicBookingFlow onBackToStart={handleBackToSelection} />
     }
-    return value as Exclude<T, null>
+
+    if (selectedBookingType.type === "HOME_VISIT") {
+      return <AtHomeBookingFlow onBackToStart={handleBackToSelection} />
+    }
+
+    return <ClinicBookingFlow onBackToStart={handleBackToSelection} />
+  }
+
+  if (!isHomeVisitEnabled) {
+    return (
+      <div className="font-roca h-full w-full">
+        <main className="flex flex-col items-center w-full mt-4 px-8 md:px-32 lg:px-20 xl:px-40">
+          <ClinicBookingFlow />
+        </main>
+      </div>
+    )
+  }
+
+  if (loadingBookingTypes) {
+    return (
+      <div className="flex justify-center items-center my-20">
+        <ClipLoader color="#33495f" />
+      </div>
+    )
   }
 
   return (
     <div className="font-roca h-full w-full">
       <main className="flex flex-col items-center w-full mt-4 px-8 md:px-32 lg:px-20 xl:px-40">
-        <div className="w-full">
-          {currentStep > 1 && (
-            <button
-              type="button"
-              onClick={goToPrevStep}
-              className="flex gap-1 mb-4 items-center self-start"
-            >
-              <MdOutlineKeyboardArrowLeft /> Back
-            </button>
-          )}
+        {!selectedBookingType && (
+          <BookingTypeSelection
+            bookingTypes={bookingTypes}
+            onSelect={handleBookingTypeSelect}
+          />
+        )}
 
-          {currentStep === 1 && (
-            <SelectService
-              selectedPet={selectedAppointment.selectedPet}
-              setSelectedPet={(pet) => {
-                setSelectedAppointmentState((prev) => ({
-                  ...prev,
-                  selectedPet: pet,
-                }))
-              }}
-              selectedServiceId={selectedAppointment.selectedServiceId}
-              setServiceOptions={(
-                svcId,
-                svcTitle,
-                pet,
-                isGrooming,
-                selectedSubtype,
-                groomingCatalogueKeys,
-              ) => {
-                setSelectedAppointmentState((prev) => ({
-                  ...prev,
-                  selectedServiceId: svcId,
-                  selectedService: svcTitle,
-                  selectedPet: pet,
-                  isGrooming: isGrooming,
-                  selectedSubtype,
-                  groomingCatalogueKeys,
-                }))
-              }}
-              openCard={openCard}
-              setOpenCard={setOpenCard}
-              isModalOpen={isDisclaimerModalOpen}
-              setIsModalOpen={setIsDisclaimerModalOpen}
-              onNext={goToNextStep}
-            />
-          )}
-
-          {currentStep === 2 && (
-            <SelectClinic
-              onNext={goToNextStep}
-              selectedClinic={selectedAppointment.selectedClinic}
-              selectedClinicLocation={selectedAppointment.selectedLocation}
-              selectedClinicContact={selectedAppointment.selectClinicContact}
-              handleClinicSelection={handleClinicSelection}
-              selectedPet={notNull(selectedAppointment.selectedPet)}
-              isGrooming={selectedAppointment.isGrooming}
-            />
-          )}
-
-          {currentStep === 3 && (
-            <SelectVet
-              onNext={(createdAppointment) => {
-                if (
-                  !createdAppointment?.appointmentId ||
-                  !createdAppointment.subBookingId
-                ) {
-                  router.push("/user/my-appointments")
-                  return
-                }
-                const params = new URLSearchParams({
-                  appointmentId: createdAppointment.appointmentId,
-                  subBookingId: createdAppointment.subBookingId,
-                })
-                router.push(`/user/thank-you?${params.toString()}`)
-              }}
-              selectedClinic={notNull(selectedAppointment.selectedClinic)}
-              selectedSvcId={notNull(selectedAppointment.selectedServiceId)}
-              selectedPet={notNull(selectedAppointment.selectedPet)}
-              selectedLocation={notNull(selectedAppointment.selectedLocation)}
-              selectedService={notNull(selectedAppointment.selectedService)}
-              selectedSubtype={selectedAppointment.selectedSubtype}
-              groomingCatalogueKeys={selectedAppointment.groomingCatalogueKeys}
-              isGrooming={selectedAppointment.isGrooming}
-              isReschedule={false}
-              setFinalAppointmentData={(appData) => {
-                setSelectedAppointmentState((prev) => ({
-                  ...prev,
-                  ...appData,
-                }))
-              }}
-            />
-          )}
-        </div>
+        {renderFlow()}
       </main>
     </div>
   )

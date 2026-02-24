@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import {
   Dialog,
   DialogContent,
@@ -22,12 +22,17 @@ interface ConfirmationModalProps {
     haircutAddOn?: boolean
     doctorName?: string
     isSenior?: boolean
+    reasonForVisit?: string
+    reasonDescription?: string
     location: string
     date: Date
     slot: string
     couponCode: string | null
   }
+  paymentAmount?: number | null
 }
+
+const DESC_TRUNCATE_LENGTH = 90
 
 const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   isOpen,
@@ -35,6 +40,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   onConfirm,
   isSubmitting = false,
   bookingDetails,
+  paymentAmount,
 }) => {
   const {
     petName,
@@ -46,8 +52,15 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
     date,
     slot,
     couponCode,
+    reasonDescription,
+    reasonForVisit,
   } = bookingDetails
   const showHaircutAddOn = Boolean(haircutAddOn)
+  const [showFullDesc, setShowFullDesc] = React.useState(false)
+
+  useEffect(() => {
+    if (!isOpen) setShowFullDesc(false)
+  }, [isOpen])
 
   return (
     <Dialog
@@ -82,9 +95,11 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                 <span>{doctorName}</span>
               </div>
             )}
-            <div className="flex items-center text-sm text-gray-600 mb-1">
-              <MapPinIcon className="w-4 h-4 mr-2" />
-              <span>{location}</span>
+            <div className="flex items-start text-sm text-gray-600 mb-1">
+              <MapPinIcon className="w-4 h-4 mr-2 mt-1 flex-shrink-0" />
+              <span className="break-words">
+                {location || "No location specified"}
+              </span>
             </div>
             <div className="flex items-center text-sm text-gray-600">
               <CalendarIcon className="w-4 h-4 mr-2" />
@@ -92,6 +107,44 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                 {format(date, "MMMM d, yyyy")} at {slot}
               </span>
             </div>
+            {reasonForVisit && (
+              <div className="flex items-center text-sm text-gray-600 my-1">
+                <span className="font-medium">Reason For Visit:</span>
+                <span className="ml-2">{reasonForVisit}</span>
+              </div>
+            )}
+            {reasonDescription && (
+              <div className="text-sm text-gray-600 my-1">
+                <div className="flex items-start gap-2">
+                  <span className="font-medium whitespace-nowrap">Notes:</span>
+
+                  <p className="break-words whitespace-pre-line">
+                    {showFullDesc
+                      ? reasonDescription
+                      : reasonDescription.slice(0, DESC_TRUNCATE_LENGTH) +
+                        (reasonDescription.length > DESC_TRUNCATE_LENGTH
+                          ? "..."
+                          : "")}
+                  </p>
+                </div>
+
+                {reasonDescription.length > DESC_TRUNCATE_LENGTH && (
+                  <button
+                    onClick={() => setShowFullDesc((prev) => !prev)}
+                    className="text-secondary-1 text-xs mt-1"
+                  >
+                    {showFullDesc ? "Show less" : "Read more"}
+                  </button>
+                )}
+              </div>
+            )}
+
+            {paymentAmount && (
+              <div className="text-sm text-gray-800 font-medium mt-2">
+                Payment Amount:{" "}
+                <span className="text-md font-semibold">₹{paymentAmount}</span>
+              </div>
+            )}
           </div>
           {couponCode && (
             <div>

@@ -169,6 +169,14 @@ export default function NavBar() {
                       </DropdownMenu.Item>
                       <DropdownMenu.Item asChild>
                         <div
+                          onClick={() => navigate.push("/user/my-address-book")}
+                          className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
+                        >
+                          My Address Book
+                        </div>
+                      </DropdownMenu.Item>
+                      <DropdownMenu.Item asChild>
+                        <div
                           onClick={() => navigate.push("/user/reports")}
                           className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none"
                         >
@@ -349,6 +357,17 @@ export default function NavBar() {
                     className="text-primary-1 hover:text-secondary-1 cursor-pointer"
                   >
                     My Appointments
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => {
+                      setIsOpen(false)
+                      navigate.push("/user/my-address-book")
+                    }}
+                    className="text-primary-1 hover:text-secondary-1 cursor-pointer"
+                  >
+                    My Address Book
                   </button>
                 </li>
                 <li>

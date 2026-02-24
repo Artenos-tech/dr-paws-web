@@ -1,3 +1,4 @@
+import exp from "constants"
 import { StaticImageData } from "next/image"
 
 export interface Service {
@@ -75,31 +76,154 @@ export enum AppointmentStatus {
   Past = "Past",
   Cancelled = "Cancelled",
 }
-export interface AppointmentType {
+
+export type AppointmentCategory =
+  | "UPCOMING"
+  | "ACTIVE"
+  | "COMPLETED"
+  | "CANCELLED"
+
+export type AppointmentTypeEnum = "VET_CONSULTATION" | "GROOMING" | "HOME_VISIT"
+export type AppointmentPaymentStatus =
+  | "PAID"
+  | "UNPAID"
+  | "NO_BILL"
+  | "PARTIALLY_PAID"
+  | "OVERPAID"
+
+export type PetType = "DOG" | "CAT" | "OTHER"
+
+export type VisitStatus =
+  | "UNCONFIRMED"
+  | "VET_CONFIRMED"
+  | "VET_DELAYED"
+  | "VET_REACHED"
+  | "CANCELLED"
+  | "VISIT_STARTED"
+  | "VISIT_FINISHED"
+
+export interface AppointmentListItem {
   id: string
   sub_booking_id: string
-  pet_id: string
-  pet_name: string
-  pet_type?: "DOG" | "CAT" | "OTHER" | null
-  pet_profile_image: string | null
-  vet_id: string
-  vet_name: string
-  vet_image: string | null
   clinic_id: string
-  clinic_name: string
-  clinic_location: string
-  clinic_contact: string
-  appt_start: string
+
+  pet_name: string
+  pet_type: PetType | null
+  pet_profile_image: string | null
+
+  booking_type: "HOME_VISIT" | "CLINIC_VISIT"
   booking_date: string
+  appt_start: string
   appt_end: string
-  appt_status: string | null
-  // appt_reason: string | null
-  appt_type: string | null
-  appt_type_id: string
-  category: "UPCOMING" | "COMPLETED" | "REQUESTED" | "CANCELLED"
+
+  appt_type_title: "Vet Consultation" | "Grooming" | "Home Visit"
+  appt_type: AppointmentTypeEnum
+
+  category: AppointmentCategory
+
+  clinic_name?: string
+  clinic_location?: string
+  clinic_contact: string
+
   coupon_code?: string | null
-  invoice_id: string
+
+  // vet_id?: string | null
+  vet_name?: string | null
+  vet_image?: string | null
+  vet_contact?: string | null
+
+  address?: AddressWithPincode
+
+  visit_status?: VisitStatus
+
+  helpline_no?: string
+  start_otp?: string | null
+  sos_status?: "ACTIVE" | "INACTIVE"
+}
+
+export interface AppointmentDetails extends AppointmentListItem {
+  pet_id: string
+  clinic_contact: string
+  invoice_id: string | null
   total_tax_amount: number
   total_billing_amount: number
   payment_status: "PAID" | "UNPAID" | "NO_BILL" | "PARTIALLY_PAID" | "OVERPAID"
+  vet_id?: string | null
+  refund?: {
+    id: string | null
+    status: RefundStatus
+    amount: number
+  }
+  reason_for_visit?: ReasonForVisitEnum
+  notes?: string
+}
+export type ReasonForVisitEnum =
+  | "VACCINATION"
+  | "CHECK_UP"
+  | "SICK"
+  | "DIAGNOSTICS"
+  | "FOLLOW_UP"
+  | "OTHER"
+
+export type RefundStatus =
+  | "NOT_APPLICABLE"
+  | "REQUESTED"
+  | "APPROVED"
+  | "REJECTED"
+  | "PROCESSED"
+  | "PENDING"
+  | "SUCCESS"
+  | "FAILED"
+  | "ONHOLD"
+  | "CANCELLED"
+
+// export interface AppointmentListItemOld {
+//   id: string
+//   sub_booking_id: string
+//   pet_id: string
+//   pet_name: string
+//   pet_type?: "DOG" | "CAT" | "OTHER" | null
+//   pet_profile_image: string | null
+//   vet_id: string
+//   vet_name: string
+//   vet_image: string | null
+//   clinic_id: string
+//   clinic_name: string
+//   clinic_location: string
+//   clinic_contact: string
+//   appt_start: string
+//   booking_date: string
+//   appt_end: string
+//   appt_status: string | null
+//   // appt_reason: string | null
+//   appt_type: string | null
+//   appt_type_id: string
+//   category: "UPCOMING" | "COMPLETED" | "REQUESTED" | "CANCELLED"
+//   coupon_code?: string | null
+//   invoice_id: string
+//   total_tax_amount: number
+//   total_billing_amount: number
+//   payment_status: "PAID" | "UNPAID" | "NO_BILL" | "PARTIALLY_PAID" | "OVERPAID"
+// }
+export type Address = {
+  id: string
+  tag: string
+  location: { lat: number; long: number }
+  address_line1: string
+  address_line2: string
+  directions?: string
+}
+
+export type AddressWithPincode = Address & {
+  pincode: string
+}
+
+export type AddressFormValues = Omit<Address, "id" | "location" | "pincode">
+
+export type BookingPet = {
+  id: string
+  name: string
+  profile_image: string | null
+  type: "DOG" | "CAT" | "OTHER"
+  serviceable: boolean
 }

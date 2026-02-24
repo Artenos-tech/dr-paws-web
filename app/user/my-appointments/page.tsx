@@ -7,12 +7,14 @@ import ClinicTabBar from "@/components/ui/ClinicTabBar"
 import Loader from "@/components/ui/Loader"
 import NoAppointments from "@/components/ui/NoAppointments"
 import { useAPICall } from "@/hooks/apicall"
-import { AppointmentType } from "@/model/typeDefinitions"
-import api from "@/services/api"
+import { AppointmentListItem } from "@/model/typeDefinitions"
+import atHomeApiClient from "@/services/api.athome"
+import { useAPIErrorToastFromResult } from "@/hooks/useAPIErrorToast"
 
 const TABS = {
   ALL: { label: "All" },
   UPCOMING: { label: "Upcoming" },
+  ACTIVE: { label: "Active" },
   PAST: { label: "Past" },
   CANCELLED: { label: "Cancelled" },
 } as const
@@ -21,28 +23,30 @@ const determinePageSize = () => {
   const width = window.innerWidth
   if (width < 640) return 1
   if (width < 1024) return 4
-  return 9
+  return 4
 }
 
 const MyAppointmentsPage = () => {
   const {
     call: getAppointments,
     loading,
-    result,
-  } = useAPICall(api.getAppointments)
+    result: getAppointmentsResult,
+  } = useAPICall(atHomeApiClient.getAppointmentsV2)
 
-  const [allAppointments, setAllAppointments] = useState<AppointmentType[]>([])
+  const [allAppointments, setAllAppointments] = useState<AppointmentListItem[]>(
+    [],
+  )
   const [filteredAppointments, setFilteredAppointments] = useState<
-    AppointmentType[]
+    AppointmentListItem[]
   >([])
   const [selectedAppointment, setSelectedAppointment] =
-    useState<AppointmentType | null>(null)
+    useState<AppointmentListItem | null>(null)
 
   const [activeTab, setActiveTab] = useState<keyof typeof TABS>("ALL")
   const [pageSize, setPageSize] = useState<number | null>(null)
   const [currentPage, setCurrentPage] = useState(1)
 
-  const sortAppointmentsByDateTime = (appointments: AppointmentType[]) => {
+  const sortAppointmentsByDateTime = (appointments: AppointmentListItem[]) => {
     return appointments.sort((a, b) => {
       const formatTime = (time: string) => {
         const [hours, minutes] = time.split(":")
@@ -60,15 +64,16 @@ const MyAppointmentsPage = () => {
     })
   }
   const sortAppointmentsWithUpcomingFirst = (
-    appointments: AppointmentType[],
+    appointments: AppointmentListItem[],
   ) => {
     return appointments.sort((a, b) => {
-      const categoryPriority: Record<AppointmentType["category"], number> = {
-        UPCOMING: 1,
-        COMPLETED: 2,
-        CANCELLED: 3,
-        REQUESTED: 4,
-      }
+      const categoryPriority: Record<AppointmentListItem["category"], number> =
+        {
+          UPCOMING: 1,
+          ACTIVE: 2,
+          COMPLETED: 3,
+          CANCELLED: 4,
+        }
 
       const priorityA = categoryPriority[a.category]
       const priorityB = categoryPriority[b.category]
@@ -101,6 +106,19 @@ const MyAppointmentsPage = () => {
       }
     })
   }
+  const isCurrentTimeInSlot = (
+    bookingDate: string,
+    start: string,
+    end: string,
+  ) => {
+    const date = bookingDate.split("T")[0]
+    const toDate = (time: string) =>
+      new Date(`${date}T${time.padStart(5, "0")}:00`)
+    const now = new Date()
+    const startTime = toDate(start)
+    const endTime = toDate(end)
+    return now >= startTime && now <= endTime
+  }
 
   useEffect(() => {
     const updatePageSize = () => {
@@ -117,18 +135,33 @@ const MyAppointmentsPage = () => {
   }, [])
 
   useEffect(() => {
-    if (result?.ok) {
-      const all = result.value.body.appointments as AppointmentType[]
+    if (getAppointmentsResult?.ok) {
+      const all = getAppointmentsResult.value.body.data
+        .appointments as unknown as AppointmentListItem[]
       setAllAppointments(all)
     }
-  }, [result])
+  }, [getAppointmentsResult])
+  useAPIErrorToastFromResult(getAppointmentsResult, {
+    fallbackMessage: "Failed to fetch appointments",
+  })
 
   useEffect(() => {
-    let filtered: AppointmentType[] = []
+    let filtered: AppointmentListItem[] = []
 
     switch (activeTab) {
       case "UPCOMING":
         filtered = allAppointments.filter((a) => a.category === "UPCOMING")
+        break
+      case "ACTIVE":
+        filtered = allAppointments.filter((a) => {
+          if (
+            a.appt_type === "HOME_VISIT" &&
+            a.visit_status === "VISIT_STARTED"
+          ) {
+            return true
+          }
+          return isCurrentTimeInSlot(a.booking_date, a.appt_start, a.appt_end)
+        })
         break
       case "PAST":
         filtered = allAppointments.filter((a) => a.category === "COMPLETED")
@@ -142,15 +175,15 @@ const MyAppointmentsPage = () => {
 
     const typeFiltered = filtered.filter(
       (appt) =>
-        (appt.vet_id !== null && appt.appt_type === "Vet Consultation") ||
-        appt.appt_type === "Grooming",
+        appt.booking_type === "CLINIC_VISIT" ||
+        appt.booking_type === "HOME_VISIT",
     )
 
-    let sortedAppointments: AppointmentType[] = []
+    let sortedAppointments: AppointmentListItem[] = []
 
     if (activeTab === "ALL") {
       sortedAppointments = sortAppointmentsWithUpcomingFirst([...typeFiltered])
-    } else if (activeTab === "UPCOMING") {
+    } else if (activeTab === "UPCOMING" || activeTab === "ACTIVE") {
       const sorted = sortAppointmentsByDateTime([...typeFiltered])
       sortedAppointments = sorted.reverse()
     } else {
@@ -181,7 +214,8 @@ const MyAppointmentsPage = () => {
       <main className="w-full flex flex-col gap-[40px] my-12 row-start-2 items-center">
         {selectedAppointment ? (
           <BookingDetails
-            selectedAppointment={selectedAppointment}
+            appointmentId={selectedAppointment.id}
+            subBookingId={selectedAppointment.sub_booking_id}
             goBack={(refetch) => {
               setSelectedAppointment(null)
               if (refetch) {
@@ -191,19 +225,6 @@ const MyAppointmentsPage = () => {
           />
         ) : (
           <>
-            {!result?.ok &&
-              (result?.error.apiClientErrorType === "ErrorResponseAPIError" ? (
-                <div>{result.error.message}</div>
-              ) : (
-                <>
-                  {console.error(
-                    "Error fetching appointments",
-                    result?.error.message,
-                  )}
-                  <div>Something went wrong fetching your appointments</div>
-                </>
-              ))}
-
             <ClinicTabBar
               tabs={TABS}
               activeTabId={activeTab}
@@ -223,7 +244,7 @@ const MyAppointmentsPage = () => {
               </div>
             ) : (
               <>
-                <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="w-full grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-6">
                   {visibleAppointments.map((appointment) => (
                     <AppointmentCard
                       key={appointment.sub_booking_id}
@@ -232,29 +253,31 @@ const MyAppointmentsPage = () => {
                     />
                   ))}
                 </div>
-
-                {/* Pagination */}
                 <div className="flex justify-center items-center gap-4 mt-6">
                   <button
                     onClick={() =>
                       setCurrentPage((prev) => Math.max(prev - 1, 1))
                     }
                     disabled={currentPage === 1}
-                    className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+                    className="
+      px-4 py-1.5 rounded-md text-sm font-medium bg-gray-100 text-gray-700 border border-gray-300 transition-all duration-200 hover:bg-gray-200 hover:shadow-sm hover:border-gray-400 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-gray-100 disabled:hover:border-gray-300
+    "
                   >
                     Prev
                   </button>
-                  <span className="text-sm font-medium">
+                  <span className="text-sm font-medium text-gray-700">
                     Page {currentPage} of {totalPages}
                   </span>
                   <button
                     onClick={() => setCurrentPage((prev) => prev + 1)}
                     disabled={currentPage >= totalPages}
-                    className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+                    className="
+      px-4 py-1.5 rounded-md text-sm font-medium bg-gray-100 text-gray-700 border border-gray-300 transition-all duration-200 hover:bg-gray-200 hover:shadow-sm hover:border-gray-400 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-gray-100 disabled:hover:border-gray-300 "
                   >
-                    Next
-                  </button>
-                </div>
+                    {" "}
+                    Next{" "}
+                  </button>{" "}
+                </div>{" "}
               </>
             )}
           </>
