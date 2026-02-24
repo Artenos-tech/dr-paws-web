@@ -96,7 +96,7 @@ const HomeVisitPaymentStatus: React.FC = () => {
           <div className="flex flex-col justify-center items-center space-y-4">
             <Loader2 className="h-5 w-5 animate-spin" />
             <p className="text-center text-primary-1">
-              Payment successful! Redirecting to your appointments...
+              Payment successful! Redirecting...
             </p>
           </div>
         )

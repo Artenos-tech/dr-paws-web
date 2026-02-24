@@ -339,14 +339,16 @@ const ClinicBookingDetails = ({
                   }
                 </div>
                 <div className="my-4 space-y-3">
-                  <p
-                    className={`flex items-center gap-2 ${isCancelled ? "line-through" : ""}`}
-                  >
-                    <span className="text-secondary-1">
-                      <GrLocation />
-                    </span>{" "}
-                    {selectedAppointment.clinic_location}
-                  </p>
+                  {selectedAppointment.clinic_location && (
+                    <p
+                      className={`flex items-center gap-2 ${isCancelled ? "line-through" : ""}`}
+                    >
+                      <span className="text-secondary-1">
+                        <GrLocation />
+                      </span>{" "}
+                      {selectedAppointment.clinic_location}
+                    </p>
+                  )}
                   <p
                     className={`flex items-center gap-2 ${isCancelled ? "line-through" : ""}`}
                   >

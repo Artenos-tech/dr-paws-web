@@ -9,6 +9,9 @@ import { useEffect, useRef, useState } from "react"
 import { ClipLoader } from "react-spinners"
 import { useAPIErrorToastFromResult } from "@/hooks/useAPIErrorToast"
 
+const isHomeVisitEnabled =
+  process.env.NEXT_PUBLIC_HOME_VISIT_ENABLED === "true"
+
 const POLLING_INTERVAL_MS = 5000
 
 export type BookingDetailsProps = {
@@ -63,6 +66,7 @@ const BookingDetails = ({
     setAppointment(fetchedAppointment)
 
     const shouldPoll =
+      isHomeVisitEnabled &&
       fetchedAppointment.booking_type === "HOME_VISIT" &&
       fetchedAppointment.visit_status !== "CANCELLED" &&
       fetchedAppointment.visit_status !== "VISIT_FINISHED" &&
@@ -94,7 +98,7 @@ const BookingDetails = ({
 
   return (
     <>
-      {appointment.booking_type === "HOME_VISIT" ? (
+      {isHomeVisitEnabled && appointment.booking_type === "HOME_VISIT" ? (
         <AtHomeBookingDetails
           selectedAppointment={appointment}
           goBack={goBack}
