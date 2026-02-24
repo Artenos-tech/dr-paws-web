@@ -39,6 +39,14 @@ const Footer = () => {
               <div>Thanisandra Clinic</div>
               <div>+91 9108467651</div>
             </div>
+            <div className="block mt-1 text-primary-1">
+              <div>Jayanagar</div>
+              <div>+91 9108467650</div>
+            </div>
+            <div className="block mt-1 text-primary-1">
+              <div>Vet at Home</div>
+              <div>+91 9740141212</div>
+            </div>
           </div>
           <div>
             <h6 className="font-sans text-primary-1 font-semibold mb-2">
