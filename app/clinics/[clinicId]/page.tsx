@@ -1,6 +1,8 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { Phone } from "lucide-react"
+import toast, { Toaster } from "react-hot-toast"
 
 import ClinicGallery from "@/components/ui/ClinicGallery"
 import ClinicPhotos from "@/components/ui/ClinicPhotos"
@@ -93,6 +95,15 @@ const ClinicDetails: React.FC<ClinicDetailsProps> = ({ params }) => {
     return availableTabs
   }
 
+  const copyClinicNumber = async () => {
+    try {
+      await navigator.clipboard.writeText(clinic.contact)
+      toast.success("Clinic number copied to clipboard")
+    } catch {
+      toast.error("Unable to copy clinic number")
+    }
+  }
+
   return (
     <div className="flex flex-col w-full h-full items-center justify-items-center font-roca pb-20 flex-grow px-8 md:px-32 lg:px-20 xl:px-40">
       <main className="w-full flex flex-col gap-[80px] row-start-2 items-center">
@@ -113,6 +124,15 @@ const ClinicDetails: React.FC<ClinicDetailsProps> = ({ params }) => {
         {activeTab === "PHOTOS" && tabs["PHOTOS"].component}
         {activeTab === "REVIEWS" && tabs["REVIEWS"].component}
       </main>
+      <button
+        type="button"
+        onClick={copyClinicNumber}
+        aria-label="Copy clinic phone number"
+        className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-secondary-1 text-white shadow-lg"
+      >
+        <Phone size={24} />
+      </button>
+      <Toaster />
     </div>
   )
 }
