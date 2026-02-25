@@ -32,8 +32,8 @@ const ConfirmationCard = ({
 
         <p className="text-center">
           You will receive a Whatsapp notification confirming the{" "}
-          {confirmationType === "RESCHEDULE" ? "rescheduled" : "cancellation"}
-          {" "}booking
+          {confirmationType === "RESCHEDULE" ? "rescheduled" : "cancellation"}{" "}
+          booking
         </p>
 
         <div className="flex items-center justify-center w-full md:w-[85%] gap-4 md:mt-4">
