@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useState } from "react"
 import SelectDoctorCard from "./SelectDoctorCard"
 import CustomButton from "./CustomButton"
 import SelectCalendar from "./SelectCalendar"
-import { format, isSameDay } from "date-fns"
+import { format, isSameDay, isValid, parse } from "date-fns"
 import {
   Carousel,
   CarouselContent,
@@ -59,7 +59,6 @@ interface selectVetProps {
 }
 
 const BEST_AVAILABLE_VET_ID = "best-available"
-
 const SelectVet: React.FC<selectVetProps> = ({
   selectedClinic,
   selectedSvcId,
@@ -100,10 +99,10 @@ const SelectVet: React.FC<selectVetProps> = ({
   } = useAPICall(api.getSlotsForStaff)
 
   const {
-    call: getGroomingSlots,
-    result: groomingSlotsResult,
-    loading: loadingGroomingSlots,
-  } = useAPICall(api.getSlotsForGrooming)
+    call: getGroomingSlotsWindow,
+    result: groomingSlotsWindowResult,
+    loading: loadingGroomingSlotsWindow,
+  } = useAPICall(api.getSlotsForGroomingWindow)
 
   const {
     call: getBestAvailableVetSchedule,
@@ -128,6 +127,10 @@ const SelectVet: React.FC<selectVetProps> = ({
   const { call: getDoctor } = useAPICall(api.getDoctor)
 
   const isConsultation = !isGrooming
+  const groomingCatalogueKeysParam =
+    groomingCatalogueKeys.length > 0
+      ? groomingCatalogueKeys.join(",")
+      : selectedSubtype?.id || ""
 
   const fetchSlotsForStaff = useCallback(async () => {
     if (!selectedDoctor) {
@@ -172,36 +175,33 @@ const SelectVet: React.FC<selectVetProps> = ({
     isGrooming,
   ])
 
-  const fetchGroomingSlots = useCallback(async () => {
-    if (selectedSvcId && selectedClinic && selectedPet && isGrooming) {
+  const fetchGroomingSlotsWindow = async () => {
+    if (selectedSvcId && selectedClinic && isGrooming) {
+      if (groomingCatalogueKeysParam.length === 0) return
       try {
-        const catalogueKeys =
-          groomingCatalogueKeys.length > 0
-            ? groomingCatalogueKeys
-            : selectedSubtype
-              ? [selectedSubtype.id]
-              : []
-        await getGroomingSlots({
+        const response = await getGroomingSlotsWindow({
           clinicid: selectedClinic,
-          catalogue_keys: catalogueKeys.join(","),
+          catalogue_keys: groomingCatalogueKeysParam,
           petid: selectedPet.id,
           pettype: selectedPet.type as "DOG" | "CAT" | "OTHER",
-          date: format(selectedDate, "dd/MM/yyyy"),
         })
+        if (response.ok) {
+          const firstAvailableDay =
+            response.value.body.days.find((day) => day.slots.length > 0) ??
+            response.value.body.days[0]
+          if (firstAvailableDay?.date) {
+            const parsedDate = parse(firstAvailableDay.date, "dd/MM/yyyy", new Date())
+            if (isValid(parsedDate)) {
+              setSelectedDate(parsedDate)
+            }
+          }
+        }
       } catch (error) {
         console.error("Error fetching grooming slots:", error)
         toast.error("Failed to load grooming slots. Please try again later.")
       }
     }
-  }, [
-    selectedSvcId,
-    selectedClinic,
-    selectedPet,
-    selectedDate,
-    isGrooming,
-    groomingCatalogueKeys,
-    selectedSubtype,
-  ])
+  }
 
   const fetchBestAvailableVetSlots = useCallback(async () => {
     if (
@@ -269,8 +269,20 @@ const SelectVet: React.FC<selectVetProps> = ({
   // on initial mount, for non grooming appts
   useEffect(() => {
     if (!isGrooming) fetchDoctors()
-    else fetchGroomingSlots()
   }, [])
+
+  useEffect(() => {
+    if (!isGrooming) return
+    setSelectedSlot(null)
+    fetchGroomingSlotsWindow()
+  }, [
+    isGrooming,
+    selectedSvcId,
+    selectedClinic,
+    selectedPet.id,
+    selectedPet.type,
+    groomingCatalogueKeysParam,
+  ])
 
   // when a different doctor is selected
   useEffect(() => {
@@ -321,7 +333,6 @@ const SelectVet: React.FC<selectVetProps> = ({
       if (selectedDoctor && selectedDoctor.id === BEST_AVAILABLE_VET_ID)
         fetchBestAvailableVetSlots()
       else if (selectedDoctor && !isGrooming) fetchSlotsForStaff()
-      else fetchGroomingSlots()
     }
   }, [selectedDate])
 
@@ -629,17 +640,27 @@ const SelectVet: React.FC<selectVetProps> = ({
   const availableSlotsLoading =
     loadingSlotsForStaff ||
     loadingBestAvailableVetSchedule ||
-    loadingGroomingSlots
+    loadingGroomingSlotsWindow
 
   const availableSlotsError =
     slotsForStaffResult?.ok === false ||
     bestAvailableVetScheduleResult?.ok === false ||
-    groomingSlotsResult?.ok === false
+    groomingSlotsWindowResult?.ok === false
   const isSubmittingBookingAction =
     loadingAppointmentCreation || loadingRescheduleAppointment
 
-  const availableSlots =
-    selectedDoctor && !isGrooming
+  const selectedDateKey = format(selectedDate, "dd/MM/yyyy")
+  const groomingSlotsForSelectedDate = groomingSlotsWindowResult?.ok
+    ? (groomingSlotsWindowResult.value.body.days.find(
+        (day) => day.date === selectedDateKey,
+      )?.slots ?? [])
+    : null
+  const groomingMaxSelectableDays = groomingSlotsWindowResult?.ok
+    ? groomingSlotsWindowResult.value.body.days.length
+    : undefined
+
+  const availableSlots = !isGrooming
+    ? selectedDoctor
       ? selectedDoctor.id === BEST_AVAILABLE_VET_ID
         ? bestAvailableVetScheduleResult?.ok
           ? bestAvailableVetScheduleResult.value.body.slots
@@ -647,9 +668,10 @@ const SelectVet: React.FC<selectVetProps> = ({
         : slotsForStaffResult?.ok
           ? slotsForStaffResult.value.body.slots
           : null
-      : groomingSlotsResult?.ok
-        ? groomingSlotsResult.value.body.slots
-        : null
+      : null
+    : groomingSlotsForSelectedDate
+      ? groomingSlotsForSelectedDate
+      : null
 
   const isNextButtonEnabled =
     (selectedDoctor !== null || isGrooming) &&
@@ -765,6 +787,7 @@ const SelectVet: React.FC<selectVetProps> = ({
                 availableSlots={availableSlots}
                 selectedSlot={selectedSlot}
                 onSlotSelected={handleSlotSelect}
+                maxSelectableDays={isGrooming ? groomingMaxSelectableDays : 20}
               />
             ) : null) // result starts out as undefined before API call is made
         }
@@ -976,6 +999,7 @@ const AppointmentDateAndTimeSelector = ({
   availableSlots,
   selectedSlot,
   onSlotSelected,
+  maxSelectableDays = 20,
 }: {
   show: boolean
   selectedDate: Date
@@ -987,6 +1011,7 @@ const AppointmentDateAndTimeSelector = ({
   }>
   selectedSlot: { startTime: string; endTime: string } | null
   onSlotSelected: (slot: { startTime: string; endTime: string }) => void
+  maxSelectableDays?: number
 }) => {
   return (
     <div className="flex flex-col justify-center items-center xl:flex-row gap-8">
@@ -998,6 +1023,7 @@ const AppointmentDateAndTimeSelector = ({
         <SelectCalendar
           selectedDate={selectedDate}
           onDateSelect={onDateSelected}
+          maxSelectableDays={maxSelectableDays}
         />
       </div>
 
