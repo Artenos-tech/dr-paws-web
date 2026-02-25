@@ -79,7 +79,7 @@ const BookingConfirmed: React.FC<BookingConfirmedProps> = ({
                 priority
               />
             </div>
-            {(!isGroomingAppointment || bookingType === "CLINIC_VISIT") && (
+            {!isGroomingAppointment && bookingType === "CLINIC_VISIT" && (
               <div className="relative w-32 h-32 rounded-full overflow-hidden bg-white p-8 ml-[-30px] flex justify-center items-center">
                 <Image
                   src={
