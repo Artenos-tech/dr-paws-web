@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { ClipLoader } from "react-spinners"
 import BookingConfirmed from "@/components/ui/BookingConfirmed"
 import { useAPICall } from "@/hooks/apicall"
-import api from "@/services/api"
+import atHomeApiClient from "@/services/api.athome"
 
 const ThankYouPage = () => {
   const router = useRouter()
@@ -17,7 +17,7 @@ const ThankYouPage = () => {
     call: getAppointmentDetails,
     loading,
     result,
-  } = useAPICall(api.getAppointmentDetails)
+  } = useAPICall(atHomeApiClient.getAppointmentDetails)
 
   useEffect(() => {
     getAppointmentDetails({
@@ -44,18 +44,24 @@ const ThankYouPage = () => {
   }
 
   const isGroomingAppointment = appointment.appt_type === "GROOMING"
-  const normalizedPetType =
-    appointment.pet_type === "DOG" ||
-    appointment.pet_type === "CAT" ||
-    appointment.pet_type === "OTHER"
-      ? appointment.pet_type
-      : null
+  const isHomeVisit = appointment.booking_type === "HOME_VISIT"
+
+  const selectedLocation = isHomeVisit
+    ? (appointment.address?.tag ?? "")
+    : (appointment.clinic_location ?? "")
+
+  const selectedAddressDetails = isHomeVisit
+    ? [appointment.address?.address_line1, appointment.address?.address_line2]
+        .filter(Boolean)
+        .join(", ")
+    : undefined
 
   return (
     <div className="font-roca h-full w-full">
       <main className="flex flex-col items-center w-full mt-4 px-8 md:px-32 lg:px-20 xl:px-40">
         <div className="w-full">
           <BookingConfirmed
+            bookingType={appointment.booking_type}
             isGroomingAppointment={isGroomingAppointment}
             selectedAppointment={{
               selectedSvcId: appointment.id,
@@ -64,7 +70,7 @@ const ThankYouPage = () => {
               selectedPet: {
                 id: appointment.pet_id,
                 name: appointment.pet_name,
-                type: normalizedPetType,
+                type: appointment.pet_type,
                 breedId: null,
                 breed: null,
                 gender: null,
@@ -72,7 +78,8 @@ const ThankYouPage = () => {
                 profileImage: appointment.pet_profile_image,
               },
               selectedClinic: appointment.clinic_id,
-              selectedLocation: appointment.clinic_location || "",
+              selectedLocation,
+              selectedAddressDetails,
               selectedClinicContact: appointment.clinic_contact,
               selectedVet:
                 appointment.vet_id && appointment.vet_name

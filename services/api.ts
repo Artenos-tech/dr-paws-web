@@ -601,6 +601,33 @@ export default createAPIClient({
       errorResponseSchema: z.object({}),
     },
 
+    getSlotsForGroomingWindow: {
+      method: "GET",
+      path: "/booking/slots/grooming/window?clinicid={clinicid}&catalogue_keys={catalogue_keys}&petid={petid}&pettype={pettype}",
+      pathParamsSchema: z.object({
+        clinicid: z.string().uuid(),
+        catalogue_keys: z.string(),
+        petid: z.string().uuid(),
+        pettype: z.enum(["DOG", "CAT", "OTHER"]),
+      }),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        days: z.array(
+          z.object({
+            date: z.string(),
+            slots: z.array(
+              z.object({
+                startTime: z.string(),
+                endTime: z.string(),
+                staffIds: z.array(z.string()),
+              }),
+            ),
+          }),
+        ),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+
     getBestAvailableVetSchedule: {
       method: "GET",
       path: "/booking/schedule/best?clinicid={clinicid}&catalogue={catalogue}&senior_only={senior_only}&petid={petid}&pettype={pettype}&date={date}",
