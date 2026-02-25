@@ -53,12 +53,11 @@ const HomeVisitPaymentStatus: React.FC = () => {
           hasRedirectedRef.current = true
           stopPolling()
           setTimeout(() => {
-            router.push(
-              "/user/book-appointment/confirmation?appointment_id=" +
-                appointmentDetails.id +
-                "&sub_booking_id=" +
-                appointmentDetails.sub_booking_id,
-            )
+            const params = new URLSearchParams({
+              appointmentId: appointmentDetails.id,
+              subBookingId: appointmentDetails.sub_booking_id,
+            })
+            router.push(`/user/thank-you?${params.toString()}`)
           }, 1500)
         }
       } catch {

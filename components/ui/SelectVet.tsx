@@ -190,7 +190,11 @@ const SelectVet: React.FC<selectVetProps> = ({
             response.value.body.days.find((day) => day.slots.length > 0) ??
             response.value.body.days[0]
           if (firstAvailableDay?.date) {
-            const parsedDate = parse(firstAvailableDay.date, "dd/MM/yyyy", new Date())
+            const parsedDate = parse(
+              firstAvailableDay.date,
+              "dd/MM/yyyy",
+              new Date(),
+            )
             if (isValid(parsedDate)) {
               setSelectedDate(parsedDate)
             }

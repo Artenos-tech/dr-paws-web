@@ -9,8 +9,7 @@ import { useEffect, useRef, useState } from "react"
 import { ClipLoader } from "react-spinners"
 import { useAPIErrorToastFromResult } from "@/hooks/useAPIErrorToast"
 
-const isHomeVisitEnabled =
-  process.env.NEXT_PUBLIC_HOME_VISIT_ENABLED === "true"
+const isHomeVisitEnabled = process.env.NEXT_PUBLIC_HOME_VISIT_ENABLED === "true"
 
 const POLLING_INTERVAL_MS = 5000
 

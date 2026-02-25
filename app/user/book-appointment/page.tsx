@@ -13,8 +13,7 @@ import toast from "react-hot-toast"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useAPIErrorToastFromResult } from "@/hooks/useAPIErrorToast"
 
-const isHomeVisitEnabled =
-  process.env.NEXT_PUBLIC_HOME_VISIT_ENABLED === "true"
+const isHomeVisitEnabled = process.env.NEXT_PUBLIC_HOME_VISIT_ENABLED === "true"
 
 const Booking: React.FC = () => {
   const [selectedBookingType, setSelectedBookingType] =
