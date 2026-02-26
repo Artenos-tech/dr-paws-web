@@ -156,6 +156,7 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
   )
 
   const handleProceedClick = () => {
+    if (isProcessing) return
     if (!selectedDate || !selectedSlot) return
     setIsProcessing(true)
     onConfirm(selectedDate, selectedSlot)
@@ -179,73 +180,80 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
       <p className="text-gray-600 mb-6">
         Choose a convenient slot for your home visit
       </p>
+      <div className={clsx(isProcessing && "pointer-events-none opacity-70")}>
+        <div className="grid grid-cols-5 gap-2 mb-6">
+          {days.slice(0, 5).map((day) => {
+            const formatted = formatDate(day.date)
+            const isActive = selectedDate === day.date
+            return (
+              <button
+                key={day.date}
+                disabled={isProcessing}
+                onClick={() => {
+                  if (isProcessing) return
+                  setSelectedDate(day.date)
+                  setSelectedSlot(null)
+                }}
+                className={clsx(
+                  "bg-primary-3 rounded-lg p-2 text-center text-sm transition border-2",
+                  isActive
+                    ? "border-secondary-1"
+                    : "border-transparent hover:border-secondary-1",
+                )}
+              >
+                <div className="font-semibold">{formatted.day}</div>
+                <div className="text-xs">{formatted.date}</div>
+              </button>
+            )
+          })}
+        </div>
 
-      <div className="grid grid-cols-5 gap-2 mb-6">
-        {days.slice(0, 5).map((day) => {
-          const formatted = formatDate(day.date)
-          const isActive = selectedDate === day.date
-          return (
-            <button
-              key={day.date}
-              onClick={() => {
-                setSelectedDate(day.date)
-                setSelectedSlot(null)
-              }}
-              className={clsx(
-                "bg-primary-3 rounded-lg p-2 text-center text-sm transition border-2",
-                isActive
-                  ? "border-secondary-1"
-                  : "border-transparent hover:border-secondary-1",
-              )}
-            >
-              <div className="font-semibold">{formatted.day}</div>
-              <div className="text-xs">{formatted.date}</div>
-            </button>
-          )
-        })}
-      </div>
+        <div className="mb-8">
+          <p className="font-bold text-gray-600 mb-3">Available slots</p>
 
-      <div className="mb-8">
-        <p className="font-bold text-gray-600 mb-3">Available slots</p>
+          {loadingSlots && (
+            <div className="flex justify-center items-center py-6">
+              <ClipLoader color="#4f46e5" size={24} />
+            </div>
+          )}
 
-        {loadingSlots && (
-          <div className="flex justify-center items-center py-6">
-            <ClipLoader color="#4f46e5" size={24} />
-          </div>
-        )}
+          {!loadingSlots && (!activeDay || activeDay.slots?.length === 0) && (
+            <p className="text-sm text-gray-500">
+              No slots available for this date
+            </p>
+          )}
 
-        {!loadingSlots && (!activeDay || activeDay.slots?.length === 0) && (
-          <p className="text-sm text-gray-500">
-            No slots available for this date
-          </p>
-        )}
+          {!loadingSlots && activeDay && activeDay.slots?.length > 0 && (
+            <div className="grid grid-cols-2 lg:grid-cols-4 md:grid-cols-3 gap-3">
+              {activeDay.slots.map((slot) => {
+                const isSelected = selectedSlot?.startTime === slot.startTime
+                return (
+                  <button
+                    key={`${slot.startTime}-${slot.endTime}`}
+                    onClick={() => {
+                      if (isProcessing) return
 
-        {!loadingSlots && activeDay && activeDay.slots?.length > 0 && (
-          <div className="grid grid-cols-2 lg:grid-cols-4 md:grid-cols-3 gap-3">
-            {activeDay.slots.map((slot) => {
-              const isSelected = selectedSlot?.startTime === slot.startTime
-              return (
-                <button
-                  key={`${slot.startTime}-${slot.endTime}`}
-                  onClick={() => setSelectedSlot(slot)}
-                  disabled={!slot.available}
-                  className={clsx(
-                    "bg-primary-3 flex items-center justify-center gap-1 rounded-lg border-2 px-3 py-2 text-xs sm:text-sm transition duration-150",
-                    isSelected
-                      ? "border-secondary-1 bg-secondary-1/10 shadow-md"
-                      : slot.available
-                        ? "border-transparent hover:border-secondary-1 hover:bg-secondary-1/5"
-                        : "border-transparent bg-gray-100 text-gray-400 cursor-not-allowed opacity-60",
-                  )}
-                >
-                  <span>{formatTime(slot.startTime)}</span>
-                  <span>-</span>
-                  <span>{formatTime(slot.endTime)}</span>
-                </button>
-              )
-            })}
-          </div>
-        )}
+                      setSelectedSlot(slot)
+                    }}
+                    disabled={!slot.available || isProcessing}
+                    className={clsx(
+                      "bg-primary-3 flex items-center justify-center gap-1 rounded-lg border-2 px-3 py-2 text-xs sm:text-sm transition duration-150",
+                      isSelected
+                        ? "border-secondary-1 bg-secondary-1/10 shadow-md"
+                        : slot.available
+                          ? "border-transparent hover:border-secondary-1 hover:bg-secondary-1/5"
+                          : "border-transparent bg-gray-100 text-gray-400 cursor-not-allowed opacity-60",
+                    )}
+                  >
+                    <span>{formatTime(slot.startTime)}</span>
+                    <span>-</span>
+                    <span>{formatTime(slot.endTime)}</span>
+                  </button>
+                )
+              })}
+            </div>
+          )}
+        </div>
       </div>
 
       {selectedDate && selectedSlot && (

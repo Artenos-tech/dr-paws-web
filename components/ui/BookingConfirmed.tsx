@@ -61,12 +61,12 @@ const BookingConfirmed: React.FC<BookingConfirmedProps> = ({
                 ? "Spa Bath + Haircut"
                 : "Spa Bath"
               : `${selectedAppointment.selectedService}`}
-            {isGroomingAppointment || bookingType === "HOME_VISIT"
+            {isGroomingAppointment
               ? ""
               : ` with ${selectedAppointment.selectedVet!.name}`}
           </p>
           <div className="flex items-center my-4 relative">
-            <div className="relative w-32 h-32 rounded-full overflow-hidden bg-whitep-3 flex justify-center items-center">
+            <div className="relative w-32 h-32 rounded-full overflow-hidden bg-white p-3 flex justify-center items-center">
               <Image
                 src={
                   selectedAppointment.selectedPet.profileImage ||
@@ -79,21 +79,23 @@ const BookingConfirmed: React.FC<BookingConfirmedProps> = ({
                 priority
               />
             </div>
-            {(!isGroomingAppointment || bookingType === "CLINIC_VISIT") && (
-              <div className="relative w-32 h-32 rounded-full overflow-hidden bg-white p-8 ml-[-30px] flex justify-center items-center">
-                <Image
-                  src={
-                    selectedAppointment.selectedVet?.displayImage ||
-                    defaultVetImage
-                  }
-                  alt={`Dr. ${selectedAppointment.selectedVet?.name}'s profile`}
-                  objectFit="cover"
-                  sizes="128px"
-                  width={128}
-                  height={128}
-                />
-              </div>
-            )}
+            {!isGroomingAppointment &&
+              (bookingType === "CLINIC_VISIT" ||
+                bookingType === "HOME_VISIT") && (
+                <div className="relative w-32 h-32 rounded-full overflow-hidden bg-white p-8 ml-[-30px] flex justify-center items-center">
+                  <Image
+                    src={
+                      selectedAppointment.selectedVet?.displayImage ||
+                      defaultVetImage
+                    }
+                    alt={`Dr. ${selectedAppointment.selectedVet?.name}'s profile`}
+                    objectFit="cover"
+                    sizes="128px"
+                    width={128}
+                    height={128}
+                  />
+                </div>
+              )}
           </div>
           <div className="my-4 space-y-3 w-fit max-w-72">
             <div className="flex flex-col justify-center">

@@ -24,7 +24,7 @@ import { ClipLoader } from "react-spinners"
 import toast from "react-hot-toast"
 import { AttachmentInfo } from "./MedicalHistory"
 import { AppointmentDetails } from "@/model/typeDefinitions"
-import ConfirmationCard from "./CancelConfirmationCard"
+import ConfirmationCard from "./ConfirmationCard"
 import CancelledBookingCard from "./CancelBookingCard"
 import RescheduleAtClinicAppointment from "@/components/ui/RescheduleAtClinicAppointment"
 

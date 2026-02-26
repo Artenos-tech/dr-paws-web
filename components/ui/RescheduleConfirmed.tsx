@@ -82,22 +82,21 @@ const RescheduleConfirmed: React.FC<RescheduleConfirmedProps> = ({
   ]
     .filter(Boolean)
     .join(", ")
-
+  const vetName = updatedValues.selectedVet?.name || oldValues.oldVet?.name
   let appointmentText = ""
 
   if (isHomeVisit) {
-    appointmentText =
-      visitStatus &&
+    if (
       visitStatus !== "CANCELLED" &&
-      visitStatus !== "UNCONFIRMED" &&
       visitStatus !== "VISIT_FINISHED" &&
-      updatedValues.selectedVet?.name
-        ? `${updatedValues.selectedPet.name} is scheduled for a Home Visit with ${updatedValues.selectedVet.name}.`
-        : visitStatus && visitStatus === "CANCELLED"
-          ? `${updatedValues.selectedPet.name} was scheduled for a Home Visit.`
-          : visitStatus && visitStatus === "VISIT_FINISHED"
-            ? `${updatedValues.selectedPet.name}'s Home Visit has been completed.`
-            : `${updatedValues.selectedPet.name} is scheduled for a Home Visit.`
+      vetName
+    ) {
+      appointmentText = `${updatedValues.selectedPet.name} is scheduled for a Home Visit with ${vetName}.`
+    } else if (visitStatus === "VISIT_FINISHED") {
+      appointmentText = `${updatedValues.selectedPet.name}'s Home Visit has been completed.`
+    } else {
+      appointmentText = `${updatedValues.selectedPet.name} is scheduled for a Home Visit.`
+    }
   } else if (isGroomingAppointment) {
     appointmentText = groomingHasHaircut
       ? `${updatedValues.selectedPet.name} is scheduled for a Spa Bath + Haircut`
