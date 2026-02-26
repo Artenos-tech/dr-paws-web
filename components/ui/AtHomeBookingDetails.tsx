@@ -216,6 +216,12 @@ const AtHomeBookingDetails = ({
     : isCompleted
       ? CircleCheck
       : CalendarDays
+  const getExtraMessage = () => {
+    const message = isFreeCancellation()
+      ? "A refund of 799 will be processed and sent back to your original payment method"
+      : "Cancelling the booking now does not qualify you for a refund. Are you sure you want to cancel the booking"
+    return message
+  }
   return (
     <div className="w-full">
       <BackButton navigateBack={handleNavigation} />
@@ -223,6 +229,7 @@ const AtHomeBookingDetails = ({
         <ConfirmActionCard
           onCancel={cancelConfirmationView}
           onConfirm={proceedConfirmationView}
+          extraMessage={getExtraMessage()}
           confirmationType={confirmationType}
         />
       )}

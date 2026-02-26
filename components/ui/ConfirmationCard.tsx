@@ -5,6 +5,7 @@ type ConfirmationType = "CANCEL" | "RESCHEDULE" | null
 type ConfirmationProps = {
   confirmationType: ConfirmationType
   loading?: boolean
+  extraMessage?: string
   onConfirm: () => void
   onCancel: () => void
 }
@@ -13,6 +14,7 @@ const ConfirmationCard = ({
   confirmationType,
   loading = false,
   onConfirm,
+  extraMessage,
   onCancel,
 }: ConfirmationProps) => {
   const isCancel = confirmationType === "CANCEL"
@@ -29,6 +31,14 @@ const ConfirmationCard = ({
             ? "Are you sure you want to cancel this booking?"
             : "Are you sure you want to reschedule this booking?"}
         </h1>
+
+        {isCancel && extraMessage && (
+          <div className="bg-red-50 border border-red-100 p-4 rounded-md w-full">
+            <p className="text-center text-red-600 font-medium italic">
+              {extraMessage}
+            </p>
+          </div>
+        )}
 
         <p className="text-center">
           You will receive a Whatsapp notification confirming the{" "}
