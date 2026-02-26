@@ -353,6 +353,7 @@ export type AtHomeAPIClient = {
       address_id: string
       pet_id: string
       appt_start: string
+      appt_end: string
       booking_date: string
     },
     opts?: { abortSignal?: AbortSignal },
@@ -373,6 +374,7 @@ export type AtHomeAPIClient = {
     params: {
       pet_id: string
       appt_start: string
+      appt_end: string
       booking_date: string
       address_id: string
       reason_for_visit:
@@ -1336,12 +1338,13 @@ const endpointConfig = {
 
   getHomeVisitPaymentAmount: {
     method: "GET" as const,
-    path: "/booking/at-home/payments/amount/{address_id}?pet_id={pet_id}&booking_date={booking_date}&appt_start={appt_start}",
+    path: "/booking/at-home/payments/amount/{address_id}?pet_id={pet_id}&booking_date={booking_date}&appt_start={appt_start}&appt_end={appt_end}",
     pathParamsSchema: z.object({
       address_id: z.string(),
       pet_id: z.string(),
       booking_date: z.string(),
       appt_start: z.string(),
+      appt_end: z.string(),
     }),
     requestSchema: z.object({}),
     responseSchema: z.object({
@@ -1359,6 +1362,7 @@ const endpointConfig = {
     requestSchema: z.object({
       pet_id: z.string(),
       appt_start: z.string(),
+      appt_end: z.string(),
       booking_date: z.string(),
       address_id: z.string(),
       reason_for_visit: z.enum([

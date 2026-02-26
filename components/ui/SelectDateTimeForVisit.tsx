@@ -141,6 +141,7 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
       pet_id: petId,
       booking_date: convertBookingDateToIso(selectedDate),
       appt_start: selectedSlot.startTime,
+      appt_end: selectedSlot.endTime,
     })
   }, [addressId, selectedDate, selectedSlot])
 
