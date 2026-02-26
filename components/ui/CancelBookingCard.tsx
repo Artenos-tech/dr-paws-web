@@ -15,12 +15,16 @@ import { AppointmentDetails, RefundStatus } from "@/model/typeDefinitions"
 type Props = {
   appointment: AppointmentDetails
   refundStatus?: RefundStatus
+  refundAmount?: number
   onDone: () => void
 }
 
-const CancelledBookingCard = ({ appointment, refundStatus, onDone }: Props) => {
-  console.log(refundStatus)
-
+const CancelledBookingCard = ({
+  appointment,
+  refundStatus,
+  refundAmount,
+  onDone,
+}: Props) => {
   const visitType = appointment.booking_type
   const parsedDate = new Date(appointment.booking_date)
 
@@ -82,7 +86,7 @@ const CancelledBookingCard = ({ appointment, refundStatus, onDone }: Props) => {
             )}
         </div>
 
-        {refundStatus && (
+        {refundStatus && refundAmount && (
           <div className="border border-gray-300 rounded-lg p-4 space-y-2">
             <p className="font-semibold text-primary-1">Refund Details</p>
             <div className="flex items-center gap-2">
@@ -105,19 +109,20 @@ const CancelledBookingCard = ({ appointment, refundStatus, onDone }: Props) => {
               refundStatus === "REQUESTED" ||
               refundStatus === "APPROVED") && (
               <p className="text-sm text-gray-500">
-                A full refund will be processed and sent back to your original
-                payment method. It may take 5-7 business days to reflect in your
-                account.
+                A full refund of ₹{refundAmount} will be processed and sent back
+                to your original payment method. It may take 5-7 business days
+                to reflect in your account.
               </p>
             )}
             {refundStatus === "SUCCESS" && (
               <p className="text-sm text-gray-500">
-                Your refund has been successfully processed.
+                Your refund of ₹{refundAmount} has been successfully processed.
               </p>
             )}
             {refundStatus === "FAILED" && (
               <p className="text-sm text-gray-500">
-                Refund processing failed. Please contact support for assistance.
+                Refund processing of ₹{refundAmount} failed. Please contact
+                support for assistance.
               </p>
             )}
           </div>

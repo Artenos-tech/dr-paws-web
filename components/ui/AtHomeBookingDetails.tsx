@@ -229,6 +229,7 @@ const AtHomeBookingDetails = ({
       {view === "CANCELLED" && (
         <CancelledBookingCard
           refundStatus={refundStatus}
+          refundAmount={selectedAppointment.refund?.amount}
           appointment={selectedAppointment}
           onDone={() => goBack(true)}
         />
