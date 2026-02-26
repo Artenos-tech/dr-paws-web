@@ -218,7 +218,7 @@ const AtHomeBookingDetails = ({
       : CalendarDays
   const getExtraMessage = () => {
     const message = isFreeCancellation()
-      ? "A refund of 799 will be processed and sent back to your original payment method"
+      ? `A refund of ${selectedAppointment.refund?.amount} will be processed and sent back to your original payment method`
       : "Cancelling the booking now does not qualify you for a refund. Are you sure you want to cancel the booking"
     return message
   }
