@@ -218,8 +218,8 @@ const AtHomeBookingDetails = ({
       : CalendarDays
   const getExtraMessage = () => {
     const message = isFreeCancellation()
-      ? `A refund of ${selectedAppointment.refund?.amount} will be processed and sent back to your original payment method`
-      : "Cancelling the booking now does not qualify you for a refund. Are you sure you want to cancel the booking"
+      ? `This cancellation qualifies for a full refund under our 24-hour cancellation policy. A refund of ${selectedAppointment.refund?.amount} will be processed and sent back to your original payment method.`
+      : "This cancellation does not qualify for a refund under our 24-hour cancellation policy. No refund will be issued for this booking."
     return message
   }
   return (
