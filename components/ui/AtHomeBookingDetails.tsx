@@ -216,6 +216,12 @@ const AtHomeBookingDetails = ({
     : isCompleted
       ? CircleCheck
       : CalendarDays
+  const getExtraMessage = () => {
+    const message = isFreeCancellation()
+      ? `This cancellation qualifies for a full refund under our 24-hour cancellation policy. A refund of ${selectedAppointment.refund?.amount} will be processed and sent back to your original payment method.`
+      : "This cancellation does not qualify for a refund under our 24-hour cancellation policy. No refund will be issued for this booking."
+    return message
+  }
   return (
     <div className="w-full">
       <BackButton navigateBack={handleNavigation} />
@@ -223,6 +229,7 @@ const AtHomeBookingDetails = ({
         <ConfirmActionCard
           onCancel={cancelConfirmationView}
           onConfirm={proceedConfirmationView}
+          extraMessage={getExtraMessage()}
           confirmationType={confirmationType}
         />
       )}
