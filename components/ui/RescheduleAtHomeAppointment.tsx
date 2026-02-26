@@ -137,6 +137,7 @@ const RescheduleAtHomeAppointment = ({
         pet_id: appointment?.pet_id,
         booking_date: bookingDetails.date.toISOString(),
         appt_start: bookingDetails.slot.split(" - ")[0],
+        appt_end: bookingDetails.slot.split(" - ")[1],
       })
 
       if (result?.ok) {

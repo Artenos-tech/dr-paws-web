@@ -237,6 +237,7 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
       pet_id: appointmentData.petId as string,
       address_id: appointmentData.addressId as string,
       appt_start: appointmentData.slot?.startTime as string,
+      appt_end: appointmentData.slot?.endTime as string,
       booking_date: convertBookingDateToIso(appointmentData.date as string),
       reason_for_visit: reasonForVisit as ReasonForVisitEnum,
       notes: bookingDetails.reasonDescription as string,
@@ -336,6 +337,7 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
         pet_id: appointmentData.petId,
         booking_date: convertBookingDateToIso(appointmentData.date),
         appt_start: appointmentData.slot.startTime,
+        appt_end: appointmentData.slot.endTime,
       })
 
       if (result?.ok) {
