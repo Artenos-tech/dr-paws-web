@@ -6,6 +6,7 @@ type AddressMapProps = {
   pin: google.maps.LatLngLiteral
   setLocation: (e: google.maps.MapMouseEvent) => void
   mapOptions: google.maps.MapOptions
+  isAddMode?:boolean
   isEditMode?: boolean
 }
 
@@ -13,6 +14,7 @@ const AddressMap = ({
   pin,
   setLocation,
   mapOptions,
+  isAddMode=false,
   isEditMode = true,
 }: AddressMapProps) => {
   return (
@@ -23,7 +25,7 @@ const AddressMap = ({
       onClick={setLocation}
       options={mapOptions}
     >
-      <Marker draggable={isEditMode} position={pin} onDragEnd={setLocation} />
+      <Marker draggable={isEditMode||isAddMode} position={pin} onDragEnd={setLocation} />
     </GoogleMap>
   )
 }
