@@ -6,6 +6,7 @@ type ConfirmationProps = {
   confirmationType: ConfirmationType
   loading?: boolean
   extraMessage?: string
+  extraMessageVariant?: "warning" | "info"
   onConfirm: () => void
   onCancel: () => void
 }
@@ -15,6 +16,7 @@ const ConfirmationCard = ({
   loading = false,
   onConfirm,
   extraMessage,
+  extraMessageVariant = "warning",
   onCancel,
 }: ConfirmationProps) => {
   const isCancel = confirmationType === "CANCEL"
@@ -33,8 +35,20 @@ const ConfirmationCard = ({
         </h1>
 
         {isCancel && extraMessage && (
-          <div className="bg-red-50 border border-red-100 p-4 rounded-md w-full">
-            <p className="text-center text-red-600 font-medium italic">
+          <div
+            className={`p-4 rounded-md w-full border ${
+              extraMessageVariant === "warning"
+                ? "bg-red-50 border-red-100"
+                : "bg-gray-50 border-gray-200"
+            }`}
+          >
+            <p
+              className={`text-center italic text-sm ${
+                extraMessageVariant === "warning"
+                  ? "text-red-600 font-medium"
+                  : "text-gray-500"
+              }`}
+            >
               {extraMessage}
             </p>
           </div>

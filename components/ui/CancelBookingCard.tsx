@@ -77,9 +77,7 @@ const CancelledBookingCard = ({
           </div>
 
           {appointment.appt_type !== "GROOMING" &&
-            appointment.booking_type === "HOME_VISIT" &&
-            isCancelled &&
-            isUnConfirmed && (
+            appointment.booking_type !== "HOME_VISIT" && (
               <div className="relative w-32 h-32 rounded-full overflow-hidden bg-white -ml-8 border-4 border-white">
                 <Image src={vetImage} alt="Vet" fill sizes="128px" />
               </div>

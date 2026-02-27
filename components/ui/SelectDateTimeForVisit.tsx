@@ -18,6 +18,7 @@ interface SelectDateTimeForVisitProps {
   slot?: Slot
   isConfirmationModalOpen?: boolean
   isConfirming?: boolean
+  paymentAmount?: number | null
   onConfirm: (date: string, slot: Slot) => void
   isReschedule?: boolean
 }
@@ -70,6 +71,7 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
   isConfirmationModalOpen,
   isConfirming,
   isReschedule,
+  paymentAmount,
 }) => {
   const {
     call: getAtHomeSlots,
@@ -77,11 +79,11 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
     loading: loadingSlots,
   } = useAPICall(atHomeApiClient.getAtHomeSlots)
 
-  const {
-    call: getHomeVisitPaymentAmount,
-    result: homeVisitPaymentAmountResult,
-    loading: homeVisitPaymentAmountLoading,
-  } = useAPICall(atHomeApiClient.getHomeVisitPaymentAmount)
+  // const {
+  //   call: getHomeVisitPaymentAmount,
+  //   result: homeVisitPaymentAmountResult,
+  //   loading: homeVisitPaymentAmountLoading,
+  // } = useAPICall(atHomeApiClient.getHomeVisitPaymentAmount)
 
   const [selectedDate, setSelectedDate] = useState<string | null>(
     initialDate || null,
@@ -134,16 +136,16 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
     }
   }, [atHomeSlotsResult])
 
-  useEffect(() => {
-    if (!addressId || !selectedDate || !selectedSlot) return
-    getHomeVisitPaymentAmount({
-      address_id: addressId,
-      pet_id: petId,
-      booking_date: convertBookingDateToIso(selectedDate),
-      appt_start: selectedSlot.startTime,
-      appt_end: selectedSlot.endTime,
-    })
-  }, [addressId, selectedDate, selectedSlot])
+  // useEffect(() => {
+  //   if (!addressId || !selectedDate || !selectedSlot) return
+  //   getHomeVisitPaymentAmount({
+  //     address_id: addressId,
+  //     pet_id: petId,
+  //     booking_date: convertBookingDateToIso(selectedDate),
+  //     appt_start: selectedSlot.startTime,
+  //     appt_end: selectedSlot.endTime,
+  //   })
+  // }, [])
 
   useEffect(() => {
     if (days.length && !selectedDate && !initialDate) {
@@ -257,28 +259,29 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
         </div>
       </div>
 
-      {selectedDate && selectedSlot && (
+      {paymentAmount && (
         <div className="mb-8">
           <p className="font-bold text-gray-600 mb-3">Amount</p>
-          {homeVisitPaymentAmountLoading && (
+          {/* {homeVisitPaymentAmountLoading && (
             <div className="flex justify-center items-center py-6">
               <ClipLoader color="#4f46e5" size={24} />
             </div>
-          )}
-          {!homeVisitPaymentAmountLoading &&
+          )} */}
+          {/* {!homeVisitPaymentAmountLoading &&
             !homeVisitPaymentAmountResult?.ok && (
               <p className="text-sm text-gray-500">
                 Payment information could not be retrieved. Please try again
                 later.
               </p>
-            )}
-          {!homeVisitPaymentAmountLoading &&
+            )} */}
+          {/* {!homeVisitPaymentAmountLoading &&
             homeVisitPaymentAmountResult &&
             homeVisitPaymentAmountResult.ok && (
               <p className="font-bold text-gray-600 mb-3">
                 INR {homeVisitPaymentAmountResult.value.body.data.amount}
               </p>
-            )}
+            )} */}
+          <p className="font-bold text-gray-600 mb-3">INR {paymentAmount}</p>
         </div>
       )}
 
