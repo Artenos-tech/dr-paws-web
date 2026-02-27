@@ -399,20 +399,22 @@ const AtHomeBookingDetails = ({
                     selectedAppointment.refund.status === "REQUESTED" ||
                     selectedAppointment.refund.status === "APPROVED") && (
                     <p className="text-sm text-gray-500">
-                      A full refund of ₹{selectedAppointment.refund.amount} will be processed and sent back to your
-                      original payment method. It may take 5-7 business days to
-                      reflect in your account.
+                      A full refund of ₹{selectedAppointment.refund.amount} will
+                      be processed and sent back to your original payment
+                      method. It may take 5-7 business days to reflect in your
+                      account.
                     </p>
                   )}
                   {selectedAppointment.refund.status === "SUCCESS" && (
                     <p className="text-sm text-gray-500">
-                      Your refund of ₹{selectedAppointment.refund.amount} has been successfully processed.
+                      Your refund of ₹{selectedAppointment.refund.amount} has
+                      been successfully processed.
                     </p>
                   )}
                   {selectedAppointment.refund.status === "FAILED" && (
                     <p className="text-sm text-gray-500">
-                      Refund processing of ₹{selectedAppointment.refund.amount} failed. Please contact support for
-                      assistance.
+                      Refund processing of ₹{selectedAppointment.refund.amount}{" "}
+                      failed. Please contact support for assistance.
                     </p>
                   )}
                 </div>
