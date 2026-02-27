@@ -673,18 +673,15 @@ export default createAPIClient({
 
     applyCouponCode: {
       method: "GET",
-      path: "/booking/validatecoupon?code={code}&booking_date={booking_date}&appt_start={appt_start}",
+      path: "/booking/validatecoupon?code={code}&appt_start={appt_start}",
       pathParamsSchema: z.object({
         code: z.string(),
-        booking_date: z.string(),
         appt_start: z.string(),
       }),
       requestSchema: z.object({}),
       responseSchema: z.object({
         status: z.number(),
         message: z.string(),
-        applicable: z.boolean().optional(),
-        coupon_type: z.string().nullable().optional(),
       }),
       errorResponseSchema: z.object({}),
     },

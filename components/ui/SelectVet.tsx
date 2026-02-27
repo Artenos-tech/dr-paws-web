@@ -616,7 +616,6 @@ const SelectVet: React.FC<selectVetProps> = ({
     try {
       const resp = await applyCouponCode({
         code: couponCode,
-        booking_date: format(selectedDate, "dd/MM/yyyy"),
         appt_start: selectedSlot?.startTime ?? "",
       })
       if (resp.ok) {
