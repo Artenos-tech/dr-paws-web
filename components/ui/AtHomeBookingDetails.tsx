@@ -61,22 +61,26 @@ const AtHomeBookingDetails = ({
   }, [view, onPausePolling])
 
   const getSlotStartDateTime = () => {
-    const bookingDate = parseISO(selectedAppointment.booking_date)
+    // booking_date is stored as UTC midnight IST (e.g. March 3 IST midnight =
+    // "2026-03-02T18:30:00.000Z"). getUTCDate() would return 2 (March 2) instead
+    // of 3. Add the IST offset first to recover the correct IST calendar date,
+    // then subtract it again after combining with appt_start (also IST).
+    const IST_OFFSET_MS = (5 * 60 + 30) * 60 * 1000
+    const bookingDateIST = new Date(
+      parseISO(selectedAppointment.booking_date).getTime() + IST_OFFSET_MS,
+    )
     const [hours, minutes] = selectedAppointment.appt_start
       .split(":")
       .map(Number)
-    const slotStart = new Date(
+    return new Date(
       Date.UTC(
-        bookingDate.getUTCFullYear(),
-        bookingDate.getUTCMonth(),
-        bookingDate.getUTCDate(),
+        bookingDateIST.getUTCFullYear(),
+        bookingDateIST.getUTCMonth(),
+        bookingDateIST.getUTCDate(),
         hours,
         minutes,
-        0,
-        0,
-      ),
+      ) - IST_OFFSET_MS,
     )
-    return slotStart
   }
 
   const canShowCancelActions =
@@ -217,10 +221,14 @@ const AtHomeBookingDetails = ({
       ? CircleCheck
       : CalendarDays
   const getExtraMessage = () => {
-    const message = isFreeCancellation()
-      ? `This cancellation qualifies for a full refund under our 24-hour cancellation policy. A refund of ${selectedAppointment.refund?.amount} will be processed and sent back to your original payment method.`
-      : "This cancellation does not qualify for a refund under our 24-hour cancellation policy. No refund will be issued for this booking."
-    return message
+    if (!isFreeCancellation()) {
+      return "This cancellation does not qualify for a refund under our 24-hour cancellation policy. No refund will be issued for this booking."
+    }
+    const refundAmount = selectedAppointment.total_billing_amount
+    const reason = isDelayed
+      ? "because your vet has been delayed"
+      : "under our 24-hour cancellation policy"
+    return `This cancellation qualifies for a full refund ${reason}. A refund of ₹${refundAmount} will be processed and sent back to your original payment method.`
   }
   return (
     <div className="w-full">
@@ -230,6 +238,7 @@ const AtHomeBookingDetails = ({
           onCancel={cancelConfirmationView}
           onConfirm={proceedConfirmationView}
           extraMessage={getExtraMessage()}
+          extraMessageVariant={isFreeCancellation() ? "info" : "warning"}
           confirmationType={confirmationType}
         />
       )}
@@ -390,20 +399,22 @@ const AtHomeBookingDetails = ({
                     selectedAppointment.refund.status === "REQUESTED" ||
                     selectedAppointment.refund.status === "APPROVED") && (
                     <p className="text-sm text-gray-500">
-                      A full refund will be processed and sent back to your
-                      original payment method. It may take 5-7 business days to
-                      reflect in your account.
+                      A full refund of ₹{selectedAppointment.refund.amount} will
+                      be processed and sent back to your original payment
+                      method. It may take 5-7 business days to reflect in your
+                      account.
                     </p>
                   )}
                   {selectedAppointment.refund.status === "SUCCESS" && (
                     <p className="text-sm text-gray-500">
-                      Your refund has been successfully processed.
+                      Your refund of ₹{selectedAppointment.refund.amount} has
+                      been successfully processed.
                     </p>
                   )}
                   {selectedAppointment.refund.status === "FAILED" && (
                     <p className="text-sm text-gray-500">
-                      Refund processing failed. Please contact support for
-                      assistance.
+                      Refund processing of ₹{selectedAppointment.refund.amount}{" "}
+                      failed. Please contact support for assistance.
                     </p>
                   )}
                 </div>
@@ -422,7 +433,12 @@ const AtHomeBookingDetails = ({
                         Reschedule & Cancel
                       </p>
 
-                      {isFreeCancellation() ? (
+                      {isDelayed ? (
+                        <p className="text-sm text-gray-600">
+                          Free cancellation available because your vet has been
+                          delayed.
+                        </p>
+                      ) : isFreeCancellation() ? (
                         <p className="text-sm text-gray-600">
                           Free cancellation available up to 24 hours before the
                           appointment.
