@@ -286,6 +286,7 @@ const AddressPage = () => {
             pin={pin}
             setLocation={setLocation}
             mapOptions={mapOptions}
+            isAddMode={isAddMode}
             isEditMode={isEditMode}
           />
           {(isAddMode || isEditMode) && (
