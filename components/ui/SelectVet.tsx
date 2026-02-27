@@ -628,7 +628,9 @@ const SelectVet: React.FC<selectVetProps> = ({
           resp.error.apiClientErrorType === "ErrorResponseAPIError"
             ? resp.error.body.message
             : "Invalid coupon code. Please try again."
-        if (errorMessage === "Coupon code not applicable for the selected slot") {
+        if (
+          errorMessage === "Coupon code not applicable for the selected slot"
+        ) {
           toast.error(errorMessage)
           setCouponError(errorMessage)
           setAppliedCoupon(null)
