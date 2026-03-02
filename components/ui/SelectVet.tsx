@@ -574,6 +574,9 @@ const SelectVet: React.FC<selectVetProps> = ({
     setSelectedSlot(
       selectedSlot && selectedSlot.startTime === time.startTime ? null : time,
     )
+    setCouponCode("")
+    setAppliedCoupon(null)
+    setCouponError(null)
     if (time.staffIds && isGrooming) {
       try {
         const response = await getDoctor({
@@ -611,12 +614,28 @@ const SelectVet: React.FC<selectVetProps> = ({
       return
     }
     try {
-      const resp = await applyCouponCode({ code: couponCode })
+      const resp = await applyCouponCode({
+        code: couponCode,
+        appt_start: selectedSlot?.startTime ?? "",
+      })
       if (resp.ok) {
         toast.success("Coupon applied!")
         setCouponError(null)
         setAppliedCoupon(couponCode)
       } else {
+        const errorMessage =
+          resp.error.apiClientErrorType === "ErrorResponseAPIError"
+            ? resp.error.body.message
+            : "Invalid coupon code. Please try again."
+        if (
+          errorMessage === "Coupon code not applicable for the selected slot"
+        ) {
+          toast.error(errorMessage)
+          setCouponError(errorMessage)
+          setAppliedCoupon(null)
+          return
+        }
+
         toast.error("Invalid coupon code. Please try again.")
         setCouponError("Invalid coupon code. Please try again.")
         setCouponCode("")
