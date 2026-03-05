@@ -148,6 +148,30 @@ export default function VetAtHomePage() {
     },
   ]
 
+  const atHomeDoctors = [
+    {
+      name: "Dr. Anchima Manohar",
+      qualification: "BVSc & AH",
+      experience: "8+ years of experience",
+      bio: "Specializes in preventive care and internal medicine, with a focus on calm and low-stress home consultations for pets.",
+      image: "/assets/images/clinic/doctorFemale.webp",
+    },
+    {
+      name: "Dr. Abhiram S.",
+      qualification: "BVSc & AH, MVSc",
+      experience: "7+ years of experience",
+      bio: "Experienced in vaccination planning, diagnostics, and long-term treatment support for pets requiring regular medical follow-up.",
+      image: "/assets/images/clinic/doctorMale.webp",
+    },
+    {
+      name: "Dr. Jonin Singh Laishangbam",
+      qualification: "BVSc & AH",
+      experience: "6+ years of experience",
+      bio: "Provides compassionate home-visit care with strong expertise in senior pet monitoring, recovery support, and chronic care management.",
+      image: "/assets/images/clinic/doctorMale.webp",
+    },
+  ]
+
   const toggleServiceCard = (index: number) => {
     setExpandedServices((prev) =>
       prev.includes(index)
@@ -530,6 +554,38 @@ export default function VetAtHomePage() {
           </div>
         </div>
       </section>
+
+      <section className="relative overflow-hidden bg-white py-16 md:py-20">
+        <div className="mx-auto w-full px-8 md:px-16 lg:px-20 xl:px-40">
+          <div className="mx-auto max-w-4xl text-center">
+            <h2 className="text-3xl font-bold leading-tight text-primary-1 md:text-5xl">
+              Meet the Veterinarians Who Visit Your Home
+            </h2>
+          </div>
+
+          <div className="mt-10 grid grid-cols-1 justify-items-center gap-5 md:mt-12 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+            {atHomeDoctors.map((doctor) => (
+              <article
+                key={doctor.name}
+                className="w-full max-w-[360px] rounded-xl border border-primary-3 bg-primary-3 p-5 text-center text-primary-1 shadow-md sm:p-6"
+              >
+                <img
+                  src={doctor.image}
+                  alt={doctor.name}
+                  className="mx-auto h-[120px] w-[120px] rounded-full object-cover"
+                />
+                <h3 className="mt-4 text-xl">{doctor.name}</h3>
+                <p className="mt-2 text-sm sm:text-base">{doctor.qualification}</p>
+                <p className="mt-1 text-sm sm:text-base">{doctor.experience}</p>
+                <p className="mt-3 text-sm leading-relaxed text-primary-1/80 sm:text-base">
+                  {doctor.bio}
+                </p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
     </main>
   )
 }
