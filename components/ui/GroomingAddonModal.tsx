@@ -43,10 +43,9 @@ export default function GroomingAddonModal({
                     Spa Bath
                   </span>
                   <span className="text-xs sm:text-sm text-gray-600">
-                    Our package that covers everything for short-coat breeds.
-                    Includes shampoo & conditioning bath, ear cleaning, teeth
-                    brushing, nail cutting, sanitary trimming, paw-pad trimming,
-                    blow-drying & perfuming.
+                    Complete hygiene care including bath with shampoo &
+                    conditioner, nail trim, sanitary trim, ear cleaning, teeth
+                    brushing, paw-pad trim, drying, and finishing perfume.
                   </span>
                 </div>
               </div>
@@ -74,8 +73,7 @@ export default function GroomingAddonModal({
                     Spa Bath + Haircut
                   </span>
                   <span className="text-xs sm:text-sm text-gray-600">
-                    Useful for long-coat breeds like shih-tzus & golden
-                    retrievers.
+                    Everything in a Spa Bath plus a full-body haircut
                   </span>
                 </div>
               </div>
