@@ -672,9 +672,6 @@ export default function VetAtHomePage() {
             <h2 className="text-3xl font-bold leading-tight text-primary-1 md:text-5xl">
               Trusted by Pet Parents Across Bangalore
             </h2>
-            <p className="mt-3 text-sm font-semibold tracking-wide text-[#94662e] md:text-base">
-              Source: Google Reviews
-            </p>
           </div>
 
           <Carousel
@@ -772,6 +769,77 @@ export default function VetAtHomePage() {
                 </article>
               )
             })}
+          </div>
+        </div>
+      </section>
+
+      <section className="relative overflow-hidden bg-[linear-gradient(180deg,#fffaf0_0%,#f7f1de_55%,#fffdf7_100%)] py-16 md:py-20">
+        <div className="mx-auto w-full px-8 md:px-16 lg:px-20 xl:px-40">
+          <div className="mx-auto max-w-4xl rounded-3xl border border-[#e1d5bf] bg-white/85 px-6 py-10 text-center shadow-[0_14px_34px_rgba(51,73,95,0.12)] md:px-10 md:py-14">
+            <h2 className="text-3xl font-bold leading-tight text-primary-1 md:text-5xl">
+              Ready to Book a Vet Visit at Home?
+            </h2>
+            <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-primary-1/80 md:text-lg">
+              Give your pet expert veterinary care - without the stress of
+              travel.
+            </p>
+
+            <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
+              <Link
+                href="/user/book-appointment"
+                className="font-open-sans btn rounded-full bg-secondary-1 px-5 py-2 text-xs tracking-wider text-white md:px-10 md:text-base"
+              >
+                Book At-Home Visit
+              </Link>
+
+              <Link
+                href="https://wa.me/919606994627"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-open-sans btn rounded-full border border-[#5281a2] bg-white px-5 py-2 text-xs tracking-wider text-[#5281a2] transition-colors hover:bg-[#5281a2] hover:text-white md:px-10 md:text-base"
+              >
+                Chat on WhatsApp
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="relative overflow-hidden bg-white py-16 md:py-20">
+        <div className="mx-auto w-full px-8 md:px-16 lg:px-20 xl:px-40">
+          <div className="mx-auto max-w-4xl text-center">
+            <h2 className="text-3xl font-bold leading-tight text-primary-1 md:text-5xl">
+              Have Questions? Get in Touch
+            </h2>
+          </div>
+
+          <div className="mx-auto mt-10 grid max-w-5xl grid-cols-1 gap-4 md:mt-12 md:grid-cols-3 md:gap-5">
+            <article className="rounded-2xl border border-[#e1d5bf] bg-[linear-gradient(180deg,#fffef9_0%,#ffffff_100%)] p-6 text-center shadow-[0_10px_24px_rgba(51,73,95,0.08)]">
+              <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#94662e] md:text-sm">
+                Support Helpline
+              </p>
+              <p className="mt-3 text-base font-semibold text-primary-1 md:text-xl">
+                +91 9740141212
+              </p>
+            </article>
+
+            <article className="rounded-2xl border border-[#e1d5bf] bg-[linear-gradient(180deg,#fffef9_0%,#ffffff_100%)] p-6 text-center shadow-[0_10px_24px_rgba(51,73,95,0.08)]">
+              <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#94662e] md:text-sm">
+                Support Hours
+              </p>
+              <p className="mt-3 text-base font-semibold text-primary-1 md:text-xl">
+                10 AM - 7 PM (Mon-Sun)
+              </p>
+            </article>
+
+            <article className="rounded-2xl border border-[#e1d5bf] bg-[linear-gradient(180deg,#fffef9_0%,#ffffff_100%)] p-6 text-center shadow-[0_10px_24px_rgba(51,73,95,0.08)]">
+              <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#94662e] md:text-sm">
+                Email
+              </p>
+              <p className="mt-3 break-all text-base font-semibold text-primary-1 md:text-xl">
+                vet-at-home@drpaws.care
+              </p>
+            </article>
           </div>
         </div>
       </section>
