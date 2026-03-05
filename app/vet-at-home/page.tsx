@@ -864,30 +864,11 @@ export default function VetAtHomePage() {
         href={whatsappBookingLink}
         target="_blank"
         rel="noopener noreferrer"
-        className="fixed bottom-24 right-4 z-50 inline-flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_12px_26px_rgba(37,211,102,0.45)] transition-transform hover:scale-105 md:bottom-8 md:right-8"
+        className="fixed bottom-6 right-4 z-50 inline-flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_12px_26px_rgba(37,211,102,0.45)] transition-transform hover:scale-105 md:bottom-8 md:right-8"
         aria-label="Chat on WhatsApp"
       >
         <FaWhatsapp size={28} />
       </Link>
-
-      <div className="fixed inset-x-0 bottom-0 z-50 border-t border-[#e1d5bf] bg-white/95 p-3 backdrop-blur-sm md:hidden">
-        <div className="mx-auto flex max-w-md items-center gap-3">
-          <Link
-            href="/user/book-appointment"
-            className="font-open-sans btn flex-1 rounded-full bg-secondary-1 px-4 py-2 text-center text-xs tracking-wide text-white"
-          >
-            Book Vet Visit
-          </Link>
-          <Link
-            href={whatsappBookingLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-open-sans btn flex-1 rounded-full border border-[#25D366] bg-white px-4 py-2 text-center text-xs tracking-wide text-[#1ea857]"
-          >
-            WhatsApp
-          </Link>
-        </div>
-      </div>
     </main>
   )
 }
