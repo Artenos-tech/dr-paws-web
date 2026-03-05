@@ -110,6 +110,12 @@ export default function NavBar() {
                 >
                   Our Team
                 </Link>
+                <Link
+                  href="/vet-at-home"
+                  className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                >
+                  Vet-at-Home
+                </Link>
                 {/* <Link
                   href="/membership"
                   className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
@@ -280,6 +286,13 @@ export default function NavBar() {
               className="text-primary-1 hover:bg-primary-2 hover:text-white block py-2 px-2 rounded-md text-base font-medium"
             >
               Our Team
+            </Link>
+            <Link
+              onClick={() => setIsOpen(false)}
+              href="/vet-at-home"
+              className="text-primary-1 hover:bg-primary-2 hover:text-white block py-2 px-2 rounded-md text-base font-medium"
+            >
+              Vet-at-Home
             </Link>
             {/* <Link
               onClick={() => setIsOpen(false)}
