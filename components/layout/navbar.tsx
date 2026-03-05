@@ -3,7 +3,7 @@
 import { Menu } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { Toaster } from "react-hot-toast"
 import ContactInfoModal from "@/components/ui/ContactInfoModal"
 import CustomButton from "@/components/ui/CustomButton"
@@ -21,6 +21,7 @@ export default function NavBar() {
   const [isProfileOpen, setIsProfileOpen] = useState(false)
   const [isContactModalOpen, setContactIsModalOpen] = useState(false)
   const navigate = useRouter()
+  const pathname = usePathname()
   // const isMarketingFeatureEnabled = useMarketingFeature();
 
   const { refresh, initiateLogin, isLoggedIn } = useUserContext()
@@ -127,7 +128,11 @@ export default function NavBar() {
           </div>
           <div className="flex items-center space-x-4 text-xs justify-end">
             <CustomButton
-              buttonText="Book a visit"
+              buttonText={
+                pathname?.includes("/vet-at-home")
+                  ? "Book an At-Home Visit"
+                  : "Book a visit"
+              }
               buttonBackground="bg-secondary-1"
               buttonClickEvent={handleBookAVisit}
             />
