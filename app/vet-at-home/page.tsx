@@ -315,8 +315,8 @@ export default function VetAtHomePage() {
                           isExpanded ? "" : "h-[56px] overflow-hidden"
                         }`}
                       >
-                        <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#fff4de] text-[#94662e]">
-                          <ServiceIcon size={18} strokeWidth={2.2} />
+                        <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#fff4de] text-[#94662e]">
+                          <ServiceIcon size={20} strokeWidth={2.2} />
                         </span>
                         <h3 className="text-xl font-semibold leading-snug text-primary-1">
                           {service.title}
