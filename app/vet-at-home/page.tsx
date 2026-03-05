@@ -1,8 +1,10 @@
 "use client"
 
 import Link from "next/link"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {
+  ChevronLeft,
+  ChevronRight,
   CalendarClock,
   ClipboardList,
   HeartPulse,
@@ -13,6 +15,7 @@ import {
 
 export default function VetAtHomePage() {
   const [expandedServices, setExpandedServices] = useState<number[]>([])
+  const [activeAmbulanceSlide, setActiveAmbulanceSlide] = useState(0)
 
   const loveAtHomeReasons = [
     {
@@ -122,6 +125,29 @@ export default function VetAtHomePage() {
     },
   ]
 
+  const ambulanceSlides = [
+    {
+      image:
+        "https://images.unsplash.com/photo-1587745416684-47953f16f02f?auto=format&fit=crop&w=1800&q=80",
+      alt: "Pet ambulance parked outside a clinic",
+    },
+    {
+      image:
+        "https://images.pexels.com/photos/28123777/pexels-photo-28123777.jpeg?cs=srgb&dl=pexels-mikhail-nilov-28123777.jpg&fm=jpg",
+      alt: "Medical team loading equipment at an ambulance",
+    },
+    {
+      image:
+        "https://images.pexels.com/photos/17206211/pexels-photo-17206211.jpeg?cs=srgb&dl=pexels-robertkso-17206211.jpg&fm=jpg",
+      alt: "Pet transport setup with secure travel crate",
+    },
+    {
+      image:
+        "https://images.pexels.com/photos/6519861/pexels-photo-6519861.jpeg?cs=srgb&dl=pexels-rdne-6519861.jpg&fm=jpg",
+      alt: "Emergency response team with ambulance",
+    },
+  ]
+
   const toggleServiceCard = (index: number) => {
     setExpandedServices((prev) =>
       prev.includes(index)
@@ -129,6 +155,30 @@ export default function VetAtHomePage() {
         : [...prev, index]
     )
   }
+
+  const showPrevAmbulanceSlide = () => {
+    setActiveAmbulanceSlide((prev) =>
+      prev === 0 ? ambulanceSlides.length - 1 : prev - 1
+    )
+  }
+
+  const showNextAmbulanceSlide = () => {
+    setActiveAmbulanceSlide((prev) =>
+      prev === ambulanceSlides.length - 1 ? 0 : prev + 1
+    )
+  }
+
+  useEffect(() => {
+    const autoSlideTimer = window.setInterval(() => {
+      setActiveAmbulanceSlide((prev) =>
+        prev === ambulanceSlides.length - 1 ? 0 : prev + 1
+      )
+    }, 4500)
+
+    return () => {
+      window.clearInterval(autoSlideTimer)
+    }
+  }, [ambulanceSlides.length])
 
   return (
     <main className="w-full">
@@ -387,6 +437,96 @@ export default function VetAtHomePage() {
                 </article>
               )
             })}
+          </div>
+        </div>
+      </section>
+
+      <section className="relative overflow-hidden bg-[linear-gradient(180deg,#fffaf0_0%,#f7f1de_58%,#fffdf7_100%)] py-16 md:py-24">
+        <div className="pointer-events-none absolute -left-24 top-8 h-56 w-56 rounded-full bg-[radial-gradient(circle,rgba(253,199,118,0.22)_0%,rgba(253,199,118,0)_72%)]" />
+        <div className="pointer-events-none absolute -right-24 bottom-10 h-64 w-64 rounded-full bg-[radial-gradient(circle,rgba(82,129,162,0.2)_0%,rgba(82,129,162,0)_74%)]" />
+
+        <div className="mx-auto w-full px-8 md:px-16 lg:px-20 xl:px-40">
+          <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:gap-12">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.13em] text-[#94662e]">
+                Ambulance & Transport Service
+              </p>
+              <h2 className="mt-3 max-w-2xl text-3xl font-bold leading-tight text-primary-1 md:text-5xl">
+                Need to Visit the Clinic? We Can Help With That Too.
+              </h2>
+              <p className="mt-5 max-w-2xl text-base leading-relaxed text-primary-1/80 md:text-lg">
+                If your pet requires imaging, procedures, or specialized care
+                at one of our clinics, our Dr. Paws Ambulance Service can
+                safely transport both pets and their parents. Our trained team
+                ensures pets travel comfortably and securely between home and
+                clinic.
+              </p>
+
+              <div className="mt-8">
+                <Link
+                  href="/user/book-appointment"
+                  className="font-open-sans btn rounded-full bg-secondary-1 px-5 py-2 text-xs tracking-wider text-white md:px-10 md:text-base"
+                >
+                  Book Ambulance Pickup
+                </Link>
+              </div>
+            </div>
+
+            <div className="relative rounded-3xl border border-[#e1d5bf] bg-white/80 p-3 shadow-[0_16px_36px_rgba(51,73,95,0.16)] md:p-4">
+              <div className="relative aspect-[16/10] overflow-hidden rounded-2xl">
+                {ambulanceSlides.map((slide, index) => (
+                  <figure
+                    key={slide.image}
+                    className={`absolute inset-0 transition-all duration-700 ease-out ${
+                      index === activeAmbulanceSlide
+                        ? "z-10 scale-100 opacity-100"
+                        : "z-0 scale-[1.03] opacity-0"
+                    }`}
+                  >
+                    <img
+                      src={slide.image}
+                      alt={slide.alt}
+                      className="h-full w-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/20 to-transparent" />
+                  </figure>
+                ))}
+
+                <button
+                  type="button"
+                  onClick={showPrevAmbulanceSlide}
+                  className="absolute left-3 top-1/2 z-20 inline-flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/50 bg-black/35 text-white backdrop-blur-sm transition-colors hover:bg-black/50 md:h-11 md:w-11"
+                  aria-label="Show previous ambulance image"
+                >
+                  <ChevronLeft size={20} />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={showNextAmbulanceSlide}
+                  className="absolute right-3 top-1/2 z-20 inline-flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/50 bg-black/35 text-white backdrop-blur-sm transition-colors hover:bg-black/50 md:h-11 md:w-11"
+                  aria-label="Show next ambulance image"
+                >
+                  <ChevronRight size={20} />
+                </button>
+
+                <div className="absolute bottom-3 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2 rounded-full bg-black/35 px-3 py-1.5 backdrop-blur-sm">
+                  {ambulanceSlides.map((slide, index) => (
+                    <button
+                      key={slide.image}
+                      type="button"
+                      onClick={() => setActiveAmbulanceSlide(index)}
+                      className={`h-2.5 rounded-full transition-all duration-300 ${
+                        index === activeAmbulanceSlide
+                          ? "w-6 bg-white"
+                          : "w-2.5 bg-white/55 hover:bg-white/80"
+                      }`}
+                      aria-label={`Go to ambulance image ${index + 1}`}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
