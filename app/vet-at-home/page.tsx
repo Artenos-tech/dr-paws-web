@@ -14,6 +14,7 @@ import {
   Star,
   Stethoscope,
 } from "lucide-react"
+import { FaWhatsapp } from "react-icons/fa"
 import {
   Carousel,
   CarouselContent,
@@ -248,6 +249,9 @@ export default function VetAtHomePage() {
     },
   ]
 
+  const whatsappBookingLink =
+    "https://wa.me/919740141212?text=Hello%2C%20I%27d%20like%20to%20book%20a%20Vet-At-Home%20appointment."
+
   const toggleServiceCard = (index: number) => {
     setExpandedServices((prev) =>
       prev.includes(index)
@@ -285,7 +289,16 @@ export default function VetAtHomePage() {
   }, [ambulanceSlides.length])
 
   return (
-    <main className="w-full">
+    <main className="w-full pb-20 md:pb-0">
+      <div className="fixed right-6 top-24 z-40 hidden md:block">
+        <Link
+          href="/user/book-appointment"
+          className="font-open-sans btn rounded-full bg-secondary-1 px-6 py-2 text-sm tracking-wide text-white shadow-[0_10px_24px_rgba(51,73,95,0.2)]"
+        >
+          Book At-Home Visit
+        </Link>
+      </div>
+
       <section className="relative min-h-[calc(100vh-4rem)] overflow-hidden">
         <img
           src="https://images.unsplash.com/photo-1644675272883-0c4d582528d8?auto=format&fit=crop&fm=jpg&q=80&w=2400"
@@ -846,6 +859,35 @@ export default function VetAtHomePage() {
           </div>
         </div>
       </section>
+
+      <Link
+        href={whatsappBookingLink}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fixed bottom-24 right-4 z-50 inline-flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_12px_26px_rgba(37,211,102,0.45)] transition-transform hover:scale-105 md:bottom-8 md:right-8"
+        aria-label="Chat on WhatsApp"
+      >
+        <FaWhatsapp size={28} />
+      </Link>
+
+      <div className="fixed inset-x-0 bottom-0 z-50 border-t border-[#e1d5bf] bg-white/95 p-3 backdrop-blur-sm md:hidden">
+        <div className="mx-auto flex max-w-md items-center gap-3">
+          <Link
+            href="/user/book-appointment"
+            className="font-open-sans btn flex-1 rounded-full bg-secondary-1 px-4 py-2 text-center text-xs tracking-wide text-white"
+          >
+            Book Vet Visit
+          </Link>
+          <Link
+            href={whatsappBookingLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-open-sans btn flex-1 rounded-full border border-[#25D366] bg-white px-4 py-2 text-center text-xs tracking-wide text-[#1ea857]"
+          >
+            WhatsApp
+          </Link>
+        </div>
+      </div>
     </main>
   )
 }
