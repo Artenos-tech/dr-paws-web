@@ -5,17 +5,27 @@ import { useEffect, useState } from "react"
 import {
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
   CalendarClock,
   ClipboardList,
   HeartPulse,
   MapPin,
   PawPrint,
+  Star,
   Stethoscope,
 } from "lucide-react"
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
 
 export default function VetAtHomePage() {
   const [expandedServices, setExpandedServices] = useState<number[]>([])
   const [activeAmbulanceSlide, setActiveAmbulanceSlide] = useState(0)
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0)
 
   const loveAtHomeReasons = [
     {
@@ -172,6 +182,72 @@ export default function VetAtHomePage() {
     },
   ]
 
+  const testimonials = [
+    {
+      reviewer: "Priya N.",
+      rating: 5,
+      review:
+        "Booked a home visit for my senior dog and the doctor was extremely patient and thorough. The whole process was smooth and stress-free.",
+    },
+    {
+      reviewer: "Rahul K.",
+      rating: 5,
+      review:
+        "Very professional team. They explained everything clearly, handled our cat gently, and shared a clear treatment plan after the visit.",
+    },
+    {
+      reviewer: "Sneha M.",
+      rating: 5,
+      review:
+        "Excellent experience with Dr. Paws at-home service. On-time arrival, great communication, and genuine care for my pet.",
+    },
+    {
+      reviewer: "Arjun S.",
+      rating: 5,
+      review:
+        "From booking to consultation, everything was easy. The vet answered all our questions and even gave practical diet guidance.",
+    },
+    {
+      reviewer: "Neha R.",
+      rating: 5,
+      review:
+        "The home visit made a huge difference for our anxious pup. Calm, efficient, and very caring team. Highly recommended.",
+    },
+  ]
+
+  const faqs = [
+    {
+      question: "How do I book an at-home vet appointment?",
+      answer:
+        "You can book directly through our website or app. Alternatively, call or WhatsApp our Vet-At-Home helpline at +91 9740141212 between 10 AM and 7 PM.",
+    },
+    {
+      question: "What services can be done during a home visit?",
+      answer:
+        "Our vets provide general consultations and key services including vaccinations, deworming, diagnostic tests, microchipping, and travel certificates. Certain medical treatments such as IV fluid therapy, injections, and laser therapy can also be performed during home visits.",
+    },
+    {
+      question: "Do you provide grooming services at home?",
+      answer:
+        "We do not provide full grooming services such as bathing or haircuts. However, basic hygiene procedures such as ear cleaning and nail clipping may be performed during a medical visit if required.",
+    },
+    {
+      question: "Can you treat community pets?",
+      answer:
+        "Yes. To ensure the safety of the animal and our team, we request that community pets be kept restrained in an indoor, secure, well-lit area before the vet arrives.",
+    },
+    {
+      question: "Can I cancel or reschedule an appointment?",
+      answer:
+        "Appointments can be rescheduled up to 3 hours before the scheduled visit at no charge. Cancellations within 24 hours of the appointment are not permitted since the veterinarian's time slot is reserved exclusively for your visit.",
+    },
+    {
+      question: "What if my pet needs further treatment?",
+      answer:
+        "If additional care is required, our team will guide you to the next steps. You can contact our Vet-At-Home helpline (10 AM - 7 PM) for support, or visit one of our Dr. Paws clinics across Bangalore.",
+    },
+  ]
+
   const toggleServiceCard = (index: number) => {
     setExpandedServices((prev) =>
       prev.includes(index)
@@ -190,6 +266,10 @@ export default function VetAtHomePage() {
     setActiveAmbulanceSlide((prev) =>
       prev === ambulanceSlides.length - 1 ? 0 : prev + 1
     )
+  }
+
+  const toggleFaq = (index: number) => {
+    setOpenFaqIndex((prev) => (prev === index ? null : index))
   }
 
   useEffect(() => {
@@ -582,6 +662,116 @@ export default function VetAtHomePage() {
                 </p>
               </article>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="relative overflow-hidden bg-[linear-gradient(180deg,#fffdf7_0%,#f7f1de_55%,#fffaf0_100%)] py-16 md:py-20">
+        <div className="mx-auto w-full px-8 md:px-16 lg:px-20 xl:px-40">
+          <div className="mx-auto max-w-4xl text-center">
+            <h2 className="text-3xl font-bold leading-tight text-primary-1 md:text-5xl">
+              Trusted by Pet Parents Across Bangalore
+            </h2>
+            <p className="mt-3 text-sm font-semibold tracking-wide text-[#94662e] md:text-base">
+              Source: Google Reviews
+            </p>
+          </div>
+
+          <Carousel
+            opts={{ align: "start", loop: true }}
+            className="mx-auto mt-10 max-w-[1180px] px-0 md:px-12"
+          >
+            <CarouselContent>
+              {testimonials.map((testimonial) => (
+                <CarouselItem
+                  key={testimonial.reviewer + testimonial.review}
+                  className="md:basis-1/2 lg:basis-1/3"
+                >
+                  <article className="flex h-full min-h-[250px] flex-col rounded-2xl border border-[#e1d5bf] bg-white p-6 shadow-[0_10px_26px_rgba(51,73,95,0.08)]">
+                    <div className="mb-4 flex items-center gap-1">
+                      {Array.from({ length: 5 }).map((_, index) => (
+                        <Star
+                          key={`${testimonial.reviewer}-${index}`}
+                          size={17}
+                          className={
+                            index < testimonial.rating
+                              ? "fill-[#e8a44a] text-[#e8a44a]"
+                              : "text-[#d5c5a7]"
+                          }
+                        />
+                      ))}
+                    </div>
+
+                    <p className="flex-1 text-sm leading-relaxed text-primary-1/85 md:text-base">
+                      "{testimonial.review}"
+                    </p>
+
+                    <p className="mt-5 text-sm font-semibold text-primary-1 md:text-base">
+                      {testimonial.reviewer}
+                    </p>
+                  </article>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+
+            <CarouselPrevious className="left-0 hidden border-[#d9c9ad] bg-white text-primary-1 hover:bg-[#f7f1de] md:inline-flex" />
+            <CarouselNext className="right-0 hidden border-[#d9c9ad] bg-white text-primary-1 hover:bg-[#f7f1de] md:inline-flex" />
+          </Carousel>
+        </div>
+      </section>
+
+      <section className="relative overflow-hidden bg-white py-16 md:py-20">
+        <div className="mx-auto w-full px-8 md:px-16 lg:px-20 xl:px-40">
+          <div className="mx-auto max-w-4xl text-center">
+            <h2 className="text-3xl font-bold leading-tight text-primary-1 md:text-5xl">
+              FAQs
+            </h2>
+          </div>
+
+          <div className="mx-auto mt-10 max-w-4xl space-y-3 md:mt-12">
+            {faqs.map((faq, index) => {
+              const isOpen = openFaqIndex === index
+
+              return (
+                <article
+                  key={faq.question}
+                  className="overflow-hidden rounded-2xl border border-[#e1d5bf] bg-[linear-gradient(180deg,#fffef9_0%,#ffffff_100%)] shadow-[0_8px_22px_rgba(51,73,95,0.08)]"
+                >
+                  <button
+                    type="button"
+                    onClick={() => toggleFaq(index)}
+                    className="flex w-full items-center justify-between gap-5 px-5 py-4 text-left md:px-6 md:py-5"
+                    aria-expanded={isOpen}
+                    aria-controls={`faq-panel-${index}`}
+                  >
+                    <span className="text-sm font-semibold leading-relaxed text-primary-1 md:text-lg">
+                      {faq.question}
+                    </span>
+                    <ChevronDown
+                      size={20}
+                      className={`shrink-0 text-[#94662e] transition-transform duration-300 ${
+                        isOpen ? "rotate-180" : ""
+                      }`}
+                    />
+                  </button>
+
+                  <div
+                    id={`faq-panel-${index}`}
+                    className={`grid transition-all duration-300 ease-in-out ${
+                      isOpen
+                        ? "grid-rows-[1fr] border-t border-[#ece2cf] opacity-100"
+                        : "grid-rows-[0fr] border-t-0 opacity-0"
+                    }`}
+                  >
+                    <div className="overflow-hidden">
+                      <p className="px-5 pb-5 pt-4 text-sm leading-relaxed text-primary-1/80 md:px-6 md:pb-6 md:text-base">
+                        {faq.answer}
+                      </p>
+                    </div>
+                  </div>
+                </article>
+              )
+            })}
           </div>
         </div>
       </section>
