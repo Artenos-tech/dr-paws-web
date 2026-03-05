@@ -252,19 +252,19 @@ export default function VetAtHomePage() {
     setExpandedServices((prev) =>
       prev.includes(index)
         ? prev.filter((item) => item !== index)
-        : [...prev, index]
+        : [...prev, index],
     )
   }
 
   const showPrevAmbulanceSlide = () => {
     setActiveAmbulanceSlide((prev) =>
-      prev === 0 ? ambulanceSlides.length - 1 : prev - 1
+      prev === 0 ? ambulanceSlides.length - 1 : prev - 1,
     )
   }
 
   const showNextAmbulanceSlide = () => {
     setActiveAmbulanceSlide((prev) =>
-      prev === ambulanceSlides.length - 1 ? 0 : prev + 1
+      prev === ambulanceSlides.length - 1 ? 0 : prev + 1,
     )
   }
 
@@ -275,7 +275,7 @@ export default function VetAtHomePage() {
   useEffect(() => {
     const autoSlideTimer = window.setInterval(() => {
       setActiveAmbulanceSlide((prev) =>
-        prev === ambulanceSlides.length - 1 ? 0 : prev + 1
+        prev === ambulanceSlides.length - 1 ? 0 : prev + 1,
       )
     }, 4500)
 
@@ -433,8 +433,8 @@ export default function VetAtHomePage() {
 
           <div className="mx-auto mt-10 max-w-4xl rounded-2xl border border-[#e6d8c1] bg-white/80 px-5 py-4 text-center shadow-[0_10px_24px_rgba(51,73,95,0.08)] md:mt-12 md:px-6 md:py-5">
             <p className="text-base font-medium leading-relaxed text-primary-1 md:text-lg">
-              No matter the reason, your pet receives the same trusted Dr.
-              Paws expertise — just at home.
+              No matter the reason, your pet receives the same trusted Dr. Paws
+              expertise — just at home.
             </p>
           </div>
         </div>
@@ -508,7 +508,9 @@ export default function VetAtHomePage() {
                         : "mt-0 max-h-0 border-t-0 pt-0 opacity-0"
                     }`}
                   >
-                    <div className={`${isExpanded ? "pointer-events-auto" : "pointer-events-none"}`}>
+                    <div
+                      className={`${isExpanded ? "pointer-events-auto" : "pointer-events-none"}`}
+                    >
                       <ul className="list-disc space-y-1.5 pl-5 text-sm leading-relaxed text-primary-1/85 md:text-base">
                         {service.points.map((point) => (
                           <li key={point}>{point}</li>
@@ -559,11 +561,10 @@ export default function VetAtHomePage() {
                 Need to Visit the Clinic? We Can Help With That Too.
               </h2>
               <p className="mt-5 max-w-2xl text-base leading-relaxed text-primary-1/80 md:text-lg">
-                If your pet requires imaging, procedures, or specialized care
-                at one of our clinics, our Dr. Paws Ambulance Service can
-                safely transport both pets and their parents. Our trained team
-                ensures pets travel comfortably and securely between home and
-                clinic.
+                If your pet requires imaging, procedures, or specialized care at
+                one of our clinics, our Dr. Paws Ambulance Service can safely
+                transport both pets and their parents. Our trained team ensures
+                pets travel comfortably and securely between home and clinic.
               </p>
 
               <div className="mt-8">
@@ -655,7 +656,9 @@ export default function VetAtHomePage() {
                   className="mx-auto h-[120px] w-[120px] rounded-full object-cover"
                 />
                 <h3 className="mt-4 text-xl">{doctor.name}</h3>
-                <p className="mt-2 text-sm sm:text-base">{doctor.qualification}</p>
+                <p className="mt-2 text-sm sm:text-base">
+                  {doctor.qualification}
+                </p>
                 <p className="mt-1 text-sm sm:text-base">{doctor.experience}</p>
                 <p className="mt-3 text-sm leading-relaxed text-primary-1/80 sm:text-base">
                   {doctor.bio}
@@ -843,7 +846,6 @@ export default function VetAtHomePage() {
           </div>
         </div>
       </section>
-
     </main>
   )
 }
