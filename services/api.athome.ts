@@ -1291,7 +1291,7 @@ const endpointConfig = {
 
   checkLocationServiceability: {
     method: "POST" as const,
-    path: "/booking/at-home/location/serviceability",
+    path: "/at-home/location/serviceability",
     pathParamsSchema: z.object({}),
     requestSchema: z.object({
       location: z.object({

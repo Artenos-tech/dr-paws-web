@@ -15,6 +15,8 @@ import {
   Stethoscope,
 } from "lucide-react"
 import { FaWhatsapp } from "react-icons/fa"
+import { useAPICall } from "@/hooks/apicall"
+import atHomeApiClient from "@/services/api.athome"
 import {
   Carousel,
   CarouselContent,
@@ -27,6 +29,12 @@ export default function VetAtHomePage() {
   const [expandedServices, setExpandedServices] = useState<number[]>([])
   const [activeAmbulanceSlide, setActiveAmbulanceSlide] = useState(0)
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0)
+  const [pincodeInput, setPincodeInput] = useState("")
+  const [pincodeStatus, setPincodeStatus] = useState<
+    "idle" | "serviceable" | "notServiceable" | "invalid" | "error"
+  >("idle")
+  const { call: getServiceablePincodes, loading: isCheckingPincode } =
+    useAPICall(atHomeApiClient.getServiceablePincodes)
 
   const loveAtHomeReasons = [
     {
@@ -276,6 +284,33 @@ export default function VetAtHomePage() {
     setOpenFaqIndex((prev) => (prev === index ? null : index))
   }
 
+  const handlePincodeInput = (value: string) => {
+    const normalizedValue = value.replace(/\D/g, "").slice(0, 6)
+    setPincodeInput(normalizedValue)
+    if (pincodeStatus !== "idle") {
+      setPincodeStatus("idle")
+    }
+  }
+
+  const handleCheckAvailability = async () => {
+    if (pincodeInput.length !== 6) {
+      setPincodeStatus("invalid")
+      return
+    }
+
+    const serviceablePincodesResult = await getServiceablePincodes({})
+    if (!serviceablePincodesResult?.ok) {
+      setPincodeStatus("error")
+      return
+    }
+
+    const isServiceable = serviceablePincodesResult.value.body.data.pincodes
+      .map((pincode) => pincode.trim())
+      .includes(pincodeInput)
+
+    setPincodeStatus(isServiceable ? "serviceable" : "notServiceable")
+  }
+
   useEffect(() => {
     const autoSlideTimer = window.setInterval(() => {
       setActiveAmbulanceSlide((prev) =>
@@ -403,6 +438,75 @@ export default function VetAtHomePage() {
               </div>
             </div>
           ))}
+        </div>
+      </section>
+
+      <section className="relative overflow-hidden bg-white py-10 md:py-12">
+        <div className="mx-auto w-full px-8 md:px-16 lg:px-20 xl:px-40">
+          <div className="mx-auto max-w-4xl rounded-2xl border border-[#e1d5bf] bg-[linear-gradient(180deg,#fffef9_0%,#ffffff_100%)] p-6 shadow-[0_10px_24px_rgba(51,73,95,0.08)] md:p-8">
+            <h2 className="text-2xl font-bold leading-tight text-primary-1 md:text-4xl">
+              Check If We Serve Your Area
+            </h2>
+            <p className="mt-3 text-sm leading-relaxed text-primary-1/80 md:text-base">
+              Enter your pincode to confirm if Vet-At-Home visits are available
+              in your neighbourhood.
+            </p>
+
+            <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center">
+              <input
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                maxLength={6}
+                value={pincodeInput}
+                onChange={(e) => handlePincodeInput(e.target.value)}
+                placeholder="Enter Pincode"
+                className="h-11 w-full rounded-xl border border-[#d9c9ad] bg-white px-4 text-sm text-primary-1 outline-none transition-colors placeholder:text-primary-1/45 focus:border-[#94662e] sm:max-w-[260px]"
+              />
+              <button
+                type="button"
+                onClick={handleCheckAvailability}
+                className="font-open-sans btn h-11 rounded-xl bg-secondary-1 px-5 text-xs tracking-wide text-white disabled:opacity-60 md:text-sm"
+                disabled={isCheckingPincode}
+              >
+                {isCheckingPincode ? "Checking..." : "Check Availability"}
+              </button>
+            </div>
+
+            {pincodeStatus === "serviceable" && (
+              <div className="mt-4 rounded-xl border border-[#b9dfbf] bg-[#f3fff4] px-4 py-3">
+                <p className="text-sm font-semibold text-[#1f7a2e] md:text-base">
+                  Great news! We offer Vet-At-Home visits in your area.
+                </p>
+                <p className="mt-1 text-sm text-[#2b6b35] md:text-base">
+                  Book your visit below.
+                </p>
+              </div>
+            )}
+
+            {pincodeStatus === "notServiceable" && (
+              <div className="mt-4 rounded-xl border border-[#f2d7a8] bg-[#fff9ef] px-4 py-3">
+                <p className="text-sm font-semibold text-[#8a5a1f] md:text-base">
+                  We're expanding quickly and may reach your area soon.
+                </p>
+                <p className="mt-1 text-sm text-[#7a5d2f] md:text-base">
+                  In the meantime, visit one of our clinics.
+                </p>
+              </div>
+            )}
+
+            {pincodeStatus === "invalid" && (
+              <p className="mt-3 text-sm text-red-600">
+                Please enter a valid 6-digit pincode.
+              </p>
+            )}
+
+            {pincodeStatus === "error" && (
+              <p className="mt-3 text-sm text-red-600">
+                Unable to check availability right now. Please try again.
+              </p>
+            )}
+          </div>
         </div>
       </section>
 
