@@ -91,17 +91,20 @@ const AtHomeBookingDetails = ({
 
   const isDelayed = selectedAppointment.visit_status === "VET_DELAYED"
 
+  const isOutsideCancellationWindow = () => {
+    const slotStart = getSlotStartDateTime()
+    const now = new Date()
+    const diffInMs = slotStart.getTime() - now.getTime()
+    const diffInHours = diffInMs / (1000 * 60 * 60)
+    return diffInHours >= APPOINTMENT_CANCEL_WINDOW_HOURS
+  }
+
   const isFreeCancellation = () => {
     if (isDelayed) return true
 
-    const slotStart = getSlotStartDateTime()
-    const now = new Date()
-
-    const diffInMs = slotStart.getTime() - now.getTime()
-    const diffInHours = diffInMs / (1000 * 60 * 60)
-
-    return diffInHours >= APPOINTMENT_CANCEL_WINDOW_HOURS
+    return isOutsideCancellationWindow()
   }
+  const canReschedule = isDelayed || isOutsideCancellationWindow()
 
   const fullAddress = [
     selectedAppointment?.address?.address_line1,
@@ -184,6 +187,10 @@ const AtHomeBookingDetails = ({
       await refetchAppointment()
       setView("CANCELLED")
     } else {
+      if (!canReschedule) {
+        setView("DETAILS")
+        return
+      }
       setView("RESCHEDULE")
     }
   }
@@ -453,8 +460,13 @@ const AtHomeBookingDetails = ({
 
                     <div className="flex flex-col lg:flex-row lg:justify-between gap-3">
                       <button
+                        disabled={!canReschedule}
                         onClick={() => openConfirmationView("RESCHEDULE")}
-                        className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-secondary-1 text-secondary-1 hover:bg-secondary-1 hover:text-white transition"
+                        className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-secondary-1 text-secondary-1 transition ${
+                          canReschedule
+                            ? "hover:bg-secondary-1 hover:text-white"
+                            : "opacity-50 cursor-not-allowed"
+                        }`}
                       >
                         <RotateCcw size={16} />
                         Reschedule
