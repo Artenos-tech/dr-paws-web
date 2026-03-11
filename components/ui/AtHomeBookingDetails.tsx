@@ -442,18 +442,18 @@ const AtHomeBookingDetails = ({
 
                       {isDelayed ? (
                         <p className="text-sm text-gray-600">
-                          Free cancellation available because your vet has been
+                          Free cancellation and rescheduling available because your vet has been
                           delayed.
                         </p>
                       ) : isFreeCancellation() ? (
                         <p className="text-sm text-gray-600">
-                          Free cancellation available up to 24 hours before the
+                          Free cancellation and rescheduling available up to 24 hours before the
                           appointment.
                         </p>
                       ) : (
                         <p className="text-sm text-red-600">
                           Cancellation within 24 hours of the appointment will
-                          incur a 100% cancellation fee.
+                          incur a 100% cancellation fee. Rescheduling is not available within this window.
                         </p>
                       )}
                     </div>
