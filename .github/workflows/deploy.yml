@@ -17,7 +17,7 @@ jobs:
       NEXT_PUBLIC_CASHFREE_ENVIRONMENT: ${{ vars.NEXT_PUBLIC_CASHFREE_ENVIRONMENT }}
       NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: ${{ vars.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY }}
       NEXT_PUBLIC_MARKETING_FEATURE_ENABLED: "true"
-      NEXT_PUBLIC_HOME_VISIT_ENABLED: "false"
+      NEXT_PUBLIC_HOME_VISIT_ENABLED: "true"
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
