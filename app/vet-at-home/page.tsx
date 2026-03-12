@@ -162,21 +162,18 @@ export default function VetAtHomePage() {
       qualification: "BVSc & AH",
       experience: "8+ years of experience",
       bio: "Specializes in preventive care and internal medicine, with a focus on calm and low-stress home consultations for pets.",
-      image: "/assets/images/clinic/doctorFemale.webp",
     },
     {
       name: "Dr. Abhiram S.",
       qualification: "BVSc & AH, MVSc",
       experience: "7+ years of experience",
       bio: "Experienced in vaccination planning, diagnostics, and long-term treatment support for pets requiring regular medical follow-up.",
-      image: "/assets/images/clinic/doctorMale.webp",
     },
     {
       name: "Dr. Jonin Singh Laishangbam",
       qualification: "BVSc & AH",
       experience: "6+ years of experience",
       bio: "Provides compassionate home-visit care with strong expertise in senior pet monitoring, recovery support, and chronic care management.",
-      image: "/assets/images/clinic/doctorMale.webp",
     },
   ]
 
@@ -732,17 +729,13 @@ export default function VetAtHomePage() {
                 key={doctor.name}
                 className="w-full max-w-[360px] rounded-xl border border-primary-3 bg-primary-3 p-5 text-center text-primary-1 shadow-md sm:p-6"
               >
-                <img
-                  src={doctor.image}
-                  alt={doctor.name}
-                  className="mx-auto h-[120px] w-[120px] rounded-full object-cover"
-                />
-                <h3 className="mt-4 text-xl">{doctor.name}</h3>
-                <p className="mt-2 text-sm sm:text-base">
+                <div className="mx-auto h-1.5 w-16 rounded-full bg-gradient-to-r from-[#fdc776] via-[#f0c474] to-[#5281a2]" />
+                <h3 className="mt-5 text-xl">{doctor.name}</h3>
+                <p className="mt-3 text-sm sm:text-base">
                   {doctor.qualification}
                 </p>
-                <p className="mt-1 text-sm sm:text-base">{doctor.experience}</p>
-                <p className="mt-3 text-sm leading-relaxed text-primary-1/80 sm:text-base">
+                <p className="mt-2 text-sm sm:text-base">{doctor.experience}</p>
+                <p className="mt-4 text-sm leading-relaxed text-primary-1/80 sm:text-base">
                   {doctor.bio}
                 </p>
               </article>
