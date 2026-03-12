@@ -1,10 +1,8 @@
 "use client"
 
 import Link from "next/link"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import {
-  ChevronLeft,
-  ChevronRight,
   ChevronDown,
   CalendarClock,
   ClipboardList,
@@ -35,7 +33,6 @@ import {
 
 export default function VetAtHomePage() {
   const [expandedServices, setExpandedServices] = useState<number[]>([])
-  const [activeAmbulanceSlide, setActiveAmbulanceSlide] = useState(0)
   const [isAmbulanceModalOpen, setIsAmbulanceModalOpen] = useState(false)
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0)
   const [pincodeInput, setPincodeInput] = useState("")
@@ -154,28 +151,10 @@ export default function VetAtHomePage() {
     },
   ]
 
-  const ambulanceSlides = [
-    {
-      image:
-        "https://images.unsplash.com/photo-1587745416684-47953f16f02f?auto=format&fit=crop&w=1800&q=80",
-      alt: "Pet ambulance parked outside a clinic",
-    },
-    {
-      image:
-        "https://images.pexels.com/photos/28123777/pexels-photo-28123777.jpeg?cs=srgb&dl=pexels-mikhail-nilov-28123777.jpg&fm=jpg",
-      alt: "Medical team loading equipment at an ambulance",
-    },
-    {
-      image:
-        "https://images.pexels.com/photos/17206211/pexels-photo-17206211.jpeg?cs=srgb&dl=pexels-robertkso-17206211.jpg&fm=jpg",
-      alt: "Pet transport setup with secure travel crate",
-    },
-    {
-      image:
-        "https://images.pexels.com/photos/6519861/pexels-photo-6519861.jpeg?cs=srgb&dl=pexels-rdne-6519861.jpg&fm=jpg",
-      alt: "Emergency response team with ambulance",
-    },
-  ]
+  const ambulanceImage = {
+    image: "/assets/images/ambulance.png",
+    alt: "White ambulance parked near a sidewalk",
+  }
 
   const atHomeDoctors = [
     {
@@ -278,18 +257,6 @@ export default function VetAtHomePage() {
     )
   }
 
-  const showPrevAmbulanceSlide = () => {
-    setActiveAmbulanceSlide((prev) =>
-      prev === 0 ? ambulanceSlides.length - 1 : prev - 1,
-    )
-  }
-
-  const showNextAmbulanceSlide = () => {
-    setActiveAmbulanceSlide((prev) =>
-      prev === ambulanceSlides.length - 1 ? 0 : prev + 1,
-    )
-  }
-
   const toggleFaq = (index: number) => {
     setOpenFaqIndex((prev) => (prev === index ? null : index))
   }
@@ -331,18 +298,6 @@ export default function VetAtHomePage() {
       setIsAmbulanceModalOpen(false)
     }
   }
-
-  useEffect(() => {
-    const autoSlideTimer = window.setInterval(() => {
-      setActiveAmbulanceSlide((prev) =>
-        prev === ambulanceSlides.length - 1 ? 0 : prev + 1,
-      )
-    }, 4500)
-
-    return () => {
-      window.clearInterval(autoSlideTimer)
-    }
-  }, [ambulanceSlides.length])
 
   return (
     <main className="w-full pb-20 md:pb-0">
@@ -715,57 +670,12 @@ export default function VetAtHomePage() {
 
             <div className="relative rounded-3xl border border-[#e1d5bf] bg-white/80 p-3 shadow-[0_16px_36px_rgba(51,73,95,0.16)] md:p-4">
               <div className="relative aspect-[16/10] overflow-hidden rounded-2xl">
-                {ambulanceSlides.map((slide, index) => (
-                  <figure
-                    key={slide.image}
-                    className={`absolute inset-0 transition-all duration-700 ease-out ${
-                      index === activeAmbulanceSlide
-                        ? "z-10 scale-100 opacity-100"
-                        : "z-0 scale-[1.03] opacity-0"
-                    }`}
-                  >
-                    <img
-                      src={slide.image}
-                      alt={slide.alt}
-                      className="h-full w-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/20 to-transparent" />
-                  </figure>
-                ))}
-
-                <button
-                  type="button"
-                  onClick={showPrevAmbulanceSlide}
-                  className="absolute left-3 top-1/2 z-20 inline-flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/50 bg-black/35 text-white backdrop-blur-sm transition-colors hover:bg-black/50 md:h-11 md:w-11"
-                  aria-label="Show previous ambulance image"
-                >
-                  <ChevronLeft size={20} />
-                </button>
-
-                <button
-                  type="button"
-                  onClick={showNextAmbulanceSlide}
-                  className="absolute right-3 top-1/2 z-20 inline-flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/50 bg-black/35 text-white backdrop-blur-sm transition-colors hover:bg-black/50 md:h-11 md:w-11"
-                  aria-label="Show next ambulance image"
-                >
-                  <ChevronRight size={20} />
-                </button>
-
-                <div className="absolute bottom-3 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2 rounded-full bg-black/35 px-3 py-1.5 backdrop-blur-sm">
-                  {ambulanceSlides.map((slide, index) => (
-                    <button
-                      key={slide.image}
-                      type="button"
-                      onClick={() => setActiveAmbulanceSlide(index)}
-                      className={`h-2.5 rounded-full transition-all duration-300 ${
-                        index === activeAmbulanceSlide
-                          ? "w-6 bg-white"
-                          : "w-2.5 bg-white/55 hover:bg-white/80"
-                      }`}
-                      aria-label={`Go to ambulance image ${index + 1}`}
-                    />
-                  ))}
-                </div>
+                <img
+                  src={ambulanceImage.image}
+                  alt={ambulanceImage.alt}
+                  className="h-full w-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/20 to-transparent" />
               </div>
             </div>
           </div>
