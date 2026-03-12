@@ -1,12 +1,14 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import SelectService, { BookingCategory } from "@/components/ui/SelectService"
 import SelectClinic from "@/components/ui/SelectClinic"
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md"
 import SelectVet, { SelectedVet } from "@/components/ui/SelectVet"
 import { Pet } from "@/context/UserContext"
 import { useRouter, useSearchParams } from "next/navigation"
+import { useAPICall } from "@/hooks/apicall"
+import api from "@/services/api"
 
 interface ClinicBookingFlowProps {
   onBackToStart?: () => void
@@ -17,6 +19,14 @@ const ClinicBookingFlow: React.FC<ClinicBookingFlowProps> = ({
 }) => {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const [bookingFlowSessionId, setBookingFlowSessionId] = useState<
+    string | null
+  >(null)
+  const lastTrackedStepRef = useRef<number | null>(null)
+  const bookingCompletedRef = useRef(false)
+  const { call: startBookingFlow } = useAPICall(api.startBookingFlow)
+  const { call: updateBookingFlowStep } = useAPICall(api.updateBookingFlowStep)
+  const { call: abandonBookingFlow } = useAPICall(api.abandonBookingFlow)
   const [selectedAppointment, setSelectedAppointmentState] = useState<{
     selectedServiceId: string | null
     selectedService: string | null
@@ -52,6 +62,60 @@ const ClinicBookingFlow: React.FC<ClinicBookingFlowProps> = ({
   const [openCard, setOpenCard] = useState<string | null>(null)
   const [isDisclaimerModalOpen, setIsDisclaimerModalOpen] = useState(false)
   const [currentStep, setCurrentStep] = useState<number>(1)
+
+  const trackStep = async (sessionId: string, stepNumber: number) => {
+    if (stepNumber < 1 || stepNumber === lastTrackedStepRef.current) return
+    lastTrackedStepRef.current = stepNumber
+    try {
+      const result = await updateBookingFlowStep({
+        session_id: sessionId,
+        step_number: stepNumber,
+      })
+      if (!result.ok) {
+        console.warn("Failed to track booking flow step", result.error)
+      }
+    } catch (e) {
+      console.warn("Failed to track booking flow step", e)
+    }
+  }
+
+  useEffect(() => {
+    const startSession = async () => {
+      try {
+        const result = await startBookingFlow({
+          booking_flow_type: "CLINIC_VISIT",
+          platform: "WEB",
+        })
+        if (!result.ok) {
+          console.warn("Failed to start booking flow session", result.error)
+          return
+        }
+        const sessionId = result.value.body.data.session.id
+        setBookingFlowSessionId(sessionId)
+        await trackStep(sessionId, 1)
+      } catch (e) {
+        console.warn("Failed to start booking flow session", e)
+      }
+    }
+    startSession()
+  }, [])
+
+  useEffect(() => {
+    return () => {
+      if (!bookingFlowSessionId || bookingCompletedRef.current) return
+      const abandonSession = async () => {
+        try {
+          const result = await abandonBookingFlow({ session_id: bookingFlowSessionId })
+          if (!result.ok) {
+            console.warn("Failed to abandon booking flow session", result.error)
+          }
+        } catch (e) {
+          console.warn("Failed to abandon booking flow session", e)
+        }
+      }
+      abandonSession()
+    }
+  }, [bookingFlowSessionId])
 
   useEffect(() => {
     const clinicId = searchParams.get("clinicId")
@@ -91,14 +155,26 @@ const ClinicBookingFlow: React.FC<ClinicBookingFlowProps> = ({
   }
 
   const goToNextStep = () => {
-    setCurrentStep((prevStep) => prevStep + 1)
+    setCurrentStep((prevStep) => {
+      const nextStep = prevStep + 1
+      if (bookingFlowSessionId) {
+        void trackStep(bookingFlowSessionId, nextStep)
+      }
+      return nextStep
+    })
   }
 
   const goToPrevStep = () => {
     if (currentStep === 1 && onBackToStart) {
       onBackToStart()
     } else if (currentStep > 1) {
-      setCurrentStep((prevStep) => prevStep - 1)
+      setCurrentStep((prevStep) => {
+        const prevStepNumber = prevStep - 1
+        if (bookingFlowSessionId) {
+          void trackStep(bookingFlowSessionId, prevStepNumber)
+        }
+        return prevStepNumber
+      })
     }
   }
 
@@ -173,6 +249,7 @@ const ClinicBookingFlow: React.FC<ClinicBookingFlowProps> = ({
       {currentStep === 3 && (
         <SelectVet
           onNext={(createdAppointment) => {
+            bookingCompletedRef.current = true
             if (
               !createdAppointment?.appointmentId ||
               !createdAppointment.subBookingId
@@ -194,6 +271,7 @@ const ClinicBookingFlow: React.FC<ClinicBookingFlowProps> = ({
           selectedSubtype={selectedAppointment.selectedSubtype}
           groomingCatalogueKeys={selectedAppointment.groomingCatalogueKeys}
           isGrooming={selectedAppointment.isGrooming}
+          bookingFlowSessionId={bookingFlowSessionId}
           isReschedule={false}
           setFinalAppointmentData={(appData) => {
             setSelectedAppointmentState((prev) => ({
