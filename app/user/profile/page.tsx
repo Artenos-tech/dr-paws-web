@@ -87,7 +87,8 @@ const Profile: React.FC = () => {
               getPetsAPIResult.value.body.pets.length === 0 &&
               !loading && (
                 <p className="text-sm text-gray-500 font-semibold">
-                  Don&apos;t see any pets - Please ensure you are logged in with the correct number.
+                  Don&apos;t see any pets - Please ensure you are logged in with
+                  the correct number.
                 </p>
               )}
           </div>
