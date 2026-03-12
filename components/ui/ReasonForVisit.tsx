@@ -7,6 +7,8 @@ import { z } from "zod"
 import { ClipLoader } from "react-spinners"
 import { MdOutlineInfo } from "react-icons/md"
 import { Tooltip } from "antd"
+import { useAPICall } from "@/hooks/apicall"
+import atHomeApiClient from "@/services/api.athome"
 
 interface ReasonForVisitProps {
   handleConfirm: (
@@ -35,8 +37,6 @@ const reasonForVisitSchema = z.object({
   ),
   filledDescription: z.string().trim().min(1, "Description is required"),
 })
-const PHONE_NUMBER =
-  process.env.NEXT_PUBLIC_EMERGENCY_HELPLINE_PHONE_NUMBER || ""
 
 const ReasonForVisit = ({
   handleConfirm,
@@ -44,9 +44,12 @@ const ReasonForVisit = ({
   description,
   isEmergency: initialIsEmergency,
 }: ReasonForVisitProps) => {
+  const { call: getEmergencyContact, result: emergencyContactResult } =
+    useAPICall(atHomeApiClient.getEmergencyContact)
   const [isEmergency, setIsEmergency] = useState<"yes" | "no" | null>(
     initialIsEmergency ?? "no",
   )
+  const [emergencyPhone, setEmergencyPhone] = useState<string | null>(null)
   const [showEmergencyModal, setShowEmergencyModal] = useState(false)
   const getReasonFromLabel = (label: string | null) => {
     const reasonObj = VISIT_REASONS.find((r) => r.label === label)
@@ -60,6 +63,22 @@ const ReasonForVisit = ({
   const [isProcessing, setIsProcessing] = useState(false)
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
   const [touched, setTouched] = useState<{ [key: string]: boolean }>({})
+  const readEmergencyPhone = (
+    result: typeof emergencyContactResult,
+  ): string | null => {
+    if (!result?.ok) {
+      return null
+    }
+    return result.value.body.emergencyPhone ?? null
+  }
+
+  useEffect(() => {
+    getEmergencyContact({})
+  }, [])
+
+  useEffect(() => {
+    setEmergencyPhone(readEmergencyPhone(emergencyContactResult))
+  }, [emergencyContactResult])
 
   useEffect(() => {
     const result = reasonForVisitSchema.safeParse({
@@ -200,15 +219,24 @@ const ReasonForVisit = ({
 
               <button
                 className="px-4 py-2 bg-primary-1 text-white rounded-lg flex items-center space-x-2"
-                onClick={() => {
-                  navigator.clipboard.writeText(PHONE_NUMBER)
+                onClick={async () => {
+                  let phone = emergencyPhone
+                  if (!phone) {
+                    const latestContactResult = await getEmergencyContact({})
+                    phone = readEmergencyPhone(latestContactResult)
+                    setEmergencyPhone(phone)
+                  }
+                  if (!phone) {
+                    toast.error(
+                      "Emergency contact number is currently unavailable",
+                    )
+                    return
+                  }
+                  navigator.clipboard.writeText(phone)
 
-                  toast.success(
-                    `Phone number ${PHONE_NUMBER} copied to clipboard`,
-                    {
-                      duration: 3000,
-                    },
-                  )
+                  toast.success(`Phone number ${phone} copied to clipboard`, {
+                    duration: 3000,
+                  })
 
                   handleModalClose()
                 }}
