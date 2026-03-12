@@ -20,9 +20,9 @@ interface ReasonForVisitProps {
 }
 
 export const VISIT_REASONS = [
-  { key: "CHECK_UP", label: "General check-up" },
-  { key: "VACCINATION", label: "Vaccination" },
   { key: "SICK", label: "My pet is sick" },
+  { key: "CHECK_UP", label: "General check-up" },
+  { key: "VACCINATION", label: "Vaccination/Deworming" },
   { key: "DIAGNOSTICS", label: "Diagnostics" },
   { key: "FOLLOW_UP", label: "Follow-up" },
   { key: "OTHER", label: "Something else" },
@@ -232,7 +232,7 @@ const ReasonForVisit = ({
 
       <div className="space-y-2 mb-6 bg-">
         <p className="font-bold text-gray-600 flex">
-          <span>Is it an emergency?</span>
+          <span>Is it a medical emergency?</span>
           <Tooltip
             title={emergencyInfoMessage}
             color="#f7f1de"
@@ -256,7 +256,7 @@ const ReasonForVisit = ({
       </div>
 
       <div className="space-y-4 mb-6">
-        <p className="font-bold text-gray-600">What seems to be wrong?</p>
+        <p className="font-bold text-gray-600">Reason for appointment</p>
 
         {VISIT_REASONS.map((item) => (
           <label key={item.key} className="flex items-center space-x-2">
