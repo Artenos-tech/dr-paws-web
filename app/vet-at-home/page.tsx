@@ -478,16 +478,13 @@ export default function VetAtHomePage() {
                 <p className="text-sm font-semibold text-[#1f7a2e] md:text-base">
                   Great news! We offer Vet-At-Home visits in your area.
                 </p>
-                <p className="mt-1 text-sm text-[#2b6b35] md:text-base">
-                  Book your visit below.
-                </p>
               </div>
             )}
 
             {pincodeStatus === "notServiceable" && (
               <div className="mt-4 rounded-xl border border-[#f2d7a8] bg-[#fff9ef] px-4 py-3">
                 <p className="text-sm font-semibold text-[#8a5a1f] md:text-base">
-                  We're expanding quickly and may reach your area soon.
+                  We&apos;re expanding quickly and may reach your area soon.
                 </p>
                 <p className="mt-1 text-sm text-[#7a5d2f] md:text-base">
                   In the meantime, visit one of our clinics.
@@ -529,7 +526,7 @@ export default function VetAtHomePage() {
             {loveAtHomeReasons.map((reason, index) => (
               <article
                 key={reason.title}
-                className="group relative overflow-hidden rounded-2xl border border-[#e1d5bf] bg-white p-6 shadow-[0_10px_26px_rgba(51,73,95,0.08)] transition-all duration-250 hover:-translate-y-0.5 hover:border-[#c9baa0] hover:shadow-[0_16px_34px_rgba(51,73,95,0.14)] md:p-7"
+                className="relative overflow-hidden rounded-2xl border border-[#e1d5bf] bg-white p-6 shadow-[0_10px_26px_rgba(51,73,95,0.08)] md:p-7"
               >
                 <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#fdc776] via-[#f0c474] to-[#5281a2]" />
                 <div className="mb-3 flex items-center gap-2.5">
@@ -820,7 +817,7 @@ export default function VetAtHomePage() {
                     </div>
 
                     <p className="flex-1 text-sm leading-relaxed text-primary-1/85 md:text-base">
-                      "{testimonial.review}"
+                      &ldquo;{testimonial.review}&rdquo;
                     </p>
 
                     <p className="mt-5 text-sm font-semibold text-primary-1 md:text-base">
