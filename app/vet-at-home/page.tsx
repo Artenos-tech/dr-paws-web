@@ -11,12 +11,20 @@ import {
   HeartPulse,
   MapPin,
   PawPrint,
+  PhoneCall,
   Star,
   Stethoscope,
 } from "lucide-react"
 import { FaWhatsapp } from "react-icons/fa"
+import toast from "react-hot-toast"
 import { useAPICall } from "@/hooks/apicall"
 import atHomeApiClient from "@/services/api.athome"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+} from "@/components/ui/dialog"
 import {
   Carousel,
   CarouselContent,
@@ -28,6 +36,7 @@ import {
 export default function VetAtHomePage() {
   const [expandedServices, setExpandedServices] = useState<number[]>([])
   const [activeAmbulanceSlide, setActiveAmbulanceSlide] = useState(0)
+  const [isAmbulanceModalOpen, setIsAmbulanceModalOpen] = useState(false)
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0)
   const [pincodeInput, setPincodeInput] = useState("")
   const [pincodeStatus, setPincodeStatus] = useState<
@@ -35,6 +44,7 @@ export default function VetAtHomePage() {
   >("idle")
   const { call: getServiceablePincodes, loading: isCheckingPincode } =
     useAPICall(atHomeApiClient.getServiceablePincodes)
+  const vetAtHomePhoneNumber = "+91 9740141212"
 
   const loveAtHomeReasons = [
     {
@@ -309,6 +319,17 @@ export default function VetAtHomePage() {
       .includes(pincodeInput)
 
     setPincodeStatus(isServiceable ? "serviceable" : "notServiceable")
+  }
+
+  const handleCopyVetAtHomeNumber = async () => {
+    try {
+      await navigator.clipboard.writeText(vetAtHomePhoneNumber)
+      toast.success("Phone number was copied to clipboard")
+    } catch {
+      toast.error("Unable to copy phone number")
+    } finally {
+      setIsAmbulanceModalOpen(false)
+    }
   }
 
   useEffect(() => {
@@ -682,12 +703,13 @@ export default function VetAtHomePage() {
               </p>
 
               <div className="mt-8">
-                <Link
-                  href="/user/book-appointment"
+                <button
+                  type="button"
+                  onClick={() => setIsAmbulanceModalOpen(true)}
                   className="font-open-sans btn rounded-full bg-secondary-1 px-5 py-2 text-xs tracking-wider text-white md:px-10 md:text-base"
                 >
                   Book Ambulance Pickup
-                </Link>
+                </button>
               </div>
             </div>
 
@@ -749,6 +771,42 @@ export default function VetAtHomePage() {
           </div>
         </div>
       </section>
+
+      <Dialog
+        open={isAmbulanceModalOpen}
+        onOpenChange={setIsAmbulanceModalOpen}
+      >
+        <DialogContent className="overflow-hidden rounded-2xl border-0 bg-transparent p-0 shadow-none sm:max-w-[560px]">
+          <div className="relative rounded-2xl border border-[#d9c9ad] bg-[linear-gradient(165deg,#fffdf7_0%,#f7f1de_52%,#fff8ea_100%)] p-6 shadow-[0_24px_48px_rgba(51,73,95,0.22)] sm:p-8">
+            <div className="pointer-events-none absolute -right-16 -top-16 h-44 w-44 rounded-full bg-[radial-gradient(circle,rgba(253,199,118,0.32)_0%,rgba(253,199,118,0)_70%)]" />
+            <div className="pointer-events-none absolute -bottom-20 -left-20 h-52 w-52 rounded-full bg-[radial-gradient(circle,rgba(82,129,162,0.22)_0%,rgba(82,129,162,0)_75%)]" />
+
+            <div className="relative">
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#e5d6bd] bg-white/70 px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-[#94662e]">
+                <PhoneCall size={14} />
+                Ambulance Support
+              </div>
+              <DialogTitle className="mt-4 text-2xl font-bold leading-tight text-primary-1 md:text-3xl">
+                Find out if ambulance pickup is available at your location
+              </DialogTitle>
+              <DialogDescription className="mt-3 text-sm leading-relaxed text-primary-1/80 md:text-base">
+                Our team will quickly verify your area coverage and guide you on
+                the next steps for safe pet transport.
+              </DialogDescription>
+
+              <div className="mt-6">
+                <button
+                  type="button"
+                  onClick={handleCopyVetAtHomeNumber}
+                  className="font-open-sans inline-flex items-center justify-center rounded-full border-0 bg-secondary-1 px-6 py-2 text-sm font-semibold tracking-wide text-white outline-none transition-colors hover:bg-[#94662e] focus:outline-none focus-visible:outline-none focus-visible:ring-0 md:px-9 md:text-base"
+                >
+                  Call Vet-At-Home
+                </button>
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <section className="relative overflow-hidden bg-white py-16 md:py-20">
         <div className="mx-auto w-full px-8 md:px-16 lg:px-20 xl:px-40">
