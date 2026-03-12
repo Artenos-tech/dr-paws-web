@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useEffect, useMemo, useState } from "react"
-import { Building2, Home, LucideIcon } from "lucide-react"
+import { Home, Hospital, LucideIcon } from "lucide-react"
 import CustomButton from "./CustomButton"
 import { useAPICall } from "@/hooks/apicall"
 import atHomeApiClient from "@/services/api.athome"
@@ -60,10 +60,10 @@ const BookingTypeSelection: React.FC<BookingTypeSelectionProps> = ({
 
   const getIconForBookingType = (title: string): LucideIcon => {
     const lowerTitle = title.toLowerCase()
-    if (lowerTitle.includes("home") || lowerTitle.includes("visit")) {
+    if (lowerTitle.includes("home")) {
       return Home
     }
-    return Building2
+    return Hospital
   }
 
   const sortedBookingTypes = [...bookingTypes].sort(

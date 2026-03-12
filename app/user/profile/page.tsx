@@ -73,14 +73,23 @@ const Profile: React.FC = () => {
         <hr className="w-full" />
 
         <div className="flex flex-col w-full min-h-[350px] gap-2">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl text-secondary-1">Your Pets</h1>
-            {pets && pets.length > 0 && (
-              <OutlineButton
-                outlineBtnText="Add Pet"
-                outlineBtnLink={() => setIsAddPetModalOpen(true)}
-              />
-            )}
+          <div className="flex flex-col w-full gap-1">
+            <div className="flex items-center justify-between">
+              <h1 className="text-2xl text-secondary-1">Your Pets</h1>
+              {pets && pets.length > 0 && (
+                <OutlineButton
+                  outlineBtnText="Add Pet"
+                  outlineBtnLink={() => setIsAddPetModalOpen(true)}
+                />
+              )}
+            </div>
+            {getPetsAPIResult?.ok &&
+              getPetsAPIResult.value.body.pets.length === 0 &&
+              !loading && (
+                <p className="text-sm text-gray-500 font-semibold">
+                  Don&apos;t see any pets - Please ensure you are logged in with the correct number.
+                </p>
+              )}
           </div>
 
           {getPetsAPIResult?.ok &&
