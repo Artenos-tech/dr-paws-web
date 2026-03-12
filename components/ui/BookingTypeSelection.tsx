@@ -5,7 +5,7 @@ import { Home, Hospital, LucideIcon } from "lucide-react"
 import CustomButton from "./CustomButton"
 import { useAPICall } from "@/hooks/apicall"
 import atHomeApiClient from "@/services/api.athome"
-import { Tooltip } from "antd"
+import { Popover } from "antd"
 import { ClipLoader } from "react-spinners"
 import { MdOutlineInfo } from "react-icons/md"
 import { useAPIErrorToastFromResult } from "@/hooks/useAPIErrorToast"
@@ -29,6 +29,7 @@ const BookingTypeSelection: React.FC<BookingTypeSelectionProps> = ({
 }) => {
   const [selectedTypeId, setSelectedTypeId] = useState<string | null>(null)
   const [availablePincodes, setAvailablePincodes] = useState<string[]>([])
+  const [pincodeSearch, setPincodeSearch] = useState("")
   const { call: getServiceablePincodes, result: getServiceablePincodesResult } =
     useAPICall(atHomeApiClient.getServiceablePincodes)
 
@@ -70,7 +71,31 @@ const BookingTypeSelection: React.FC<BookingTypeSelectionProps> = ({
     (a, b) => a.displayOrder - b.displayOrder,
   )
 
-  const availablePincodesTooltip = useMemo(() => {
+  const uniqueSortedPincodes = useMemo(() => {
+    const deduped = Array.from(
+      new Set(
+        availablePincodes.map((pincode) => pincode.trim()).filter(Boolean),
+      ),
+    )
+    return deduped.sort((a, b) => {
+      const numA = Number(a)
+      const numB = Number(b)
+      if (!Number.isNaN(numA) && !Number.isNaN(numB)) {
+        return numA - numB
+      }
+      return a.localeCompare(b)
+    })
+  }, [availablePincodes])
+
+  const filteredPincodes = useMemo(() => {
+    const query = pincodeSearch.trim()
+    if (!query) {
+      return uniqueSortedPincodes
+    }
+    return uniqueSortedPincodes.filter((pincode) => pincode.includes(query))
+  }, [uniqueSortedPincodes, pincodeSearch])
+
+  const availablePincodesPopover = useMemo(() => {
     if (!availablePincodes.length) {
       return (
         <div className="flex justify-center items-center h-32">
@@ -82,30 +107,50 @@ const BookingTypeSelection: React.FC<BookingTypeSelectionProps> = ({
     return (
       <div
         className="
-        w-64
-        max-h-32
-        overflow-y-auto
+        w-96
         text-sm
         p-3
-        scrollbar-thin
       "
       >
         <p className="font-semibold mb-2">
           Home Visit is currently available in the following pincodes:
         </p>
 
-        <ul className="list-disc pl-5 space-y-1">
-          {availablePincodes.map((pincode) => (
-            <li key={pincode}>{pincode}</li>
-          ))}
-        </ul>
+        <input
+          type="text"
+          value={pincodeSearch}
+          onChange={(e) => setPincodeSearch(e.target.value)}
+          placeholder="Search pincode"
+          className="w-full mb-3 rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-secondary-1"
+        />
+        <p className="text-xs text-gray-600 mb-3">
+          You can check if your location is serviceable by searching your
+          pincode.
+        </p>
+
+        <div className="max-h-40 overflow-y-auto pr-1 scrollbar-thin">
+          {filteredPincodes.length > 0 ? (
+            <div className="grid grid-cols-3 gap-2">
+              {filteredPincodes.map((pincode) => (
+                <span
+                  key={pincode}
+                  className="rounded-full border border-gray-300 bg-white px-2 py-1 text-center text-xs font-semibold text-primary-1"
+                >
+                  {pincode}
+                </span>
+              ))}
+            </div>
+          ) : (
+            <p className="text-xs text-gray-600">No pincodes found</p>
+          )}
+        </div>
 
         <p className="mt-3 text-xs text-gray-600">
           We are actively adding more serviceable areas.
         </p>
       </div>
     )
-  }, [availablePincodes])
+  }, [availablePincodes.length, filteredPincodes, pincodeSearch])
 
   return (
     <div className="w-full">
@@ -130,10 +175,11 @@ const BookingTypeSelection: React.FC<BookingTypeSelectionProps> = ({
               } bg-primary-3`}
             >
               {bookingType.type === "HOME_VISIT" && (
-                <Tooltip
-                  title={availablePincodesTooltip}
+                <Popover
+                  content={availablePincodesPopover}
                   color="#f7f1de"
                   styles={{ body: { color: "#33495f" } }}
+                  trigger={["click"]}
                 >
                   <button
                     onClick={(e) => e.stopPropagation()}
@@ -141,7 +187,7 @@ const BookingTypeSelection: React.FC<BookingTypeSelectionProps> = ({
                   >
                     <MdOutlineInfo className="hover:text-primary-1" size={18} />
                   </button>
-                </Tooltip>
+                </Popover>
               )}
 
               <div className="w-20 h-20 flex items-center justify-center mb-4 rounded-full bg-white">
@@ -159,17 +205,20 @@ const BookingTypeSelection: React.FC<BookingTypeSelectionProps> = ({
               {bookingType.type === "HOME_VISIT" && (
                 <p className="text-center  text-gray-600 text-[10px]">
                   Home Visits are currently available in{" "}
-                  <Tooltip
+                  <Popover
                     key={bookingType.id}
-                    title={
-                      bookingType.type === "HOME_VISIT" &&
-                      availablePincodesTooltip
-                    }
+                    content={availablePincodesPopover}
                     color="#f7f1de"
                     styles={{ body: { color: "#33495f" } }}
+                    trigger={["click"]}
                   >
-                    <span className="text-secondary-1">selected locations</span>
-                  </Tooltip>
+                    <span
+                      className="text-secondary-1"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      selected locations
+                    </span>
+                  </Popover>
                 </p>
               )}
             </div>
