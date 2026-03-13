@@ -220,8 +220,6 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
                     )}
                   >
                     <span>{formatTime(slot.startTime)}</span>
-                    <span>-</span>
-                    <span>{formatTime(slot.endTime)}</span>
                   </button>
                 )
               })}
