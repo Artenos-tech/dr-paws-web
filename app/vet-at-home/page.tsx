@@ -31,6 +31,8 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel"
 
+const isHomeVisitEnabled = process.env.NEXT_PUBLIC_HOME_VISIT_ENABLED === "true"
+
 export default function VetAtHomePage() {
   const [expandedServices, setExpandedServices] = useState<number[]>([])
   const [isAmbulanceModalOpen, setIsAmbulanceModalOpen] = useState(false)
@@ -374,15 +376,17 @@ export default function VetAtHomePage() {
 
             {/* CTA buttons */}
             <div className="flex flex-wrap gap-[14px]">
-              <Link
-                href="/user/book-appointment"
-                className="font-open-sans btn rounded-full text-white px-4 md:px-10 py-2 tracking-wider text-xs md:text-base bg-secondary-1"
-              >
-                Book an At-Home Visit
-              </Link>
+              {isHomeVisitEnabled && (
+                <Link
+                  href="/user/book-appointment"
+                  className="font-open-sans btn rounded-full text-white px-4 md:px-10 py-2 tracking-wider text-xs md:text-base bg-secondary-1"
+                >
+                  Book an At-Home Visit
+                </Link>
+              )}
 
               <Link
-                href="https://wa.me/919606994627"
+                href="https://wa.me/919740141212"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-open-sans btn rounded-full text-white px-4 md:px-10 py-2 tracking-wider text-xs md:text-base border border-white bg-transparent hover:bg-white/10"
@@ -871,7 +875,7 @@ export default function VetAtHomePage() {
               </Link>
 
               <Link
-                href="https://wa.me/919606994627"
+                href="https://wa.me/919740141212"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-open-sans btn rounded-full border border-[#5281a2] bg-white px-5 py-2 text-xs tracking-wider text-[#5281a2] transition-colors hover:bg-[#5281a2] hover:text-white md:px-10 md:text-base"
