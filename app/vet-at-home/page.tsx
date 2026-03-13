@@ -376,7 +376,7 @@ export default function VetAtHomePage() {
 
             {/* CTA buttons */}
             <div className="flex flex-wrap gap-[14px]">
-              { isHomeVisitEnabled && (
+              {isHomeVisitEnabled && (
                 <Link
                   href="/user/book-appointment"
                   className="font-open-sans btn rounded-full text-white px-4 md:px-10 py-2 tracking-wider text-xs md:text-base bg-secondary-1"
