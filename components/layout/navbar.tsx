@@ -16,6 +16,8 @@ import api, { clearAuthToken } from "@/services/api"
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
 import { useEffect, useRef, useState } from "react"
 
+const isHomeVisitEnabled = process.env.NEXT_PUBLIC_HOME_VISIT_ENABLED === "true"
+
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false)
   const [isProfileOpen, setIsProfileOpen] = useState(false)
@@ -129,7 +131,7 @@ export default function NavBar() {
           <div className="flex items-center space-x-4 text-xs justify-end">
             <CustomButton
               buttonText={
-                pathname?.includes("/vet-at-home")
+                pathname?.includes("/vet-at-home") && isHomeVisitEnabled
                   ? "Book an At-Home Visit"
                   : "Book a visit"
               }
@@ -297,7 +299,7 @@ export default function NavBar() {
               href="/vet-at-home"
               className="text-primary-1 hover:bg-primary-2 hover:text-white block py-2 px-2 rounded-md text-base font-medium"
             >
-              Vet-at-Home
+              Vet-At-Home
             </Link>
             {/* <Link
               onClick={() => setIsOpen(false)}
