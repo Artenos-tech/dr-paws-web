@@ -300,14 +300,16 @@ export default function VetAtHomePage() {
 
   return (
     <main className="w-full pb-20 md:pb-0">
-      {/* <div className="fixed right-6 top-24 z-40 hidden md:block">
-        <Link
-          href="/user/book-appointment"
-          className="font-open-sans btn rounded-full bg-secondary-1 px-6 py-2 text-sm tracking-wide text-white shadow-[0_10px_24px_rgba(51,73,95,0.2)]"
-        >
-          Book At-Home Visit
-        </Link>
-      </div> */}
+      {isHomeVisitEnabled && (
+        <div className="fixed right-6 top-24 z-40 hidden md:block">
+          <Link
+            href="/user/book-appointment"
+            className="font-open-sans btn rounded-full bg-secondary-1 px-6 py-2 text-sm tracking-wide text-white shadow-[0_10px_24px_rgba(51,73,95,0.2)]"
+          >
+            Book At-Home Visit
+          </Link>
+        </div>
+      )}
 
       <section className="relative min-h-[calc(100vh-4rem)] overflow-hidden">
         <img
@@ -867,12 +869,14 @@ export default function VetAtHomePage() {
             </p>
 
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
-              <Link
-                href="/user/book-appointment"
-                className="font-open-sans btn rounded-full bg-secondary-1 px-5 py-2 text-xs tracking-wider text-white md:px-10 md:text-base"
-              >
-                Book At-Home Visit
-              </Link>
+              {isHomeVisitEnabled && (
+                <Link
+                  href="/user/book-appointment"
+                  className="font-open-sans btn rounded-full bg-secondary-1 px-5 py-2 text-xs tracking-wider text-white md:px-10 md:text-base"
+                >
+                  Book At-Home Visit
+                </Link>
+              )}
 
               <Link
                 href="https://wa.me/919740141212"

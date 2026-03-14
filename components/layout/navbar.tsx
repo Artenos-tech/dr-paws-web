@@ -117,7 +117,7 @@ export default function NavBar() {
                   href="/vet-at-home"
                   className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                 >
-                  Vet-at-Home
+                  Vet-At-Home
                 </Link>
                 {/* <Link
                   href="/membership"
