@@ -356,8 +356,9 @@ const AtHomeBookingDetails = ({
             >
               <MdOutlineAccessTime className="text-secondary-1 text-xl" />
               <span className="text-base font-medium">
-                {selectedAppointment.appt_start} –{" "}
-                {selectedAppointment.appt_end}
+                {selectedAppointment.appt_start}
+                {/* –{" "}
+                {selectedAppointment.appt_end} */}
               </span>
             </div>
 

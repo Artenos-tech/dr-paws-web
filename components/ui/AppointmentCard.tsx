@@ -188,8 +188,8 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
         <p>{format(parsedDate, "EEEE dd MMMM, yyyy")}</p>
         <p>
           {appointment.appt_start}
-          {" - "}
-          {appointment.appt_end}
+          {appointment.booking_type === "CLINIC_VISIT" && " - "}
+          {appointment.booking_type === "CLINIC_VISIT" && appointment.appt_end}
         </p>
       </div>
       <div className="mt-auto self-end">

@@ -149,7 +149,8 @@ const CancelledBookingCard = ({
 
           <p className="flex items-center gap-2 line-through">
             <MdOutlineAccessTime className="text-secondary-1" />
-            {appointment.appt_start} – {appointment.appt_end}
+            {appointment.appt_start} {visitType !== "HOME_VISIT" && " - "}{" "}
+            {visitType !== "HOME_VISIT" && appointment.appt_end}
           </p>
         </div>
 
