@@ -311,7 +311,7 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
       reasonDescription: appointmentData.description,
       date: appointmentData.date ? new Date(appointmentData.date) : new Date(),
       slot: appointmentData.slot
-        ? `${appointmentData.slot.startTime} - ${appointmentData.slot.endTime}`
+        ? `${appointmentData.slot.startTime}`
         : "",
       couponCode: null,
     }
