@@ -45,7 +45,7 @@ const AtHomeVisitStatus = ({
 
       {vet_contact && visitStatus !== "VISIT_FINISHED" && (
         <Tooltip
-          title={"Click to copy helpline number"}
+          title={"Click to copy the vet's contact number"}
           color="#f7f1de"
           styles={{ body: { color: "#33495f" } }}
         >

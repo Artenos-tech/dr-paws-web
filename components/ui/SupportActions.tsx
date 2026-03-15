@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react"
-import { Phone, AlertTriangle } from "lucide-react"
+import { Phone } from "lucide-react"
 
 type SupportActionsProps = {
   isVisitFinished?: boolean
@@ -12,7 +12,7 @@ type SupportActionsProps = {
 const SupportActions: React.FC<SupportActionsProps> = ({
   isVisitFinished = false,
   onCallUs,
-  onSOS,
+  // onSOS,
 }) => {
   return (
     <div className="space-y-1">
@@ -31,13 +31,13 @@ const SupportActions: React.FC<SupportActionsProps> = ({
           Call Us
         </button>
 
-        <button
+        {/* <button
           onClick={onSOS}
           className="flex items-center gap-2 px-4 py-2 rounded-lg border border-red-600 text-red-600 hover:bg-red-600 hover:text-white transition"
         >
           <AlertTriangle size={18} />
           SOS
-        </button>
+        </button> */}
       </div>
     </div>
   )

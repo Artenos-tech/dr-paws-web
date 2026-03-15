@@ -175,7 +175,8 @@ const RescheduleConfirmed: React.FC<RescheduleConfirmedProps> = ({
 
           <p className="flex items-center gap-2">
             <MdOutlineAccessTime className="text-secondary-1" />
-            {updatedValues.selectedSlot} – {updatedValues.selectedSlotEnd}
+            {updatedValues.selectedSlot} {!isHomeVisit && " - "}{" "}
+            {!isHomeVisit && updatedValues.selectedSlotEnd}
           </p>
 
           <p className="font-medium pt-2">Former Timings</p>
