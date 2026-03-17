@@ -180,6 +180,20 @@ const AppointmentDetailSchema = z
 // ============================================================================
 
 export type AtHomeAPIClient = {
+  getHomeVisitFeatureFlag: (
+    params: Record<string, never>,
+    opts?: { abortSignal?: AbortSignal },
+  ) => Promise<
+    Result<
+      APIResponse<{
+        status: number
+        message: string
+        enableHomeVisits: boolean
+      }>,
+      any
+    >
+  >
+
   // Address Book
   getAddressBook: (
     params: Record<string, never>,
@@ -649,6 +663,17 @@ const delay = (ms: number, signal?: AbortSignal) =>
   })
 
 export const mockAtHomeClient: AtHomeAPIClient = {
+  getHomeVisitFeatureFlag: async (params, opts) => {
+    await delay(500, opts?.abortSignal)
+    return ok({
+      status: 200,
+      body: {
+        status: 200,
+        message: "Home visit feature flag fetched successfully",
+        enableHomeVisits: true,
+      },
+    })
+  },
   getAddressBook: async (params, opts) => {
     await delay(500, opts?.abortSignal)
     return ok({
@@ -1199,6 +1224,18 @@ export const mockAtHomeClient: AtHomeAPIClient = {
 // ============================================================================
 
 const endpointConfig = {
+  getHomeVisitFeatureFlag: {
+    method: "GET" as const,
+    path: "/config/home-visit-feature-flag",
+    pathParamsSchema: z.object({}),
+    requestSchema: z.object({}),
+    responseSchema: z.object({
+      status: z.number(),
+      message: z.string(),
+      enableHomeVisits: z.boolean(),
+    }),
+    errorResponseSchema: z.object({}),
+  },
   // Address Book
   getAddressBook: {
     method: "GET" as const,
@@ -1304,7 +1341,7 @@ const endpointConfig = {
 
   getServiceablePincodes: {
     method: "GET" as const,
-    path: "/booking/at-home/serviceable-pincodes",
+    path: "/at-home/location/serviceable-pincodes",
     pathParamsSchema: z.object({}),
     requestSchema: z.object({}),
     responseSchema: z.object({

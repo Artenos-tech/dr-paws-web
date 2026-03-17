@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import {
   ChevronDown,
   CalendarClock,
@@ -31,7 +31,206 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel"
 
-const isHomeVisitEnabled = process.env.NEXT_PUBLIC_HOME_VISIT_ENABLED === "true"
+const vetAtHomePhoneNumber = "9740141212"
+
+const loveAtHomeReasons = [
+  {
+    title: "Transporting Pets Isn’t Always Easy",
+    description:
+      "Many pet parents struggle to find pet-friendly transport, especially for large dogs or anxious pets. Our vets come to you instead.",
+  },
+  {
+    title: "Clinics Can Be Stressful for Pets",
+    description:
+      "New smells, unfamiliar animals, and waiting rooms can cause anxiety. Home visits allow pets to stay calm in familiar surroundings.",
+  },
+  {
+    title: "Senior Pets May Struggle to Travel",
+    description:
+      "Older pets or pets recovering from illness often find travel uncomfortable. At-home care allows them to receive medical attention without leaving home.",
+  },
+  {
+    title: "Busy Schedules Make Clinic Visits Hard",
+    description:
+      "Between work, traffic, and daily life, finding time for clinic visits can be difficult. At-home appointments make veterinary care more convenient.",
+  },
+]
+
+const servicesAvailableAtHome = [
+  {
+    icon: Stethoscope,
+    title: "General Vet Consults",
+    subtitle:
+      "If your pet seems unwell or simply due for a health check, our veterinarians can examine them in the comfort of your home.",
+    points: [
+      "Perform a full physical examination",
+      "Evaluate symptoms such as vomiting, skin issues, or lethargy",
+      "Provide prescriptions and treatment plans",
+      "Guide you on diet, behaviour, and preventive care",
+    ],
+    note: "If additional diagnostics are needed, our team will guide you on the next steps.",
+  },
+  {
+    icon: ClipboardList,
+    title: "Vaccinations & Deworming",
+    subtitle: "Routine preventive care can be safely done at home.",
+    points: [
+      "Core and non-core vaccinations",
+      "Puppy and kitten vaccine schedules",
+      "Deworming treatments",
+      "Parasite prevention guidance",
+    ],
+    note: "Our vets will also maintain your pet’s vaccination records and reminders.",
+  },
+  {
+    icon: CalendarClock,
+    title: "Diagnostic Tests",
+    subtitle: "Many diagnostic tests can be initiated at home.",
+    points: [
+      "Blood tests",
+      "Urine tests",
+      "Skin scrapings",
+      "Other lab samples",
+    ],
+    note: "These samples are processed through our in-house labs and diagnostic partners (if applicable) and results are shared digitally.",
+    extraNote:
+      "Imaging procedures such as X-rays and ultrasounds require clinic visits.",
+  },
+  {
+    icon: HeartPulse,
+    title: "Chronic Illness & Post-Surgery Care",
+    subtitle: "Some conditions require consistent follow-up care.",
+    points: [
+      "CKD",
+      "FIP",
+      "Long-term medical conditions",
+      "Fluid therapy",
+      "Injections",
+      "Medication administration",
+      "Wound care",
+      "Post-surgery recovery monitoring",
+    ],
+    note: "Our vets can provide ongoing medical support for pets with chronic illnesses and recovery needs.",
+  },
+  {
+    icon: PawPrint,
+    title: "Senior Pet Care",
+    subtitle:
+      "As pets age, they often require more frequent monitoring and support.",
+    points: [
+      "Routine health checks",
+      "Diagnostic testing",
+      "Pain management",
+      "Injections and medications",
+      "Laser therapy",
+      "Mobility and comfort assessments",
+    ],
+    note: "Our at-home care helps senior pets stay comfortable for longer.",
+  },
+  {
+    icon: MapPin,
+    title: "Travel Requirements & Certificates",
+    subtitle: "Preparing pets for travel can involve several steps.",
+    points: [
+      "Fit-to-travel examinations",
+      "Vaccination verification",
+      "Required diagnostic tests",
+      "Microchipping",
+    ],
+    note: "Completing these steps at home makes travel preparation significantly easier.",
+  },
+]
+
+const ambulanceImage = {
+  image: "/assets/images/ambulance.png",
+  alt: "White ambulance parked near a sidewalk",
+}
+
+const atHomeDoctors = [
+  {
+    name: "Dr. Anchima Manohar",
+    qualification: "BVSc & AH",
+    experience: "8+ years of experience",
+    bio: "Specializes in preventive care and internal medicine, with a focus on calm and low-stress home consultations for pets.",
+  },
+  {
+    name: "Dr. Abhiram S.",
+    qualification: "BVSc & AH, MVSc",
+    experience: "7+ years of experience",
+    bio: "Experienced in vaccination planning, diagnostics, and long-term treatment support for pets requiring regular medical follow-up.",
+  },
+  {
+    name: "Dr. Jonin Singh Laishangbam",
+    qualification: "BVSc & AH",
+    experience: "6+ years of experience",
+    bio: "Provides compassionate home-visit care with strong expertise in senior pet monitoring, recovery support, and chronic care management.",
+  },
+]
+
+const testimonials = [
+  {
+    reviewer: "Priya N.",
+    rating: 5,
+    review:
+      "Booked a home visit for my senior dog and the doctor was extremely patient and thorough. The whole process was smooth and stress-free.",
+  },
+  {
+    reviewer: "Rahul K.",
+    rating: 5,
+    review:
+      "Very professional team. They explained everything clearly, handled our cat gently, and shared a clear treatment plan after the visit.",
+  },
+  {
+    reviewer: "Sneha M.",
+    rating: 5,
+    review:
+      "Excellent experience with Dr. Paws at-home service. On-time arrival, great communication, and genuine care for my pet.",
+  },
+  {
+    reviewer: "Arjun S.",
+    rating: 5,
+    review:
+      "From booking to consultation, everything was easy. The vet answered all our questions and even gave practical diet guidance.",
+  },
+  {
+    reviewer: "Neha R.",
+    rating: 5,
+    review:
+      "The home visit made a huge difference for our anxious pup. Calm, efficient, and very caring team. Highly recommended.",
+  },
+]
+
+const getFaqs = (emergencyPhone: string) => [
+  {
+    question: "How do I book an at-home vet appointment?",
+    answer: `You can book directly through our website or app. Alternatively, call or WhatsApp our Vet-At-Home helpline at ${emergencyPhone} between 10 AM and 7 PM.`,
+  },
+  {
+    question: "What services can be done during a home visit?",
+    answer:
+      "Our vets provide general consultations and key services including vaccinations, deworming, diagnostic tests, microchipping, and travel certificates. Certain medical treatments such as IV fluid therapy, injections, and laser therapy can also be performed during home visits.",
+  },
+  {
+    question: "Do you provide grooming services at home?",
+    answer:
+      "We do not provide full grooming services such as bathing or haircuts. However, basic hygiene procedures such as ear cleaning and nail clipping may be performed during a medical visit if required.",
+  },
+  {
+    question: "Can you treat community pets?",
+    answer:
+      "Yes. To ensure the safety of the animal and our team, we request that community pets be kept restrained in an indoor, secure, well-lit area before the vet arrives.",
+  },
+  {
+    question: "Can I cancel or reschedule an appointment?",
+    answer:
+      "Appointments can be rescheduled up to 3 hours before the scheduled visit at no charge. Cancellations within 24 hours of the appointment are not permitted since the veterinarian's time slot is reserved exclusively for your visit.",
+  },
+  {
+    question: "What if my pet needs further treatment?",
+    answer:
+      "If additional care is required, our team will guide you to the next steps. You can contact our Vet-At-Home helpline (10 AM - 7 PM) for support, or visit one of our Dr. Paws clinics across Bangalore.",
+  },
+]
 
 export default function VetAtHomePage() {
   const [expandedServices, setExpandedServices] = useState<number[]>([])
@@ -43,210 +242,42 @@ export default function VetAtHomePage() {
   >("idle")
   const { call: getServiceablePincodes, loading: isCheckingPincode } =
     useAPICall(atHomeApiClient.getServiceablePincodes)
-  const vetAtHomePhoneNumber = "+91 9740141212"
+  const {
+    call: getHomeVisitFeatureFlag,
+    loading: isCheckingHomeVisitFeatureFlag,
+    result: homeVisitFeatureFlagResult,
+  } = useAPICall(atHomeApiClient.getHomeVisitFeatureFlag)
 
-  const loveAtHomeReasons = [
-    {
-      title: "Transporting Pets Isn’t Always Easy",
-      description:
-        "Many pet parents struggle to find pet-friendly transport, especially for large dogs or anxious pets. Our vets come to you instead.",
-    },
-    {
-      title: "Clinics Can Be Stressful for Pets",
-      description:
-        "New smells, unfamiliar animals, and waiting rooms can cause anxiety. Home visits allow pets to stay calm in familiar surroundings.",
-    },
-    {
-      title: "Senior Pets May Struggle to Travel",
-      description:
-        "Older pets or pets recovering from illness often find travel uncomfortable. At-home care allows them to receive medical attention without leaving home.",
-    },
-    {
-      title: "Busy Schedules Make Clinic Visits Hard",
-      description:
-        "Between work, traffic, and daily life, finding time for clinic visits can be difficult. At-home appointments make veterinary care more convenient.",
-    },
-  ]
+  const {
+    call: getEmergencyContact,
+    loading: isCheckingEmergencyContact,
+    result: emergencyContactResult,
+  } = useAPICall(atHomeApiClient.getEmergencyContact)
 
-  const servicesAvailableAtHome = [
-    {
-      icon: Stethoscope,
-      title: "General Vet Consults",
-      subtitle:
-        "If your pet seems unwell or simply due for a health check, our veterinarians can examine them in the comfort of your home.",
-      points: [
-        "Perform a full physical examination",
-        "Evaluate symptoms such as vomiting, skin issues, or lethargy",
-        "Provide prescriptions and treatment plans",
-        "Guide you on diet, behaviour, and preventive care",
-      ],
-      note: "If additional diagnostics are needed, our team will guide you on the next steps.",
-    },
-    {
-      icon: ClipboardList,
-      title: "Vaccinations & Deworming",
-      subtitle: "Routine preventive care can be safely done at home.",
-      points: [
-        "Core and non-core vaccinations",
-        "Puppy and kitten vaccine schedules",
-        "Deworming treatments",
-        "Parasite prevention guidance",
-      ],
-      note: "Our vets will also maintain your pet’s vaccination records and reminders.",
-    },
-    {
-      icon: CalendarClock,
-      title: "Diagnostic Tests",
-      subtitle: "Many diagnostic tests can be initiated at home.",
-      points: [
-        "Blood tests",
-        "Urine tests",
-        "Skin scrapings",
-        "Other lab samples",
-      ],
-      note: "These samples are processed through our in-house labs and diagnostic partners (if applicable) and results are shared digitally.",
-      extraNote:
-        "Imaging procedures such as X-rays and ultrasounds require clinic visits.",
-    },
-    {
-      icon: HeartPulse,
-      title: "Chronic Illness & Post-Surgery Care",
-      subtitle: "Some conditions require consistent follow-up care.",
-      points: [
-        "CKD",
-        "FIP",
-        "Long-term medical conditions",
-        "Fluid therapy",
-        "Injections",
-        "Medication administration",
-        "Wound care",
-        "Post-surgery recovery monitoring",
-      ],
-      note: "Our vets can provide ongoing medical support for pets with chronic illnesses and recovery needs.",
-    },
-    {
-      icon: PawPrint,
-      title: "Senior Pet Care",
-      subtitle:
-        "As pets age, they often require more frequent monitoring and support.",
-      points: [
-        "Routine health checks",
-        "Diagnostic testing",
-        "Pain management",
-        "Injections and medications",
-        "Laser therapy",
-        "Mobility and comfort assessments",
-      ],
-      note: "Our at-home care helps senior pets stay comfortable for longer.",
-    },
-    {
-      icon: MapPin,
-      title: "Travel Requirements & Certificates",
-      subtitle: "Preparing pets for travel can involve several steps.",
-      points: [
-        "Fit-to-travel examinations",
-        "Vaccination verification",
-        "Required diagnostic tests",
-        "Microchipping",
-      ],
-      note: "Completing these steps at home makes travel preparation significantly easier.",
-    },
-  ]
+  const emergencyContactNumber =
+    emergencyContactResult?.ok &&
+    emergencyContactResult.value.body.emergencyPhone
+      ? `+91 ${emergencyContactResult.value.body.emergencyPhone}`
+      : `+91 ${vetAtHomePhoneNumber}`
+  const emergencyWhatsAppNumber = emergencyContactNumber.replace(/\D/g, "")
 
-  const ambulanceImage = {
-    image: "/assets/images/ambulance.png",
-    alt: "White ambulance parked near a sidewalk",
-  }
+  const whatsappBookingLink = `https://wa.me/${emergencyWhatsAppNumber}?text=Hello%2C%20I%27d%20like%20to%20book%20a%20Vet-At-Home%20appointment.`
 
-  const atHomeDoctors = [
-    {
-      name: "Dr. Anchima Manohar",
-      qualification: "BVSc & AH",
-      experience: "8+ years of experience",
-      bio: "Specializes in preventive care and internal medicine, with a focus on calm and low-stress home consultations for pets.",
-    },
-    {
-      name: "Dr. Abhiram S.",
-      qualification: "BVSc & AH, MVSc",
-      experience: "7+ years of experience",
-      bio: "Experienced in vaccination planning, diagnostics, and long-term treatment support for pets requiring regular medical follow-up.",
-    },
-    {
-      name: "Dr. Jonin Singh Laishangbam",
-      qualification: "BVSc & AH",
-      experience: "6+ years of experience",
-      bio: "Provides compassionate home-visit care with strong expertise in senior pet monitoring, recovery support, and chronic care management.",
-    },
-  ]
+  const faqs = useMemo(
+    () => getFaqs(emergencyContactNumber),
+    [emergencyContactNumber],
+  )
 
-  const testimonials = [
-    {
-      reviewer: "Priya N.",
-      rating: 5,
-      review:
-        "Booked a home visit for my senior dog and the doctor was extremely patient and thorough. The whole process was smooth and stress-free.",
-    },
-    {
-      reviewer: "Rahul K.",
-      rating: 5,
-      review:
-        "Very professional team. They explained everything clearly, handled our cat gently, and shared a clear treatment plan after the visit.",
-    },
-    {
-      reviewer: "Sneha M.",
-      rating: 5,
-      review:
-        "Excellent experience with Dr. Paws at-home service. On-time arrival, great communication, and genuine care for my pet.",
-    },
-    {
-      reviewer: "Arjun S.",
-      rating: 5,
-      review:
-        "From booking to consultation, everything was easy. The vet answered all our questions and even gave practical diet guidance.",
-    },
-    {
-      reviewer: "Neha R.",
-      rating: 5,
-      review:
-        "The home visit made a huge difference for our anxious pup. Calm, efficient, and very caring team. Highly recommended.",
-    },
-  ]
-
-  const faqs = [
-    {
-      question: "How do I book an at-home vet appointment?",
-      answer:
-        "You can book directly through our website or app. Alternatively, call or WhatsApp our Vet-At-Home helpline at +91 9740141212 between 10 AM and 7 PM.",
-    },
-    {
-      question: "What services can be done during a home visit?",
-      answer:
-        "Our vets provide general consultations and key services including vaccinations, deworming, diagnostic tests, microchipping, and travel certificates. Certain medical treatments such as IV fluid therapy, injections, and laser therapy can also be performed during home visits.",
-    },
-    {
-      question: "Do you provide grooming services at home?",
-      answer:
-        "We do not provide full grooming services such as bathing or haircuts. However, basic hygiene procedures such as ear cleaning and nail clipping may be performed during a medical visit if required.",
-    },
-    {
-      question: "Can you treat community pets?",
-      answer:
-        "Yes. To ensure the safety of the animal and our team, we request that community pets be kept restrained in an indoor, secure, well-lit area before the vet arrives.",
-    },
-    {
-      question: "Can I cancel or reschedule an appointment?",
-      answer:
-        "Appointments can be rescheduled up to 3 hours before the scheduled visit at no charge. Cancellations within 24 hours of the appointment are not permitted since the veterinarian's time slot is reserved exclusively for your visit.",
-    },
-    {
-      question: "What if my pet needs further treatment?",
-      answer:
-        "If additional care is required, our team will guide you to the next steps. You can contact our Vet-At-Home helpline (10 AM - 7 PM) for support, or visit one of our Dr. Paws clinics across Bangalore.",
-    },
-  ]
-
-  const whatsappBookingLink =
-    "https://wa.me/919740141212?text=Hello%2C%20I%27d%20like%20to%20book%20a%20Vet-At-Home%20appointment."
+  useEffect(() => {
+    const fetchHomeVisitFeatureFlag = async () => {
+      await getHomeVisitFeatureFlag({})
+    }
+    const fetchEmergencyContact = async () => {
+      await getEmergencyContact({})
+    }
+    fetchHomeVisitFeatureFlag()
+    fetchEmergencyContact()
+  }, [])
 
   const toggleServiceCard = (index: number) => {
     setExpandedServices((prev) =>
@@ -289,7 +320,7 @@ export default function VetAtHomePage() {
 
   const handleCopyVetAtHomeNumber = async () => {
     try {
-      await navigator.clipboard.writeText(vetAtHomePhoneNumber)
+      await navigator.clipboard.writeText(emergencyContactNumber)
       toast.success("Phone number was copied to clipboard")
     } catch {
       toast.error("Unable to copy phone number")
@@ -298,16 +329,24 @@ export default function VetAtHomePage() {
     }
   }
 
+  const isHomeVisitEnabled =
+    homeVisitFeatureFlagResult?.ok &&
+    homeVisitFeatureFlagResult.value.body.enableHomeVisits
+
   return (
     <main className="w-full pb-20 md:pb-0">
-      {isHomeVisitEnabled && (
+      {(isCheckingHomeVisitFeatureFlag || isHomeVisitEnabled) && (
         <div className="fixed right-6 top-24 z-40 hidden md:block">
-          <Link
-            href="/user/book-appointment"
-            className="font-open-sans btn rounded-full bg-secondary-1 px-6 py-2 text-sm tracking-wide text-white shadow-[0_10px_24px_rgba(51,73,95,0.2)]"
-          >
-            Book At-Home Visit
-          </Link>
+          {isCheckingHomeVisitFeatureFlag ? (
+            <div className="animate-pulse h-9 w-40 rounded-full bg-secondary-1/40" />
+          ) : (
+            <Link
+              href="/user/book-appointment?home=true"
+              className="font-open-sans btn rounded-full bg-secondary-1 px-6 py-2 text-sm tracking-wide text-white shadow-[0_10px_24px_rgba(51,73,95,0.2)]"
+            >
+              Book At-Home Visit
+            </Link>
+          )}
         </div>
       )}
 
@@ -378,9 +417,12 @@ export default function VetAtHomePage() {
 
             {/* CTA buttons */}
             <div className="flex flex-wrap gap-[14px]">
-              {isHomeVisitEnabled && (
+              {isCheckingHomeVisitFeatureFlag && (
+                <div className="animate-pulse h-10 w-48 rounded-full bg-white/20" />
+              )}
+              {!isCheckingHomeVisitFeatureFlag && isHomeVisitEnabled && (
                 <Link
-                  href="/user/book-appointment"
+                  href="/user/book-appointment?home=true"
                   className="font-open-sans btn rounded-full text-white px-4 md:px-10 py-2 tracking-wider text-xs md:text-base bg-secondary-1"
                 >
                   Book an At-Home Visit
@@ -388,7 +430,7 @@ export default function VetAtHomePage() {
               )}
 
               <Link
-                href="https://wa.me/919740141212"
+                href={`https://wa.me/${emergencyWhatsAppNumber}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-open-sans btn rounded-full text-white px-4 md:px-10 py-2 tracking-wider text-xs md:text-base border border-white bg-transparent hover:bg-white/10"
@@ -711,9 +753,12 @@ export default function VetAtHomePage() {
                 <button
                   type="button"
                   onClick={handleCopyVetAtHomeNumber}
-                  className="font-open-sans inline-flex items-center justify-center rounded-full border-0 bg-secondary-1 px-6 py-2 text-sm font-semibold tracking-wide text-white outline-none transition-colors hover:bg-[#94662e] focus:outline-none focus-visible:outline-none focus-visible:ring-0 md:px-9 md:text-base"
+                  disabled={isCheckingEmergencyContact}
+                  className="font-open-sans inline-flex items-center justify-center rounded-full border-0 bg-secondary-1 px-6 py-2 text-sm font-semibold tracking-wide text-white outline-none transition-colors hover:bg-[#94662e] focus:outline-none focus-visible:outline-none focus-visible:ring-0 disabled:opacity-60 disabled:cursor-not-allowed md:px-9 md:text-base"
                 >
-                  Call Vet-At-Home
+                  {isCheckingEmergencyContact
+                    ? "Loading..."
+                    : "Call Vet-At-Home"}
                 </button>
               </div>
             </div>
@@ -869,9 +914,12 @@ export default function VetAtHomePage() {
             </p>
 
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
-              {isHomeVisitEnabled && (
+              {isCheckingHomeVisitFeatureFlag && (
+                <div className="animate-pulse h-10 w-40 rounded-full bg-secondary-1/40" />
+              )}
+              {!isCheckingHomeVisitFeatureFlag && isHomeVisitEnabled && (
                 <Link
-                  href="/user/book-appointment"
+                  href="/user/book-appointment?home=true"
                   className="font-open-sans btn rounded-full bg-secondary-1 px-5 py-2 text-xs tracking-wider text-white md:px-10 md:text-base"
                 >
                   Book At-Home Visit
@@ -879,7 +927,7 @@ export default function VetAtHomePage() {
               )}
 
               <Link
-                href="https://wa.me/919740141212"
+                href={`https://wa.me/${emergencyWhatsAppNumber}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-open-sans btn rounded-full border border-[#5281a2] bg-white px-5 py-2 text-xs tracking-wider text-[#5281a2] transition-colors hover:bg-[#5281a2] hover:text-white md:px-10 md:text-base"
@@ -905,7 +953,7 @@ export default function VetAtHomePage() {
                 Support Helpline
               </p>
               <p className="mt-3 text-base font-semibold text-primary-1 md:text-xl">
-                +91 9740141212
+                {emergencyContactNumber}
               </p>
             </article>
 
