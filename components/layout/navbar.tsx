@@ -70,10 +70,14 @@ export default function NavBar() {
   }
 
   const handleBookAVisit = () => {
+    const destination =
+      pathname?.includes("/vet-at-home") && isHomeVisitEnabled
+        ? "/user/book-appointment?home=true"
+        : "/user/book-appointment"
     if (isLoggedIn) {
-      navigate.push("/user/book-appointment")
+      navigate.push(destination)
     } else {
-      initiateLogin("Book a Visit", "/user/book-appointment")
+      initiateLogin("Book a Visit", destination)
     }
   }
 

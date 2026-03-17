@@ -341,7 +341,7 @@ export default function VetAtHomePage() {
             <div className="animate-pulse h-9 w-40 rounded-full bg-secondary-1/40" />
           ) : (
             <Link
-              href="/user/book-appointment"
+              href="/user/book-appointment?home=true"
               className="font-open-sans btn rounded-full bg-secondary-1 px-6 py-2 text-sm tracking-wide text-white shadow-[0_10px_24px_rgba(51,73,95,0.2)]"
             >
               Book At-Home Visit
@@ -422,7 +422,7 @@ export default function VetAtHomePage() {
               )}
               {!isCheckingHomeVisitFeatureFlag && isHomeVisitEnabled && (
                 <Link
-                  href="/user/book-appointment"
+                  href="/user/book-appointment?home=true"
                   className="font-open-sans btn rounded-full text-white px-4 md:px-10 py-2 tracking-wider text-xs md:text-base bg-secondary-1"
                 >
                   Book an At-Home Visit
@@ -919,7 +919,7 @@ export default function VetAtHomePage() {
               )}
               {!isCheckingHomeVisitFeatureFlag && isHomeVisitEnabled && (
                 <Link
-                  href="/user/book-appointment"
+                  href="/user/book-appointment?home=true"
                   className="font-open-sans btn rounded-full bg-secondary-1 px-5 py-2 text-xs tracking-wider text-white md:px-10 md:text-base"
                 >
                   Book At-Home Visit
