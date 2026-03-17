@@ -105,7 +105,9 @@ const ClinicBookingFlow: React.FC<ClinicBookingFlowProps> = ({
       if (!bookingFlowSessionId || bookingCompletedRef.current) return
       const abandonSession = async () => {
         try {
-          const result = await abandonBookingFlow({ session_id: bookingFlowSessionId })
+          const result = await abandonBookingFlow({
+            session_id: bookingFlowSessionId,
+          })
           if (!result.ok) {
             console.warn("Failed to abandon booking flow session", result.error)
           }
