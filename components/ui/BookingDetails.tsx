@@ -8,8 +8,7 @@ import atHomeApiClient from "@/services/api.athome"
 import { useEffect, useRef, useState } from "react"
 import { ClipLoader } from "react-spinners"
 import { useAPIErrorToastFromResult } from "@/hooks/useAPIErrorToast"
-
-const isHomeVisitEnabled = process.env.NEXT_PUBLIC_HOME_VISIT_ENABLED === "true"
+import { useHomeVisitFeature } from "@/hooks/useHomeVisitFeature"
 
 const POLLING_INTERVAL_MS = 5000
 
@@ -24,6 +23,10 @@ const BookingDetails = ({
   subBookingId,
   goBack,
 }: BookingDetailsProps) => {
+  const {
+    isFeatureEnabled: isHomeVisitEnabled,
+    isLoading: isLoadingFeatureFlag,
+  } = useHomeVisitFeature()
   const { call: getAppointmentDetails, result: getAppointmentDetailsResult } =
     useAPICall(atHomeApiClient.getAppointmentDetails)
   const [appointment, setAppointment] = useState<AppointmentDetails | null>(
@@ -87,7 +90,7 @@ const BookingDetails = ({
     fallbackMessage: "Failed to fetch appointment",
   })
 
-  if (!appointment) {
+  if (!appointment || isLoadingFeatureFlag) {
     return (
       <div className="flex justify-center items-center py-20">
         <ClipLoader />

@@ -15,8 +15,7 @@ import Profile from "@/public/assets/images/profileThumnail.svg"
 import api, { clearAuthToken } from "@/services/api"
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
 import { useEffect, useRef, useState } from "react"
-
-const isHomeVisitEnabled = process.env.NEXT_PUBLIC_HOME_VISIT_ENABLED === "true"
+import { useHomeVisitFeature } from "@/hooks/useHomeVisitFeature"
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false)
@@ -27,6 +26,7 @@ export default function NavBar() {
   // const isMarketingFeatureEnabled = useMarketingFeature();
 
   const { refresh, initiateLogin, isLoggedIn } = useUserContext()
+  const { isFeatureEnabled: isHomeVisitEnabled } = useHomeVisitFeature()
 
   const dropdownRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
