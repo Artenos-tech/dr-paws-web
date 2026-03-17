@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import {
   ChevronDown,
   CalendarClock,
@@ -31,7 +31,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel"
 
-const vetAtHomePhoneNumber = "+91 9740141212"
+const vetAtHomePhoneNumber = "9740141212"
 
 const loveAtHomeReasons = [
   {
@@ -200,11 +200,10 @@ const testimonials = [
   },
 ]
 
-const faqs = [
+const getFaqs = (emergencyPhone: string) => [
   {
     question: "How do I book an at-home vet appointment?",
-    answer:
-      "You can book directly through our website or app. Alternatively, call or WhatsApp our Vet-At-Home helpline at +91 9740141212 between 10 AM and 7 PM.",
+    answer: `You can book directly through our website or app. Alternatively, call or WhatsApp our Vet-At-Home helpline at ${emergencyPhone} between 10 AM and 7 PM.`,
   },
   {
     question: "What services can be done during a home visit?",
@@ -255,8 +254,19 @@ export default function VetAtHomePage() {
     result: emergencyContactResult,
   } = useAPICall(atHomeApiClient.getEmergencyContact)
 
-  const whatsappBookingLink =
-    "https://wa.me/919740141212?text=Hello%2C%20I%27d%20like%20to%20book%20a%20Vet-At-Home%20appointment."
+  const emergencyContactNumber =
+    emergencyContactResult?.ok &&
+    emergencyContactResult.value.body.emergencyPhone
+      ? `+91 ${emergencyContactResult.value.body.emergencyPhone}`
+      : `+91 ${vetAtHomePhoneNumber}`
+  const emergencyWhatsAppNumber = emergencyContactNumber.replace(/\D/g, "")
+
+  const whatsappBookingLink = `https://wa.me/${emergencyWhatsAppNumber}?text=Hello%2C%20I%27d%20like%20to%20book%20a%20Vet-At-Home%20appointment.`
+
+  const faqs = useMemo(
+    () => getFaqs(emergencyContactNumber),
+    [emergencyContactNumber],
+  )
 
   useEffect(() => {
     const fetchHomeVisitFeatureFlag = async () => {
@@ -322,11 +332,6 @@ export default function VetAtHomePage() {
   const isHomeVisitEnabled =
     homeVisitFeatureFlagResult?.ok &&
     homeVisitFeatureFlagResult.value.body.enableHomeVisits
-  const emergencyContactNumber =
-    emergencyContactResult?.ok &&
-    emergencyContactResult.value.body.emergencyPhone
-      ? emergencyContactResult.value.body.emergencyPhone
-      : vetAtHomePhoneNumber
 
   return (
     <main className="w-full pb-20 md:pb-0">
@@ -425,7 +430,7 @@ export default function VetAtHomePage() {
               )}
 
               <Link
-                href="https://wa.me/919740141212"
+                href={`https://wa.me/${emergencyWhatsAppNumber}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-open-sans btn rounded-full text-white px-4 md:px-10 py-2 tracking-wider text-xs md:text-base border border-white bg-transparent hover:bg-white/10"
@@ -922,7 +927,7 @@ export default function VetAtHomePage() {
               )}
 
               <Link
-                href="https://wa.me/919740141212"
+                href={`https://wa.me/${emergencyWhatsAppNumber}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-open-sans btn rounded-full border border-[#5281a2] bg-white px-5 py-2 text-xs tracking-wider text-[#5281a2] transition-colors hover:bg-[#5281a2] hover:text-white md:px-10 md:text-base"
@@ -948,7 +953,7 @@ export default function VetAtHomePage() {
                 Support Helpline
               </p>
               <p className="mt-3 text-base font-semibold text-primary-1 md:text-xl">
-                +91 9740141212
+                {emergencyContactNumber}
               </p>
             </article>
 
