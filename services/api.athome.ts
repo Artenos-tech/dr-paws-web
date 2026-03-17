@@ -300,6 +300,20 @@ export type AtHomeAPIClient = {
     >
   >
 
+  getEmergencyContact: (
+    params: Record<string, never>,
+    opts?: { abortSignal?: AbortSignal },
+  ) => Promise<
+    Result<
+      APIResponse<{
+        status: number
+        message: string
+        emergencyPhone: string | null
+      }>,
+      any
+    >
+  >
+
   checkLocationServiceability: (
     params: { location: { lat: number; long: number } },
     opts?: { abortSignal?: AbortSignal },
@@ -775,6 +789,18 @@ export const mockAtHomeClient: AtHomeAPIClient = {
         data: {
           pincodes: ["560034", "560038", "560066", "560095", "560100"],
         },
+      },
+    })
+  },
+
+  getEmergencyContact: async (params, opts) => {
+    await delay(500, opts?.abortSignal)
+    return ok({
+      status: 200,
+      body: {
+        status: 200,
+        message: "Emergency contact fetched successfully",
+        emergencyPhone: "1234567899",
       },
     })
   },
@@ -1286,6 +1312,17 @@ const endpointConfig = {
       data: z.object({
         pincodes: z.array(z.string()),
       }),
+    }),
+    errorResponseSchema: z.object({}),
+  },
+
+  getEmergencyContact: {
+    method: "GET" as const,
+    path: "/config/emergency-contact",
+    pathParamsSchema: z.object({}),
+    requestSchema: z.object({}),
+    responseSchema: z.object({
+      emergencyPhone: z.string().nullable(),
     }),
     errorResponseSchema: z.object({}),
   },
