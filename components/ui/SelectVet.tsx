@@ -601,44 +601,35 @@ const SelectVet: React.FC<selectVetProps> = ({
   }
 
   const handleApplyCoupon = async () => {
-    if (!couponCode.trim()) {
+    const trimmedCouponCode = couponCode.trim()
+
+    if (!trimmedCouponCode) {
       toast.error("Please enter a coupon code")
       setCouponError("Please enter a coupon code.")
       setAppliedCoupon(null)
       return
     }
-    if (!/^[A-Z0-9]{6}$/.test(couponCode.trim())) {
-      toast.error("Invalid coupon code format. Please enter a valid code.")
-      setCouponError("Invalid coupon code format. Please enter a valid code.")
-      setAppliedCoupon(null)
-      return
-    }
     try {
       const resp = await applyCouponCode({
-        code: couponCode,
+        code: trimmedCouponCode,
         appt_start: selectedSlot?.startTime ?? "",
       })
       if (resp.ok) {
         toast.success("Coupon applied!")
         setCouponError(null)
-        setAppliedCoupon(couponCode)
+        setAppliedCoupon(trimmedCouponCode)
       } else {
         const errorMessage =
           resp.error.apiClientErrorType === "ErrorResponseAPIError"
             ? resp.error.body.message
             : "Invalid coupon code. Please try again."
+        toast.error(errorMessage)
+        setCouponError(errorMessage)
         if (
-          errorMessage === "Coupon code not applicable for the selected slot"
+          errorMessage !== "Coupon code not applicable for the selected slot"
         ) {
-          toast.error(errorMessage)
-          setCouponError(errorMessage)
-          setAppliedCoupon(null)
-          return
+          setCouponCode("")
         }
-
-        toast.error("Invalid coupon code. Please try again.")
-        setCouponError("Invalid coupon code. Please try again.")
-        setCouponCode("")
         setAppliedCoupon(null)
       }
     } catch (error) {
