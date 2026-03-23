@@ -93,6 +93,12 @@ const Footer = () => {
             >
               Terms & Conditions
             </Link>
+            <Link
+              href="/vet-at-home-terms"
+              className="block mt-1 text-primary-1 hover:text-primary-2"
+            >
+              Vet-At-Home T&amp;C
+            </Link>
             {/* <Link
                 href="/membership"
                 className="block mt-1 text-primary-1 hover:text-primary-2"
