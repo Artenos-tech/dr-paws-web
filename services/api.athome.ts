@@ -413,6 +413,7 @@ export type AtHomeAPIClient = {
         | "FOLLOW_UP"
         | "OTHER"
       notes: string
+      booking_flow_session_id?: string
     },
     opts?: { abortSignal?: AbortSignal },
   ) => Promise<
@@ -1448,6 +1449,7 @@ const endpointConfig = {
         "OTHER",
       ]),
       notes: z.string(),
+      booking_flow_session_id: z.string().uuid().optional(),
     }),
     responseSchema: z.object({
       data: z.object({

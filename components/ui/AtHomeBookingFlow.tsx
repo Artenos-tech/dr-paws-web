@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useRef } from "react"
+import React, { useEffect, useReducer, useRef, useState } from "react"
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md"
 import SelectAddress from "./SelectAddress"
 import SelectPet from "./SelectPet"
@@ -7,6 +7,7 @@ import SelectDateTimeForVisit from "./SelectDateTimeForVisit"
 import ConfirmationModal from "./ConfirmationModal"
 import { useAPICall } from "@/hooks/apicall"
 import atHomeApiClient from "@/services/api.athome"
+import api from "@/services/api"
 import { ReasonForVisitEnum } from "@/model/typeDefinitions"
 import { load } from "@cashfreepayments/cashfree-js"
 import toast from "react-hot-toast"
@@ -159,6 +160,11 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
   const [paymentAmount, setPaymentAmount] = React.useState<number | null>(null)
   const [isLoadingPaymentAmount, setIsLoadingPaymentAmount] =
     React.useState(false)
+  const [bookingFlowSessionId, setBookingFlowSessionId] = useState<
+    string | null
+  >(null)
+  const hasHandedOffToPaymentRef = useRef(false)
+  const lastTrackedStepRef = useRef<number | null>(null)
 
   const {
     currentStep,
@@ -171,6 +177,69 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
   const { call: createPaymentOrder } = useAPICall(
     atHomeApiClient.createPaymentOrder,
   )
+  const { call: startBookingFlow } = useAPICall(api.startBookingFlow)
+  const { call: updateBookingFlowStep } = useAPICall(api.updateBookingFlowStep)
+  const { call: abandonBookingFlow } = useAPICall(api.abandonBookingFlow)
+  const trackStep = async (sessionId: string, stepNumber: number) => {
+    if (stepNumber < 1 || stepNumber === lastTrackedStepRef.current) return
+    lastTrackedStepRef.current = stepNumber
+    try {
+      const result = await updateBookingFlowStep({
+        session_id: sessionId,
+        step_number: stepNumber,
+      })
+      if (!result.ok) {
+        console.warn("Failed to track booking flow step", result.error)
+      }
+    } catch (e) {
+      console.warn("Failed to track booking flow step", e)
+    }
+  }
+
+  useEffect(() => {
+    const startSession = async () => {
+      try {
+        const result = await startBookingFlow({
+          booking_flow_type: "HOME_VISIT",
+          platform: "WEB",
+        })
+        if (!result.ok) {
+          console.warn("Failed to start booking flow session", result.error)
+          return
+        }
+        const sessionId = result.value.body.data.session.id
+        setBookingFlowSessionId(sessionId)
+        await trackStep(sessionId, 1)
+      } catch (e) {
+        console.warn("Failed to start booking flow session", e)
+      }
+    }
+    startSession()
+  }, [])
+
+  useEffect(() => {
+    if (!bookingFlowSessionId || currentStep <= 1) return
+    void trackStep(bookingFlowSessionId, currentStep)
+  }, [currentStep, bookingFlowSessionId])
+
+  useEffect(() => {
+    return () => {
+      if (!bookingFlowSessionId || hasHandedOffToPaymentRef.current) return
+      const abandonSession = async () => {
+        try {
+          const result = await abandonBookingFlow({
+            session_id: bookingFlowSessionId,
+          })
+          if (!result.ok) {
+            console.warn("Failed to abandon booking flow session", result.error)
+          }
+        } catch (e) {
+          console.warn("Failed to abandon booking flow session", e)
+        }
+      }
+      abandonSession()
+    }
+  }, [bookingFlowSessionId])
   const { call: getHomeVisitPaymentAmount } = useAPICall(
     atHomeApiClient.getHomeVisitPaymentAmount,
   )
@@ -238,6 +307,11 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
     const reasonForVisit = VISIT_REASONS.find(
       (reason) => reason.label === bookingDetails.reasonForVisit,
     )?.key
+
+    if (bookingFlowSessionId) {
+      void trackStep(bookingFlowSessionId, 5)
+    }
+
     const createPaymentOrderResult = await createPaymentOrder({
       pet_id: appointmentData.petId as string,
       address_id: appointmentData.addressId as string,
@@ -246,9 +320,11 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
       booking_date: convertBookingDateToIso(appointmentData.date as string),
       reason_for_visit: reasonForVisit as ReasonForVisitEnum,
       notes: bookingDetails.reasonDescription as string,
+      booking_flow_session_id: bookingFlowSessionId ?? undefined,
     })
 
     if (createPaymentOrderResult?.ok) {
+      hasHandedOffToPaymentRef.current = true
       dispatch({ type: "BOOKING_CONFIRMED" })
       const { paymentSessionId, orderId } =
         createPaymentOrderResult.value.body.data.order

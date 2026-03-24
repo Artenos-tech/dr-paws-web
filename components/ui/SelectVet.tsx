@@ -40,6 +40,7 @@ interface selectVetProps {
   groomingCatalogueKeys: string[]
   isGrooming: boolean
   isReschedule: boolean
+  bookingFlowSessionId?: string | null
   existingAppointment?: {
     appointmentId: string
     subBookingId: string
@@ -71,6 +72,7 @@ const SelectVet: React.FC<selectVetProps> = ({
   isGrooming,
   onNext,
   isReschedule,
+  bookingFlowSessionId,
   existingAppointment,
   onRescheduleError,
 }) => {
@@ -426,6 +428,7 @@ const SelectVet: React.FC<selectVetProps> = ({
             pet_type: "DOG" | "CAT" | "OTHER"
             is_grooming: boolean
             coupon_code?: string
+            booking_flow_session_id?: string
           } = {
             vet_id:
               selectedDoctor.id === BEST_AVAILABLE_VET_ID && chosenVetId
@@ -443,6 +446,9 @@ const SelectVet: React.FC<selectVetProps> = ({
             ...(appliedCoupon && {
               coupon_code: appliedCoupon,
             }),
+          }
+          if (bookingFlowSessionId) {
+            payload.booking_flow_session_id = bookingFlowSessionId
           }
           if (isGrooming && groomingCatalogueKeys.length > 0) {
             payload.catalogue_keys = groomingCatalogueKeys
