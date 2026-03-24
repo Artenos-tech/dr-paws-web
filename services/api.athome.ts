@@ -1305,7 +1305,7 @@ const endpointConfig = {
 
   getServiceablePincodes: {
     method: "GET" as const,
-    path: "/booking/at-home/serviceable-pincodes",
+    path: "/at-home/location/serviceable-pincodes",
     pathParamsSchema: z.object({}),
     requestSchema: z.object({}),
     responseSchema: z.object({
