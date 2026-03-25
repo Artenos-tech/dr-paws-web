@@ -374,7 +374,11 @@ export default function VetAtHomePage() {
           <div className="flex h-full w-full items-center lg:w-[35%]">
             <div className="w-full px-6 md:px-12 lg:px-16 xl:px-24">
               <div className="max-w-[560px]">
-                <span className="mb-7 block h-[2px] w-16 bg-gradient-to-r from-[#e8a44a] to-[#f0c474]" />
+                <img
+                  src="/assets/images/VAHByDrPaws.png"
+                  alt="Vet at Home by Dr. Paws"
+                  className="mb-6 h-auto w-[clamp(10rem,17vw,15rem)]"
+                />
 
                 <p className="mb-5 text-[11px] font-medium uppercase tracking-[0.22em] text-[#e8a44a]">
                   Premium At-Home Veterinary Care
