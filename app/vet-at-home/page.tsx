@@ -270,7 +270,7 @@ export default function VetAtHomePage() {
 
   useEffect(() => {
     const fetchHomeVisitFeatureFlag = async () => {
-      await getHomeVisitFeatureFlag({ platform: "web"})
+      await getHomeVisitFeatureFlag({ platform: "web" })
     }
     const fetchEmergencyContact = async () => {
       await getEmergencyContact({})
