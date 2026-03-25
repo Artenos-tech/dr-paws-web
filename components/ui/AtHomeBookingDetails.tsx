@@ -25,6 +25,8 @@ import atHomeApiClient from "@/services/api.athome"
 import RescheduleAtHomeAppointment from "./RescheduleAtHomeAppointment"
 import SupportActions from "./SupportActions"
 import { useAPIErrorToastFromResult } from "@/hooks/useAPIErrorToast"
+import SOSActivatedBanner from "./SOSActivatedBanner"
+import SOSConfirmationModal from "./SOSConfirmationModal"
 
 type AtHomeBookingDetailsProps = {
   goBack: (refetch: boolean) => void
@@ -46,8 +48,16 @@ const AtHomeBookingDetails = ({
     "CANCEL" | "RESCHEDULE" | null
   >(null)
   const [refundStatus, setRefundStatus] = useState<RefundStatus>()
+  const [showSOSModal, setShowSOSModal] = useState(false)
+  const [isSOSActive, setIsSOSActive] = useState(
+    selectedAppointment.sos_status === "ACTIVE",
+  )
   const { call: cancelAppointment, result: cancelAppointmentResult } =
     useAPICall(atHomeApiClient.cancelAppointmentV2)
+  const { call: raiseSOSAlert, result: raiseSOSResult, loading: raisingSOS } =
+    useAPICall(atHomeApiClient.raiseSOSAlert)
+  const { call: cancelSOSAlert, result: cancelSOSResult, loading: cancellingSOS } =
+    useAPICall(atHomeApiClient.cancelSOSAlert)
   const parsedDate = parseISO(selectedAppointment.booking_date)
 
   useEffect(() => {
@@ -214,6 +224,42 @@ const AtHomeBookingDetails = ({
     fallbackMessage: "Failed to cancel appointment",
   })
 
+  const handleRaiseSOS = async (description?: string) => {
+    setShowSOSModal(false)
+    await raiseSOSAlert({
+      appointment_id: selectedAppointment.id,
+      sub_booking_id: selectedAppointment.sub_booking_id,
+      description,
+    })
+  }
+
+  const handleCancelSOS = async () => {
+    await cancelSOSAlert({
+      appointment_id: selectedAppointment.id,
+      sub_booking_id: selectedAppointment.sub_booking_id,
+    })
+  }
+
+  useEffect(() => {
+    if (raiseSOSResult?.ok) {
+      setIsSOSActive(true)
+      toast.success("SOS alert raised. Our team will contact you shortly.")
+    }
+  }, [raiseSOSResult])
+  useAPIErrorToastFromResult(raiseSOSResult, {
+    fallbackMessage: "Failed to raise SOS alert",
+  })
+
+  useEffect(() => {
+    if (cancelSOSResult?.ok) {
+      setIsSOSActive(false)
+      toast.success("SOS alert cancelled.")
+    }
+  }, [cancelSOSResult])
+  useAPIErrorToastFromResult(cancelSOSResult, {
+    fallbackMessage: "Failed to cancel SOS alert",
+  })
+
   const handleNavigation = () => {
     if (view === "CONFIRM_ACTION" || view === "RESCHEDULE") {
       setView("DETAILS")
@@ -263,6 +309,12 @@ const AtHomeBookingDetails = ({
           subBookingId={selectedAppointment.sub_booking_id}
         />
       )}
+      <SOSConfirmationModal
+        open={showSOSModal}
+        loading={raisingSOS}
+        onConfirm={handleRaiseSOS}
+        onCancel={() => setShowSOSModal(false)}
+      />
       {view === "DETAILS" && (
         <div className="flex flex-col items-center gap-6 mt-6">
           <div className="flex items-center gap-2">
@@ -319,6 +371,13 @@ const AtHomeBookingDetails = ({
               }
             </div>
 
+            {isSOSActive && (
+              <SOSActivatedBanner
+                onCancelSOS={handleCancelSOS}
+                loading={cancellingSOS}
+                onCallUs={copyHelpline}
+              />
+            )}
             {isVisitFinished && (
               <>
                 <div className="space-y-1">
@@ -332,7 +391,7 @@ const AtHomeBookingDetails = ({
                 <SupportActions
                   isVisitFinished
                   onCallUs={copyHelpline}
-                  onSOS={() => {}}
+                  onSOS={!isSOSActive ? () => setShowSOSModal(true) : undefined}
                 />
 
                 <AtHomeVisitStatus
@@ -431,7 +490,10 @@ const AtHomeBookingDetails = ({
             {(!isVisitFinished || canShowCancelActions) && (
               <div className="pt-4 border-t space-y-4">
                 {!isVisitFinished && (
-                  <SupportActions onCallUs={copyHelpline} onSOS={() => {}} />
+                  <SupportActions
+                    onCallUs={copyHelpline}
+                    onSOS={!isSOSActive ? () => setShowSOSModal(true) : undefined}
+                  />
                 )}
 
                 {canShowCancelActions && (

@@ -531,6 +531,7 @@ export type AtHomeAPIClient = {
   raiseSOSAlert: (
     params: {
       appointment_id: string
+      sub_booking_id: string
       description?: string
     },
     opts?: { abortSignal?: AbortSignal },
@@ -550,6 +551,7 @@ export type AtHomeAPIClient = {
   cancelSOSAlert: (
     params: {
       appointment_id: string
+      sub_booking_id: string
     },
     opts?: { abortSignal?: AbortSignal },
   ) => Promise<
@@ -1550,8 +1552,11 @@ const endpointConfig = {
 
   raiseSOSAlert: {
     method: "PUT" as const,
-    path: "/user/appointment/{appointment_id}/sos/alert",
-    pathParamsSchema: z.object({ appointment_id: z.string().uuid() }),
+    path: "/user/appointment/{appointment_id}/sos/alert?sub_booking_id={sub_booking_id}",
+    pathParamsSchema: z.object({
+      appointment_id: z.string().uuid(),
+      sub_booking_id: z.string().uuid(),
+    }),
     requestSchema: z.object({
       description: z.string().optional(),
     }),
@@ -1565,8 +1570,11 @@ const endpointConfig = {
 
   cancelSOSAlert: {
     method: "PUT" as const,
-    path: "/user/appointment/{appointment_id}/sos/cancel",
-    pathParamsSchema: z.object({ appointment_id: z.string().uuid() }),
+    path: "/user/appointment/{appointment_id}/sos/cancel?sub_booking_id={sub_booking_id}",
+    pathParamsSchema: z.object({
+      appointment_id: z.string().uuid(),
+      sub_booking_id: z.string().uuid(),
+    }),
     requestSchema: z.object({}),
     responseSchema: z.object({
       data: z.object({
