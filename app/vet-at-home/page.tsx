@@ -350,116 +350,125 @@ export default function VetAtHomePage() {
         </div>
       )}
 
-      <section className="relative min-h-[calc(100vh-4rem)] overflow-hidden">
-        <img
-          src="https://images.unsplash.com/photo-1644675272883-0c4d582528d8?auto=format&fit=crop&fm=jpg&q=80&w=2400"
-          alt=""
-          aria-hidden="true"
-          className="absolute inset-0 h-full w-full object-cover object-center"
-        />
-        <div className="absolute inset-0 z-[1] bg-black/40" />
-
-        {/* HERO CONTENT */}
-        <div className="relative z-10 flex min-h-[calc(100vh-4rem)] items-center px-[clamp(2rem,10vw,10rem)] py-[clamp(2rem,5vw,5rem)]">
-          <div className="max-w-[580px]">
-            {/* Amber accent line */}
-            <span className="mb-7 block h-[2px] w-16 bg-gradient-to-r from-[#e8a44a] to-[#f0c474]" />
-
-            {/* Eyebrow */}
-            <p className="mb-5 text-[11px] font-medium uppercase tracking-[0.22em] text-[#e8a44a]">
-              Premium At-Home Veterinary Care
-            </p>
-
-            {/* Headline */}
-            <h1 className="mb-7 text-[clamp(2.5rem,5.5vw,4.6rem)] font-black leading-[1.07] tracking-[-0.02em] text-[#faf6f0]">
-              Dr. Paws Expertise.
-              <br />
-              Now At Your <em className="italic text-[#f0c474]">Doorstep.</em>
-            </h1>
-
-            {/* Body copy */}
-            <p className="mb-9 max-w-[500px] text-[clamp(0.95rem,1.5vw,1.08rem)] font-light leading-[1.78] text-white">
-              Professional veterinary care delivered right to your home.
-              <br />
-              Skip the travel, avoid the stress, and let your pet receive expert
-              care where they feel most comfortable.
-            </p>
-
-            {/* Trust badges */}
-            <div className="mb-12 flex flex-col gap-3">
-              {[
-                "Trusted by 17,000+ pet parents",
-                "5.0\u2605 rated veterinary clinics",
-                "Experienced veterinary doctors",
-              ].map((text) => (
-                <div
-                  key={text}
-                  className="flex items-center gap-[11px] text-[0.88rem] font-normal text-white"
-                >
-                  <span className="flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full border border-[rgba(232,164,74,0.55)] bg-[rgba(232,164,74,0.2)] text-[#e8a44a]">
-                    <svg
-                      width="11"
-                      height="11"
-                      viewBox="0 0 12 12"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2.2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <polyline points="2,6 5,9 10,3" />
-                    </svg>
-                  </span>
-                  {text}
-                </div>
-              ))}
-            </div>
-
-            {/* CTA buttons */}
-            <div className="flex flex-wrap gap-[14px]">
-              {isCheckingHomeVisitFeatureFlag && (
-                <div className="animate-pulse h-10 w-48 rounded-full bg-white/20" />
-              )}
-              {!isCheckingHomeVisitFeatureFlag && isHomeVisitEnabled && (
-                <Link
-                  href="/user/book-appointment?home=true"
-                  className="font-open-sans btn rounded-full text-white px-4 md:px-10 py-2 tracking-wider text-xs md:text-base bg-secondary-1"
-                >
-                  Book an At-Home Visit
-                </Link>
-              )}
-
-              <Link
-                href={`https://wa.me/${emergencyWhatsAppNumber}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-open-sans btn rounded-full text-white px-4 md:px-10 py-2 tracking-wider text-xs md:text-base border border-white bg-transparent hover:bg-white/10"
-              >
-                Chat on WhatsApp
-              </Link>
-            </div>
-          </div>
+      <section className="relative h-screen overflow-hidden bg-[#f8f1e5]">
+        <div className="absolute inset-0 lg:hidden">
+          <img
+            src="/assets/images/VAH_Pic1.png"
+            alt=""
+            aria-hidden="true"
+            className="h-full w-full object-cover object-center opacity-[0.08]"
+          />
         </div>
 
-        {/* Floating stat cards */}
-        <div className="absolute bottom-[clamp(3rem,8vh,5rem)] right-[clamp(2rem,6vw,6rem)] z-10 hidden flex-col gap-3 min-[769px]:flex">
+        <div className="absolute inset-y-0 right-0 hidden w-[65%] overflow-hidden lg:block">
+          <img
+            src="/assets/images/VAH_Pic1.png"
+            alt="Veterinarian examining a black dog at home"
+            className="h-full w-full object-cover object-center"
+          />
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-20 bg-[linear-gradient(90deg,#f8f1e5_0%,rgba(248,241,229,0.86)_48%,rgba(248,241,229,0)_100%)]" />
+          <div className="pointer-events-none absolute inset-y-0 -left-16 w-32 bg-[linear-gradient(90deg,#f8f1e5_0%,rgba(248,241,229,0.94)_38%,rgba(248,241,229,0)_100%)] blur-2xl" />
+        </div>
+
+        <div className="relative z-10 flex h-full">
+          <div className="flex h-full w-full items-center lg:w-[35%]">
+            <div className="w-full px-6 md:px-12 lg:px-16 xl:px-24">
+              <div className="max-w-[560px]">
+                <span className="mb-7 block h-[2px] w-16 bg-gradient-to-r from-[#e8a44a] to-[#f0c474]" />
+
+                <p className="mb-5 text-[11px] font-medium uppercase tracking-[0.22em] text-[#e8a44a]">
+                  Premium At-Home Veterinary Care
+                </p>
+
+                <h1 className="mb-6 text-[clamp(2.2rem,4vw,4.4rem)] font-thin leading-[0.98] tracking-[-0.04em] text-primary-1">
+                  Dr. Paws Expertise.
+                  <br />
+                  Now At Your Doorstep.
+                </h1>
+
+                <p className="mb-6 max-w-[500px] text-[clamp(1.05rem,1.6vw,1.18rem)] uppercase font-light leading-[1.78] text-primary-1">
+                  Skip the travel, avoid the stress,
+                  <br />
+                  and let your pet receive expert
+                  care where they feel most comfortable.
+                </p>
+
+                <div className="mb-12 flex flex-col gap-3">
+                  {[
+                    "Trusted by 17,000+ pet parents",
+                    "5.0\u2605 rated veterinary clinics",
+                    "Experienced veterinary doctors",
+                  ].map((text) => (
+                    <div
+                      key={text}
+                      className="flex items-center gap-[11px] text-[0.9rem] font-semibold uppercase text-primary-1"
+                    >
+                      <span className="flex h-[24px] w-[24px] shrink-0 items-center justify-center rounded-full border border-[#d6c29d] bg-[#fff5de] text-[#94662e]">
+                        <svg
+                          width="11"
+                          height="11"
+                          viewBox="0 0 12 12"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2.2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <polyline points="2,6 5,9 10,3" />
+                        </svg>
+                      </span>
+                      {text}
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex flex-wrap gap-[14px] lg:flex-nowrap lg:items-center lg:gap-3">
+                  {isCheckingHomeVisitFeatureFlag && (
+                    <div className="h-10 w-48 animate-pulse rounded-full bg-primary-1/10 lg:w-[48%]" />
+                  )}
+                  {!isCheckingHomeVisitFeatureFlag && isHomeVisitEnabled && (
+                    <Link
+                      href="/user/book-appointment?home=true"
+                      className="font-open-sans btn rounded-full border border-[#efbf73] bg-primary-2 px-5 py-3 text-xs font-semibold uppercase tracking-[0.12em] text-primary-1 shadow-[0_8px_18px_rgba(51,73,95,0.14)] transition-transform hover:translate-y-[-1px] md:px-10 md:text-base lg:flex-none lg:px-7 lg:py-3 lg:text-sm lg:whitespace-nowrap xl:px-8"
+                    >
+                      Book an At-Home Visit
+                    </Link>
+                  )}
+
+                  <Link
+                    href={`https://wa.me/${emergencyWhatsAppNumber}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-open-sans btn rounded-full border border-[#b0bb96] bg-secondary-2 px-5 py-3 text-xs font-semibold uppercase tracking-[0.12em] text-white shadow-[0_8px_18px_rgba(51,73,95,0.12)] transition-transform hover:translate-y-[-1px] md:px-10 md:text-base lg:flex-none lg:px-7 lg:py-3 lg:text-sm lg:whitespace-nowrap xl:px-8"
+                  >
+                    WhatsApp
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="pointer-events-none hidden lg:block lg:w-[65%]" />
+        </div>
+
+        <div className="absolute bottom-8 right-8 z-20 hidden flex-col gap-3 lg:flex">
           {[
             { num: "17k+", label: "Happy Pet Parents" },
             { num: "5.0\u2605", label: "Average Rating" },
           ].map(({ num, label }) => (
             <div
               key={label}
-              className="min-w-40 rounded-[6px] border border-[rgba(232,164,74,0.25)] bg-[rgba(10,7,5,0.45)] px-6 py-[18px]"
+              className="min-w-40 rounded-[6px] border border-[rgba(148,102,46,0.14)] bg-[rgba(255,255,255,0.82)] px-6 py-[18px] backdrop-blur-md"
             >
-              <div className="mb-1 text-[1.85rem] font-bold leading-none text-[#f0c474]">
+              <div className="mb-1 text-[1.85rem] font-bold leading-none text-[#94662e]">
                 {num}
               </div>
-              <div className="text-[0.72rem] font-normal uppercase tracking-[0.08em] text-[rgba(250,246,240,0.7)]">
+              <div className="text-[0.72rem] font-normal uppercase tracking-[0.08em] text-primary-1/70">
                 {label}
               </div>
             </div>
           ))}
-        </div>
+          </div>
       </section>
 
       <section className="relative overflow-hidden bg-white py-10 md:py-12">
