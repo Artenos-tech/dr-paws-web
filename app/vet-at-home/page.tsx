@@ -350,7 +350,7 @@ export default function VetAtHomePage() {
         </div>
       )}
 
-      <section className="relative h-screen overflow-hidden bg-[#f8f1e5]">
+      <section className="relative h-[94vh] overflow-hidden bg-[#f8f1e5]">
         <div className="absolute inset-0 lg:hidden">
           <img
             src="/assets/images/VAH_Pic1.png"
@@ -377,27 +377,27 @@ export default function VetAtHomePage() {
                 <img
                   src="/assets/images/VAHByDrPaws.png"
                   alt="Vet at Home by Dr. Paws"
-                  className="mb-6 h-auto w-[clamp(10rem,17vw,15rem)]"
+                  className="mb-4 h-auto w-[clamp(10rem,17vw,15rem)]"
                 />
 
-                <p className="mb-5 text-[11px] font-medium uppercase tracking-[0.22em] text-[#e8a44a]">
+                <p className="mb-4 inline-flex rounded-full border border-[#efbf73] bg-primary-2 px-3 py-1 text-[0.9rem] font-semibold uppercase tracking-[0.12em] text-primary-1 shadow-[0_6px_16px_rgba(51,73,95,0.12)]">
                   Premium At-Home Veterinary Care
                 </p>
 
-                <h1 className="mb-6 text-[clamp(2.2rem,4vw,4.4rem)] font-thin leading-[0.98] tracking-[-0.04em] text-primary-1">
+                <h1 className="mb-4 text-[clamp(2.2rem,4vw,4.4rem)] font-thin leading-[0.98] tracking-[-0.04em] text-primary-1">
                   Dr. Paws Expertise.
                   <br />
                   Now At Your Doorstep.
                 </h1>
 
-                <p className="mb-6 max-w-[500px] text-[clamp(1.05rem,1.6vw,1.18rem)] uppercase font-light leading-[1.78] text-primary-1">
+                <p className="mb-4 max-w-[500px] text-[clamp(1.05rem,1.6vw,1.18rem)] uppercase font-light leading-[1.78] text-primary-1">
                   Skip the travel, avoid the stress,
                   <br />
                   and let your pet receive expert
                   care where they feel most comfortable.
                 </p>
 
-                <div className="mb-12 flex flex-col gap-3">
+                <div className="mb-6 flex flex-col gap-3">
                   {[
                     "Trusted by 17,000+ pet parents",
                     "5.0\u2605 rated veterinary clinics",
