@@ -17,5 +17,6 @@ export function useHomeVisitFeature() {
     isFeatureEnabled:
       result?.ok === true && result.value.body.enableHomeVisits === true,
     isLoading: loading,
+    hasResolved: result !== undefined,
   }
 }

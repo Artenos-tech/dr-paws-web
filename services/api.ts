@@ -734,27 +734,6 @@ export default createAPIClient({
       errorResponseSchema: z.object({}),
     },
 
-    abandonBookingFlow: {
-      method: "PATCH",
-      path: "/booking/flow/{session_id}/abandon",
-      pathParamsSchema: z.object({
-        session_id: z.string().uuid(),
-      }),
-      requestSchema: z.object({}),
-      responseSchema: z.object({
-        data: z.object({
-          session: z.object({
-            id: z.string().uuid(),
-            status: z.enum(["ACTIVE", "COMPLETED", "ABANDONED"]),
-            last_step: z.string().nullable(),
-            abandoned_at: z.string().nullable(),
-            last_activity_at: z.string(),
-          }),
-        }),
-      }),
-      errorResponseSchema: z.object({}),
-    },
-
     createAppointment: {
       method: "POST",
       path: "/user/appointment",
