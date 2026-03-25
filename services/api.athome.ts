@@ -1227,7 +1227,7 @@ export const mockAtHomeClient: AtHomeAPIClient = {
 const endpointConfig = {
   getHomeVisitFeatureFlag: {
     method: "GET" as const,
-    path: "/config/home-visit-feature-flag",
+    path: "/config/home-visit-feature-flag?platform={platform}",
     pathParamsSchema: z.object({
       platform: z.enum(["web", "ios", "android"]),
     }),
