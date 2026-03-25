@@ -477,7 +477,7 @@ export default function VetAtHomePage() {
               </div>
             </div>
           ))}
-          </div>
+        </div>
       </section>
 
       <section className="relative overflow-hidden bg-white py-10 md:py-12">
