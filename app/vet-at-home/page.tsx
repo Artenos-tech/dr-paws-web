@@ -9,6 +9,7 @@ import {
   HeartPulse,
   MapPin,
   PawPrint,
+  Phone,
   PhoneCall,
   Star,
   Stethoscope,
@@ -30,6 +31,10 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
+
+type GTMEventPayload = {
+  event: "vet_at_home_whatsapp_click" | "vet_at_home_phone_click"
+}
 
 const vetAtHomePhoneNumber = "9740141212"
 
@@ -289,6 +294,19 @@ export default function VetAtHomePage() {
 
   const toggleFaq = (index: number) => {
     setOpenFaqIndex((prev) => (prev === index ? null : index))
+  }
+
+  const pushGtmEvent = (event: GTMEventPayload["event"]) => {
+    if (typeof window === "undefined") {
+      return
+    }
+
+    const windowWithDataLayer = window as Window & {
+      dataLayer?: GTMEventPayload[]
+    }
+
+    windowWithDataLayer.dataLayer = windowWithDataLayer.dataLayer || []
+    windowWithDataLayer.dataLayer.push({ event })
   }
 
   const handlePincodeInput = (value: string) => {
@@ -978,15 +996,29 @@ export default function VetAtHomePage() {
         </div>
       </section>
 
-      <Link
-        href={whatsappBookingLink}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="fixed bottom-6 right-4 z-50 inline-flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_12px_26px_rgba(37,211,102,0.45)] transition-transform hover:scale-105 md:bottom-8 md:right-8"
-        aria-label="Chat on WhatsApp"
-      >
-        <FaWhatsapp size={28} />
-      </Link>
+      <div className="fixed bottom-6 right-4 z-50 flex items-center gap-3 md:bottom-8 md:right-8">
+        <button
+          type="button"
+          onClick={() => {
+            pushGtmEvent("vet_at_home_phone_click")
+            handleCopyVetAtHomeNumber()
+          }}
+          className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-secondary-1 text-white shadow-lg transition-transform hover:scale-105"
+          aria-label="Copy phone number"
+        >
+          <Phone size={24} />
+        </button>
+        <Link
+          href={whatsappBookingLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => pushGtmEvent("vet_at_home_whatsapp_click")}
+          className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_12px_26px_rgba(37,211,102,0.45)] transition-transform hover:scale-105"
+          aria-label="Chat on WhatsApp"
+        >
+          <FaWhatsapp size={28} />
+        </Link>
+      </div>
     </main>
   )
 }
