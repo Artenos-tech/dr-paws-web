@@ -10,7 +10,7 @@ export function useHomeVisitFeature() {
   } = useAPICall(atHomeApiClient.getHomeVisitFeatureFlag)
 
   useEffect(() => {
-    getHomeVisitFeatureFlag({})
+    getHomeVisitFeatureFlag({ platform: "web" })
   }, [])
 
   return {
