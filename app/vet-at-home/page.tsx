@@ -360,7 +360,7 @@ export default function VetAtHomePage() {
           />
         </div>
 
-        <div className="absolute inset-y-0 right-0 hidden w-[65%] overflow-hidden lg:block">
+        <div className="absolute inset-y-0 right-0 hidden w-[67%] overflow-hidden lg:block">
           <img
             src="/assets/images/VAH_Pic1.png"
             alt="Veterinarian examining a black dog at home"
@@ -371,7 +371,7 @@ export default function VetAtHomePage() {
         </div>
 
         <div className="relative z-10 flex h-full">
-          <div className="flex h-full w-full items-center lg:w-[35%]">
+          <div className="flex h-full w-full items-center lg:w-[33%]">
             <div className="w-full px-6 md:px-12 lg:px-16 xl:px-24">
               <div className="max-w-[560px]">
                 <img
@@ -380,7 +380,7 @@ export default function VetAtHomePage() {
                   className="mb-4 h-auto w-[clamp(10rem,17vw,15rem)]"
                 />
 
-                <p className="mb-4 inline-flex rounded-full border border-[#efbf73] bg-primary-2 px-3 py-1 text-[0.9rem] font-semibold uppercase tracking-[0.12em] text-primary-1 shadow-[0_6px_16px_rgba(51,73,95,0.12)]">
+                <p className="mb-4 block text-[0.9rem] font-semibold uppercase tracking-[0.12em] text-primary-1 lg:inline-flex lg:w-fit lg:whitespace-nowrap lg:rounded-full lg:border lg:border-[#efbf73] lg:bg-primary-2 lg:px-3 lg:py-1 lg:shadow-[0_6px_16px_rgba(51,73,95,0.12)]">
                   Premium At-Home Veterinary Care
                 </p>
 
@@ -390,11 +390,16 @@ export default function VetAtHomePage() {
                   Now At Your Doorstep.
                 </h1>
 
-                <p className="mb-4 max-w-[500px] text-[clamp(1.05rem,1.6vw,1.18rem)] uppercase font-light leading-[1.78] text-primary-1">
-                  Skip the travel, avoid the stress,
-                  <br />
-                  and let your pet receive expert
-                  care where they feel most comfortable.
+                <p className="mb-4 max-w-[500px] text-[clamp(1.05rem,1.6vw,1.18rem)] uppercase leading-[1.78] text-primary-1">
+                  <span className="block lg:whitespace-nowrap">
+                    Skip the travel, avoid the stress,
+                  </span>
+                  <span className="block lg:whitespace-nowrap">
+                    and let your pet receive expert Care
+                  </span>
+                  <span className="block lg:whitespace-nowrap">
+                    where they feel most comfortable.
+                  </span>
                 </p>
 
                 <div className="mb-6 flex flex-col gap-3">
@@ -405,7 +410,7 @@ export default function VetAtHomePage() {
                   ].map((text) => (
                     <div
                       key={text}
-                      className="flex items-center gap-[11px] text-[0.9rem] font-semibold uppercase text-primary-1"
+                      className="flex items-center gap-[11px] text-[0.9rem] font-semibold uppercase text-primary-1 lg:whitespace-nowrap"
                     >
                       <span className="flex h-[24px] w-[24px] shrink-0 items-center justify-center rounded-full border border-[#d6c29d] bg-[#fff5de] text-[#94662e]">
                         <svg
@@ -433,7 +438,7 @@ export default function VetAtHomePage() {
                   {!isCheckingHomeVisitFeatureFlag && isHomeVisitEnabled && (
                     <Link
                       href="/user/book-appointment?home=true"
-                      className="font-open-sans btn rounded-full border border-[#efbf73] bg-primary-2 px-5 py-3 text-xs font-semibold uppercase tracking-[0.12em] text-primary-1 shadow-[0_8px_18px_rgba(51,73,95,0.14)] transition-transform hover:translate-y-[-1px] md:px-10 md:text-base lg:flex-none lg:px-7 lg:py-3 lg:text-sm lg:whitespace-nowrap xl:px-8"
+                      className="font-open-sans btn rounded-full border border-[#efbf73] bg-primary-2 px-4 py-2 text-xs font-bold uppercase tracking-[0.12em] text-primary-1 shadow-[0_8px_18px_rgba(51,73,95,0.14)] transition-transform hover:translate-y-[-1px] md:px-10 md:text-base lg:flex-none lg:px-7 lg:py-3 lg:text-sm lg:whitespace-nowrap xl:px-8"
                     >
                       Book an At-Home Visit
                     </Link>
@@ -443,7 +448,7 @@ export default function VetAtHomePage() {
                     href={`https://wa.me/${emergencyWhatsAppNumber}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="font-open-sans btn rounded-full border border-[#b0bb96] bg-secondary-2 px-5 py-3 text-xs font-semibold uppercase tracking-[0.12em] text-white shadow-[0_8px_18px_rgba(51,73,95,0.12)] transition-transform hover:translate-y-[-1px] md:px-10 md:text-base lg:flex-none lg:px-7 lg:py-3 lg:text-sm lg:whitespace-nowrap xl:px-8"
+                    className="font-open-sans btn rounded-full border border-[#b0bb96] bg-secondary-2 px-4 py-2 text-xs font-bold uppercase tracking-[0.12em] text-white shadow-[0_8px_18px_rgba(51,73,95,0.12)] transition-transform hover:translate-y-[-1px] md:px-10 md:text-base lg:flex-none lg:px-7 lg:py-3 lg:text-sm lg:whitespace-nowrap xl:px-8"
                   >
                     WhatsApp
                   </Link>
