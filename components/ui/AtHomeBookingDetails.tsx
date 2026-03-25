@@ -54,10 +54,16 @@ const AtHomeBookingDetails = ({
   )
   const { call: cancelAppointment, result: cancelAppointmentResult } =
     useAPICall(atHomeApiClient.cancelAppointmentV2)
-  const { call: raiseSOSAlert, result: raiseSOSResult, loading: raisingSOS } =
-    useAPICall(atHomeApiClient.raiseSOSAlert)
-  const { call: cancelSOSAlert, result: cancelSOSResult, loading: cancellingSOS } =
-    useAPICall(atHomeApiClient.cancelSOSAlert)
+  const {
+    call: raiseSOSAlert,
+    result: raiseSOSResult,
+    loading: raisingSOS,
+  } = useAPICall(atHomeApiClient.raiseSOSAlert)
+  const {
+    call: cancelSOSAlert,
+    result: cancelSOSResult,
+    loading: cancellingSOS,
+  } = useAPICall(atHomeApiClient.cancelSOSAlert)
   const parsedDate = parseISO(selectedAppointment.booking_date)
 
   useEffect(() => {
@@ -492,7 +498,9 @@ const AtHomeBookingDetails = ({
                 {!isVisitFinished && (
                   <SupportActions
                     onCallUs={copyHelpline}
-                    onSOS={!isSOSActive ? () => setShowSOSModal(true) : undefined}
+                    onSOS={
+                      !isSOSActive ? () => setShowSOSModal(true) : undefined
+                    }
                   />
                 )}
 
