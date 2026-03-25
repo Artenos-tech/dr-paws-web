@@ -181,7 +181,7 @@ const AppointmentDetailSchema = z
 
 export type AtHomeAPIClient = {
   getHomeVisitFeatureFlag: (
-    params: Record<string, never>,
+    params: { platform: "web" | "ios" | "android" },
     opts?: { abortSignal?: AbortSignal },
   ) => Promise<
     Result<
@@ -1228,7 +1228,9 @@ const endpointConfig = {
   getHomeVisitFeatureFlag: {
     method: "GET" as const,
     path: "/config/home-visit-feature-flag",
-    pathParamsSchema: z.object({}),
+    pathParamsSchema: z.object({
+      platform: z.enum(["web", "ios", "android"]),
+    }),
     requestSchema: z.object({}),
     responseSchema: z.object({
       status: z.number(),
