@@ -31,6 +31,7 @@ const SupportActions: React.FC<SupportActionsProps> = ({
           Call Us
         </button>
 
+        {/* SOS button temporarily hidden
         {onSOS && (
           <button
             onClick={onSOS}
@@ -40,6 +41,7 @@ const SupportActions: React.FC<SupportActionsProps> = ({
             SOS
           </button>
         )}
+        */}
       </div>
     </div>
   )
