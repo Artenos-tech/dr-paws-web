@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react"
-import { AlertTriangle, Phone } from "lucide-react"
+import { Phone } from "lucide-react"
 
 type SupportActionsProps = {
   isVisitFinished?: boolean
@@ -12,7 +12,6 @@ type SupportActionsProps = {
 const SupportActions: React.FC<SupportActionsProps> = ({
   isVisitFinished = false,
   onCallUs,
-  onSOS,
 }) => {
   return (
     <div className="space-y-1">
