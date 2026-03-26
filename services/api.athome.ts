@@ -37,10 +37,12 @@ const requestContext = initRequestContext()
 const AddressSchema = z.object({
   id: z.string().uuid(),
   tag: z.string(),
-  location: z.object({
-    lat: z.number(),
-    long: z.number(),
-  }).nullable(),
+  location: z
+    .object({
+      lat: z.number(),
+      long: z.number(),
+    })
+    .nullable(),
   address_line1: z.string(),
   address_line2: z.string(),
   pincode: z.string(),
