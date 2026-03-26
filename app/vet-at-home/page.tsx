@@ -353,28 +353,13 @@ export default function VetAtHomePage() {
 
   return (
     <main className="w-full pb-20 md:pb-0">
-      {(isCheckingHomeVisitFeatureFlag || isHomeVisitEnabled) && (
-        <div className="fixed right-6 top-24 z-40 hidden md:block">
-          {isCheckingHomeVisitFeatureFlag ? (
-            <div className="animate-pulse h-9 w-40 rounded-full bg-secondary-1/40" />
-          ) : (
-            <Link
-              href="/user/book-appointment?home=true"
-              className="font-open-sans btn rounded-full bg-secondary-1 px-6 py-2 text-sm tracking-wide text-white shadow-[0_10px_24px_rgba(51,73,95,0.2)]"
-            >
-              Book At-Home Visit
-            </Link>
-          )}
-        </div>
-      )}
-
       <section className="relative h-[94vh] overflow-hidden bg-[#f8f1e5]">
         <div className="absolute inset-0 lg:hidden">
           <img
             src="/assets/images/VAH_Pic1.png"
             alt=""
             aria-hidden="true"
-            className="h-full w-full object-cover object-center opacity-[0.08]"
+            className="h-full w-full object-cover object-center opacity-[0.30]"
           />
         </div>
 
@@ -398,7 +383,7 @@ export default function VetAtHomePage() {
                   className="mb-4 h-auto w-[clamp(10rem,17vw,15rem)]"
                 />
 
-                <p className="mb-4 block text-[0.9rem] font-semibold uppercase tracking-[0.12em] text-primary-1 lg:inline-flex lg:w-fit lg:whitespace-nowrap lg:rounded-full lg:border lg:border-[#efbf73] lg:bg-primary-2 lg:px-3 lg:py-1 lg:shadow-[0_6px_16px_rgba(51,73,95,0.12)]">
+                <p className="mb-4 inline-flex w-fit rounded-full border border-[#efbf73] bg-primary-2 px-3 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.1em] text-primary-1 shadow-[0_6px_16px_rgba(51,73,95,0.12)] sm:text-[0.78rem] lg:whitespace-nowrap lg:text-[0.9rem]">
                   Premium At-Home Veterinary Care
                 </p>
 
@@ -409,13 +394,13 @@ export default function VetAtHomePage() {
                 </h1>
 
                 <p className="mb-4 max-w-[500px] text-[clamp(1.05rem,1.6vw,1.18rem)] uppercase leading-[1.78] text-primary-1">
-                  <span className="block lg:whitespace-nowrap">
+                  <span className="inline lg:block lg:whitespace-nowrap">
                     Skip the travel, avoid the stress,
-                  </span>
-                  <span className="block lg:whitespace-nowrap">
-                    and let your pet receive expert Care
-                  </span>
-                  <span className="block lg:whitespace-nowrap">
+                  </span>{" "}
+                  <span className="inline lg:block lg:whitespace-nowrap">
+                    and let your pet receive expert care
+                  </span>{" "}
+                  <span className="inline lg:block lg:whitespace-nowrap">
                     where they feel most comfortable.
                   </span>
                 </p>
