@@ -141,13 +141,14 @@ const AddressPage = () => {
 
         setPincode(address.pincode)
 
-        const newPin = {
-          lat: address.location.lat,
-          lng: address.location.long,
+        if (address.location) {
+          const newPin = {
+            lat: address.location.lat,
+            lng: address.location.long,
+          }
+          setPin(newPin)
+          reverseGeocode(newPin)
         }
-
-        setPin(newPin)
-        reverseGeocode(newPin)
       } catch (err) {
         console.error(err)
         toast.error("Something went wrong while fetching address")
