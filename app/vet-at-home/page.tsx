@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { useEffect, useMemo, useState } from "react"
 import {
   ChevronDown,
@@ -31,6 +32,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
+import { useUserContext } from "@/context/UserContext"
 
 type GTMEventPayload = {
   event: "vet_at_home_whatsapp_click" | "vet_at_home_phone_click"
@@ -242,6 +244,8 @@ export default function VetAtHomePage() {
   const [isAmbulanceModalOpen, setIsAmbulanceModalOpen] = useState(false)
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0)
   const [pincodeInput, setPincodeInput] = useState("")
+  const router = useRouter()
+  const { isLoggedIn, initiateLogin } = useUserContext()
   const [pincodeStatus, setPincodeStatus] = useState<
     "idle" | "serviceable" | "notServiceable" | "invalid" | "error"
   >("idle")
@@ -347,27 +351,23 @@ export default function VetAtHomePage() {
     }
   }
 
+  const handleBookAtHomeVisit = () => {
+    const destination = "/user/book-appointment?home=true"
+
+    if (isLoggedIn) {
+      router.push(destination)
+      return
+    }
+
+    initiateLogin("Book an At-Home Visit", destination)
+  }
+
   const isHomeVisitEnabled =
     homeVisitFeatureFlagResult?.ok &&
     homeVisitFeatureFlagResult.value.body.enableHomeVisits
 
   return (
     <main className="w-full pb-20 md:pb-0">
-      {(isCheckingHomeVisitFeatureFlag || isHomeVisitEnabled) && (
-        <div className="fixed right-6 top-24 z-40 hidden md:block">
-          {isCheckingHomeVisitFeatureFlag ? (
-            <div className="animate-pulse h-9 w-40 rounded-full bg-secondary-1/40" />
-          ) : (
-            <Link
-              href="/user/book-appointment?home=true"
-              className="font-open-sans btn rounded-full bg-secondary-1 px-6 py-2 text-sm tracking-wide text-white shadow-[0_10px_24px_rgba(51,73,95,0.2)]"
-            >
-              Book At-Home Visit
-            </Link>
-          )}
-        </div>
-      )}
-
       <section className="relative h-[94vh] overflow-hidden bg-[#f8f1e5]">
         <div className="absolute inset-0 lg:hidden">
           <img
@@ -454,12 +454,13 @@ export default function VetAtHomePage() {
                     <div className="h-10 w-48 animate-pulse rounded-full bg-primary-1/10 lg:w-[48%]" />
                   )}
                   {!isCheckingHomeVisitFeatureFlag && isHomeVisitEnabled && (
-                    <Link
-                      href="/user/book-appointment?home=true"
+                    <button
+                      type="button"
+                      onClick={handleBookAtHomeVisit}
                       className="font-open-sans btn rounded-full border border-[#efbf73] bg-primary-2 px-4 py-2 text-xs font-bold uppercase tracking-[0.12em] text-primary-1 shadow-[0_8px_18px_rgba(51,73,95,0.14)] transition-transform hover:translate-y-[-1px] md:px-10 md:text-base lg:flex-none lg:px-7 lg:py-3 lg:text-sm lg:whitespace-nowrap xl:px-8"
                     >
                       Book an At-Home Visit
-                    </Link>
+                    </button>
                   )}
 
                   <Link
