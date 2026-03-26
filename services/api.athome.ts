@@ -37,14 +37,17 @@ const requestContext = initRequestContext()
 const AddressSchema = z.object({
   id: z.string().uuid(),
   tag: z.string(),
-  location: z.object({
-    lat: z.number(),
-    long: z.number(),
-  }),
+  location: z
+    .object({
+      lat: z.number(),
+      long: z.number(),
+    })
+    .nullable(),
   address_line1: z.string(),
   address_line2: z.string(),
   pincode: z.string(),
   directions: z.string().optional(),
+  has_coordinates: z.boolean(),
 })
 
 const BookingTypeSchema = z.object({
@@ -584,6 +587,7 @@ const mockAddresses: Array<z.infer<typeof AddressSchema>> = [
     address_line2: "Koramangala 4th Block",
     pincode: "560034",
     directions: "Near Sony Signal",
+    has_coordinates: true,
   },
   {
     id: generateUUID(),
@@ -592,6 +596,7 @@ const mockAddresses: Array<z.infer<typeof AddressSchema>> = [
     address_line1: "456 Park Avenue",
     address_line2: "Indiranagar 100 Feet Road",
     pincode: "560038",
+    has_coordinates: true,
   },
   {
     id: generateUUID(),
@@ -601,6 +606,7 @@ const mockAddresses: Array<z.infer<typeof AddressSchema>> = [
     address_line2: "Whitefield Main Road",
     pincode: "560066",
     directions: "Opposite Forum Mall",
+    has_coordinates: true,
   },
 ]
 
@@ -726,6 +732,7 @@ export const mockAtHomeClient: AtHomeAPIClient = {
       address_line2: params.address.address_line2,
       pincode: "560000", // Default pincode for mock
       directions: params.address.directions ?? undefined,
+      has_coordinates: true,
     }
 
     mockAddresses.push(newAddress)

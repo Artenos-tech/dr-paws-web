@@ -180,7 +180,7 @@ export type RefundStatus =
 export type Address = {
   id: string
   tag: string
-  location: { lat: number; long: number }
+  location: { lat: number; long: number } | null
   address_line1: string
   address_line2: string
   directions?: string

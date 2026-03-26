@@ -79,6 +79,8 @@ const SelectAddress = ({ handleConfirm, addressId }: SelectAddressProps) => {
             if (!isActive || abortController.signal.aborted) return
 
             try {
+              if (!address.location) return
+
               const result = await atHomeApiClient.checkLocationServiceability(
                 { location: address.location },
                 { abortSignal: abortController.signal },
