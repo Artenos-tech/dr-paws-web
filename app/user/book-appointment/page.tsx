@@ -118,7 +118,11 @@ const Booking: React.FC = () => {
     return <ClinicBookingFlow onBackToStart={handleBackToSelection} />
   }
 
-  if (!hasResolvedHomeVisitFeature || isLoadingFeatureFlag || loadingBookingTypes) {
+  if (
+    !hasResolvedHomeVisitFeature ||
+    isLoadingFeatureFlag ||
+    loadingBookingTypes
+  ) {
     return (
       <div className="flex justify-center items-center my-20">
         <ClipLoader color="#33495f" />
