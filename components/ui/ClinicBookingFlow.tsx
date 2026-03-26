@@ -23,10 +23,8 @@ const ClinicBookingFlow: React.FC<ClinicBookingFlowProps> = ({
     string | null
   >(null)
   const lastTrackedStepRef = useRef<number | null>(null)
-  const bookingCompletedRef = useRef(false)
   const { call: startBookingFlow } = useAPICall(api.startBookingFlow)
   const { call: updateBookingFlowStep } = useAPICall(api.updateBookingFlowStep)
-  const { call: abandonBookingFlow } = useAPICall(api.abandonBookingFlow)
   const [selectedAppointment, setSelectedAppointmentState] = useState<{
     selectedServiceId: string | null
     selectedService: string | null
@@ -99,25 +97,6 @@ const ClinicBookingFlow: React.FC<ClinicBookingFlowProps> = ({
     }
     startSession()
   }, [])
-
-  useEffect(() => {
-    return () => {
-      if (!bookingFlowSessionId || bookingCompletedRef.current) return
-      const abandonSession = async () => {
-        try {
-          const result = await abandonBookingFlow({
-            session_id: bookingFlowSessionId,
-          })
-          if (!result.ok) {
-            console.warn("Failed to abandon booking flow session", result.error)
-          }
-        } catch (e) {
-          console.warn("Failed to abandon booking flow session", e)
-        }
-      }
-      abandonSession()
-    }
-  }, [bookingFlowSessionId])
 
   useEffect(() => {
     const clinicId = searchParams.get("clinicId")
@@ -251,7 +230,6 @@ const ClinicBookingFlow: React.FC<ClinicBookingFlowProps> = ({
       {currentStep === 3 && (
         <SelectVet
           onNext={(createdAppointment) => {
-            bookingCompletedRef.current = true
             if (
               !createdAppointment?.appointmentId ||
               !createdAppointment.subBookingId

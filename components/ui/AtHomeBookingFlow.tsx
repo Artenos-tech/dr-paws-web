@@ -163,7 +163,6 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
   const [bookingFlowSessionId, setBookingFlowSessionId] = useState<
     string | null
   >(null)
-  const hasHandedOffToPaymentRef = useRef(false)
   const lastTrackedStepRef = useRef<number | null>(null)
 
   const {
@@ -179,7 +178,6 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
   )
   const { call: startBookingFlow } = useAPICall(api.startBookingFlow)
   const { call: updateBookingFlowStep } = useAPICall(api.updateBookingFlowStep)
-  const { call: abandonBookingFlow } = useAPICall(api.abandonBookingFlow)
   const trackStep = async (sessionId: string, stepNumber: number) => {
     if (stepNumber < 1 || stepNumber === lastTrackedStepRef.current) return
     lastTrackedStepRef.current = stepNumber
@@ -222,24 +220,6 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
     void trackStep(bookingFlowSessionId, currentStep)
   }, [currentStep, bookingFlowSessionId])
 
-  useEffect(() => {
-    return () => {
-      if (!bookingFlowSessionId || hasHandedOffToPaymentRef.current) return
-      const abandonSession = async () => {
-        try {
-          const result = await abandonBookingFlow({
-            session_id: bookingFlowSessionId,
-          })
-          if (!result.ok) {
-            console.warn("Failed to abandon booking flow session", result.error)
-          }
-        } catch (e) {
-          console.warn("Failed to abandon booking flow session", e)
-        }
-      }
-      abandonSession()
-    }
-  }, [bookingFlowSessionId])
   const { call: getHomeVisitPaymentAmount } = useAPICall(
     atHomeApiClient.getHomeVisitPaymentAmount,
   )
@@ -324,7 +304,6 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
     })
 
     if (createPaymentOrderResult?.ok) {
-      hasHandedOffToPaymentRef.current = true
       dispatch({ type: "BOOKING_CONFIRMED" })
       const { paymentSessionId, orderId } =
         createPaymentOrderResult.value.body.data.order
@@ -359,6 +338,9 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
     if (isConfirming) return
 
     if (currentStep > 1) {
+      if (bookingFlowSessionId) {
+        void trackStep(bookingFlowSessionId, currentStep - 1)
+      }
       dispatch({ type: "GO_BACK" })
     } else {
       onBackToStart()
