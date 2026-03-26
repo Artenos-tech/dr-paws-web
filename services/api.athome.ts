@@ -40,7 +40,7 @@ const AddressSchema = z.object({
   location: z.object({
     lat: z.number(),
     long: z.number(),
-  }),
+  }).nullable(),
   address_line1: z.string(),
   address_line2: z.string(),
   pincode: z.string(),
