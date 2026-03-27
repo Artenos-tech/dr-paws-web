@@ -346,7 +346,7 @@ export default function VetAtHomePage() {
 
   return (
     <main className="w-full pb-20 md:pb-0">
-      <section className="relative h-[94vh] overflow-hidden bg-[#f8f1e5]">
+      <section className="relative h-[98vh] overflow-hidden bg-[#f8f1e5]">
         <div className="absolute inset-0 lg:hidden">
           <img
             src="/assets/images/VAH_Pic1.png"
