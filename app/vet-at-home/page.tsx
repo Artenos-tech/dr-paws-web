@@ -16,7 +16,6 @@ import {
   Stethoscope,
 } from "lucide-react"
 import { FaWhatsapp } from "react-icons/fa"
-import toast from "react-hot-toast"
 import { useAPICall } from "@/hooks/apicall"
 import atHomeApiClient from "@/services/api.athome"
 import {
@@ -340,15 +339,9 @@ export default function VetAtHomePage() {
     setPincodeStatus(isServiceable ? "serviceable" : "notServiceable")
   }
 
-  const handleCopyVetAtHomeNumber = async () => {
-    try {
-      await navigator.clipboard.writeText(emergencyContactNumber)
-      toast.success("Phone number was copied to clipboard")
-    } catch {
-      toast.error("Unable to copy phone number")
-    } finally {
-      setIsAmbulanceModalOpen(false)
-    }
+  const handleCallVetAtHomeNumber = () => {
+    window.location.href = `tel:${emergencyContactNumber.replace(/\s/g, "")}`
+    setIsAmbulanceModalOpen(false)
   }
 
   const handleBookAtHomeVisit = () => {
@@ -374,7 +367,7 @@ export default function VetAtHomePage() {
             src="/assets/images/VAH_Pic1.png"
             alt=""
             aria-hidden="true"
-            className="h-full w-full object-cover object-center opacity-[0.08]"
+            className="h-full w-full object-cover object-center opacity-[0.30]"
           />
         </div>
 
@@ -398,7 +391,7 @@ export default function VetAtHomePage() {
                   className="mb-4 h-auto w-[clamp(10rem,17vw,15rem)]"
                 />
 
-                <p className="mb-4 block text-[0.9rem] font-semibold uppercase tracking-[0.12em] text-primary-1 lg:inline-flex lg:w-fit lg:whitespace-nowrap lg:rounded-full lg:border lg:border-[#efbf73] lg:bg-primary-2 lg:px-3 lg:py-1 lg:shadow-[0_6px_16px_rgba(51,73,95,0.12)]">
+                <p className="mb-4 inline-flex w-fit rounded-full border border-[#efbf73] bg-primary-2 px-3 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.1em] text-primary-1 shadow-[0_6px_16px_rgba(51,73,95,0.12)] sm:text-[0.78rem] lg:whitespace-nowrap lg:text-[0.9rem]">
                   Premium At-Home Veterinary Care
                 </p>
 
@@ -409,13 +402,13 @@ export default function VetAtHomePage() {
                 </h1>
 
                 <p className="mb-4 max-w-[500px] text-[clamp(1.05rem,1.6vw,1.18rem)] uppercase leading-[1.78] text-primary-1">
-                  <span className="block lg:whitespace-nowrap">
+                  <span className="inline lg:block lg:whitespace-nowrap">
                     Skip the travel, avoid the stress,
-                  </span>
-                  <span className="block lg:whitespace-nowrap">
-                    and let your pet receive expert Care
-                  </span>
-                  <span className="block lg:whitespace-nowrap">
+                  </span>{" "}
+                  <span className="inline lg:block lg:whitespace-nowrap">
+                    and let your pet receive expert care
+                  </span>{" "}
+                  <span className="inline lg:block lg:whitespace-nowrap">
                     where they feel most comfortable.
                   </span>
                 </p>
@@ -789,7 +782,7 @@ export default function VetAtHomePage() {
               <div className="mt-6">
                 <button
                   type="button"
-                  onClick={handleCopyVetAtHomeNumber}
+                  onClick={handleCallVetAtHomeNumber}
                   disabled={isCheckingEmergencyContact}
                   className="font-open-sans inline-flex items-center justify-center rounded-full border-0 bg-secondary-1 px-6 py-2 text-sm font-semibold tracking-wide text-white outline-none transition-colors hover:bg-[#94662e] focus:outline-none focus-visible:outline-none focus-visible:ring-0 disabled:opacity-60 disabled:cursor-not-allowed md:px-9 md:text-base"
                 >
@@ -1020,10 +1013,10 @@ export default function VetAtHomePage() {
           type="button"
           onClick={() => {
             pushGtmEvent("vet_at_home_phone_click")
-            handleCopyVetAtHomeNumber()
+            handleCallVetAtHomeNumber()
           }}
           className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-secondary-1 text-white shadow-lg transition-transform hover:scale-105"
-          aria-label="Copy phone number"
+          aria-label="Call Vet at Home"
         >
           <Phone size={24} />
         </button>
