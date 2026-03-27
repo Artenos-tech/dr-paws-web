@@ -436,7 +436,15 @@ const AtHomeBookingDetails = ({
                 <span className="font-medium">
                   {selectedAppointment.address?.tag}
                 </span>
-                <span className="text-base leading-relaxed">{fullAddress}</span>
+                {selectedAppointment.address?.has_coordinates === false ? (
+                  <span className="text-base leading-relaxed text-amber-700">
+                    {"\u26A0 "}Exact address details are not available for this
+                    booking yet. Please contact the Dr Paws helpline to add
+                    them.
+                  </span>
+                ) : (
+                  <span className="text-base leading-relaxed">{fullAddress}</span>
+                )}
               </div>
             </div>
 

@@ -179,10 +179,17 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
               <span className="font-semibold">{appointment.address.tag}</span>
             </div>
 
-            <p>
-              {appointment.address.address_line1},{" "}
-              {appointment.address.address_line2}, {appointment.address.pincode}
-            </p>
+            {appointment.address.has_coordinates === false ? (
+              <p className="text-amber-700">
+                {"\u26A0 "}Exact address details are not available for this
+                booking yet. Please contact the Dr Paws helpline to add them.
+              </p>
+            ) : (
+              <p>
+                {appointment.address.address_line1},{" "}
+                {appointment.address.address_line2}, {appointment.address.pincode}
+              </p>
+            )}
           </>
         )}
 
