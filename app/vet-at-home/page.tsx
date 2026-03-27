@@ -15,7 +15,6 @@ import {
   Stethoscope,
 } from "lucide-react"
 import { FaWhatsapp } from "react-icons/fa"
-import toast from "react-hot-toast"
 import { useAPICall } from "@/hooks/apicall"
 import atHomeApiClient from "@/services/api.athome"
 import {
@@ -336,15 +335,9 @@ export default function VetAtHomePage() {
     setPincodeStatus(isServiceable ? "serviceable" : "notServiceable")
   }
 
-  const handleCopyVetAtHomeNumber = async () => {
-    try {
-      await navigator.clipboard.writeText(emergencyContactNumber)
-      toast.success("Phone number was copied to clipboard")
-    } catch {
-      toast.error("Unable to copy phone number")
-    } finally {
-      setIsAmbulanceModalOpen(false)
-    }
+  const handleCallVetAtHomeNumber = () => {
+    window.location.href = `tel:${emergencyContactNumber.replace(/\s/g, "")}`
+    setIsAmbulanceModalOpen(false)
   }
 
   const isHomeVisitEnabled =
@@ -773,7 +766,7 @@ export default function VetAtHomePage() {
               <div className="mt-6">
                 <button
                   type="button"
-                  onClick={handleCopyVetAtHomeNumber}
+                  onClick={handleCallVetAtHomeNumber}
                   disabled={isCheckingEmergencyContact}
                   className="font-open-sans inline-flex items-center justify-center rounded-full border-0 bg-secondary-1 px-6 py-2 text-sm font-semibold tracking-wide text-white outline-none transition-colors hover:bg-[#94662e] focus:outline-none focus-visible:outline-none focus-visible:ring-0 disabled:opacity-60 disabled:cursor-not-allowed md:px-9 md:text-base"
                 >
@@ -1004,10 +997,10 @@ export default function VetAtHomePage() {
           type="button"
           onClick={() => {
             pushGtmEvent("vet_at_home_phone_click")
-            handleCopyVetAtHomeNumber()
+            handleCallVetAtHomeNumber()
           }}
           className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-secondary-1 text-white shadow-lg transition-transform hover:scale-105"
-          aria-label="Copy phone number"
+          aria-label="Call Vet at Home"
         >
           <Phone size={24} />
         </button>
