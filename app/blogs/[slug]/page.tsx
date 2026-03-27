@@ -16,6 +16,29 @@ export const generateStaticParams = () => {
   }))
 }
 
+const getParagraphClassName = (
+  emphasis?: "italic" | "strong",
+  variant?: "default" | "insight",
+) => {
+  const baseClassName =
+    "text-[15px] leading-7 font-secondary text-primary-1 sm:text-base sm:leading-8"
+  const insightBaseClassName =
+    "text-[15px] leading-7 font-secondary text-[#2f4358] sm:text-base sm:leading-8"
+
+  const resolvedBaseClassName =
+    variant === "insight" ? insightBaseClassName : baseClassName
+
+  if (emphasis === "italic") {
+    return `${resolvedBaseClassName} italic`
+  }
+
+  if (emphasis === "strong") {
+    return `${resolvedBaseClassName} font-semibold text-secondary-1`
+  }
+
+  return resolvedBaseClassName
+}
+
 const BlogDetailPage = ({ params }: BlogDetailPageProps) => {
   const post = getBlogBySlug(params.slug)
 
@@ -76,15 +99,116 @@ const BlogDetailPage = ({ params }: BlogDetailPageProps) => {
 
           <div className="grid gap-8 border-t border-[#efe7d7] px-5 py-6 sm:px-8 sm:py-8 lg:grid-cols-[minmax(0,1fr)_250px] lg:px-10">
             <div>
-              <p className="text-[15px] leading-7 font-secondary text-primary-1 sm:text-base sm:leading-8">
-                {post.content.join(" ")}
-              </p>
+              {post.sections?.length ? (
+                <div className="space-y-8">
+                  {post.sections.map((section, sectionIndex) => {
+                    const sectionClassName =
+                      section.variant === "insight"
+                        ? "rounded-2xl border border-[#dcc9a3] border-l-[6px] border-l-secondary-1 bg-[linear-gradient(135deg,#fffaf1_0%,#fff3d9_100%)] p-5 shadow-[0_12px_28px_rgba(170,133,67,0.12)] sm:p-6"
+                        : ""
+                    const headingClassName =
+                      section.variant === "insight"
+                        ? "text-xl font-primary text-secondary-1 sm:text-2xl"
+                        : "text-2xl font-primary text-primary-1 sm:text-3xl"
+
+                    return (
+                      <section
+                        key={`${post.slug}-section-${sectionIndex}`}
+                        className={sectionClassName}
+                      >
+                        {section.heading ? (
+                          <h2 className={headingClassName}>
+                            {section.heading}
+                          </h2>
+                        ) : null}
+                        <div
+                          className={section.heading ? "mt-4 space-y-4" : "space-y-4"}
+                        >
+                          {section.blocks.map((block, blockIndex) => {
+                            if (block.type === "list") {
+                              return (
+                                <ul
+                                  key={`${post.slug}-block-${sectionIndex}-${blockIndex}`}
+                                  className="space-y-2 pl-5 text-[15px] leading-7 font-secondary text-primary-1 sm:text-base sm:leading-8"
+                                >
+                                  {block.items.map((item, itemIndex) => (
+                                    <li
+                                      key={`${post.slug}-item-${sectionIndex}-${blockIndex}-${itemIndex}`}
+                                      className="list-disc"
+                                    >
+                                      {item}
+                                    </li>
+                                  ))}
+                                </ul>
+                              )
+                            }
+
+                            return (
+                              <p
+                                key={`${post.slug}-block-${sectionIndex}-${blockIndex}`}
+                                className={getParagraphClassName(
+                                  block.emphasis,
+                                  section.variant,
+                                )}
+                              >
+                                {block.text}
+                              </p>
+                            )
+                          })}
+                        </div>
+                      </section>
+                    )
+                  })}
+                </div>
+              ) : (
+                <>
+                  <div className="space-y-4">
+                    {post.content.map((paragraph, index) => (
+                      <p
+                        key={`${post.slug}-paragraph-${index}`}
+                        className="text-[15px] leading-7 font-secondary text-primary-1 sm:text-base sm:leading-8"
+                      >
+                        {paragraph}
+                      </p>
+                    ))}
+                  </div>
+
+                  {post.vetInsight?.length ? (
+                    <section className="mt-8 rounded-2xl border border-[#e7dfcc] bg-[#fffaf1] p-5 sm:p-6">
+                      <p className="text-[11px] font-secondary uppercase tracking-[0.18em] text-secondary-1">
+                        Vet&apos;s Insight
+                      </p>
+                      <div className="mt-4 space-y-4">
+                        {post.vetInsight.map((paragraph, index) => (
+                          <p
+                            key={`${post.slug}-insight-${index}`}
+                            className="text-[15px] leading-7 font-secondary text-primary-1 sm:text-base sm:leading-8"
+                          >
+                            {paragraph}
+                          </p>
+                        ))}
+                      </div>
+                    </section>
+                  ) : null}
+                </>
+              )}
             </div>
 
             <aside className="h-fit rounded-2xl border border-[#e7dfcc] bg-[#fffaf1] p-4 sm:p-5">
               <p className="text-[11px] font-secondary uppercase tracking-[0.18em] text-secondary-1">
                 Written by
               </p>
+              {post.author.imageUrl ? (
+                <div className="relative mt-4 h-16 w-16 overflow-hidden rounded-full border border-[#e7dfcc]">
+                  <Image
+                    src={post.author.imageUrl}
+                    alt={post.author.imageAlt ?? post.author.name}
+                    fill
+                    className="object-cover object-top"
+                    sizes="64px"
+                  />
+                </div>
+              ) : null}
               <p className="mt-2 text-lg font-primary text-primary-1">
                 {post.author.name}
               </p>
