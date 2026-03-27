@@ -23,6 +23,7 @@ export default function NavBar() {
   const [isContactModalOpen, setContactIsModalOpen] = useState(false)
   const navigate = useRouter()
   const pathname = usePathname()
+  const isVetAtHomePage = pathname?.includes("/vet-at-home")
   // const isMarketingFeatureEnabled = useMarketingFeature();
 
   const { refresh, initiateLogin, isLoggedIn } = useUserContext()
@@ -83,7 +84,11 @@ export default function NavBar() {
 
   return (
     <div className="fixed left-0 top-0 z-30 bg-primary-3 w-full drop-shadow-lg">
-      <div className="mx-auto px-8 md:px-32 lg:px-20 xl:px-40">
+      <div
+        className={`mx-auto ${
+          isVetAtHomePage ? "px-4 sm:px-6 md:px-32" : "px-8 md:px-32"
+        } lg:px-20 xl:px-40`}
+      >
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center gap-9">
             <div className="flex-shrink-0">
@@ -132,16 +137,35 @@ export default function NavBar() {
               </div>
             </div>
           </div>
-          <div className="flex items-center space-x-4 text-xs justify-end">
-            <CustomButton
-              buttonText={
-                pathname?.includes("/vet-at-home") && isHomeVisitEnabled
-                  ? "Book an At-Home Visit"
-                  : "Book a visit"
-              }
-              buttonBackground="bg-secondary-1"
-              buttonClickEvent={handleBookAVisit}
-            />
+          <div
+            className={`flex items-center text-xs justify-end ${
+              isVetAtHomePage ? "gap-2 md:gap-4" : "gap-4"
+            }`}
+          >
+            {isVetAtHomePage ? (
+              <>
+                <button
+                  type="button"
+                  onClick={handleBookAVisit}
+                  className="font-open-sans btn rounded-full bg-secondary-1 px-2.5 py-2 text-[10px] tracking-[0.04em] text-white whitespace-nowrap sm:px-3 sm:text-[11px] md:hidden"
+                >
+                  Book an At-Home Visit
+                </button>
+                <div className="hidden md:block">
+                  <CustomButton
+                    buttonText="Book an At-Home Visit"
+                    buttonBackground="bg-secondary-1"
+                    buttonClickEvent={handleBookAVisit}
+                  />
+                </div>
+              </>
+            ) : (
+              <CustomButton
+                buttonText="Book a visit"
+                buttonBackground="bg-secondary-1"
+                buttonClickEvent={handleBookAVisit}
+              />
+            )}
             <div className="hidden lg:flex items-center space-x-4 text-xs">
               {isLoggedIn ? (
                 <DropdownMenu.Root>
