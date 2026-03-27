@@ -187,7 +187,8 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
             ) : (
               <p>
                 {appointment.address.address_line1},{" "}
-                {appointment.address.address_line2}, {appointment.address.pincode}
+                {appointment.address.address_line2},{" "}
+                {appointment.address.pincode}
               </p>
             )}
           </>

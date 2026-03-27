@@ -443,7 +443,9 @@ const AtHomeBookingDetails = ({
                     them.
                   </span>
                 ) : (
-                  <span className="text-base leading-relaxed">{fullAddress}</span>
+                  <span className="text-base leading-relaxed">
+                    {fullAddress}
+                  </span>
                 )}
               </div>
             </div>
