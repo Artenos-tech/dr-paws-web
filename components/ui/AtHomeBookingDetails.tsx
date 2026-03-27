@@ -433,10 +433,24 @@ const AtHomeBookingDetails = ({
               </div>
 
               <div className={`flex flex-col ${isCancelled && "line-through"}`}>
-                <span className="font-medium">
-                  {selectedAppointment.address?.tag}
-                </span>
-                <span className="text-base leading-relaxed">{fullAddress}</span>
+                {selectedAppointment.address?.has_coordinates !== false && (
+                  <span className="font-medium">
+                    {selectedAppointment.address?.tag}
+                  </span>
+                )}
+                {selectedAppointment.address?.has_coordinates === false ? (
+                  <div className="flex items-start gap-2 rounded-[10px] border border-[#fcd34d] bg-[#fffbeb] px-3 py-2 text-[#b45309]">
+                    <span className="leading-5">{"\u26A0"}</span>
+                    <span className="text-sm leading-relaxed">
+                      The exact visit location is not available yet for this
+                      booking. Our Dr Paws team will update it shortly.
+                    </span>
+                  </div>
+                ) : (
+                  <span className="text-base leading-relaxed">
+                    {fullAddress}
+                  </span>
+                )}
               </div>
             </div>
 

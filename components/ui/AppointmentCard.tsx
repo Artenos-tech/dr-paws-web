@@ -174,15 +174,28 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
         {appointment.clinic_name && <p>{appointment.clinic_name}</p>}
         {appointment.address && (
           <>
-            <div className="flex">
-              <HiLocationMarker className="mt-1 mr-1" size={14} />
-              <span className="font-semibold">{appointment.address.tag}</span>
-            </div>
+            {appointment.address.has_coordinates !== false && (
+              <div className="flex">
+                <HiLocationMarker className="mt-1 mr-1" size={14} />
+                <span className="font-semibold">{appointment.address.tag}</span>
+              </div>
+            )}
 
-            <p>
-              {appointment.address.address_line1},{" "}
-              {appointment.address.address_line2}, {appointment.address.pincode}
-            </p>
+            {appointment.address.has_coordinates === false ? (
+              <div className="flex items-start gap-2 rounded-[10px] border border-[#fcd34d] bg-[#fffbeb] px-3 py-2 text-[#b45309]">
+                <span className="leading-5">{"\u26A0"}</span>
+                <p className="text-sm leading-relaxed">
+                  The exact visit location is not available yet for this
+                  booking. Our Dr Paws team will update it shortly.
+                </p>
+              </div>
+            ) : (
+              <p>
+                {appointment.address.address_line1},{" "}
+                {appointment.address.address_line2},{" "}
+                {appointment.address.pincode}
+              </p>
+            )}
           </>
         )}
 

@@ -184,6 +184,7 @@ export type Address = {
   address_line1: string
   address_line2: string
   directions?: string
+  has_coordinates?: boolean
 }
 
 export type AddressWithPincode = Address & {
