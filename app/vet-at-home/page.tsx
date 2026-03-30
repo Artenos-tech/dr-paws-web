@@ -361,7 +361,7 @@ export default function VetAtHomePage() {
 
   return (
     <main className="w-full pb-20 md:pb-0">
-      <section className="relative h-[94vh] overflow-hidden bg-[#f8f1e5]">
+      <section className="relative min-h-[94vh] overflow-hidden bg-[#f8f1e5]">
         <div className="absolute inset-0 lg:hidden">
           <img
             src="/assets/images/VAH_Pic1.png"
@@ -381,8 +381,8 @@ export default function VetAtHomePage() {
           <div className="pointer-events-none absolute inset-y-0 -left-16 w-32 bg-[linear-gradient(90deg,#f8f1e5_0%,rgba(248,241,229,0.94)_38%,rgba(248,241,229,0)_100%)] blur-2xl" />
         </div>
 
-        <div className="relative z-10 flex h-full">
-          <div className="flex h-full w-full items-center lg:w-[33%]">
+        <div className="relative z-10 flex min-h-[94vh]">
+          <div className="flex min-h-[94vh] w-full items-center lg:w-[33%] py-6">
             <div className="w-full px-6 md:px-12 lg:px-16 xl:px-24">
               <div className="max-w-[560px]">
                 <img
