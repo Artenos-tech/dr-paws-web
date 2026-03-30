@@ -24,9 +24,9 @@ const BlogsPage = () => {
           {blogPosts.map((post) => (
             <article
               key={post.slug}
-              className="group overflow-hidden rounded-2xl border border-[#e7dfcc] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
+              className="group h-full overflow-hidden rounded-2xl border border-[#e7dfcc] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
             >
-              <Link href={`/blogs/${post.slug}`} className="block">
+              <Link href={`/blogs/${post.slug}`} className="flex h-full flex-col">
                 <div className="relative h-56 w-full overflow-hidden">
                   <Image
                     src={post.imageUrl}
@@ -35,10 +35,12 @@ const BlogsPage = () => {
                     className="object-cover transition duration-300 group-hover:scale-105"
                     sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
                   />
+                  <div className="absolute left-4 top-4 rounded-full border border-[#e7dfcc] bg-white px-3.5 py-1.5 text-[11px] font-secondary uppercase tracking-[0.14em] text-primary-1 shadow-[0_6px_18px_rgba(51,73,95,0.12)]">
+                    {post.category}
+                  </div>
                 </div>
-                <div className="p-5 md:p-6">
+                <div className="flex flex-1 flex-col p-5 md:p-6">
                   <div className="flex items-center justify-between gap-3 text-xs font-secondary text-secondary-1">
-                    <span>{post.category}</span>
                     <span>{post.readTime}</span>
                   </div>
                   <h2 className="mt-3 text-xl font-primary leading-tight text-primary-1">
@@ -50,6 +52,11 @@ const BlogsPage = () => {
                   <div className="mt-5 flex items-center justify-between text-xs font-secondary text-[#6f7d89]">
                     <span>{post.author.name}</span>
                     <span>{post.publishedAt}</span>
+                  </div>
+                  <div className="mt-auto flex justify-end pt-4">
+                    <span className="text-sm font-secondary text-secondary-1 transition group-hover:translate-x-1">
+                      Read more →
+                    </span>
                   </div>
                 </div>
               </Link>
