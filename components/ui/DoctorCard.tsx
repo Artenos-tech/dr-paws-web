@@ -51,11 +51,13 @@ const DoctorCard: React.FC<DoctorCardProps> = ({ doctor }) => {
         <h2 className="text-lg sm:text-xl">{displayName}</h2>
         <p className="text-sm sm:text-base">{position}</p>
         <p className="text-sm sm:text-base">{experience} of Experience</p>
-        <div className="flex items-center space-x-2 text-primary-1 truncate">
-          <CiLocationOn size={20} />
-          <span className="text-sm sm:text-base">
-            {availableToDisplayAt.map((clinic) => clinic.name).join(", ")}
-          </span>
+        <div className="flex w-full justify-center text-primary-1">
+          <div className="flex max-w-[240px] items-start gap-2">
+            <CiLocationOn size={20} className="mt-0.5 shrink-0" />
+            <p className="m-0 text-center text-sm sm:text-base whitespace-normal break-words">
+              {availableToDisplayAt.map((clinic) => clinic.name).join(", ")}
+            </p>
+          </div>
         </div>
         <div
           className={`relative mt-4 py-2 px-4 rounded-lg text-white text-sm ${loadingDoctorProfile ? "bg-transparent" : "bg-accent"} ${loadingDoctorProfile ? "" : "hover:bg-secondary-1"}`}
