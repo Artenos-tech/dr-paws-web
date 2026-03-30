@@ -665,13 +665,18 @@ export default function VetAtHomePage() {
                         <div className={isExpanded ? "" : "overflow-hidden"}>
                           <div
                             className={`flex items-center gap-2.5 ${
-                              isExpanded ? "" : "h-[56px] overflow-hidden"
+                              isExpanded
+                                ? ""
+                                : "min-h-[72px] overflow-hidden xl:h-[56px] xl:min-h-0"
                             }`}
                           >
-                            <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#fff4de] text-[#94662e]">
-                              <ServiceIcon size={20} strokeWidth={2.2} />
+                            <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#fff4de] text-[#94662e] xl:h-10 xl:w-10">
+                              <ServiceIcon
+                                className="h-[18px] w-[18px] xl:h-5 xl:w-5"
+                                strokeWidth={2.2}
+                              />
                             </span>
-                            <h3 className="text-xl font-semibold leading-snug text-primary-1">
+                            <h3 className="text-base font-semibold leading-snug text-primary-1 xl:text-xl">
                               {service.title}
                             </h3>
                           </div>
@@ -746,7 +751,7 @@ export default function VetAtHomePage() {
             </CarouselContent>
           </Carousel>
 
-          <div className="mt-10 hidden grid-cols-1 items-start gap-4 md:mt-12 md:grid md:grid-cols-3 md:gap-5">
+          <div className="mt-10 hidden grid-cols-1 items-start gap-4 md:mt-12 md:grid md:grid-cols-2 md:gap-5 xl:grid-cols-3">
             {servicesAvailableAtHome.map((service, index) => {
               const isExpanded = expandedServices.includes(index)
               const ServiceIcon = service.icon
@@ -764,13 +769,18 @@ export default function VetAtHomePage() {
                     <div className={isExpanded ? "" : "overflow-hidden"}>
                       <div
                         className={`flex items-center gap-2.5 ${
-                          isExpanded ? "" : "h-[56px] overflow-hidden"
+                          isExpanded
+                            ? ""
+                            : "min-h-[72px] overflow-hidden xl:h-[56px] xl:min-h-0"
                         }`}
                       >
-                        <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#fff4de] text-[#94662e]">
-                          <ServiceIcon size={20} strokeWidth={2.2} />
+                        <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#fff4de] text-[#94662e] xl:h-10 xl:w-10">
+                          <ServiceIcon
+                            className="h-[18px] w-[18px] xl:h-5 xl:w-5"
+                            strokeWidth={2.2}
+                          />
                         </span>
-                        <h3 className="text-xl font-semibold leading-snug text-primary-1">
+                        <h3 className="text-lg font-semibold leading-snug text-primary-1 xl:text-xl">
                           {service.title}
                         </h3>
                       </div>
