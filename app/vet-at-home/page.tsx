@@ -4,6 +4,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useEffect, useMemo, useState } from "react"
 import {
+  ArrowRight,
   ChevronDown,
   CalendarClock,
   ClipboardList,
@@ -573,7 +574,36 @@ export default function VetAtHomePage() {
             </p>
           </div>
 
-          <div className="mt-10 grid grid-cols-1 gap-4 md:mt-12 md:grid-cols-2 md:gap-5">
+          <p className="mt-8 flex items-center justify-end gap-1 text-right text-xs font-semibold uppercase tracking-[0.12em] text-[#94662e] md:hidden">
+            <span>Swipe to see more</span>
+            <ArrowRight size={14} />
+          </p>
+
+          <Carousel opts={{ align: "start" }} className="mt-4 md:hidden">
+            <CarouselContent>
+              {loveAtHomeReasons.map((reason, index) => (
+                <CarouselItem key={reason.title} className="basis-full">
+                  <article className="relative h-full overflow-hidden rounded-2xl border border-[#e1d5bf] bg-white p-6 shadow-[0_10px_26px_rgba(51,73,95,0.08)]">
+                    <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#fdc776] via-[#f0c474] to-[#5281a2]" />
+                    <div className="mb-3 flex items-center gap-2.5">
+                      <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#fff4de] text-sm font-semibold text-[#94662e]">
+                        {index + 1}
+                      </span>
+                      <span className="h-[1px] flex-1 bg-[#efe4cf]" />
+                    </div>
+                    <h3 className="mb-2 text-xl font-semibold leading-snug text-primary-1">
+                      {reason.title}
+                    </h3>
+                    <p className="text-base leading-relaxed text-primary-1/80">
+                      {reason.description}
+                    </p>
+                  </article>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+          </Carousel>
+
+          <div className="mt-10 hidden grid-cols-1 gap-4 md:mt-12 md:grid md:grid-cols-2 md:gap-5">
             {loveAtHomeReasons.map((reason, index) => (
               <article
                 key={reason.title}
@@ -613,7 +643,110 @@ export default function VetAtHomePage() {
             </h2>
           </div>
 
-          <div className="mt-10 grid grid-cols-1 items-start gap-4 md:mt-12 md:grid-cols-3 md:gap-5">
+          <p className="mt-8 flex items-center justify-end gap-1 text-right text-xs font-semibold uppercase tracking-[0.12em] text-[#94662e] md:hidden">
+            <span>Swipe to see more</span>
+            <ArrowRight size={14} />
+          </p>
+
+          <Carousel opts={{ align: "start" }} className="mt-4 md:hidden">
+            <CarouselContent>
+              {servicesAvailableAtHome.map((service, index) => {
+                const isExpanded = expandedServices.includes(index)
+                const ServiceIcon = service.icon
+
+                return (
+                  <CarouselItem key={service.title} className="basis-full">
+                    <article className="self-start rounded-2xl border border-[#e1d5bf] bg-[linear-gradient(180deg,#fffef9_0%,#ffffff_100%)] p-5 shadow-[0_8px_24px_rgba(51,73,95,0.08)]">
+                      <div
+                        className={`flex flex-col justify-between ${
+                          isExpanded ? "min-h-[132px]" : "h-[190px]"
+                        }`}
+                      >
+                        <div className={isExpanded ? "" : "overflow-hidden"}>
+                          <div
+                            className={`flex items-center gap-2.5 ${
+                              isExpanded ? "" : "h-[56px] overflow-hidden"
+                            }`}
+                          >
+                            <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#fff4de] text-[#94662e]">
+                              <ServiceIcon size={20} strokeWidth={2.2} />
+                            </span>
+                            <h3 className="text-xl font-semibold leading-snug text-primary-1">
+                              {service.title}
+                            </h3>
+                          </div>
+                          <p
+                            className={`mt-2 text-sm leading-relaxed text-primary-1/80 ${
+                              isExpanded ? "" : "h-[96px] overflow-hidden"
+                            }`}
+                          >
+                            {service.subtitle}
+                          </p>
+                        </div>
+
+                        {!isExpanded && (
+                          <div className="mt-4 flex justify-end">
+                            <button
+                              type="button"
+                              onClick={() => toggleServiceCard(index)}
+                              className="text-sm font-semibold text-[#94662e] transition-colors hover:text-[#7f5524]"
+                              aria-expanded={isExpanded}
+                              aria-controls={`service-card-details-${index}`}
+                            >
+                              Read more
+                            </button>
+                          </div>
+                        )}
+                      </div>
+
+                      <div
+                        id={`service-card-details-${index}`}
+                        className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                          isExpanded
+                            ? "mt-4 max-h-[900px] border-t border-[#ece2cf] pt-4 opacity-100"
+                            : "mt-0 max-h-0 border-t-0 pt-0 opacity-0"
+                        }`}
+                      >
+                        <div
+                          className={`${isExpanded ? "pointer-events-auto" : "pointer-events-none"}`}
+                        >
+                          <ul className="list-disc space-y-1.5 pl-5 text-sm leading-relaxed text-primary-1/85">
+                            {service.points.map((point) => (
+                              <li key={point}>{point}</li>
+                            ))}
+                          </ul>
+
+                          <p className="mt-4 text-sm leading-relaxed text-primary-1/80">
+                            {service.note}
+                          </p>
+
+                          {service.extraNote && (
+                            <p className="mt-3 text-sm font-medium leading-relaxed text-primary-1">
+                              Note: {service.extraNote}
+                            </p>
+                          )}
+
+                          <div className="mt-4 flex justify-end">
+                            <button
+                              type="button"
+                              onClick={() => toggleServiceCard(index)}
+                              className="text-sm font-semibold text-[#94662e] transition-colors hover:text-[#7f5524]"
+                              aria-expanded={isExpanded}
+                              aria-controls={`service-card-details-${index}`}
+                            >
+                              Read less
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </article>
+                  </CarouselItem>
+                )
+              })}
+            </CarouselContent>
+          </Carousel>
+
+          <div className="mt-10 hidden grid-cols-1 items-start gap-4 md:mt-12 md:grid md:grid-cols-3 md:gap-5">
             {servicesAvailableAtHome.map((service, index) => {
               const isExpanded = expandedServices.includes(index)
               const ServiceIcon = service.icon
