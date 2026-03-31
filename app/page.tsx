@@ -11,6 +11,7 @@ import ReviewCard from "@/components/ui/ReviewCard"
 import Services from "@/components/ui/Services"
 import { useUserContext } from "@/context/UserContext"
 import { reviewData } from "@/model/mockData"
+import HomeBanner from "@/public/assets/images/home-banner.webp"
 import TickMark from "@/public/assets/images/petValues/TickMark.svg"
 import YellowAndDocWithDog from "@/public/assets/images/petValues/YellowAndDocWithDog.svg"
 import Lady from "@/public/assets/images/reviewImages/Girl.png"
@@ -21,8 +22,20 @@ export default function Home() {
   return (
     <div className="w-full h-full items-center justify-items-center font-roca">
       <main className="w-full flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <div className="bg-banner bg-cover bg-top bg-no-repeat h-96 w-full md:h-[500px] lg:h-[600px] min-h-[300px]">
-          <div className="flex flex-col items-center md:items-start gap-0 w-full md:w-full  lg:w-1/2 mx-auto mt-6 md:ml-32 md:mt-10 lg:gap-4 lg:mt-12 lg:ml-40 text-center md:text-left">
+        <div className="relative h-96 w-full md:h-[500px] lg:h-[600px] min-h-[300px] overflow-hidden">
+          <Image
+            src={HomeBanner}
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-top"
+          />
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 bg-[linear-gradient(to_right,white_40%,transparent_65%)]"
+          />
+          <div className="relative z-10 flex flex-col items-center md:items-start gap-0 w-full md:w-full  lg:w-1/2 mx-auto mt-6 md:ml-32 md:mt-10 lg:gap-4 lg:mt-12 lg:ml-40 text-center md:text-left">
             <div>
               <p className="text-[12px] md:text-[16px] lg:text-[18px] mb-3 font-openSans tracking-[0.29em] font-bold leading-tight md:leading-snug lg:leading-none text-primary-1">
                 INDIA&apos;S FRIENDLIEST VET CLINICS
