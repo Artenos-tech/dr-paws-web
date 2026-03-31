@@ -26,7 +26,10 @@ const BlogsPage = () => {
               key={post.slug}
               className="group h-full overflow-hidden rounded-2xl border border-[#e7dfcc] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
             >
-              <Link href={`/blogs/${post.slug}`} className="flex h-full flex-col">
+              <Link
+                href={`/blogs/${post.slug}`}
+                className="flex h-full flex-col"
+              >
                 <div className="relative h-56 w-full overflow-hidden">
                   <Image
                     src={post.imageUrl}
