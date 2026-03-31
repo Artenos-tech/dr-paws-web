@@ -223,50 +223,52 @@ const BlogDetailPage = ({ params }: BlogDetailPageProps) => {
           </div>
         </article>
 
-        <section className="mt-12 sm:mt-14">
-          <div className="flex items-end justify-between gap-4">
-            <h2 className="text-2xl font-primary text-primary-1 sm:text-3xl">
-              More Blogs
-            </h2>
-            <Link
-              href="/blogs"
-              className="text-sm font-secondary text-secondary-1 hover:underline"
-            >
-              View all
-            </Link>
-          </div>
-
-          <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-3">
-            {relatedPosts.map((relatedPost) => (
+        {relatedPosts.length > 0 ? (
+          <section className="mt-12 sm:mt-14">
+            <div className="flex items-end justify-between gap-4">
+              <h2 className="text-2xl font-primary text-primary-1 sm:text-3xl">
+                More Blogs
+              </h2>
               <Link
-                key={relatedPost.slug}
-                href={`/blogs/${relatedPost.slug}`}
-                className="group overflow-hidden rounded-2xl border border-[#e7dfcc] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
+                href="/blogs"
+                className="text-sm font-secondary text-secondary-1 hover:underline"
               >
-                <div className="relative h-40 w-full overflow-hidden">
-                  <Image
-                    src={relatedPost.imageUrl}
-                    alt={relatedPost.imageAlt}
-                    fill
-                    className="object-cover transition duration-300 group-hover:scale-105"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1280px) 33vw, 360px"
-                  />
-                </div>
-                <div className="p-4 sm:p-5">
-                  <p className="text-xs font-secondary text-secondary-1">
-                    {relatedPost.category}
-                  </p>
-                  <h3 className="mt-2 text-lg font-primary leading-snug text-primary-1">
-                    {relatedPost.title}
-                  </h3>
-                  <p className="mt-3 text-sm font-secondary text-primary-1">
-                    {relatedPost.excerpt}
-                  </p>
-                </div>
+                View all
               </Link>
-            ))}
-          </div>
-        </section>
+            </div>
+
+            <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-3">
+              {relatedPosts.map((relatedPost) => (
+                <Link
+                  key={relatedPost.slug}
+                  href={`/blogs/${relatedPost.slug}`}
+                  className="group overflow-hidden rounded-2xl border border-[#e7dfcc] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
+                >
+                  <div className="relative h-40 w-full overflow-hidden">
+                    <Image
+                      src={relatedPost.imageUrl}
+                      alt={relatedPost.imageAlt}
+                      fill
+                      className="object-cover transition duration-300 group-hover:scale-105"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1280px) 33vw, 360px"
+                    />
+                  </div>
+                  <div className="p-4 sm:p-5">
+                    <p className="text-xs font-secondary text-secondary-1">
+                      {relatedPost.category}
+                    </p>
+                    <h3 className="mt-2 text-lg font-primary leading-snug text-primary-1">
+                      {relatedPost.title}
+                    </h3>
+                    <p className="mt-3 text-sm font-secondary text-primary-1">
+                      {relatedPost.excerpt}
+                    </p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        ) : null}
       </main>
     </div>
   )
