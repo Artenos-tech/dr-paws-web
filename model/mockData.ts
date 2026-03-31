@@ -8,13 +8,13 @@ import otherPetsImg from "../public/assets/images/otherpetimg.png"
 // import StarCare from "@/public/assets/images/Membership/Star Care and Grooming.png";
 // import { MembershipPlan } from "@/components/ui/MemberCard";
 
-import LP_DocsThatCare from "@/public/assets/images/Landing Page/LP_DocsThatCare.png"
-import LP_EverythingUnderRoof from "@/public/assets/images/Landing Page/LP_EverythingUnderRoof.png"
-import LP_FeelsLikeHome from "@/public/assets/images/Landing Page/LP_FeelsLikeHome.png"
-import LP_MembershipsCount from "@/public/assets/images/Landing Page/LP_MembershipsCount.png"
-import LP_OneTap from "@/public/assets/images/Landing Page/LP_OneTap.png"
-import LP_OnlyNecessaryTreatment from "@/public/assets/images/Landing Page/LP_OnlyNecessaryTreatments.png"
-import LP_SpaceForCats from "@/public/assets/images/Landing Page/LP_SpaceForCats.png"
+import LP_DocsThatCare from "@/public/assets/images/Landing Page/LP_DocsThatCare.webp"
+import LP_EverythingUnderRoof from "@/public/assets/images/Landing Page/LP_EverythingUnderRoof.webp"
+import LP_FeelsLikeHome from "@/public/assets/images/Landing Page/LP_FeelsLikeHome.webp"
+import LP_MembershipsCount from "@/public/assets/images/Landing Page/LP_MembershipsCount.webp"
+import LP_OneTap from "@/public/assets/images/Landing Page/LP_OneTap.webp"
+import LP_OnlyNecessaryTreatment from "@/public/assets/images/Landing Page/LP_OnlyNecessaryTreatments.webp"
+import LP_SpaceForCats from "@/public/assets/images/Landing Page/LP_SpaceForCats.webp"
 
 export const FaqData = [
   {

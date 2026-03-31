@@ -177,41 +177,14 @@ export type RefundStatus =
   | "ONHOLD"
   | "CANCELLED"
 
-// export interface AppointmentListItemOld {
-//   id: string
-//   sub_booking_id: string
-//   pet_id: string
-//   pet_name: string
-//   pet_type?: "DOG" | "CAT" | "OTHER" | null
-//   pet_profile_image: string | null
-//   vet_id: string
-//   vet_name: string
-//   vet_image: string | null
-//   clinic_id: string
-//   clinic_name: string
-//   clinic_location: string
-//   clinic_contact: string
-//   appt_start: string
-//   booking_date: string
-//   appt_end: string
-//   appt_status: string | null
-//   // appt_reason: string | null
-//   appt_type: string | null
-//   appt_type_id: string
-//   category: "UPCOMING" | "COMPLETED" | "REQUESTED" | "CANCELLED"
-//   coupon_code?: string | null
-//   invoice_id: string
-//   total_tax_amount: number
-//   total_billing_amount: number
-//   payment_status: "PAID" | "UNPAID" | "NO_BILL" | "PARTIALLY_PAID" | "OVERPAID"
-// }
 export type Address = {
   id: string
   tag: string
-  location: { lat: number; long: number }
+  location: { lat: number; long: number } | null
   address_line1: string
   address_line2: string
   directions?: string
+  has_coordinates?: boolean
 }
 
 export type AddressWithPincode = Address & {

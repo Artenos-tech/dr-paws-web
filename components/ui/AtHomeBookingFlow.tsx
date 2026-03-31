@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useRef } from "react"
+import React, { useEffect, useReducer, useRef, useState } from "react"
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md"
 import SelectAddress from "./SelectAddress"
 import SelectPet from "./SelectPet"
@@ -7,6 +7,7 @@ import SelectDateTimeForVisit from "./SelectDateTimeForVisit"
 import ConfirmationModal from "./ConfirmationModal"
 import { useAPICall } from "@/hooks/apicall"
 import atHomeApiClient from "@/services/api.athome"
+import api from "@/services/api"
 import { ReasonForVisitEnum } from "@/model/typeDefinitions"
 import { load } from "@cashfreepayments/cashfree-js"
 import toast from "react-hot-toast"
@@ -140,11 +141,29 @@ function atHomeBookingReducer(
   }
 }
 
+// Pure utility — no component state dependencies
+const convertBookingDateToIso = (date: string) => {
+  const dateParts = date.split("-")
+  return new Date(
+    Date.UTC(
+      Number(dateParts[0]),
+      Number(dateParts[1]) - 1,
+      Number(dateParts[2]),
+    ),
+  ).toISOString()
+}
+
 const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
   onBackToStart,
 }) => {
   const [state, dispatch] = useReducer(atHomeBookingReducer, initialState)
   const [paymentAmount, setPaymentAmount] = React.useState<number | null>(null)
+  const [isLoadingPaymentAmount, setIsLoadingPaymentAmount] =
+    React.useState(false)
+  const [bookingFlowSessionId, setBookingFlowSessionId] = useState<
+    string | null
+  >(null)
+  const lastTrackedStepRef = useRef<number | null>(null)
 
   const {
     currentStep,
@@ -156,6 +175,53 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
   const { call: getAddress } = useAPICall(atHomeApiClient.getAddress)
   const { call: createPaymentOrder } = useAPICall(
     atHomeApiClient.createPaymentOrder,
+  )
+  const { call: startBookingFlow } = useAPICall(api.startBookingFlow)
+  const { call: updateBookingFlowStep } = useAPICall(api.updateBookingFlowStep)
+  const trackStep = async (sessionId: string, stepNumber: number) => {
+    if (stepNumber < 1 || stepNumber === lastTrackedStepRef.current) return
+    lastTrackedStepRef.current = stepNumber
+    try {
+      const result = await updateBookingFlowStep({
+        session_id: sessionId,
+        step_number: stepNumber,
+      })
+      if (!result.ok) {
+        console.warn("Failed to track booking flow step", result.error)
+      }
+    } catch (e) {
+      console.warn("Failed to track booking flow step", e)
+    }
+  }
+
+  useEffect(() => {
+    const startSession = async () => {
+      try {
+        const result = await startBookingFlow({
+          booking_flow_type: "HOME_VISIT",
+          platform: "WEB",
+        })
+        if (!result.ok) {
+          console.warn("Failed to start booking flow session", result.error)
+          return
+        }
+        const sessionId = result.value.body.data.session.id
+        setBookingFlowSessionId(sessionId)
+        await trackStep(sessionId, 1)
+      } catch (e) {
+        console.warn("Failed to start booking flow session", e)
+      }
+    }
+    startSession()
+  }, [])
+
+  useEffect(() => {
+    if (!bookingFlowSessionId || currentStep <= 1) return
+    void trackStep(bookingFlowSessionId, currentStep)
+  }, [currentStep, bookingFlowSessionId])
+
+  const { call: getHomeVisitPaymentAmount } = useAPICall(
+    atHomeApiClient.getHomeVisitPaymentAmount,
   )
   useEffect(() => {
     if (!isConfirming) return
@@ -216,23 +282,16 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
   ) => {
     dispatch({ type: "SET_DATE_TIME", payload: { date, slot } })
   }
-  // Convert date (YYYY-MM-DD) to UTC ISO string
-  const convertBookingDateToIso = (date: string) => {
-    const dateParts = date.split("-")
-    return new Date(
-      Date.UTC(
-        Number(dateParts[0]),
-        Number(dateParts[1]) - 1,
-        Number(dateParts[2]),
-      ),
-    ).toISOString()
-  }
-
   const handleConfirmBooking = async () => {
     dispatch({ type: "CONFIRM_BOOKING" })
     const reasonForVisit = VISIT_REASONS.find(
       (reason) => reason.label === bookingDetails.reasonForVisit,
     )?.key
+
+    if (bookingFlowSessionId) {
+      void trackStep(bookingFlowSessionId, 5)
+    }
+
     const createPaymentOrderResult = await createPaymentOrder({
       pet_id: appointmentData.petId as string,
       address_id: appointmentData.addressId as string,
@@ -241,6 +300,7 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
       booking_date: convertBookingDateToIso(appointmentData.date as string),
       reason_for_visit: reasonForVisit as ReasonForVisitEnum,
       notes: bookingDetails.reasonDescription as string,
+      booking_flow_session_id: bookingFlowSessionId ?? undefined,
     })
 
     if (createPaymentOrderResult?.ok) {
@@ -278,6 +338,9 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
     if (isConfirming) return
 
     if (currentStep > 1) {
+      if (bookingFlowSessionId) {
+        void trackStep(bookingFlowSessionId, currentStep - 1)
+      }
       dispatch({ type: "GO_BACK" })
     } else {
       onBackToStart()
@@ -310,62 +373,48 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
       reasonForVisit: appointmentData.reasonForVisit,
       reasonDescription: appointmentData.description,
       date: appointmentData.date ? new Date(appointmentData.date) : new Date(),
-      slot: appointmentData.slot
-        ? `${appointmentData.slot.startTime} - ${appointmentData.slot.endTime}`
-        : "",
+      slot: appointmentData.slot ? `${appointmentData.slot.startTime}` : "",
       couponCode: null,
     }
   }, [appointmentData])
 
-  const { call: getHomeVisitPaymentAmount } = useAPICall(
-    atHomeApiClient.getHomeVisitPaymentAmount,
-  )
   // Price is fixed per (address, pet) — it does not vary by date or slot.
   // Reset when address or pet changes so a new fetch is triggered.
   const hasFetchedAmountRef = useRef(false)
   useEffect(() => {
     setPaymentAmount(null)
+    setIsLoadingPaymentAmount(false)
     hasFetchedAmountRef.current = false
   }, [appointmentData.addressId, appointmentData.petId])
 
-  // Fetch once we have all required params. date/slot are in the deps so the
-  // effect fires when the user first selects them, but hasFetchedAmountRef
-  // prevents re-fetching when they change subsequent slots.
-  useEffect(() => {
+  // Called by SelectDateTimeForVisit once slots are loaded, with the first
+  // available slot. Fetches the payment amount once and caches it for the
+  // session so that it is ready before the user selects any slot.
+  const handleSlotsLoaded = async (
+    firstSlot: { startTime: string; endTime: string },
+    date: string,
+  ) => {
     if (hasFetchedAmountRef.current) return
-    if (
-      !appointmentData.addressId ||
-      !appointmentData.petId ||
-      !appointmentData.date ||
-      !appointmentData.slot?.startTime
-    )
-      return
+    if (!appointmentData.addressId || !appointmentData.petId) return
 
-    const fetchPaymentAmount = async () => {
-      hasFetchedAmountRef.current = true
-      const result = await getHomeVisitPaymentAmount({
-        address_id: appointmentData.addressId as string,
-        pet_id: appointmentData.petId as string,
-        booking_date: convertBookingDateToIso(appointmentData.date as string),
-        appt_start: appointmentData.slot!.startTime,
-        appt_end: appointmentData.slot!.endTime,
-      })
+    hasFetchedAmountRef.current = true
+    setIsLoadingPaymentAmount(true)
+    const result = await getHomeVisitPaymentAmount({
+      address_id: appointmentData.addressId,
+      pet_id: appointmentData.petId,
+      booking_date: convertBookingDateToIso(date),
+      appt_start: firstSlot.startTime,
+      appt_end: firstSlot.endTime,
+    })
+    setIsLoadingPaymentAmount(false)
 
-      if (result?.ok) {
-        setPaymentAmount(result.value.body.data.amount)
-      } else {
-        toast.error("Failed to fetch payment amount")
-        hasFetchedAmountRef.current = false
-      }
+    if (result?.ok) {
+      setPaymentAmount(result.value.body.data.amount)
+    } else {
+      toast.error("Failed to fetch payment amount")
+      hasFetchedAmountRef.current = false
     }
-
-    fetchPaymentAmount()
-  }, [
-    appointmentData.addressId,
-    appointmentData.petId,
-    appointmentData.date,
-    appointmentData.slot?.startTime,
-  ])
+  }
 
   return (
     <div className="w-full">
@@ -419,7 +468,9 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
               isConfirmationModalOpen={showConfirmationModal}
               isConfirming={isConfirming}
               paymentAmount={paymentAmount}
+              isLoadingPaymentAmount={isLoadingPaymentAmount}
               onConfirm={handleDateTimeConfirm}
+              onSlotsLoaded={handleSlotsLoaded}
             />
             <ConfirmationModal
               isOpen={showConfirmationModal}

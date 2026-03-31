@@ -77,6 +77,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
 
   const statusCategory = getStatusCategory(appointment.category)
   const { border, bg, text } = cardStyles[statusCategory]
+  const isSOSActive = appointment.sos_status === "ACTIVE"
 
   const defaultPetImageByType =
     petImageByType[appointment.pet_type?.toLowerCase() || "other"] ||
@@ -90,7 +91,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
   const Icon = appointment.booking_type === "HOME_VISIT" ? Home : Building2
   return (
     <div
-      className={`p-4 ${border} ${bg} flex flex-col gap-3 rounded-lg shadow-md w-full`}
+      className={`p-4 ${border} ${isSOSActive ? "bg-red-100" : bg} flex flex-col gap-3 rounded-lg shadow-md w-full`}
     >
       {/* Status and Reason */}
       <div className="text-xs flex justify-between">
@@ -173,23 +174,36 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
         {appointment.clinic_name && <p>{appointment.clinic_name}</p>}
         {appointment.address && (
           <>
-            <div className="flex">
-              <HiLocationMarker className="mt-1 mr-1" size={14} />
-              <span className="font-semibold">{appointment.address.tag}</span>
-            </div>
+            {appointment.address.has_coordinates !== false && (
+              <div className="flex">
+                <HiLocationMarker className="mt-1 mr-1" size={14} />
+                <span className="font-semibold">{appointment.address.tag}</span>
+              </div>
+            )}
 
-            <p>
-              {appointment.address.address_line1},{" "}
-              {appointment.address.address_line2}, {appointment.address.pincode}
-            </p>
+            {appointment.address.has_coordinates === false ? (
+              <div className="flex items-start gap-2 rounded-[10px] border border-[#fcd34d] bg-[#fffbeb] px-3 py-2 text-[#b45309]">
+                <span className="leading-5">{"\u26A0"}</span>
+                <p className="text-sm leading-relaxed">
+                  The exact visit location is not available yet for this
+                  booking. Our Dr Paws team will update it shortly.
+                </p>
+              </div>
+            ) : (
+              <p>
+                {appointment.address.address_line1},{" "}
+                {appointment.address.address_line2},{" "}
+                {appointment.address.pincode}
+              </p>
+            )}
           </>
         )}
 
         <p>{format(parsedDate, "EEEE dd MMMM, yyyy")}</p>
         <p>
           {appointment.appt_start}
-          {" - "}
-          {appointment.appt_end}
+          {appointment.booking_type === "CLINIC_VISIT" && " - "}
+          {appointment.booking_type === "CLINIC_VISIT" && appointment.appt_end}
         </p>
       </div>
       <div className="mt-auto self-end">

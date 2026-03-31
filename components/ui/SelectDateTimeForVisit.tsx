@@ -19,7 +19,9 @@ interface SelectDateTimeForVisitProps {
   isConfirmationModalOpen?: boolean
   isConfirming?: boolean
   paymentAmount?: number | null
+  isLoadingPaymentAmount?: boolean
   onConfirm: (date: string, slot: Slot) => void
+  onSlotsLoaded?: (firstAvailableSlot: Slot, date: string) => void
   isReschedule?: boolean
 }
 
@@ -72,6 +74,8 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
   isConfirming,
   isReschedule,
   paymentAmount,
+  isLoadingPaymentAmount,
+  onSlotsLoaded,
 }) => {
   const {
     call: getAtHomeSlots,
@@ -111,6 +115,15 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
     const parseResult = responseSchema.safeParse(atHomeSlotsResult.value.body)
     if (parseResult.success) {
       setDays(parseResult.data.data.days)
+      // Pre-fetch payment amount using the first available slot so the amount
+      // is ready before the user selects anything.
+      for (const day of parseResult.data.data.days) {
+        const firstAvailable = day.slots.find((s) => s.available)
+        if (firstAvailable) {
+          onSlotsLoaded?.(firstAvailable, day.date)
+          break
+        }
+      }
     } else {
       console.error("Invalid slot data format:", parseResult.error)
       toast.error("Invalid slot data received. Please contact support.")
@@ -220,8 +233,6 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
                     )}
                   >
                     <span>{formatTime(slot.startTime)}</span>
-                    <span>-</span>
-                    <span>{formatTime(slot.endTime)}</span>
                   </button>
                 )
               })}
@@ -230,10 +241,14 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
         </div>
       </div>
 
-      {paymentAmount && (
+      {selectedSlot && (isLoadingPaymentAmount || paymentAmount) && (
         <div className="mb-8">
           <p className="font-bold text-gray-600 mb-3">Amount</p>
-          <p className="font-bold text-gray-600 mb-3">INR {paymentAmount}</p>
+          {isLoadingPaymentAmount ? (
+            <div className="animate-pulse h-5 w-24 bg-gray-200 rounded" />
+          ) : (
+            <p className="font-bold text-gray-600 mb-3">INR {paymentAmount}</p>
+          )}
         </div>
       )}
 
@@ -241,10 +256,21 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
         <Tooltip
           color="#f7f1de"
           styles={{ body: { color: "#33495f" } }}
-          title={!selectedSlot ? "Select time slot to proceed" : ""}
+          title={
+            !selectedSlot
+              ? "Select time slot to proceed"
+              : isLoadingPaymentAmount
+                ? "Loading payment amount..."
+                : ""
+          }
         >
           <button
-            disabled={!selectedDate || !selectedSlot || isProcessing}
+            disabled={
+              !selectedDate ||
+              !selectedSlot ||
+              isProcessing ||
+              !!isLoadingPaymentAmount
+            }
             onClick={handleProceedClick}
             className="btn rounded-full text-white px-10 py-2 tracking-wider bg-secondary-1 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           >

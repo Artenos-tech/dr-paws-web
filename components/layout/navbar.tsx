@@ -3,7 +3,7 @@
 import { Menu } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { Toaster } from "react-hot-toast"
 import ContactInfoModal from "@/components/ui/ContactInfoModal"
 import CustomButton from "@/components/ui/CustomButton"
@@ -15,15 +15,19 @@ import Profile from "@/public/assets/images/profileThumnail.svg"
 import api, { clearAuthToken } from "@/services/api"
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
 import { useEffect, useRef, useState } from "react"
+import { useHomeVisitFeature } from "@/hooks/useHomeVisitFeature"
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false)
   const [isProfileOpen, setIsProfileOpen] = useState(false)
   const [isContactModalOpen, setContactIsModalOpen] = useState(false)
   const navigate = useRouter()
+  const pathname = usePathname()
+  const isVetAtHomePage = pathname?.includes("/vet-at-home")
   // const isMarketingFeatureEnabled = useMarketingFeature();
 
   const { refresh, initiateLogin, isLoggedIn } = useUserContext()
+  const { isFeatureEnabled: isHomeVisitEnabled } = useHomeVisitFeature()
 
   const dropdownRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
@@ -67,16 +71,24 @@ export default function NavBar() {
   }
 
   const handleBookAVisit = () => {
+    const destination =
+      pathname?.includes("/vet-at-home") && isHomeVisitEnabled
+        ? "/user/book-appointment?home=true"
+        : "/user/book-appointment"
     if (isLoggedIn) {
-      navigate.push("/user/book-appointment")
+      navigate.push(destination)
     } else {
-      initiateLogin("Book a Visit", "/user/book-appointment")
+      initiateLogin("Book a Visit", destination)
     }
   }
 
   return (
     <div className="fixed left-0 top-0 z-30 bg-primary-3 w-full drop-shadow-lg">
-      <div className="mx-auto px-8 md:px-32 lg:px-20 xl:px-40">
+      <div
+        className={`mx-auto ${
+          isVetAtHomePage ? "px-4 sm:px-6 md:px-32" : "px-8 md:px-32"
+        } lg:px-20 xl:px-40`}
+      >
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center gap-9">
             <div className="flex-shrink-0">
@@ -111,6 +123,12 @@ export default function NavBar() {
                   Our Team
                 </Link>
                 <Link
+                  href="/vet-at-home"
+                  className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                >
+                  Vet-At-Home
+                </Link>
+                <Link
                   href="/blogs"
                   className="text-primary-1 hover:bg-primary-2 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                 >
@@ -125,12 +143,35 @@ export default function NavBar() {
               </div>
             </div>
           </div>
-          <div className="flex items-center space-x-4 text-xs justify-end">
-            <CustomButton
-              buttonText="Book a visit"
-              buttonBackground="bg-secondary-1"
-              buttonClickEvent={handleBookAVisit}
-            />
+          <div
+            className={`flex items-center text-xs justify-end ${
+              isVetAtHomePage ? "gap-2 md:gap-4" : "gap-4"
+            }`}
+          >
+            {isVetAtHomePage ? (
+              <>
+                <button
+                  type="button"
+                  onClick={handleBookAVisit}
+                  className="font-open-sans btn rounded-full bg-secondary-1 px-2.5 py-2 text-[10px] tracking-[0.04em] text-white whitespace-nowrap sm:px-3 sm:text-[11px] md:hidden"
+                >
+                  Book an At-Home Visit
+                </button>
+                <div className="hidden md:block">
+                  <CustomButton
+                    buttonText="Book an At-Home Visit"
+                    buttonBackground="bg-secondary-1"
+                    buttonClickEvent={handleBookAVisit}
+                  />
+                </div>
+              </>
+            ) : (
+              <CustomButton
+                buttonText="Book a visit"
+                buttonBackground="bg-secondary-1"
+                buttonClickEvent={handleBookAVisit}
+              />
+            )}
             <div className="hidden lg:flex items-center space-x-4 text-xs">
               {isLoggedIn ? (
                 <DropdownMenu.Root>
@@ -286,6 +327,13 @@ export default function NavBar() {
               className="text-primary-1 hover:bg-primary-2 hover:text-white block py-2 px-2 rounded-md text-base font-medium"
             >
               Our Team
+            </Link>
+            <Link
+              onClick={() => setIsOpen(false)}
+              href="/vet-at-home"
+              className="text-primary-1 hover:bg-primary-2 hover:text-white block py-2 px-2 rounded-md text-base font-medium"
+            >
+              Vet-At-Home
             </Link>
             <Link
               onClick={() => setIsOpen(false)}

@@ -12,10 +12,14 @@ import { ClipLoader } from "react-spinners"
 import toast from "react-hot-toast"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useAPIErrorToastFromResult } from "@/hooks/useAPIErrorToast"
-
-const isHomeVisitEnabled = process.env.NEXT_PUBLIC_HOME_VISIT_ENABLED === "true"
+import { useHomeVisitFeature } from "@/hooks/useHomeVisitFeature"
 
 const Booking: React.FC = () => {
+  const {
+    isFeatureEnabled: isHomeVisitEnabled,
+    isLoading: isLoadingFeatureFlag,
+    hasResolved: hasResolvedHomeVisitFeature,
+  } = useHomeVisitFeature()
   const [selectedBookingType, setSelectedBookingType] =
     useState<BookingType | null>(null)
   const router = useRouter()
@@ -51,7 +55,7 @@ const Booking: React.FC = () => {
   }, [bookingTypes])
 
   useEffect(() => {
-    if (!isHomeVisitEnabled) return
+    if (isLoadingFeatureFlag || !isHomeVisitEnabled) return
 
     const fetchBookingTypes = async () => {
       try {
@@ -63,10 +67,10 @@ const Booking: React.FC = () => {
     }
 
     fetchBookingTypes()
-  }, [])
+  }, [isLoadingFeatureFlag, isHomeVisitEnabled])
 
   useEffect(() => {
-    if (!isHomeVisitEnabled) return
+    if (isLoadingFeatureFlag || !isHomeVisitEnabled) return
     if (!getBookingTypesResult?.ok) return
     if (selectedBookingType) return
 
@@ -81,6 +85,8 @@ const Booking: React.FC = () => {
       router.replace("/user/book-appointment", { scroll: false })
     }
   }, [
+    isLoadingFeatureFlag,
+    isHomeVisitEnabled,
     home,
     clinic,
     selectedBookingType,
@@ -112,20 +118,24 @@ const Booking: React.FC = () => {
     return <ClinicBookingFlow onBackToStart={handleBackToSelection} />
   }
 
+  if (
+    !hasResolvedHomeVisitFeature ||
+    isLoadingFeatureFlag ||
+    loadingBookingTypes
+  ) {
+    return (
+      <div className="flex justify-center items-center my-20">
+        <ClipLoader color="#33495f" />
+      </div>
+    )
+  }
+
   if (!isHomeVisitEnabled) {
     return (
       <div className="font-roca h-full w-full">
         <main className="flex flex-col items-center w-full mt-4 px-8 md:px-32 lg:px-20 xl:px-40">
           <ClinicBookingFlow />
         </main>
-      </div>
-    )
-  }
-
-  if (loadingBookingTypes) {
-    return (
-      <div className="flex justify-center items-center my-20">
-        <ClipLoader color="#33495f" />
       </div>
     )
   }

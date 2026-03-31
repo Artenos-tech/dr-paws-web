@@ -686,6 +686,54 @@ export default createAPIClient({
       errorResponseSchema: z.object({}),
     },
 
+    startBookingFlow: {
+      method: "POST",
+      path: "/booking/flow/start",
+      pathParamsSchema: z.object({}),
+      requestSchema: z.object({
+        booking_flow_type: z.enum(["HOME_VISIT", "CLINIC_VISIT"]),
+        platform: z.enum(["WEB"]),
+      }),
+      responseSchema: z.object({
+        data: z.object({
+          session: z.object({
+            id: z.string().uuid(),
+            user_id: z.string(),
+            booking_flow_type: z.enum(["HOME_VISIT", "CLINIC_VISIT"]),
+            platform: z.enum(["WEB"]),
+            status: z.enum(["ACTIVE", "COMPLETED", "ABANDONED"]),
+            last_step: z.string().nullable(),
+            started_at: z.string(),
+            last_activity_at: z.string(),
+            completed_at: z.string().nullable(),
+            abandoned_at: z.string().nullable(),
+          }),
+        }),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+
+    updateBookingFlowStep: {
+      method: "PATCH",
+      path: "/booking/flow/{session_id}/step",
+      pathParamsSchema: z.object({
+        session_id: z.string().uuid(),
+      }),
+      requestSchema: z.object({
+        step_number: z.number().int().min(1),
+      }),
+      responseSchema: z.object({
+        data: z.object({
+          session: z.object({
+            id: z.string().uuid(),
+            last_step: z.string().nullable(),
+            last_activity_at: z.string(),
+          }),
+        }),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+
     createAppointment: {
       method: "POST",
       path: "/user/appointment",
@@ -703,6 +751,7 @@ export default createAPIClient({
         pet_type: z.enum(["DOG", "CAT", "OTHER"]),
         is_grooming: z.boolean(),
         coupon_code: z.string().optional(),
+        booking_flow_session_id: z.string().uuid().optional(),
       }),
       responseSchema: z.object({
         status: z.number(),

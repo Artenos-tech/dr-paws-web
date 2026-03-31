@@ -25,6 +25,8 @@ import atHomeApiClient from "@/services/api.athome"
 import RescheduleAtHomeAppointment from "./RescheduleAtHomeAppointment"
 import SupportActions from "./SupportActions"
 import { useAPIErrorToastFromResult } from "@/hooks/useAPIErrorToast"
+import SOSActivatedBanner from "./SOSActivatedBanner"
+import SOSConfirmationModal from "./SOSConfirmationModal"
 
 type AtHomeBookingDetailsProps = {
   goBack: (refetch: boolean) => void
@@ -46,8 +48,22 @@ const AtHomeBookingDetails = ({
     "CANCEL" | "RESCHEDULE" | null
   >(null)
   const [refundStatus, setRefundStatus] = useState<RefundStatus>()
+  const [showSOSModal, setShowSOSModal] = useState(false)
+  const [isSOSActive, setIsSOSActive] = useState(
+    selectedAppointment.sos_status === "ACTIVE",
+  )
   const { call: cancelAppointment, result: cancelAppointmentResult } =
     useAPICall(atHomeApiClient.cancelAppointmentV2)
+  const {
+    call: raiseSOSAlert,
+    result: raiseSOSResult,
+    loading: raisingSOS,
+  } = useAPICall(atHomeApiClient.raiseSOSAlert)
+  const {
+    call: cancelSOSAlert,
+    result: cancelSOSResult,
+    loading: cancellingSOS,
+  } = useAPICall(atHomeApiClient.cancelSOSAlert)
   const parsedDate = parseISO(selectedAppointment.booking_date)
 
   useEffect(() => {
@@ -91,17 +107,20 @@ const AtHomeBookingDetails = ({
 
   const isDelayed = selectedAppointment.visit_status === "VET_DELAYED"
 
+  const isOutsideCancellationWindow = () => {
+    const slotStart = getSlotStartDateTime()
+    const now = new Date()
+    const diffInMs = slotStart.getTime() - now.getTime()
+    const diffInHours = diffInMs / (1000 * 60 * 60)
+    return diffInHours >= APPOINTMENT_CANCEL_WINDOW_HOURS
+  }
+
   const isFreeCancellation = () => {
     if (isDelayed) return true
 
-    const slotStart = getSlotStartDateTime()
-    const now = new Date()
-
-    const diffInMs = slotStart.getTime() - now.getTime()
-    const diffInHours = diffInMs / (1000 * 60 * 60)
-
-    return diffInHours >= APPOINTMENT_CANCEL_WINDOW_HOURS
+    return isOutsideCancellationWindow()
   }
+  const canReschedule = isDelayed || isOutsideCancellationWindow()
 
   const fullAddress = [
     selectedAppointment?.address?.address_line1,
@@ -184,6 +203,10 @@ const AtHomeBookingDetails = ({
       await refetchAppointment()
       setView("CANCELLED")
     } else {
+      if (!canReschedule) {
+        setView("DETAILS")
+        return
+      }
       setView("RESCHEDULE")
     }
   }
@@ -205,6 +228,42 @@ const AtHomeBookingDetails = ({
   }, [cancelAppointmentResult])
   useAPIErrorToastFromResult(cancelAppointmentResult, {
     fallbackMessage: "Failed to cancel appointment",
+  })
+
+  const handleRaiseSOS = async (description?: string) => {
+    setShowSOSModal(false)
+    await raiseSOSAlert({
+      appointment_id: selectedAppointment.id,
+      sub_booking_id: selectedAppointment.sub_booking_id,
+      description,
+    })
+  }
+
+  const handleCancelSOS = async () => {
+    await cancelSOSAlert({
+      appointment_id: selectedAppointment.id,
+      sub_booking_id: selectedAppointment.sub_booking_id,
+    })
+  }
+
+  useEffect(() => {
+    if (raiseSOSResult?.ok) {
+      setIsSOSActive(true)
+      toast.success("SOS alert raised. Our team will contact you shortly.")
+    }
+  }, [raiseSOSResult])
+  useAPIErrorToastFromResult(raiseSOSResult, {
+    fallbackMessage: "Failed to raise SOS alert",
+  })
+
+  useEffect(() => {
+    if (cancelSOSResult?.ok) {
+      setIsSOSActive(false)
+      toast.success("SOS alert cancelled.")
+    }
+  }, [cancelSOSResult])
+  useAPIErrorToastFromResult(cancelSOSResult, {
+    fallbackMessage: "Failed to cancel SOS alert",
   })
 
   const handleNavigation = () => {
@@ -256,6 +315,12 @@ const AtHomeBookingDetails = ({
           subBookingId={selectedAppointment.sub_booking_id}
         />
       )}
+      <SOSConfirmationModal
+        open={showSOSModal}
+        loading={raisingSOS}
+        onConfirm={handleRaiseSOS}
+        onCancel={() => setShowSOSModal(false)}
+      />
       {view === "DETAILS" && (
         <div className="flex flex-col items-center gap-6 mt-6">
           <div className="flex items-center gap-2">
@@ -312,6 +377,13 @@ const AtHomeBookingDetails = ({
               }
             </div>
 
+            {isSOSActive && (
+              <SOSActivatedBanner
+                onCancelSOS={handleCancelSOS}
+                loading={cancellingSOS}
+                onCallUs={copyHelpline}
+              />
+            )}
             {isVisitFinished && (
               <>
                 <div className="space-y-1">
@@ -325,7 +397,7 @@ const AtHomeBookingDetails = ({
                 <SupportActions
                   isVisitFinished
                   onCallUs={copyHelpline}
-                  onSOS={() => {}}
+                  onSOS={!isSOSActive ? () => setShowSOSModal(true) : undefined}
                 />
 
                 <AtHomeVisitStatus
@@ -349,8 +421,9 @@ const AtHomeBookingDetails = ({
             >
               <MdOutlineAccessTime className="text-secondary-1 text-xl" />
               <span className="text-base font-medium">
-                {selectedAppointment.appt_start} –{" "}
-                {selectedAppointment.appt_end}
+                {selectedAppointment.appt_start}
+                {/* –{" "}
+                {selectedAppointment.appt_end} */}
               </span>
             </div>
 
@@ -360,10 +433,24 @@ const AtHomeBookingDetails = ({
               </div>
 
               <div className={`flex flex-col ${isCancelled && "line-through"}`}>
-                <span className="font-medium">
-                  {selectedAppointment.address?.tag}
-                </span>
-                <span className="text-base leading-relaxed">{fullAddress}</span>
+                {selectedAppointment.address?.has_coordinates !== false && (
+                  <span className="font-medium">
+                    {selectedAppointment.address?.tag}
+                  </span>
+                )}
+                {selectedAppointment.address?.has_coordinates === false ? (
+                  <div className="flex items-start gap-2 rounded-[10px] border border-[#fcd34d] bg-[#fffbeb] px-3 py-2 text-[#b45309]">
+                    <span className="leading-5">{"\u26A0"}</span>
+                    <span className="text-sm leading-relaxed">
+                      The exact visit location is not available yet for this
+                      booking. Our Dr Paws team will update it shortly.
+                    </span>
+                  </div>
+                ) : (
+                  <span className="text-base leading-relaxed">
+                    {fullAddress}
+                  </span>
+                )}
               </div>
             </div>
 
@@ -423,7 +510,12 @@ const AtHomeBookingDetails = ({
             {(!isVisitFinished || canShowCancelActions) && (
               <div className="pt-4 border-t space-y-4">
                 {!isVisitFinished && (
-                  <SupportActions onCallUs={copyHelpline} onSOS={() => {}} />
+                  <SupportActions
+                    onCallUs={copyHelpline}
+                    onSOS={
+                      !isSOSActive ? () => setShowSOSModal(true) : undefined
+                    }
+                  />
                 )}
 
                 {canShowCancelActions && (
@@ -435,26 +527,32 @@ const AtHomeBookingDetails = ({
 
                       {isDelayed ? (
                         <p className="text-sm text-gray-600">
-                          Free cancellation available because your vet has been
-                          delayed.
+                          Free cancellation and rescheduling available because
+                          your vet has been delayed.
                         </p>
                       ) : isFreeCancellation() ? (
                         <p className="text-sm text-gray-600">
-                          Free cancellation available up to 24 hours before the
-                          appointment.
+                          Free cancellation and rescheduling available up to 24
+                          hours before the appointment.
                         </p>
                       ) : (
                         <p className="text-sm text-red-600">
                           Cancellation within 24 hours of the appointment will
-                          incur a 100% cancellation fee.
+                          incur a 100% cancellation fee. Rescheduling is not
+                          available within this window.
                         </p>
                       )}
                     </div>
 
                     <div className="flex flex-col lg:flex-row lg:justify-between gap-3">
                       <button
+                        disabled={!canReschedule}
                         onClick={() => openConfirmationView("RESCHEDULE")}
-                        className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-secondary-1 text-secondary-1 hover:bg-secondary-1 hover:text-white transition"
+                        className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-secondary-1 text-secondary-1 transition ${
+                          canReschedule
+                            ? "hover:bg-secondary-1 hover:text-white"
+                            : "opacity-50 cursor-not-allowed"
+                        }`}
                       >
                         <RotateCcw size={16} />
                         Reschedule

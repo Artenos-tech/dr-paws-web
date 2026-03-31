@@ -37,14 +37,17 @@ const requestContext = initRequestContext()
 const AddressSchema = z.object({
   id: z.string().uuid(),
   tag: z.string(),
-  location: z.object({
-    lat: z.number(),
-    long: z.number(),
-  }),
+  location: z
+    .object({
+      lat: z.number(),
+      long: z.number(),
+    })
+    .nullable(),
   address_line1: z.string(),
   address_line2: z.string(),
   pincode: z.string(),
   directions: z.string().optional(),
+  has_coordinates: z.boolean(),
 })
 
 const BookingTypeSchema = z.object({
@@ -180,6 +183,20 @@ const AppointmentDetailSchema = z
 // ============================================================================
 
 export type AtHomeAPIClient = {
+  getHomeVisitFeatureFlag: (
+    params: { platform: "web" | "ios" | "android" },
+    opts?: { abortSignal?: AbortSignal },
+  ) => Promise<
+    Result<
+      APIResponse<{
+        status: number
+        message: string
+        enableHomeVisits: boolean
+      }>,
+      any
+    >
+  >
+
   // Address Book
   getAddressBook: (
     params: Record<string, never>,
@@ -300,6 +317,20 @@ export type AtHomeAPIClient = {
     >
   >
 
+  getEmergencyContact: (
+    params: Record<string, never>,
+    opts?: { abortSignal?: AbortSignal },
+  ) => Promise<
+    Result<
+      APIResponse<{
+        status: number
+        message: string
+        emergencyPhone: string | null
+      }>,
+      any
+    >
+  >
+
   checkLocationServiceability: (
     params: { location: { lat: number; long: number } },
     opts?: { abortSignal?: AbortSignal },
@@ -385,6 +416,7 @@ export type AtHomeAPIClient = {
         | "FOLLOW_UP"
         | "OTHER"
       notes: string
+      booking_flow_session_id?: string
     },
     opts?: { abortSignal?: AbortSignal },
   ) => Promise<
@@ -502,6 +534,7 @@ export type AtHomeAPIClient = {
   raiseSOSAlert: (
     params: {
       appointment_id: string
+      sub_booking_id: string
       description?: string
     },
     opts?: { abortSignal?: AbortSignal },
@@ -521,6 +554,7 @@ export type AtHomeAPIClient = {
   cancelSOSAlert: (
     params: {
       appointment_id: string
+      sub_booking_id: string
     },
     opts?: { abortSignal?: AbortSignal },
   ) => Promise<
@@ -553,6 +587,7 @@ const mockAddresses: Array<z.infer<typeof AddressSchema>> = [
     address_line2: "Koramangala 4th Block",
     pincode: "560034",
     directions: "Near Sony Signal",
+    has_coordinates: true,
   },
   {
     id: generateUUID(),
@@ -561,6 +596,7 @@ const mockAddresses: Array<z.infer<typeof AddressSchema>> = [
     address_line1: "456 Park Avenue",
     address_line2: "Indiranagar 100 Feet Road",
     pincode: "560038",
+    has_coordinates: true,
   },
   {
     id: generateUUID(),
@@ -570,6 +606,7 @@ const mockAddresses: Array<z.infer<typeof AddressSchema>> = [
     address_line2: "Whitefield Main Road",
     pincode: "560066",
     directions: "Opposite Forum Mall",
+    has_coordinates: true,
   },
 ]
 
@@ -635,6 +672,17 @@ const delay = (ms: number, signal?: AbortSignal) =>
   })
 
 export const mockAtHomeClient: AtHomeAPIClient = {
+  getHomeVisitFeatureFlag: async (params, opts) => {
+    await delay(500, opts?.abortSignal)
+    return ok({
+      status: 200,
+      body: {
+        status: 200,
+        message: "Home visit feature flag fetched successfully",
+        enableHomeVisits: true,
+      },
+    })
+  },
   getAddressBook: async (params, opts) => {
     await delay(500, opts?.abortSignal)
     return ok({
@@ -684,6 +732,7 @@ export const mockAtHomeClient: AtHomeAPIClient = {
       address_line2: params.address.address_line2,
       pincode: "560000", // Default pincode for mock
       directions: params.address.directions ?? undefined,
+      has_coordinates: true,
     }
 
     mockAddresses.push(newAddress)
@@ -774,6 +823,18 @@ export const mockAtHomeClient: AtHomeAPIClient = {
         data: {
           pincodes: ["560034", "560038", "560066", "560095", "560100"],
         },
+      },
+    })
+  },
+
+  getEmergencyContact: async (params, opts) => {
+    await delay(500, opts?.abortSignal)
+    return ok({
+      status: 200,
+      body: {
+        status: 200,
+        message: "Emergency contact fetched successfully",
+        emergencyPhone: "1234567899",
       },
     })
   },
@@ -1173,6 +1234,20 @@ export const mockAtHomeClient: AtHomeAPIClient = {
 // ============================================================================
 
 const endpointConfig = {
+  getHomeVisitFeatureFlag: {
+    method: "GET" as const,
+    path: "/config/home-visit-feature-flag?platform={platform}",
+    pathParamsSchema: z.object({
+      platform: z.enum(["web", "ios", "android"]),
+    }),
+    requestSchema: z.object({}),
+    responseSchema: z.object({
+      status: z.number(),
+      message: z.string(),
+      enableHomeVisits: z.boolean(),
+    }),
+    errorResponseSchema: z.object({}),
+  },
   // Address Book
   getAddressBook: {
     method: "GET" as const,
@@ -1278,7 +1353,7 @@ const endpointConfig = {
 
   getServiceablePincodes: {
     method: "GET" as const,
-    path: "/booking/at-home/serviceable-pincodes",
+    path: "/at-home/location/serviceable-pincodes",
     pathParamsSchema: z.object({}),
     requestSchema: z.object({}),
     responseSchema: z.object({
@@ -1289,9 +1364,20 @@ const endpointConfig = {
     errorResponseSchema: z.object({}),
   },
 
+  getEmergencyContact: {
+    method: "GET" as const,
+    path: "/config/emergency-contact",
+    pathParamsSchema: z.object({}),
+    requestSchema: z.object({}),
+    responseSchema: z.object({
+      emergencyPhone: z.string().nullable(),
+    }),
+    errorResponseSchema: z.object({}),
+  },
+
   checkLocationServiceability: {
     method: "POST" as const,
-    path: "/booking/at-home/location/serviceability",
+    path: "/at-home/location/serviceability",
     pathParamsSchema: z.object({}),
     requestSchema: z.object({
       location: z.object({
@@ -1374,6 +1460,7 @@ const endpointConfig = {
         "OTHER",
       ]),
       notes: z.string(),
+      booking_flow_session_id: z.string().uuid().optional(),
     }),
     responseSchema: z.object({
       data: z.object({
@@ -1472,8 +1559,11 @@ const endpointConfig = {
 
   raiseSOSAlert: {
     method: "PUT" as const,
-    path: "/user/appointment/{appointment_id}/sos/alert",
-    pathParamsSchema: z.object({ appointment_id: z.string().uuid() }),
+    path: "/user/appointment/{appointment_id}/sos/alert?sub_booking_id={sub_booking_id}",
+    pathParamsSchema: z.object({
+      appointment_id: z.string().uuid(),
+      sub_booking_id: z.string().uuid(),
+    }),
     requestSchema: z.object({
       description: z.string().optional(),
     }),
@@ -1487,8 +1577,11 @@ const endpointConfig = {
 
   cancelSOSAlert: {
     method: "PUT" as const,
-    path: "/user/appointment/{appointment_id}/sos/cancel",
-    pathParamsSchema: z.object({ appointment_id: z.string().uuid() }),
+    path: "/user/appointment/{appointment_id}/sos/cancel?sub_booking_id={sub_booking_id}",
+    pathParamsSchema: z.object({
+      appointment_id: z.string().uuid(),
+      sub_booking_id: z.string().uuid(),
+    }),
     requestSchema: z.object({}),
     responseSchema: z.object({
       data: z.object({

@@ -61,6 +61,8 @@ const DescriptionCard: React.FC<descriptionCardProps> = ({
         <Image
           src={image}
           alt={title + " image"}
+          sizes="(min-width: 1024px) 42vw, 100vw"
+          quality={85}
           className="mx-auto rounded-md"
         />
       </div>

@@ -127,8 +127,10 @@ const BookingConfirmed: React.FC<BookingConfirmedProps> = ({
               <span className="text-secondary-1">
                 <MdOutlineAccessTime />
               </span>
-              {selectedAppointment?.selectedSlot} -{" "}
-              {selectedAppointment?.selectedSlotEnd}
+              {selectedAppointment?.selectedSlot}{" "}
+              {bookingType === "CLINIC_VISIT" && " - "}
+              {bookingType === "CLINIC_VISIT" &&
+                selectedAppointment?.selectedSlotEnd}
             </p>
           </div>
           {selectedAppointment.appliedCoupon && (

@@ -1,11 +1,22 @@
-import { useState, useEffect } from "react"
+import { useEffect } from "react"
+import { useAPICall } from "@/hooks/apicall"
+import atHomeApiClient from "@/services/api.athome"
 
 export function useHomeVisitFeature() {
-  const [isFeatureEnabled, setIsFeatureEnabled] = useState(false)
+  const {
+    call: getHomeVisitFeatureFlag,
+    loading,
+    result,
+  } = useAPICall(atHomeApiClient.getHomeVisitFeatureFlag)
 
   useEffect(() => {
-    setIsFeatureEnabled(process.env.NEXT_PUBLIC_HOME_VISIT_ENABLED === "true")
+    getHomeVisitFeatureFlag({ platform: "web" })
   }, [])
 
-  return isFeatureEnabled
+  return {
+    isFeatureEnabled:
+      result?.ok === true && result.value.body.enableHomeVisits === true,
+    isLoading: loading,
+    hasResolved: result !== undefined,
+  }
 }
