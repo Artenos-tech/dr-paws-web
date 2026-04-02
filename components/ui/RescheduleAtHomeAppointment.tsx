@@ -181,6 +181,7 @@ const RescheduleAtHomeAppointment = ({
               isOpen={isConfirmationModalOpen}
               onClose={() => setIsConfirmationModalOpen(false)}
               onConfirm={handleConfirmReschedule}
+              isSubmitting={rescheduleLoading}
               bookingDetails={bookingDetails}
               paymentAmount={paymentAmount}
             />

@@ -63,14 +63,16 @@ const ConfirmationCard = ({
         <div className="flex items-center justify-center w-full md:w-[85%] gap-4 md:mt-4">
           <button
             onClick={onCancel}
-            className="w-full py-3 rounded-full text-sm text-white bg-secondary-1"
+            disabled={loading}
+            className="w-full py-3 rounded-full text-sm text-white bg-secondary-1 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             No
           </button>
 
           <button
             onClick={onConfirm}
-            className="w-full py-3 border-2 border-secondary-1 rounded-full text-sm"
+            disabled={loading}
+            className="w-full py-3 border-2 border-secondary-1 rounded-full text-sm disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? <ClipLoader color="#33495f" size={18} /> : "Yes"}
           </button>
