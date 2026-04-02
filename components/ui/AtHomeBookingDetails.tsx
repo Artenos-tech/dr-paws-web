@@ -52,8 +52,11 @@ const AtHomeBookingDetails = ({
   const [isSOSActive, setIsSOSActive] = useState(
     selectedAppointment.sos_status === "ACTIVE",
   )
-  const { call: cancelAppointment, result: cancelAppointmentResult } =
-    useAPICall(atHomeApiClient.cancelAppointmentV2)
+  const {
+    call: cancelAppointment,
+    result: cancelAppointmentResult,
+    loading: cancelAppointmentLoading,
+  } = useAPICall(atHomeApiClient.cancelAppointmentV2)
   const {
     call: raiseSOSAlert,
     result: raiseSOSResult,
@@ -296,6 +299,7 @@ const AtHomeBookingDetails = ({
         <ConfirmActionCard
           onCancel={cancelConfirmationView}
           onConfirm={proceedConfirmationView}
+          loading={confirmationType === "CANCEL" && cancelAppointmentLoading}
           extraMessage={getExtraMessage()}
           extraMessageVariant={isFreeCancellation() ? "info" : "warning"}
           confirmationType={confirmationType}

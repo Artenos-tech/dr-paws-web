@@ -476,6 +476,7 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
               isOpen={showConfirmationModal}
               onClose={() => dispatch({ type: "HIDE_CONFIRMATION_MODAL" })}
               onConfirm={handleConfirmBooking}
+              isSubmitting={isConfirming}
               bookingDetails={bookingDetails}
               paymentAmount={paymentAmount}
             />
