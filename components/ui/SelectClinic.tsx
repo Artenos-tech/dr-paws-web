@@ -26,8 +26,6 @@ interface SelectClinicProps {
 const SelectClinic: React.FC<SelectClinicProps> = ({
   onNext,
   selectedClinic,
-  selectedClinicLocation,
-  selectedClinicContact,
   handleClinicSelection,
   selectedPet,
   isGrooming,
@@ -40,7 +38,7 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
   const [formData, setFormData] = useState<
     Record<string, { id: string; name: string }>
   >({})
-  const [isFormComplete, setIsFormComplete] = useState(false)
+  const [loadingClinicId, setLoadingClinicId] = useState<string | null>(null)
   const [clinicSearch, setClinicSearch] = useState("")
   const [selectedLocation, setSelectedLocation] = useState<string | undefined>(
     undefined,
@@ -84,97 +82,101 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
     options.length > 0 ? options[options.length - 1] : null
 
   const onClinicSelect = async function (clinic: string) {
-    setIsFormComplete(false)
-    const response = await getMissingAttributes({
-      clinicid: clinic,
-      petid: selectedPet.id,
-      grooming: isGrooming ? "y" : "n",
-    })
-    if (!response.ok) return
-    if (response.value.body.attributes.length === 0) {
-      setIsFormComplete(true)
-      setMissingAttributes([])
-      setShowModal(false)
-    } else {
-      const missing = response.value.body.attributes as (
-        | "Name"
-        | "Type"
-        | "Breed"
-        | "Gender"
-        | "Birthday"
-        | "Breed size"
-        | "Coat size"
-        | "Species"
-      )[]
-      if (!selectedPet.gender) missing.push("Gender")
-      if (!selectedPet.type) missing.push("Species")
-      const onlyBreedAndCoatMissing = missing.every(
-        (attr) => attr === "Breed size" || attr === "Coat size",
-      )
-      const updatedFormData: typeof formData = { ...formData }
-      const updatedOptions: typeof dropdownOptions = {}
-      const filteredMissing = []
-      for (const attr of missing) {
-        if (attr !== "Breed size" && attr !== "Coat size") {
-          filteredMissing.push(attr)
-          if (
-            ATTRIBUTE_OPTIONS_CONFIG[
-              attr as keyof typeof ATTRIBUTE_OPTIONS_CONFIG
-            ]
-          ) {
-            updatedOptions[attr] =
+    setLoadingClinicId(clinic)
+    try {
+      const response = await getMissingAttributes({
+        clinicid: clinic,
+        petid: selectedPet.id,
+        grooming: isGrooming ? "y" : "n",
+      })
+      if (!response.ok) return
+      if (response.value.body.attributes.length === 0) {
+        setMissingAttributes([])
+        setShowModal(false)
+        onNext()
+      } else {
+        const missing = response.value.body.attributes as (
+          | "Name"
+          | "Type"
+          | "Breed"
+          | "Gender"
+          | "Birthday"
+          | "Breed size"
+          | "Coat size"
+          | "Species"
+        )[]
+        if (!selectedPet.gender) missing.push("Gender")
+        if (!selectedPet.type) missing.push("Species")
+        const onlyBreedAndCoatMissing = missing.every(
+          (attr) => attr === "Breed size" || attr === "Coat size",
+        )
+        const updatedFormData: typeof formData = { ...formData }
+        const updatedOptions: typeof dropdownOptions = {}
+        const filteredMissing = []
+        for (const attr of missing) {
+          if (attr !== "Breed size" && attr !== "Coat size") {
+            filteredMissing.push(attr)
+            if (
               ATTRIBUTE_OPTIONS_CONFIG[
                 attr as keyof typeof ATTRIBUTE_OPTIONS_CONFIG
               ]
-          }
-          if (attr === "Breed" && selectedPet.type) {
-            updatedOptions[attr] = await fetchBreedOptions(selectedPet.type)
-          }
-        } else {
-          if (attr === "Breed size") {
-            const breedSizeRes = await getSizes({})
-            if (breedSizeRes.ok) {
-              const largest =
-                selectedPet.type === "CAT"
-                  ? breedSizeRes.value.body.sizes.find(
-                      (size) => size.name.toLowerCase() === "medium",
-                    )
-                  : getLargestOption(breedSizeRes.value.body.sizes)
-              if (largest) {
-                updatedFormData["Breed size"] = {
-                  id: largest.id,
-                  name: largest.name,
+            ) {
+              updatedOptions[attr] =
+                ATTRIBUTE_OPTIONS_CONFIG[
+                  attr as keyof typeof ATTRIBUTE_OPTIONS_CONFIG
+                ]
+            }
+            if (attr === "Breed" && selectedPet.type) {
+              updatedOptions[attr] = await fetchBreedOptions(selectedPet.type)
+            }
+          } else {
+            if (attr === "Breed size") {
+              const breedSizeRes = await getSizes({})
+              if (breedSizeRes.ok) {
+                const largest =
+                  selectedPet.type === "CAT"
+                    ? breedSizeRes.value.body.sizes.find(
+                        (size) => size.name.toLowerCase() === "medium",
+                      )
+                    : getLargestOption(breedSizeRes.value.body.sizes)
+                if (largest) {
+                  updatedFormData["Breed size"] = {
+                    id: largest.id,
+                    name: largest.name,
+                  }
                 }
               }
             }
-          }
-          if (attr === "Coat size") {
-            const coatSizeRes = await getCoats({})
-            if (coatSizeRes.ok) {
-              const largest = getLargestOption(coatSizeRes.value.body.coats)
-              if (largest) {
-                updatedFormData["Coat size"] = {
-                  id: largest.id,
-                  name: largest.name,
+            if (attr === "Coat size") {
+              const coatSizeRes = await getCoats({})
+              if (coatSizeRes.ok) {
+                const largest = getLargestOption(coatSizeRes.value.body.coats)
+                if (largest) {
+                  updatedFormData["Coat size"] = {
+                    id: largest.id,
+                    name: largest.name,
+                  }
                 }
               }
             }
           }
         }
+        setFormData(updatedFormData)
+        setDropdownOptions(updatedOptions)
+        if (onlyBreedAndCoatMissing) {
+          await onUpdatePet({
+            breedSize: updatedFormData["Breed size"],
+            coat: updatedFormData["Coat size"],
+          })
+        } else if (filteredMissing.length > 0) {
+          setMissingAttributes(filteredMissing)
+          setShowModal(true)
+        } else {
+          onNext()
+        }
       }
-      setFormData(updatedFormData)
-      setDropdownOptions(updatedOptions)
-      if (onlyBreedAndCoatMissing) {
-        await onUpdatePet({
-          breedSize: updatedFormData["Breed size"],
-          coat: updatedFormData["Coat size"],
-        })
-      } else if (filteredMissing.length > 0) {
-        setMissingAttributes(filteredMissing)
-        setShowModal(true)
-      } else {
-        setIsFormComplete(true)
-      }
+    } finally {
+      setLoadingClinicId(null)
     }
   }
 
@@ -214,8 +216,8 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
       },
     })
     if (updateResponse.ok) {
-      setIsFormComplete(true)
       setShowModal(false)
+      onNext()
     }
   }
 
@@ -237,32 +239,6 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
       : true
     return matchesName && matchesLocation
   })
-
-  useEffect(() => {
-    if (!selectedClinic || clinics.length === 0) return
-    const selected =
-      clinics.find((item) => item.id === selectedClinic) ||
-      clinics.find((item) => item.dbClinicId === selectedClinic)
-    if (!selected) return
-    if (
-      selectedClinic === selected.id &&
-      selectedClinicLocation &&
-      selectedClinicContact
-    ) {
-      onClinicSelect(selected.id)
-      return
-    }
-    handleClinicSelection(selected.id, selected.location, selected.contact, {
-      skipToggle: true,
-    })
-    onClinicSelect(selected.id)
-  }, [
-    clinics,
-    handleClinicSelection,
-    selectedClinic,
-    selectedClinicContact,
-    selectedClinicLocation,
-  ])
 
   if (loadingClinics) {
     return (
@@ -305,15 +281,11 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
               key={item.id}
               clinic={item}
               isSelected={selectedClinic === item.id}
+              isLoading={loadingClinicId === item.id}
               onSelect={() => {
                 handleClinicSelection(item.id, item.location, item.contact)
                 onClinicSelect(item.id)
               }}
-              onNext={
-                selectedClinic === item.id && isFormComplete && !showModal
-                  ? onNext
-                  : undefined
-              }
             />
           </div>
         ))}
@@ -365,7 +337,9 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
                 className="text-sm text-gray-500 hover:underline"
                 onClick={() => {
                   setShowModal(false)
-                  setIsFormComplete(false)
+                  if (selectedClinic) {
+                    handleClinicSelection(selectedClinic, "", "")
+                  }
                 }}
               >
                 Cancel

@@ -6,7 +6,7 @@ import SelectClinic from "@/components/ui/SelectClinic"
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md"
 import SelectVet, { SelectedVet } from "@/components/ui/SelectVet"
 import { Pet } from "@/context/UserContext"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { useAPICall } from "@/hooks/apicall"
 import api from "@/services/api"
 
@@ -18,7 +18,6 @@ const ClinicBookingFlow: React.FC<ClinicBookingFlowProps> = ({
   onBackToStart,
 }) => {
   const router = useRouter()
-  const searchParams = useSearchParams()
   const [bookingFlowSessionId, setBookingFlowSessionId] = useState<
     string | null
   >(null)
@@ -61,6 +60,10 @@ const ClinicBookingFlow: React.FC<ClinicBookingFlowProps> = ({
   const [isDisclaimerModalOpen, setIsDisclaimerModalOpen] = useState(false)
   const [currentStep, setCurrentStep] = useState<number>(1)
 
+  useEffect(() => {
+    window.scrollTo({ top: 0 })
+  }, [currentStep])
+
   const trackStep = async (sessionId: string, stepNumber: number) => {
     if (stepNumber < 1 || stepNumber === lastTrackedStepRef.current) return
     lastTrackedStepRef.current = stepNumber
@@ -98,18 +101,6 @@ const ClinicBookingFlow: React.FC<ClinicBookingFlowProps> = ({
     startSession()
   }, [])
 
-  useEffect(() => {
-    const clinicId = searchParams.get("clinicId")
-    if (!clinicId) return
-    setSelectedAppointmentState((prev) => {
-      if (prev.selectedClinic) return prev
-      return {
-        ...prev,
-        selectedClinic: clinicId,
-      }
-    })
-  }, [searchParams])
-
   const handleClinicSelection = (
     clinicId: string,
     location: string,
@@ -146,6 +137,14 @@ const ClinicBookingFlow: React.FC<ClinicBookingFlowProps> = ({
   }
 
   const goToPrevStep = () => {
+    if (currentStep === 3) {
+      setSelectedAppointmentState((prev) => ({
+        ...prev,
+        selectedClinic: null,
+        selectedLocation: null,
+        selectClinicContact: null,
+      }))
+    }
     if (currentStep === 1 && onBackToStart) {
       onBackToStart()
     } else if (currentStep > 1) {
