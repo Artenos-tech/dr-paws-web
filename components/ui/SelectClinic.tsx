@@ -1,7 +1,6 @@
 "use client"
 
 import SelectClinicCard from "./SelectClinicCard"
-import CustomButton from "./CustomButton"
 import { useEffect, useState } from "react"
 import { useAPICall } from "@/hooks/apicall"
 import api from "@/services/api"
@@ -250,6 +249,7 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
       selectedClinicLocation &&
       selectedClinicContact
     ) {
+      onClinicSelect(selected.id)
       return
     }
     handleClinicSelection(selected.id, selected.location, selected.contact, {
@@ -298,7 +298,7 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
           }))}
         />
       </div>
-      <div className="h-full grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-12 ">
+      <div className="h-full grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-12 mb-16">
         {filteredClinics.map((item) => (
           <div key={item.id} className="h-full ">
             <SelectClinicCard
@@ -309,25 +309,17 @@ const SelectClinic: React.FC<SelectClinicProps> = ({
                 handleClinicSelection(item.id, item.location, item.contact)
                 onClinicSelect(item.id)
               }}
+              onNext={
+                selectedClinic === item.id && isFormComplete && !showModal
+                  ? onNext
+                  : undefined
+              }
             />
           </div>
         ))}
         {!filteredClinics.length && (
           <div className="text-gray-500">No clinics match your search.</div>
         )}
-      </div>
-      <div className="my-16 flex justify-center">
-        <CustomButton
-          buttonText="Next"
-          buttonBackground="bg-secondary-1"
-          disabled={
-            !selectedClinic ||
-            !selectedClinicLocation ||
-            !selectedClinicContact ||
-            !isFormComplete
-          }
-          buttonClickEvent={onNext}
-        />
       </div>
       {showModal && (
         <div className="fixed inset-0 z-50 bg-black bg-opacity-30 flex justify-center items-center">
