@@ -545,6 +545,7 @@ export type AtHomeAPIClient = {
         message: string
         data: {
           appointment_id: string
+          sos_id: string
         }
       }>,
       any
@@ -564,6 +565,28 @@ export type AtHomeAPIClient = {
         message: string
         data: {
           appointment_id: string
+        }
+      }>,
+      any
+    >
+  >
+
+  getSOSStatus: (
+    params: {
+      appointment_id: string
+      sub_booking_id: string
+      sos_id: string
+    },
+    opts?: { abortSignal?: AbortSignal },
+  ) => Promise<
+    Result<
+      APIResponse<{
+        status: number
+        message: string
+        data: {
+          sos_status: "ACTIVE" | "INACTIVE"
+          resolved_at?: string
+          resolution_notes?: string
         }
       }>,
       any
@@ -1209,6 +1232,7 @@ export const mockAtHomeClient: AtHomeAPIClient = {
         message: "SOS Alert raised for appointment successfully",
         data: {
           appointment_id: params.appointment_id,
+          sos_id: generateUUID(),
         },
       },
     })
@@ -1223,6 +1247,20 @@ export const mockAtHomeClient: AtHomeAPIClient = {
         message: "SOS Alert cancelled for appointment successfully",
         data: {
           appointment_id: params.appointment_id,
+        },
+      },
+    })
+  },
+
+  getSOSStatus: async (params, opts) => {
+    await delay(500, opts?.abortSignal)
+    return ok({
+      status: 200,
+      body: {
+        status: 200,
+        message: "SOS status fetched successfully",
+        data: {
+          sos_status: "ACTIVE" as const,
         },
       },
     })
@@ -1570,6 +1608,7 @@ const endpointConfig = {
     responseSchema: z.object({
       data: z.object({
         appointment_id: z.string().uuid(),
+        sos_id: z.string().uuid(),
       }),
     }),
     errorResponseSchema: z.object({}),
@@ -1586,6 +1625,25 @@ const endpointConfig = {
     responseSchema: z.object({
       data: z.object({
         appointment_id: z.string().uuid(),
+      }),
+    }),
+    errorResponseSchema: z.object({}),
+  },
+
+  getSOSStatus: {
+    method: "GET" as const,
+    path: "/user/appointment/{appointment_id}/sos/{sos_id}/status?sub_booking_id={sub_booking_id}",
+    pathParamsSchema: z.object({
+      appointment_id: z.string().uuid(),
+      sub_booking_id: z.string().uuid(),
+      sos_id: z.string(),
+    }),
+    requestSchema: z.object({}),
+    responseSchema: z.object({
+      data: z.object({
+        sos_status: z.enum(["ACTIVE", "INACTIVE"]),
+        resolved_at: z.string().optional(),
+        resolution_notes: z.string().optional(),
       }),
     }),
     errorResponseSchema: z.object({}),

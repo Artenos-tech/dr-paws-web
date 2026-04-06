@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import BackButton from "./BackButton"
 import {
   CalendarDays,
@@ -52,6 +52,13 @@ const AtHomeBookingDetails = ({
   const [isSOSActive, setIsSOSActive] = useState(
     selectedAppointment.sos_status === "ACTIVE",
   )
+  const [sosId, setSosId] = useState<string | null>(null)
+  const [sosResolution, setSosResolution] = useState<{
+    resolved_at?: string
+    resolution_notes?: string
+  } | null>(null)
+  const prevSosStatusRef = useRef(selectedAppointment.sos_status)
+  const sosIdRef = useRef<string | null>(null)
   const { call: cancelAppointment, result: cancelAppointmentResult } =
     useAPICall(atHomeApiClient.cancelAppointmentV2)
   const {
@@ -64,6 +71,9 @@ const AtHomeBookingDetails = ({
     result: cancelSOSResult,
     loading: cancellingSOS,
   } = useAPICall(atHomeApiClient.cancelSOSAlert)
+  const { call: fetchSOSStatus, result: sosStatusResult } = useAPICall(
+    atHomeApiClient.getSOSStatus,
+  )
   const parsedDate = parseISO(selectedAppointment.booking_date)
 
   useEffect(() => {
@@ -248,6 +258,10 @@ const AtHomeBookingDetails = ({
 
   useEffect(() => {
     if (raiseSOSResult?.ok) {
+      const newSosId = raiseSOSResult.value.body.data.sos_id
+      setSosId(newSosId)
+      sosIdRef.current = newSosId
+      setSosResolution(null)
       setIsSOSActive(true)
       toast.success("SOS alert raised. Our team will contact you shortly.")
     }
@@ -258,6 +272,9 @@ const AtHomeBookingDetails = ({
 
   useEffect(() => {
     if (cancelSOSResult?.ok) {
+      setSosId(null)
+      sosIdRef.current = null
+      setSosResolution(null)
       setIsSOSActive(false)
       toast.success("SOS alert cancelled.")
     }
@@ -265,6 +282,34 @@ const AtHomeBookingDetails = ({
   useAPIErrorToastFromResult(cancelSOSResult, {
     fallbackMessage: "Failed to cancel SOS alert",
   })
+
+  // Detect external SOS resolution via polling — only fires on ACTIVE → INACTIVE transition
+  useEffect(() => {
+    const prevStatus = prevSosStatusRef.current
+    prevSosStatusRef.current = selectedAppointment.sos_status
+
+    if (prevStatus === "ACTIVE" && selectedAppointment.sos_status === "INACTIVE") {
+      setIsSOSActive(false)
+      if (sosIdRef.current) {
+        fetchSOSStatus({
+          appointment_id: selectedAppointment.id,
+          sub_booking_id: selectedAppointment.sub_booking_id,
+          sos_id: sosIdRef.current,
+        })
+      }
+    }
+  }, [selectedAppointment.sos_status])
+
+  useEffect(() => {
+    if (sosStatusResult?.ok) {
+      const { sos_status, resolved_at, resolution_notes } =
+        sosStatusResult.value.body.data
+      if (sos_status === "INACTIVE") {
+        setSosResolution({ resolved_at, resolution_notes })
+        toast.success("Your SOS alert has been resolved by our support team.")
+      }
+    }
+  }, [sosStatusResult])
 
   const handleNavigation = () => {
     if (view === "CONFIRM_ACTION" || view === "RESCHEDULE") {
@@ -379,9 +424,17 @@ const AtHomeBookingDetails = ({
 
             {isSOSActive && (
               <SOSActivatedBanner
+                variant="active"
                 onCancelSOS={handleCancelSOS}
                 loading={cancellingSOS}
                 onCallUs={copyHelpline}
+              />
+            )}
+            {!isSOSActive && sosResolution && (
+              <SOSActivatedBanner
+                variant="resolved"
+                resolvedAt={sosResolution.resolved_at}
+                resolutionNotes={sosResolution.resolution_notes}
               />
             )}
             {isVisitFinished && (
