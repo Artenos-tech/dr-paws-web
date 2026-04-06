@@ -10,7 +10,7 @@ import { ClipLoader } from "react-spinners"
 import { useAPIErrorToastFromResult } from "@/hooks/useAPIErrorToast"
 import { useHomeVisitFeature } from "@/hooks/useHomeVisitFeature"
 
-const POLLING_INTERVAL_MS = 5000
+const POLLING_INTERVAL_MS = 30000
 
 export type BookingDetailsProps = {
   goBack: (refetch: boolean) => void
