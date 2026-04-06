@@ -62,7 +62,7 @@ export default function RootLayout({
         <body className={`w-full min-h-screen overflow-x-hidden flex flex-col`}>
           <Script
             id="gtm-script"
-            strategy="beforeInteractive"
+            strategy="afterInteractive"
             dangerouslySetInnerHTML={{
               __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],

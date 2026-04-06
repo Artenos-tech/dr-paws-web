@@ -19,6 +19,7 @@ const nextConfig = {
             "maps.googleapis.com",
             "pettle.s3.ap-south-1.amazonaws.com",
             "storage.googleapis.com",
+            "images.unsplash.com",
           ],
         }
       : {
@@ -28,6 +29,7 @@ const nextConfig = {
             "lh3.googleusercontent.com",
             "pettle.s3.ap-south-1.amazonaws.com",
             "storage.googleapis.com",
+            "images.unsplash.com",
           ],
         },
   webpack: (config, { isServer }) => {

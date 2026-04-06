@@ -61,6 +61,7 @@ const ReasonForVisit = ({
   const [filledDescription, setFilledDescription] = useState(description || "")
   const [isValid, setIsValid] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
+  const [isCallingEmergency, setIsCallingEmergency] = useState(false)
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
   const [touched, setTouched] = useState<{ [key: string]: boolean }>({})
   const readEmergencyPhone = (
@@ -212,37 +213,53 @@ const ReasonForVisit = ({
             <div className="flex justify-around space-x-3">
               <button
                 onClick={handleModalClose}
+                disabled={isCallingEmergency}
                 className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700"
               >
                 Cancel
               </button>
 
               <button
+                disabled={isCallingEmergency}
                 className="px-4 py-2 bg-primary-1 text-white rounded-lg flex items-center space-x-2"
                 onClick={async () => {
-                  let phone = emergencyPhone
-                  if (!phone) {
-                    const latestContactResult = await getEmergencyContact({})
-                    phone = readEmergencyPhone(latestContactResult)
-                    setEmergencyPhone(phone)
-                  }
-                  if (!phone) {
-                    toast.error(
-                      "Emergency contact number is currently unavailable",
-                    )
-                    return
-                  }
-                  navigator.clipboard.writeText(phone)
+                  setIsCallingEmergency(true)
+                  try {
+                    let phone = emergencyPhone
+                    if (!phone) {
+                      const latestContactResult = await getEmergencyContact({})
+                      phone = readEmergencyPhone(latestContactResult)
+                      setEmergencyPhone(phone)
+                    }
+                    if (!phone) {
+                      toast.error(
+                        "Emergency contact number is currently unavailable",
+                      )
+                      return
+                    }
+                    navigator.clipboard.writeText(phone)
 
-                  toast.success(`Phone number ${phone} copied to clipboard`, {
-                    duration: 3000,
-                  })
+                    toast.success(`Phone number ${phone} copied to clipboard`, {
+                      duration: 3000,
+                    })
 
-                  handleModalClose()
+                    handleModalClose()
+                  } finally {
+                    setIsCallingEmergency(false)
+                  }
                 }}
               >
-                <PhoneCall />
-                <span>Call Us</span>
+                {isCallingEmergency ? (
+                  <>
+                    <ClipLoader size={16} color="#ffffff" />
+                    <span>Calling...</span>
+                  </>
+                ) : (
+                  <>
+                    <PhoneCall />
+                    <span>Call Us</span>
+                  </>
+                )}
               </button>
             </div>
           </div>

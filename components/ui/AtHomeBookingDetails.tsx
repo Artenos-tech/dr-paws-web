@@ -344,6 +344,7 @@ const AtHomeBookingDetails = ({
         <ConfirmActionCard
           onCancel={cancelConfirmationView}
           onConfirm={proceedConfirmationView}
+          loading={confirmationType === "CANCEL" && cancelAppointmentLoading}
           extraMessage={getExtraMessage()}
           extraMessageVariant={isFreeCancellation() ? "info" : "warning"}
           confirmationType={confirmationType}
