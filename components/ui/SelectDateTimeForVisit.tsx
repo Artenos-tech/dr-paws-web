@@ -11,6 +11,13 @@ import { Tooltip } from "antd"
 
 type Slot = { startTime: string; endTime: string }
 type SlotWithAvailability = Slot & { available: boolean }
+type HomeVisitPricingSummary = {
+  base_amount: number
+  discount_amount: number
+  final_amount: number
+  coupon_applied: boolean
+  coupon_code: string | null
+}
 interface SelectDateTimeForVisitProps {
   addressId: string
   petId: string
@@ -18,8 +25,13 @@ interface SelectDateTimeForVisitProps {
   slot?: Slot
   isConfirmationModalOpen?: boolean
   isConfirming?: boolean
-  paymentAmount?: number | null
+  pricingSummary?: HomeVisitPricingSummary | null
   isLoadingPaymentAmount?: boolean
+  couponCode?: string
+  appliedCoupon?: string | null
+  couponError?: string | null
+  onCouponCodeChange?: (value: string) => void
+  onApplyCoupon?: (date: string, slot: Slot) => Promise<void>
   onConfirm: (date: string, slot: Slot) => void
   onSlotsLoaded?: (firstAvailableSlot: Slot, date: string) => void
   isReschedule?: boolean
@@ -73,8 +85,13 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
   isConfirmationModalOpen,
   isConfirming,
   isReschedule,
-  paymentAmount,
+  pricingSummary,
   isLoadingPaymentAmount,
+  couponCode = "",
+  appliedCoupon = null,
+  couponError = null,
+  onCouponCodeChange,
+  onApplyCoupon,
   onSlotsLoaded,
 }) => {
   const {
@@ -241,14 +258,73 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
         </div>
       </div>
 
-      {selectedSlot && (isLoadingPaymentAmount || paymentAmount) && (
+      {selectedSlot && (isLoadingPaymentAmount || pricingSummary) && (
         <div className="mb-8">
           <p className="font-bold text-gray-600 mb-3">Amount</p>
           {isLoadingPaymentAmount ? (
             <div className="animate-pulse h-5 w-24 bg-gray-200 rounded" />
           ) : (
-            <p className="font-bold text-gray-600 mb-3">INR {paymentAmount}</p>
+            <div className="space-y-1">
+              {pricingSummary && pricingSummary.discount_amount > 0 && (
+                <p className="text-sm text-gray-500 line-through">
+                  INR {pricingSummary.base_amount}
+                </p>
+              )}
+              <p className="font-bold text-gray-600">
+                INR {pricingSummary?.final_amount}
+              </p>
+              {pricingSummary && pricingSummary.discount_amount > 0 && (
+                <p className="text-sm font-medium text-green-600">
+                  Coupon {pricingSummary.coupon_code} applied: INR{" "}
+                  {pricingSummary.discount_amount} off
+                </p>
+              )}
+            </div>
           )}
+        </div>
+      )}
+
+      {selectedDate && selectedSlot && onCouponCodeChange && onApplyCoupon && (
+        <div className="mb-8 flex">
+          <div className="w-full max-w-md">
+            <h2 className="text-lg font-semibold">Have a coupon code?</h2>
+            <p className="text-gray-600 mb-4">
+              Enter it below to redeem your discount
+            </p>
+            <div className="relative w-full">
+              <input
+                type="text"
+                placeholder="Enter coupon code"
+                className={`w-full border ${
+                  couponError
+                    ? "border-red-500"
+                    : appliedCoupon
+                      ? "border-green-500"
+                      : "border-gray-300"
+                } rounded-md py-2 px-4 pr-24`}
+                value={couponCode}
+                onChange={(e) => onCouponCodeChange(e.target.value)}
+              />
+              {!appliedCoupon && (
+                <button
+                  type="button"
+                  className="absolute right-1 top-1 bottom-1 my-auto bg-secondary-1 text-white px-4 py-1.5 rounded-md text-sm"
+                  onClick={() => onApplyCoupon(selectedDate, selectedSlot)}
+                >
+                  Apply
+                </button>
+              )}
+            </div>
+            {couponError && (
+              <p className="text-red-500 text-sm mt-2">{couponError}</p>
+            )}
+            {appliedCoupon && (
+              <p className="text-green-600 text-sm mt-2 font-medium">
+                Coupon Code <span className="font-bold">{appliedCoupon}</span>{" "}
+                applied!
+              </p>
+            )}
+          </div>
         </div>
       )}
 
