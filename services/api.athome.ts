@@ -171,6 +171,9 @@ const AppointmentDetailSchema = z
       ])
       .optional(),
     notes: z.string().optional(),
+    sos_id: z.string().optional(),
+    resolved_at: z.string().optional(),
+    resolution_notes: z.string().optional(),
   })
   .merge(
     z.object({
