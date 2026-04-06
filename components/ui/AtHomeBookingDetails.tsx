@@ -58,8 +58,11 @@ const AtHomeBookingDetails = ({
   } | null>(null)
   const prevSosStatusRef = useRef(selectedAppointment.sos_status)
   const sosIdRef = useRef<string | null>(null)
-  const { call: cancelAppointment, result: cancelAppointmentResult } =
-    useAPICall(atHomeApiClient.cancelAppointmentV2)
+  const {
+    call: cancelAppointment,
+    result: cancelAppointmentResult,
+    loading: cancelAppointmentLoading,
+  } = useAPICall(atHomeApiClient.cancelAppointmentV2)
   const {
     call: raiseSOSAlert,
     result: raiseSOSResult,
