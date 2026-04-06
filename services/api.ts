@@ -1460,6 +1460,7 @@ export default createAPIClient({
                     "UPCOMING",
                     "NO_SHOW",
                     "ACTIVE",
+                    "CANCELLED",
                   ]),
                   staff: z
                     .object({
@@ -1489,6 +1490,7 @@ export default createAPIClient({
                     "UPCOMING",
                     "NO_SHOW",
                     "ACTIVE",
+                    "CANCELLED",
                   ]),
                   staff: z
                     .object({
