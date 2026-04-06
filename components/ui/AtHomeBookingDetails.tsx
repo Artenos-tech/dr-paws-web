@@ -52,7 +52,6 @@ const AtHomeBookingDetails = ({
   const [isSOSActive, setIsSOSActive] = useState(
     selectedAppointment.sos_status === "ACTIVE",
   )
-  const [sosId, setSosId] = useState<string | null>(null)
   const [sosResolution, setSosResolution] = useState<{
     resolved_at?: string
     resolution_notes?: string
@@ -258,9 +257,7 @@ const AtHomeBookingDetails = ({
 
   useEffect(() => {
     if (raiseSOSResult?.ok) {
-      const newSosId = raiseSOSResult.value.body.data.sos_id
-      setSosId(newSosId)
-      sosIdRef.current = newSosId
+      sosIdRef.current = raiseSOSResult.value.body.data.sos_id
       setSosResolution(null)
       setIsSOSActive(true)
       toast.success("SOS alert raised. Our team will contact you shortly.")
@@ -272,7 +269,6 @@ const AtHomeBookingDetails = ({
 
   useEffect(() => {
     if (cancelSOSResult?.ok) {
-      setSosId(null)
       sosIdRef.current = null
       setSosResolution(null)
       setIsSOSActive(false)
