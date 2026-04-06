@@ -40,7 +40,6 @@ const SupportActions: React.FC<SupportActionsProps> = ({
             SOS
           </button>
         )}
-       
       </div>
     </div>
   )

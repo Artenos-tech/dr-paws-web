@@ -34,9 +34,7 @@ const SOSActivatedBanner = (props: Props) => {
           </p>
         )}
         {props.resolutionNotes && (
-          <p className="text-sm opacity-90">
-            Notes: {props.resolutionNotes}
-          </p>
+          <p className="text-sm opacity-90">Notes: {props.resolutionNotes}</p>
         )}
       </div>
     )

@@ -288,7 +288,10 @@ const AtHomeBookingDetails = ({
     const prevStatus = prevSosStatusRef.current
     prevSosStatusRef.current = selectedAppointment.sos_status
 
-    if (prevStatus === "ACTIVE" && selectedAppointment.sos_status === "INACTIVE") {
+    if (
+      prevStatus === "ACTIVE" &&
+      selectedAppointment.sos_status === "INACTIVE"
+    ) {
       setIsSOSActive(false)
       if (sosIdRef.current) {
         fetchSOSStatus({
