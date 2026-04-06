@@ -11,7 +11,7 @@ import defaultVetImage from "@/public/assets/images/clinic/doctorFemale.webp"
 import { petImageByType } from "./PetCard"
 import { format, parseISO } from "date-fns"
 import { HiLocationMarker } from "react-icons/hi"
-import { Building2, Home } from "lucide-react"
+import { AlertTriangle, Building2, Home } from "lucide-react"
 
 type AppointmentCardProps = {
   appointment: AppointmentListItem
@@ -93,6 +93,13 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
     <div
       className={`p-4 ${border} ${isSOSActive ? "bg-red-100" : bg} flex flex-col gap-3 rounded-lg shadow-md w-full`}
     >
+      {/* SOS Alert Tag */}
+      {isSOSActive && (
+        <div className="flex items-center gap-1.5 self-start px-3 py-1 rounded-full bg-red-600 text-white text-xs font-semibold">
+          <AlertTriangle size={13} />
+          SOS Mode Active
+        </div>
+      )}
       {/* Status and Reason */}
       <div className="text-xs flex justify-between">
         <p className={`${text}`}>
