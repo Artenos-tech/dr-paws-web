@@ -837,7 +837,8 @@ export const blogPosts: BlogPost[] = [
         ],
       },
       {
-        heading: "Parasite Prevention in City Living: Not Just an Outdoor Concern",
+        heading:
+          "Parasite Prevention in City Living: Not Just an Outdoor Concern",
         blocks: [
           {
             type: "paragraph",
@@ -862,7 +863,8 @@ export const blogPosts: BlogPost[] = [
         ],
       },
       {
-        heading: "Emotional Adjustment: Especially for Adopted Indie Dogs and Rescue Cats",
+        heading:
+          "Emotional Adjustment: Especially for Adopted Indie Dogs and Rescue Cats",
         blocks: [
           {
             type: "paragraph",
@@ -1519,7 +1521,7 @@ export const blogPosts: BlogPost[] = [
     category: "Lifestyle",
     readTime: "8 min read",
     publishedAt: "February 23, 2026",
-    imageUrl: "/assets/images/blogs/article5.jpg",
+    imageUrl: "/assets/images/blogs/article5.webp",
     imageAlt: "Pet during a dental care related wellness moment",
     author: {
       name: "Dr. Aarti Goswami",
@@ -1854,7 +1856,8 @@ export const blogPosts: BlogPost[] = [
         ],
       },
       {
-        heading: "Myth 2: “Spaying or Neutering Will Change My Pet’s Personality”",
+        heading:
+          "Myth 2: “Spaying or Neutering Will Change My Pet’s Personality”",
         blocks: [
           {
             type: "paragraph",
@@ -2078,7 +2081,8 @@ export const blogPosts: BlogPost[] = [
         ],
       },
       {
-        heading: "Subtle Changes in Appetite (Not Just Complete Loss of Eating)",
+        heading:
+          "Subtle Changes in Appetite (Not Just Complete Loss of Eating)",
         blocks: [
           {
             type: "paragraph",
