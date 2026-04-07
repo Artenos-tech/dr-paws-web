@@ -17,7 +17,7 @@ const BlogsPage = () => {
             Dr. Paws Journal
           </p>
           <h1 className="mt-2 text-3xl md:text-4xl lg:text-5xl font-primary text-primary-1">
-            Blogs for Better Pet Care
+            Blogs for The Urban Pet Parent
           </h1>
           <p className="mt-4 max-w-3xl text-sm md:text-base font-secondary text-primary-1">
             Practical guides written for pet parents. Explore routines, health
