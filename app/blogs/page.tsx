@@ -4,6 +4,11 @@ import Link from "next/link"
 import { blogPosts } from "@/model/mockData"
 
 const BlogsPage = () => {
+  const sortedPosts = [...blogPosts].sort(
+    (a, b) =>
+      new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime(),
+  )
+
   return (
     <div className="w-full pb-20">
       <main className="w-full px-8 md:px-32 lg:px-20 xl:px-40">
@@ -21,7 +26,7 @@ const BlogsPage = () => {
         </section>
 
         <section className="mt-10 md:mt-14 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-7">
-          {blogPosts.map((post) => (
+          {sortedPosts.map((post) => (
             <article
               key={post.slug}
               className="group h-full overflow-hidden rounded-2xl border border-[#e7dfcc] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
