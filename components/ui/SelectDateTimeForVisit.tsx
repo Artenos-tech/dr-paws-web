@@ -27,6 +27,7 @@ interface SelectDateTimeForVisitProps {
   isConfirming?: boolean
   pricingSummary?: HomeVisitPricingSummary | null
   isLoadingPaymentAmount?: boolean
+  isApplyingCoupon?: boolean
   couponCode?: string
   appliedCoupon?: string | null
   couponError?: string | null
@@ -87,6 +88,7 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
   isReschedule,
   pricingSummary,
   isLoadingPaymentAmount,
+  isApplyingCoupon = false,
   couponCode = "",
   appliedCoupon = null,
   couponError = null,
@@ -308,10 +310,11 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
               {!appliedCoupon && (
                 <button
                   type="button"
-                  className="absolute right-1 top-1 bottom-1 my-auto bg-secondary-1 text-white px-4 py-1.5 rounded-md text-sm"
+                  className="absolute right-1 top-1 bottom-1 my-auto bg-secondary-1 text-white px-4 py-1.5 rounded-md text-sm disabled:opacity-70 disabled:cursor-not-allowed"
                   onClick={() => onApplyCoupon(selectedDate, selectedSlot)}
+                  disabled={isApplyingCoupon}
                 >
-                  Apply
+                  {isApplyingCoupon ? "Applying..." : "Apply"}
                 </button>
               )}
             </div>

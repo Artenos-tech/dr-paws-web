@@ -171,6 +171,7 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
     React.useState<HomeVisitPricingSummary | null>(null)
   const [isLoadingPaymentAmount, setIsLoadingPaymentAmount] =
     React.useState(false)
+  const [isApplyingCoupon, setIsApplyingCoupon] = React.useState(false)
   const [couponCode, setCouponCode] = useState("")
   const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null)
   const [couponError, setCouponError] = useState<string | null>(null)
@@ -478,6 +479,7 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
     }
     if (!appointmentData.addressId || !appointmentData.petId) return
 
+    setIsApplyingCoupon(true)
     setIsLoadingPaymentAmount(true)
     const result = await getHomeVisitPaymentAmount({
       address_id: appointmentData.addressId,
@@ -487,6 +489,7 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
       appt_end: slot.endTime,
       coupon_code: trimmedCouponCode,
     })
+    setIsApplyingCoupon(false)
     setIsLoadingPaymentAmount(false)
 
     if (result?.ok) {
@@ -565,6 +568,7 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
               isConfirming={isConfirming}
               pricingSummary={pricingSummary}
               isLoadingPaymentAmount={isLoadingPaymentAmount}
+              isApplyingCoupon={isApplyingCoupon}
               couponCode={couponCode}
               appliedCoupon={appliedCoupon}
               couponError={couponError}

@@ -286,7 +286,10 @@ const AtHomeBookingDetails = ({
     if (!isFreeCancellation()) {
       return "This cancellation does not qualify for a refund under our 24-hour cancellation policy. No refund will be issued for this booking."
     }
-    const refundAmount = selectedAppointment.total_billing_amount
+    const refundAmount =
+      selectedAppointment.refund?.amount ??
+      selectedAppointment.refund_preview_amount ??
+      selectedAppointment.total_billing_amount
     const reason = isDelayed
       ? "because your vet has been delayed"
       : "under our 24-hour cancellation policy"

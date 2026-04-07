@@ -160,6 +160,7 @@ const AppointmentDetailSchema = z
     invoice_id: z.string().uuid().nullable(),
     total_tax_amount: z.number(),
     total_billing_amount: z.number(),
+    refund_preview_amount: z.number().optional(),
     payment_status: z.enum([
       "PAID",
       "UNPAID",
