@@ -22,10 +22,14 @@ const Booking: React.FC = () => {
   } = useHomeVisitFeature()
   const [selectedBookingType, setSelectedBookingType] =
     useState<BookingType | null>(null)
+  const [preAppliedCouponCode, setPreAppliedCouponCode] = useState<
+    string | null
+  >(null)
   const router = useRouter()
   const searchParams = useSearchParams()
   const home = searchParams.get("home")
   const clinic = searchParams.get("clinic")
+  const coupon = searchParams.get("coupon")
 
   const {
     call: getBookingTypes,
@@ -75,6 +79,7 @@ const Booking: React.FC = () => {
     if (selectedBookingType) return
 
     if (home === "true" && atHomeBookingType) {
+      setPreAppliedCouponCode(coupon?.trim().toUpperCase() ?? null)
       setSelectedBookingType(atHomeBookingType)
       router.replace("/user/book-appointment", { scroll: false })
       return
@@ -89,6 +94,7 @@ const Booking: React.FC = () => {
     isHomeVisitEnabled,
     home,
     clinic,
+    coupon,
     selectedBookingType,
     getBookingTypesResult,
     router,
@@ -102,6 +108,7 @@ const Booking: React.FC = () => {
 
   const handleBackToSelection = () => {
     setSelectedBookingType(null)
+    setPreAppliedCouponCode(null)
   }
 
   const renderFlow = () => {
@@ -112,7 +119,12 @@ const Booking: React.FC = () => {
     }
 
     if (selectedBookingType.type === "HOME_VISIT") {
-      return <AtHomeBookingFlow onBackToStart={handleBackToSelection} />
+      return (
+        <AtHomeBookingFlow
+          onBackToStart={handleBackToSelection}
+          preAppliedCouponCode={preAppliedCouponCode}
+        />
+      )
     }
 
     return <ClinicBookingFlow onBackToStart={handleBackToSelection} />

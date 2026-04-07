@@ -345,8 +345,10 @@ export default function VetAtHomePage() {
     setIsAmbulanceModalOpen(false)
   }
 
-  const handleBookAtHomeVisit = () => {
-    const destination = "/user/book-appointment?home=true"
+  const handleBookAtHomeVisit = (couponCode?: string) => {
+    const destination = couponCode
+      ? `/user/book-appointment?home=true&coupon=${encodeURIComponent(couponCode)}`
+      : "/user/book-appointment?home=true"
 
     if (isLoggedIn) {
       router.push(destination)
@@ -450,7 +452,7 @@ export default function VetAtHomePage() {
                   {!isCheckingHomeVisitFeatureFlag && isHomeVisitEnabled && (
                     <button
                       type="button"
-                      onClick={handleBookAtHomeVisit}
+                      onClick={() => handleBookAtHomeVisit()}
                       className="font-open-sans btn rounded-full border border-[#efbf73] bg-primary-2 px-4 py-2 text-xs font-bold uppercase tracking-[0.12em] text-primary-1 shadow-[0_8px_18px_rgba(51,73,95,0.14)] transition-transform hover:translate-y-[-1px] md:px-10 md:text-base lg:flex-none lg:px-7 lg:py-3 lg:text-sm lg:whitespace-nowrap xl:px-8"
                     >
                       Book an At-Home Visit
@@ -490,6 +492,45 @@ export default function VetAtHomePage() {
               </div>
             </div>
           ))}
+        </div>
+      </section>
+
+      <section className="relative overflow-hidden bg-[#fff9ef] py-10 md:py-12">
+        <div className="mx-auto w-full px-8 md:px-16 lg:px-20 xl:px-40">
+          <div className="mx-auto max-w-4xl rounded-2xl border border-[#e7d8b8] bg-white p-6 shadow-[0_10px_24px_rgba(51,73,95,0.08)] md:p-8">
+            <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+              <div>
+                <p className="mb-2 text-xs font-bold uppercase tracking-[0.14em] text-[#94662e]">
+                  Offers
+                </p>
+                <h2 className="text-2xl font-bold text-primary-1 md:text-3xl">
+                  Save on your first at-home booking
+                </h2>
+                <p className="mt-2 text-sm leading-relaxed text-primary-1/80 md:text-base">
+                  Use <span className="font-semibold text-primary-1">HOME400</span> and get INR 400 off on your first Vet-At-Home visit.
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-[#efbf73] bg-[#fff7e5] p-5 md:min-w-[280px]">
+                <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#94662e]">
+                  HOME400
+                </p>
+                <p className="mt-2 text-2xl font-bold text-primary-1">
+                  INR 400 OFF
+                </p>
+                <p className="mt-2 text-sm text-primary-1/75">
+                  This will be pre-applied when you start booking.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => handleBookAtHomeVisit("HOME400")}
+                  className="font-open-sans btn mt-4 rounded-full border border-[#efbf73] bg-primary-2 px-5 py-2 text-xs font-bold uppercase tracking-[0.12em] text-primary-1 shadow-[0_8px_18px_rgba(51,73,95,0.14)] transition-transform hover:translate-y-[-1px] md:text-sm"
+                >
+                  Avail Offer
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 

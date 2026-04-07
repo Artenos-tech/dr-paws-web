@@ -28,6 +28,7 @@ interface SelectDateTimeForVisitProps {
   pricingSummary?: HomeVisitPricingSummary | null
   isLoadingPaymentAmount?: boolean
   isApplyingCoupon?: boolean
+  autoApplyCouponCode?: string | null
   couponCode?: string
   appliedCoupon?: string | null
   couponError?: string | null
@@ -89,6 +90,7 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
   pricingSummary,
   isLoadingPaymentAmount,
   isApplyingCoupon = false,
+  autoApplyCouponCode = null,
   couponCode = "",
   appliedCoupon = null,
   couponError = null,
@@ -240,6 +242,14 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
                       if (isProcessing) return
 
                       setSelectedSlot(slot)
+                      if (
+                        selectedDate &&
+                        autoApplyCouponCode &&
+                        !appliedCoupon &&
+                        !isApplyingCoupon
+                      ) {
+                        void onApplyCoupon?.(selectedDate, slot)
+                      }
                     }}
                     disabled={!slot.available || isProcessing}
                     className={clsx(

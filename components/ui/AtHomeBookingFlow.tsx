@@ -14,6 +14,7 @@ import toast from "react-hot-toast"
 
 interface AtHomeBookingFlowProps {
   onBackToStart: () => void
+  preAppliedCouponCode?: string | null
 }
 
 type HomeVisitPricingSummary = {
@@ -163,6 +164,7 @@ const convertBookingDateToIso = (date: string) => {
 
 const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
   onBackToStart,
+  preAppliedCouponCode = null,
 }) => {
   const [state, dispatch] = useReducer(atHomeBookingReducer, initialState)
   const [pricingSummary, setPricingSummary] =
@@ -172,7 +174,9 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
   const [isLoadingPaymentAmount, setIsLoadingPaymentAmount] =
     React.useState(false)
   const [isApplyingCoupon, setIsApplyingCoupon] = React.useState(false)
-  const [couponCode, setCouponCode] = useState("")
+  const [couponCode, setCouponCode] = useState(
+    preAppliedCouponCode?.toUpperCase() ?? "",
+  )
   const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null)
   const [couponError, setCouponError] = useState<string | null>(null)
   const [bookingFlowSessionId, setBookingFlowSessionId] = useState<
@@ -420,11 +424,12 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
     setPricingSummary(null)
     setBasePricingSummary(null)
     setIsLoadingPaymentAmount(false)
-    setCouponCode("")
+    setIsApplyingCoupon(false)
+    setCouponCode(preAppliedCouponCode?.toUpperCase() ?? "")
     setAppliedCoupon(null)
     setCouponError(null)
     hasFetchedAmountRef.current = false
-  }, [appointmentData.addressId, appointmentData.petId])
+  }, [appointmentData.addressId, appointmentData.petId, preAppliedCouponCode])
 
   // Called by SelectDateTimeForVisit once slots are loaded, with the first
   // available slot. Fetches the payment amount once and caches it for the
@@ -569,6 +574,7 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
               pricingSummary={pricingSummary}
               isLoadingPaymentAmount={isLoadingPaymentAmount}
               isApplyingCoupon={isApplyingCoupon}
+              autoApplyCouponCode={preAppliedCouponCode}
               couponCode={couponCode}
               appliedCoupon={appliedCoupon}
               couponError={couponError}
