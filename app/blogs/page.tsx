@@ -52,14 +52,17 @@ const BlogsPage = () => {
                   <p className="mt-3 text-sm font-secondary text-primary-1">
                     {post.excerpt}
                   </p>
-                  <div className="mt-5 flex items-center justify-between text-xs font-secondary text-[#6f7d89]">
-                    <span>{post.author.name}</span>
-                    <span>{post.publishedAt}</span>
-                  </div>
-                  <div className="mt-auto flex justify-end pt-4">
-                    <span className="text-sm font-secondary text-secondary-1 transition group-hover:translate-x-1">
-                      Read more →
-                    </span>
+                  <div className="mt-auto pt-5">
+                    <div className="flex items-center justify-between gap-4 text-xs font-secondary text-[#6f7d89]">
+                      <span>{post.author.name}</span>
+                      <span>{post.publishedAt}</span>
+                    </div>
+                    <div className="mt-4 flex items-center justify-between gap-4">
+                      <span />
+                      <span className="text-sm font-secondary text-secondary-1 transition group-hover:translate-x-1">
+                        Read more →
+                      </span>
+                    </div>
                   </div>
                 </div>
               </Link>
