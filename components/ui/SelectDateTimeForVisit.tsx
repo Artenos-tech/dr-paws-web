@@ -299,43 +299,52 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
       {selectedDate && selectedSlot && onCouponCodeChange && onApplyCoupon && (
         <div className="mb-8 flex">
           <div className="w-full max-w-md">
-            <h2 className="text-lg font-semibold">Have a coupon code?</h2>
-            <p className="text-gray-600 mb-4">
-              Enter it below to redeem your discount
-            </p>
-            <div className="relative w-full">
-              <input
-                type="text"
-                placeholder="Enter coupon code"
-                className={`w-full border ${
-                  couponError
-                    ? "border-red-500"
-                    : appliedCoupon
-                      ? "border-green-500"
-                      : "border-gray-300"
-                } rounded-md py-2 px-4 pr-24`}
-                value={couponCode}
-                onChange={(e) => onCouponCodeChange(e.target.value)}
-              />
-              {!appliedCoupon && (
-                <button
-                  type="button"
-                  className="absolute right-1 top-1 bottom-1 my-auto bg-secondary-1 text-white px-4 py-1.5 rounded-md text-sm disabled:opacity-70 disabled:cursor-not-allowed"
-                  onClick={() => onApplyCoupon(selectedDate, selectedSlot)}
-                  disabled={isApplyingCoupon}
-                >
-                  {isApplyingCoupon ? "Applying..." : "Apply"}
-                </button>
-              )}
-            </div>
-            {couponError && (
-              <p className="text-red-500 text-sm mt-2">{couponError}</p>
-            )}
-            {appliedCoupon && (
-              <p className="text-green-600 text-sm mt-2 font-medium">
-                Coupon Code <span className="font-bold">{appliedCoupon}</span>{" "}
-                applied!
-              </p>
+            {isApplyingCoupon ? (
+              <div className="flex items-center gap-3 rounded-md border border-[#d7c49d] bg-[#fff8e8] px-4 py-3 text-sm font-medium text-primary-1">
+                <ClipLoader color="#33495f" size={16} />
+                <span>Applying coupon code...</span>
+              </div>
+            ) : (
+              <>
+                <h2 className="text-lg font-semibold">Have a coupon code?</h2>
+                <p className="text-gray-600 mb-4">
+                  Enter it below to redeem your discount
+                </p>
+                <div className="relative w-full">
+                  <input
+                    type="text"
+                    placeholder="Enter coupon code"
+                    className={`w-full border ${
+                      couponError
+                        ? "border-red-500"
+                        : appliedCoupon
+                          ? "border-green-500"
+                          : "border-gray-300"
+                    } rounded-md py-2 px-4 pr-24`}
+                    value={couponCode}
+                    onChange={(e) => onCouponCodeChange(e.target.value)}
+                  />
+                  {!appliedCoupon && (
+                    <button
+                      type="button"
+                      className="absolute right-1 top-1 bottom-1 my-auto bg-secondary-1 text-white px-4 py-1.5 rounded-md text-sm disabled:opacity-70 disabled:cursor-not-allowed"
+                      onClick={() => onApplyCoupon(selectedDate, selectedSlot)}
+                      disabled={isApplyingCoupon}
+                    >
+                      Apply
+                    </button>
+                  )}
+                </div>
+                {couponError && (
+                  <p className="text-red-500 text-sm mt-2">{couponError}</p>
+                )}
+                {appliedCoupon && (
+                  <p className="text-green-600 text-sm mt-2 font-medium">
+                    Coupon Code <span className="font-bold">{appliedCoupon}</span>{" "}
+                    applied!
+                  </p>
+                )}
+              </>
             )}
           </div>
         </div>
