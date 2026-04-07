@@ -156,6 +156,9 @@ export interface AppointmentDetails extends AppointmentListItem {
   }
   reason_for_visit?: ReasonForVisitEnum
   notes?: string
+  sos_id?: string
+  resolved_at?: string
+  resolution_notes?: string
 }
 export type ReasonForVisitEnum =
   | "VACCINATION"

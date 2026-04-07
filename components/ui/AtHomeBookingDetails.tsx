@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import BackButton from "./BackButton"
 import {
   CalendarDays,
@@ -11,7 +11,7 @@ import {
 } from "lucide-react"
 import { MdOutlineAccessTime } from "react-icons/md"
 import { GrLocation } from "react-icons/gr"
-import { format, parseISO } from "date-fns"
+import { differenceInMinutes, format, parseISO } from "date-fns"
 import AtHomeVisitStatus from "./AtHomeVisitStatus"
 import toast from "react-hot-toast"
 import { AppointmentDetails, RefundStatus } from "@/model/typeDefinitions"
@@ -37,6 +37,17 @@ type AtHomeBookingDetailsProps = {
 type ViewState = "DETAILS" | "CONFIRM_ACTION" | "CANCELLED" | "RESCHEDULE"
 
 const APPOINTMENT_CANCEL_WINDOW_HOURS = 24
+const RESOLVED_BANNER_WINDOW_MINUTES = 10
+const DISMISSED_SOS_STORAGE_KEY = "dismissed_sos_alerts"
+
+const getDismissedSosIds = (): Set<string> => {
+  try {
+    const stored = localStorage.getItem(DISMISSED_SOS_STORAGE_KEY)
+    return new Set(stored ? JSON.parse(stored) : [])
+  } catch {
+    return new Set()
+  }
+}
 const AtHomeBookingDetails = ({
   selectedAppointment,
   goBack,
@@ -49,9 +60,73 @@ const AtHomeBookingDetails = ({
   >(null)
   const [refundStatus, setRefundStatus] = useState<RefundStatus>()
   const [showSOSModal, setShowSOSModal] = useState(false)
-  const [isSOSActive, setIsSOSActive] = useState(
-    selectedAppointment.sos_status === "ACTIVE",
+  const [optimisticSOS, setOptimisticSOS] = useState<
+    "ACTIVE" | "INACTIVE" | null
+  >(null)
+  const [dismissedSosIds, setDismissedSosIds] =
+    useState<Set<string>>(getDismissedSosIds)
+  const optimisticSosIdRef = useRef<string | null>(null)
+
+  // Clear optimistic override once polling catches up.
+  // Two conditions:
+  //   1. Poll status matches optimistic (normal case)
+  //   2. Poll sos_id matches the raise action's sos_id — server has acknowledged
+  //      the raise regardless of current status (handles fast external resolution)
+  useEffect(() => {
+    if (optimisticSOS === null) return
+    const confirmedBySosId =
+      optimisticSosIdRef.current !== null &&
+      selectedAppointment.sos_id === optimisticSosIdRef.current
+    if (selectedAppointment.sos_status === optimisticSOS || confirmedBySosId) {
+      optimisticSosIdRef.current = null
+      setOptimisticSOS(null)
+    }
+  }, [
+    selectedAppointment.sos_status,
+    selectedAppointment.sos_id,
+    optimisticSOS,
+  ])
+
+  const isSOSActive =
+    optimisticSOS !== null
+      ? optimisticSOS === "ACTIVE"
+      : selectedAppointment.sos_status === "ACTIVE"
+
+  // Suppress resolved banner while user-cancelled SOS hasn't been confirmed by poll yet,
+  // or while a new SOS raise is in flight (isSOSActive handles that via JSX guard)
+  const sosResolution =
+    optimisticSOS === "INACTIVE"
+      ? null
+      : selectedAppointment.sos_id && selectedAppointment.resolved_at
+        ? {
+            resolved_at: selectedAppointment.resolved_at,
+            resolution_notes: selectedAppointment.resolution_notes,
+          }
+        : null
+
+  const isRecentlyResolved =
+    sosResolution?.resolved_at != null &&
+    differenceInMinutes(new Date(), parseISO(sosResolution.resolved_at)) <=
+      RESOLVED_BANNER_WINDOW_MINUTES
+
+  const isDismissed = !!(
+    selectedAppointment.sos_id &&
+    dismissedSosIds.has(selectedAppointment.sos_id)
   )
+
+  const handleDismissResolution = () => {
+    if (!selectedAppointment.sos_id) return
+    const updated = new Set(dismissedSosIds)
+    updated.add(selectedAppointment.sos_id)
+    try {
+      localStorage.setItem(
+        DISMISSED_SOS_STORAGE_KEY,
+        JSON.stringify(Array.from(updated)),
+      )
+    } catch {}
+    setDismissedSosIds(updated)
+  }
+
   const {
     call: cancelAppointment,
     result: cancelAppointmentResult,
@@ -251,8 +326,8 @@ const AtHomeBookingDetails = ({
 
   useEffect(() => {
     if (raiseSOSResult?.ok) {
-      setIsSOSActive(true)
-      toast.success("SOS alert raised. Our team will contact you shortly.")
+      optimisticSosIdRef.current = raiseSOSResult.value.body.data.sos_id
+      setOptimisticSOS("ACTIVE")
     }
   }, [raiseSOSResult])
   useAPIErrorToastFromResult(raiseSOSResult, {
@@ -261,8 +336,7 @@ const AtHomeBookingDetails = ({
 
   useEffect(() => {
     if (cancelSOSResult?.ok) {
-      setIsSOSActive(false)
-      toast.success("SOS alert cancelled.")
+      setOptimisticSOS("INACTIVE")
     }
   }, [cancelSOSResult])
   useAPIErrorToastFromResult(cancelSOSResult, {
@@ -383,9 +457,18 @@ const AtHomeBookingDetails = ({
 
             {isSOSActive && (
               <SOSActivatedBanner
+                variant="active"
                 onCancelSOS={handleCancelSOS}
                 loading={cancellingSOS}
                 onCallUs={copyHelpline}
+              />
+            )}
+            {!isSOSActive && sosResolution && !isDismissed && (
+              <SOSActivatedBanner
+                variant={isRecentlyResolved ? "resolved" : "resolved-compact"}
+                resolvedAt={sosResolution.resolved_at}
+                resolutionNotes={sosResolution.resolution_notes}
+                onDismiss={handleDismissResolution}
               />
             )}
             {isVisitFinished && (
