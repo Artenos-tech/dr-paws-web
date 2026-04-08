@@ -81,7 +81,6 @@ const Booking: React.FC = () => {
     if (home === "true" && atHomeBookingType) {
       setPreAppliedCouponCode(coupon?.trim().toUpperCase() ?? null)
       setSelectedBookingType(atHomeBookingType)
-      router.replace("/user/book-appointment", { scroll: false })
       return
     }
 
@@ -109,6 +108,7 @@ const Booking: React.FC = () => {
   const handleBackToSelection = () => {
     setSelectedBookingType(null)
     setPreAppliedCouponCode(null)
+    router.replace("/user/book-appointment", { scroll: false })
   }
 
   const renderFlow = () => {
