@@ -164,7 +164,9 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                 ) : (
                   <>
                     Payment Amount:{" "}
-                    <span className="text-md font-semibold">₹{paymentAmount}</span>
+                    <span className="text-md font-semibold">
+                      ₹{paymentAmount}
+                    </span>
                   </>
                 )}
               </div>
@@ -175,7 +177,9 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
               <DialogDescription className="text-md font-medium text-secondary-1">
                 Coupon Code applied: <b>{couponCode}</b>
               </DialogDescription>
-              <DialogDescription>Discount included in payment amount</DialogDescription>
+              <DialogDescription>
+                Discount included in payment amount
+              </DialogDescription>
             </div>
           )}
           {isSenior && (

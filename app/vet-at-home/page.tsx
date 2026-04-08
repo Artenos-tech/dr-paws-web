@@ -495,7 +495,7 @@ export default function VetAtHomePage() {
         </div>
       </section>
 
-      <section className="relative overflow-hidden bg-[#fff9ef] py-10 md:py-12">
+      {/* <section className="relative overflow-hidden bg-[#fff9ef] py-10 md:py-12">
         <div className="mx-auto w-full px-8 md:px-16 lg:px-20 xl:px-40">
           <div className="mx-auto max-w-4xl rounded-2xl border border-[#e7d8b8] bg-white p-6 shadow-[0_10px_24px_rgba(51,73,95,0.08)] md:p-8">
             <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
@@ -532,7 +532,7 @@ export default function VetAtHomePage() {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       <section className="relative overflow-hidden bg-white py-10 md:py-12">
         <div className="mx-auto w-full px-8 md:px-16 lg:px-20 xl:px-40">

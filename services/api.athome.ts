@@ -963,7 +963,7 @@ export const mockAtHomeClient: AtHomeAPIClient = {
             discount_amount: discountAmount,
             final_amount: finalAmount,
             coupon_applied: discountAmount > 0,
-            coupon_code: discountAmount > 0 ? couponCode ?? null : null,
+            coupon_code: discountAmount > 0 ? (couponCode ?? null) : null,
           },
         },
       },
