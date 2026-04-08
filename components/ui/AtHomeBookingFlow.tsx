@@ -510,7 +510,10 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
       return
     }
 
-    if (normalizedPreAppliedCoupon && couponCode === normalizedPreAppliedCoupon) {
+    if (
+      normalizedPreAppliedCoupon &&
+      couponCode === normalizedPreAppliedCoupon
+    ) {
       if (
         pricingSummary?.coupon_applied &&
         pricingSummary.coupon_code === normalizedPreAppliedCoupon
