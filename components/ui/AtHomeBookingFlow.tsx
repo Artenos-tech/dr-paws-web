@@ -14,6 +14,15 @@ import toast from "react-hot-toast"
 
 interface AtHomeBookingFlowProps {
   onBackToStart: () => void
+  preAppliedCouponCode?: string | null
+}
+
+type HomeVisitPricingSummary = {
+  base_amount: number
+  discount_amount: number
+  final_amount: number
+  coupon_applied: boolean
+  coupon_code: string | null
 }
 
 type AtHomeAppointmentData = {
@@ -155,11 +164,21 @@ const convertBookingDateToIso = (date: string) => {
 
 const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
   onBackToStart,
+  preAppliedCouponCode = null,
 }) => {
   const [state, dispatch] = useReducer(atHomeBookingReducer, initialState)
-  const [paymentAmount, setPaymentAmount] = React.useState<number | null>(null)
+  const [pricingSummary, setPricingSummary] =
+    React.useState<HomeVisitPricingSummary | null>(null)
+  const [basePricingSummary, setBasePricingSummary] =
+    React.useState<HomeVisitPricingSummary | null>(null)
   const [isLoadingPaymentAmount, setIsLoadingPaymentAmount] =
     React.useState(false)
+  const [isApplyingCoupon, setIsApplyingCoupon] = React.useState(false)
+  const [couponCode, setCouponCode] = useState(
+    preAppliedCouponCode?.toUpperCase() ?? "",
+  )
+  const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null)
+  const [couponError, setCouponError] = useState<string | null>(null)
   const [bookingFlowSessionId, setBookingFlowSessionId] = useState<
     string | null
   >(null)
@@ -300,6 +319,7 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
       booking_date: convertBookingDateToIso(appointmentData.date as string),
       reason_for_visit: reasonForVisit as ReasonForVisitEnum,
       notes: bookingDetails.reasonDescription as string,
+      coupon_code: appliedCoupon ?? undefined,
       booking_flow_session_id: bookingFlowSessionId ?? undefined,
     })
 
@@ -310,7 +330,26 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
       handlePayment(paymentSessionId, orderId)
     } else {
       dispatch({ type: "HIDE_CONFIRMATION_MODAL" })
-      toast.error("Could not complete booking. Please try again later.")
+      let errorMessage = "Could not complete booking. Please try again later."
+
+      if (
+        createPaymentOrderResult &&
+        !createPaymentOrderResult.ok &&
+        createPaymentOrderResult.error.apiClientErrorType ===
+          "ErrorResponseAPIError"
+      ) {
+        errorMessage = createPaymentOrderResult.error.body.message
+
+        if (appliedCoupon && /coupon/i.test(errorMessage)) {
+          setCouponError(errorMessage)
+          setAppliedCoupon(null)
+          if (basePricingSummary) {
+            setPricingSummary(basePricingSummary)
+          }
+        }
+      }
+
+      toast.error(errorMessage)
     }
   }
 
@@ -374,46 +413,172 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
       reasonDescription: appointmentData.description,
       date: appointmentData.date ? new Date(appointmentData.date) : new Date(),
       slot: appointmentData.slot ? `${appointmentData.slot.startTime}` : "",
-      couponCode: null,
+      couponCode: appliedCoupon,
     }
-  }, [appointmentData])
+  }, [appointmentData, appliedCoupon])
 
-  // Price is fixed per (address, pet) — it does not vary by date or slot.
-  // Reset when address or pet changes so a new fetch is triggered.
-  const hasFetchedAmountRef = useRef(false)
   useEffect(() => {
-    setPaymentAmount(null)
+    setPricingSummary(null)
+    setBasePricingSummary(null)
     setIsLoadingPaymentAmount(false)
-    hasFetchedAmountRef.current = false
-  }, [appointmentData.addressId, appointmentData.petId])
+    setIsApplyingCoupon(false)
+    setCouponCode(preAppliedCouponCode?.toUpperCase() ?? "")
+    setAppliedCoupon(null)
+    setCouponError(null)
+  }, [appointmentData.addressId, appointmentData.petId, preAppliedCouponCode])
 
-  // Called by SelectDateTimeForVisit once slots are loaded, with the first
-  // available slot. Fetches the payment amount once and caches it for the
-  // session so that it is ready before the user selects any slot.
-  const handleSlotsLoaded = async (
-    firstSlot: { startTime: string; endTime: string },
+  const loadPricing = async (
     date: string,
+    slot: { startTime: string; endTime: string },
+    couponToApply?: string | null,
   ) => {
-    if (hasFetchedAmountRef.current) return
     if (!appointmentData.addressId || !appointmentData.petId) return
 
-    hasFetchedAmountRef.current = true
+    const normalizedCouponCode = couponToApply?.trim().toUpperCase() ?? null
+    const isCouponRequest = Boolean(normalizedCouponCode)
+
+    if (isCouponRequest) {
+      setIsApplyingCoupon(true)
+    }
     setIsLoadingPaymentAmount(true)
     const result = await getHomeVisitPaymentAmount({
       address_id: appointmentData.addressId,
       pet_id: appointmentData.petId,
       booking_date: convertBookingDateToIso(date),
-      appt_start: firstSlot.startTime,
-      appt_end: firstSlot.endTime,
+      appt_start: slot.startTime,
+      appt_end: slot.endTime,
+      coupon_code: normalizedCouponCode ?? undefined,
+    }).finally(() => {
+      if (isCouponRequest) {
+        setIsApplyingCoupon(false)
+      }
+      setIsLoadingPaymentAmount(false)
     })
-    setIsLoadingPaymentAmount(false)
 
     if (result?.ok) {
-      setPaymentAmount(result.value.body.data.amount)
-    } else {
-      toast.error("Failed to fetch payment amount")
-      hasFetchedAmountRef.current = false
+      setPricingSummary(result.value.body.data.pricing)
+      if (!normalizedCouponCode) {
+        setBasePricingSummary(result.value.body.data.pricing)
+      }
+      return result.value.body.data.pricing
     }
+
+    if (isCouponRequest) {
+      let errorMessage = "Failed to apply coupon code. Please try again later."
+      if (
+        result &&
+        !result.ok &&
+        result.error.apiClientErrorType === "ErrorResponseAPIError"
+      ) {
+        errorMessage = result.error.body.message
+      }
+      setCouponError(errorMessage)
+      setAppliedCoupon(null)
+      return null
+    }
+
+    if (
+      result &&
+      !result.ok &&
+      result.error.apiClientErrorType === "FetchAPIError" &&
+      result.error.fetchError.name === "AbortError"
+    ) {
+      return null
+    }
+
+    toast.error("Failed to fetch payment amount")
+    return null
+  }
+
+  const handleSlotSelection = async (
+    date: string,
+    slot: { startTime: string; endTime: string },
+  ) => {
+    const normalizedPreAppliedCoupon =
+      preAppliedCouponCode?.trim().toUpperCase() ?? null
+
+    setCouponError(null)
+
+    if (appliedCoupon) {
+      if (
+        pricingSummary?.coupon_applied &&
+        pricingSummary.coupon_code === appliedCoupon
+      ) {
+        return
+      }
+      await loadPricing(date, slot, appliedCoupon)
+      return
+    }
+
+    if (
+      normalizedPreAppliedCoupon &&
+      couponCode === normalizedPreAppliedCoupon
+    ) {
+      if (
+        pricingSummary?.coupon_applied &&
+        pricingSummary.coupon_code === normalizedPreAppliedCoupon
+      ) {
+        setAppliedCoupon(normalizedPreAppliedCoupon)
+        setCouponCode(normalizedPreAppliedCoupon)
+        return
+      }
+      const pricing = await loadPricing(date, slot, normalizedPreAppliedCoupon)
+      if (pricing?.coupon_applied) {
+        setAppliedCoupon(normalizedPreAppliedCoupon)
+        setCouponCode(normalizedPreAppliedCoupon)
+        setCouponError(null)
+        return
+      }
+
+      await loadPricing(date, slot)
+      return
+    }
+
+    if (pricingSummary && !pricingSummary.coupon_applied) {
+      return
+    }
+
+    await loadPricing(date, slot)
+  }
+
+  const handleCouponCodeChange = (value: string) => {
+    const normalizedValue = value.toUpperCase()
+    setCouponCode(normalizedValue)
+    setCouponError(null)
+    if (appliedCoupon) {
+      setAppliedCoupon(null)
+      if (basePricingSummary) {
+        setPricingSummary(basePricingSummary)
+      }
+    }
+  }
+
+  const handleApplyCoupon = async (
+    date: string,
+    slot: { startTime: string; endTime: string },
+  ) => {
+    const trimmedCouponCode = couponCode.trim().toUpperCase()
+    if (!trimmedCouponCode) {
+      setCouponError("Please enter a coupon code.")
+      return
+    }
+    const pricing = await loadPricing(date, slot, trimmedCouponCode)
+
+    if (pricing?.coupon_applied) {
+      setAppliedCoupon(trimmedCouponCode)
+      setCouponCode(trimmedCouponCode)
+      setCouponError(null)
+    }
+  }
+
+  const handleRemoveCoupon = async (
+    date: string,
+    slot: { startTime: string; endTime: string },
+  ) => {
+    setAppliedCoupon(null)
+    setCouponError(null)
+    setCouponCode("")
+    await loadPricing(date, slot)
   }
 
   return (
@@ -467,10 +632,17 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
               slot={appointmentData.slot}
               isConfirmationModalOpen={showConfirmationModal}
               isConfirming={isConfirming}
-              paymentAmount={paymentAmount}
+              pricingSummary={pricingSummary}
               isLoadingPaymentAmount={isLoadingPaymentAmount}
+              isApplyingCoupon={isApplyingCoupon}
+              couponCode={couponCode}
+              appliedCoupon={appliedCoupon}
+              couponError={couponError}
+              onCouponCodeChange={handleCouponCodeChange}
+              onSlotSelection={handleSlotSelection}
+              onApplyCoupon={handleApplyCoupon}
+              onRemoveCoupon={handleRemoveCoupon}
               onConfirm={handleDateTimeConfirm}
-              onSlotsLoaded={handleSlotsLoaded}
             />
             <ConfirmationModal
               isOpen={showConfirmationModal}
@@ -478,7 +650,7 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
               onConfirm={handleConfirmBooking}
               isSubmitting={isConfirming}
               bookingDetails={bookingDetails}
-              paymentAmount={paymentAmount}
+              pricingSummary={pricingSummary}
             />
           </>
         )}

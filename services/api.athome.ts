@@ -83,6 +83,14 @@ const PaymentOrderSchema = z.object({
   paymentSessionId: z.string(),
 })
 
+const HomeVisitPricingSchema = z.object({
+  base_amount: z.number(),
+  discount_amount: z.number(),
+  final_amount: z.number(),
+  coupon_applied: z.boolean(),
+  coupon_code: z.string().nullable(),
+})
+
 const OrderStatusSchema = z.object({
   success: z.boolean(),
   status: z.enum([
@@ -152,6 +160,7 @@ const AppointmentDetailSchema = z
     invoice_id: z.string().uuid().nullable(),
     total_tax_amount: z.number(),
     total_billing_amount: z.number(),
+    refund_preview_amount: z.number().optional(),
     payment_status: z.enum([
       "PAID",
       "UNPAID",
@@ -389,6 +398,7 @@ export type AtHomeAPIClient = {
       appt_start: string
       appt_end: string
       booking_date: string
+      coupon_code?: string
     },
     opts?: { abortSignal?: AbortSignal },
   ) => Promise<
@@ -398,6 +408,7 @@ export type AtHomeAPIClient = {
         message: string
         data: {
           amount: number
+          pricing: z.infer<typeof HomeVisitPricingSchema>
         }
       }>,
       any
@@ -419,6 +430,7 @@ export type AtHomeAPIClient = {
         | "FOLLOW_UP"
         | "OTHER"
       notes: string
+      coupon_code?: string
       booking_flow_session_id?: string
     },
     opts?: { abortSignal?: AbortSignal },
@@ -961,13 +973,24 @@ export const mockAtHomeClient: AtHomeAPIClient = {
 
   getHomeVisitPaymentAmount: async (params, opts) => {
     await delay(500, opts?.abortSignal)
+    const couponCode = params.coupon_code?.trim().toUpperCase()
+    const baseAmount = 799
+    const discountAmount = couponCode === "HOME400" ? 400 : 0
+    const finalAmount = baseAmount - discountAmount
     return ok({
       status: 200,
       body: {
         status: 200,
         message: "Fetched home visit payment amount successfully",
         data: {
-          amount: 799,
+          amount: finalAmount,
+          pricing: {
+            base_amount: baseAmount,
+            discount_amount: discountAmount,
+            final_amount: finalAmount,
+            coupon_applied: discountAmount > 0,
+            coupon_code: discountAmount > 0 ? (couponCode ?? null) : null,
+          },
         },
       },
     })
@@ -1465,18 +1488,20 @@ const endpointConfig = {
 
   getHomeVisitPaymentAmount: {
     method: "GET" as const,
-    path: "/booking/at-home/payments/amount/{address_id}?pet_id={pet_id}&booking_date={booking_date}&appt_start={appt_start}&appt_end={appt_end}",
+    path: "/booking/at-home/payments/amount/{address_id}?pet_id={pet_id}&booking_date={booking_date}&appt_start={appt_start}&appt_end={appt_end}&coupon_code={coupon_code}",
     pathParamsSchema: z.object({
       address_id: z.string(),
       pet_id: z.string(),
       booking_date: z.string(),
       appt_start: z.string(),
       appt_end: z.string(),
+      coupon_code: z.string().optional(),
     }),
     requestSchema: z.object({}),
     responseSchema: z.object({
       data: z.object({
         amount: z.number(),
+        pricing: HomeVisitPricingSchema,
       }),
     }),
     errorResponseSchema: z.object({}),
@@ -1501,6 +1526,7 @@ const endpointConfig = {
         "OTHER",
       ]),
       notes: z.string(),
+      coupon_code: z.string().optional(),
       booking_flow_session_id: z.string().uuid().optional(),
     }),
     responseSchema: z.object({

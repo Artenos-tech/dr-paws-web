@@ -30,6 +30,13 @@ interface ConfirmationModalProps {
     couponCode: string | null
   }
   paymentAmount?: number | null
+  pricingSummary?: {
+    base_amount: number
+    discount_amount: number
+    final_amount: number
+    coupon_applied: boolean
+    coupon_code: string | null
+  } | null
 }
 
 const DESC_TRUNCATE_LENGTH = 90
@@ -41,6 +48,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   isSubmitting = false,
   bookingDetails,
   paymentAmount,
+  pricingSummary,
 }) => {
   const {
     petName,
@@ -139,10 +147,28 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
               </div>
             )}
 
-            {paymentAmount && (
+            {(pricingSummary || paymentAmount) && (
               <div className="text-sm text-gray-800 font-medium mt-2">
-                Payment Amount:{" "}
-                <span className="text-md font-semibold">₹{paymentAmount}</span>
+                {pricingSummary ? (
+                  <div className="flex items-center gap-2">
+                    <span>Payment Amount:</span>
+                    {pricingSummary.discount_amount > 0 && (
+                      <span className="text-gray-500 line-through">
+                        ₹{pricingSummary.base_amount}
+                      </span>
+                    )}
+                    <span className="text-md font-semibold">
+                      ₹{pricingSummary.final_amount}
+                    </span>
+                  </div>
+                ) : (
+                  <>
+                    Payment Amount:{" "}
+                    <span className="text-md font-semibold">
+                      ₹{paymentAmount}
+                    </span>
+                  </>
+                )}
               </div>
             )}
           </div>
@@ -152,7 +178,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                 Coupon Code applied: <b>{couponCode}</b>
               </DialogDescription>
               <DialogDescription>
-                Discount redeemable at checkout
+                Discount included in payment amount
               </DialogDescription>
             </div>
           )}

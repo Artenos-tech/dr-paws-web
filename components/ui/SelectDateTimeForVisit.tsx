@@ -11,6 +11,13 @@ import { Tooltip } from "antd"
 
 type Slot = { startTime: string; endTime: string }
 type SlotWithAvailability = Slot & { available: boolean }
+type HomeVisitPricingSummary = {
+  base_amount: number
+  discount_amount: number
+  final_amount: number
+  coupon_applied: boolean
+  coupon_code: string | null
+}
 interface SelectDateTimeForVisitProps {
   addressId: string
   petId: string
@@ -18,10 +25,17 @@ interface SelectDateTimeForVisitProps {
   slot?: Slot
   isConfirmationModalOpen?: boolean
   isConfirming?: boolean
-  paymentAmount?: number | null
+  pricingSummary?: HomeVisitPricingSummary | null
   isLoadingPaymentAmount?: boolean
+  isApplyingCoupon?: boolean
+  couponCode?: string
+  appliedCoupon?: string | null
+  couponError?: string | null
+  onCouponCodeChange?: (value: string) => void
+  onSlotSelection?: (date: string, slot: Slot) => Promise<void>
+  onApplyCoupon?: (date: string, slot: Slot) => Promise<void>
+  onRemoveCoupon?: (date: string, slot: Slot) => Promise<void> | void
   onConfirm: (date: string, slot: Slot) => void
-  onSlotsLoaded?: (firstAvailableSlot: Slot, date: string) => void
   isReschedule?: boolean
 }
 
@@ -73,9 +87,16 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
   isConfirmationModalOpen,
   isConfirming,
   isReschedule,
-  paymentAmount,
+  pricingSummary,
   isLoadingPaymentAmount,
-  onSlotsLoaded,
+  isApplyingCoupon = false,
+  couponCode = "",
+  appliedCoupon = null,
+  couponError = null,
+  onCouponCodeChange,
+  onSlotSelection,
+  onApplyCoupon,
+  onRemoveCoupon,
 }) => {
   const {
     call: getAtHomeSlots,
@@ -115,15 +136,6 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
     const parseResult = responseSchema.safeParse(atHomeSlotsResult.value.body)
     if (parseResult.success) {
       setDays(parseResult.data.data.days)
-      // Pre-fetch payment amount using the first available slot so the amount
-      // is ready before the user selects anything.
-      for (const day of parseResult.data.data.days) {
-        const firstAvailable = day.slots.find((s) => s.available)
-        if (firstAvailable) {
-          onSlotsLoaded?.(firstAvailable, day.date)
-          break
-        }
-      }
     } else {
       console.error("Invalid slot data format:", parseResult.error)
       toast.error("Invalid slot data received. Please contact support.")
@@ -221,6 +233,9 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
                       if (isProcessing) return
 
                       setSelectedSlot(slot)
+                      if (selectedDate) {
+                        void onSlotSelection?.(selectedDate, slot)
+                      }
                     }}
                     disabled={!slot.available || isProcessing}
                     className={clsx(
@@ -241,16 +256,103 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
         </div>
       </div>
 
-      {selectedSlot && (isLoadingPaymentAmount || paymentAmount) && (
+      {selectedSlot && (isLoadingPaymentAmount || pricingSummary) && (
         <div className="mb-8">
           <p className="font-bold text-gray-600 mb-3">Amount</p>
           {isLoadingPaymentAmount ? (
-            <div className="animate-pulse h-5 w-24 bg-gray-200 rounded" />
+            isApplyingCoupon ? null : (
+              <div className="flex items-center gap-2 text-sm text-gray-600">
+                <ClipLoader color="#33495f" size={14} />
+                <span>Loading amount...</span>
+              </div>
+            )
           ) : (
-            <p className="font-bold text-gray-600 mb-3">INR {paymentAmount}</p>
+            <div className="space-y-1">
+              {pricingSummary && pricingSummary.discount_amount > 0 && (
+                <p className="text-sm text-gray-500 line-through">
+                  INR {pricingSummary.base_amount}
+                </p>
+              )}
+              <p className="font-bold text-gray-600">
+                INR {pricingSummary?.final_amount}
+              </p>
+              {pricingSummary && pricingSummary.discount_amount > 0 && (
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-green-600">
+                    Coupon {pricingSummary.coupon_code} applied: INR{" "}
+                    {pricingSummary.discount_amount} off
+                  </p>
+                  {appliedCoupon && onRemoveCoupon && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        onRemoveCoupon(selectedDate!, selectedSlot!)
+                      }
+                      className="text-sm text-secondary-1 underline underline-offset-2"
+                    >
+                      Remove coupon
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
           )}
         </div>
       )}
+
+      {selectedDate &&
+        selectedSlot &&
+        onCouponCodeChange &&
+        onApplyCoupon &&
+        !appliedCoupon && (
+          <div className="mb-8 flex">
+            <div className="w-full max-w-md">
+              {isApplyingCoupon ? (
+                <div className="flex items-center gap-3 rounded-md border border-[#d7c49d] bg-[#fff8e8] px-4 py-3 text-sm font-medium text-primary-1">
+                  <ClipLoader color="#33495f" size={16} />
+                  <span>Applying coupon code...</span>
+                </div>
+              ) : (
+                <>
+                  <h2 className="text-lg font-semibold">Have a coupon code?</h2>
+                  <p className="text-gray-600 mb-4">
+                    Enter it below to redeem your discount
+                  </p>
+                  <div className="relative w-full">
+                    <input
+                      type="text"
+                      placeholder="Enter coupon code"
+                      className={`w-full border ${
+                        couponError
+                          ? "border-red-500"
+                          : appliedCoupon
+                            ? "border-green-500"
+                            : "border-gray-300"
+                      } rounded-md py-2 px-4 pr-24`}
+                      value={couponCode}
+                      onChange={(e) => onCouponCodeChange(e.target.value)}
+                    />
+                    {!appliedCoupon && (
+                      <button
+                        type="button"
+                        className="absolute right-1 top-1 bottom-1 my-auto bg-secondary-1 text-white px-4 py-1.5 rounded-md text-sm disabled:opacity-70 disabled:cursor-not-allowed"
+                        onClick={() =>
+                          onApplyCoupon(selectedDate, selectedSlot)
+                        }
+                        disabled={isApplyingCoupon}
+                      >
+                        Apply
+                      </button>
+                    )}
+                  </div>
+                  {couponError && (
+                    <p className="text-red-500 text-sm mt-2">{couponError}</p>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+        )}
 
       <div className="flex flex-col items-center justify-center mb-10">
         <Tooltip
@@ -261,7 +363,9 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
               ? "Select time slot to proceed"
               : isLoadingPaymentAmount
                 ? "Loading payment amount..."
-                : ""
+                : !isReschedule && !pricingSummary
+                  ? "Fetching payment amount..."
+                  : ""
           }
         >
           <button
@@ -269,7 +373,8 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
               !selectedDate ||
               !selectedSlot ||
               isProcessing ||
-              !!isLoadingPaymentAmount
+              !!isLoadingPaymentAmount ||
+              (!isReschedule && !pricingSummary)
             }
             onClick={handleProceedClick}
             className="btn rounded-full text-white px-10 py-2 tracking-wider bg-secondary-1 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
