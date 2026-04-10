@@ -377,6 +377,15 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
     if (isConfirming) return
 
     if (currentStep > 1) {
+      if (currentStep === 4) {
+        setPricingSummary(null)
+        setBasePricingSummary(null)
+        setIsLoadingPaymentAmount(false)
+        setIsApplyingCoupon(false)
+        setCouponCode(preAppliedCouponCode?.toUpperCase() ?? "")
+        setAppliedCoupon(null)
+        setCouponError(null)
+      }
       if (bookingFlowSessionId) {
         void trackStep(bookingFlowSessionId, currentStep - 1)
       }
