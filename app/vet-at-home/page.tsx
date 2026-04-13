@@ -495,48 +495,9 @@ export default function VetAtHomePage() {
         </div>
       </section>
 
-      {/* <section className="relative overflow-hidden bg-[#fff9ef] py-10 md:py-12">
-        <div className="mx-auto w-full px-8 md:px-16 lg:px-20 xl:px-40">
-          <div className="mx-auto max-w-4xl rounded-2xl border border-[#e7d8b8] bg-white p-6 shadow-[0_10px_24px_rgba(51,73,95,0.08)] md:p-8">
-            <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
-              <div>
-                <p className="mb-2 text-xs font-bold uppercase tracking-[0.14em] text-[#94662e]">
-                  Offers
-                </p>
-                <h2 className="text-2xl font-bold text-primary-1 md:text-3xl">
-                  Save on your first at-home booking
-                </h2>
-                <p className="mt-2 text-sm leading-relaxed text-primary-1/80 md:text-base">
-                  Use <span className="font-semibold text-primary-1">HOME400</span> and get INR 400 off on your first Vet-At-Home visit.
-                </p>
-              </div>
-
-              <div className="rounded-2xl border border-[#efbf73] bg-[#fff7e5] p-5 md:min-w-[280px]">
-                <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#94662e]">
-                  HOME400
-                </p>
-                <p className="mt-2 text-2xl font-bold text-primary-1">
-                  INR 400 OFF
-                </p>
-                <p className="mt-2 text-sm text-primary-1/75">
-                  This will be pre-applied when you start booking.
-                </p>
-                <button
-                  type="button"
-                  onClick={() => handleBookAtHomeVisit("HOME400")}
-                  className="font-open-sans btn mt-4 rounded-full border border-[#efbf73] bg-primary-2 px-5 py-2 text-xs font-bold uppercase tracking-[0.12em] text-primary-1 shadow-[0_8px_18px_rgba(51,73,95,0.14)] transition-transform hover:translate-y-[-1px] md:text-sm"
-                >
-                  Avail Offer
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section> */}
-
       <section className="relative overflow-hidden bg-white py-10 md:py-12">
         <div className="mx-auto w-full px-8 md:px-16 lg:px-20 xl:px-40">
-          <div className="mx-auto max-w-4xl rounded-2xl border border-[#e1d5bf] bg-[linear-gradient(180deg,#fffef9_0%,#ffffff_100%)] p-6 shadow-[0_10px_24px_rgba(51,73,95,0.08)] md:p-8">
+          <div className="mx-auto max-w-5xl rounded-2xl border border-[#e1d5bf] bg-[linear-gradient(180deg,#fffef9_0%,#ffffff_100%)] p-6 shadow-[0_10px_24px_rgba(51,73,95,0.08)] md:p-8">
             <h2 className="text-2xl font-bold leading-tight text-primary-1 md:text-4xl">
               Check If We Serve Your Area
             </h2>
@@ -596,6 +557,97 @@ export default function VetAtHomePage() {
                 Unable to check availability right now. Please try again.
               </p>
             )}
+          </div>
+        </div>
+      </section>
+
+      <section className="relative overflow-hidden bg-[linear-gradient(180deg,#fffdf7_0%,#f9f4e7_45%,#ffffff_100%)] py-16 md:py-20">
+        <div className="mx-auto w-full px-8 md:px-16 lg:px-20 xl:px-40">
+          <div className="mx-auto max-w-4xl text-center">
+            <h2 className="text-3xl font-bold leading-tight text-primary-1 md:text-5xl">
+              Offers
+            </h2>
+          </div>
+
+          <div className="relative mx-auto mt-10 max-w-5xl overflow-hidden rounded-[34px] bg-[linear-gradient(135deg,#ffe9b6_0%,#fdcf7b_52%,#f5bd59_100%)] shadow-[0_18px_42px_rgba(148,102,46,0.2)]">
+            <div className="pointer-events-none absolute -right-10 top-[-80px] h-[240px] w-[240px] rounded-full bg-white/25 blur-[2px] md:h-[340px] md:w-[340px]" />
+            <div className="pointer-events-none absolute bottom-[-60px] right-10 h-[180px] w-[180px] rounded-full bg-[#d79a34]/18 blur-[2px]" />
+            <div className="grid gap-8 p-6 text-primary-1 md:p-8 lg:grid-cols-[1.25fr_0.85fr] lg:gap-10">
+              <div className="relative z-10">
+                <div className="inline-flex rounded-full border border-[#f4d396] bg-white/45 px-4 py-2 text-xs font-bold uppercase tracking-[0.14em] text-[#94662e]">
+                  Limited Period Offer
+                </div>
+                <h3 className="mt-5 text-3xl font-bold leading-tight md:text-5xl">
+                  1st At-Home Vet Consult
+                </h3>
+                <p className="mt-4 max-w-2xl text-base leading-relaxed text-primary-1/85 md:text-2xl">
+                  Covers a 9-step, full-body physical health examination of your
+                  pet by an experienced vet.
+                </p>
+
+                <div className="mt-6 h-px w-full bg-[#dca959]/35" />
+
+                <div className="mt-5 space-y-1.5 text-xs leading-relaxed text-primary-1/78 md:text-sm">
+                  <p>
+                    * Offer price covers the vet visit and consultation charges
+                    only.
+                  </p>
+                  <p>
+                    * Any medical treatment / services availed will be charged
+                    separately.
+                  </p>
+                  <p>* Vet Consult duration is capped at 30 min per pet.</p>
+                  <p>
+                    * Limited Period Offer. Only for the 1st at-home vet
+                    consult.
+                  </p>
+                </div>
+              </div>
+
+              <div className="relative z-10 flex flex-col justify-between rounded-[28px] border border-[#e8b867] bg-[linear-gradient(180deg,rgba(255,246,223,0.78)_0%,rgba(255,241,201,0.94)_100%)] p-5 md:p-6">
+                <div>
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary-1/55">
+                        Offer Price
+                      </p>
+                      <div className="mt-3 flex flex-wrap items-end gap-3">
+                        <p className="text-5xl font-bold leading-none md:text-6xl">
+                          ₹399
+                        </p>
+                        <p className="pb-1 text-xl text-primary-1/35 line-through">
+                          ₹799
+                        </p>
+                      </div>
+                    </div>
+                    <div className="rounded-2xl bg-[linear-gradient(180deg,#5281a2_0%,#3c6987_100%)] px-4 py-3 text-right text-white shadow-[0_8px_18px_rgba(82,129,162,0.28)]">
+                      <p className="text-xs font-bold uppercase tracking-[0.12em]">
+                        Save
+                      </p>
+                      <p className="mt-1 text-2xl font-bold leading-none">
+                        ₹400
+                      </p>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => handleBookAtHomeVisit("HOME400")}
+                    className="mt-8 block w-full rounded-[28px] border border-[#6f91aa] bg-[linear-gradient(180deg,#7ea6c2_0%,#5b84a0_100%)] px-5 py-5 text-left text-white shadow-[0_10px_22px_rgba(82,129,162,0.26)] transition-transform hover:translate-y-[-1px]"
+                  >
+                    <p className="text-xs font-bold uppercase tracking-[0.14em] text-white/78">
+                      Click Here To Avail The Offer
+                    </p>
+                    <p className="mt-2 text-3xl font-bold leading-none md:text-4xl">
+                      HOME400
+                    </p>
+                    <p className="mt-2 text-sm font-medium text-white/82 md:text-base">
+                      Tap to continue with this offer pre-applied.
+                    </p>
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
