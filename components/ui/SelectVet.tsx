@@ -470,8 +470,16 @@ const SelectVet: React.FC<selectVetProps> = ({
               }) // Navigate to the next page only if the API succeeds
             }
           } else {
-            toast.error("Failed to create appointment. Please try again.", {
-              duration: 3000,
+            let errorMessage =
+              "Failed to create appointment. Please try again."
+            if (
+              !response.ok &&
+              response.error.apiClientErrorType === "ErrorResponseAPIError"
+            ) {
+              errorMessage = response.error.body.message
+            }
+            toast.error(errorMessage, {
+              duration: 6000,
               position: "bottom-right",
             })
           }
