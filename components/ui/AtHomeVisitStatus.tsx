@@ -20,11 +20,11 @@ const AtHomeVisitStatus = ({
 }: AtHomeVisitStatusProps) => {
   const { vet_name, vet_contact, vet_image, start_otp } = selectedAppointment
 
-  // const copyNumber = () => {
-  //   if (!vet_contact) return
-  //   navigator.clipboard.writeText(vet_contact)
-  //   toast.success(`Vet contact ${vet_contact} copied to clipboard`)
-  // }
+  const copyNumber = () => {
+    if (!vet_contact) return
+    navigator.clipboard.writeText(vet_contact)
+    toast.success(`Vet contact ${vet_contact} copied to clipboard`)
+  }
 
   const vetImageSrc = vet_image || defaultVetImage
 
@@ -43,7 +43,7 @@ const AtHomeVisitStatus = ({
         <p className="font-semibold">{vet_name || "Assigned Vet"}</p>
       </div>
 
-      {/* vet_contact && visitStatus !== "VISIT_FINISHED" && (
+      {vet_contact && visitStatus !== "VISIT_FINISHED" && (
         <Tooltip
           title={"Click to copy the vet's contact number"}
           color="#f7f1de"
@@ -56,7 +56,7 @@ const AtHomeVisitStatus = ({
             <Phone size={16} />
           </button>
         </Tooltip>
-      )}*/}
+      )}
     </div>
   )
 
