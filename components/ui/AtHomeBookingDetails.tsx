@@ -555,8 +555,8 @@ const AtHomeBookingDetails = ({
               <div className="flex items-start gap-2 rounded-[10px] border border-[#93c5fd] bg-[#eff6ff] px-3 py-2 text-[#1d4ed8]">
                 <span className="leading-5">{"\u{1F4DE}"}</span>
                 <span className="text-sm leading-relaxed">
-                  Our vet team will call you within 30 minutes before your
-                  scheduled appointment time.
+                  Our team will call you within 30 minutes before your scheduled
+                  appointment time.
                 </span>
               </div>
             )}
