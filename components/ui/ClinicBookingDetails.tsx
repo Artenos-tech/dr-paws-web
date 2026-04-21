@@ -23,7 +23,7 @@ import api from "@/services/api"
 import { ClipLoader } from "react-spinners"
 import toast from "react-hot-toast"
 import { AttachmentInfo } from "./MedicalHistory"
-import { AppointmentDetails } from "@/model/typeDefinitions"
+import { AppointmentDetails, RefundStatus } from "@/model/typeDefinitions"
 import ConfirmationCard from "./ConfirmationCard"
 import CancelledBookingCard from "./CancelBookingCard"
 import RescheduleAtClinicAppointment from "@/components/ui/RescheduleAtClinicAppointment"
@@ -69,9 +69,15 @@ const ClinicBookingDetails = ({
   >("default")
   const [attachmentsPage, setAttachmentsPage] = useState(1)
   const [soapNotesPage, setSoapNotesPage] = useState(1)
+  const [refundStatus, setRefundStatus] = useState<RefundStatus | undefined>(
+    selectedAppointment.refund?.status,
+  )
+  const [refundAmount, setRefundAmount] = useState<number | undefined>(
+    selectedAppointment.refund?.amount,
+  )
 
   const { call: cancelAppointment, loading: cancelAppointmentLoading } =
-    useAPICall(api.cancelAppointment)
+    useAPICall(api.cancelAppointmentV2)
   const {
     call: getMedicalReports,
     loading: loadingMedicalReports,
@@ -84,6 +90,13 @@ const ClinicBookingDetails = ({
       getMedicalReports({ appointment_id: selectedAppointment.id })
     }
   }, [selectedAppointment.id])
+
+  useEffect(() => {
+    if (selectedAppointment.refund) {
+      setRefundStatus(selectedAppointment.refund.status)
+      setRefundAmount(selectedAppointment.refund.amount)
+    }
+  }, [selectedAppointment.refund])
 
   const handleCancelClick = () => {
     setCurrentView("cancelConfirm")
@@ -100,7 +113,7 @@ const ClinicBookingDetails = ({
   const cancelBooking = async () => {
     try {
       const resp = await cancelAppointment({
-        appointmentid: selectedAppointment.id,
+        appointment_id: selectedAppointment.id,
         clinic_id: selectedAppointment.clinic_id,
         sub_booking_id: selectedAppointment.sub_booking_id,
       })
@@ -111,6 +124,8 @@ const ClinicBookingDetails = ({
         )
         return
       }
+      setRefundStatus(resp.value.body.data.appointment.refund?.status)
+      setRefundAmount(resp.value.body.data.appointment.refund?.amount)
       setCurrentView("cancelled")
     } catch (error) {
       console.error("Error cancelling appointment", error)
@@ -275,6 +290,13 @@ const ClinicBookingDetails = ({
   const petImage =
     selectedAppointment.pet_profile_image || defaultPetImageByType
   const vetImage = selectedAppointment?.vet_image || defaultVetImage
+  const cancellationRefundAmount =
+    selectedAppointment.refund?.amount ??
+    selectedAppointment.refund_preview_amount
+  const cancellationExtraMessage =
+    typeof cancellationRefundAmount === "number" && cancellationRefundAmount > 0
+      ? `This booking has an advance payment of ₹${cancellationRefundAmount}. If you continue, this amount will be refunded to your original payment method.`
+      : undefined
 
   return (
     <div className="w-full">
@@ -851,6 +873,8 @@ const ClinicBookingDetails = ({
               onConfirm={cancelBooking}
               onCancel={resetView}
               confirmationType="CANCEL"
+              extraMessage={cancellationExtraMessage}
+              extraMessageVariant="info"
             />
             // <div className="flex flex-col justify-center items-center gap-4">
             //   <h1 className="text-3xl">Cancel Booking</h1>
@@ -909,6 +933,8 @@ const ClinicBookingDetails = ({
           {currentView === "cancelled" && (
             <CancelledBookingCard
               appointment={selectedAppointment}
+              refundStatus={refundStatus}
+              refundAmount={refundAmount}
               onDone={() => goBack(true)}
             />
             // <div className="flex flex-col justify-center gap-4 items-center">

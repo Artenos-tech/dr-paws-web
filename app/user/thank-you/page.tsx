@@ -93,7 +93,7 @@ const ThankYouPage = () => {
               selectedSlot: appointment.appt_start,
               selectedSlotEnd: appointment.appt_end,
               appliedCoupon: appointment.coupon_code || null,
-              groomingCatalogueKeys: [],
+              groomingCatalogueKeys: appointment.catalogue_keys ?? [],
             }}
           />
         </div>

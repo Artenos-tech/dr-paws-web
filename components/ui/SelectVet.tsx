@@ -1,6 +1,7 @@
 "use client"
 
-import React, { useCallback, useEffect, useState } from "react"
+import React, { useCallback, useEffect, useRef, useState } from "react"
+import { load } from "@cashfreepayments/cashfree-js"
 import SelectDoctorCard from "./SelectDoctorCard"
 import CustomButton from "./CustomButton"
 import SelectCalendar from "./SelectCalendar"
@@ -59,6 +60,13 @@ interface selectVetProps {
   }) => void
 }
 
+type ClinicPaymentPricing = {
+  full_amount: number
+  token_amount: number
+  pay_at_clinic_amount: number
+  total_tax_amount: number
+}
+
 const BEST_AVAILABLE_VET_ID = "best-available"
 const SelectVet: React.FC<selectVetProps> = ({
   selectedClinic,
@@ -92,6 +100,13 @@ const SelectVet: React.FC<selectVetProps> = ({
   const [couponCode, setCouponCode] = useState<string>("")
   const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null)
   const [couponError, setCouponError] = useState<string | null>(null)
+  const [clinicPaymentPricing, setClinicPaymentPricing] =
+    useState<ClinicPaymentPricing | null>(null)
+  const [isLoadingClinicPaymentAmount, setIsLoadingClinicPaymentAmount] =
+    useState(false)
+  const [clinicPaymentAmountError, setClinicPaymentAmountError] = useState<
+    string | null
+  >(null)
   const [vetSearch, setVetSearch] = useState("")
   const [showSeniorOnly, setShowSeniorOnly] = useState(false)
   const {
@@ -114,8 +129,15 @@ const SelectVet: React.FC<selectVetProps> = ({
 
   const { call: applyCouponCode } = useAPICall(api.applyCouponCode)
 
-  const { call: createAnAppointment, loading: loadingAppointmentCreation } =
-    useAPICall(api.createAppointment)
+  const {
+    call: createClinicPaymentOrder,
+    loading: loadingAppointmentCreation,
+  } = useAPICall(api.createClinicPaymentOrder)
+  const { call: getClinicPaymentAmount } = useAPICall(
+    api.getClinicPaymentAmount,
+  )
+  const getClinicPaymentAmountRef = useRef(getClinicPaymentAmount)
+  getClinicPaymentAmountRef.current = getClinicPaymentAmount
 
   const { call: rescheduleAppointment, loading: loadingRescheduleAppointment } =
     useAPICall(api.rescheduleAppointment)
@@ -129,6 +151,7 @@ const SelectVet: React.FC<selectVetProps> = ({
   const { call: getDoctor } = useAPICall(api.getDoctor)
 
   const isConsultation = !isGrooming
+  const groomingCatalogueKeysKey = groomingCatalogueKeys.join(",")
   const groomingCatalogueKeysParam =
     groomingCatalogueKeys.length > 0
       ? groomingCatalogueKeys.join(",")
@@ -333,6 +356,97 @@ const SelectVet: React.FC<selectVetProps> = ({
     bestAvailableVetScheduleResult,
   ])
 
+  useEffect(() => {
+    if (isReschedule) return
+
+    setClinicPaymentPricing(null)
+    setClinicPaymentAmountError(null)
+
+    const pricingVetId =
+      selectedDoctor?.id === BEST_AVAILABLE_VET_ID
+        ? chosenVetId
+        : selectedDoctor?.id
+
+    if (
+      !selectedSlot ||
+      !selectedDate ||
+      !pricingVetId ||
+      !selectedPet?.id ||
+      !selectedClinic
+    ) {
+      setIsLoadingClinicPaymentAmount(false)
+      return
+    }
+
+    if (isGrooming && groomingCatalogueKeys.length === 0) {
+      setIsLoadingClinicPaymentAmount(false)
+      return
+    }
+
+    if (!isGrooming && !isConsultation && !selectedSubtype?.id) {
+      setIsLoadingClinicPaymentAmount(false)
+      return
+    }
+
+    let cancelled = false
+
+    const loadClinicPaymentAmount = async () => {
+      setIsLoadingClinicPaymentAmount(true)
+      const response = await getClinicPaymentAmountRef.current({
+        vet_id: pricingVetId,
+        pet_id: selectedPet.id,
+        clinic_id: selectedClinic,
+        appt_start: selectedSlot.startTime.replace(":", ""),
+        appt_end: selectedSlot.endTime.replace(":", ""),
+        booking_date: format(selectedDate, "dd/MM/yyyy"),
+        pet_type: selectedPet.type as "DOG" | "CAT" | "OTHER",
+        is_grooming: isGrooming,
+        ...(isGrooming && groomingCatalogueKeys.length > 0
+          ? { catalogue_keys: groomingCatalogueKeys }
+          : {}),
+        ...(!isConsultation && selectedSubtype?.id
+          ? { subtype_id: selectedSubtype.id }
+          : {}),
+      }).finally(() => {
+        if (!cancelled) {
+          setIsLoadingClinicPaymentAmount(false)
+        }
+      })
+
+      if (cancelled) return
+
+      if (response.ok) {
+        setClinicPaymentPricing(response.value.body.data.pricing)
+        return
+      }
+
+      setClinicPaymentAmountError(
+        "Could not fetch the service price. Please try another slot.",
+      )
+      toast.error("Failed to fetch service price")
+    }
+
+    void loadClinicPaymentAmount()
+
+    return () => {
+      cancelled = true
+    }
+  }, [
+    isReschedule,
+    selectedSlot?.startTime,
+    selectedSlot?.endTime,
+    selectedDate,
+    selectedDoctor?.id,
+    chosenVetId,
+    selectedPet.id,
+    selectedPet.type,
+    selectedClinic,
+    selectedSubtype?.id,
+    groomingCatalogueKeysKey,
+    isGrooming,
+    isConsultation,
+  ])
+
   // when a different date is selected
   useEffect(() => {
     if ((selectedDoctor || isGrooming) && selectedDate) {
@@ -397,6 +511,14 @@ const SelectVet: React.FC<selectVetProps> = ({
       toast.error("Please select a time slot before proceeding.")
       return
     }
+    if (!isReschedule && isLoadingClinicPaymentAmount) {
+      toast.error("Please wait while we fetch the service price.")
+      return
+    }
+    if (!isReschedule && !clinicPaymentPricing) {
+      toast.error("Could not fetch the service price. Please try again.")
+      return
+    }
     const selectedDoc =
       selectedDoctor?.id === BEST_AVAILABLE_VET_ID &&
       doctors.find((doc) => doc.id === chosenVetId)
@@ -456,19 +578,10 @@ const SelectVet: React.FC<selectVetProps> = ({
           if (!isConsultation) {
             payload.subtype_id = selectedSubtype?.id as string
           }
-          const response = await createAnAppointment(payload)
+          const response = await createClinicPaymentOrder(payload)
           if (response.ok) {
-            setIsConfirmationModalOpen(false)
-            toast.success("Appointment created successfully!", {
-              duration: 3000,
-              position: "bottom-right",
-            })
-            if (onNext) {
-              onNext({
-                appointmentId: response.value.body.appointment.appointment_id,
-                subBookingId: response.value.body.appointment.sub_booking_id,
-              }) // Navigate to the next page only if the API succeeds
-            }
+            const { paymentSessionId, orderId } = response.value.body.data.order
+            await handlePayment(paymentSessionId, orderId)
           } else {
             let errorMessage = "Failed to create appointment. Please try again."
             if (
@@ -572,6 +685,44 @@ const SelectVet: React.FC<selectVetProps> = ({
     }
   }
 
+  const handlePayment = async (paymentSessionId: string, orderId: string) => {
+    try {
+      const cashfreeSession = await initializeSDK()
+      const result = await cashfreeSession.checkout({
+        paymentSessionId,
+        returnUrl:
+          window.location.origin +
+          `/user/book-appointment/clinic-visit/payment?order_id=` +
+          orderId +
+          `&service=Clinic_Visit`,
+        redirectTarget: "_self",
+      })
+      console.log("Cashfree checkout result: ", result)
+    } catch (error) {
+      console.error("Error initiating payment on Cashfree", error)
+      toast.error("Failed to initiate payment. Please try again.", {
+        duration: 3000,
+        position: "bottom-right",
+      })
+    }
+  }
+
+  const initializeSDK = async function () {
+    const cashfreeEnv = process.env.NEXT_PUBLIC_CASHFREE_ENVIRONMENT as
+      | "sandbox"
+      | "production"
+    if (!cashfreeEnv) {
+      throw new Error(
+        "Cashfree environment is not set. Cannot proceed with payment",
+      )
+    }
+
+    const cashfree = await load({
+      mode: cashfreeEnv,
+    })
+    return cashfree
+  }
+
   const handleDateSelect = (date: Date) => {
     if (!isSameDay(date, selectedDate)) {
       setSelectedDate(date)
@@ -584,13 +735,19 @@ const SelectVet: React.FC<selectVetProps> = ({
     endTime: string
     staffIds?: string[]
   }) => {
+    const isDeselectingSlot =
+      selectedSlot && selectedSlot.startTime === time.startTime
     setSelectedSlot(
-      selectedSlot && selectedSlot.startTime === time.startTime ? null : time,
+      isDeselectingSlot ? null : time,
     )
     setCouponCode("")
     setAppliedCoupon(null)
     setCouponError(null)
-    if (time.staffIds && isGrooming) {
+    if (selectedDoctor?.id === BEST_AVAILABLE_VET_ID || isDeselectingSlot) {
+      setChosenVetId(null)
+    }
+    if (time.staffIds && isGrooming && !isDeselectingSlot) {
+      setSelectedDoctor(null)
       try {
         const response = await getDoctor({
           staffid:
@@ -675,6 +832,10 @@ const SelectVet: React.FC<selectVetProps> = ({
     groomingSlotsWindowResult?.ok === false
   const isSubmittingBookingAction =
     loadingAppointmentCreation || loadingRescheduleAppointment
+  const isClinicPaymentAmountRequired = !isReschedule && selectedSlot !== null
+  const isClinicPaymentAmountUnavailable =
+    isClinicPaymentAmountRequired &&
+    (isLoadingClinicPaymentAmount || !clinicPaymentPricing)
 
   const selectedDateKey = format(selectedDate, "dd/MM/yyyy")
   const groomingSlotsForSelectedDate = groomingSlotsWindowResult?.ok
@@ -819,6 +980,47 @@ const SelectVet: React.FC<selectVetProps> = ({
             ) : null) // result starts out as undefined before API call is made
         }
       </div>
+      {selectedSlot &&
+        !isReschedule &&
+        (isLoadingClinicPaymentAmount ||
+          clinicPaymentPricing ||
+          clinicPaymentAmountError) && (
+          <div className="mb-8">
+            <p className="font-bold text-gray-600 mb-3">Amount</p>
+            {isLoadingClinicPaymentAmount ? (
+              <div className="flex items-center gap-2 text-sm text-gray-600">
+                <ClipLoader color="#33495f" size={14} />
+                <span>Loading amount...</span>
+              </div>
+            ) : clinicPaymentPricing ? (
+              <div className="space-y-1">
+                <p className="text-sm text-gray-500">
+                  Full service price: INR {clinicPaymentPricing.full_amount}
+                </p>
+                <div className="inline-flex flex-col rounded-md bg-primary-3 px-3 py-2">
+                  <span className="text-xs font-medium text-gray-600">
+                    Pay now
+                  </span>
+                  <span className="text-xl font-bold text-secondary-1">
+                    INR {clinicPaymentPricing.token_amount}
+                  </span>
+                </div>
+                <p className="text-sm text-gray-600">
+                  Balance payable at clinic: INR{" "}
+                  {clinicPaymentPricing.pay_at_clinic_amount}
+                </p>
+                <p className="text-sm font-medium text-green-600">
+                  You are paying only a token amount now. The remaining amount
+                  will be collected at the clinic.
+                </p>
+              </div>
+            ) : (
+              <p className="text-sm text-red-500">
+                {clinicPaymentAmountError}
+              </p>
+            )}
+          </div>
+        )}
       {/* Coupon Code Section */}
       {(selectedDoctor || isGrooming) && selectedDate && selectedSlot && (
         <div className="flex">
@@ -878,11 +1080,13 @@ const SelectVet: React.FC<selectVetProps> = ({
           disabled={
             !isNextButtonEnabled ||
             loadingAppointmentCreation ||
-            loadingRescheduleAppointment
+            loadingRescheduleAppointment ||
+            isClinicPaymentAmountUnavailable
           }
           loading={
             (isNextButtonEnabled && loadingAppointmentCreation) ||
-            loadingRescheduleAppointment
+            loadingRescheduleAppointment ||
+            (isNextButtonEnabled && isLoadingClinicPaymentAmount)
           }
           buttonClickEvent={handleNextClick}
         />
@@ -924,6 +1128,16 @@ const SelectVet: React.FC<selectVetProps> = ({
             slot: selectedSlot.startTime,
             couponCode: appliedCoupon,
           }}
+          clinicPaymentBreakdown={
+            clinicPaymentPricing
+              ? {
+                  fullAmount: clinicPaymentPricing.full_amount,
+                  tokenAmount: clinicPaymentPricing.token_amount,
+                  payAtClinicAmount:
+                    clinicPaymentPricing.pay_at_clinic_amount,
+                }
+              : undefined
+          }
         />
       )}
       <Modal

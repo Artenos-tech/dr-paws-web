@@ -37,6 +37,11 @@ interface ConfirmationModalProps {
     coupon_applied: boolean
     coupon_code: string | null
   } | null
+  clinicPaymentBreakdown?: {
+    fullAmount: number
+    tokenAmount: number
+    payAtClinicAmount: number
+  }
 }
 
 const DESC_TRUNCATE_LENGTH = 90
@@ -49,6 +54,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   bookingDetails,
   paymentAmount,
   pricingSummary,
+  clinicPaymentBreakdown,
 }) => {
   const {
     petName,
@@ -92,7 +98,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
             <p className="text-sm text-gray-700 mb-2">
               <span className="font-medium">{service}</span>
             </p>
-            {showHaircutAddOn && (
+            {showHaircutAddOn && !clinicPaymentBreakdown && (
               <p className="text-xs sm:text-sm text-[#8b5a00] font-semibold mb-2">
                 Haircut add-on: + ₹999
               </p>
@@ -147,7 +153,31 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
               </div>
             )}
 
-            {(pricingSummary || paymentAmount) && (
+            {clinicPaymentBreakdown && (
+              <div className="text-sm text-gray-800 font-medium mt-2 space-y-1">
+                <p className="text-gray-500">
+                  Full service price: ₹{clinicPaymentBreakdown.fullAmount}
+                </p>
+                <div className="inline-flex flex-col rounded-md bg-white/70 px-3 py-2">
+                  <span className="text-xs font-medium text-gray-600">
+                    Pay now
+                  </span>
+                  <span className="text-xl font-bold text-secondary-1">
+                    ₹{clinicPaymentBreakdown.tokenAmount}
+                  </span>
+                </div>
+                <p className="text-gray-600">
+                  Balance payable at clinic: ₹
+                  {clinicPaymentBreakdown.payAtClinicAmount}
+                </p>
+                <p className="text-xs text-green-600">
+                  You are paying only a token amount now. The remaining amount
+                  will be collected at the clinic.
+                </p>
+              </div>
+            )}
+
+            {!clinicPaymentBreakdown && (pricingSummary || paymentAmount) && (
               <div className="text-sm text-gray-800 font-medium mt-2">
                 {pricingSummary ? (
                   <div className="flex items-center gap-2">

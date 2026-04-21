@@ -116,6 +116,7 @@ const AppointmentSchema = z.object({
   appt_type_title: z.enum(["Vet Consultation", "Grooming", "Home Visit"]),
   appt_type: z.enum(["VET_CONSULTATION", "GROOMING", "HOME_VISIT"]), // home visits may have different sub types in the future; for now keeping this as is
   category: z.enum(["UPCOMING", "COMPLETED", "CANCELLED", "ACTIVE"]),
+  catalogue_keys: z.array(z.string()).optional(),
   clinic_name: z.string().optional(),
   clinic_location: z.string().optional(),
   coupon_code: z.string().optional(),
