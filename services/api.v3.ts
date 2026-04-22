@@ -79,15 +79,6 @@ export default createAPIClient({
       errorResponseSchema: z.object({ errorCode: z.string().optional() }),
     },
 
-    signupOTP: {
-      method: "POST",
-      path: "/v3/signup/otp",
-      pathParamsSchema: z.object({}),
-      requestSchema: z.object({ mobile: z.string() }),
-      responseSchema: z.object({}),
-      errorResponseSchema: z.object({}),
-    },
-
     signupVerify: {
       method: "POST",
       path: "/v3/signup/verify",
