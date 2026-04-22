@@ -6,6 +6,7 @@ import "./globals.css"
 import NavBar from "@/components/layout/navbar"
 import Footer from "@/components/layout/Footer"
 import { UserProvider } from "@/context/UserContext"
+import { V3UserProvider } from "@/context/V3UserContext"
 
 // Load Open Sans from Google Fonts
 const openSans = Open_Sans({
@@ -58,6 +59,7 @@ export default function RootLayout({
 }>) {
   return (
     <UserProvider>
+      <V3UserProvider>
       <html lang="en" className={`${roca.variable} ${openSans.variable}`}>
         <body className={`w-full min-h-screen overflow-x-hidden flex flex-col`}>
           <Script
@@ -86,6 +88,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           </div>
         </body>
       </html>
+    </V3UserProvider>
     </UserProvider>
   )
 }

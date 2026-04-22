@@ -16,11 +16,15 @@ import api, { clearAuthToken } from "@/services/api"
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
 import { useEffect, useRef, useState } from "react"
 import { useHomeVisitFeature } from "@/hooks/useHomeVisitFeature"
+import { useV3Feature } from "@/hooks/useV3Feature"
+import { useV3UserContext } from "@/context/V3UserContext"
+import V3LoginModal from "@/components/v3/V3LoginModal"
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false)
   const [isProfileOpen, setIsProfileOpen] = useState(false)
   const [isContactModalOpen, setContactIsModalOpen] = useState(false)
+  const [v3ModalOpen, setV3ModalOpen] = useState(false)
   const navigate = useRouter()
   const pathname = usePathname()
   const isVetAtHomePage = pathname?.includes("/vet-at-home")
@@ -28,6 +32,8 @@ export default function NavBar() {
 
   const { refresh, initiateLogin, isLoggedIn } = useUserContext()
   const { isFeatureEnabled: isHomeVisitEnabled } = useHomeVisitFeature()
+  const isV3Enabled = useV3Feature()
+  const { isLoggedIn: isV3LoggedIn, owner: v3Owner, login: v3Login, logout: v3Logout } = useV3UserContext()
 
   const dropdownRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
@@ -173,7 +179,42 @@ export default function NavBar() {
               />
             )}
             <div className="hidden lg:flex items-center space-x-4 text-xs">
-              {isLoggedIn ? (
+              {isV3Enabled ? (
+                isV3LoggedIn ? (
+                  <DropdownMenu.Root>
+                    <DropdownMenu.Trigger className="outline-none">
+                      <div className="flex items-center gap-1.5 cursor-pointer rounded-full bg-primary-2/10 px-3 py-1.5 text-primary-1 hover:bg-primary-2/20 transition-colors">
+                        <span className="text-xs font-medium">{v3Owner?.firstName}</span>
+                      </div>
+                    </DropdownMenu.Trigger>
+                    <DropdownMenu.Portal>
+                      <DropdownMenu.Content
+                        className="bg-[#f7f1de] shadow-lg rounded-lg w-40 p-3 flex flex-col gap-1"
+                        align="start"
+                        sideOffset={5}
+                      >
+                        <DropdownMenu.Item asChild>
+                          <div
+                            onClick={v3Logout}
+                            className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none text-sm"
+                          >
+                            Logout
+                          </div>
+                        </DropdownMenu.Item>
+                        <DropdownMenu.Arrow className="fill-current text-[#f7f1de]" />
+                      </DropdownMenu.Content>
+                    </DropdownMenu.Portal>
+                  </DropdownMenu.Root>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setV3ModalOpen(true)}
+                    className="text-primary-1 text-sm tracking-wider"
+                  >
+                    Login
+                  </button>
+                )
+              ) : isLoggedIn ? (
                 <DropdownMenu.Root>
                   <DropdownMenu.Trigger className="outline-none">
                     <Image
@@ -352,7 +393,25 @@ export default function NavBar() {
           </div>
           <div className="pt-4 pb-3 border-t border-primary-2">
             <div className="flex items-center px-8 md:px-32 space-x-4">
-              {isLoggedIn ? (
+              {isV3Enabled ? (
+                isV3LoggedIn ? (
+                  <button
+                    type="button"
+                    onClick={v3Logout}
+                    className="text-primary-1 text-sm tracking-wider"
+                  >
+                    {v3Owner?.firstName} · Logout
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setV3ModalOpen(true)}
+                    className="text-primary-1 text-sm tracking-wider"
+                  >
+                    Login
+                  </button>
+                )
+              ) : isLoggedIn ? (
                 <button
                   type="button"
                   ref={profileButtonRef}
@@ -490,6 +549,13 @@ export default function NavBar() {
         isOpen={isContactModalOpen}
         onRequestClose={() => setContactIsModalOpen(false)}
       />
+
+      {v3ModalOpen && (
+        <V3LoginModal
+          onSuccess={(owner, token) => { v3Login(owner, token); setV3ModalOpen(false); navigate.push("/v3") }}
+          onClose={() => setV3ModalOpen(false)}
+        />
+      )}
 
       <Toaster />
     </div>
