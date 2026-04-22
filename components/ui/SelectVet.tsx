@@ -392,26 +392,28 @@ const SelectVet: React.FC<selectVetProps> = ({
 
     const loadClinicPaymentAmount = async () => {
       setIsLoadingClinicPaymentAmount(true)
-      const response = await getClinicPaymentAmountRef.current({
-        vet_id: pricingVetId,
-        pet_id: selectedPet.id,
-        clinic_id: selectedClinic,
-        appt_start: selectedSlot.startTime.replace(":", ""),
-        appt_end: selectedSlot.endTime.replace(":", ""),
-        booking_date: format(selectedDate, "dd/MM/yyyy"),
-        pet_type: selectedPet.type as "DOG" | "CAT" | "OTHER",
-        is_grooming: isGrooming,
-        ...(isGrooming && groomingCatalogueKeys.length > 0
-          ? { catalogue_keys: groomingCatalogueKeys }
-          : {}),
-        ...(!isConsultation && selectedSubtype?.id
-          ? { subtype_id: selectedSubtype.id }
-          : {}),
-      }).finally(() => {
-        if (!cancelled) {
-          setIsLoadingClinicPaymentAmount(false)
-        }
-      })
+      const response = await getClinicPaymentAmountRef
+        .current({
+          vet_id: pricingVetId,
+          pet_id: selectedPet.id,
+          clinic_id: selectedClinic,
+          appt_start: selectedSlot.startTime.replace(":", ""),
+          appt_end: selectedSlot.endTime.replace(":", ""),
+          booking_date: format(selectedDate, "dd/MM/yyyy"),
+          pet_type: selectedPet.type as "DOG" | "CAT" | "OTHER",
+          is_grooming: isGrooming,
+          ...(isGrooming && groomingCatalogueKeys.length > 0
+            ? { catalogue_keys: groomingCatalogueKeys }
+            : {}),
+          ...(!isConsultation && selectedSubtype?.id
+            ? { subtype_id: selectedSubtype.id }
+            : {}),
+        })
+        .finally(() => {
+          if (!cancelled) {
+            setIsLoadingClinicPaymentAmount(false)
+          }
+        })
 
       if (cancelled) return
 
@@ -737,9 +739,7 @@ const SelectVet: React.FC<selectVetProps> = ({
   }) => {
     const isDeselectingSlot =
       selectedSlot && selectedSlot.startTime === time.startTime
-    setSelectedSlot(
-      isDeselectingSlot ? null : time,
-    )
+    setSelectedSlot(isDeselectingSlot ? null : time)
     setCouponCode("")
     setAppliedCoupon(null)
     setCouponError(null)
@@ -1025,9 +1025,7 @@ const SelectVet: React.FC<selectVetProps> = ({
                 </p>
               </div>
             ) : (
-              <p className="text-sm text-red-500">
-                {clinicPaymentAmountError}
-              </p>
+              <p className="text-sm text-red-500">{clinicPaymentAmountError}</p>
             )}
           </div>
         )}
@@ -1143,8 +1141,7 @@ const SelectVet: React.FC<selectVetProps> = ({
               ? {
                   fullAmount: clinicPaymentPricing.full_amount,
                   tokenAmount: clinicPaymentPricing.token_amount,
-                  payAtClinicAmount:
-                    clinicPaymentPricing.pay_at_clinic_amount,
+                  payAtClinicAmount: clinicPaymentPricing.pay_at_clinic_amount,
                 }
               : undefined
           }
