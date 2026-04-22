@@ -985,33 +985,43 @@ const SelectVet: React.FC<selectVetProps> = ({
         (isLoadingClinicPaymentAmount ||
           clinicPaymentPricing ||
           clinicPaymentAmountError) && (
-          <div className="mb-8">
-            <p className="font-bold text-gray-600 mb-3">Amount</p>
+          <div className="mb-0">
             {isLoadingClinicPaymentAmount ? (
               <div className="flex items-center gap-2 text-sm text-gray-600">
                 <ClipLoader color="#33495f" size={14} />
                 <span>Loading amount...</span>
               </div>
             ) : clinicPaymentPricing ? (
-              <div className="space-y-1">
-                <p className="text-sm text-gray-500">
-                  Full service price: INR {clinicPaymentPricing.full_amount}
+              <div className="max-w-80 text-sm text-gray-700">
+                <p className="font-semibold text-gray-700 mb-2">
+                  Payment summary
                 </p>
-                <div className="inline-flex flex-col rounded-md bg-primary-3 px-3 py-2">
-                  <span className="text-xs font-medium text-gray-600">
-                    Pay now
+                <div className="space-y-1.5">
+                  <div className="flex justify-between gap-3">
+                    <span>Total service price</span>
+                    <span className="font-semibold">
+                      INR {clinicPaymentPricing.full_amount}
+                    </span>
+                  </div>
+                  <div className="flex justify-between gap-3">
+                    <span>Pay at clinic</span>
+                    <span className="font-semibold">
+                      INR {clinicPaymentPricing.pay_at_clinic_amount}
+                    </span>
+                  </div>
+                </div>
+                <div className="my-2.5 border-t border-gray-300" />
+                <div className="flex items-center justify-between gap-3">
+                  <span className="font-semibold text-gray-700">
+                    Pay now to confirm booking
                   </span>
                   <span className="text-xl font-bold text-secondary-1">
                     INR {clinicPaymentPricing.token_amount}
                   </span>
                 </div>
-                <p className="text-sm text-gray-600">
-                  Balance payable at clinic: INR{" "}
-                  {clinicPaymentPricing.pay_at_clinic_amount}
-                </p>
-                <p className="text-sm font-medium text-green-600">
-                  You are paying only a token amount now. The remaining amount
-                  will be collected at the clinic.
+                <p className="mt-2 text-xs font-medium text-green-600">
+                  A token amount is charged now to confirm your booking. The
+                  remaining amount will be paid at the clinic.
                 </p>
               </div>
             ) : (
@@ -1073,9 +1083,9 @@ const SelectVet: React.FC<selectVetProps> = ({
           </div>
         </div>
       )}
-      <div className="mt-4 mb-16 flex justify-center">
+      <div className="mt-0 mb-16 flex justify-center">
         <CustomButton
-          buttonText={isReschedule ? "Reschedule" : "Book"}
+          buttonText={isReschedule ? "Reschedule" : "Proceed to Pay"}
           buttonBackground="bg-secondary-1"
           disabled={
             !isNextButtonEnabled ||

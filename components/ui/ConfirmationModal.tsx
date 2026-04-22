@@ -154,25 +154,36 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
             )}
 
             {clinicPaymentBreakdown && (
-              <div className="text-sm text-gray-800 font-medium mt-2 space-y-1">
-                <p className="text-gray-500">
-                  Full service price: ₹{clinicPaymentBreakdown.fullAmount}
+              <div className="text-sm text-gray-800 font-medium mt-3 max-w-80">
+                <p className="font-semibold text-gray-700 mb-2">
+                  Payment summary
                 </p>
-                <div className="inline-flex flex-col rounded-md bg-white/70 px-3 py-2">
-                  <span className="text-xs font-medium text-gray-600">
-                    Pay now
+                <div className="space-y-1.5">
+                  <div className="flex justify-between gap-3">
+                    <span>Total service price</span>
+                    <span className="font-semibold">
+                      ₹{clinicPaymentBreakdown.fullAmount}
+                    </span>
+                  </div>
+                  <div className="flex justify-between gap-3">
+                    <span>Pay at clinic</span>
+                    <span className="font-semibold">
+                      ₹{clinicPaymentBreakdown.payAtClinicAmount}
+                    </span>
+                  </div>
+                </div>
+                <div className="my-2.5 border-t border-gray-300" />
+                <div className="flex items-center justify-between gap-3">
+                  <span className="font-semibold text-gray-700">
+                    Pay now to confirm booking
                   </span>
                   <span className="text-xl font-bold text-secondary-1">
                     ₹{clinicPaymentBreakdown.tokenAmount}
                   </span>
                 </div>
-                <p className="text-gray-600">
-                  Balance payable at clinic: ₹
-                  {clinicPaymentBreakdown.payAtClinicAmount}
-                </p>
-                <p className="text-xs text-green-600">
-                  You are paying only a token amount now. The remaining amount
-                  will be collected at the clinic.
+                <p className="mt-2 text-xs text-green-600">
+                  A token amount is charged now to confirm your booking. The
+                  remaining amount will be paid at the clinic.
                 </p>
               </div>
             )}
