@@ -33,7 +33,12 @@ export default function NavBar() {
   const { refresh, initiateLogin, isLoggedIn } = useUserContext()
   const { isFeatureEnabled: isHomeVisitEnabled } = useHomeVisitFeature()
   const isV3Enabled = useV3Feature()
-  const { isLoggedIn: isV3LoggedIn, owner: v3Owner, login: v3Login, logout: v3Logout } = useV3UserContext()
+  const {
+    isLoggedIn: isV3LoggedIn,
+    owner: v3Owner,
+    login: v3Login,
+    logout: v3Logout,
+  } = useV3UserContext()
 
   const dropdownRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
@@ -184,7 +189,9 @@ export default function NavBar() {
                   <DropdownMenu.Root>
                     <DropdownMenu.Trigger className="outline-none">
                       <div className="flex items-center gap-1.5 cursor-pointer rounded-full bg-primary-2/10 px-3 py-1.5 text-primary-1 hover:bg-primary-2/20 transition-colors">
-                        <span className="text-xs font-medium">{v3Owner?.firstName}</span>
+                        <span className="text-xs font-medium">
+                          {v3Owner?.firstName}
+                        </span>
                       </div>
                     </DropdownMenu.Trigger>
                     <DropdownMenu.Portal>
@@ -552,7 +559,11 @@ export default function NavBar() {
 
       {v3ModalOpen && (
         <V3LoginModal
-          onSuccess={(owner, token) => { v3Login(owner, token); setV3ModalOpen(false); navigate.push("/v3") }}
+          onSuccess={(owner, token) => {
+            v3Login(owner, token)
+            setV3ModalOpen(false)
+            navigate.push("/v3")
+          }}
           onClose={() => setV3ModalOpen(false)}
         />
       )}

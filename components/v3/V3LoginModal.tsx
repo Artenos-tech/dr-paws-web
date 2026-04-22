@@ -14,11 +14,15 @@ export default function V3LoginModal({ onSuccess, onClose }: Props) {
   return createPortal(
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4"
-      onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose()
+      }}
     >
       <div className="relative w-full max-w-sm rounded-2xl bg-white shadow-xl">
         <div className="flex items-center justify-between border-b border-gray-100 px-6 py-4">
-          <h2 className="font-roca text-lg text-primary-1">Sign in to Dr. Paws</h2>
+          <h2 className="font-roca text-lg text-primary-1">
+            Sign in to Dr. Paws
+          </h2>
           <button
             onClick={onClose}
             className="rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors"
@@ -32,6 +36,6 @@ export default function V3LoginModal({ onSuccess, onClose }: Props) {
         </div>
       </div>
     </div>,
-    document.body
+    document.body,
   )
 }

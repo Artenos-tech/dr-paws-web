@@ -30,7 +30,10 @@ export default function V3LoginFlow({ onSuccess }: Props) {
     if (value && index < 3) otpRefs.current[index + 1]?.focus()
   }
 
-  function handleOtpKeyDown(index: number, e: React.KeyboardEvent<HTMLInputElement>) {
+  function handleOtpKeyDown(
+    index: number,
+    e: React.KeyboardEvent<HTMLInputElement>,
+  ) {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
       otpRefs.current[index - 1]?.focus()
     }
@@ -41,7 +44,9 @@ export default function V3LoginFlow({ onSuccess }: Props) {
     if (!text) return
     e.preventDefault()
     const next = ["", "", "", ""]
-    text.split("").forEach((ch, i) => { next[i] = ch })
+    text.split("").forEach((ch, i) => {
+      next[i] = ch
+    })
     setOtp(next)
     otpRefs.current[Math.min(text.length, 3)]?.focus()
   }
@@ -69,7 +74,12 @@ export default function V3LoginFlow({ onSuccess }: Props) {
     const result = await api.loginOTP({ mobile: trimmed })
     setLoading(false)
     if (!result.ok) {
-      setError(extractErrorMessage(result.error, "Failed to send OTP. Please try again."))
+      setError(
+        extractErrorMessage(
+          result.error,
+          "Failed to send OTP. Please try again.",
+        ),
+      )
       return
     }
     setStep("otp")
@@ -79,18 +89,24 @@ export default function V3LoginFlow({ onSuccess }: Props) {
     if (otpValue.length !== 4) return
     setLoading(true)
     setError(null)
-    const result = await api.loginVerify({ mobile: mobile.trim(), otp: otpValue })
+    const result = await api.loginVerify({
+      mobile: mobile.trim(),
+      otp: otpValue,
+    })
     setLoading(false)
     if (!result.ok) {
-      const body = (result.error instanceof ErrorResponseAPIError)
-        ? (result.error.body as { errorCode?: string; message?: string })
-        : null
+      const body =
+        result.error instanceof ErrorResponseAPIError
+          ? (result.error.body as { errorCode?: string; message?: string })
+          : null
       if (body?.errorCode === "USER_NOT_FOUND") {
         setError(null)
         setStep("signup")
         return
       }
-      setError(extractErrorMessage(result.error, "Invalid OTP. Please try again."))
+      setError(
+        extractErrorMessage(result.error, "Invalid OTP. Please try again."),
+      )
       setOtp(["", "", "", ""])
       otpRefs.current[0]?.focus()
       return
@@ -114,7 +130,12 @@ export default function V3LoginFlow({ onSuccess }: Props) {
     })
     setLoading(false)
     if (!result.ok) {
-      setError(extractErrorMessage(result.error, "Failed to create account. Please try again."))
+      setError(
+        extractErrorMessage(
+          result.error,
+          "Failed to create account. Please try again.",
+        ),
+      )
       return
     }
     const { token, owner } = result.value.body
@@ -172,7 +193,9 @@ export default function V3LoginFlow({ onSuccess }: Props) {
             {otp.map((digit, i) => (
               <input
                 key={i}
-                ref={(el) => { otpRefs.current[i] = el }}
+                ref={(el) => {
+                  otpRefs.current[i] = el
+                }}
                 type="tel"
                 inputMode="numeric"
                 maxLength={1}
@@ -197,7 +220,11 @@ export default function V3LoginFlow({ onSuccess }: Props) {
 
           <div className="flex items-center justify-between text-xs text-gray-500">
             <button
-              onClick={() => { setStep("phone"); setOtp(["", "", "", ""]); setError(null) }}
+              onClick={() => {
+                setStep("phone")
+                setOtp(["", "", "", ""])
+                setError(null)
+              }}
               className="hover:text-gray-700"
             >
               ← Change number
@@ -217,8 +244,8 @@ export default function V3LoginFlow({ onSuccess }: Props) {
         <>
           <div className="rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-800">
             No account found for{" "}
-            <span className="font-medium">{maskedMobile}</span>. Enter your
-            name to create one.
+            <span className="font-medium">{maskedMobile}</span>. Enter your name
+            to create one.
           </div>
 
           <div className="grid grid-cols-2 gap-3">
@@ -260,7 +287,11 @@ export default function V3LoginFlow({ onSuccess }: Props) {
           </button>
 
           <button
-            onClick={() => { setStep("phone"); setOtp(["", "", "", ""]); setError(null) }}
+            onClick={() => {
+              setStep("phone")
+              setOtp(["", "", "", ""])
+              setError(null)
+            }}
             className="w-full text-center text-xs text-gray-500 hover:text-gray-700"
           >
             ← Use a different number

@@ -9,7 +9,13 @@ import {
   useState,
 } from "react"
 
-import api, { type V3Owner, V3_OWNER_KEY, V3_AUTH_TOKEN_KEY, clearV3Auth, setV3AuthToken } from "@/services/api.v3"
+import api, {
+  type V3Owner,
+  V3_OWNER_KEY,
+  V3_AUTH_TOKEN_KEY,
+  clearV3Auth,
+  setV3AuthToken,
+} from "@/services/api.v3"
 
 interface V3UserContextType {
   owner: V3Owner | null
@@ -72,6 +78,7 @@ export function V3UserProvider({ children }: { children: ReactNode }) {
 
 export function useV3UserContext() {
   const ctx = useContext(V3UserContext)
-  if (!ctx) throw new Error("useV3UserContext must be used within V3UserProvider")
+  if (!ctx)
+    throw new Error("useV3UserContext must be used within V3UserProvider")
   return ctx
 }
