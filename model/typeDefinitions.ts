@@ -120,6 +120,7 @@ export interface AppointmentListItem {
   appt_type: AppointmentTypeEnum
 
   category: AppointmentCategory
+  catalogue_keys?: string[]
 
   clinic_name?: string
   clinic_location?: string
