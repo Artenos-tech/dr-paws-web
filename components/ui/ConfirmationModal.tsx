@@ -219,7 +219,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                 Coupon Code applied: <b>{couponCode}</b>
               </DialogDescription>
               <DialogDescription>
-                Discount included in payment amount
+                Discount will be applied during checkout at the clinic
               </DialogDescription>
             </div>
           )}
