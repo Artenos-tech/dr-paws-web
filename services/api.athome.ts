@@ -1,8 +1,4 @@
-import {
-  createAPIClient,
-  z,
-  type APIResponse,
-} from "../lib/apiclient"
+import { createAPIClient, z, type APIResponse } from "../lib/apiclient"
 import { type Result, ok, err } from "../lib/result"
 
 export {
@@ -12,7 +8,11 @@ export {
   ErrorResponseAPIError,
 } from "../lib/apiclient"
 
-import { AUTH_TOKEN_HEADER_NAME, AUTH_TOKEN_LOCALSTORAGE_KEY, requestContext } from "./api"
+import {
+  AUTH_TOKEN_HEADER_NAME,
+  AUTH_TOKEN_LOCALSTORAGE_KEY,
+  requestContext,
+} from "./api"
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL as string
 
