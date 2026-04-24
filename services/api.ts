@@ -24,7 +24,7 @@ function initRequestContext() {
   return ctx
 }
 
-const requestContext = initRequestContext()
+export const requestContext = initRequestContext()
 
 const PaymentOrderSchema = z.object({
   orderId: z.string(),
