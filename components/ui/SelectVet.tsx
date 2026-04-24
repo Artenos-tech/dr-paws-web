@@ -58,6 +58,7 @@ interface selectVetProps {
     appointmentId: string
     subBookingId: string
   }) => void
+  onBeforePayment?: () => void
 }
 
 type ClinicPaymentPricing = {
@@ -83,6 +84,7 @@ const SelectVet: React.FC<selectVetProps> = ({
   bookingFlowSessionId,
   existingAppointment,
   onRescheduleError,
+  onBeforePayment,
 }) => {
   const { user } = useUserContext()
 
@@ -580,6 +582,7 @@ const SelectVet: React.FC<selectVetProps> = ({
           if (!isConsultation) {
             payload.subtype_id = selectedSubtype?.id as string
           }
+          onBeforePayment?.()
           const response = await createClinicPaymentOrder(payload)
           if (response.ok) {
             const { paymentSessionId, orderId } = response.value.body.data.order

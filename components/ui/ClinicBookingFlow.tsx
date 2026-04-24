@@ -252,6 +252,11 @@ const ClinicBookingFlow: React.FC<ClinicBookingFlowProps> = ({
           groomingCatalogueKeys={selectedAppointment.groomingCatalogueKeys}
           isGrooming={selectedAppointment.isGrooming}
           bookingFlowSessionId={bookingFlowSessionId}
+          onBeforePayment={
+            bookingFlowSessionId
+              ? () => void trackStep(bookingFlowSessionId, 4)
+              : undefined
+          }
           isReschedule={false}
           setFinalAppointmentData={(appData) => {
             setSelectedAppointmentState((prev) => ({
