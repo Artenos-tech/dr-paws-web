@@ -70,6 +70,11 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
     reasonForVisit,
   } = bookingDetails
   const showHaircutAddOn = Boolean(haircutAddOn)
+  const couponDiscountMessage = clinicPaymentBreakdown
+    ? "Discount will be applied during checkout at the clinic"
+    : pricingSummary
+      ? "Discount included in payment amount"
+      : null
   const [showFullDesc, setShowFullDesc] = React.useState(false)
 
   useEffect(() => {
@@ -218,9 +223,11 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
               <DialogDescription className="text-md font-medium text-secondary-1">
                 Coupon Code applied: <b>{couponCode}</b>
               </DialogDescription>
-              <DialogDescription>
-                Discount will be applied during checkout at the clinic
-              </DialogDescription>
+              {couponDiscountMessage && (
+                <DialogDescription>
+                  {couponDiscountMessage}
+                </DialogDescription>
+              )}
             </div>
           )}
           {isSenior && (
