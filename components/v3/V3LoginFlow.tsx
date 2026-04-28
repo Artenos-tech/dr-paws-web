@@ -37,6 +37,9 @@ export default function V3LoginFlow({ onSuccess }: Props) {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
       otpRefs.current[index - 1]?.focus()
     }
+    if (e.key === "Enter") {
+      handleVerifyOTP()
+    }
   }
 
   function handleOtpPaste(e: React.ClipboardEvent) {
@@ -257,6 +260,7 @@ export default function V3LoginFlow({ onSuccess }: Props) {
                 type="text"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleSignup()}
                 placeholder="Jane"
                 autoFocus
                 className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:border-primary-2 focus:outline-none focus:ring-1 focus:ring-primary-2"
@@ -270,6 +274,7 @@ export default function V3LoginFlow({ onSuccess }: Props) {
                 type="text"
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleSignup()}
                 placeholder="Smith"
                 className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:border-primary-2 focus:outline-none focus:ring-1 focus:ring-primary-2"
               />
