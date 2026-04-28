@@ -237,10 +237,8 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
     void trackStep(bookingFlowSessionId, currentStep)
   }, [currentStep, bookingFlowSessionId])
 
-  const {
-    call: getHomeVisitPaymentAmount,
-    loading: isLoadingPaymentAmount,
-  } = useAPICall(atHomeApiClient.getHomeVisitPaymentAmount)
+  const { call: getHomeVisitPaymentAmount, loading: isLoadingPaymentAmount } =
+    useAPICall(atHomeApiClient.getHomeVisitPaymentAmount)
   useEffect(() => {
     if (!isConfirming) return
 

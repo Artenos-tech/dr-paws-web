@@ -224,9 +224,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                 Coupon Code applied: <b>{couponCode}</b>
               </DialogDescription>
               {couponDiscountMessage && (
-                <DialogDescription>
-                  {couponDiscountMessage}
-                </DialogDescription>
+                <DialogDescription>{couponDiscountMessage}</DialogDescription>
               )}
             </div>
           )}
