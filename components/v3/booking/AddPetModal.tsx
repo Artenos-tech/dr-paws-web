@@ -79,8 +79,8 @@ export default function AddPetModal({ clinics, onClose, onAdded }: Props) {
         dateOfBirth: dateOfBirth || null,
       })
       onAdded(pet)
-    } catch (e: any) {
-      setError(e.message ?? "Failed to add pet. Please try again.")
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Failed to add pet. Please try again.")
     } finally {
       setLoading(false)
     }

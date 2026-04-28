@@ -72,11 +72,12 @@ export default function StepConfirm({
         reasonForVisit: reason.trim() || undefined,
       })
       onSuccess(appt)
-    } catch (e: any) {
+    } catch (e) {
+      const err = e as { errorCode?: string; message?: string }
       setError(
-        e?.errorCode === "SLOT_UNAVAILABLE"
+        err.errorCode === "SLOT_UNAVAILABLE"
           ? "This slot is no longer available. Tap 'Vet & appointment time' above to choose a different time."
-          : (e?.message ?? "Failed to book appointment. Please try again."),
+          : (err.message ?? "Failed to book appointment. Please try again."),
       )
     } finally {
       setLoading(false)
