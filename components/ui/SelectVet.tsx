@@ -555,6 +555,7 @@ const SelectVet: React.FC<selectVetProps> = ({
             is_grooming: boolean
             coupon_code?: string
             booking_flow_session_id?: string
+            platform?: "WEB"
           } = {
             vet_id:
               selectedDoctor.id === BEST_AVAILABLE_VET_ID && chosenVetId
@@ -569,6 +570,7 @@ const SelectVet: React.FC<selectVetProps> = ({
             appt_type_id: selectedSvcId,
             pet_type: selectedPet.type as "DOG" | "CAT" | "OTHER",
             is_grooming: isGrooming,
+            platform: "WEB",
             ...(appliedCoupon && {
               coupon_code: appliedCoupon,
             }),

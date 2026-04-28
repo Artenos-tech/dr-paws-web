@@ -811,6 +811,7 @@ export default createAPIClient({
         is_grooming: z.boolean(),
         coupon_code: z.string().optional(),
         booking_flow_session_id: z.string().uuid().optional(),
+        platform: z.literal("WEB").optional(),
       }),
       responseSchema: z.object({
         status: z.number(),
@@ -856,6 +857,7 @@ export default createAPIClient({
         is_grooming: z.boolean(),
         coupon_code: z.string().optional(),
         booking_flow_session_id: z.string().uuid().optional(),
+        platform: z.literal("WEB").optional(),
       }),
       responseSchema: z.object({
         data: z.object({
