@@ -25,6 +25,7 @@ export default function NavBar() {
   const [isProfileOpen, setIsProfileOpen] = useState(false)
   const [isContactModalOpen, setContactIsModalOpen] = useState(false)
   const [v3ModalOpen, setV3ModalOpen] = useState(false)
+  const [v3PostLoginPath, setV3PostLoginPath] = useState("/v3")
   const navigate = useRouter()
   const pathname = usePathname()
   const isVetAtHomePage = pathname?.includes("/vet-at-home")
@@ -82,6 +83,15 @@ export default function NavBar() {
   }
 
   const handleBookAVisit = () => {
+    if (isV3Enabled) {
+      if (isV3LoggedIn) {
+        navigate.push("/v3/book")
+      } else {
+        setV3PostLoginPath("/v3/book")
+        setV3ModalOpen(true)
+      }
+      return
+    }
     const destination =
       pathname?.includes("/vet-at-home") && isHomeVisitEnabled
         ? "/user/book-appointment?home=true"
@@ -562,9 +572,12 @@ export default function NavBar() {
           onSuccess={(owner, token) => {
             v3Login(owner, token)
             setV3ModalOpen(false)
-            navigate.push("/v3")
+            navigate.push(v3PostLoginPath)
           }}
-          onClose={() => setV3ModalOpen(false)}
+          onClose={() => {
+            setV3ModalOpen(false)
+            setV3PostLoginPath("/v3")
+          }}
         />
       )}
 

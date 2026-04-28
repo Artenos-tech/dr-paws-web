@@ -1,0 +1,328 @@
+"use client"
+
+import { useEffect, useRef, useState } from "react"
+import {
+  ChevronLeft,
+  ChevronRight,
+  User,
+  CalendarDays,
+  Clock,
+  Loader2,
+} from "lucide-react"
+import {
+  v3FetchDoctors,
+  v3FetchAvailableDates,
+  v3FetchTimeSlots,
+  type V3Doctor,
+  type V3TimeSlot,
+} from "@/services/api.v3"
+
+interface Props {
+  clinicId: string
+  initialDoctor?: V3Doctor | null
+  onSelect: (doctor: V3Doctor, date: string, slot: V3TimeSlot) => void
+}
+
+function formatDate(dateStr: string): string {
+  return new Date(dateStr + "T00:00:00").toLocaleDateString("en-IN", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  })
+}
+
+function formatTime(time: string): string {
+  const [h, m] = time.split(":").map(Number)
+  const period = h >= 12 ? "PM" : "AM"
+  const hour = h % 12 || 12
+  return `${hour}:${String(m).padStart(2, "0")} ${period}`
+}
+
+function toDateStr(d: Date): string {
+  return d.toISOString().split("T")[0]
+}
+
+function daysInMonth(year: number, month: number): number {
+  return new Date(year, month + 1, 0).getDate()
+}
+
+interface CalendarProps {
+  availableDates: Set<string>
+  selectedDate: string | null
+  onSelectDate: (d: string) => void
+}
+
+function MiniCalendar({
+  availableDates,
+  selectedDate,
+  onSelectDate,
+}: CalendarProps) {
+  const today = new Date()
+  const [viewYear, setViewYear] = useState(today.getFullYear())
+  const [viewMonth, setViewMonth] = useState(today.getMonth())
+
+  const firstDay = new Date(viewYear, viewMonth, 1).getDay()
+  const days = daysInMonth(viewYear, viewMonth)
+  const todayStr = toDateStr(today)
+
+  function prevMonth() {
+    if (viewMonth === 0) {
+      setViewMonth(11)
+      setViewYear(viewYear - 1)
+    } else setViewMonth(viewMonth - 1)
+  }
+
+  function nextMonth() {
+    if (viewMonth === 11) {
+      setViewMonth(0)
+      setViewYear(viewYear + 1)
+    } else setViewMonth(viewMonth + 1)
+  }
+
+  const monthLabel = new Date(viewYear, viewMonth).toLocaleDateString("en-IN", {
+    month: "long",
+    year: "numeric",
+  })
+
+  const cells: (string | null)[] = []
+  for (let i = 0; i < firstDay; i++) cells.push(null)
+  for (let d = 1; d <= days; d++) {
+    const pad = String(viewMonth + 1).padStart(2, "0")
+    cells.push(`${viewYear}-${pad}-${String(d).padStart(2, "0")}`)
+  }
+
+  return (
+    <div className="rounded-xl border border-gray-200 p-4">
+      <div className="flex items-center justify-between mb-3">
+        <button
+          onClick={prevMonth}
+          className="p-1 rounded-lg hover:bg-gray-100 transition-colors"
+        >
+          <ChevronLeft className="h-4 w-4 text-gray-600" />
+        </button>
+        <span className="text-sm font-semibold text-primary-1">
+          {monthLabel}
+        </span>
+        <button
+          onClick={nextMonth}
+          className="p-1 rounded-lg hover:bg-gray-100 transition-colors"
+        >
+          <ChevronRight className="h-4 w-4 text-gray-600" />
+        </button>
+      </div>
+
+      <div className="grid grid-cols-7 gap-0.5 mb-1">
+        {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((d) => (
+          <div
+            key={d}
+            className="text-center text-xs text-gray-400 font-medium py-1"
+          >
+            {d}
+          </div>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-7 gap-0.5">
+        {cells.map((dateStr, i) => {
+          if (!dateStr) return <div key={`empty-${i}`} />
+          const isAvailable = availableDates.has(dateStr)
+          const isSelected = selectedDate === dateStr
+          const isPast = dateStr < todayStr
+          return (
+            <button
+              key={dateStr}
+              onClick={() => isAvailable && !isPast && onSelectDate(dateStr)}
+              disabled={!isAvailable || isPast}
+              className={[
+                "aspect-square rounded-lg text-xs font-medium transition-all",
+                isSelected
+                  ? "bg-primary-2 text-white"
+                  : isAvailable && !isPast
+                    ? "bg-primary-2/10 text-primary-2 hover:bg-primary-2 hover:text-white"
+                    : "text-gray-300 cursor-default",
+              ].join(" ")}
+            >
+              {new Date(dateStr + "T00:00:00").getDate()}
+            </button>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+export default function StepVetDateTime({
+  clinicId,
+  initialDoctor,
+  onSelect,
+}: Props) {
+  const [doctors, setDoctors] = useState<V3Doctor[]>([])
+  const [selectedDoctor, setSelectedDoctor] = useState<V3Doctor | null>(
+    initialDoctor ?? null,
+  )
+  const [loadingDoctors, setLoadingDoctors] = useState(true)
+
+  const [availableDates, setAvailableDates] = useState<Set<string>>(new Set())
+  const [loadingDates, setLoadingDates] = useState(false)
+  const [selectedDate, setSelectedDate] = useState<string | null>(null)
+
+  const [slots, setSlots] = useState<V3TimeSlot[]>([])
+  const [loadingSlots, setLoadingSlots] = useState(false)
+
+  const slotsRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    setLoadingDoctors(true)
+    v3FetchDoctors(clinicId)
+      .then(setDoctors)
+      .catch(console.error)
+      .finally(() => setLoadingDoctors(false))
+  }, [clinicId])
+
+  useEffect(() => {
+    if (!selectedDoctor) return
+    setLoadingDates(true)
+    setSelectedDate(null)
+    setSlots([])
+
+    const today = new Date()
+    const endDate = new Date(today)
+    endDate.setMonth(endDate.getMonth() + 2)
+
+    v3FetchAvailableDates(
+      clinicId,
+      selectedDoctor.id,
+      toDateStr(today),
+      toDateStr(endDate),
+    )
+      .then((dates) => setAvailableDates(new Set(dates)))
+      .catch(console.error)
+      .finally(() => setLoadingDates(false))
+  }, [selectedDoctor, clinicId])
+
+  useEffect(() => {
+    if (!selectedDate || !selectedDoctor) return
+    setLoadingSlots(true)
+    setSlots([])
+
+    v3FetchTimeSlots(clinicId, selectedDate, selectedDoctor.id)
+      .then(setSlots)
+      .catch(console.error)
+      .finally(() => setLoadingSlots(false))
+  }, [selectedDate, selectedDoctor, clinicId])
+
+  // Scroll slots into view after loading
+  useEffect(() => {
+    if (!selectedDate) return
+    const timer = setTimeout(() => {
+      slotsRef.current?.scrollIntoView({ behavior: "smooth", block: "center" })
+    }, 150)
+    return () => clearTimeout(timer)
+  }, [selectedDate, loadingSlots])
+
+  const availableSlots = slots.filter((s) => s.isAvailable)
+
+  return (
+    <div className="space-y-6">
+      {/* Vet selection */}
+      <div>
+        {loadingDoctors ? (
+          <div className="flex justify-center py-8">
+            <Loader2 className="h-6 w-6 animate-spin text-primary-2" />
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {doctors.map((doc) => (
+              <button
+                key={doc.id}
+                onClick={() => setSelectedDoctor(doc)}
+                className={[
+                  "w-full flex items-center gap-3 px-4 py-3 rounded-xl border transition-all text-left",
+                  selectedDoctor?.id === doc.id
+                    ? "border-primary-2 bg-primary-2/5 ring-1 ring-primary-2"
+                    : "border-gray-200 hover:border-primary-2/50 hover:bg-gray-50",
+                ].join(" ")}
+              >
+                <div className="flex-shrink-0 h-10 w-10 rounded-full bg-primary-2/10 flex items-center justify-center">
+                  <User className="h-5 w-5 text-primary-2" />
+                </div>
+                <div className="flex-1">
+                  <div className="font-medium text-primary-1">{doc.name}</div>
+                  <div className="text-xs text-gray-400">Veterinarian</div>
+                </div>
+                {selectedDoctor?.id === doc.id && (
+                  <div className="h-2 w-2 rounded-full bg-primary-2 flex-shrink-0" />
+                )}
+              </button>
+            ))}
+            {doctors.length === 0 && (
+              <p className="text-center text-sm text-gray-500 py-6">
+                No doctors available at this clinic.
+              </p>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Date selection */}
+      {selectedDoctor && (
+        <div>
+          <div className="flex items-center gap-2 mb-3">
+            <CalendarDays className="h-5 w-5 text-primary-2" />
+            <h3 className="font-semibold text-primary-1">Choose a date</h3>
+          </div>
+          {loadingDates ? (
+            <div className="flex justify-center py-6">
+              <Loader2 className="h-5 w-5 animate-spin text-primary-2" />
+            </div>
+          ) : (
+            <MiniCalendar
+              availableDates={availableDates}
+              selectedDate={selectedDate}
+              onSelectDate={setSelectedDate}
+            />
+          )}
+          {!loadingDates && availableDates.size === 0 && (
+            <p className="text-sm text-center text-gray-500 mt-2">
+              No available dates in the next 2 months for this doctor.
+            </p>
+          )}
+        </div>
+      )}
+
+      {/* Time slot selection */}
+      {selectedDate && selectedDoctor && (
+        <div ref={slotsRef} className="scroll-mt-4">
+          <div className="flex items-center gap-2 mb-3">
+            <Clock className="h-5 w-5 text-primary-2" />
+            <h3 className="font-semibold text-primary-1">
+              {formatDate(selectedDate)}
+            </h3>
+          </div>
+          {loadingSlots ? (
+            <div className="flex justify-center py-6">
+              <Loader2 className="h-5 w-5 animate-spin text-primary-2" />
+            </div>
+          ) : availableSlots.length === 0 ? (
+            <p className="text-sm text-center text-gray-500 py-4">
+              No available slots on this date. Please choose another day.
+            </p>
+          ) : (
+            <div className="grid grid-cols-3 gap-2">
+              {availableSlots.map((slot) => (
+                <button
+                  key={slot.startTime}
+                  onClick={() => onSelect(selectedDoctor, selectedDate, slot)}
+                  className="rounded-xl border border-primary-2/30 bg-primary-2/5 px-3 py-2.5 text-sm font-medium text-primary-2 hover:bg-primary-2 hover:text-white hover:border-primary-2 transition-all text-center"
+                >
+                  {formatTime(slot.startTime)}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}

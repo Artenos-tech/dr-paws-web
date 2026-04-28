@@ -6,6 +6,216 @@ export const V3_AUTH_TOKEN_HEADER = "X-Auth-Token"
 export const V3_AUTH_TOKEN_KEY = "v3AuthToken"
 export const V3_OWNER_KEY = "v3Owner"
 
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+export type V3Pet = {
+  id: string
+  name: string
+  species?: string | null
+  breed?: string | null
+  gender: string
+  dateOfBirth?: string | null
+  weight?: string | null
+  reproductiveStatus?: string | null
+}
+
+export type V3Clinic = {
+  id: string
+  name: string
+  timezone: string
+  email?: string | null
+  phone?: string | null
+  city?: string | null
+  vetBookingEnabled: boolean
+  groomingBookingEnabled: boolean
+}
+
+export type V3Doctor = {
+  id: string
+  name: string
+}
+
+export type V3TimeSlot = {
+  startTime: string
+  endTime: string
+  isAvailable: boolean
+  doctorId?: string
+  doctorName?: string
+}
+
+export type V3Appointment = {
+  id: string
+  petId: string
+  petName: string
+  doctorId: string
+  doctorName: string
+  clinicId: string
+  clinicName: string
+  date: string
+  startTime: string
+  endTime: string
+  status: string
+  reasonForVisit?: string | null
+  createdAt: string
+}
+
+export type V3SpeciesOption = { value: string; label: string }
+export type V3BreedOption = {
+  value: string
+  label: string
+  coatType: string | null
+  bodySize: string | null
+}
+
+// ─── Booking API helpers ──────────────────────────────────────────────────────
+
+function getV3Headers(): Record<string, string> {
+  const headers: Record<string, string> = { "Content-Type": "application/json" }
+  if (typeof window !== "undefined") {
+    const token = localStorage.getItem(V3_AUTH_TOKEN_KEY)
+    if (token) headers[V3_AUTH_TOKEN_HEADER] = token
+  }
+  return headers
+}
+
+async function v3Get<T>(
+  path: string,
+  query?: Record<string, string | undefined>,
+): Promise<T> {
+  const url = new URL(`${API_BASE_URL}${path}`)
+  if (query) {
+    Object.entries(query).forEach(([k, v]) => {
+      if (v !== undefined) url.searchParams.set(k, v)
+    })
+  }
+  const res = await fetch(url.toString(), {
+    headers: getV3Headers(),
+    credentials: "include",
+  })
+  const json = await res.json()
+  if (!res.ok) {
+    throw new Error(json?.message ?? `Request failed: ${res.status}`)
+  }
+  return json as T
+}
+
+async function v3Post<T>(path: string, body: unknown): Promise<T> {
+  const res = await fetch(`${API_BASE_URL}${path}`, {
+    method: "POST",
+    headers: getV3Headers(),
+    credentials: "include",
+    body: JSON.stringify(body),
+  })
+  const json = await res.json()
+  if (!res.ok) {
+    const err = new Error(
+      json?.message ?? `Request failed: ${res.status}`,
+    ) as Error & {
+      status: number
+      errorCode?: string
+      body?: unknown
+    }
+    err.status = res.status
+    err.errorCode = (json as any)?.errorCode
+    err.body = json
+    throw err
+  }
+  return json as T
+}
+
+type V3ApiResponse<T> = { status: number; message: string } & T
+
+export async function v3FetchPets(): Promise<V3Pet[]> {
+  const data = await v3Get<V3ApiResponse<{ pets: V3Pet[] }>>("/v3/pets")
+  return data.pets
+}
+
+export async function v3CreatePet(input: {
+  name: string
+  clinicId: string
+  species?: string
+  breed?: string
+  gender?: string
+  dateOfBirth?: string | null
+  weight?: string
+  reproductiveStatus?: string
+}): Promise<V3Pet> {
+  const data = await v3Post<V3ApiResponse<{ pet: V3Pet }>>("/v3/pets", input)
+  return data.pet
+}
+
+export async function v3FetchClinics(): Promise<V3Clinic[]> {
+  const data =
+    await v3Get<V3ApiResponse<{ clinics: V3Clinic[] }>>("/v3/clinics")
+  return data.clinics
+}
+
+export async function v3FetchDoctors(clinicId: string): Promise<V3Doctor[]> {
+  const data = await v3Get<V3ApiResponse<{ doctors: V3Doctor[] }>>(
+    `/v3/clinics/${encodeURIComponent(clinicId)}/doctors`,
+  )
+  return data.doctors
+}
+
+export async function v3FetchAvailableDates(
+  clinicId: string,
+  doctorId?: string,
+  startDate?: string,
+  endDate?: string,
+): Promise<string[]> {
+  const data = await v3Get<V3ApiResponse<{ dates: string[] }>>(
+    `/v3/clinics/${encodeURIComponent(clinicId)}/availability/dates`,
+    { doctorId, startDate, endDate },
+  )
+  return data.dates
+}
+
+export async function v3FetchTimeSlots(
+  clinicId: string,
+  date: string,
+  doctorId?: string,
+): Promise<V3TimeSlot[]> {
+  const data = await v3Get<
+    V3ApiResponse<{ date: string; timeSlots: V3TimeSlot[] }>
+  >(
+    `/v3/clinics/${encodeURIComponent(clinicId)}/availability/slots/${encodeURIComponent(date)}`,
+    { doctorId },
+  )
+  return data.timeSlots
+}
+
+export async function v3CreateAppointment(input: {
+  clinicId: string
+  petId: string
+  doctorId: string
+  date: string
+  startTime: string
+  endTime: string
+  reasonForVisit?: string
+}): Promise<V3Appointment> {
+  const data = await v3Post<V3ApiResponse<{ appointment: V3Appointment }>>(
+    "/v3/appointments",
+    input,
+  )
+  return data.appointment
+}
+
+export async function v3FetchSpecies(): Promise<V3SpeciesOption[]> {
+  const data =
+    await v3Get<V3ApiResponse<{ species: V3SpeciesOption[] }>>("/v3/species")
+  return data.species
+}
+
+export async function v3FetchBreeds(species: string): Promise<V3BreedOption[]> {
+  const data = await v3Get<V3ApiResponse<{ breeds: V3BreedOption[] }>>(
+    "/v3/breeds",
+    {
+      species,
+    },
+  )
+  return data.breeds
+}
+
 function initRequestContext() {
   const ctx = new RequestContext()
   if (typeof window !== "undefined") {
