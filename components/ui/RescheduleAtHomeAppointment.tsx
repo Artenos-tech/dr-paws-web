@@ -113,6 +113,12 @@ const RescheduleAtHomeAppointment = ({
     if (res?.ok) {
       setIsConfirmationModalOpen(false)
       setView("CONFIRMED")
+    } else if (
+      res &&
+      res.error.apiClientErrorType === "FetchAPIError" &&
+      res.error.fetchError.name === "AbortError"
+    ) {
+      // Silently ignore aborted requests
     } else {
       toast.error("Failed to reschedule appointment")
     }
@@ -142,6 +148,12 @@ const RescheduleAtHomeAppointment = ({
 
       if (result?.ok) {
         setPaymentAmount(result.value.body.data.amount)
+      } else if (
+        result &&
+        result.error.apiClientErrorType === "FetchAPIError" &&
+        result.error.fetchError.name === "AbortError"
+      ) {
+        // Silently ignore aborted requests
       } else {
         toast.error("Failed to fetch payment amount")
         setPaymentAmount(null)

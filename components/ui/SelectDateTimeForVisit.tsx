@@ -128,6 +128,12 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
     if (!atHomeSlotsResult) return
 
     if (!atHomeSlotsResult.ok) {
+      if (
+        atHomeSlotsResult.error.apiClientErrorType === "FetchAPIError" &&
+        atHomeSlotsResult.error.fetchError.name === "AbortError"
+      ) {
+        return
+      }
       toast.error("Failed to load available slots. Please try again.")
       setDays([])
       return
