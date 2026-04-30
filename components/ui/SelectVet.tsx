@@ -190,6 +190,7 @@ const SelectVet: React.FC<selectVetProps> = ({
         }
         await getSlotsForStaff(params)
       } catch (error) {
+        if (error instanceof Error && error.name === "AbortError") return
         console.error("Error fetching slots for staff:", error)
         toast.error("Failed to load slots for staff. Please try again later.")
       }
@@ -228,6 +229,7 @@ const SelectVet: React.FC<selectVetProps> = ({
           }
         }
       } catch (error) {
+        if (error instanceof Error && error.name === "AbortError") return
         console.error("Error fetching grooming slots:", error)
         toast.error("Failed to load grooming slots. Please try again later.")
       }
@@ -262,6 +264,7 @@ const SelectVet: React.FC<selectVetProps> = ({
         }
         await getBestAvailableVetSchedule(params)
       } catch (error) {
+        if (error instanceof Error && error.name === "AbortError") return
         console.error("Error fetching best available vet slots:", error)
         toast.error(
           "Failed to load slots for best available vet. Please try again later.",
@@ -291,6 +294,7 @@ const SelectVet: React.FC<selectVetProps> = ({
           pettype: selectedPet.type as "DOG" | "CAT" | "OTHER",
         })
       } catch (error) {
+        if (error instanceof Error && error.name === "AbortError") return
         console.error("Error fetching doctors for clinic:", error)
         toast.error("Failed to load doctors. Please try again later.")
       }
@@ -421,6 +425,13 @@ const SelectVet: React.FC<selectVetProps> = ({
 
       if (response.ok) {
         setClinicPaymentPricing(response.value.body.data.pricing)
+        return
+      }
+
+      if (
+        response.error.apiClientErrorType === "FetchAPIError" &&
+        response.error.fetchError.name === "AbortError"
+      ) {
         return
       }
 
@@ -590,11 +601,14 @@ const SelectVet: React.FC<selectVetProps> = ({
             const { paymentSessionId, orderId } = response.value.body.data.order
             await handlePayment(paymentSessionId, orderId)
           } else {
-            let errorMessage = "Failed to create appointment. Please try again."
             if (
-              !response.ok &&
-              response.error.apiClientErrorType === "ErrorResponseAPIError"
+              response.error.apiClientErrorType === "FetchAPIError" &&
+              response.error.fetchError.name === "AbortError"
             ) {
+              return
+            }
+            let errorMessage = "Failed to create appointment. Please try again."
+            if (response.error.apiClientErrorType === "ErrorResponseAPIError") {
               errorMessage = response.error.body.message
             }
             toast.error(errorMessage, {
@@ -669,6 +683,12 @@ const SelectVet: React.FC<selectVetProps> = ({
               onNext() // Navigate to the next page only if the API succeeds
             }
           } else {
+            if (
+              response.error.apiClientErrorType === "FetchAPIError" &&
+              response.error.fetchError.name === "AbortError"
+            ) {
+              return
+            }
             toast.error("Failed to reschedule appointment. Please try again.", {
               duration: 3000,
               position: "bottom-right",
@@ -761,12 +781,18 @@ const SelectVet: React.FC<selectVetProps> = ({
         if (response.ok) {
           const doctor = response.value.body.staff
           setSelectedDoctor(doctor)
-        } else {
+        } else if (
+          !(
+            response.error.apiClientErrorType === "FetchAPIError" &&
+            response.error.fetchError.name === "AbortError"
+          )
+        ) {
           toast.error(
             "Failed to load groomer information. Please try again later.",
           )
         }
       } catch (error) {
+        if (error instanceof Error && error.name === "AbortError") return
         console.error("Error fetching doctor for grooming slot:", error)
         toast.error(
           "Failed to load groomer information. Please try again later.",
@@ -794,6 +820,12 @@ const SelectVet: React.FC<selectVetProps> = ({
         setCouponError(null)
         setAppliedCoupon(trimmedCouponCode)
       } else {
+        if (
+          resp.error.apiClientErrorType === "FetchAPIError" &&
+          resp.error.fetchError.name === "AbortError"
+        ) {
+          return
+        }
         const errorMessage =
           resp.error.apiClientErrorType === "ErrorResponseAPIError"
             ? resp.error.body.message
@@ -808,6 +840,7 @@ const SelectVet: React.FC<selectVetProps> = ({
         setAppliedCoupon(null)
       }
     } catch (error) {
+      if (error instanceof Error && error.name === "AbortError") return
       console.error("Error applying coupon code:", error)
       toast.error("Failed to apply coupon code. Please try again later.")
       setCouponError("Failed to apply coupon code. Please try again later.")

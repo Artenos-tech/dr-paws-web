@@ -6,6 +6,7 @@ type APIError = {
   apiClientErrorType?: string
   message?: string
   status?: number
+  fetchError?: Error
 }
 
 type APIResult<T = any> =
@@ -33,6 +34,13 @@ export function useAPIErrorToastFromResult(
 
     if (lastErrorRef.current === error) return
     lastErrorRef.current = error
+
+    if (
+      error.apiClientErrorType === "FetchAPIError" &&
+      error.fetchError?.name === "AbortError"
+    ) {
+      return
+    }
 
     const fallback =
       options?.fallbackMessage ?? "Something went wrong. Please try again."
