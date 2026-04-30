@@ -9,6 +9,8 @@ import toast from "react-hot-toast"
 const POLL_INTERVAL_MS = 3000
 // Max time to wait for the webhook to create the appointment after PAID status
 const MAX_PAID_WAIT_MS = 30000
+// Max time to wait for the payment webhook to arrive before concluding not paid
+const MAX_ACTIVE_WAIT_MS = 15000
 
 const HomeVisitPaymentStatus: React.FC = () => {
   const searchParams = useSearchParams()
@@ -17,6 +19,7 @@ const HomeVisitPaymentStatus: React.FC = () => {
   const { call: getOrderStatus } = useAPICall(atHomeClient.getOrderStatus)
   const pollingRef = useRef<NodeJS.Timeout | null>(null)
   const paidTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const activeTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const hasRedirectedRef = useRef(false)
   const getOrderStatusRef = useRef(getOrderStatus)
   getOrderStatusRef.current = getOrderStatus
@@ -43,6 +46,13 @@ const HomeVisitPaymentStatus: React.FC = () => {
       }
     }
 
+    const stopActiveTimeout = () => {
+      if (activeTimeoutRef.current) {
+        clearTimeout(activeTimeoutRef.current)
+        activeTimeoutRef.current = null
+      }
+    }
+
     const verifyPaymentForOrder = async () => {
       if (hasRedirectedRef.current) return
 
@@ -52,19 +62,26 @@ const HomeVisitPaymentStatus: React.FC = () => {
           console.log("Error message from API", result.error)
           stopPolling()
           stopPaidTimeout()
+          stopActiveTimeout()
           setStatus("error")
           return
         }
 
         const paymentStatus = result.value.body.data.order_payment.status
         const appointmentDetails = result.value.body.data.appointment
-        setStatus(paymentStatus)
+
+        // Don't update status to ACTIVE immediately — defer to the timeout
+        // so the user stays on the loading spinner during the grace period
+        if (paymentStatus !== "ACTIVE") {
+          setStatus(paymentStatus)
+        }
 
         if (paymentStatus === "PAID" && appointmentDetails) {
           // Payment confirmed and appointment created — redirect to thank-you
           hasRedirectedRef.current = true
           stopPolling()
           stopPaidTimeout()
+          stopActiveTimeout()
           setTimeout(() => {
             const params = new URLSearchParams({
               appointmentId: appointmentDetails.id,
@@ -75,26 +92,37 @@ const HomeVisitPaymentStatus: React.FC = () => {
         } else if (paymentStatus === "PAID" && !appointmentDetails) {
           // Payment confirmed but webhook hasn't created the appointment yet —
           // keep polling, but start a max-wait timeout if not already running
+          stopActiveTimeout()
           if (!paidTimeoutRef.current) {
             paidTimeoutRef.current = setTimeout(() => {
               stopPolling()
               setStatus("PAID_TIMEOUT")
             }, MAX_PAID_WAIT_MS)
           }
+        } else if (paymentStatus === "ACTIVE") {
+          // Webhook may not have arrived yet — keep polling for a grace period
+          // before concluding the payment wasn't completed
+          if (!activeTimeoutRef.current) {
+            activeTimeoutRef.current = setTimeout(() => {
+              stopPolling()
+              setStatus("ACTIVE")
+            }, MAX_ACTIVE_WAIT_MS)
+          }
         } else if (
-          paymentStatus === "ACTIVE" ||
           paymentStatus === "EXPIRED" ||
           paymentStatus === "TERMINATED" ||
           paymentStatus === "TERMINATION_REQUESTED"
         ) {
-          // Terminal non-success states — stop polling immediately
+          // Genuinely terminal non-success states — stop polling immediately
           stopPolling()
           stopPaidTimeout()
+          stopActiveTimeout()
         }
       } catch {
         toast.error("Failed to verify payment")
         stopPolling()
         stopPaidTimeout()
+        stopActiveTimeout()
         setStatus("error")
       }
     }
@@ -105,6 +133,7 @@ const HomeVisitPaymentStatus: React.FC = () => {
     return () => {
       stopPolling()
       stopPaidTimeout()
+      stopActiveTimeout()
     }
   }, [orderId, router])
 
