@@ -59,6 +59,7 @@ interface selectVetProps {
     subBookingId: string
   }) => void
   onBeforePayment?: () => void
+  onPriceViewed?: () => void
 }
 
 type ClinicPaymentPricing = {
@@ -85,6 +86,7 @@ const SelectVet: React.FC<selectVetProps> = ({
   existingAppointment,
   onRescheduleError,
   onBeforePayment,
+  onPriceViewed,
 }) => {
   const { user } = useUserContext()
 
@@ -425,6 +427,7 @@ const SelectVet: React.FC<selectVetProps> = ({
 
       if (response.ok) {
         setClinicPaymentPricing(response.value.body.data.pricing)
+        onPriceViewed?.()
         return
       }
 
