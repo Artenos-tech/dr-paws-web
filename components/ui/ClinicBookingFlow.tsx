@@ -254,12 +254,12 @@ const ClinicBookingFlow: React.FC<ClinicBookingFlowProps> = ({
           bookingFlowSessionId={bookingFlowSessionId}
           onPriceViewed={
             bookingFlowSessionId
-              ? () => void trackStep(bookingFlowSessionId, 4)
+              ? () => void trackStep(bookingFlowSessionId, 5)
               : undefined
           }
           onBeforePayment={
             bookingFlowSessionId
-              ? () => void trackStep(bookingFlowSessionId, 5)
+              ? () => void trackStep(bookingFlowSessionId, 4)
               : undefined
           }
           isReschedule={false}
