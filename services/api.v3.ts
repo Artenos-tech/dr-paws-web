@@ -343,6 +343,51 @@ export async function v3GetHomeVisitAppointment(
   return data.appointment
 }
 
+type V3AppointmentCommon = {
+  id: string
+  petId: string
+  petName: string
+  doctorName: string
+  clinicId: string
+  clinicName: string
+  date: string
+  startTime: string
+  endTime: string
+  appointmentTypeName: string | null
+  reasonForVisit: string | null
+}
+
+export type V3AppointmentListAddress = {
+  line1: string
+  line2: string | null
+  pincode: string
+  directions: string | null
+}
+
+export type V3AppointmentListItem =
+  | (V3AppointmentCommon & {
+      bookingType: "CLINIC_VISIT"
+      clinicStatus: string
+    })
+  | (V3AppointmentCommon & {
+      bookingType: "HOME_VISIT"
+      visitStatus: string
+      address: V3AppointmentListAddress | null
+    })
+
+export async function v3FetchAppointments(
+  page: number,
+  pageSize: number,
+): Promise<{ items: V3AppointmentListItem[]; hasNext: boolean }> {
+  const data = await v3Get<
+    V3ApiResponse<{
+      appointments: V3AppointmentListItem[]
+      hasNext: boolean
+    }>
+  >("/v3/appointments", { page: String(page), pageSize: String(pageSize) })
+  return { items: data.appointments, hasNext: data.hasNext }
+}
+
 export async function v3FetchSpecies(): Promise<V3SpeciesOption[]> {
   const data =
     await v3Get<V3ApiResponse<{ species: V3SpeciesOption[] }>>("/v3/species")
