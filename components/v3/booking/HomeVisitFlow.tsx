@@ -524,8 +524,8 @@ function AddAddressModal({
           {!pinAcked ? (
             <>
               <p className="text-xs text-gray-500 mb-3">
-                Search, tap on the map, or drag the pin. We&apos;ll use this to guide
-                the vet to your door.
+                Search, tap on the map, or drag the pin. We&apos;ll use this to
+                guide the vet to your door.
               </p>
               <MapAddressPicker
                 onChange={(loc) => setLocation(loc)}
@@ -659,16 +659,16 @@ function ServiceabilityBanner({ state }: { state: ServiceabilityState }) {
   if (state.kind === "no") {
     return (
       <div className="mt-2 rounded-xl bg-red-50 border border-red-200 px-3 py-2 text-xs text-red-700">
-        We don&apos;t currently offer home visits at pincode {state.pincode}. Try a
-        different location.
+        We don&apos;t currently offer home visits at pincode {state.pincode}.
+        Try a different location.
       </div>
     )
   }
   if (state.kind === "no-pincode") {
     return (
       <div className="mt-2 rounded-xl bg-amber-50 border border-amber-200 px-3 py-2 text-xs text-amber-700">
-        Couldn&apos;t read a pincode for this spot. Drop the pin slightly closer to a
-        road or building.
+        Couldn&apos;t read a pincode for this spot. Drop the pin slightly closer
+        to a road or building.
       </div>
     )
   }
