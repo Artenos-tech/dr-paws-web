@@ -2,16 +2,14 @@ export default function PrivacyPolicy() {
   return (
     <div className="max-w-3xl m-auto p-10">
       <h1 className="text-3xl mb-5">Privacy Policy</h1>
-      <p className="text-sm font-bold my-5">
-        Last updated on 07-05-2026
-      </p>
+      <p className="text-sm font-bold my-5">Last updated on 07-05-2026</p>
 
       <p className="my-5">
         This Privacy Policy explains how DR. PAWS HEALTHCARE PRIVATE LIMITED
         (&quot;Dr. Paws&quot;, &quot;we&quot;, &quot;us&quot;, or
         &quot;our&quot;) collects, uses, stores, shares, retains, and deletes
-        user data when you use the Dr. Paws mobile application, website, clinics,
-        home-visit services, and related services (collectively,
+        user data when you use the Dr. Paws mobile application, website,
+        clinics, home-visit services, and related services (collectively,
         &quot;Services&quot;).
       </p>
 
@@ -37,10 +35,10 @@ export default function PrivacyPolicy() {
           session details.
         </li>
         <li>
-          Address and location information, such as saved addresses, city, state,
-          pincode, map search results, and location details entered or selected
-          for clinic visits, home visits, serviceability checks, and appointment
-          fulfilment.
+          Address and location information, such as saved addresses, city,
+          state, pincode, map search results, and location details entered or
+          selected for clinic visits, home visits, serviceability checks, and
+          appointment fulfilment.
         </li>
         <li>
           Pet profile information, such as pet name, species, breed, gender,
@@ -49,15 +47,15 @@ export default function PrivacyPolicy() {
         </li>
         <li>
           Appointment and service information, such as selected clinic, selected
-          service, preferred veterinarian, visit date and time, reason for visit,
-          booking status, cancellation or rescheduling details, and home-visit
-          operational details.
+          service, preferred veterinarian, visit date and time, reason for
+          visit, booking status, cancellation or rescheduling details, and
+          home-visit operational details.
         </li>
         <li>
-          Payment and transaction information, such as order identifiers, payment
-          status, invoice details, refund status, and payment gateway references.
-          We do not store complete card numbers, UPI credentials, bank account
-          passwords, or similar payment credentials.
+          Payment and transaction information, such as order identifiers,
+          payment status, invoice details, refund status, and payment gateway
+          references. We do not store complete card numbers, UPI credentials,
+          bank account passwords, or similar payment credentials.
         </li>
         <li>
           Files and media that you choose to upload, such as profile pictures,
@@ -70,9 +68,7 @@ export default function PrivacyPolicy() {
         </li>
       </ul>
 
-      <h2 className="text-xl font-semibold mt-8 mb-3">
-        2. How We Use Data
-      </h2>
+      <h2 className="text-xl font-semibold mt-8 mb-3">2. How We Use Data</h2>
       <p className="my-5">We use user data for the following purposes:</p>
       <ul className="list-disc ml-5 mt-4 flex flex-col gap-4">
         <li>Creating, verifying, and maintaining your Dr. Paws account.</li>
@@ -93,8 +89,8 @@ export default function PrivacyPolicy() {
           customer support.
         </li>
         <li>
-          Sending OTPs, service messages, appointment updates, reminders, support
-          responses, and important account or policy notices.
+          Sending OTPs, service messages, appointment updates, reminders,
+          support responses, and important account or policy notices.
         </li>
         <li>
           Improving service quality, training our team, auditing internal
@@ -107,9 +103,7 @@ export default function PrivacyPolicy() {
         </li>
       </ul>
 
-      <h2 className="text-xl font-semibold mt-8 mb-3">
-        3. How We Share Data
-      </h2>
+      <h2 className="text-xl font-semibold mt-8 mb-3">3. How We Share Data</h2>
       <p className="my-5">
         We do not sell personal and sensitive user data. We may share data only
         when needed for the purposes described in this Privacy Policy:
@@ -146,8 +140,8 @@ export default function PrivacyPolicy() {
         4. Secure Data Handling
       </h2>
       <p className="my-5">
-        We use reasonable technical and organisational safeguards to protect user
-        data. These safeguards include restricted access to systems, use of
+        We use reasonable technical and organisational safeguards to protect
+        user data. These safeguards include restricted access to systems, use of
         authentication controls, secure transmission where supported, access
         controls for internal users, logging and monitoring, and vendor
         controls. No internet or electronic storage method is completely secure,
@@ -155,9 +149,7 @@ export default function PrivacyPolicy() {
         alteration, and destruction.
       </p>
 
-      <h2 className="text-xl font-semibold mt-8 mb-3">
-        5. Data Retention
-      </h2>
+      <h2 className="text-xl font-semibold mt-8 mb-3">5. Data Retention</h2>
       <p className="my-5">
         We retain user data only for as long as needed for the purposes
         described in this Privacy Policy, unless a longer retention period is
@@ -174,8 +166,8 @@ export default function PrivacyPolicy() {
         </li>
         <li>
           OTPs and temporary signup data are retained only for the period needed
-          to verify, complete, or cancel signup or login, and are then deleted or
-          replaced according to our authentication process.
+          to verify, complete, or cancel signup or login, and are then deleted
+          or replaced according to our authentication process.
         </li>
         <li>
           Address book entries are retained while your account is active or
@@ -183,10 +175,11 @@ export default function PrivacyPolicy() {
           delete the data, subject to legitimate retention needs.
         </li>
         <li>
-          Appointment, invoice, payment status, refund, subscription, and service
-          records are retained while needed to provide services, maintain service
-          history, process payments or refunds, support users, and meet legal,
-          tax, accounting, audit, dispute, or regulatory requirements.
+          Appointment, invoice, payment status, refund, subscription, and
+          service records are retained while needed to provide services,
+          maintain service history, process payments or refunds, support users,
+          and meet legal, tax, accounting, audit, dispute, or regulatory
+          requirements.
         </li>
         <li>
           Pet medical records, prescriptions, reports, diagnostic files, and
@@ -232,16 +225,17 @@ export default function PrivacyPolicy() {
         and associated user data within 30 days, except where we need to retain
         certain records for legal, tax, accounting, fraud prevention, dispute,
         safety, regulatory, veterinary record-keeping, or legitimate business
-        reasons. Where data is retained for these reasons, we restrict use of the
-        retained data to those purposes and delete or anonymise it when the
+        reasons. Where data is retained for these reasons, we restrict use of
+        the retained data to those purposes and delete or anonymise it when the
         retention need ends.
       </p>
       <p className="my-5">
         Account deletion is permanent. You may lose access to appointment
-        history, pet profiles, saved addresses, invoices, subscriptions, reports,
-        and other account-linked services. If you have an active appointment,
-        subscription, refund, payment dispute, or unresolved support case, we may
-        ask you to complete or cancel that process before completing deletion.
+        history, pet profiles, saved addresses, invoices, subscriptions,
+        reports, and other account-linked services. If you have an active
+        appointment, subscription, refund, payment dispute, or unresolved
+        support case, we may ask you to complete or cancel that process before
+        completing deletion.
       </p>
 
       <h2 className="text-xl font-semibold mt-8 mb-3">
@@ -250,8 +244,8 @@ export default function PrivacyPolicy() {
       <p className="my-5">
         You may contact us to request access to your personal data, correction
         of inaccurate data, deletion of data, withdrawal of consent where
-        applicable, or information about how your data is handled. We may need to
-        verify your identity before acting on a request.
+        applicable, or information about how your data is handled. We may need
+        to verify your identity before acting on a request.
       </p>
 
       <h2 className="text-xl font-semibold mt-8 mb-3">
