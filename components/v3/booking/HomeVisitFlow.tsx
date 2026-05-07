@@ -369,7 +369,7 @@ function StepAddressSelect({
               Add a new address
             </div>
             <div className="text-sm text-gray-400">
-              We'll check serviceability before saving
+              We&apos;ll check serviceability before saving
             </div>
           </div>
         </button>
@@ -466,6 +466,7 @@ function AddAddressModal({
       cancelled = true
       clearTimeout(timer)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location?.pincode])
 
   const canConfirmPin = serviceability.kind === "ok"
@@ -523,7 +524,7 @@ function AddAddressModal({
           {!pinAcked ? (
             <>
               <p className="text-xs text-gray-500 mb-3">
-                Search, tap on the map, or drag the pin. We'll use this to guide
+                Search, tap on the map, or drag the pin. We&apos;ll use this to guide
                 the vet to your door.
               </p>
               <MapAddressPicker
@@ -658,7 +659,7 @@ function ServiceabilityBanner({ state }: { state: ServiceabilityState }) {
   if (state.kind === "no") {
     return (
       <div className="mt-2 rounded-xl bg-red-50 border border-red-200 px-3 py-2 text-xs text-red-700">
-        We don't currently offer home visits at pincode {state.pincode}. Try a
+        We don&apos;t currently offer home visits at pincode {state.pincode}. Try a
         different location.
       </div>
     )
@@ -666,7 +667,7 @@ function ServiceabilityBanner({ state }: { state: ServiceabilityState }) {
   if (state.kind === "no-pincode") {
     return (
       <div className="mt-2 rounded-xl bg-amber-50 border border-amber-200 px-3 py-2 text-xs text-amber-700">
-        Couldn't read a pincode for this spot. Drop the pin slightly closer to a
+        Couldn&apos;t read a pincode for this spot. Drop the pin slightly closer to a
         road or building.
       </div>
     )
@@ -942,7 +943,7 @@ function HomeVisitSuccess({
         Home visit booked!
       </h2>
       <p className="text-gray-500 text-sm mb-8">
-        We'll send the vet's details closer to your appointment.
+        We&apos;ll send the vet&apos;s details closer to your appointment.
       </p>
 
       <div className="rounded-xl border border-gray-200 overflow-hidden divide-y divide-gray-100 text-left mb-8">
