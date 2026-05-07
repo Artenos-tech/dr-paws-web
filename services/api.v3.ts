@@ -245,6 +245,104 @@ export async function v3CreateAppointment(input: {
   return data.appointment
 }
 
+export type V3Address = {
+  id: string
+  tag: string | null
+  line1: string
+  line2: string | null
+  pincode: string
+  latitude: number | null
+  longitude: number | null
+  directions: string | null
+}
+
+export async function v3FetchAddresses(): Promise<V3Address[]> {
+  const data =
+    await v3Get<V3ApiResponse<{ addresses: V3Address[] }>>("/v3/addresses/")
+  return data.addresses
+}
+
+export async function v3CreateAddress(input: {
+  tag?: string | null
+  line1: string
+  line2?: string | null
+  pincode: string
+  latitude?: number | null
+  longitude?: number | null
+  directions?: string | null
+}): Promise<V3Address> {
+  const data = await v3Post<V3ApiResponse<{ address: V3Address }>>(
+    "/v3/addresses/",
+    input,
+  )
+  return data.address
+}
+
+export type V3HomeVisitSlot = {
+  startTime: string
+  endTime: string
+  doctorIds: string[]
+  doctorNames: Record<string, string>
+}
+
+export type V3HomeVisitAppointment = {
+  id: string
+  nidanaAppointmentId: string
+  petId: string
+  addressId: string
+  clinicSlug: string
+  apptDate: string
+  apptStart: string
+  apptEnd: string
+  reasonForVisit: string | null
+  visitStatus: string
+}
+
+export async function v3CheckHomeVisitServiceable(
+  pincode: string,
+): Promise<{ serviceable: boolean; clinicSlug?: string }> {
+  const data = await v3Get<
+    V3ApiResponse<{ serviceable: boolean; clinicSlug?: string }>
+  >("/v3/booking/at-home/serviceable", { pincode })
+  return { serviceable: data.serviceable, clinicSlug: data.clinicSlug }
+}
+
+export async function v3FetchHomeVisitSlots(
+  addressId: string,
+  date: string,
+): Promise<{ clinicSlug: string; slots: V3HomeVisitSlot[] }> {
+  const data = await v3Get<
+    V3ApiResponse<{
+      clinicSlug: string
+      date: string
+      slots: V3HomeVisitSlot[]
+    }>
+  >("/v3/booking/at-home/slots", { addressId, date })
+  return { clinicSlug: data.clinicSlug, slots: data.slots }
+}
+
+export async function v3CreateHomeVisitAppointment(input: {
+  addressId: string
+  petId: string
+  date: string
+  startTime: string
+  reasonForVisit?: string | null
+}): Promise<V3HomeVisitAppointment> {
+  const data = await v3Post<
+    V3ApiResponse<{ appointment: V3HomeVisitAppointment }>
+  >("/v3/booking/at-home/appointments", input)
+  return data.appointment
+}
+
+export async function v3GetHomeVisitAppointment(
+  id: string,
+): Promise<V3HomeVisitAppointment> {
+  const data = await v3Get<
+    V3ApiResponse<{ appointment: V3HomeVisitAppointment }>
+  >(`/v3/booking/at-home/appointments/${encodeURIComponent(id)}`)
+  return data.appointment
+}
+
 export async function v3FetchSpecies(): Promise<V3SpeciesOption[]> {
   const data =
     await v3Get<V3ApiResponse<{ species: V3SpeciesOption[] }>>("/v3/species")
