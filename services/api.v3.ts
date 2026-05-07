@@ -22,12 +22,20 @@ export type V3Pet = {
 export type V3Clinic = {
   id: string
   name: string
-  timezone: string
-  email?: string | null
-  phone?: string | null
-  city?: string | null
-  vetBookingEnabled: boolean
-  groomingBookingEnabled: boolean
+  neighborhood: string
+  city: string
+  address?: string
+  heroImageUrl?: string
+  phone?: string
+  vetEnabled: boolean
+  groomingEnabled: boolean
+}
+
+export type V3AppointmentType = {
+  key: string
+  name: string
+  description: string
+  durationMinutes?: number
 }
 
 export type V3Doctor = {
@@ -57,6 +65,18 @@ export type V3Appointment = {
   status: string
   reasonForVisit?: string | null
   createdAt: string
+}
+
+export type V3BestSlot = {
+  startTime: string
+  endTime: string
+  doctorIds: string[]
+  doctorNames: Record<string, string>
+}
+
+export type V3PreferredDoctor = {
+  doctorId: string
+  appCount: number
 }
 
 export type V3SpeciesOption = { value: string; label: string }
@@ -150,6 +170,15 @@ export async function v3FetchClinics(): Promise<V3Clinic[]> {
   return data.clinics
 }
 
+export async function v3FetchAppointmentTypes(
+  clinicId: string,
+): Promise<V3AppointmentType[]> {
+  const data = await v3Get<
+    V3ApiResponse<{ appointmentTypes: V3AppointmentType[] }>
+  >(`/v3/clinics/${encodeURIComponent(clinicId)}/appointment-types`)
+  return data.appointmentTypes
+}
+
 export async function v3FetchDoctors(clinicId: string): Promise<V3Doctor[]> {
   const data = await v3Get<V3ApiResponse<{ doctors: V3Doctor[] }>>(
     `/v3/clinics/${encodeURIComponent(clinicId)}/doctors`,
@@ -184,6 +213,21 @@ export async function v3FetchTimeSlots(
   return data.timeSlots
 }
 
+export async function v3FetchBestSlots(
+  clinicId: string,
+  date: string,
+): Promise<{ slots: V3BestSlot[]; preferredDoctors: V3PreferredDoctor[] }> {
+  const data = await v3Get<
+    V3ApiResponse<{
+      slots: V3BestSlot[]
+      preferredDoctors: V3PreferredDoctor[]
+    }>
+  >(`/v3/clinics/${encodeURIComponent(clinicId)}/availability/best-slots`, {
+    date,
+  })
+  return { slots: data.slots, preferredDoctors: data.preferredDoctors }
+}
+
 export async function v3CreateAppointment(input: {
   clinicId: string
   petId: string
@@ -192,6 +236,7 @@ export async function v3CreateAppointment(input: {
   startTime: string
   endTime: string
   reasonForVisit?: string
+  appointmentTypeKey?: string
 }): Promise<V3Appointment> {
   const data = await v3Post<V3ApiResponse<{ appointment: V3Appointment }>>(
     "/v3/appointments",

@@ -8,13 +8,17 @@ import {
   CalendarDays,
   Clock,
   Loader2,
+  Sparkles,
 } from "lucide-react"
 import {
   v3FetchDoctors,
   v3FetchAvailableDates,
   v3FetchTimeSlots,
+  v3FetchBestSlots,
   type V3Doctor,
   type V3TimeSlot,
+  type V3BestSlot,
+  type V3PreferredDoctor,
 } from "@/services/api.v3"
 
 interface Props {
@@ -152,11 +156,27 @@ function MiniCalendar({
   )
 }
 
+function resolveDoctor(
+  slot: V3BestSlot,
+  preferredDoctors: V3PreferredDoctor[],
+): V3Doctor {
+  for (const { doctorId } of preferredDoctors) {
+    if (slot.doctorIds.includes(doctorId)) {
+      return { id: doctorId, name: slot.doctorNames[doctorId] }
+    }
+  }
+  const id = slot.doctorIds[0]
+  return { id, name: slot.doctorNames[id] }
+}
+
 export default function StepVetDateTime({
   clinicId,
   initialDoctor,
   onSelect,
 }: Props) {
+  const [mode, setMode] = useState<"specific" | "best">("specific")
+
+  // ── Specific-vet mode state ───────────────────────────────────────────────
   const [doctors, setDoctors] = useState<V3Doctor[]>([])
   const [selectedDoctor, setSelectedDoctor] = useState<V3Doctor | null>(
     initialDoctor ?? null,
@@ -170,8 +190,22 @@ export default function StepVetDateTime({
   const [slots, setSlots] = useState<V3TimeSlot[]>([])
   const [loadingSlots, setLoadingSlots] = useState(false)
 
+  // ── Best-available mode state ─────────────────────────────────────────────
+  const [bestAvailableDates, setBestAvailableDates] = useState<Set<string>>(
+    new Set(),
+  )
+  const [loadingBestDates, setLoadingBestDates] = useState(false)
+  const [bestSelectedDate, setBestSelectedDate] = useState<string | null>(null)
+
+  const [bestSlots, setBestSlots] = useState<V3BestSlot[]>([])
+  const [preferredDoctors, setPreferredDoctors] = useState<V3PreferredDoctor[]>(
+    [],
+  )
+  const [loadingBestSlots, setLoadingBestSlots] = useState(false)
+
   const slotsRef = useRef<HTMLDivElement>(null)
 
+  // ── Specific-vet effects ──────────────────────────────────────────────────
   useEffect(() => {
     setLoadingDoctors(true)
     v3FetchDoctors(clinicId)
@@ -212,7 +246,6 @@ export default function StepVetDateTime({
       .finally(() => setLoadingSlots(false))
   }, [selectedDate, selectedDoctor, clinicId])
 
-  // Scroll slots into view after loading
   useEffect(() => {
     if (!selectedDate) return
     const timer = setTimeout(() => {
@@ -221,10 +254,182 @@ export default function StepVetDateTime({
     return () => clearTimeout(timer)
   }, [selectedDate, loadingSlots])
 
+  // ── Best-available effects ────────────────────────────────────────────────
+  useEffect(() => {
+    if (mode !== "best") return
+    setLoadingBestDates(true)
+    setBestSelectedDate(null)
+    setBestSlots([])
+
+    const today = new Date()
+    const endDate = new Date(today)
+    endDate.setMonth(endDate.getMonth() + 2)
+
+    v3FetchAvailableDates(
+      clinicId,
+      undefined,
+      toDateStr(today),
+      toDateStr(endDate),
+    )
+      .then((dates) => setBestAvailableDates(new Set(dates)))
+      .catch(console.error)
+      .finally(() => setLoadingBestDates(false))
+  }, [mode, clinicId])
+
+  useEffect(() => {
+    if (!bestSelectedDate) return
+    setLoadingBestSlots(true)
+    setBestSlots([])
+    setPreferredDoctors([])
+
+    v3FetchBestSlots(clinicId, bestSelectedDate)
+      .then(({ slots, preferredDoctors }) => {
+        setBestSlots(slots)
+        setPreferredDoctors(preferredDoctors)
+      })
+      .catch(console.error)
+      .finally(() => setLoadingBestSlots(false))
+  }, [bestSelectedDate, clinicId])
+
+  useEffect(() => {
+    if (!bestSelectedDate) return
+    const timer = setTimeout(() => {
+      slotsRef.current?.scrollIntoView({ behavior: "smooth", block: "center" })
+    }, 150)
+    return () => clearTimeout(timer)
+  }, [bestSelectedDate, loadingBestSlots])
+
   const availableSlots = slots.filter((s) => s.isAvailable)
 
+  function switchToBest() {
+    setMode("best")
+  }
+
+  function switchToSpecific() {
+    setMode("specific")
+    setBestSelectedDate(null)
+    setBestSlots([])
+  }
+
+  // ── Best-available UI ─────────────────────────────────────────────────────
+  if (mode === "best") {
+    return (
+      <div className="space-y-6">
+        <div className="rounded-xl border border-primary-2/30 bg-primary-2/5 px-4 py-3 flex items-center gap-3">
+          <Sparkles className="h-5 w-5 text-primary-2 flex-shrink-0" />
+          <div className="flex-1 min-w-0">
+            <div className="text-sm font-semibold text-primary-1">
+              Best available vet
+            </div>
+            <div className="text-xs text-gray-500">
+              We&apos;ll match you with the best available vet for your pet.
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div className="flex items-center gap-2 mb-3">
+            <CalendarDays className="h-5 w-5 text-primary-2" />
+            <h3 className="font-semibold text-primary-1">Choose a date</h3>
+          </div>
+          {loadingBestDates ? (
+            <div className="flex justify-center py-6">
+              <Loader2 className="h-5 w-5 animate-spin text-primary-2" />
+            </div>
+          ) : (
+            <MiniCalendar
+              availableDates={bestAvailableDates}
+              selectedDate={bestSelectedDate}
+              onSelectDate={setBestSelectedDate}
+            />
+          )}
+          {!loadingBestDates && bestAvailableDates.size === 0 && (
+            <p className="text-sm text-center text-gray-500 mt-2">
+              No available dates in the next 2 months.
+            </p>
+          )}
+        </div>
+
+        {bestSelectedDate && (
+          <div ref={slotsRef} className="scroll-mt-4">
+            <div className="flex items-center gap-2 mb-3">
+              <Clock className="h-5 w-5 text-primary-2" />
+              <h3 className="font-semibold text-primary-1">
+                {formatDate(bestSelectedDate)}
+              </h3>
+            </div>
+            {loadingBestSlots ? (
+              <div className="flex justify-center py-6">
+                <Loader2 className="h-5 w-5 animate-spin text-primary-2" />
+              </div>
+            ) : bestSlots.length === 0 ? (
+              <p className="text-sm text-center text-gray-500 py-4">
+                No available slots on this date. Please choose another day.
+              </p>
+            ) : (
+              <div className="grid grid-cols-3 gap-2">
+                {bestSlots.map((slot) => {
+                  const vetCount = slot.doctorIds.length
+                  return (
+                    <button
+                      key={slot.startTime}
+                      onClick={() => {
+                        const doctor = resolveDoctor(slot, preferredDoctors)
+                        const legacySlot: V3TimeSlot = {
+                          startTime: slot.startTime,
+                          endTime: slot.endTime,
+                          isAvailable: true,
+                        }
+                        onSelect(doctor, bestSelectedDate, legacySlot)
+                      }}
+                      className="rounded-xl border border-primary-2/30 bg-primary-2/5 px-3 py-2.5 text-sm font-medium text-primary-2 hover:bg-primary-2 hover:text-white hover:border-primary-2 transition-all text-center"
+                    >
+                      <div>{formatTime(slot.startTime)}</div>
+                      {vetCount > 1 && (
+                        <div className="text-xs opacity-70 mt-0.5">
+                          {vetCount} vets
+                        </div>
+                      )}
+                    </button>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
+        <button
+          onClick={switchToSpecific}
+          className="text-sm text-gray-400 hover:text-primary-2 transition-colors"
+        >
+          ← Choose a specific vet instead
+        </button>
+      </div>
+    )
+  }
+
+  // ── Specific-vet UI ───────────────────────────────────────────────────────
   return (
     <div className="space-y-6">
+      {/* Best available prompt */}
+      <button
+        onClick={switchToBest}
+        className="w-full flex items-center gap-3 rounded-xl border border-primary-2/40 bg-primary-2/5 px-4 py-3 text-left hover:bg-primary-2/10 transition-colors"
+      >
+        <div className="flex-shrink-0 h-9 w-9 rounded-full bg-primary-2/15 flex items-center justify-center">
+          <Sparkles className="h-4 w-4 text-primary-2" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="text-sm font-semibold text-primary-2">
+            Best available vet
+          </div>
+          <div className="text-xs text-gray-500">
+            Let us match you with the best available vet for your pet
+          </div>
+        </div>
+        <ChevronRight className="h-4 w-4 text-primary-2/60 flex-shrink-0" />
+      </button>
+
       {/* Vet selection */}
       <div>
         {loadingDoctors ? (

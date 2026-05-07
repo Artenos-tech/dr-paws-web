@@ -9,7 +9,7 @@ interface Props {
 }
 
 export default function StepClinicSelect({ clinics, onSelect }: Props) {
-  const vetClinics = clinics.filter((c) => c.vetBookingEnabled)
+  const vetClinics = clinics.filter((c) => c.vetEnabled)
 
   return (
     <div>
