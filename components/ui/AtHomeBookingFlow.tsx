@@ -171,8 +171,6 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
     React.useState<HomeVisitPricingSummary | null>(null)
   const [basePricingSummary, setBasePricingSummary] =
     React.useState<HomeVisitPricingSummary | null>(null)
-  const [isLoadingPaymentAmount, setIsLoadingPaymentAmount] =
-    React.useState(false)
   const [isApplyingCoupon, setIsApplyingCoupon] = React.useState(false)
   const [couponCode, setCouponCode] = useState(
     preAppliedCouponCode?.toUpperCase() ?? "",
@@ -239,9 +237,8 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
     void trackStep(bookingFlowSessionId, currentStep)
   }, [currentStep, bookingFlowSessionId])
 
-  const { call: getHomeVisitPaymentAmount } = useAPICall(
-    atHomeApiClient.getHomeVisitPaymentAmount,
-  )
+  const { call: getHomeVisitPaymentAmount, loading: isLoadingPaymentAmount } =
+    useAPICall(atHomeApiClient.getHomeVisitPaymentAmount)
   useEffect(() => {
     if (!isConfirming) return
 
@@ -380,7 +377,6 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
       if (currentStep === 4) {
         setPricingSummary(null)
         setBasePricingSummary(null)
-        setIsLoadingPaymentAmount(false)
         setIsApplyingCoupon(false)
         setCouponCode(preAppliedCouponCode?.toUpperCase() ?? "")
         setAppliedCoupon(null)
@@ -429,7 +425,6 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
   useEffect(() => {
     setPricingSummary(null)
     setBasePricingSummary(null)
-    setIsLoadingPaymentAmount(false)
     setIsApplyingCoupon(false)
     setCouponCode(preAppliedCouponCode?.toUpperCase() ?? "")
     setAppliedCoupon(null)
@@ -449,7 +444,6 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
     if (isCouponRequest) {
       setIsApplyingCoupon(true)
     }
-    setIsLoadingPaymentAmount(true)
     const result = await getHomeVisitPaymentAmount({
       address_id: appointmentData.addressId,
       pet_id: appointmentData.petId,
@@ -461,7 +455,6 @@ const AtHomeBookingFlow: React.FC<AtHomeBookingFlowProps> = ({
       if (isCouponRequest) {
         setIsApplyingCoupon(false)
       }
-      setIsLoadingPaymentAmount(false)
     })
 
     if (result?.ok) {

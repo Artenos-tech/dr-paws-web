@@ -128,6 +128,12 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
     if (!atHomeSlotsResult) return
 
     if (!atHomeSlotsResult.ok) {
+      if (
+        atHomeSlotsResult.error.apiClientErrorType === "FetchAPIError" &&
+        atHomeSlotsResult.error.fetchError.name === "AbortError"
+      ) {
+        return
+      }
       toast.error("Failed to load available slots. Please try again.")
       setDays([])
       return
@@ -153,6 +159,8 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
     () => days.find((d) => d.date === selectedDate),
     [days, selectedDate],
   )
+  const isWaitingForPaymentAmount =
+    !isReschedule && Boolean(selectedSlot) && !pricingSummary
 
   const handleProceedClick = () => {
     if (isProcessing) return
@@ -256,49 +264,52 @@ const SelectDateTimeForVisit: React.FC<SelectDateTimeForVisitProps> = ({
         </div>
       </div>
 
-      {selectedSlot && (isLoadingPaymentAmount || pricingSummary) && (
-        <div className="mb-8">
-          <p className="font-bold text-gray-600 mb-3">Amount</p>
-          {isLoadingPaymentAmount ? (
-            isApplyingCoupon ? null : (
-              <div className="flex items-center gap-2 text-sm text-gray-600">
-                <ClipLoader color="#33495f" size={14} />
-                <span>Loading amount...</span>
-              </div>
-            )
-          ) : (
-            <div className="space-y-1">
-              {pricingSummary && pricingSummary.discount_amount > 0 && (
-                <p className="text-sm text-gray-500 line-through">
-                  INR {pricingSummary.base_amount}
-                </p>
-              )}
-              <p className="font-bold text-gray-600">
-                INR {pricingSummary?.final_amount}
-              </p>
-              {pricingSummary && pricingSummary.discount_amount > 0 && (
-                <div className="space-y-1">
-                  <p className="text-sm font-medium text-green-600">
-                    Coupon {pricingSummary.coupon_code} applied: INR{" "}
-                    {pricingSummary.discount_amount} off
-                  </p>
-                  {appliedCoupon && onRemoveCoupon && (
-                    <button
-                      type="button"
-                      onClick={() =>
-                        onRemoveCoupon(selectedDate!, selectedSlot!)
-                      }
-                      className="text-sm text-secondary-1 underline underline-offset-2"
-                    >
-                      Remove coupon
-                    </button>
-                  )}
+      {selectedSlot &&
+        (isWaitingForPaymentAmount ||
+          isLoadingPaymentAmount ||
+          pricingSummary) && (
+          <div className="mb-8">
+            <p className="font-bold text-gray-600 mb-3">Amount</p>
+            {isWaitingForPaymentAmount || isLoadingPaymentAmount ? (
+              isApplyingCoupon ? null : (
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <ClipLoader color="#33495f" size={14} />
+                  <span>Loading amount...</span>
                 </div>
-              )}
-            </div>
-          )}
-        </div>
-      )}
+              )
+            ) : (
+              <div className="space-y-1">
+                {pricingSummary && pricingSummary.discount_amount > 0 && (
+                  <p className="text-sm text-gray-500 line-through">
+                    INR {pricingSummary.base_amount}
+                  </p>
+                )}
+                <p className="font-bold text-gray-600">
+                  INR {pricingSummary?.final_amount}
+                </p>
+                {pricingSummary && pricingSummary.discount_amount > 0 && (
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium text-green-600">
+                      Coupon {pricingSummary.coupon_code} applied: INR{" "}
+                      {pricingSummary.discount_amount} off
+                    </p>
+                    {appliedCoupon && onRemoveCoupon && (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          onRemoveCoupon(selectedDate!, selectedSlot!)
+                        }
+                        className="text-sm text-secondary-1 underline underline-offset-2"
+                      >
+                        Remove coupon
+                      </button>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
 
       {selectedDate &&
         selectedSlot &&

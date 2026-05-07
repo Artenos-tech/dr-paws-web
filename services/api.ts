@@ -24,7 +24,66 @@ function initRequestContext() {
   return ctx
 }
 
-const requestContext = initRequestContext()
+export const requestContext = initRequestContext()
+
+const PaymentOrderSchema = z.object({
+  orderId: z.string(),
+  paymentSessionId: z.string(),
+})
+
+const OrderStatusSchema = z.object({
+  success: z.boolean(),
+  status: z.enum([
+    "ACTIVE",
+    "PAID",
+    "EXPIRED",
+    "TERMINATED",
+    "TERMINATION_REQUESTED",
+  ]),
+})
+
+const RefundSchema = z.object({
+  status: z.enum([
+    "PENDING",
+    "SUCCESS",
+    "FAILED",
+    "CANCELLED",
+    "ONHOLD",
+    "NOT_APPLICABLE",
+    "REQUESTED",
+    "APPROVED",
+    "PROCESSED",
+    "REJECTED",
+  ]),
+  id: z.string().uuid().nullable(),
+  amount: z.number(),
+})
+
+const ClinicPaymentPricingSchema = z.object({
+  full_amount: z.number(),
+  token_amount: z.number(),
+  pay_at_clinic_amount: z.number(),
+  total_tax_amount: z.number(),
+  billing_line_items: z.array(
+    z.object({
+      amount: z.number(),
+      discount: z.number(),
+      lineItemType: z.enum([
+        "BASE",
+        "ADD_ON",
+        "DISCOUNT",
+        "ADDITIONAL",
+        "ADDITIONAL_DISCOUNT",
+      ]),
+      taxes: z.array(
+        z.object({
+          taxName: z.string(),
+          taxAmount: z.number(),
+        }),
+      ),
+    }),
+  ),
+})
 
 export function setAuthToken(token: string) {
   if (typeof window !== "undefined") {
@@ -752,6 +811,7 @@ export default createAPIClient({
         is_grooming: z.boolean(),
         coupon_code: z.string().optional(),
         booking_flow_session_id: z.string().uuid().optional(),
+        platform: z.literal("WEB").optional(),
       }),
       responseSchema: z.object({
         status: z.number(),
@@ -774,6 +834,77 @@ export default createAPIClient({
           pet_type: z.string().nullable(),
           pet_profile_image: z.string().nullable(),
           coupon_code: z.string().optional(),
+        }),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+
+    createClinicPaymentOrder: {
+      method: "POST",
+      path: "/user/appointment/payments/orders",
+      pathParamsSchema: z.object({}),
+      requestSchema: z.object({
+        vet_id: z.string().uuid(),
+        pet_id: z.string().uuid(),
+        appt_start: z.string(),
+        appt_end: z.string(),
+        booking_date: z.string(),
+        clinic_id: z.string().uuid(),
+        appt_type_id: z.string(),
+        subtype_id: z.string().optional(),
+        catalogue_keys: z.array(z.string()).optional(),
+        pet_type: z.enum(["DOG", "CAT", "OTHER"]),
+        is_grooming: z.boolean(),
+        coupon_code: z.string().optional(),
+        booking_flow_session_id: z.string().uuid().optional(),
+        platform: z.literal("WEB").optional(),
+      }),
+      responseSchema: z.object({
+        data: z.object({
+          order: PaymentOrderSchema,
+        }),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+
+    getClinicPaymentAmount: {
+      method: "POST",
+      path: "/user/appointment/payments/amount",
+      pathParamsSchema: z.object({}),
+      requestSchema: z.object({
+        vet_id: z.string().uuid(),
+        pet_id: z.string().uuid(),
+        appt_start: z.string(),
+        appt_end: z.string(),
+        booking_date: z.string(),
+        clinic_id: z.string().uuid(),
+        subtype_id: z.string().optional(),
+        catalogue_keys: z.array(z.string()).optional(),
+        pet_type: z.enum(["DOG", "CAT", "OTHER"]),
+        is_grooming: z.boolean(),
+      }),
+      responseSchema: z.object({
+        data: z.object({
+          pricing: ClinicPaymentPricingSchema,
+        }),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+
+    getClinicPaymentOrderStatus: {
+      method: "GET",
+      path: "/user/appointment/payments/order/{orderid}/status",
+      pathParamsSchema: z.object({ orderid: z.string() }),
+      requestSchema: z.object({}),
+      responseSchema: z.object({
+        data: z.object({
+          order_payment: OrderStatusSchema,
+          appointment: z
+            .object({
+              id: z.string(),
+              sub_booking_id: z.string(),
+            })
+            .nullable(),
         }),
       }),
       errorResponseSchema: z.object({}),
@@ -861,6 +992,7 @@ export default createAPIClient({
             ]),
             appt_type: z.enum(["VET_CONSULTATION", "GROOMING", "HOME_VISIT"]),
             category: z.enum(["UPCOMING", "COMPLETED", "CANCELLED", "ACTIVE"]),
+            catalogue_keys: z.array(z.string()).optional(),
             clinic_name: z.string().optional(),
             clinic_location: z.string().optional(),
             coupon_code: z.string().optional(),
@@ -871,6 +1003,7 @@ export default createAPIClient({
             invoice_id: z.string().uuid().nullable(),
             total_tax_amount: z.number(),
             total_billing_amount: z.number(),
+            refund_preview_amount: z.number().optional(),
             payment_status: z.enum([
               "PAID",
               "UNPAID",
@@ -880,6 +1013,7 @@ export default createAPIClient({
             ]),
             pet_id: z.string().uuid(),
             vet_id: z.string().uuid().nullable().optional(),
+            refund: RefundSchema.optional(),
           }),
         }),
       }),
@@ -900,6 +1034,25 @@ export default createAPIClient({
         appointment: z.object({
           id: z.string().uuid(),
           clinic_id: z.string().uuid(),
+        }),
+      }),
+      errorResponseSchema: z.object({}),
+    },
+
+    cancelAppointmentV2: {
+      method: "PUT",
+      path: "/user/appointment/{appointment_id}/cancel/v2",
+      pathParamsSchema: z.object({ appointment_id: z.string().uuid() }),
+      requestSchema: z.object({
+        clinic_id: z.string().uuid(),
+        sub_booking_id: z.string().uuid(),
+      }),
+      responseSchema: z.object({
+        data: z.object({
+          appointment: z.object({
+            id: z.string().uuid(),
+            refund: RefundSchema.optional(),
+          }),
         }),
       }),
       errorResponseSchema: z.object({}),

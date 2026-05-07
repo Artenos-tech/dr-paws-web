@@ -49,7 +49,11 @@ export function useAsyncResult<
       // so loading and result states are set correctly
       await new Promise((resolve) => setTimeout(resolve))
       if (getLoading()) {
-        throw new Error("abort still not completed after one tick")
+        const abortTimeoutError = new Error(
+          "abort still not completed after one tick",
+        )
+        abortTimeoutError.name = "AbortError"
+        throw abortTimeoutError
       }
     }
     abortControllerRef.current = new AbortController()

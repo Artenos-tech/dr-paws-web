@@ -37,6 +37,11 @@ interface ConfirmationModalProps {
     coupon_applied: boolean
     coupon_code: string | null
   } | null
+  clinicPaymentBreakdown?: {
+    fullAmount: number
+    tokenAmount: number
+    payAtClinicAmount: number
+  }
 }
 
 const DESC_TRUNCATE_LENGTH = 90
@@ -49,6 +54,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   bookingDetails,
   paymentAmount,
   pricingSummary,
+  clinicPaymentBreakdown,
 }) => {
   const {
     petName,
@@ -64,6 +70,11 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
     reasonForVisit,
   } = bookingDetails
   const showHaircutAddOn = Boolean(haircutAddOn)
+  const couponDiscountMessage = clinicPaymentBreakdown
+    ? "Discount will be applied during checkout at the clinic"
+    : pricingSummary
+      ? "Discount included in payment amount"
+      : null
   const [showFullDesc, setShowFullDesc] = React.useState(false)
 
   useEffect(() => {
@@ -92,7 +103,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
             <p className="text-sm text-gray-700 mb-2">
               <span className="font-medium">{service}</span>
             </p>
-            {showHaircutAddOn && (
+            {showHaircutAddOn && !clinicPaymentBreakdown && (
               <p className="text-xs sm:text-sm text-[#8b5a00] font-semibold mb-2">
                 Haircut add-on: + ₹999
               </p>
@@ -147,7 +158,42 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
               </div>
             )}
 
-            {(pricingSummary || paymentAmount) && (
+            {clinicPaymentBreakdown && (
+              <div className="text-sm text-gray-800 font-medium mt-3 max-w-80">
+                <p className="font-semibold text-gray-700 mb-2">
+                  Payment summary
+                </p>
+                <div className="space-y-1.5">
+                  <div className="flex justify-between gap-3">
+                    <span>Total service price</span>
+                    <span className="font-semibold">
+                      ₹{clinicPaymentBreakdown.fullAmount}
+                    </span>
+                  </div>
+                  <div className="flex justify-between gap-3">
+                    <span>Pay at clinic</span>
+                    <span className="font-semibold">
+                      ₹{clinicPaymentBreakdown.payAtClinicAmount}
+                    </span>
+                  </div>
+                </div>
+                <div className="my-2.5 border-t border-gray-300" />
+                <div className="flex items-center justify-between gap-3">
+                  <span className="font-semibold text-gray-700">
+                    Pay now to confirm booking
+                  </span>
+                  <span className="text-xl font-bold text-secondary-1">
+                    ₹{clinicPaymentBreakdown.tokenAmount}
+                  </span>
+                </div>
+                <p className="mt-2 text-xs text-green-600">
+                  A token amount is charged now to confirm your booking. The
+                  remaining amount will be paid at the clinic.
+                </p>
+              </div>
+            )}
+
+            {!clinicPaymentBreakdown && (pricingSummary || paymentAmount) && (
               <div className="text-sm text-gray-800 font-medium mt-2">
                 {pricingSummary ? (
                   <div className="flex items-center gap-2">
@@ -177,9 +223,9 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
               <DialogDescription className="text-md font-medium text-secondary-1">
                 Coupon Code applied: <b>{couponCode}</b>
               </DialogDescription>
-              <DialogDescription>
-                Discount included in payment amount
-              </DialogDescription>
+              {couponDiscountMessage && (
+                <DialogDescription>{couponDiscountMessage}</DialogDescription>
+              )}
             </div>
           )}
           {isSenior && (

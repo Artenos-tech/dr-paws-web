@@ -37,6 +37,12 @@ const SelectPet: React.FC<SelectPetProps> = ({ handleConfirm, petId }) => {
     if (allPetsResult?.ok) {
       setPets(allPetsResult.value.body.data.pets)
     } else if (allPetsResult && !allPetsResult.ok) {
+      if (
+        allPetsResult.error.apiClientErrorType === "FetchAPIError" &&
+        allPetsResult.error.fetchError.name === "AbortError"
+      ) {
+        return
+      }
       setPets([])
       toast.error("Failed to fetch pets. Please try again.", {
         duration: 3000,

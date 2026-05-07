@@ -70,6 +70,7 @@ const SelectService: React.FC<SelectServiceProps> = ({
     try {
       await getAppointmentServices({ hide_consult_subtypes: "true" })
     } catch (error) {
+      if (error instanceof Error && error.name === "AbortError") return
       console.error("Error fetching appointment services:", error)
       toast.error(
         "Failed to load appointment services. Please try again later.",
@@ -81,6 +82,7 @@ const SelectService: React.FC<SelectServiceProps> = ({
     try {
       await getPetsAPI({})
     } catch (error) {
+      if (error instanceof Error && error.name === "AbortError") return
       console.error("Error fetching pets:", error)
       toast.error("Failed to load pets. Please try again later.")
     }

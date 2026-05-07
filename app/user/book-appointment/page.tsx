@@ -31,6 +31,23 @@ const Booking: React.FC = () => {
   const clinic = searchParams.get("clinic")
   const coupon = searchParams.get("coupon")
 
+  useEffect(() => {
+    const handlePageShow = (event: PageTransitionEvent) => {
+      if (!event.persisted) return
+      window.history.pushState(
+        { clearedPaymentForwardHistory: true },
+        "",
+        window.location.href,
+      )
+      setSelectedBookingType(null)
+      setPreAppliedCouponCode(null)
+      window.scrollTo(0, 0)
+    }
+
+    window.addEventListener("pageshow", handlePageShow)
+    return () => window.removeEventListener("pageshow", handlePageShow)
+  }, [])
+
   const {
     call: getBookingTypes,
     loading: loadingBookingTypes,
