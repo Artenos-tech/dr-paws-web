@@ -1,13 +1,13 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import {
   Autocomplete,
   GoogleMap,
   Marker,
   useJsApiLoader,
 } from "@react-google-maps/api"
-import { Crosshair, Search } from "lucide-react"
+import { Crosshair, MapPin, Search } from "lucide-react"
 import ClipLoader from "react-spinners/ClipLoader"
 
 const DEFAULT_PIN = { lat: 12.9716, lng: 77.5946 } // Bangalore
@@ -22,16 +22,22 @@ export type GeocodedLocation = {
   suggestedLine1: string
 }
 
+// "centered-pin": map drags under a fixed center pin (phone-native UX).
+// "draggable-marker": legacy — user drags the marker; map snaps to it on release.
+export type MapPickerMode = "centered-pin" | "draggable-marker"
+
 type Props = {
   initial?: { lat: number; lng: number } | null
   onChange: (location: GeocodedLocation) => void
   height?: number
+  mode?: MapPickerMode
 }
 
 export default function MapAddressPicker({
   initial,
   onChange,
   height = 280,
+  mode = "centered-pin",
 }: Props) {
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
@@ -47,6 +53,10 @@ export default function MapAddressPicker({
   const [locating, setLocating] = useState(false)
   const onChangeRef = useRef(onChange)
   onChangeRef.current = onChange
+  const mapRef = useRef<google.maps.Map | null>(null)
+  // Used as the GoogleMap `center` prop. Frozen after mount so user pans
+  // are not fought by re-renders. Programmatic moves go via mapRef.panTo.
+  const initialCenter = useMemo(() => initial ?? DEFAULT_PIN, [])
 
   // Reverse-geocode whenever the pin moves and report back to the parent.
   useEffect(() => {
@@ -111,12 +121,23 @@ export default function MapAddressPicker({
     }
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        setPin({ lat: pos.coords.latitude, lng: pos.coords.longitude })
+        panMapTo({ lat: pos.coords.latitude, lng: pos.coords.longitude })
       },
       undefined,
       { timeout: 5000, maximumAge: 60_000 },
     )
   }, [])
+
+  function panMapTo(target: google.maps.LatLngLiteral) {
+    // In centered-pin mode, onIdle picks up the new center and updates `pin`.
+    // In draggable-marker mode, we update `pin` directly so the controlled
+    // `center` prop re-centers the map and the marker follows.
+    if (mode === "centered-pin" && mapRef.current) {
+      mapRef.current.panTo(target)
+    } else {
+      setPin(target)
+    }
+  }
 
   function useCurrentLocation() {
     if (!navigator.geolocation) {
@@ -125,7 +146,7 @@ export default function MapAddressPicker({
     setLocating(true)
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        setPin({ lat: pos.coords.latitude, lng: pos.coords.longitude })
+        panMapTo({ lat: pos.coords.latitude, lng: pos.coords.longitude })
         setLocating(false)
       },
       () => setLocating(false),
@@ -141,15 +162,34 @@ export default function MapAddressPicker({
     if (!place.geometry?.location) {
       return
     }
-    setPin({
+    panMapTo({
       lat: place.geometry.location.lat(),
       lng: place.geometry.location.lng(),
     })
     setSearchText("")
   }
 
+  function handleMapIdle() {
+    if (mode !== "centered-pin") {
+      return
+    }
+    const map = mapRef.current
+    if (!map) {
+      return
+    }
+    const center = map.getCenter()
+    if (!center) {
+      return
+    }
+    const lat = center.lat()
+    const lng = center.lng()
+    setPin((prev) =>
+      prev.lat === lat && prev.lng === lng ? prev : { lat, lng },
+    )
+  }
+
   function handleMapClick(e: google.maps.MapMouseEvent) {
-    if (!e.latLng) {
+    if (mode !== "draggable-marker" || !e.latLng) {
       return
     }
     setPin(e.latLng.toJSON())
@@ -176,9 +216,16 @@ export default function MapAddressPicker({
   return (
     <div className="relative rounded-xl overflow-hidden border border-gray-200">
       <GoogleMap
-        center={pin}
+        center={mode === "centered-pin" ? initialCenter : pin}
         zoom={16}
         mapContainerStyle={{ width: "100%", height: `${height}px` }}
+        onLoad={(map) => {
+          mapRef.current = map
+        }}
+        onUnmount={() => {
+          mapRef.current = null
+        }}
+        onIdle={handleMapIdle}
         onClick={handleMapClick}
         options={{
           disableDefaultUI: true,
@@ -187,8 +234,23 @@ export default function MapAddressPicker({
           clickableIcons: false,
         }}
       >
-        <Marker position={pin} draggable onDragEnd={handleMarkerDrag} />
+        {mode === "draggable-marker" && (
+          <Marker position={pin} draggable onDragEnd={handleMarkerDrag} />
+        )}
       </GoogleMap>
+
+      {mode === "centered-pin" && (
+        // Fixed centered pin overlay. pointer-events-none so gestures pass through.
+        <div className="pointer-events-none absolute inset-0 z-[5] flex items-center justify-center">
+          <MapPin
+            className="h-9 w-9 text-red-600 drop-shadow-md"
+            fill="currentColor"
+            strokeWidth={1.5}
+            // Offset upward so the pin's tip sits on the true map center.
+            style={{ transform: "translateY(-50%)" }}
+          />
+        </div>
+      )}
 
       <div className="absolute top-2 left-2 right-2 z-10">
         <Autocomplete
