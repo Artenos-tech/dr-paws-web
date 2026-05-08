@@ -28,13 +28,23 @@ import {
   type V3HomeVisitAppointment,
 } from "@/services/api.v3"
 import StepPetSelect from "./StepPetSelect"
+import StepVisitDetails, {
+  reasonLabel,
+  type VisitReasonCode,
+} from "./StepVisitDetails"
 import MapAddressPicker, { type GeocodedLocation } from "./MapAddressPicker"
 
-type SectionId = "address" | "pet" | "datetime" | "confirm"
+type SectionId = "address" | "pet" | "visitDetails" | "datetime" | "confirm"
+
+interface VisitDetails {
+  reasonCode: VisitReasonCode
+  petParentNotes: string
+}
 
 interface Selection {
   address: V3Address | null
   pet: V3Pet | null
+  visitDetails: VisitDetails | null
   date: string | null
   slot: V3HomeVisitSlot | null
 }
@@ -42,6 +52,7 @@ interface Selection {
 const SECTIONS: { id: SectionId; label: string }[] = [
   { id: "address", label: "Where should the vet visit?" },
   { id: "pet", label: "Select a pet" },
+  { id: "visitDetails", label: "Tell us about the visit" },
   { id: "datetime", label: "Pick a date & time" },
   { id: "confirm", label: "Confirm home visit" },
 ]
@@ -76,6 +87,7 @@ export default function HomeVisitFlow() {
   const [sel, setSel] = useState<Selection>({
     address: null,
     pet: null,
+    visitDetails: null,
     date: null,
     slot: null,
   })
@@ -83,6 +95,7 @@ export default function HomeVisitFlow() {
   const refs: Record<SectionId, React.RefObject<HTMLDivElement>> = {
     address: useRef<HTMLDivElement>(null),
     pet: useRef<HTMLDivElement>(null),
+    visitDetails: useRef<HTMLDivElement>(null),
     datetime: useRef<HTMLDivElement>(null),
     confirm: useRef<HTMLDivElement>(null),
   }
@@ -118,8 +131,21 @@ export default function HomeVisitFlow() {
 
   function editSection(section: SectionId) {
     if (section === "address") {
-      setSel((s) => ({ ...s, pet: null, date: null, slot: null }))
+      setSel((s) => ({
+        ...s,
+        pet: null,
+        visitDetails: null,
+        date: null,
+        slot: null,
+      }))
     } else if (section === "pet") {
+      setSel((s) => ({
+        ...s,
+        visitDetails: null,
+        date: null,
+        slot: null,
+      }))
+    } else if (section === "visitDetails") {
       setSel((s) => ({ ...s, date: null, slot: null }))
     } else if (section === "datetime") {
       setSel((s) => ({ ...s, slot: null }))
@@ -134,11 +160,20 @@ export default function HomeVisitFlow() {
     if (id === "pet") {
       return !!sel.address
     }
-    if (id === "datetime") {
+    if (id === "visitDetails") {
       return !!sel.address && !!sel.pet
     }
+    if (id === "datetime") {
+      return !!sel.address && !!sel.pet && !!sel.visitDetails
+    }
     if (id === "confirm") {
-      return !!sel.address && !!sel.pet && !!sel.date && !!sel.slot
+      return (
+        !!sel.address &&
+        !!sel.pet &&
+        !!sel.visitDetails &&
+        !!sel.date &&
+        !!sel.slot
+      )
     }
     return false
   }
@@ -149,6 +184,9 @@ export default function HomeVisitFlow() {
   }
   if (sel.pet) {
     summaries.pet = sel.pet.name
+  }
+  if (sel.visitDetails) {
+    summaries.visitDetails = reasonLabel(sel.visitDetails.reasonCode)
   }
   if (sel.date && sel.slot) {
     summaries.datetime = `${formatDateShort(sel.date)} · ${formatTime(sel.slot.startTime)}`
@@ -277,11 +315,27 @@ export default function HomeVisitFlow() {
                     clinics={clinics}
                     onSelect={(pet) => {
                       setSel((s) => ({ ...s, pet }))
-                      openAndScroll("datetime")
+                      openAndScroll("visitDetails")
                     }}
                     onPetAdded={(pet) => {
                       setPets((prev) => [...prev, pet])
                       setSel((s) => ({ ...s, pet }))
+                      openAndScroll("visitDetails")
+                    }}
+                  />
+                )}
+                {id === "visitDetails" && (
+                  <StepVisitDetails
+                    initialIsEmergency={sel.visitDetails ? false : null}
+                    initialReasonCode={sel.visitDetails?.reasonCode ?? null}
+                    initialPetParentNotes={
+                      sel.visitDetails?.petParentNotes ?? ""
+                    }
+                    onConfirm={({ reasonCode, petParentNotes }) => {
+                      setSel((s) => ({
+                        ...s,
+                        visitDetails: { reasonCode, petParentNotes },
+                      }))
                       openAndScroll("datetime")
                     }}
                   />
@@ -298,11 +352,13 @@ export default function HomeVisitFlow() {
                 {id === "confirm" &&
                   sel.address &&
                   sel.pet &&
+                  sel.visitDetails &&
                   sel.date &&
                   sel.slot && (
                     <StepHomeVisitConfirm
                       address={sel.address}
                       pet={sel.pet}
+                      visitDetails={sel.visitDetails}
                       date={sel.date}
                       slot={sel.slot}
                       priceInRupees={priceInRupees}
@@ -804,6 +860,7 @@ function StepHomeVisitDateTime({
 function StepHomeVisitConfirm({
   address,
   pet,
+  visitDetails,
   date,
   slot,
   priceInRupees,
@@ -812,13 +869,13 @@ function StepHomeVisitConfirm({
 }: {
   address: V3Address
   pet: V3Pet
+  visitDetails: VisitDetails
   date: string
   slot: V3HomeVisitSlot
   priceInRupees: number | null
   onSuccess: (appt: V3HomeVisitAppointment) => void
   onEdit: (section: SectionId) => void
 }) {
-  const [reason, setReason] = useState("")
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -831,7 +888,9 @@ function StepHomeVisitConfirm({
         petId: pet.id,
         date,
         startTime: slot.startTime,
-        reasonForVisit: reason.trim() || null,
+        isEmergency: false,
+        reasonCode: visitDetails.reasonCode,
+        petParentNotes: visitDetails.petParentNotes,
       })
       onSuccess(appt)
     } catch (e) {
@@ -862,26 +921,16 @@ function StepHomeVisitConfirm({
           onEdit={() => onEdit("pet")}
         />
         <SummaryRow
+          label="Reason"
+          value={`${reasonLabel(visitDetails.reasonCode)} — ${visitDetails.petParentNotes}`}
+          icon={<Pencil className="h-5 w-5 text-primary-2" />}
+          onEdit={() => onEdit("visitDetails")}
+        />
+        <SummaryRow
           label="When"
           value={`${formatDateShort(date)} · ${formatTime(slot.startTime)} – ${formatTime(slot.endTime)}`}
           icon={<CalendarDays className="h-5 w-5 text-primary-2" />}
           onEdit={() => onEdit("datetime")}
-        />
-      </div>
-
-      <div className="space-y-1 mb-5">
-        <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">
-          Reason for visit{" "}
-          <span className="text-gray-400 font-normal normal-case">
-            (optional)
-          </span>
-        </label>
-        <textarea
-          value={reason}
-          onChange={(e) => setReason(e.target.value)}
-          placeholder="e.g. Vaccination, follow-up, not eating well…"
-          rows={3}
-          className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:border-primary-2 focus:outline-none focus:ring-1 focus:ring-primary-2 resize-none"
         />
       </div>
 

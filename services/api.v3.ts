@@ -295,6 +295,9 @@ export type V3HomeVisitAppointment = {
   apptStart: string
   apptEnd: string
   reasonForVisit: string | null
+  isEmergency: boolean | null
+  reasonCode: string | null
+  petParentNotes: string | null
   visitStatus: string
 }
 
@@ -335,7 +338,9 @@ export async function v3CreateHomeVisitAppointment(input: {
   petId: string
   date: string
   startTime: string
-  reasonForVisit?: string | null
+  isEmergency: boolean
+  reasonCode: string
+  petParentNotes: string
 }): Promise<V3HomeVisitAppointment> {
   const data = await v3Post<
     V3ApiResponse<{ appointment: V3HomeVisitAppointment }>
