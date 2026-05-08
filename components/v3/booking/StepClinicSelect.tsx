@@ -5,16 +5,24 @@ import type { V3Clinic } from "@/services/api.v3"
 
 interface Props {
   clinics: V3Clinic[]
+  mode?: "vet" | "grooming"
   onSelect: (clinic: V3Clinic) => void
 }
 
-export default function StepClinicSelect({ clinics, onSelect }: Props) {
-  const vetClinics = clinics.filter((c) => c.vetEnabled)
+export default function StepClinicSelect({
+  clinics,
+  mode = "vet",
+  onSelect,
+}: Props) {
+  const eligibleClinics =
+    mode === "grooming"
+      ? clinics.filter((c) => c.groomingEnabled)
+      : clinics.filter((c) => c.vetEnabled)
 
   return (
     <div>
       <div className="space-y-3">
-        {vetClinics.map((clinic) => (
+        {eligibleClinics.map((clinic) => (
           <button
             key={clinic.id}
             onClick={() => onSelect(clinic)}
@@ -25,10 +33,10 @@ export default function StepClinicSelect({ clinics, onSelect }: Props) {
             </div>
             <div className="flex-1 min-w-0">
               <div className="font-semibold text-primary-1">{clinic.name}</div>
-              {clinic.city && (
+              {clinic.neighborhood && (
                 <div className="text-sm text-gray-500 flex items-center gap-1 mt-0.5">
                   <MapPin className="h-3.5 w-3.5 flex-shrink-0" />
-                  {clinic.city}
+                  {clinic.neighborhood}
                 </div>
               )}
               {clinic.phone && (
@@ -42,7 +50,7 @@ export default function StepClinicSelect({ clinics, onSelect }: Props) {
           </button>
         ))}
 
-        {vetClinics.length === 0 && (
+        {eligibleClinics.length === 0 && (
           <p className="text-center text-sm text-gray-500 py-8">
             No clinics available for booking at this time.
           </p>

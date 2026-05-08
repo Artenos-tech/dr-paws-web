@@ -402,6 +402,102 @@ export async function v3FetchAppointments(
   return { items: data.appointments, hasNext: data.hasNext }
 }
 
+// ─── Visit / booking type meta ────────────────────────────────────────────────
+
+export type V3VisitType = { key: string; title: string; description: string }
+export type V3GroomingServiceType = { key: string; displayName: string }
+export type V3GroomingSlot = {
+  startTime: string
+  endTime: string
+  durationMinutes: number
+  groomerIds: string[]
+  groomerNames: Record<string, string>
+}
+
+export async function v3FetchVisitTypes(): Promise<{
+  visitTypes: V3VisitType[]
+  clinicSubtypes: V3VisitType[]
+}> {
+  const data = await v3Get<
+    V3ApiResponse<{ visitTypes: V3VisitType[]; clinicSubtypes: V3VisitType[] }>
+  >("/v3/booking/visit-types")
+  return { visitTypes: data.visitTypes, clinicSubtypes: data.clinicSubtypes }
+}
+
+export async function v3FetchVetPrice(): Promise<{ priceInRupees: number }> {
+  const data = await v3Get<V3ApiResponse<{ priceInRupees: number }>>(
+    "/v3/booking/vet/price",
+  )
+  return { priceInRupees: data.priceInRupees }
+}
+
+export async function v3FetchGroomingServiceTypes(): Promise<
+  V3GroomingServiceType[]
+> {
+  const data = await v3Get<
+    V3ApiResponse<{ groomingTypes: V3GroomingServiceType[] }>
+  >("/v3/booking/grooming/types")
+  return data.groomingTypes
+}
+
+export async function v3FetchGroomingPrice(): Promise<{
+  priceInRupees: number
+}> {
+  const data = await v3Get<V3ApiResponse<{ priceInRupees: number }>>(
+    "/v3/booking/grooming/price",
+  )
+  return { priceInRupees: data.priceInRupees }
+}
+
+export async function v3FetchGroomingDates(
+  clinicId: string,
+  groomingTypeKey: string,
+  petId: string,
+  startDate?: string,
+  endDate?: string,
+): Promise<string[]> {
+  const data = await v3Get<V3ApiResponse<{ dates: string[] }>>(
+    `/v3/clinics/${encodeURIComponent(clinicId)}/grooming/availability/dates`,
+    { groomingTypeKey, petId, startDate, endDate },
+  )
+  return data.dates
+}
+
+export async function v3FetchGroomingSlots(
+  clinicId: string,
+  date: string,
+  groomingTypeKey: string,
+  petId: string,
+): Promise<{ date: string; slots: V3GroomingSlot[]; groomers: V3Doctor[] }> {
+  const data = await v3Get<
+    V3ApiResponse<{
+      date: string
+      slots: V3GroomingSlot[]
+      groomers: V3Doctor[]
+    }>
+  >(
+    `/v3/clinics/${encodeURIComponent(clinicId)}/grooming/availability/slots/${encodeURIComponent(date)}`,
+    { groomingTypeKey, petId },
+  )
+  return { date: data.date, slots: data.slots, groomers: data.groomers }
+}
+
+export async function v3CreateGroomingAppointment(input: {
+  clinicId: string
+  petId: string
+  groomerId: string
+  groomingTypeKey: string
+  date: string
+  startTime: string
+  endTime: string
+}): Promise<V3Appointment> {
+  const data = await v3Post<V3ApiResponse<{ appointment: V3Appointment }>>(
+    "/v3/appointments/grooming",
+    input,
+  )
+  return data.appointment
+}
+
 export async function v3FetchSpecies(): Promise<V3SpeciesOption[]> {
   const data =
     await v3Get<V3ApiResponse<{ species: V3SpeciesOption[] }>>("/v3/species")

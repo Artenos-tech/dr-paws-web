@@ -17,6 +17,7 @@ interface Props {
   doctor: V3Doctor
   date: string
   slot: V3TimeSlot
+  priceInRupees?: number | null
   onSuccess: (appointment: V3Appointment) => void
   onEdit: (section: "pet" | "clinic" | "datetime") => void
 }
@@ -51,6 +52,7 @@ export default function StepConfirm({
   doctor,
   date,
   slot,
+  priceInRupees,
   onSuccess,
   onEdit,
 }: Props) {
@@ -153,6 +155,22 @@ export default function StepConfirm({
           </button>
         </div>
       </div>
+
+      {priceInRupees != null && (
+        <div className="mb-5 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
+          <div className="flex items-baseline justify-between">
+            <span className="text-sm font-medium text-gray-700">
+              Consultation fee
+            </span>
+            <span className="font-semibold text-primary-1">
+              ₹{priceInRupees}
+            </span>
+          </div>
+          <p className="mt-1 text-xs text-gray-500">
+            Payment collected at the clinic.
+          </p>
+        </div>
+      )}
 
       <div className="space-y-1 mb-5">
         <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">

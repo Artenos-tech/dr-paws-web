@@ -72,7 +72,7 @@ function formatTime(time: string): string {
   return `${hour}:${String(m).padStart(2, "0")} ${period}`
 }
 
-export default function HomeVisitFlow() {
+export default function HomeVisitFlow({ onBack }: { onBack?: () => void }) {
   const [openSection, setOpenSection] = useState<SectionId>("address")
   const [pets, setPets] = useState<V3Pet[]>([])
   const [clinics, setClinics] = useState<V3Clinic[]>([])
@@ -212,6 +212,14 @@ export default function HomeVisitFlow() {
 
   return (
     <div className="max-w-lg mx-auto px-4 py-8 space-y-3">
+      {onBack && (
+        <button
+          onClick={onBack}
+          className="flex items-center gap-1 text-sm text-gray-500 hover:text-primary-1 mb-2"
+        >
+          ← Back
+        </button>
+      )}
       {SECTIONS.map(({ id, label }, i) => {
         const isOpen = openSection === id
         const summary = summaries[id]

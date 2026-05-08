@@ -1,5 +1,5 @@
-import BookingFlow from "@/components/v3/booking/BookingFlow"
+import BookingOrchestrator from "@/components/v3/booking/BookingOrchestrator"
 
 export default function BookPage() {
-  return <BookingFlow />
+  return <BookingOrchestrator />
 }

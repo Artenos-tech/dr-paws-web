@@ -1,0 +1,743 @@
+"use client"
+
+import { useEffect, useRef, useState } from "react"
+import {
+  CheckCircle2,
+  Pencil,
+  MapPin,
+  CalendarDays,
+  Scissors,
+  ChevronRight,
+} from "lucide-react"
+import ClipLoader from "react-spinners/ClipLoader"
+
+import {
+  v3FetchPets,
+  v3FetchClinics,
+  v3FetchGroomingServiceTypes,
+  v3FetchGroomingPrice,
+  v3FetchGroomingDates,
+  v3FetchGroomingSlots,
+  v3CreateGroomingAppointment,
+  type V3Pet,
+  type V3Clinic,
+  type V3GroomingServiceType,
+  type V3GroomingSlot,
+  type V3Appointment,
+} from "@/services/api.v3"
+import StepPetSelect from "./StepPetSelect"
+import StepClinicSelect from "./StepClinicSelect"
+
+type SectionId = "groomingType" | "pet" | "clinic" | "datetime" | "confirm"
+
+interface Selection {
+  groomingType: V3GroomingServiceType | null
+  pet: V3Pet | null
+  clinic: V3Clinic | null
+  date: string | null
+  slot: V3GroomingSlot | null
+}
+
+const SECTIONS: { id: SectionId; label: string }[] = [
+  { id: "groomingType", label: "Choose a grooming service" },
+  { id: "pet", label: "Select a pet" },
+  { id: "clinic", label: "Choose a clinic" },
+  { id: "datetime", label: "Pick a date & time" },
+  { id: "confirm", label: "Confirm booking" },
+]
+
+function formatDateShort(dateStr: string): string {
+  return new Date(dateStr + "T00:00:00").toLocaleDateString("en-IN", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+  })
+}
+
+function formatDate(dateStr: string): string {
+  return new Date(dateStr + "T00:00:00").toLocaleDateString("en-IN", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  })
+}
+
+function formatTime(time: string): string {
+  const [h, m] = time.split(":").map(Number)
+  const period = h >= 12 ? "PM" : "AM"
+  const hour = h % 12 || 12
+  return `${hour}:${String(m).padStart(2, "0")} ${period}`
+}
+
+function todayInIST(): string {
+  const now = new Date()
+  const istOffsetMs = 5.5 * 60 * 60 * 1000
+  const ist = new Date(now.getTime() + istOffsetMs)
+  return ist.toISOString().slice(0, 10)
+}
+
+function nextNDates(n: number): string[] {
+  const out: string[] = []
+  const start = new Date(todayInIST() + "T00:00:00Z")
+  for (let i = 0; i < n; i++) {
+    const d = new Date(start.getTime() + i * 24 * 60 * 60 * 1000)
+    out.push(d.toISOString().slice(0, 10))
+  }
+  return out
+}
+
+export default function ClinicGroomingFlow({
+  onBack,
+}: {
+  onBack?: () => void
+}) {
+  const [openSection, setOpenSection] = useState<SectionId>("groomingType")
+  const [pets, setPets] = useState<V3Pet[]>([])
+  const [clinics, setClinics] = useState<V3Clinic[]>([])
+  const [groomingTypes, setGroomingTypes] = useState<V3GroomingServiceType[]>(
+    [],
+  )
+  const [priceInRupees, setPriceInRupees] = useState<number | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState<string | null>(null)
+  const [appointment, setAppointment] = useState<V3Appointment | null>(null)
+
+  const [sel, setSel] = useState<Selection>({
+    groomingType: null,
+    pet: null,
+    clinic: null,
+    date: null,
+    slot: null,
+  })
+
+  const refs: Record<SectionId, React.RefObject<HTMLDivElement>> = {
+    groomingType: useRef<HTMLDivElement>(null),
+    pet: useRef<HTMLDivElement>(null),
+    clinic: useRef<HTMLDivElement>(null),
+    datetime: useRef<HTMLDivElement>(null),
+    confirm: useRef<HTMLDivElement>(null),
+  }
+
+  useEffect(() => {
+    Promise.all([
+      v3FetchPets(),
+      v3FetchClinics(),
+      v3FetchGroomingServiceTypes(),
+      v3FetchGroomingPrice(),
+    ])
+      .then(([p, c, gt, price]) => {
+        setPets(p)
+        setClinics(c)
+        setGroomingTypes(gt)
+        setPriceInRupees(price.priceInRupees)
+      })
+      .catch(() =>
+        setLoadError("Failed to load data. Please refresh and try again."),
+      )
+      .finally(() => setLoading(false))
+  }, [])
+
+  function openAndScroll(section: SectionId) {
+    setOpenSection(section)
+    setTimeout(() => {
+      refs[section].current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      })
+    }, 50)
+  }
+
+  function editSection(section: SectionId) {
+    if (section === "groomingType") {
+      setSel((s) => ({ ...s, pet: null, clinic: null, date: null, slot: null }))
+    } else if (section === "pet") {
+      setSel((s) => ({ ...s, clinic: null, date: null, slot: null }))
+    } else if (section === "clinic") {
+      setSel((s) => ({ ...s, date: null, slot: null }))
+    } else if (section === "datetime") {
+      setSel((s) => ({ ...s, slot: null }))
+    }
+    openAndScroll(section)
+  }
+
+  function isReachable(id: SectionId): boolean {
+    if (id === "groomingType") return true
+    if (id === "pet") return !!sel.groomingType
+    if (id === "clinic") return !!sel.groomingType && !!sel.pet
+    if (id === "datetime")
+      return !!sel.groomingType && !!sel.pet && !!sel.clinic
+    if (id === "confirm")
+      return (
+        !!sel.groomingType &&
+        !!sel.pet &&
+        !!sel.clinic &&
+        !!sel.date &&
+        !!sel.slot
+      )
+    return false
+  }
+
+  const summaries: Partial<Record<SectionId, string>> = {}
+  if (sel.groomingType) summaries.groomingType = sel.groomingType.displayName
+  if (sel.pet) summaries.pet = sel.pet.name
+  if (sel.clinic) summaries.clinic = sel.clinic.name
+  if (sel.date && sel.slot)
+    summaries.datetime = `${formatDateShort(sel.date)} · ${formatTime(sel.slot.startTime)}`
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-[40vh]">
+        <ClipLoader color="#33495f" />
+      </div>
+    )
+  }
+
+  if (loadError) {
+    return (
+      <div className="text-center py-16 text-gray-500">
+        <p>{loadError}</p>
+      </div>
+    )
+  }
+
+  if (appointment) {
+    return <GroomingBookingSuccess appointment={appointment} />
+  }
+
+  return (
+    <div className="max-w-lg mx-auto px-4 py-8 space-y-3">
+      {onBack && (
+        <button
+          onClick={onBack}
+          className="flex items-center gap-1 text-sm text-gray-500 hover:text-primary-1 mb-2"
+        >
+          ← Back
+        </button>
+      )}
+
+      {SECTIONS.map(({ id, label }, i) => {
+        const isOpen = openSection === id
+        const summary = summaries[id]
+        const isCompleted = !!summary
+        const reachable = isReachable(id)
+        const isEditable = isCompleted && !isOpen
+
+        return (
+          <div
+            key={id}
+            ref={refs[id]}
+            className={[
+              "rounded-2xl border transition-all scroll-mt-20",
+              isOpen
+                ? "border-primary-2/40 shadow-sm bg-white"
+                : isCompleted
+                  ? "border-gray-200 bg-white"
+                  : "border-gray-100 bg-gray-50/50",
+            ].join(" ")}
+          >
+            <button
+              onClick={() => (isEditable ? editSection(id) : undefined)}
+              disabled={!reachable || isOpen}
+              className={[
+                "w-full flex items-center gap-3 px-4 py-4 text-left transition-colors",
+                isEditable ? "hover:bg-gray-50 rounded-2xl" : "",
+                isOpen ? "border-b border-gray-100" : "",
+              ].join(" ")}
+            >
+              <div
+                className={[
+                  "flex-shrink-0 h-7 w-7 rounded-full flex items-center justify-center text-xs font-semibold transition-all",
+                  isCompleted
+                    ? "bg-primary-2 text-white"
+                    : isOpen
+                      ? "bg-primary-2 text-white ring-4 ring-primary-2/20"
+                      : reachable
+                        ? "bg-gray-100 text-gray-500"
+                        : "bg-gray-100 text-gray-300",
+                ].join(" ")}
+              >
+                {isCompleted ? "✓" : i + 1}
+              </div>
+
+              <div className="flex-1 min-w-0">
+                <div
+                  className={[
+                    "text-sm font-semibold",
+                    isOpen
+                      ? "text-primary-1"
+                      : isCompleted
+                        ? "text-gray-800"
+                        : reachable
+                          ? "text-gray-500"
+                          : "text-gray-300",
+                  ].join(" ")}
+                >
+                  {label}
+                </div>
+                {isCompleted && !isOpen && (
+                  <div className="text-xs text-gray-500 mt-0.5 truncate">
+                    {summary}
+                  </div>
+                )}
+              </div>
+
+              {isEditable && (
+                <Pencil className="h-3.5 w-3.5 text-gray-400 flex-shrink-0" />
+              )}
+            </button>
+
+            {isOpen && (
+              <div className="px-4 py-5">
+                {id === "groomingType" && (
+                  <StepGroomingTypeSelect
+                    groomingTypes={groomingTypes}
+                    onSelect={(gt) => {
+                      setSel((s) => ({
+                        ...s,
+                        groomingType: gt,
+                        pet: null,
+                        clinic: null,
+                        date: null,
+                        slot: null,
+                      }))
+                      openAndScroll("pet")
+                    }}
+                  />
+                )}
+
+                {id === "pet" && (
+                  <StepPetSelect
+                    pets={pets}
+                    clinics={clinics}
+                    onSelect={(pet) => {
+                      setSel((s) => ({ ...s, pet }))
+                      openAndScroll("clinic")
+                    }}
+                    onPetAdded={(pet) => {
+                      setPets((prev) => [...prev, pet])
+                      setSel((s) => ({ ...s, pet }))
+                      openAndScroll("clinic")
+                    }}
+                  />
+                )}
+
+                {id === "clinic" && (
+                  <StepClinicSelect
+                    clinics={clinics}
+                    mode="grooming"
+                    onSelect={(clinic) => {
+                      setSel((s) => ({
+                        ...s,
+                        clinic,
+                        date: null,
+                        slot: null,
+                      }))
+                      openAndScroll("datetime")
+                    }}
+                  />
+                )}
+
+                {id === "datetime" &&
+                  sel.clinic &&
+                  sel.groomingType &&
+                  sel.pet && (
+                    <StepGroomingDateTime
+                      clinicId={sel.clinic.id}
+                      groomingTypeKey={sel.groomingType.key}
+                      petId={sel.pet.id}
+                      onSelect={(date, slot) => {
+                        setSel((s) => ({ ...s, date, slot }))
+                        openAndScroll("confirm")
+                      }}
+                    />
+                  )}
+
+                {id === "confirm" &&
+                  sel.groomingType &&
+                  sel.pet &&
+                  sel.clinic &&
+                  sel.date &&
+                  sel.slot && (
+                    <StepGroomingConfirm
+                      groomingType={sel.groomingType}
+                      pet={sel.pet}
+                      clinic={sel.clinic}
+                      date={sel.date}
+                      slot={sel.slot}
+                      priceInRupees={priceInRupees}
+                      onSuccess={(appt) => setAppointment(appt)}
+                      onEdit={editSection}
+                    />
+                  )}
+              </div>
+            )}
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
+// ─── Step: grooming type selection ───────────────────────────────────────────
+
+function StepGroomingTypeSelect({
+  groomingTypes,
+  onSelect,
+}: {
+  groomingTypes: V3GroomingServiceType[]
+  onSelect: (gt: V3GroomingServiceType) => void
+}) {
+  return (
+    <div className="space-y-3">
+      {groomingTypes.map((gt) => (
+        <button
+          key={gt.key}
+          onClick={() => onSelect(gt)}
+          className="w-full flex items-center gap-4 p-4 rounded-xl border border-gray-200 hover:border-primary-2 hover:bg-primary-2/5 transition-all text-left group"
+        >
+          <div className="flex-shrink-0 h-12 w-12 rounded-full bg-primary-2/10 flex items-center justify-center">
+            <Scissors className="h-5 w-5 text-primary-2" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="font-semibold text-primary-1">{gt.displayName}</div>
+          </div>
+          <ChevronRight className="h-5 w-5 text-gray-400 group-hover:text-primary-2 transition-colors flex-shrink-0" />
+        </button>
+      ))}
+
+      {groomingTypes.length === 0 && (
+        <p className="text-center text-sm text-gray-500 py-8">
+          No grooming services available at this time.
+        </p>
+      )}
+    </div>
+  )
+}
+
+// ─── Step: date & time ───────────────────────────────────────────────────────
+
+function StepGroomingDateTime({
+  clinicId,
+  groomingTypeKey,
+  petId,
+  onSelect,
+}: {
+  clinicId: string
+  groomingTypeKey: string
+  petId: string
+  onSelect: (date: string, slot: V3GroomingSlot) => void
+}) {
+  const [date, setDate] = useState(() => todayInIST())
+  const [slots, setSlots] = useState<V3GroomingSlot[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    let cancelled = false
+    setLoading(true)
+    setError(null)
+    v3FetchGroomingSlots(clinicId, date, groomingTypeKey, petId)
+      .then(({ slots: s }) => {
+        if (!cancelled) setSlots(s)
+      })
+      .catch((e) => {
+        if (!cancelled) setError((e as Error).message ?? "Failed to load slots")
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [clinicId, date, groomingTypeKey, petId])
+
+  const dates = nextNDates(7)
+
+  return (
+    <div>
+      <div className="flex gap-2 overflow-x-auto pb-3 mb-4 -mx-4 px-4">
+        {dates.map((d) => {
+          const active = d === date
+          return (
+            <button
+              key={d}
+              onClick={() => setDate(d)}
+              className={[
+                "flex-shrink-0 rounded-xl border px-3 py-2 text-sm transition-all",
+                active
+                  ? "border-primary-2 bg-primary-2/10 text-primary-1 font-semibold"
+                  : "border-gray-200 text-gray-600 hover:border-primary-2/50",
+              ].join(" ")}
+            >
+              {formatDateShort(d)}
+            </button>
+          )
+        })}
+      </div>
+
+      {loading && (
+        <div className="flex justify-center py-6">
+          <ClipLoader color="#33495f" size={24} />
+        </div>
+      )}
+
+      {!loading && error && (
+        <div className="rounded-xl bg-red-50 border border-red-200 px-3 py-2 text-sm text-red-700">
+          {error}
+        </div>
+      )}
+
+      {!loading && !error && slots.length === 0 && (
+        <div className="text-center text-sm text-gray-500 py-6">
+          No grooming slots available on this day. Try another date.
+        </div>
+      )}
+
+      {!loading && !error && slots.length > 0 && (
+        <div className="grid grid-cols-3 gap-2">
+          {slots.map((slot) => (
+            <button
+              key={`${slot.startTime}-${slot.endTime}`}
+              onClick={() => onSelect(date, slot)}
+              className="rounded-xl border border-gray-200 px-2 py-2 text-sm text-gray-700 hover:border-primary-2 hover:bg-primary-2/5 transition-all"
+            >
+              {formatTime(slot.startTime)}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ─── Step: confirm ───────────────────────────────────────────────────────────
+
+function StepGroomingConfirm({
+  groomingType,
+  pet,
+  clinic,
+  date,
+  slot,
+  priceInRupees,
+  onSuccess,
+  onEdit,
+}: {
+  groomingType: V3GroomingServiceType
+  pet: V3Pet
+  clinic: V3Clinic
+  date: string
+  slot: V3GroomingSlot
+  priceInRupees: number | null
+  onSuccess: (appt: V3Appointment) => void
+  onEdit: (section: SectionId) => void
+}) {
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const groomerId = slot.groomerIds[0]
+  const groomerName = groomerId ? slot.groomerNames[groomerId] : undefined
+
+  async function handleConfirm() {
+    if (!groomerId) {
+      setError("No groomer available for this slot.")
+      return
+    }
+    setSubmitting(true)
+    setError(null)
+    try {
+      const appt = await v3CreateGroomingAppointment({
+        clinicId: clinic.id,
+        petId: pet.id,
+        groomerId,
+        groomingTypeKey: groomingType.key,
+        date,
+        startTime: slot.startTime,
+        endTime: slot.endTime,
+      })
+      onSuccess(appt)
+    } catch (e) {
+      const err = e as { errorCode?: string; message?: string }
+      setError(
+        err.errorCode === "SLOT_UNAVAILABLE"
+          ? "This slot was just taken. Pick a different time above."
+          : (err.message ?? "Failed to book grooming. Please try again."),
+      )
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  return (
+    <div>
+      <div className="rounded-xl border border-gray-200 overflow-hidden divide-y divide-gray-100 mb-5">
+        <SummaryRow
+          label="Service"
+          value={groomingType.displayName}
+          icon={<Scissors className="h-5 w-5 text-primary-2" />}
+          onEdit={() => onEdit("groomingType")}
+        />
+        <SummaryRow
+          label="Pet"
+          value={pet.name}
+          icon={<Scissors className="h-5 w-5 text-primary-2" />}
+          onEdit={() => onEdit("pet")}
+        />
+        <SummaryRow
+          label="Clinic"
+          value={clinic.name}
+          icon={<MapPin className="h-5 w-5 text-primary-2" />}
+          onEdit={() => onEdit("clinic")}
+        />
+        <SummaryRow
+          label="When"
+          value={`${formatDateShort(date)} · ${formatTime(slot.startTime)} – ${formatTime(slot.endTime)}`}
+          icon={<CalendarDays className="h-5 w-5 text-primary-2" />}
+          onEdit={() => onEdit("datetime")}
+        />
+        {groomerName && (
+          <div className="flex items-center gap-3 px-4 py-3.5">
+            <div className="flex-shrink-0 h-9 w-9 rounded-full bg-primary-2/10 flex items-center justify-center">
+              <Scissors className="h-5 w-5 text-primary-2" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="text-xs text-gray-400 uppercase tracking-wide font-medium">
+                Groomer
+              </div>
+              <div className="font-semibold text-primary-1">{groomerName}</div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {priceInRupees != null && (
+        <div className="mb-5 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
+          <div className="flex items-baseline justify-between">
+            <span className="text-sm font-medium text-gray-700">
+              Grooming fee
+            </span>
+            <span className="font-semibold text-primary-1">
+              ₹{priceInRupees}
+            </span>
+          </div>
+          <p className="mt-1 text-xs text-gray-500">
+            Payment collected at the clinic.
+          </p>
+        </div>
+      )}
+
+      {error && (
+        <div className="mb-4 rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
+          {error}
+        </div>
+      )}
+
+      <button
+        onClick={handleConfirm}
+        disabled={submitting}
+        className="w-full rounded-xl bg-secondary-1 py-3 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-60"
+      >
+        {submitting ? "Booking…" : "Confirm grooming"}
+      </button>
+    </div>
+  )
+}
+
+function SummaryRow({
+  label,
+  value,
+  icon,
+  onEdit,
+}: {
+  label: string
+  value: string
+  icon: React.ReactNode
+  onEdit: () => void
+}) {
+  return (
+    <div className="flex items-center gap-3 px-4 py-3.5">
+      <div className="flex-shrink-0 h-9 w-9 rounded-full bg-primary-2/10 flex items-center justify-center">
+        {icon}
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="text-xs text-gray-400 uppercase tracking-wide font-medium">
+          {label}
+        </div>
+        <div className="font-semibold text-primary-1">{value}</div>
+      </div>
+      <button
+        onClick={onEdit}
+        className="text-xs font-medium text-primary-2 hover:underline flex-shrink-0"
+      >
+        Edit
+      </button>
+    </div>
+  )
+}
+
+// ─── Success screen ───────────────────────────────────────────────────────────
+
+function GroomingBookingSuccess({
+  appointment,
+}: {
+  appointment: V3Appointment
+}) {
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" })
+  }, [])
+
+  return (
+    <div className="max-w-lg mx-auto px-4 py-12 text-center">
+      <div className="flex justify-center mb-5">
+        <div className="h-20 w-20 rounded-full bg-green-100 flex items-center justify-center">
+          <CheckCircle2 className="h-10 w-10 text-green-500" />
+        </div>
+      </div>
+
+      <h2 className="font-roca text-2xl text-primary-1 mb-2">
+        Grooming booked!
+      </h2>
+      <p className="text-gray-500 text-sm mb-8">
+        Your grooming appointment has been successfully scheduled.
+      </p>
+
+      <div className="rounded-xl border border-gray-200 overflow-hidden divide-y divide-gray-100 text-left mb-8">
+        {[
+          { label: "Pet", value: appointment.petName },
+          { label: "Clinic", value: appointment.clinicName },
+          { label: "Groomer", value: appointment.doctorName },
+          {
+            label: "Date",
+            value: new Date(appointment.date + "T00:00:00").toLocaleDateString(
+              "en-IN",
+              {
+                weekday: "long",
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              },
+            ),
+          },
+          {
+            label: "Time",
+            value: `${formatTime(appointment.startTime)} – ${formatTime(appointment.endTime)}`,
+          },
+        ].map(({ label, value }) => (
+          <div key={label} className="px-4 py-3 flex justify-between gap-4">
+            <span className="text-sm text-gray-500">{label}</span>
+            <span className="text-sm font-semibold text-primary-1 text-right">
+              {value}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      <a
+        href="/v3"
+        className="inline-flex items-center gap-2 rounded-xl bg-secondary-1 px-6 py-3 text-sm font-semibold text-white hover:opacity-90 transition-opacity w-full justify-center"
+      >
+        Back to home
+      </a>
+    </div>
+  )
+}
