@@ -19,6 +19,7 @@ import {
   v3CreateAddress,
   v3CheckHomeVisitServiceable,
   v3FetchHomeVisitSlots,
+  v3FetchHomeVisitPrice,
   v3CreateHomeVisitAppointment,
   type V3Pet,
   type V3Clinic,
@@ -65,6 +66,7 @@ export default function HomeVisitFlow() {
   const [pets, setPets] = useState<V3Pet[]>([])
   const [clinics, setClinics] = useState<V3Clinic[]>([])
   const [addresses, setAddresses] = useState<V3Address[]>([])
+  const [priceInRupees, setPriceInRupees] = useState<number | null>(null)
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState<string | null>(null)
   const [appointment, setAppointment] = useState<V3HomeVisitAppointment | null>(
@@ -86,11 +88,17 @@ export default function HomeVisitFlow() {
   }
 
   useEffect(() => {
-    Promise.all([v3FetchPets(), v3FetchClinics(), v3FetchAddresses()])
-      .then(([p, c, a]) => {
+    Promise.all([
+      v3FetchPets(),
+      v3FetchClinics(),
+      v3FetchAddresses(),
+      v3FetchHomeVisitPrice(),
+    ])
+      .then(([p, c, a, price]) => {
         setPets(p)
         setClinics(c)
         setAddresses(a)
+        setPriceInRupees(price.priceInRupees)
       })
       .catch(() =>
         setLoadError("Failed to load data. Please refresh and try again."),
@@ -297,6 +305,7 @@ export default function HomeVisitFlow() {
                       pet={sel.pet}
                       date={sel.date}
                       slot={sel.slot}
+                      priceInRupees={priceInRupees}
                       onSuccess={(appt) => setAppointment(appt)}
                       onEdit={editSection}
                     />
@@ -797,6 +806,7 @@ function StepHomeVisitConfirm({
   pet,
   date,
   slot,
+  priceInRupees,
   onSuccess,
   onEdit,
 }: {
@@ -804,6 +814,7 @@ function StepHomeVisitConfirm({
   pet: V3Pet
   date: string
   slot: V3HomeVisitSlot
+  priceInRupees: number | null
   onSuccess: (appt: V3HomeVisitAppointment) => void
   onEdit: (section: SectionId) => void
 }) {
@@ -873,6 +884,22 @@ function StepHomeVisitConfirm({
           className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:border-primary-2 focus:outline-none focus:ring-1 focus:ring-primary-2 resize-none"
         />
       </div>
+
+      {priceInRupees !== null && (
+        <div className="mb-4 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
+          <div className="flex items-baseline justify-between">
+            <span className="text-sm font-medium text-gray-700">
+              Home visit fee
+            </span>
+            <span className="font-semibold text-primary-1">
+              ₹{priceInRupees}
+            </span>
+          </div>
+          <p className="mt-1 text-xs text-gray-500">
+            Our team will reach out to collect payment.
+          </p>
+        </div>
+      )}
 
       {error && (
         <div className="mb-4 rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">

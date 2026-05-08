@@ -298,6 +298,15 @@ export type V3HomeVisitAppointment = {
   visitStatus: string
 }
 
+export async function v3FetchHomeVisitPrice(): Promise<{
+  priceInRupees: number
+}> {
+  const data = await v3Get<V3ApiResponse<{ priceInRupees: number }>>(
+    "/v3/booking/at-home/price",
+  )
+  return { priceInRupees: data.priceInRupees }
+}
+
 export async function v3CheckHomeVisitServiceable(
   pincode: string,
 ): Promise<{ serviceable: boolean; clinicSlug?: string }> {
