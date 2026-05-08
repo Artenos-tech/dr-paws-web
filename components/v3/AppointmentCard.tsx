@@ -1,4 +1,6 @@
-import { CalendarDays, Clock, MapPin, Stethoscope, Home } from "lucide-react"
+import { useState } from "react"
+import { CalendarDays, Clock, MapPin, Stethoscope, Home, X } from "lucide-react"
+import ClipLoader from "react-spinners/ClipLoader"
 import type { V3AppointmentListItem } from "@/services/api.v3"
 
 function formatDate(dateStr: string): string {
@@ -17,13 +19,54 @@ function formatTime(time: string): string {
   return `${hour}:${String(m).padStart(2, "0")} ${period}`
 }
 
-interface Props {
-  item: V3AppointmentListItem
+const STATUS_PILL_CLASSES: Record<string, string> = {
+  Scheduled: "bg-blue-50 text-blue-700 ring-blue-200",
+  "Awaiting Confirmation": "bg-amber-50 text-amber-700 ring-amber-200",
+  Confirmed: "bg-blue-50 text-blue-700 ring-blue-200",
+  "Vet Delayed": "bg-amber-50 text-amber-700 ring-amber-200",
+  "Vet Arrived": "bg-indigo-50 text-indigo-700 ring-indigo-200",
+  "Checked In": "bg-indigo-50 text-indigo-700 ring-indigo-200",
+  "In Progress": "bg-violet-50 text-violet-700 ring-violet-200",
+  "In Consultation": "bg-violet-50 text-violet-700 ring-violet-200",
+  "Checking Out": "bg-violet-50 text-violet-700 ring-violet-200",
+  Completed: "bg-emerald-50 text-emerald-700 ring-emerald-200",
+  Cancelled: "bg-rose-50 text-rose-700 ring-rose-200",
+  "No Show": "bg-gray-100 text-gray-600 ring-gray-200",
+  Missed: "bg-gray-100 text-gray-600 ring-gray-200",
 }
 
-export default function AppointmentCard({ item }: Props) {
+function statusPillClasses(status: string): string {
+  return (
+    STATUS_PILL_CLASSES[status] ?? "bg-gray-100 text-gray-700 ring-gray-200"
+  )
+}
+
+interface Props {
+  item: V3AppointmentListItem
+  onCancel?: (id: string) => Promise<void>
+}
+
+export default function AppointmentCard({ item, onCancel }: Props) {
   const isHomeVisit = item.bookingType === "HOME_VISIT"
   const status = isHomeVisit ? item.visitStatus : item.clinicStatus
+
+  const [confirming, setConfirming] = useState(false)
+  const [cancelling, setCancelling] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const handleConfirmCancel = async () => {
+    if (!onCancel) return
+    setCancelling(true)
+    setError(null)
+    try {
+      await onCancel(item.id)
+      setConfirming(false)
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Failed to cancel appointment")
+    } finally {
+      setCancelling(false)
+    }
+  }
 
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
@@ -47,7 +90,9 @@ export default function AppointmentCard({ item }: Props) {
             <p className="text-sm text-gray-500">{item.appointmentTypeName}</p>
           )}
         </div>
-        <span className="shrink-0 rounded-full bg-primary-2/10 text-primary-2 text-xs px-2 py-1">
+        <span
+          className={`shrink-0 rounded-full text-xs font-medium px-2.5 py-1 ring-1 ring-inset ${statusPillClasses(status)}`}
+        >
           {status}
         </span>
       </div>
@@ -94,6 +139,64 @@ export default function AppointmentCard({ item }: Props) {
           </p>
         )}
       </div>
+
+      {item.canModifyOrCancel && onCancel && (
+        <div className="mt-3 flex justify-end">
+          <button
+            type="button"
+            onClick={() => setConfirming(true)}
+            className="inline-flex items-center gap-1 rounded-md border border-red-200 text-red-600 hover:bg-red-50 text-sm px-3 py-1.5"
+          >
+            <X className="h-4 w-4" /> Cancel
+          </button>
+        </div>
+      )}
+
+      {confirming && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+          role="dialog"
+          aria-modal="true"
+        >
+          <div className="w-full max-w-sm rounded-xl bg-white p-5 shadow-lg">
+            <h4 className="font-roca text-lg text-primary-1 mb-1">
+              Cancel this appointment?
+            </h4>
+            <p className="text-sm text-gray-600">
+              {item.petName}'s {isHomeVisit ? "home visit" : "clinic visit"} on{" "}
+              {formatDate(item.date)} at {formatTime(item.startTime)} will be
+              cancelled. This cannot be undone.
+            </p>
+            {error && (
+              <div className="mt-3 rounded-md border border-red-200 bg-red-50 p-2 text-sm text-red-700">
+                {error}
+              </div>
+            )}
+            <div className="mt-4 flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setConfirming(false)
+                  setError(null)
+                }}
+                disabled={cancelling}
+                className="rounded-md border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 text-sm px-3 py-1.5 disabled:opacity-60"
+              >
+                Keep it
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmCancel}
+                disabled={cancelling}
+                className="inline-flex items-center gap-2 rounded-md bg-red-600 text-white hover:bg-red-700 text-sm px-3 py-1.5 disabled:opacity-60"
+              >
+                {cancelling && <ClipLoader color="#ffffff" size={14} />}
+                {cancelling ? "Cancelling…" : "Yes, cancel"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

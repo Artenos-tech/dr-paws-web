@@ -143,6 +143,29 @@ async function v3Post<T>(path: string, body: unknown): Promise<T> {
   return json as T
 }
 
+async function v3Delete<T>(path: string): Promise<T> {
+  const res = await fetch(`${API_BASE_URL}${path}`, {
+    method: "DELETE",
+    headers: getV3Headers(),
+    credentials: "include",
+  })
+  const json = await res.json()
+  if (!res.ok) {
+    const err = new Error(
+      json?.message ?? `Request failed: ${res.status}`,
+    ) as Error & {
+      status: number
+      errorCode?: string
+      body?: unknown
+    }
+    err.status = res.status
+    err.errorCode = (json as any)?.errorCode
+    err.body = json
+    throw err
+  }
+  return json as T
+}
+
 type V3ApiResponse<T> = { status: number; message: string } & T
 
 export async function v3FetchPets(): Promise<V3Pet[]> {
@@ -369,6 +392,8 @@ type V3AppointmentCommon = {
   endTime: string
   appointmentTypeName: string | null
   reasonForVisit: string | null
+  canModifyOrCancel: boolean
+  modificationDeadline: string | null
 }
 
 export type V3AppointmentListAddress = {
@@ -496,6 +521,12 @@ export async function v3CreateGroomingAppointment(input: {
     input,
   )
   return data.appointment
+}
+
+export async function v3CancelAppointment(id: string): Promise<void> {
+  await v3Delete<V3ApiResponse<{}>>(
+    `/v3/appointments/${encodeURIComponent(id)}`,
+  )
 }
 
 export async function v3FetchSpecies(): Promise<V3SpeciesOption[]> {

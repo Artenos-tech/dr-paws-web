@@ -2,9 +2,11 @@
 
 import { useCallback, useEffect, useRef, useState } from "react"
 import ClipLoader from "react-spinners/ClipLoader"
+import toast, { Toaster } from "react-hot-toast"
 import { CalendarX } from "lucide-react"
 import AppointmentCard from "@/components/v3/AppointmentCard"
 import {
+  v3CancelAppointment,
   v3FetchAppointments,
   type V3AppointmentListItem,
 } from "@/services/api.v3"
@@ -87,13 +89,47 @@ export default function V3AppointmentsPage() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-6">
+      <Toaster position="top-center" />
       <h1 className="font-roca text-2xl text-primary-1 mb-4">
         My Appointments
       </h1>
 
       <div className="space-y-3">
         {items.map((item) => (
-          <AppointmentCard key={item.id} item={item} />
+          <AppointmentCard
+            key={item.id}
+            item={item}
+            onCancel={async (id) => {
+              try {
+                await v3CancelAppointment(id)
+              } catch (e) {
+                const message =
+                  e instanceof Error
+                    ? e.message
+                    : "Failed to cancel appointment"
+                toast.error(message)
+                throw e
+              }
+              setItems((prev) =>
+                prev.map((it) => {
+                  if (it.id !== id) return it
+                  if (it.bookingType === "HOME_VISIT") {
+                    return {
+                      ...it,
+                      visitStatus: "Cancelled",
+                      canModifyOrCancel: false,
+                    }
+                  }
+                  return {
+                    ...it,
+                    clinicStatus: "Cancelled",
+                    canModifyOrCancel: false,
+                  }
+                }),
+              )
+              toast.success("Appointment cancelled")
+            }}
+          />
         ))}
       </div>
 
