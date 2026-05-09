@@ -427,6 +427,99 @@ export async function v3FetchAppointments(
   return { items: data.appointments, hasNext: data.hasNext }
 }
 
+// ─── Documents ────────────────────────────────────────────────────────────────
+
+export type V3DocumentType =
+  | "invoice"
+  | "credit_note"
+  | "payment_receipt"
+  | "diagnostic"
+  | "emr"
+  | "prescription"
+  | "estimate"
+  | "vaccination"
+  | "consent_form"
+
+export type V3DocumentFile = {
+  downloadId: string
+  name: string
+  fileType: string
+  createdAt: string
+}
+
+export type V3Document = {
+  id: string
+  name: string
+  type: V3DocumentType
+  petId: string | null
+  petName: string | null
+  createdAt: string
+  amount: number | null
+  clinicId: string | null
+  doctorName: string | null
+  files: V3DocumentFile[]
+}
+
+export type V3DocumentCounts = {
+  invoices: number
+  credit_notes: number
+  payment_receipts: number
+  diagnostics: number
+  emrs: number
+  prescriptions: number
+  estimates: number
+  vaccinations: number
+  consent_forms: number
+}
+
+export async function v3FetchDocuments(params: {
+  type?: V3DocumentType
+  petId?: string
+  page?: number
+  pageSize?: number
+}): Promise<{
+  counts: V3DocumentCounts
+  documents: V3Document[]
+  hasNext: boolean
+}> {
+  const query: Record<string, string | undefined> = {}
+  if (params.type) query.type = params.type
+  if (params.petId) query.petId = params.petId
+  if (params.page != null) query.page = String(params.page)
+  if (params.pageSize != null) query.pageSize = String(params.pageSize)
+  const data = await v3Get<
+    V3ApiResponse<{
+      counts: V3DocumentCounts
+      documents: V3Document[]
+      hasNext: boolean
+    }>
+  >("/v3/documents", query)
+  return { counts: data.counts, documents: data.documents, hasNext: data.hasNext }
+}
+
+export type V3DocumentDownload = {
+  url: string | null
+  expiresIn: number
+  fileName: string
+  isGenerating: boolean
+}
+
+export async function v3GetDocumentDownloadUrl(
+  documentId: string,
+  type: V3DocumentType,
+): Promise<V3DocumentDownload> {
+  const data = await v3Get<V3ApiResponse<V3DocumentDownload>>(
+    `/v3/documents/${encodeURIComponent(documentId)}/download`,
+    { type },
+  )
+  return {
+    url: data.url,
+    expiresIn: data.expiresIn,
+    fileName: data.fileName,
+    isGenerating: data.isGenerating,
+  }
+}
+
 // ─── Visit / booking type meta ────────────────────────────────────────────────
 
 export type V3VisitType = { key: string; title: string; description: string }
