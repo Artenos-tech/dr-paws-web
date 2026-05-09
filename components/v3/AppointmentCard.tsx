@@ -163,7 +163,8 @@ export default function AppointmentCard({ item, onCancel }: Props) {
               Cancel this appointment?
             </h4>
             <p className="text-sm text-gray-600">
-              {item.petName}'s {isHomeVisit ? "home visit" : "clinic visit"} on{" "}
+              {item.petName}&apos;s{" "}
+              {isHomeVisit ? "home visit" : "clinic visit"} on{" "}
               {formatDate(item.date)} at {formatTime(item.startTime)} will be
               cancelled. This cannot be undone.
             </p>

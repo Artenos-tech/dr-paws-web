@@ -16,7 +16,6 @@ import {
   v3FetchClinics,
   v3FetchGroomingServiceTypes,
   v3FetchGroomingPrice,
-  v3FetchGroomingDates,
   v3FetchGroomingSlots,
   v3CreateGroomingAppointment,
   type V3Pet,
@@ -51,15 +50,6 @@ function formatDateShort(dateStr: string): string {
     weekday: "short",
     day: "numeric",
     month: "short",
-  })
-}
-
-function formatDate(dateStr: string): string {
-  return new Date(dateStr + "T00:00:00").toLocaleDateString("en-IN", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
   })
 }
 
