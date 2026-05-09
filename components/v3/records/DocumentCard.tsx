@@ -2,10 +2,7 @@
 
 import { useEffect, useRef, useState } from "react"
 import { FileText, Eye, Download, Loader2 } from "lucide-react"
-import {
-  v3GetDocumentDownloadUrl,
-  type V3Document,
-} from "@/services/api.v3"
+import { v3GetDocumentDownloadUrl, type V3Document } from "@/services/api.v3"
 
 // These types may need async PDF regeneration — poll until isGenerating=false
 const ASYNC_TYPES = new Set(["emr", "prescription"])
@@ -30,7 +27,9 @@ function formatAmount(amount: number): string {
 // window.open() on it always triggers a download. To view inline (PDFs, images),
 // we fetch the file as a blob first — blob object URLs have no Content-Disposition,
 // so the browser renders them inline based on Content-Type.
-async function fetchBlob(url: string): Promise<{ objectUrl: string; blob: Blob } | null> {
+async function fetchBlob(
+  url: string,
+): Promise<{ objectUrl: string; blob: Blob } | null> {
   try {
     const res = await fetch(url)
     if (!res.ok) return null
@@ -118,7 +117,11 @@ export default function DocumentCard({ document: doc }: Props) {
         stopPolling()
         setIsGenerating(false)
         setActiveAction(null)
-        await executeAction(result.url, result.fileName, pendingActionRef.current!)
+        await executeAction(
+          result.url,
+          result.fileName,
+          pendingActionRef.current!,
+        )
       }
     } catch {
       stopPolling()
@@ -205,7 +208,10 @@ export default function DocumentCard({ document: doc }: Props) {
       {doc.files.length > 0 && (
         <div className="mt-2 pt-2 border-t border-gray-100 space-y-0.5">
           {doc.files.map((file) => (
-            <div key={file.downloadId} className="text-xs text-gray-400 truncate">
+            <div
+              key={file.downloadId}
+              className="text-xs text-gray-400 truncate"
+            >
               {file.name}
             </div>
           ))}
@@ -218,9 +224,7 @@ export default function DocumentCard({ document: doc }: Props) {
         </p>
       )}
 
-      {errorMsg && (
-        <p className="mt-2 text-xs text-red-600">{errorMsg}</p>
-      )}
+      {errorMsg && <p className="mt-2 text-xs text-red-600">{errorMsg}</p>}
     </div>
   )
 }

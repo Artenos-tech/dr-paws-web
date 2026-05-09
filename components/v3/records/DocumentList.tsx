@@ -47,9 +47,7 @@ export default function DocumentList({ type, petId }: Props) {
         setHasNext(more)
         setPage(pageToLoad)
       } catch (e) {
-        setError(
-          e instanceof Error ? e.message : "Failed to load documents",
-        )
+        setError(e instanceof Error ? e.message : "Failed to load documents")
       } finally {
         setLoading(false)
         setInitialLoading(false)

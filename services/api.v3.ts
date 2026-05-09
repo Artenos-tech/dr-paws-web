@@ -494,7 +494,11 @@ export async function v3FetchDocuments(params: {
       hasNext: boolean
     }>
   >("/v3/documents", query)
-  return { counts: data.counts, documents: data.documents, hasNext: data.hasNext }
+  return {
+    counts: data.counts,
+    documents: data.documents,
+    hasNext: data.hasNext,
+  }
 }
 
 export type V3DocumentDownload = {
