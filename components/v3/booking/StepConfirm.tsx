@@ -1,7 +1,15 @@
 "use client"
 
 import { useState } from "react"
-import { CalendarDays, MapPin, Dog, Cat, Bird, HelpCircle } from "lucide-react"
+import {
+  CalendarDays,
+  MapPin,
+  Dog,
+  Cat,
+  Bird,
+  HelpCircle,
+  Star,
+} from "lucide-react"
 import {
   v3CreateAppointment,
   type V3Pet,
@@ -18,6 +26,7 @@ interface Props {
   date: string
   slot: V3TimeSlot
   priceInRupees?: number | null
+  isSeniorVet?: boolean
   onSuccess: (appointment: V3Appointment) => void
   onEdit: (section: "pet" | "clinic" | "datetime") => void
 }
@@ -53,6 +62,7 @@ export default function StepConfirm({
   date,
   slot,
   priceInRupees,
+  isSeniorVet,
   onSuccess,
   onEdit,
 }: Props) {
@@ -156,17 +166,53 @@ export default function StepConfirm({
         </div>
       </div>
 
+      {isSeniorVet && (
+        <div className="mb-3 rounded-xl bg-amber-50 border border-amber-200 px-4 py-3 flex items-start gap-2">
+          <Star className="h-4 w-4 text-amber-500 fill-amber-400 flex-shrink-0 mt-0.5" />
+          <div>
+            <p className="text-sm font-semibold text-amber-800">
+              Senior Vet selected
+            </p>
+            <p className="text-xs text-amber-700 mt-0.5">
+              A higher consultation fee applies for senior vet consultations.
+            </p>
+          </div>
+        </div>
+      )}
+
       {priceInRupees != null && (
-        <div className="mb-5 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
+        <div
+          className={[
+            "mb-5 rounded-xl border px-4 py-3",
+            isSeniorVet
+              ? "border-amber-200 bg-amber-50"
+              : "border-gray-200 bg-gray-50",
+          ].join(" ")}
+        >
           <div className="flex items-baseline justify-between">
-            <span className="text-sm font-medium text-gray-700">
-              Consultation fee
+            <span
+              className={[
+                "text-sm font-medium",
+                isSeniorVet ? "text-amber-800" : "text-gray-700",
+              ].join(" ")}
+            >
+              {isSeniorVet ? "Senior consultation fee" : "Consultation fee"}
             </span>
-            <span className="font-semibold text-primary-1">
+            <span
+              className={[
+                "font-semibold",
+                isSeniorVet ? "text-amber-900" : "text-primary-1",
+              ].join(" ")}
+            >
               ₹{priceInRupees}
             </span>
           </div>
-          <p className="mt-1 text-xs text-gray-500">
+          <p
+            className={[
+              "mt-1 text-xs",
+              isSeniorVet ? "text-amber-700" : "text-gray-500",
+            ].join(" ")}
+          >
             Payment collected at the clinic.
           </p>
         </div>

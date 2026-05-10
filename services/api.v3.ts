@@ -41,6 +41,7 @@ export type V3AppointmentType = {
 export type V3Doctor = {
   id: string
   name: string
+  isSenior?: boolean
 }
 
 export type V3TimeSlot = {
@@ -546,11 +547,17 @@ export async function v3FetchVisitTypes(): Promise<{
   return { visitTypes: data.visitTypes, clinicSubtypes: data.clinicSubtypes }
 }
 
-export async function v3FetchVetPrice(): Promise<{ priceInRupees: number }> {
-  const data = await v3Get<V3ApiResponse<{ priceInRupees: number }>>(
-    "/v3/booking/vet/price",
-  )
-  return { priceInRupees: data.priceInRupees }
+export async function v3FetchVetPrice(): Promise<{
+  priceInRupees: number
+  seniorPriceInRupees: number
+}> {
+  const data = await v3Get<
+    V3ApiResponse<{ priceInRupees: number; seniorPriceInRupees: number }>
+  >("/v3/booking/vet/price")
+  return {
+    priceInRupees: data.priceInRupees,
+    seniorPriceInRupees: data.seniorPriceInRupees,
+  }
 }
 
 export async function v3FetchGroomingServiceTypes(): Promise<

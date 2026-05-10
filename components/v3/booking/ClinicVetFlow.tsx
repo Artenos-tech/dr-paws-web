@@ -17,6 +17,7 @@ import StepPetSelect from "./StepPetSelect"
 import StepClinicSelect from "./StepClinicSelect"
 import StepVetDateTime from "./StepVetDateTime"
 import StepConfirm from "./StepConfirm"
+import SeniorVetModal from "./SeniorVetModal"
 
 type SectionId = "pet" | "clinic" | "datetime" | "confirm"
 
@@ -74,9 +75,17 @@ export default function ClinicVetFlow({ onBack }: { onBack?: () => void }) {
   const [pets, setPets] = useState<V3Pet[]>([])
   const [clinics, setClinics] = useState<V3Clinic[]>([])
   const [priceInRupees, setPriceInRupees] = useState<number | null>(null)
+  const [seniorPriceInRupees, setSeniorPriceInRupees] = useState<number | null>(
+    null,
+  )
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState<string | null>(null)
   const [appointment, setAppointment] = useState<V3Appointment | null>(null)
+  const [pendingSeniorSelection, setPendingSeniorSelection] = useState<{
+    doctor: V3Doctor
+    date: string
+    slot: V3TimeSlot
+  } | null>(null)
 
   const [sel, setSel] = useState<Selection>({
     pet: null,
@@ -104,6 +113,7 @@ export default function ClinicVetFlow({ onBack }: { onBack?: () => void }) {
         setPets(p)
         setClinics(c)
         setPriceInRupees(price.priceInRupees)
+        setSeniorPriceInRupees(price.seniorPriceInRupees)
       })
       .catch(() =>
         setLoadError("Failed to load data. Please refresh and try again."),
@@ -174,157 +184,181 @@ export default function ClinicVetFlow({ onBack }: { onBack?: () => void }) {
   }
 
   return (
-    <div className="max-w-lg mx-auto px-4 py-8 space-y-3">
-      {onBack && (
-        <button
-          onClick={onBack}
-          className="flex items-center gap-1 text-sm text-gray-500 hover:text-primary-1 mb-2"
-        >
-          ← Back
-        </button>
-      )}
-      {SECTIONS.map(({ id, label }, i) => {
-        const isOpen = openSection === id
-        const summary = summaries[id]
-        const isCompleted = !!summary
-        const reachable = isReachable(id)
-        const isEditable = isCompleted && !isOpen
-
-        return (
-          <div
-            key={id}
-            ref={sectionRefs[id]}
-            className={[
-              "rounded-2xl border transition-all scroll-mt-20",
-              isOpen
-                ? "border-primary-2/40 shadow-sm bg-white"
-                : isCompleted
-                  ? "border-gray-200 bg-white"
-                  : "border-gray-100 bg-gray-50/50",
-            ].join(" ")}
+    <>
+      <div className="max-w-lg mx-auto px-4 py-8 space-y-3">
+        {onBack && (
+          <button
+            onClick={onBack}
+            className="flex items-center gap-1 text-sm text-gray-500 hover:text-primary-1 mb-2"
           >
-            {/* Section header */}
-            <button
-              onClick={() => (isEditable ? editSection(id) : undefined)}
-              disabled={!reachable || isOpen}
+            ← Back
+          </button>
+        )}
+        {SECTIONS.map(({ id, label }, i) => {
+          const isOpen = openSection === id
+          const summary = summaries[id]
+          const isCompleted = !!summary
+          const reachable = isReachable(id)
+          const isEditable = isCompleted && !isOpen
+
+          return (
+            <div
+              key={id}
+              ref={sectionRefs[id]}
               className={[
-                "w-full flex items-center gap-3 px-4 py-4 text-left transition-colors",
-                isEditable ? "hover:bg-gray-50 rounded-2xl" : "",
-                isOpen ? "border-b border-gray-100" : "",
+                "rounded-2xl border transition-all scroll-mt-20",
+                isOpen
+                  ? "border-primary-2/40 shadow-sm bg-white"
+                  : isCompleted
+                    ? "border-gray-200 bg-white"
+                    : "border-gray-100 bg-gray-50/50",
               ].join(" ")}
             >
-              {/* Step circle */}
-              <div
+              {/* Section header */}
+              <button
+                onClick={() => (isEditable ? editSection(id) : undefined)}
+                disabled={!reachable || isOpen}
                 className={[
-                  "flex-shrink-0 h-7 w-7 rounded-full flex items-center justify-center text-xs font-semibold transition-all",
-                  isCompleted
-                    ? "bg-primary-2 text-white"
-                    : isOpen
-                      ? "bg-primary-2 text-white ring-4 ring-primary-2/20"
-                      : reachable
-                        ? "bg-gray-100 text-gray-500"
-                        : "bg-gray-100 text-gray-300",
+                  "w-full flex items-center gap-3 px-4 py-4 text-left transition-colors",
+                  isEditable ? "hover:bg-gray-50 rounded-2xl" : "",
+                  isOpen ? "border-b border-gray-100" : "",
                 ].join(" ")}
               >
-                {isCompleted ? "✓" : i + 1}
-              </div>
-
-              <div className="flex-1 min-w-0">
+                {/* Step circle */}
                 <div
                   className={[
-                    "text-sm font-semibold",
-                    isOpen
-                      ? "text-primary-1"
-                      : isCompleted
-                        ? "text-gray-800"
+                    "flex-shrink-0 h-7 w-7 rounded-full flex items-center justify-center text-xs font-semibold transition-all",
+                    isCompleted
+                      ? "bg-primary-2 text-white"
+                      : isOpen
+                        ? "bg-primary-2 text-white ring-4 ring-primary-2/20"
                         : reachable
-                          ? "text-gray-500"
-                          : "text-gray-300",
+                          ? "bg-gray-100 text-gray-500"
+                          : "bg-gray-100 text-gray-300",
                   ].join(" ")}
                 >
-                  {label}
+                  {isCompleted ? "✓" : i + 1}
                 </div>
-                {isCompleted && !isOpen && (
-                  <div className="text-xs text-gray-500 mt-0.5 truncate">
-                    {summary}
+
+                <div className="flex-1 min-w-0">
+                  <div
+                    className={[
+                      "text-sm font-semibold",
+                      isOpen
+                        ? "text-primary-1"
+                        : isCompleted
+                          ? "text-gray-800"
+                          : reachable
+                            ? "text-gray-500"
+                            : "text-gray-300",
+                    ].join(" ")}
+                  >
+                    {label}
                   </div>
+                  {isCompleted && !isOpen && (
+                    <div className="text-xs text-gray-500 mt-0.5 truncate">
+                      {summary}
+                    </div>
+                  )}
+                </div>
+
+                {isEditable && (
+                  <Pencil className="h-3.5 w-3.5 text-gray-400 flex-shrink-0" />
                 )}
-              </div>
+              </button>
 
-              {isEditable && (
-                <Pencil className="h-3.5 w-3.5 text-gray-400 flex-shrink-0" />
-              )}
-            </button>
-
-            {/* Section content */}
-            {isOpen && (
-              <div className="px-4 py-5">
-                {id === "pet" && (
-                  <StepPetSelect
-                    pets={pets}
-                    clinics={clinics}
-                    onSelect={(pet) => {
-                      setSel((s) => ({ ...s, pet }))
-                      openAndScroll("clinic")
-                    }}
-                    onPetAdded={(pet) => {
-                      setPets((prev) => [...prev, pet])
-                      setSel((s) => ({ ...s, pet }))
-                      openAndScroll("clinic")
-                    }}
-                  />
-                )}
-
-                {id === "clinic" && (
-                  <StepClinicSelect
-                    clinics={clinics}
-                    onSelect={(clinic) => {
-                      setSel((s) => ({
-                        ...s,
-                        clinic,
-                        doctor: null,
-                        date: null,
-                        slot: null,
-                      }))
-                      openAndScroll("datetime")
-                    }}
-                  />
-                )}
-
-                {id === "datetime" && sel.clinic && (
-                  <StepVetDateTime
-                    clinicId={sel.clinic.id}
-                    initialDoctor={sel.doctor}
-                    onSelect={(doctor, date, slot) => {
-                      setSel((s) => ({ ...s, doctor, date, slot }))
-                      openAndScroll("confirm")
-                    }}
-                  />
-                )}
-
-                {id === "confirm" &&
-                  sel.pet &&
-                  sel.clinic &&
-                  sel.doctor &&
-                  sel.date &&
-                  sel.slot && (
-                    <StepConfirm
-                      pet={sel.pet}
-                      clinic={sel.clinic}
-                      doctor={sel.doctor}
-                      date={sel.date}
-                      slot={sel.slot}
-                      priceInRupees={priceInRupees}
-                      onSuccess={(appt) => setAppointment(appt)}
-                      onEdit={editSection}
+              {/* Section content */}
+              {isOpen && (
+                <div className="px-4 py-5">
+                  {id === "pet" && (
+                    <StepPetSelect
+                      pets={pets}
+                      clinics={clinics}
+                      onSelect={(pet) => {
+                        setSel((s) => ({ ...s, pet }))
+                        openAndScroll("clinic")
+                      }}
+                      onPetAdded={(pet) => {
+                        setPets((prev) => [...prev, pet])
+                        setSel((s) => ({ ...s, pet }))
+                        openAndScroll("clinic")
+                      }}
                     />
                   )}
-              </div>
-            )}
-          </div>
-        )
-      })}
-    </div>
+
+                  {id === "clinic" && (
+                    <StepClinicSelect
+                      clinics={clinics}
+                      onSelect={(clinic) => {
+                        setSel((s) => ({
+                          ...s,
+                          clinic,
+                          doctor: null,
+                          date: null,
+                          slot: null,
+                        }))
+                        openAndScroll("datetime")
+                      }}
+                    />
+                  )}
+
+                  {id === "datetime" && sel.clinic && (
+                    <StepVetDateTime
+                      clinicId={sel.clinic.id}
+                      initialDoctor={sel.doctor}
+                      seniorPriceInRupees={seniorPriceInRupees ?? 999}
+                      onSelect={(doctor, date, slot) => {
+                        setSel((s) => ({ ...s, doctor, date, slot }))
+                        openAndScroll("confirm")
+                      }}
+                      onSeniorVetPicked={(doctor, date, slot) => {
+                        setPendingSeniorSelection({ doctor, date, slot })
+                      }}
+                    />
+                  )}
+
+                  {id === "confirm" &&
+                    sel.pet &&
+                    sel.clinic &&
+                    sel.doctor &&
+                    sel.date &&
+                    sel.slot && (
+                      <StepConfirm
+                        pet={sel.pet}
+                        clinic={sel.clinic}
+                        doctor={sel.doctor}
+                        date={sel.date}
+                        slot={sel.slot}
+                        isSeniorVet={!!sel.doctor.isSenior}
+                        priceInRupees={
+                          sel.doctor.isSenior
+                            ? seniorPriceInRupees
+                            : priceInRupees
+                        }
+                        onSuccess={(appt) => setAppointment(appt)}
+                        onEdit={editSection}
+                      />
+                    )}
+                </div>
+              )}
+            </div>
+          )
+        })}
+      </div>
+
+      {pendingSeniorSelection && seniorPriceInRupees && (
+        <SeniorVetModal
+          doctorName={pendingSeniorSelection.doctor.name}
+          seniorPrice={seniorPriceInRupees}
+          onDismiss={() => {
+            const { doctor, date, slot } = pendingSeniorSelection
+            setPendingSeniorSelection(null)
+            setSel((s) => ({ ...s, doctor, date, slot }))
+            openAndScroll("confirm")
+          }}
+        />
+      )}
+    </>
   )
 }
 

@@ -9,6 +9,7 @@ import {
   Clock,
   Loader2,
   Sparkles,
+  Star,
 } from "lucide-react"
 import {
   v3FetchDoctors,
@@ -24,7 +25,9 @@ import {
 interface Props {
   clinicId: string
   initialDoctor?: V3Doctor | null
+  seniorPriceInRupees: number
   onSelect: (doctor: V3Doctor, date: string, slot: V3TimeSlot) => void
+  onSeniorVetPicked: (doctor: V3Doctor, date: string, slot: V3TimeSlot) => void
 }
 
 function formatDate(dateStr: string): string {
@@ -159,22 +162,33 @@ function MiniCalendar({
 function resolveDoctor(
   slot: V3BestSlot,
   preferredDoctors: V3PreferredDoctor[],
+  allDoctors: V3Doctor[],
 ): V3Doctor {
   for (const { doctorId } of preferredDoctors) {
     if (slot.doctorIds.includes(doctorId)) {
-      return { id: doctorId, name: slot.doctorNames[doctorId] }
+      return (
+        allDoctors.find((d) => d.id === doctorId) ?? {
+          id: doctorId,
+          name: slot.doctorNames[doctorId],
+        }
+      )
     }
   }
   const id = slot.doctorIds[0]
-  return { id, name: slot.doctorNames[id] }
+  return (
+    allDoctors.find((d) => d.id === id) ?? { id, name: slot.doctorNames[id] }
+  )
 }
 
 export default function StepVetDateTime({
   clinicId,
   initialDoctor,
+  seniorPriceInRupees,
   onSelect,
+  onSeniorVetPicked,
 }: Props) {
   const [mode, setMode] = useState<"specific" | "best">("specific")
+  const [seniorOnly, setSeniorOnly] = useState(false)
 
   // ── Specific-vet mode state ───────────────────────────────────────────────
   const [doctors, setDoctors] = useState<V3Doctor[]>([])
@@ -374,13 +388,25 @@ export default function StepVetDateTime({
                     <button
                       key={slot.startTime}
                       onClick={() => {
-                        const doctor = resolveDoctor(slot, preferredDoctors)
+                        const doctor = resolveDoctor(
+                          slot,
+                          preferredDoctors,
+                          doctors,
+                        )
                         const legacySlot: V3TimeSlot = {
                           startTime: slot.startTime,
                           endTime: slot.endTime,
                           isAvailable: true,
                         }
-                        onSelect(doctor, bestSelectedDate, legacySlot)
+                        if (doctor.isSenior && !seniorOnly) {
+                          onSeniorVetPicked(
+                            doctor,
+                            bestSelectedDate,
+                            legacySlot,
+                          )
+                        } else {
+                          onSelect(doctor, bestSelectedDate, legacySlot)
+                        }
                       }}
                       className="rounded-xl border border-primary-2/30 bg-primary-2/5 px-3 py-2.5 text-sm font-medium text-primary-2 hover:bg-primary-2 hover:text-white hover:border-primary-2 transition-all text-center"
                     >
@@ -432,38 +458,110 @@ export default function StepVetDateTime({
 
       {/* Vet selection */}
       <div>
+        {!loadingDoctors && doctors.some((d) => d.isSenior) && (
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-sm font-medium text-gray-600">
+              Select a vet
+            </span>
+            <label className="flex items-center gap-2 cursor-pointer select-none">
+              <span className="flex items-center gap-1 text-xs font-medium text-amber-700">
+                <Star className="h-3 w-3 fill-amber-500 text-amber-500" />
+                Senior vets
+              </span>
+              <button
+                role="switch"
+                aria-checked={seniorOnly}
+                onClick={() => {
+                  setSeniorOnly((v) => !v)
+                  setSelectedDoctor(null)
+                  setSelectedDate(null)
+                  setSlots([])
+                }}
+                className={[
+                  "relative inline-flex h-5 w-9 flex-shrink-0 rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none",
+                  seniorOnly ? "bg-amber-400" : "bg-gray-200",
+                ].join(" ")}
+              >
+                <span
+                  className={[
+                    "pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform duration-200",
+                    seniorOnly ? "translate-x-4" : "translate-x-0",
+                  ].join(" ")}
+                />
+              </button>
+            </label>
+          </div>
+        )}
         {loadingDoctors ? (
           <div className="flex justify-center py-8">
             <Loader2 className="h-6 w-6 animate-spin text-primary-2" />
           </div>
         ) : (
           <div className="space-y-2">
-            {doctors.map((doc) => (
-              <button
-                key={doc.id}
-                onClick={() => setSelectedDoctor(doc)}
-                className={[
-                  "w-full flex items-center gap-3 px-4 py-3 rounded-xl border transition-all text-left",
-                  selectedDoctor?.id === doc.id
-                    ? "border-primary-2 bg-primary-2/5 ring-1 ring-primary-2"
-                    : "border-gray-200 hover:border-primary-2/50 hover:bg-gray-50",
-                ].join(" ")}
-              >
-                <div className="flex-shrink-0 h-10 w-10 rounded-full bg-primary-2/10 flex items-center justify-center">
-                  <User className="h-5 w-5 text-primary-2" />
-                </div>
-                <div className="flex-1">
-                  <div className="font-medium text-primary-1">{doc.name}</div>
-                  <div className="text-xs text-gray-400">Veterinarian</div>
-                </div>
-                {selectedDoctor?.id === doc.id && (
-                  <div className="h-2 w-2 rounded-full bg-primary-2 flex-shrink-0" />
-                )}
-              </button>
-            ))}
-            {doctors.length === 0 && (
+            {(seniorOnly ? doctors.filter((d) => d.isSenior) : doctors).map(
+              (doc) => (
+                <button
+                  key={doc.id}
+                  onClick={() => setSelectedDoctor(doc)}
+                  className={[
+                    "w-full flex items-center gap-3 px-4 py-3 rounded-xl border transition-all text-left",
+                    selectedDoctor?.id === doc.id
+                      ? doc.isSenior
+                        ? "border-amber-400 bg-amber-50 ring-1 ring-amber-400"
+                        : "border-primary-2 bg-primary-2/5 ring-1 ring-primary-2"
+                      : doc.isSenior
+                        ? "border-amber-300 bg-amber-50/60 hover:border-amber-400 hover:bg-amber-50"
+                        : "border-gray-200 hover:border-primary-2/50 hover:bg-gray-50",
+                  ].join(" ")}
+                >
+                  <div
+                    className={[
+                      "flex-shrink-0 h-10 w-10 rounded-full flex items-center justify-center",
+                      doc.isSenior ? "bg-amber-100" : "bg-primary-2/10",
+                    ].join(" ")}
+                  >
+                    <User
+                      className={[
+                        "h-5 w-5",
+                        doc.isSenior ? "text-amber-600" : "text-primary-2",
+                      ].join(" ")}
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium text-primary-1">
+                        {doc.name}
+                      </span>
+                      {doc.isSenior && (
+                        <span className="inline-flex items-center gap-0.5 rounded-full bg-amber-100 border border-amber-300 px-1.5 py-0.5 text-[10px] font-semibold text-amber-700">
+                          <Star className="h-2.5 w-2.5 fill-amber-500 text-amber-500" />
+                          Senior
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-xs text-gray-400">
+                      {doc.isSenior
+                        ? `Senior Veterinarian · ₹${seniorPriceInRupees}`
+                        : "Veterinarian"}
+                    </div>
+                  </div>
+                  {selectedDoctor?.id === doc.id && (
+                    <div
+                      className={[
+                        "h-2 w-2 rounded-full flex-shrink-0",
+                        doc.isSenior ? "bg-amber-500" : "bg-primary-2",
+                      ].join(" ")}
+                    />
+                  )}
+                </button>
+              ),
+            )}
+            {(seniorOnly ? doctors.filter((d) => d.isSenior) : doctors)
+              .length === 0 && (
               <p className="text-center text-sm text-gray-500 py-6">
-                No doctors available at this clinic.
+                {seniorOnly
+                  ? "No senior vets available at this clinic."
+                  : "No doctors available at this clinic."}
               </p>
             )}
           </div>
@@ -518,7 +616,13 @@ export default function StepVetDateTime({
               {availableSlots.map((slot) => (
                 <button
                   key={slot.startTime}
-                  onClick={() => onSelect(selectedDoctor, selectedDate, slot)}
+                  onClick={() => {
+                    if (selectedDoctor.isSenior && !seniorOnly) {
+                      onSeniorVetPicked(selectedDoctor, selectedDate, slot)
+                    } else {
+                      onSelect(selectedDoctor, selectedDate, slot)
+                    }
+                  }}
                   className="rounded-xl border border-primary-2/30 bg-primary-2/5 px-3 py-2.5 text-sm font-medium text-primary-2 hover:bg-primary-2 hover:text-white hover:border-primary-2 transition-all text-center"
                 >
                   {formatTime(slot.startTime)}
