@@ -523,7 +523,6 @@ function StepGroomingConfirm({
   const [error, setError] = useState<string | null>(null)
 
   const groomerId = slot.groomerIds[0]
-  const groomerName = groomerId ? slot.groomerNames[groomerId] : undefined
 
   async function handleConfirm() {
     if (!groomerId) {
@@ -582,19 +581,6 @@ function StepGroomingConfirm({
           icon={<CalendarDays className="h-5 w-5 text-primary-2" />}
           onEdit={() => onEdit("datetime")}
         />
-        {groomerName && (
-          <div className="flex items-center gap-3 px-4 py-3.5">
-            <div className="flex-shrink-0 h-9 w-9 rounded-full bg-primary-2/10 flex items-center justify-center">
-              <Scissors className="h-5 w-5 text-primary-2" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="text-xs text-gray-400 uppercase tracking-wide font-medium">
-                Groomer
-              </div>
-              <div className="font-semibold text-primary-1">{groomerName}</div>
-            </div>
-          </div>
-        )}
       </div>
 
       {priceInRupees != null && (
@@ -692,7 +678,6 @@ function GroomingBookingSuccess({
         {[
           { label: "Pet", value: appointment.petName },
           { label: "Clinic", value: appointment.clinicName },
-          { label: "Groomer", value: appointment.doctorName },
           {
             label: "Date",
             value: new Date(appointment.date + "T00:00:00").toLocaleDateString(
