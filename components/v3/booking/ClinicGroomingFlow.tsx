@@ -108,7 +108,11 @@ export default function ClinicGroomingFlow({
   }
 
   useEffect(() => {
-    Promise.all([v3FetchPets(), v3FetchClinics(), v3FetchGroomingServiceTypes()])
+    Promise.all([
+      v3FetchPets(),
+      v3FetchClinics(),
+      v3FetchGroomingServiceTypes(),
+    ])
       .then(([p, c, gt]) => {
         setPets(p)
         setClinics(c)
