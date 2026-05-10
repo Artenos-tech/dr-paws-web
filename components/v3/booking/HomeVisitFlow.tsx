@@ -220,6 +220,7 @@ export default function HomeVisitFlow({ onBack }: { onBack?: () => void }) {
           ← Back
         </button>
       )}
+      <h1 className="font-roca text-2xl text-primary-1 mb-6">Home Visit</h1>
       {SECTIONS.map(({ id, label }, i) => {
         const isOpen = openSection === id
         const summary = summaries[id]

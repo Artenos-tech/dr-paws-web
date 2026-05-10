@@ -201,6 +201,7 @@ export default function ClinicGroomingFlow({
           ← Back
         </button>
       )}
+      <h1 className="font-roca text-2xl text-primary-1 mb-6">Grooming</h1>
 
       {SECTIONS.map(({ id, label }, i) => {
         const isOpen = openSection === id

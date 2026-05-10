@@ -22,7 +22,7 @@ interface Props {
 const FALLBACK_VISIT_TYPES: V3VisitType[] = [
   {
     key: "HOME_VISIT",
-    title: "Vet at Home",
+    title: "Home Visit",
     description: "A vet visits your home at a convenient time",
   },
   {
@@ -78,7 +78,7 @@ export default function BookingTypeSelector({ onSelect, initialStep }: Props) {
 
   const displayTypes = step === "top" ? visitTypes : clinicSubtypes
   const heading =
-    step === "top" ? "How would you like to book?" : "What type of appointment?"
+    step === "top" ? "Your place or ours?" : "What type of appointment?"
 
   function handleTopSelect(type: TopType) {
     if (type === "HOME_VISIT") {

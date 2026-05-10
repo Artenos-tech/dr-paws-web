@@ -4,7 +4,6 @@ import { useEffect } from "react"
 import { useRouter } from "next/navigation"
 import ClipLoader from "react-spinners/ClipLoader"
 import { useV3UserContext } from "@/context/V3UserContext"
-
 export default function V3Layout({ children }: { children: React.ReactNode }) {
   const { isLoggedIn } = useV3UserContext()
   const router = useRouter()
