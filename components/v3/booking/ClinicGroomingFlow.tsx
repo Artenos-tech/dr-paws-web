@@ -15,7 +15,6 @@ import {
   v3FetchPets,
   v3FetchClinics,
   v3FetchGroomingServiceTypes,
-  v3FetchGroomingPrice,
   v3FetchGroomingSlots,
   v3CreateGroomingAppointment,
   type V3Pet,
@@ -88,7 +87,6 @@ export default function ClinicGroomingFlow({
   const [groomingTypes, setGroomingTypes] = useState<V3GroomingServiceType[]>(
     [],
   )
-  const [priceInRupees, setPriceInRupees] = useState<number | null>(null)
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState<string | null>(null)
   const [appointment, setAppointment] = useState<V3Appointment | null>(null)
@@ -110,17 +108,11 @@ export default function ClinicGroomingFlow({
   }
 
   useEffect(() => {
-    Promise.all([
-      v3FetchPets(),
-      v3FetchClinics(),
-      v3FetchGroomingServiceTypes(),
-      v3FetchGroomingPrice(),
-    ])
-      .then(([p, c, gt, price]) => {
+    Promise.all([v3FetchPets(), v3FetchClinics(), v3FetchGroomingServiceTypes()])
+      .then(([p, c, gt]) => {
         setPets(p)
         setClinics(c)
         setGroomingTypes(gt)
-        setPriceInRupees(price.priceInRupees)
       })
       .catch(() =>
         setLoadError("Failed to load data. Please refresh and try again."),
@@ -355,7 +347,7 @@ export default function ClinicGroomingFlow({
                       clinic={sel.clinic}
                       date={sel.date}
                       slot={sel.slot}
-                      priceInRupees={priceInRupees}
+                      priceInRupees={sel.groomingType.priceInRupees ?? null}
                       onSuccess={(appt) => setAppointment(appt)}
                       onEdit={editSection}
                     />
@@ -391,6 +383,11 @@ function StepGroomingTypeSelect({
           </div>
           <div className="flex-1 min-w-0">
             <div className="font-semibold text-primary-1">{gt.displayName}</div>
+            {gt.priceInRupees != null && (
+              <div className="text-sm text-gray-500 mt-0.5">
+                ₹{gt.priceInRupees}
+              </div>
+            )}
           </div>
           <ChevronRight className="h-5 w-5 text-gray-400 group-hover:text-primary-2 transition-colors flex-shrink-0" />
         </button>

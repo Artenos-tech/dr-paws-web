@@ -528,7 +528,11 @@ export async function v3GetDocumentDownloadUrl(
 // ─── Visit / booking type meta ────────────────────────────────────────────────
 
 export type V3VisitType = { key: string; title: string; description: string }
-export type V3GroomingServiceType = { key: string; displayName: string }
+export type V3GroomingServiceType = {
+  key: string
+  displayName: string
+  priceInRupees?: number
+}
 export type V3GroomingSlot = {
   startTime: string
   endTime: string
