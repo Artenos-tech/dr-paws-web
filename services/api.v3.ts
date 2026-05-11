@@ -98,6 +98,7 @@ export type V3NidanaClinicBookingFlowStep =
   | "SELECT_SERVICE"
   | "SELECT_PET"
   | "SELECT_CLINIC"
+  | "SELECT_DATE_TIME"
   | "SELECT_VET_AND_SLOT"
   | "REVIEW_BOOKING"
 
@@ -689,6 +690,7 @@ export async function v3CreateGroomingAppointment(input: {
   date: string
   startTime: string
   endTime: string
+  bookingFlowSessionId?: string
 }): Promise<V3Appointment> {
   const data = await v3Post<V3ApiResponse<{ appointment: V3Appointment }>>(
     "/v3/appointments/grooming",

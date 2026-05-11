@@ -51,6 +51,7 @@ export default function BookingOrchestrator() {
   if (bookingType === "GROOMING") {
     return (
       <ClinicGroomingFlow
+        bookingFlowSessionId={clinicBookingFlowSessionId}
         onBack={() => {
           setSelectorStep("clinic-subtype")
           setBookingType(null)
