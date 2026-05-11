@@ -1,12 +1,14 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { CheckCircle2, CalendarDays, Pencil } from "lucide-react"
 import ClipLoader from "react-spinners/ClipLoader"
 import {
   v3FetchPets,
   v3FetchClinics,
   v3FetchVetPrice,
+  v3UpdateBookingFlowStep,
+  type V3NidanaClinicBookingFlowStep,
   type V3Pet,
   type V3Clinic,
   type V3Doctor,
@@ -70,7 +72,23 @@ const SECTIONS: { id: SectionId; label: string }[] = [
   { id: "confirm", label: "Confirm booking" },
 ]
 
-export default function ClinicVetFlow({ onBack }: { onBack?: () => void }) {
+const BOOKING_FLOW_STEP_BY_SECTION: Record<
+  SectionId,
+  V3NidanaClinicBookingFlowStep
+> = {
+  pet: "SELECT_PET",
+  clinic: "SELECT_CLINIC",
+  datetime: "SELECT_VET_AND_SLOT",
+  confirm: "REVIEW_BOOKING",
+}
+
+export default function ClinicVetFlow({
+  bookingFlowSessionId,
+  onBack,
+}: {
+  bookingFlowSessionId: string | null
+  onBack?: () => void
+}) {
   const [openSection, setOpenSection] = useState<SectionId>("pet")
   const [pets, setPets] = useState<V3Pet[]>([])
   const [clinics, setClinics] = useState<V3Clinic[]>([])
@@ -99,6 +117,7 @@ export default function ClinicVetFlow({ onBack }: { onBack?: () => void }) {
   const clinicRef = useRef<HTMLDivElement>(null)
   const datetimeRef = useRef<HTMLDivElement>(null)
   const confirmRef = useRef<HTMLDivElement>(null)
+  const lastTrackedStepRef = useRef<V3NidanaClinicBookingFlowStep | null>(null)
 
   const sectionRefs: Record<SectionId, React.RefObject<HTMLDivElement>> = {
     pet: petRef,
@@ -121,8 +140,29 @@ export default function ClinicVetFlow({ onBack }: { onBack?: () => void }) {
       .finally(() => setLoading(false))
   }, [])
 
+  const trackStep = useCallback(async (
+    sessionId: string,
+    stepName: V3NidanaClinicBookingFlowStep,
+  ) => {
+    if (stepName === lastTrackedStepRef.current) return
+    lastTrackedStepRef.current = stepName
+    try {
+      await v3UpdateBookingFlowStep({ sessionId, stepName })
+    } catch (e) {
+      console.warn("Failed to track Nidana booking flow step", e)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!bookingFlowSessionId) return
+    void trackStep(bookingFlowSessionId, BOOKING_FLOW_STEP_BY_SECTION.pet)
+  }, [bookingFlowSessionId, trackStep])
+
   function openAndScroll(section: SectionId) {
     setOpenSection(section)
+    if (bookingFlowSessionId) {
+      void trackStep(bookingFlowSessionId, BOOKING_FLOW_STEP_BY_SECTION[section])
+    }
     setTimeout(() => {
       sectionRefs[section].current?.scrollIntoView({
         behavior: "smooth",
@@ -338,6 +378,7 @@ export default function ClinicVetFlow({ onBack }: { onBack?: () => void }) {
                             ? seniorPriceInRupees
                             : priceInRupees
                         }
+                        bookingFlowSessionId={bookingFlowSessionId}
                         onSuccess={(appt) => setAppointment(appt)}
                         onEdit={editSection}
                       />

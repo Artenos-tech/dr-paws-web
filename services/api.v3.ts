@@ -80,6 +80,27 @@ export type V3PreferredDoctor = {
   appCount: number
 }
 
+export type V3BookingFlowSession = {
+  id: string
+  user_id: string
+  booking_flow_type: "HOME_VISIT" | "CLINIC_VISIT"
+  booking_provider: "NIDANA"
+  platform: "WEB" | "APP"
+  status: "ACTIVE" | "COMPLETED" | "ABANDONED"
+  last_step: string | null
+  started_at: string
+  last_activity_at: string
+  completed_at: string | null
+  abandoned_at: string | null
+}
+
+export type V3NidanaClinicBookingFlowStep =
+  | "SELECT_SERVICE"
+  | "SELECT_PET"
+  | "SELECT_CLINIC"
+  | "SELECT_VET_AND_SLOT"
+  | "REVIEW_BOOKING"
+
 export type V3SpeciesOption = { value: string; label: string }
 export type V3BreedOption = {
   value: string
@@ -123,6 +144,30 @@ async function v3Get<T>(
 async function v3Post<T>(path: string, body: unknown): Promise<T> {
   const res = await fetch(`${API_BASE_URL}${path}`, {
     method: "POST",
+    headers: getV3Headers(),
+    credentials: "include",
+    body: JSON.stringify(body),
+  })
+  const json = await res.json()
+  if (!res.ok) {
+    const err = new Error(
+      json?.message ?? `Request failed: ${res.status}`,
+    ) as Error & {
+      status: number
+      errorCode?: string
+      body?: unknown
+    }
+    err.status = res.status
+    err.errorCode = (json as any)?.errorCode
+    err.body = json
+    throw err
+  }
+  return json as T
+}
+
+async function v3Patch<T>(path: string, body: unknown): Promise<T> {
+  const res = await fetch(`${API_BASE_URL}${path}`, {
+    method: "PATCH",
     headers: getV3Headers(),
     credentials: "include",
     body: JSON.stringify(body),
@@ -252,6 +297,26 @@ export async function v3FetchBestSlots(
   return { slots: data.slots, preferredDoctors: data.preferredDoctors }
 }
 
+export async function v3StartBookingFlow(input: {
+  booking_flow_type: "HOME_VISIT" | "CLINIC_VISIT"
+  platform: "WEB"
+}): Promise<V3BookingFlowSession> {
+  const data = await v3Post<
+    V3ApiResponse<{ data: { session: V3BookingFlowSession } }>
+  >("/v3/booking/flow/start", input)
+  return data.data.session
+}
+
+export async function v3UpdateBookingFlowStep(input: {
+  sessionId: string
+  stepName: V3NidanaClinicBookingFlowStep
+}): Promise<void> {
+  await v3Patch<V3ApiResponse<{ data: unknown }>>(
+    `/v3/booking/flow/${encodeURIComponent(input.sessionId)}/step`,
+    { step_name: input.stepName },
+  )
+}
+
 export async function v3CreateAppointment(input: {
   clinicId: string
   petId: string
@@ -261,6 +326,7 @@ export async function v3CreateAppointment(input: {
   endTime: string
   reasonForVisit?: string
   appointmentTypeKey?: string
+  bookingFlowSessionId?: string
 }): Promise<V3Appointment> {
   const data = await v3Post<V3ApiResponse<{ appointment: V3Appointment }>>(
     "/v3/appointments",
