@@ -80,7 +80,7 @@ export default function StepPetSelect({
         <AddPetModal
           clinics={clinics}
           onClose={() => setShowAddPet(false)}
-          onAdded={(pet) => {
+          onSaved={(pet) => {
             setShowAddPet(false)
             onPetAdded(pet)
           }}

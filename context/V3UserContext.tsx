@@ -22,12 +22,13 @@ interface V3UserContextType {
   isLoggedIn: boolean | null
   login: (owner: V3Owner, token: string) => void
   logout: () => Promise<void>
+  setOwner: (owner: V3Owner) => void
 }
 
 const V3UserContext = createContext<V3UserContextType | undefined>(undefined)
 
 export function V3UserProvider({ children }: { children: ReactNode }) {
-  const [owner, setOwner] = useState<V3Owner | null>(null)
+  const [owner, setOwner_] = useState<V3Owner | null>(null)
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null)
 
   useEffect(() => {
@@ -39,7 +40,7 @@ export function V3UserProvider({ children }: { children: ReactNode }) {
     const stored = localStorage.getItem(V3_OWNER_KEY)
     if (stored) {
       try {
-        setOwner(JSON.parse(stored))
+        setOwner_(JSON.parse(stored))
         setIsLoggedIn(true)
       } catch {
         clearV3Auth()
@@ -54,8 +55,13 @@ export function V3UserProvider({ children }: { children: ReactNode }) {
   const login = useCallback((owner: V3Owner, token: string) => {
     setV3AuthToken(token)
     localStorage.setItem(V3_OWNER_KEY, JSON.stringify(owner))
-    setOwner(owner)
+    setOwner_(owner)
     setIsLoggedIn(true)
+  }, [])
+
+  const setOwner = useCallback((updated: V3Owner) => {
+    localStorage.setItem(V3_OWNER_KEY, JSON.stringify(updated))
+    setOwner_(updated)
   }, [])
 
   const logout = useCallback(async () => {
@@ -65,12 +71,14 @@ export function V3UserProvider({ children }: { children: ReactNode }) {
       // best-effort
     }
     clearV3Auth()
-    setOwner(null)
+    setOwner_(null)
     setIsLoggedIn(false)
   }, [])
 
   return (
-    <V3UserContext.Provider value={{ owner, isLoggedIn, login, logout }}>
+    <V3UserContext.Provider
+      value={{ owner, isLoggedIn, login, logout, setOwner }}
+    >
       {children}
     </V3UserContext.Provider>
   )

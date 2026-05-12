@@ -201,6 +201,30 @@ async function v3Patch<T>(path: string, body: unknown): Promise<T> {
   return json as T
 }
 
+async function v3Put<T>(path: string, body: unknown): Promise<T> {
+  const res = await fetch(`${API_BASE_URL}${path}`, {
+    method: "PUT",
+    headers: getV3Headers(),
+    credentials: "include",
+    body: JSON.stringify(body),
+  })
+  const json = await res.json()
+  if (!res.ok) {
+    const err = new Error(
+      json?.message ?? `Request failed: ${res.status}`,
+    ) as Error & {
+      status: number
+      errorCode?: string
+      body?: unknown
+    }
+    err.status = res.status
+    err.errorCode = (json as any)?.errorCode
+    err.body = json
+    throw err
+  }
+  return json as T
+}
+
 async function v3Delete<T>(path: string): Promise<T> {
   const res = await fetch(`${API_BASE_URL}${path}`, {
     method: "DELETE",
@@ -643,22 +667,13 @@ export async function v3FetchVetPrice(): Promise<{
   }
 }
 
-export async function v3FetchGroomingServiceTypes(): Promise<
-  V3GroomingServiceType[]
-> {
+export async function v3FetchGroomingServiceTypes(
+  species?: string,
+): Promise<V3GroomingServiceType[]> {
   const data = await v3Get<
     V3ApiResponse<{ groomingTypes: V3GroomingServiceType[] }>
-  >("/v3/booking/grooming/types")
+  >("/v3/booking/grooming/types", species ? { species } : undefined)
   return data.groomingTypes
-}
-
-export async function v3FetchGroomingPrice(): Promise<{
-  priceInRupees: number
-}> {
-  const data = await v3Get<V3ApiResponse<{ priceInRupees: number }>>(
-    "/v3/booking/grooming/price",
-  )
-  return { priceInRupees: data.priceInRupees }
 }
 
 export async function v3FetchGroomingDates(
@@ -731,6 +746,37 @@ export async function v3FetchBreeds(species: string): Promise<V3BreedOption[]> {
     },
   )
   return data.breeds
+}
+
+export async function v3UpdateOwner(input: {
+  firstName?: string
+  lastName?: string
+  email?: string | null
+}): Promise<V3Owner> {
+  const data = await v3Put<V3ApiResponse<{ owner: V3Owner }>>(
+    "/v3/owners/me",
+    input,
+  )
+  return data.owner
+}
+
+export async function v3UpdatePet(
+  id: string,
+  input: {
+    name?: string
+    species?: string
+    breed?: string | null
+    gender?: string
+    dateOfBirth?: string | null
+    weight?: string | null
+    reproductiveStatus?: string | null
+  },
+): Promise<V3Pet> {
+  const data = await v3Put<V3ApiResponse<{ pet: V3Pet }>>(
+    `/v3/pets/${id}`,
+    input,
+  )
+  return data.pet
 }
 
 function initRequestContext() {
