@@ -140,18 +140,18 @@ export default function ClinicGroomingFlow({
       .finally(() => setLoading(false))
   }, [])
 
-  const trackStep = useCallback(async (
-    sessionId: string,
-    stepName: V3NidanaClinicBookingFlowStep,
-  ) => {
-    if (stepName === lastTrackedStepRef.current) return
-    lastTrackedStepRef.current = stepName
-    try {
-      await v3UpdateBookingFlowStep({ sessionId, stepName })
-    } catch (e) {
-      console.warn("Failed to track Nidana grooming booking flow step", e)
-    }
-  }, [])
+  const trackStep = useCallback(
+    async (sessionId: string, stepName: V3NidanaClinicBookingFlowStep) => {
+      if (stepName === lastTrackedStepRef.current) return
+      lastTrackedStepRef.current = stepName
+      try {
+        await v3UpdateBookingFlowStep({ sessionId, stepName })
+      } catch (e) {
+        console.warn("Failed to track Nidana grooming booking flow step", e)
+      }
+    },
+    [],
+  )
 
   useEffect(() => {
     if (!bookingFlowSessionId) return
@@ -164,7 +164,10 @@ export default function ClinicGroomingFlow({
   function openAndScroll(section: SectionId) {
     setOpenSection(section)
     if (bookingFlowSessionId) {
-      void trackStep(bookingFlowSessionId, BOOKING_FLOW_STEP_BY_SECTION[section])
+      void trackStep(
+        bookingFlowSessionId,
+        BOOKING_FLOW_STEP_BY_SECTION[section],
+      )
     }
     setTimeout(() => {
       refs[section].current?.scrollIntoView({

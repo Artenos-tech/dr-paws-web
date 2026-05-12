@@ -116,8 +116,9 @@ export default function HomeVisitFlow({ onBack }: { onBack?: () => void }) {
     datetime: useRef<HTMLDivElement>(null),
     confirm: useRef<HTMLDivElement>(null),
   }
-  const lastTrackedStepRef =
-    useRef<V3NidanaHomeVisitBookingFlowStep | null>(null)
+  const lastTrackedStepRef = useRef<V3NidanaHomeVisitBookingFlowStep | null>(
+    null,
+  )
   const openSectionRef = useRef<SectionId>("address")
 
   useEffect(() => {
@@ -139,18 +140,18 @@ export default function HomeVisitFlow({ onBack }: { onBack?: () => void }) {
       .finally(() => setLoading(false))
   }, [])
 
-  const trackStep = useCallback(async (
-    sessionId: string,
-    stepName: V3NidanaHomeVisitBookingFlowStep,
-  ) => {
-    if (stepName === lastTrackedStepRef.current) return
-    lastTrackedStepRef.current = stepName
-    try {
-      await v3UpdateBookingFlowStep({ sessionId, stepName })
-    } catch (e) {
-      console.warn("Failed to track Nidana home-visit booking flow step", e)
-    }
-  }, [])
+  const trackStep = useCallback(
+    async (sessionId: string, stepName: V3NidanaHomeVisitBookingFlowStep) => {
+      if (stepName === lastTrackedStepRef.current) return
+      lastTrackedStepRef.current = stepName
+      try {
+        await v3UpdateBookingFlowStep({ sessionId, stepName })
+      } catch (e) {
+        console.warn("Failed to track Nidana home-visit booking flow step", e)
+      }
+    },
+    [],
+  )
 
   useEffect(() => {
     const startSession = async () => {
@@ -165,7 +166,10 @@ export default function HomeVisitFlow({ onBack }: { onBack?: () => void }) {
           BOOKING_FLOW_STEP_BY_SECTION[openSectionRef.current],
         )
       } catch (e) {
-        console.warn("Failed to start Nidana home-visit booking flow session", e)
+        console.warn(
+          "Failed to start Nidana home-visit booking flow session",
+          e,
+        )
       }
     }
 
@@ -176,7 +180,10 @@ export default function HomeVisitFlow({ onBack }: { onBack?: () => void }) {
     openSectionRef.current = section
     setOpenSection(section)
     if (bookingFlowSessionId) {
-      void trackStep(bookingFlowSessionId, BOOKING_FLOW_STEP_BY_SECTION[section])
+      void trackStep(
+        bookingFlowSessionId,
+        BOOKING_FLOW_STEP_BY_SECTION[section],
+      )
     }
     setTimeout(() => {
       refs[section].current?.scrollIntoView({
