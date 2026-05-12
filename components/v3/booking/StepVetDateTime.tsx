@@ -25,6 +25,7 @@ import {
 interface Props {
   clinicId: string
   initialDoctor?: V3Doctor | null
+  priceInRupees: number
   seniorPriceInRupees: number
   onSelect: (doctor: V3Doctor, date: string, slot: V3TimeSlot) => void
   onSeniorVetPicked: (doctor: V3Doctor, date: string, slot: V3TimeSlot) => void
@@ -183,6 +184,7 @@ function resolveDoctor(
 export default function StepVetDateTime({
   clinicId,
   initialDoctor,
+  priceInRupees,
   seniorPriceInRupees,
   onSelect,
   onSeniorVetPicked,
@@ -542,7 +544,7 @@ export default function StepVetDateTime({
                     <div className="text-xs text-gray-400">
                       {doc.isSenior
                         ? `Senior Veterinarian · ₹${seniorPriceInRupees}`
-                        : "Veterinarian"}
+                        : `Veterinarian · ₹${priceInRupees}`}
                     </div>
                   </div>
                   {selectedDoctor?.id === doc.id && (

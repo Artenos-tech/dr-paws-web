@@ -309,6 +309,7 @@ export default function ClinicVetFlow({ onBack }: { onBack?: () => void }) {
                     <StepVetDateTime
                       clinicId={sel.clinic.id}
                       initialDoctor={sel.doctor}
+                      priceInRupees={priceInRupees ?? 599}
                       seniorPriceInRupees={seniorPriceInRupees ?? 999}
                       onSelect={(doctor, date, slot) => {
                         setSel((s) => ({ ...s, doctor, date, slot }))
