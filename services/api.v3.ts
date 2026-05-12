@@ -102,6 +102,17 @@ export type V3NidanaClinicBookingFlowStep =
   | "SELECT_VET_AND_SLOT"
   | "REVIEW_BOOKING"
 
+export type V3NidanaHomeVisitBookingFlowStep =
+  | "SELECT_ADDRESS"
+  | "SELECT_PET"
+  | "SELECT_REASON_FOR_VISIT"
+  | "SELECT_DATE_TIME"
+  | "REVIEW_BOOKING"
+
+export type V3NidanaBookingFlowStep =
+  | V3NidanaClinicBookingFlowStep
+  | V3NidanaHomeVisitBookingFlowStep
+
 export type V3SpeciesOption = { value: string; label: string }
 export type V3BreedOption = {
   value: string
@@ -310,7 +321,7 @@ export async function v3StartBookingFlow(input: {
 
 export async function v3UpdateBookingFlowStep(input: {
   sessionId: string
-  stepName: V3NidanaClinicBookingFlowStep
+  stepName: V3NidanaBookingFlowStep
 }): Promise<void> {
   await v3Patch<V3ApiResponse<{ data: unknown }>>(
     `/v3/booking/flow/${encodeURIComponent(input.sessionId)}/step`,
@@ -432,6 +443,7 @@ export async function v3CreateHomeVisitAppointment(input: {
   isEmergency: boolean
   reasonCode: string
   petParentNotes: string
+  bookingFlowSessionId?: string
 }): Promise<V3HomeVisitAppointment> {
   const data = await v3Post<
     V3ApiResponse<{ appointment: V3HomeVisitAppointment }>
