@@ -584,22 +584,13 @@ export async function v3FetchVetPrice(): Promise<{
   }
 }
 
-export async function v3FetchGroomingServiceTypes(): Promise<
-  V3GroomingServiceType[]
-> {
+export async function v3FetchGroomingServiceTypes(
+  species?: string,
+): Promise<V3GroomingServiceType[]> {
   const data = await v3Get<
     V3ApiResponse<{ groomingTypes: V3GroomingServiceType[] }>
-  >("/v3/booking/grooming/types")
+  >("/v3/booking/grooming/types", species ? { species } : undefined)
   return data.groomingTypes
-}
-
-export async function v3FetchGroomingPrice(): Promise<{
-  priceInRupees: number
-}> {
-  const data = await v3Get<V3ApiResponse<{ priceInRupees: number }>>(
-    "/v3/booking/grooming/price",
-  )
-  return { priceInRupees: data.priceInRupees }
 }
 
 export async function v3FetchGroomingDates(

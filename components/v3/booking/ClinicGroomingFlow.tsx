@@ -37,8 +37,8 @@ interface Selection {
 }
 
 const SECTIONS: { id: SectionId; label: string }[] = [
-  { id: "groomingType", label: "Choose a grooming service" },
   { id: "pet", label: "Select a pet" },
+  { id: "groomingType", label: "Choose a grooming service" },
   { id: "clinic", label: "Choose a clinic" },
   { id: "datetime", label: "Pick a date & time" },
   { id: "confirm", label: "Confirm booking" },
@@ -81,12 +81,13 @@ export default function ClinicGroomingFlow({
 }: {
   onBack?: () => void
 }) {
-  const [openSection, setOpenSection] = useState<SectionId>("groomingType")
+  const [openSection, setOpenSection] = useState<SectionId>("pet")
   const [pets, setPets] = useState<V3Pet[]>([])
   const [clinics, setClinics] = useState<V3Clinic[]>([])
   const [groomingTypes, setGroomingTypes] = useState<V3GroomingServiceType[]>(
     [],
   )
+  const [groomingTypesLoading, setGroomingTypesLoading] = useState(false)
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState<string | null>(null)
   const [appointment, setAppointment] = useState<V3Appointment | null>(null)
@@ -108,21 +109,31 @@ export default function ClinicGroomingFlow({
   }
 
   useEffect(() => {
-    Promise.all([
-      v3FetchPets(),
-      v3FetchClinics(),
-      v3FetchGroomingServiceTypes(),
-    ])
-      .then(([p, c, gt]) => {
+    Promise.all([v3FetchPets(), v3FetchClinics()])
+      .then(([p, c]) => {
         setPets(p)
         setClinics(c)
-        setGroomingTypes(gt)
       })
       .catch(() =>
         setLoadError("Failed to load data. Please refresh and try again."),
       )
       .finally(() => setLoading(false))
   }, [])
+
+  async function fetchGroomingTypes(pet: V3Pet) {
+    setGroomingTypes([])
+    setGroomingTypesLoading(true)
+    try {
+      const types = await v3FetchGroomingServiceTypes(pet.species ?? undefined)
+      setGroomingTypes(types)
+    } catch {
+      setLoadError(
+        "Failed to load grooming services. Please refresh and try again.",
+      )
+    } finally {
+      setGroomingTypesLoading(false)
+    }
+  }
 
   function openAndScroll(section: SectionId) {
     setOpenSection(section)
@@ -135,9 +146,16 @@ export default function ClinicGroomingFlow({
   }
 
   function editSection(section: SectionId) {
-    if (section === "groomingType") {
-      setSel((s) => ({ ...s, pet: null, clinic: null, date: null, slot: null }))
-    } else if (section === "pet") {
+    if (section === "pet") {
+      setSel((s) => ({
+        ...s,
+        groomingType: null,
+        clinic: null,
+        date: null,
+        slot: null,
+      }))
+      setGroomingTypes([])
+    } else if (section === "groomingType") {
       setSel((s) => ({ ...s, clinic: null, date: null, slot: null }))
     } else if (section === "clinic") {
       setSel((s) => ({ ...s, date: null, slot: null }))
@@ -148,15 +166,15 @@ export default function ClinicGroomingFlow({
   }
 
   function isReachable(id: SectionId): boolean {
-    if (id === "groomingType") return true
-    if (id === "pet") return !!sel.groomingType
-    if (id === "clinic") return !!sel.groomingType && !!sel.pet
+    if (id === "pet") return true
+    if (id === "groomingType") return !!sel.pet
+    if (id === "clinic") return !!sel.pet && !!sel.groomingType
     if (id === "datetime")
-      return !!sel.groomingType && !!sel.pet && !!sel.clinic
+      return !!sel.pet && !!sel.groomingType && !!sel.clinic
     if (id === "confirm")
       return (
-        !!sel.groomingType &&
         !!sel.pet &&
+        !!sel.groomingType &&
         !!sel.clinic &&
         !!sel.date &&
         !!sel.slot
@@ -276,34 +294,50 @@ export default function ClinicGroomingFlow({
 
             {isOpen && (
               <div className="px-4 py-5">
-                {id === "groomingType" && (
-                  <StepGroomingTypeSelect
-                    groomingTypes={groomingTypes}
-                    onSelect={(gt) => {
-                      setSel((s) => ({
-                        ...s,
-                        groomingType: gt,
-                        pet: null,
-                        clinic: null,
-                        date: null,
-                        slot: null,
-                      }))
-                      openAndScroll("pet")
-                    }}
-                  />
-                )}
-
                 {id === "pet" && (
                   <StepPetSelect
                     pets={pets}
                     clinics={clinics}
-                    onSelect={(pet) => {
-                      setSel((s) => ({ ...s, pet }))
-                      openAndScroll("clinic")
+                    onSelect={async (pet) => {
+                      setSel((s) => ({
+                        ...s,
+                        pet,
+                        groomingType: null,
+                        clinic: null,
+                        date: null,
+                        slot: null,
+                      }))
+                      await fetchGroomingTypes(pet)
+                      openAndScroll("groomingType")
                     }}
-                    onPetAdded={(pet) => {
+                    onPetAdded={async (pet) => {
                       setPets((prev) => [...prev, pet])
-                      setSel((s) => ({ ...s, pet }))
+                      setSel((s) => ({
+                        ...s,
+                        pet,
+                        groomingType: null,
+                        clinic: null,
+                        date: null,
+                        slot: null,
+                      }))
+                      await fetchGroomingTypes(pet)
+                      openAndScroll("groomingType")
+                    }}
+                  />
+                )}
+
+                {id === "groomingType" && (
+                  <StepGroomingTypeSelect
+                    groomingTypes={groomingTypes}
+                    loading={groomingTypesLoading}
+                    onSelect={(gt) => {
+                      setSel((s) => ({
+                        ...s,
+                        groomingType: gt,
+                        clinic: null,
+                        date: null,
+                        slot: null,
+                      }))
                       openAndScroll("clinic")
                     }}
                   />
@@ -370,11 +404,21 @@ export default function ClinicGroomingFlow({
 
 function StepGroomingTypeSelect({
   groomingTypes,
+  loading,
   onSelect,
 }: {
   groomingTypes: V3GroomingServiceType[]
+  loading?: boolean
   onSelect: (gt: V3GroomingServiceType) => void
 }) {
+  if (loading) {
+    return (
+      <div className="flex justify-center py-6">
+        <ClipLoader color="#33495f" size={24} />
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-3">
       {groomingTypes.map((gt) => (
