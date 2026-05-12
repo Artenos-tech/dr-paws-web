@@ -144,6 +144,26 @@ async function v3Post<T>(path: string, body: unknown): Promise<T> {
   return json as T
 }
 
+async function v3Put<T>(path: string, body: unknown): Promise<T> {
+  const res = await fetch(`${API_BASE_URL}${path}`, {
+    method: "PUT",
+    headers: getV3Headers(),
+    credentials: "include",
+    body: JSON.stringify(body),
+  })
+  const json = await res.json()
+  if (!res.ok) {
+    const err = new Error(
+      json?.message ?? `Request failed: ${res.status}`,
+    ) as Error & { status: number; errorCode?: string; body?: unknown }
+    err.status = res.status
+    err.errorCode = (json as any)?.errorCode
+    err.body = json
+    throw err
+  }
+  return json as T
+}
+
 async function v3Delete<T>(path: string): Promise<T> {
   const res = await fetch(`${API_BASE_URL}${path}`, {
     method: "DELETE",
@@ -651,6 +671,37 @@ export async function v3FetchBreeds(species: string): Promise<V3BreedOption[]> {
     },
   )
   return data.breeds
+}
+
+export async function v3UpdateOwner(input: {
+  firstName?: string
+  lastName?: string
+  email?: string | null
+}): Promise<V3Owner> {
+  const data = await v3Put<V3ApiResponse<{ owner: V3Owner }>>(
+    "/v3/owners/me",
+    input,
+  )
+  return data.owner
+}
+
+export async function v3UpdatePet(
+  id: string,
+  input: {
+    name?: string
+    species?: string
+    breed?: string | null
+    gender?: string
+    dateOfBirth?: string | null
+    weight?: string | null
+    reproductiveStatus?: string | null
+  },
+): Promise<V3Pet> {
+  const data = await v3Put<V3ApiResponse<{ pet: V3Pet }>>(
+    `/v3/pets/${id}`,
+    input,
+  )
+  return data.pet
 }
 
 function initRequestContext() {

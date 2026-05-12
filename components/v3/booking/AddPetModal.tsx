@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { X } from "lucide-react"
 import {
   v3CreatePet,
+  v3UpdatePet,
   v3FetchSpecies,
   v3FetchBreeds,
   type V3Pet,
@@ -14,8 +15,9 @@ import {
 
 interface Props {
   clinics: V3Clinic[]
+  petToEdit?: V3Pet
   onClose: () => void
-  onAdded: (pet: V3Pet) => void
+  onSaved: (pet: V3Pet) => void
 }
 
 const GENDERS = [
@@ -24,12 +26,29 @@ const GENDERS = [
   { value: "Unknown", label: "Unknown" },
 ]
 
-export default function AddPetModal({ clinics, onClose, onAdded }: Props) {
-  const [name, setName] = useState("")
-  const [species, setSpecies] = useState("")
-  const [breed, setBreed] = useState("")
-  const [gender, setGender] = useState("Unknown")
-  const [dateOfBirth, setDateOfBirth] = useState("")
+const REPRODUCTIVE_STATUSES = [
+  { value: "Intact", label: "Intact" },
+  { value: "Neutered", label: "Neutered" },
+  { value: "Spayed", label: "Spayed" },
+]
+
+export default function AddPetModal({
+  clinics,
+  petToEdit,
+  onClose,
+  onSaved,
+}: Props) {
+  const isEditing = !!petToEdit
+
+  const [name, setName] = useState(petToEdit?.name ?? "")
+  const [species, setSpecies] = useState(petToEdit?.species ?? "")
+  const [breed, setBreed] = useState(petToEdit?.breed ?? "")
+  const [gender, setGender] = useState(petToEdit?.gender ?? "Unknown")
+  const [dateOfBirth, setDateOfBirth] = useState(petToEdit?.dateOfBirth ?? "")
+  const [weight, setWeight] = useState(petToEdit?.weight ?? "")
+  const [reproductiveStatus, setReproductiveStatus] = useState(
+    petToEdit?.reproductiveStatus ?? "",
+  )
 
   const [speciesOptions, setSpeciesOptions] = useState<V3SpeciesOption[]>([])
   const [breedOptions, setBreedOptions] = useState<V3BreedOption[]>([])
@@ -45,11 +64,10 @@ export default function AddPetModal({ clinics, onClose, onAdded }: Props) {
   useEffect(() => {
     if (!species) {
       setBreedOptions([])
-      setBreed("")
+      if (!isEditing) setBreed("")
       return
     }
     setLoadingBreeds(true)
-    setBreed("")
     v3FetchBreeds(species)
       .then(setBreedOptions)
       .catch(console.error)
@@ -62,26 +80,42 @@ export default function AddPetModal({ clinics, onClose, onAdded }: Props) {
       setError("Pet name is required")
       return
     }
-    if (!clinics.length) {
-      setError("No clinics available. Please try again later.")
-      return
-    }
 
     setLoading(true)
     setError(null)
     try {
-      const pet = await v3CreatePet({
-        name: name.trim(),
-        clinicId: clinics[0].id,
-        species: species || undefined,
-        breed: breed || undefined,
-        gender: gender || undefined,
-        dateOfBirth: dateOfBirth || null,
-      })
-      onAdded(pet)
+      let pet: V3Pet
+      if (isEditing) {
+        pet = await v3UpdatePet(petToEdit.id, {
+          name: name.trim(),
+          species: species || undefined,
+          breed: breed || null,
+          gender: gender || undefined,
+          dateOfBirth: dateOfBirth || null,
+          weight: weight || null,
+          reproductiveStatus: reproductiveStatus || null,
+        })
+      } else {
+        if (!clinics.length) {
+          setError("No clinics available. Please try again later.")
+          setLoading(false)
+          return
+        }
+        pet = await v3CreatePet({
+          name: name.trim(),
+          clinicId: clinics[0].id,
+          species: species || undefined,
+          breed: breed || undefined,
+          gender: gender || undefined,
+          dateOfBirth: dateOfBirth || null,
+          weight: weight || undefined,
+          reproductiveStatus: reproductiveStatus || undefined,
+        })
+      }
+      onSaved(pet)
     } catch (e) {
       setError(
-        e instanceof Error ? e.message : "Failed to add pet. Please try again.",
+        e instanceof Error ? e.message : "Failed to save pet. Please try again.",
       )
     } finally {
       setLoading(false)
@@ -95,7 +129,9 @@ export default function AddPetModal({ clinics, onClose, onAdded }: Props) {
     >
       <div className="bg-white w-full sm:max-w-md sm:rounded-2xl rounded-t-2xl shadow-xl max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-gray-100">
-          <h3 className="font-roca text-xl text-primary-1">Add a new pet</h3>
+          <h3 className="font-roca text-xl text-primary-1">
+            {isEditing ? "Edit pet" : "Add a new pet"}
+          </h3>
           <button
             onClick={onClose}
             className="rounded-full p-1.5 hover:bg-gray-100 transition-colors"
@@ -126,7 +162,7 @@ export default function AddPetModal({ clinics, onClose, onAdded }: Props) {
               </label>
               <select
                 value={species}
-                onChange={(e) => setSpecies(e.target.value)}
+                onChange={(e) => { setSpecies(e.target.value); setBreed("") }}
                 className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm text-gray-800 focus:border-primary-2 focus:outline-none focus:ring-1 focus:ring-primary-2 bg-white"
               >
                 <option value="">Select…</option>
@@ -179,17 +215,50 @@ export default function AddPetModal({ clinics, onClose, onAdded }: Props) {
             </div>
           )}
 
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                Date of birth
+              </label>
+              <input
+                type="date"
+                value={dateOfBirth}
+                onChange={(e) => setDateOfBirth(e.target.value)}
+                max={new Date().toISOString().split("T")[0]}
+                className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm text-gray-800 focus:border-primary-2 focus:outline-none focus:ring-1 focus:ring-primary-2"
+              />
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                Weight
+              </label>
+              <input
+                type="text"
+                value={weight}
+                onChange={(e) => setWeight(e.target.value)}
+                placeholder="e.g. 4.5 kg"
+                className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:border-primary-2 focus:outline-none focus:ring-1 focus:ring-primary-2"
+              />
+            </div>
+          </div>
+
           <div className="space-y-1">
             <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">
-              Date of birth
+              Reproductive status
             </label>
-            <input
-              type="date"
-              value={dateOfBirth}
-              onChange={(e) => setDateOfBirth(e.target.value)}
-              max={new Date().toISOString().split("T")[0]}
-              className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm text-gray-800 focus:border-primary-2 focus:outline-none focus:ring-1 focus:ring-primary-2"
-            />
+            <select
+              value={reproductiveStatus}
+              onChange={(e) => setReproductiveStatus(e.target.value)}
+              className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm text-gray-800 focus:border-primary-2 focus:outline-none focus:ring-1 focus:ring-primary-2 bg-white"
+            >
+              <option value="">Not specified</option>
+              {REPRODUCTIVE_STATUSES.map((r) => (
+                <option key={r.value} value={r.value}>
+                  {r.label}
+                </option>
+              ))}
+            </select>
           </div>
 
           {error && <p className="text-xs text-red-500">{error}</p>}
@@ -207,7 +276,13 @@ export default function AddPetModal({ clinics, onClose, onAdded }: Props) {
               disabled={loading}
               className="flex-1 rounded-lg bg-secondary-1 py-2.5 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-60"
             >
-              {loading ? "Adding…" : "Add pet"}
+              {loading
+                ? isEditing
+                  ? "Saving…"
+                  : "Adding…"
+                : isEditing
+                  ? "Save changes"
+                  : "Add pet"}
             </button>
           </div>
         </form>
