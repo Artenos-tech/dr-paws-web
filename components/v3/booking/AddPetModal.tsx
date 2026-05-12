@@ -115,7 +115,9 @@ export default function AddPetModal({
       onSaved(pet)
     } catch (e) {
       setError(
-        e instanceof Error ? e.message : "Failed to save pet. Please try again.",
+        e instanceof Error
+          ? e.message
+          : "Failed to save pet. Please try again.",
       )
     } finally {
       setLoading(false)
@@ -162,7 +164,10 @@ export default function AddPetModal({
               </label>
               <select
                 value={species}
-                onChange={(e) => { setSpecies(e.target.value); setBreed("") }}
+                onChange={(e) => {
+                  setSpecies(e.target.value)
+                  setBreed("")
+                }}
                 className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm text-gray-800 focus:border-primary-2 focus:outline-none focus:ring-1 focus:ring-primary-2 bg-white"
               >
                 <option value="">Select…</option>

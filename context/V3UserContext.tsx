@@ -76,7 +76,9 @@ export function V3UserProvider({ children }: { children: ReactNode }) {
   }, [])
 
   return (
-    <V3UserContext.Provider value={{ owner, isLoggedIn, login, logout, setOwner }}>
+    <V3UserContext.Provider
+      value={{ owner, isLoggedIn, login, logout, setOwner }}
+    >
       {children}
     </V3UserContext.Provider>
   )

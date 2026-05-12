@@ -1,7 +1,17 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Pencil, Plus, Dog, Cat, Bird, HelpCircle, User, Mail, Phone } from "lucide-react"
+import {
+  Pencil,
+  Plus,
+  Dog,
+  Cat,
+  Bird,
+  HelpCircle,
+  User,
+  Mail,
+  Phone,
+} from "lucide-react"
 import { X } from "lucide-react"
 import ClipLoader from "react-spinners/ClipLoader"
 import { useV3UserContext } from "@/context/V3UserContext"
@@ -59,7 +69,9 @@ function EditProfileModal({
       onSaved(updated)
     } catch (e) {
       setError(
-        e instanceof Error ? e.message : "Failed to update profile. Please try again.",
+        e instanceof Error
+          ? e.message
+          : "Failed to update profile. Please try again.",
       )
     } finally {
       setLoading(false)
@@ -184,7 +196,9 @@ export default function V3HomePage() {
       {/* Profile section */}
       <div className="rounded-2xl border border-gray-200 bg-white overflow-hidden">
         <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
-          <span className="text-sm font-semibold text-gray-700">My Profile</span>
+          <span className="text-sm font-semibold text-gray-700">
+            My Profile
+          </span>
           <button
             onClick={() => setEditingProfile(true)}
             className="flex items-center gap-1 text-xs font-medium text-primary-2 hover:underline"
@@ -219,7 +233,10 @@ export default function V3HomePage() {
         <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
           <span className="text-sm font-semibold text-gray-700">My Pets</span>
           <button
-            onClick={() => { setPetToEdit(null); setPetModalOpen(true) }}
+            onClick={() => {
+              setPetToEdit(null)
+              setPetModalOpen(true)
+            }}
             className="flex items-center gap-1 text-xs font-medium text-primary-2 hover:underline"
           >
             <Plus className="h-3.5 w-3.5" />
@@ -249,13 +266,20 @@ export default function V3HomePage() {
                     <PetIcon species={pet.species} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="font-semibold text-sm text-primary-1">{pet.name}</div>
+                    <div className="font-semibold text-sm text-primary-1">
+                      {pet.name}
+                    </div>
                     {subtitle && (
-                      <div className="text-xs text-gray-500 mt-0.5">{subtitle}</div>
+                      <div className="text-xs text-gray-500 mt-0.5">
+                        {subtitle}
+                      </div>
                     )}
                   </div>
                   <button
-                    onClick={() => { setPetToEdit(pet); setPetModalOpen(true) }}
+                    onClick={() => {
+                      setPetToEdit(pet)
+                      setPetModalOpen(true)
+                    }}
                     className="flex items-center gap-1 text-xs font-medium text-primary-2 hover:underline flex-shrink-0"
                   >
                     <Pencil className="h-3 w-3" />

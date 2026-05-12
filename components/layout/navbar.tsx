@@ -455,13 +455,19 @@ export default function NavBar() {
                       {[
                         { label: "Home", href: "/v3" },
                         { label: "My Appointments", href: "/v3/appointments" },
-                        { label: "Medical History", href: "/v3/medical-history" },
+                        {
+                          label: "Medical History",
+                          href: "/v3/medical-history",
+                        },
                         { label: "Invoices", href: "/v3/invoices" },
                       ].map(({ label, href }) => (
                         <button
                           key={href}
                           type="button"
-                          onClick={() => { setIsOpen(false); navigate.push(href) }}
+                          onClick={() => {
+                            setIsOpen(false)
+                            navigate.push(href)
+                          }}
                           className="text-primary-1 hover:text-secondary-1 text-sm text-left"
                         >
                           {label}
