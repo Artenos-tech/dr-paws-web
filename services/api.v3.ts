@@ -4,7 +4,6 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL as string
 
 export const V3_AUTH_TOKEN_HEADER = "X-Auth-Token"
 export const V3_AUTH_TOKEN_KEY = "v3AuthToken"
-export const V3_OWNER_KEY = "v3Owner"
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -115,7 +114,13 @@ async function v3Get<T>(
   })
   const json = await res.json()
   if (!res.ok) {
-    throw new Error(json?.message ?? `Request failed: ${res.status}`)
+    const err = new Error(
+      json?.message ?? `Request failed: ${res.status}`,
+    ) as Error & { status: number; errorCode?: string; body?: unknown }
+    err.status = res.status
+    err.errorCode = (json as any)?.errorCode
+    err.body = json
+    throw err
   }
   return json as T
 }
@@ -664,6 +669,11 @@ export async function v3FetchBreeds(species: string): Promise<V3BreedOption[]> {
   return data.breeds
 }
 
+export async function v3GetMe(): Promise<V3Owner> {
+  const data = await v3Get<V3ApiResponse<{ owner: V3Owner }>>("/v3/me")
+  return data.owner
+}
+
 export async function v3UpdateOwner(input: {
   firstName?: string
   lastName?: string
@@ -716,7 +726,6 @@ export function setV3AuthToken(token: string) {
 export function clearV3Auth() {
   if (typeof window !== "undefined") {
     localStorage.removeItem(V3_AUTH_TOKEN_KEY)
-    localStorage.removeItem(V3_OWNER_KEY)
     requestContext.removeHeader(V3_AUTH_TOKEN_HEADER)
   }
 }

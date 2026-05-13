@@ -16,6 +16,7 @@ import api, { clearAuthToken } from "@/services/api"
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
 import { useEffect, useRef, useState } from "react"
 import { ChevronDown } from "lucide-react"
+import ClipLoader from "react-spinners/ClipLoader"
 import { useHomeVisitFeature } from "@/hooks/useHomeVisitFeature"
 import { useV3Feature } from "@/hooks/useV3Feature"
 import { useV3UserContext } from "@/context/V3UserContext"
@@ -196,7 +197,16 @@ export default function NavBar() {
             )}
             <div className="hidden lg:flex items-center space-x-4 text-xs">
               {isV3Enabled ? (
-                isV3LoggedIn ? (
+                isV3LoggedIn === null ? (
+                  <div
+                    aria-busy="true"
+                    aria-label="Checking sign-in status"
+                    className="flex items-center gap-1.5 rounded-full bg-primary-2/10 px-3 py-1.5 text-primary-1 border border-primary-2/20"
+                  >
+                    <ClipLoader color="#33495f" size={12} />
+                    <ChevronDown className="h-3 w-3 opacity-60" />
+                  </div>
+                ) : isV3LoggedIn ? (
                   <DropdownMenu.Root>
                     <DropdownMenu.Trigger className="outline-none">
                       <div className="flex items-center gap-1.5 cursor-pointer rounded-full bg-primary-2/10 px-3 py-1.5 text-primary-1 hover:bg-primary-2/20 transition-colors border border-primary-2/20">
@@ -446,7 +456,15 @@ export default function NavBar() {
           <div className="pt-4 pb-3 border-t border-primary-2">
             <div className="flex items-center px-8 md:px-32 space-x-4">
               {isV3Enabled ? (
-                isV3LoggedIn ? (
+                isV3LoggedIn === null ? (
+                  <div
+                    aria-busy="true"
+                    aria-label="Checking sign-in status"
+                    className="flex items-center h-5"
+                  >
+                    <ClipLoader color="#33495f" size={14} />
+                  </div>
+                ) : isV3LoggedIn ? (
                   <div className="flex flex-col gap-2">
                     <span className="text-primary-1 text-sm font-medium">
                       {v3Owner?.firstName}
