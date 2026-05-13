@@ -366,7 +366,7 @@ export async function v3CreateAppointment(input: {
 }): Promise<V3Appointment> {
   const data = await v3Post<V3ApiResponse<{ appointment: V3Appointment }>>(
     "/v3/appointments",
-    input,
+    { ...input, platform: "WEB" },
   )
   return data.appointment
 }
@@ -471,7 +471,7 @@ export async function v3CreateHomeVisitAppointment(input: {
 }): Promise<V3HomeVisitAppointment> {
   const data = await v3Post<
     V3ApiResponse<{ appointment: V3HomeVisitAppointment }>
-  >("/v3/booking/at-home/appointments", input)
+  >("/v3/booking/at-home/appointments", { ...input, platform: "WEB" })
   return data.appointment
 }
 
@@ -721,7 +721,7 @@ export async function v3CreateGroomingAppointment(input: {
 }): Promise<V3Appointment> {
   const data = await v3Post<V3ApiResponse<{ appointment: V3Appointment }>>(
     "/v3/appointments/grooming",
-    input,
+    { ...input, platform: "WEB" },
   )
   return data.appointment
 }
