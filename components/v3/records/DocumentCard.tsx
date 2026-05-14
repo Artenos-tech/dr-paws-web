@@ -2,7 +2,11 @@
 
 import { useEffect, useRef, useState } from "react"
 import { FileText, Eye, Download, Loader2 } from "lucide-react"
-import { v3GetDocumentDownloadUrl, type V3Document } from "@/services/api.v3"
+import {
+  v3GetDocumentDownloadUrl,
+  type V3Document,
+  type V3DocumentType,
+} from "@/services/api.v3"
 
 // These types may need async PDF regeneration — poll until isGenerating=false
 const ASYNC_TYPES = new Set(["emr", "prescription"])
@@ -68,11 +72,15 @@ async function downloadUrl(url: string, fileName: string) {
   }
 }
 
-interface Props {
-  document: V3Document
-}
-
-export default function DocumentCard({ document: doc }: Props) {
+function FileRow({
+  downloadId,
+  type,
+  name,
+}: {
+  downloadId: string
+  type: V3DocumentType
+  name: string
+}) {
   const [activeAction, setActiveAction] = useState<Action | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
@@ -112,16 +120,12 @@ export default function DocumentCard({ document: doc }: Props) {
       return
     }
     try {
-      const result = await v3GetDocumentDownloadUrl(doc.id, doc.type)
+      const result = await v3GetDocumentDownloadUrl(downloadId, type)
       if (!result.isGenerating && result.url) {
         stopPolling()
         setIsGenerating(false)
         setActiveAction(null)
-        await executeAction(
-          result.url,
-          result.fileName,
-          pendingActionRef.current!,
-        )
+        await executeAction(result.url, result.fileName, pendingActionRef.current!)
       }
     } catch {
       stopPolling()
@@ -137,7 +141,7 @@ export default function DocumentCard({ document: doc }: Props) {
     setErrorMsg(null)
 
     try {
-      const result = await v3GetDocumentDownloadUrl(doc.id, doc.type)
+      const result = await v3GetDocumentDownloadUrl(downloadId, type)
 
       if (!result.isGenerating && result.url) {
         setActiveAction(null)
@@ -145,7 +149,7 @@ export default function DocumentCard({ document: doc }: Props) {
         return
       }
 
-      if (ASYNC_TYPES.has(doc.type)) {
+      if (ASYNC_TYPES.has(type)) {
         pendingActionRef.current = action
         attemptsRef.current = 0
         setIsGenerating(true)
@@ -163,30 +167,10 @@ export default function DocumentCard({ document: doc }: Props) {
   const busy = activeAction !== null
 
   return (
-    <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
-      <div className="flex items-start justify-between gap-3">
-        {/* Document info */}
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2 mb-1">
-            <FileText className="h-4 w-4 text-primary-2 flex-shrink-0" />
-            <h3 className="text-sm font-semibold text-primary-1 truncate">
-              {doc.name}
-            </h3>
-          </div>
-          <div className="text-xs text-gray-500 space-y-0.5">
-            <div>{formatDate(doc.createdAt)}</div>
-            {doc.petName && <div>Pet: {doc.petName}</div>}
-            {doc.doctorName && <div>By: {doc.doctorName}</div>}
-            {doc.amount != null && (
-              <div className="font-medium text-gray-700">
-                {formatAmount(doc.amount)}
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Action buttons */}
-        <div className="flex items-center gap-2 flex-shrink-0">
+    <div>
+      <div className="flex items-center justify-between gap-2">
+        <span className="text-xs text-gray-500 truncate">{name}</span>
+        <div className="flex items-center gap-1.5 flex-shrink-0">
           <ActionButton
             icon={<Eye className="h-3 w-3" />}
             label="View"
@@ -203,28 +187,12 @@ export default function DocumentCard({ document: doc }: Props) {
           />
         </div>
       </div>
-
-      {/* File list — metadata only */}
-      {doc.files.length > 0 && (
-        <div className="mt-2 pt-2 border-t border-gray-100 space-y-0.5">
-          {doc.files.map((file) => (
-            <div
-              key={file.downloadId}
-              className="text-xs text-gray-400 truncate"
-            >
-              {file.name}
-            </div>
-          ))}
-        </div>
-      )}
-
       {isGenerating && (
-        <p className="mt-2 text-xs text-amber-600">
+        <p className="mt-1 text-xs text-amber-600">
           Generating PDF, this may take a few seconds…
         </p>
       )}
-
-      {errorMsg && <p className="mt-2 text-xs text-red-600">{errorMsg}</p>}
+      {errorMsg && <p className="mt-1 text-xs text-red-600">{errorMsg}</p>}
     </div>
   )
 }
@@ -251,5 +219,52 @@ function ActionButton({
       {loading ? <Loader2 className="h-3 w-3 animate-spin" /> : icon}
       {label}
     </button>
+  )
+}
+
+interface Props {
+  document: V3Document
+}
+
+export default function DocumentCard({ document: doc }: Props) {
+  const fileRows =
+    doc.files.length > 0
+      ? doc.files.map((f) => ({ downloadId: f.downloadId, name: f.name }))
+      : [{ downloadId: doc.id, name: doc.name }]
+
+  return (
+    <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+      {/* Document info */}
+      <div className="flex items-start gap-2 mb-3">
+        <FileText className="h-4 w-4 text-primary-2 flex-shrink-0 mt-0.5" />
+        <div className="min-w-0">
+          <h3 className="text-sm font-semibold text-primary-1 truncate">
+            {doc.name}
+          </h3>
+          <div className="text-xs text-gray-500 space-y-0.5 mt-0.5">
+            <div>{formatDate(doc.createdAt)}</div>
+            {doc.petName && <div>Pet: {doc.petName}</div>}
+            {doc.doctorName && <div>By: {doc.doctorName}</div>}
+            {doc.amount != null && (
+              <div className="font-medium text-gray-700">
+                {formatAmount(doc.amount)}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Per-file rows with individual View/Download actions */}
+      <div className="border-t border-gray-100 pt-2 space-y-2">
+        {fileRows.map((row) => (
+          <FileRow
+            key={row.downloadId}
+            downloadId={row.downloadId}
+            type={doc.type}
+            name={row.name}
+          />
+        ))}
+      </div>
+    </div>
   )
 }

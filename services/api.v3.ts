@@ -535,11 +535,11 @@ export type V3DocumentDownload = {
 }
 
 export async function v3GetDocumentDownloadUrl(
-  documentId: string,
+  downloadId: string,
   type: V3DocumentType,
 ): Promise<V3DocumentDownload> {
   const data = await v3Get<V3ApiResponse<V3DocumentDownload>>(
-    `/v3/documents/${encodeURIComponent(documentId)}/download`,
+    `/v3/documents/${encodeURIComponent(downloadId)}/download`,
     { type },
   )
   return {
