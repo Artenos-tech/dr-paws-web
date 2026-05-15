@@ -4,16 +4,25 @@
 
 "use client"
 
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 // import toast from "react-hot-toast"
 import { useUserContext } from "@/context/UserContext"
+import { useV3Feature } from "@/hooks/useV3Feature"
 import ClipLoader from "react-spinners/ClipLoader"
 import { useEffect, useState } from "react"
 
 export default function UserLayout(props: { children: React.ReactNode }) {
   const { isLoggedIn, initiateLogin } = useUserContext()
   const pathname = usePathname()
+  const router = useRouter()
+  const isV3Enabled = useV3Feature()
   const [wasLoggedIn, setWasLoggedIn] = useState(false)
+
+  useEffect(() => {
+    if (isV3Enabled === true) {
+      router.replace("/")
+    }
+  }, [isV3Enabled])
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -31,7 +40,7 @@ export default function UserLayout(props: { children: React.ReactNode }) {
     }
   }, [isLoggedIn, pathname])
 
-  if (isLoggedIn === null) {
+  if (isV3Enabled === null || isLoggedIn === null) {
     return (
       <div className="flex justify-center items-center my-20">
         <ClipLoader color="#33495f" />
@@ -39,7 +48,7 @@ export default function UserLayout(props: { children: React.ReactNode }) {
     )
   }
 
-  if (isLoggedIn === false) {
+  if (isV3Enabled === true || isLoggedIn === false) {
     return null
   }
   return props.children

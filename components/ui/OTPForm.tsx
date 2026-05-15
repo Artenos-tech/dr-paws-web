@@ -27,7 +27,7 @@ const OTPForm: React.FC<otpFormProps> = ({
   const [otp, setOtp] = useState<string>("")
   const [err, setErr] = useState<string>("")
 
-  const handleVerify = (e: React.UIEvent<HTMLElement>) => {
+  const handleVerify = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (otp.length === 4) {
       handleOTPVerification(otp)
@@ -51,7 +51,7 @@ const OTPForm: React.FC<otpFormProps> = ({
         Incorrect Number?
       </span>
 
-      <form>
+      <form onSubmit={handleVerify}>
         <div className="flex flex-col justify-center items-center my-10 gap-10">
           <div>
             <InputOTP
@@ -61,11 +61,6 @@ const OTPForm: React.FC<otpFormProps> = ({
               onChange={(value) => setOtp(value)}
               value={otp}
               autoFocus
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  handleVerify(e)
-                }
-              }}
             >
               <InputOTPGroup>
                 <InputOTPSlot
@@ -94,9 +89,8 @@ const OTPForm: React.FC<otpFormProps> = ({
           )}
 
           <button
-            type="button"
+            type="submit"
             className="w-full bg-secondary-1 text-white rounded-full py-3 text-xs md:text-sm my-2"
-            onClick={handleVerify}
           >
             {loading ? (
               <ClipLoader size={20} color="white" />

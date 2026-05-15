@@ -15,12 +15,19 @@ import Profile from "@/public/assets/images/profileThumnail.svg"
 import api, { clearAuthToken } from "@/services/api"
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
 import { useEffect, useRef, useState } from "react"
+import { ChevronDown } from "lucide-react"
+import ClipLoader from "react-spinners/ClipLoader"
 import { useHomeVisitFeature } from "@/hooks/useHomeVisitFeature"
+import { useV3Feature } from "@/hooks/useV3Feature"
+import { useV3UserContext } from "@/context/V3UserContext"
+import V3LoginModal from "@/components/v3/V3LoginModal"
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false)
   const [isProfileOpen, setIsProfileOpen] = useState(false)
   const [isContactModalOpen, setContactIsModalOpen] = useState(false)
+  const [v3ModalOpen, setV3ModalOpen] = useState(false)
+  const [v3PostLoginPath, setV3PostLoginPath] = useState("/v3")
   const navigate = useRouter()
   const pathname = usePathname()
   const isVetAtHomePage = pathname?.includes("/vet-at-home")
@@ -28,6 +35,13 @@ export default function NavBar() {
 
   const { refresh, initiateLogin, isLoggedIn } = useUserContext()
   const { isFeatureEnabled: isHomeVisitEnabled } = useHomeVisitFeature()
+  const isV3Enabled = useV3Feature()
+  const {
+    isLoggedIn: isV3LoggedIn,
+    owner: v3Owner,
+    login: v3Login,
+    logout: v3Logout,
+  } = useV3UserContext()
 
   const dropdownRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
@@ -71,6 +85,15 @@ export default function NavBar() {
   }
 
   const handleBookAVisit = () => {
+    if (isV3Enabled) {
+      if (isV3LoggedIn) {
+        navigate.push("/v3/book")
+      } else {
+        setV3PostLoginPath("/v3/book")
+        setV3ModalOpen(true)
+      }
+      return
+    }
     const destination =
       pathname?.includes("/vet-at-home") && isHomeVisitEnabled
         ? "/user/book-appointment?home=true"
@@ -173,7 +196,96 @@ export default function NavBar() {
               />
             )}
             <div className="hidden lg:flex items-center space-x-4 text-xs">
-              {isLoggedIn ? (
+              {isV3Enabled === null ? (
+                <div
+                  aria-busy="true"
+                  aria-label="Checking sign-in status"
+                  className="flex items-center gap-1.5 rounded-full bg-primary-2/10 px-3 py-1.5 text-primary-1 border border-primary-2/20"
+                >
+                  <ClipLoader color="#33495f" size={12} />
+                  <ChevronDown className="h-3 w-3 opacity-60" />
+                </div>
+              ) : isV3Enabled ? (
+                isV3LoggedIn === null ? (
+                  <div
+                    aria-busy="true"
+                    aria-label="Checking sign-in status"
+                    className="flex items-center gap-1.5 rounded-full bg-primary-2/10 px-3 py-1.5 text-primary-1 border border-primary-2/20"
+                  >
+                    <ClipLoader color="#33495f" size={12} />
+                    <ChevronDown className="h-3 w-3 opacity-60" />
+                  </div>
+                ) : isV3LoggedIn ? (
+                  <DropdownMenu.Root>
+                    <DropdownMenu.Trigger className="outline-none">
+                      <div className="flex items-center gap-1.5 cursor-pointer rounded-full bg-primary-2/10 px-3 py-1.5 text-primary-1 hover:bg-primary-2/20 transition-colors border border-primary-2/20">
+                        <span className="text-xs font-medium">
+                          {v3Owner?.firstName}
+                        </span>
+                        <ChevronDown className="h-3 w-3 opacity-60" />
+                      </div>
+                    </DropdownMenu.Trigger>
+                    <DropdownMenu.Portal>
+                      <DropdownMenu.Content
+                        className="bg-[#f7f1de] shadow-lg rounded-lg w-44 p-3 flex flex-col gap-1 z-50"
+                        align="end"
+                        sideOffset={8}
+                      >
+                        <DropdownMenu.Item asChild>
+                          <div
+                            onClick={() => navigate.push("/v3")}
+                            className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none text-sm"
+                          >
+                            Home
+                          </div>
+                        </DropdownMenu.Item>
+                        <DropdownMenu.Item asChild>
+                          <div
+                            onClick={() => navigate.push("/v3/appointments")}
+                            className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none text-sm"
+                          >
+                            My Appointments
+                          </div>
+                        </DropdownMenu.Item>
+                        <DropdownMenu.Item asChild>
+                          <div
+                            onClick={() => navigate.push("/v3/medical-history")}
+                            className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none text-sm"
+                          >
+                            Medical History
+                          </div>
+                        </DropdownMenu.Item>
+                        <DropdownMenu.Item asChild>
+                          <div
+                            onClick={() => navigate.push("/v3/invoices")}
+                            className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none text-sm"
+                          >
+                            Invoices
+                          </div>
+                        </DropdownMenu.Item>
+                        <div className="border-t border-gray-300 my-1" />
+                        <DropdownMenu.Item asChild>
+                          <div
+                            onClick={v3Logout}
+                            className="text-primary-1 hover:text-secondary-1 cursor-pointer outline-none text-sm"
+                          >
+                            Logout
+                          </div>
+                        </DropdownMenu.Item>
+                        <DropdownMenu.Arrow className="fill-current text-[#f7f1de]" />
+                      </DropdownMenu.Content>
+                    </DropdownMenu.Portal>
+                  </DropdownMenu.Root>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setV3ModalOpen(true)}
+                    className="text-primary-1 text-sm tracking-wider"
+                  >
+                    Login
+                  </button>
+                )
+              ) : isLoggedIn ? (
                 <DropdownMenu.Root>
                   <DropdownMenu.Trigger className="outline-none">
                     <Image
@@ -352,7 +464,69 @@ export default function NavBar() {
           </div>
           <div className="pt-4 pb-3 border-t border-primary-2">
             <div className="flex items-center px-8 md:px-32 space-x-4">
-              {isLoggedIn ? (
+              {isV3Enabled === null ? (
+                <div
+                  aria-busy="true"
+                  aria-label="Checking sign-in status"
+                  className="flex items-center h-5"
+                >
+                  <ClipLoader color="#33495f" size={14} />
+                </div>
+              ) : isV3Enabled ? (
+                isV3LoggedIn === null ? (
+                  <div
+                    aria-busy="true"
+                    aria-label="Checking sign-in status"
+                    className="flex items-center h-5"
+                  >
+                    <ClipLoader color="#33495f" size={14} />
+                  </div>
+                ) : isV3LoggedIn ? (
+                  <div className="flex flex-col gap-2">
+                    <span className="text-primary-1 text-sm font-medium">
+                      {v3Owner?.firstName}
+                    </span>
+                    <div className="flex flex-col gap-1 pl-1">
+                      {[
+                        { label: "Home", href: "/v3" },
+                        { label: "My Appointments", href: "/v3/appointments" },
+                        {
+                          label: "Medical History",
+                          href: "/v3/medical-history",
+                        },
+                        { label: "Invoices", href: "/v3/invoices" },
+                      ].map(({ label, href }) => (
+                        <button
+                          key={href}
+                          type="button"
+                          onClick={() => {
+                            setIsOpen(false)
+                            navigate.push(href)
+                          }}
+                          className="text-primary-1 hover:text-secondary-1 text-sm text-left"
+                        >
+                          {label}
+                        </button>
+                      ))}
+                      <button
+                        type="button"
+                        onClick={v3Logout}
+                        className="text-primary-1 hover:text-secondary-1 text-sm text-left"
+                      >
+                        Logout
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setV3ModalOpen(true)}
+                    className="text-primary-1 text-sm tracking-wider"
+                  >
+                    Login
+                  </button>
+                )
+              ) : isLoggedIn ? (
                 <button
                   type="button"
                   ref={profileButtonRef}
@@ -490,6 +664,20 @@ export default function NavBar() {
         isOpen={isContactModalOpen}
         onRequestClose={() => setContactIsModalOpen(false)}
       />
+
+      {v3ModalOpen && (
+        <V3LoginModal
+          onSuccess={(owner, token) => {
+            v3Login(owner, token)
+            setV3ModalOpen(false)
+            navigate.push(v3PostLoginPath)
+          }}
+          onClose={() => {
+            setV3ModalOpen(false)
+            setV3PostLoginPath("/v3")
+          }}
+        />
+      )}
 
       <Toaster />
     </div>
