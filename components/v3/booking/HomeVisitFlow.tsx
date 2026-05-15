@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import {
   CheckCircle2,
   Pencil,
@@ -21,11 +21,14 @@ import {
   v3FetchHomeVisitSlots,
   v3FetchHomeVisitPrice,
   v3CreateHomeVisitAppointment,
+  v3StartBookingFlow,
+  v3UpdateBookingFlowStep,
   type V3Pet,
   type V3Clinic,
   type V3Address,
   type V3HomeVisitSlot,
   type V3HomeVisitAppointment,
+  type V3NidanaHomeVisitBookingFlowStep,
 } from "@/services/api.v3"
 import StepPetSelect from "./StepPetSelect"
 import StepVisitDetails, {
@@ -57,6 +60,17 @@ const SECTIONS: { id: SectionId; label: string }[] = [
   { id: "confirm", label: "Confirm home visit" },
 ]
 
+const BOOKING_FLOW_STEP_BY_SECTION: Record<
+  SectionId,
+  V3NidanaHomeVisitBookingFlowStep
+> = {
+  address: "SELECT_ADDRESS",
+  pet: "SELECT_PET",
+  visitDetails: "SELECT_REASON_FOR_VISIT",
+  datetime: "SELECT_DATE_TIME",
+  confirm: "REVIEW_BOOKING",
+}
+
 function formatDateShort(dateStr: string): string {
   return new Date(dateStr + "T00:00:00").toLocaleDateString("en-IN", {
     weekday: "short",
@@ -83,6 +97,9 @@ export default function HomeVisitFlow({ onBack }: { onBack?: () => void }) {
   const [appointment, setAppointment] = useState<V3HomeVisitAppointment | null>(
     null,
   )
+  const [bookingFlowSessionId, setBookingFlowSessionId] = useState<
+    string | null
+  >(null)
 
   const [sel, setSel] = useState<Selection>({
     address: null,
@@ -99,6 +116,10 @@ export default function HomeVisitFlow({ onBack }: { onBack?: () => void }) {
     datetime: useRef<HTMLDivElement>(null),
     confirm: useRef<HTMLDivElement>(null),
   }
+  const lastTrackedStepRef = useRef<V3NidanaHomeVisitBookingFlowStep | null>(
+    null,
+  )
+  const openSectionRef = useRef<SectionId>("address")
 
   useEffect(() => {
     Promise.all([
@@ -119,8 +140,51 @@ export default function HomeVisitFlow({ onBack }: { onBack?: () => void }) {
       .finally(() => setLoading(false))
   }, [])
 
+  const trackStep = useCallback(
+    async (sessionId: string, stepName: V3NidanaHomeVisitBookingFlowStep) => {
+      if (stepName === lastTrackedStepRef.current) return
+      lastTrackedStepRef.current = stepName
+      try {
+        await v3UpdateBookingFlowStep({ sessionId, stepName })
+      } catch (e) {
+        console.warn("Failed to track Nidana home-visit booking flow step", e)
+      }
+    },
+    [],
+  )
+
+  useEffect(() => {
+    const startSession = async () => {
+      try {
+        const session = await v3StartBookingFlow({
+          booking_flow_type: "HOME_VISIT",
+          platform: "WEB",
+        })
+        setBookingFlowSessionId(session.id)
+        await trackStep(
+          session.id,
+          BOOKING_FLOW_STEP_BY_SECTION[openSectionRef.current],
+        )
+      } catch (e) {
+        console.warn(
+          "Failed to start Nidana home-visit booking flow session",
+          e,
+        )
+      }
+    }
+
+    void startSession()
+  }, [trackStep])
+
   function openAndScroll(section: SectionId) {
+    openSectionRef.current = section
     setOpenSection(section)
+    if (bookingFlowSessionId) {
+      void trackStep(
+        bookingFlowSessionId,
+        BOOKING_FLOW_STEP_BY_SECTION[section],
+      )
+    }
     setTimeout(() => {
       refs[section].current?.scrollIntoView({
         behavior: "smooth",
@@ -371,6 +435,7 @@ export default function HomeVisitFlow({ onBack }: { onBack?: () => void }) {
                       date={sel.date}
                       slot={sel.slot}
                       priceInRupees={priceInRupees}
+                      bookingFlowSessionId={bookingFlowSessionId}
                       onSuccess={(appt) => setAppointment(appt)}
                       onEdit={editSection}
                     />
@@ -873,6 +938,7 @@ function StepHomeVisitConfirm({
   date,
   slot,
   priceInRupees,
+  bookingFlowSessionId,
   onSuccess,
   onEdit,
 }: {
@@ -882,6 +948,7 @@ function StepHomeVisitConfirm({
   date: string
   slot: V3HomeVisitSlot
   priceInRupees: number | null
+  bookingFlowSessionId: string | null
   onSuccess: (appt: V3HomeVisitAppointment) => void
   onEdit: (section: SectionId) => void
 }) {
@@ -900,6 +967,7 @@ function StepHomeVisitConfirm({
         isEmergency: false,
         reasonCode: visitDetails.reasonCode,
         petParentNotes: visitDetails.petParentNotes,
+        bookingFlowSessionId: bookingFlowSessionId ?? undefined,
       })
       onSuccess(appt)
     } catch (e) {

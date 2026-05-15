@@ -16,6 +16,7 @@ type BookingType = "HOME_VISIT" | "VET_CONSULTATION" | "GROOMING"
 
 interface Props {
   onSelect: (type: BookingType) => void
+  onClinicVisitSelect?: () => void
   initialStep?: "top" | "clinic-subtype"
 }
 
@@ -53,7 +54,11 @@ function typeIcon(key: string) {
   return <Stethoscope className={cls} />
 }
 
-export default function BookingTypeSelector({ onSelect, initialStep }: Props) {
+export default function BookingTypeSelector({
+  onSelect,
+  onClinicVisitSelect,
+  initialStep,
+}: Props) {
   const [step, setStep] = useState<"top" | "clinic-subtype">(
     initialStep ?? "top",
   )
@@ -84,6 +89,7 @@ export default function BookingTypeSelector({ onSelect, initialStep }: Props) {
     if (type === "HOME_VISIT") {
       onSelect("HOME_VISIT")
     } else {
+      onClinicVisitSelect?.()
       setStep("clinic-subtype")
     }
   }

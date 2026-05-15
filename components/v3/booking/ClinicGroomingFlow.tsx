@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import {
   CheckCircle2,
   Pencil,
@@ -17,6 +17,8 @@ import {
   v3FetchGroomingServiceTypes,
   v3FetchGroomingSlots,
   v3CreateGroomingAppointment,
+  v3UpdateBookingFlowStep,
+  type V3NidanaClinicBookingFlowStep,
   type V3Pet,
   type V3Clinic,
   type V3GroomingServiceType,
@@ -43,6 +45,17 @@ const SECTIONS: { id: SectionId; label: string }[] = [
   { id: "datetime", label: "Pick a date & time" },
   { id: "confirm", label: "Confirm booking" },
 ]
+
+const BOOKING_FLOW_STEP_BY_SECTION: Record<
+  SectionId,
+  V3NidanaClinicBookingFlowStep
+> = {
+  groomingType: "SELECT_SERVICE",
+  pet: "SELECT_PET",
+  clinic: "SELECT_CLINIC",
+  datetime: "SELECT_DATE_TIME",
+  confirm: "REVIEW_BOOKING",
+}
 
 function formatDateShort(dateStr: string): string {
   return new Date(dateStr + "T00:00:00").toLocaleDateString("en-IN", {
@@ -77,8 +90,10 @@ function nextNDates(n: number): string[] {
 }
 
 export default function ClinicGroomingFlow({
+  bookingFlowSessionId,
   onBack,
 }: {
+  bookingFlowSessionId: string | null
   onBack?: () => void
 }) {
   const [openSection, setOpenSection] = useState<SectionId>("pet")
@@ -107,6 +122,7 @@ export default function ClinicGroomingFlow({
     datetime: useRef<HTMLDivElement>(null),
     confirm: useRef<HTMLDivElement>(null),
   }
+  const lastTrackedStepRef = useRef<V3NidanaClinicBookingFlowStep | null>(null)
 
   useEffect(() => {
     Promise.all([v3FetchPets(), v3FetchClinics()])
@@ -119,6 +135,24 @@ export default function ClinicGroomingFlow({
       )
       .finally(() => setLoading(false))
   }, [])
+
+  const trackStep = useCallback(
+    async (sessionId: string, stepName: V3NidanaClinicBookingFlowStep) => {
+      if (stepName === lastTrackedStepRef.current) return
+      lastTrackedStepRef.current = stepName
+      try {
+        await v3UpdateBookingFlowStep({ sessionId, stepName })
+      } catch (e) {
+        console.warn("Failed to track Nidana grooming booking flow step", e)
+      }
+    },
+    [],
+  )
+
+  useEffect(() => {
+    if (!bookingFlowSessionId) return
+    void trackStep(bookingFlowSessionId, BOOKING_FLOW_STEP_BY_SECTION.pet)
+  }, [bookingFlowSessionId, trackStep])
 
   async function fetchGroomingTypes(pet: V3Pet) {
     setGroomingTypes([])
@@ -137,6 +171,12 @@ export default function ClinicGroomingFlow({
 
   function openAndScroll(section: SectionId) {
     setOpenSection(section)
+    if (bookingFlowSessionId) {
+      void trackStep(
+        bookingFlowSessionId,
+        BOOKING_FLOW_STEP_BY_SECTION[section],
+      )
+    }
     setTimeout(() => {
       refs[section].current?.scrollIntoView({
         behavior: "smooth",
@@ -387,6 +427,7 @@ export default function ClinicGroomingFlow({
                       date={sel.date}
                       slot={sel.slot}
                       priceInRupees={sel.groomingType.priceInRupees ?? null}
+                      bookingFlowSessionId={bookingFlowSessionId}
                       onSuccess={(appt) => setAppointment(appt)}
                       onEdit={editSection}
                     />
@@ -556,6 +597,7 @@ function StepGroomingConfirm({
   date,
   slot,
   priceInRupees,
+  bookingFlowSessionId,
   onSuccess,
   onEdit,
 }: {
@@ -565,6 +607,7 @@ function StepGroomingConfirm({
   date: string
   slot: V3GroomingSlot
   priceInRupees: number | null
+  bookingFlowSessionId: string | null
   onSuccess: (appt: V3Appointment) => void
   onEdit: (section: SectionId) => void
 }) {
@@ -589,6 +632,7 @@ function StepGroomingConfirm({
         date,
         startTime: slot.startTime,
         endTime: slot.endTime,
+        bookingFlowSessionId: bookingFlowSessionId ?? undefined,
       })
       onSuccess(appt)
     } catch (e) {

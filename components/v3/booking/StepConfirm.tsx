@@ -27,6 +27,7 @@ interface Props {
   slot: V3TimeSlot
   priceInRupees?: number | null
   isSeniorVet?: boolean
+  bookingFlowSessionId?: string | null
   onSuccess: (appointment: V3Appointment) => void
   onEdit: (section: "pet" | "clinic" | "datetime") => void
 }
@@ -63,6 +64,7 @@ export default function StepConfirm({
   slot,
   priceInRupees,
   isSeniorVet,
+  bookingFlowSessionId,
   onSuccess,
   onEdit,
 }: Props) {
@@ -82,6 +84,7 @@ export default function StepConfirm({
         startTime: slot.startTime,
         endTime: slot.endTime,
         reasonForVisit: reason.trim() || undefined,
+        bookingFlowSessionId: bookingFlowSessionId ?? undefined,
       })
       onSuccess(appt)
     } catch (e) {
