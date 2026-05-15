@@ -125,7 +125,11 @@ function FileRow({
         stopPolling()
         setIsGenerating(false)
         setActiveAction(null)
-        await executeAction(result.url, result.fileName, pendingActionRef.current!)
+        await executeAction(
+          result.url,
+          result.fileName,
+          pendingActionRef.current!,
+        )
       }
     } catch {
       stopPolling()

@@ -196,7 +196,16 @@ export default function NavBar() {
               />
             )}
             <div className="hidden lg:flex items-center space-x-4 text-xs">
-              {isV3Enabled ? (
+              {isV3Enabled === null ? (
+                <div
+                  aria-busy="true"
+                  aria-label="Checking sign-in status"
+                  className="flex items-center gap-1.5 rounded-full bg-primary-2/10 px-3 py-1.5 text-primary-1 border border-primary-2/20"
+                >
+                  <ClipLoader color="#33495f" size={12} />
+                  <ChevronDown className="h-3 w-3 opacity-60" />
+                </div>
+              ) : isV3Enabled ? (
                 isV3LoggedIn === null ? (
                   <div
                     aria-busy="true"
@@ -455,7 +464,15 @@ export default function NavBar() {
           </div>
           <div className="pt-4 pb-3 border-t border-primary-2">
             <div className="flex items-center px-8 md:px-32 space-x-4">
-              {isV3Enabled ? (
+              {isV3Enabled === null ? (
+                <div
+                  aria-busy="true"
+                  aria-label="Checking sign-in status"
+                  className="flex items-center h-5"
+                >
+                  <ClipLoader color="#33495f" size={14} />
+                </div>
+              ) : isV3Enabled ? (
                 isV3LoggedIn === null ? (
                   <div
                     aria-busy="true"
