@@ -12,7 +12,7 @@ import ClipLoader from "react-spinners/ClipLoader"
 import { useEffect, useState } from "react"
 
 export default function UserLayout(props: { children: React.ReactNode }) {
-  const { isLoggedIn, initiateLogin } = useUserContext()
+  const { isLoggedIn } = useUserContext()
   const pathname = usePathname()
   const router = useRouter()
   const isV3Enabled = useV3Feature()
