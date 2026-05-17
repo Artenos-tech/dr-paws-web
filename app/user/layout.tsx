@@ -31,12 +31,13 @@ export default function UserLayout(props: { children: React.ReactNode }) {
       // toast.error("You've been logged out automatically. Please login again.")
       setWasLoggedIn(false)
     } else if (isLoggedIn === false) {
-      const loginText = pathname.match("book-appointment")
-        ? "book a visit"
-        : pathname.match("my-appointments")
-          ? "view your appointments"
-          : "continue"
-      initiateLogin(loginText, pathname)
+      // const loginText = pathname.match("book-appointment")
+      //   ? "book a visit"
+      //   : pathname.match("my-appointments")
+      //     ? "view your appointments"
+      //     : "continue"
+      // initiateLogin(loginText, pathname)
+      router.replace("/")
     }
   }, [isLoggedIn, pathname])
 
