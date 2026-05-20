@@ -128,6 +128,7 @@ export default function ClinicGroomingFlow({
     datetime: useRef<HTMLDivElement>(null),
     confirm: useRef<HTMLDivElement>(null),
   }
+  const breedMessageRef = useRef<HTMLDivElement>(null)
   const lastTrackedStepRef = useRef<V3NidanaClinicBookingFlowStep | null>(null)
 
   useEffect(() => {
@@ -159,6 +160,16 @@ export default function ClinicGroomingFlow({
     if (!bookingFlowSessionId) return
     void trackStep(bookingFlowSessionId, BOOKING_FLOW_STEP_BY_SECTION.pet)
   }, [bookingFlowSessionId, trackStep])
+
+  useEffect(() => {
+    if (!breedCheckPet) return
+    setTimeout(() => {
+      breedMessageRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+      })
+    }, 50)
+  }, [breedCheckPet])
 
   async function fetchGroomingTypes(pet: V3Pet) {
     setGroomingTypes([])
@@ -348,6 +359,9 @@ export default function ClinicGroomingFlow({
                     <StepPetSelect
                       pets={pets}
                       clinics={clinics}
+                      isEligible={(pet) =>
+                        pet.species === "canine" || pet.species === "feline"
+                      }
                       onSelect={async (pet) => {
                         setSel((s) => ({
                           ...s,
@@ -385,7 +399,10 @@ export default function ClinicGroomingFlow({
                       }}
                     />
                     {breedCheckPet && (
-                      <div className="mt-4 p-4 rounded-xl bg-amber-50 border border-amber-200 space-y-3">
+                      <div
+                        ref={breedMessageRef}
+                        className="mt-4 p-4 rounded-xl bg-amber-50 border border-amber-200 space-y-3"
+                      >
                         <p className="text-sm text-amber-800">
                           We need <strong>{breedCheckPet.name}</strong>&apos;s
                           breed to show the right grooming services and pricing.
