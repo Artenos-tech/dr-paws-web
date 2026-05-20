@@ -673,11 +673,11 @@ export async function v3FetchVetPrice(): Promise<{
 }
 
 export async function v3FetchGroomingServiceTypes(
-  species?: string,
+  petId?: string,
 ): Promise<V3GroomingServiceType[]> {
   const data = await v3Get<
     V3ApiResponse<{ groomingTypes: V3GroomingServiceType[] }>
-  >("/v3/booking/grooming/types", species ? { species } : undefined)
+  >("/v3/booking/grooming/types", petId ? { petId } : undefined)
   return data.groomingTypes
 }
 

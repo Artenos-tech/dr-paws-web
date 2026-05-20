@@ -27,6 +27,7 @@ import {
 } from "@/services/api.v3"
 import StepPetSelect from "./StepPetSelect"
 import StepClinicSelect from "./StepClinicSelect"
+import AddPetModal from "./AddPetModal"
 
 type SectionId = "groomingType" | "pet" | "clinic" | "datetime" | "confirm"
 
@@ -106,6 +107,8 @@ export default function ClinicGroomingFlow({
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState<string | null>(null)
   const [appointment, setAppointment] = useState<V3Appointment | null>(null)
+  const [breedCheckPet, setBreedCheckPet] = useState<V3Pet | null>(null)
+  const [showEditBreedModal, setShowEditBreedModal] = useState(false)
 
   const [sel, setSel] = useState<Selection>({
     groomingType: null,
@@ -158,7 +161,7 @@ export default function ClinicGroomingFlow({
     setGroomingTypes([])
     setGroomingTypesLoading(true)
     try {
-      const types = await v3FetchGroomingServiceTypes(pet.species ?? undefined)
+      const types = await v3FetchGroomingServiceTypes(pet.id)
       setGroomingTypes(types)
     } catch {
       setLoadError(
@@ -335,35 +338,62 @@ export default function ClinicGroomingFlow({
             {isOpen && (
               <div className="px-4 py-5">
                 {id === "pet" && (
-                  <StepPetSelect
-                    pets={pets}
-                    clinics={clinics}
-                    onSelect={async (pet) => {
-                      setSel((s) => ({
-                        ...s,
-                        pet,
-                        groomingType: null,
-                        clinic: null,
-                        date: null,
-                        slot: null,
-                      }))
-                      await fetchGroomingTypes(pet)
-                      openAndScroll("groomingType")
-                    }}
-                    onPetAdded={async (pet) => {
-                      setPets((prev) => [...prev, pet])
-                      setSel((s) => ({
-                        ...s,
-                        pet,
-                        groomingType: null,
-                        clinic: null,
-                        date: null,
-                        slot: null,
-                      }))
-                      await fetchGroomingTypes(pet)
-                      openAndScroll("groomingType")
-                    }}
-                  />
+                  <>
+                    <StepPetSelect
+                      pets={pets}
+                      clinics={clinics}
+                      onSelect={async (pet) => {
+                        setSel((s) => ({
+                          ...s,
+                          pet,
+                          groomingType: null,
+                          clinic: null,
+                          date: null,
+                          slot: null,
+                        }))
+                        if (!pet.breed) {
+                          setBreedCheckPet(pet)
+                          return
+                        }
+                        setBreedCheckPet(null)
+                        await fetchGroomingTypes(pet)
+                        openAndScroll("groomingType")
+                      }}
+                      onPetAdded={async (pet) => {
+                        setPets((prev) => [...prev, pet])
+                        setSel((s) => ({
+                          ...s,
+                          pet,
+                          groomingType: null,
+                          clinic: null,
+                          date: null,
+                          slot: null,
+                        }))
+                        if (!pet.breed) {
+                          setBreedCheckPet(pet)
+                          return
+                        }
+                        setBreedCheckPet(null)
+                        await fetchGroomingTypes(pet)
+                        openAndScroll("groomingType")
+                      }}
+                    />
+                    {breedCheckPet && (
+                      <div className="mt-4 p-4 rounded-xl bg-amber-50 border border-amber-200 space-y-3">
+                        <p className="text-sm text-amber-800">
+                          We need <strong>{breedCheckPet.name}</strong>&apos;s
+                          breed to show the right grooming services and pricing.
+                          Please update their profile.
+                        </p>
+                        <button
+                          onClick={() => setShowEditBreedModal(true)}
+                          className="text-sm font-medium text-amber-800 underline underline-offset-2"
+                        >
+                          Set breed for {breedCheckPet.name} →
+                        </button>
+                      </div>
+                    )}
+                  </>
                 )}
 
                 {id === "groomingType" && (
@@ -437,6 +467,35 @@ export default function ClinicGroomingFlow({
           </div>
         )
       })}
+
+      {showEditBreedModal && breedCheckPet && (
+        <AddPetModal
+          clinics={clinics}
+          petToEdit={breedCheckPet}
+          onClose={() => setShowEditBreedModal(false)}
+          onSaved={async (updatedPet) => {
+            setShowEditBreedModal(false)
+            setPets((prev) =>
+              prev.map((p) => (p.id === updatedPet.id ? updatedPet : p)),
+            )
+            if (updatedPet.breed) {
+              setBreedCheckPet(null)
+              setSel((s) => ({
+                ...s,
+                pet: updatedPet,
+                groomingType: null,
+                clinic: null,
+                date: null,
+                slot: null,
+              }))
+              await fetchGroomingTypes(updatedPet)
+              openAndScroll("groomingType")
+            } else {
+              setBreedCheckPet(updatedPet)
+            }
+          }}
+        />
+      )}
     </div>
   )
 }
