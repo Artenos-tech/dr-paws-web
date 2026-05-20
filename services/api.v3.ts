@@ -676,9 +676,7 @@ export async function v3FetchVetPrice(): Promise<{
   }
 }
 
-export async function v3FetchGroomingServiceTypes(
-  petId?: string,
-): Promise<{
+export async function v3FetchGroomingServiceTypes(petId?: string): Promise<{
   groomingTypes: V3GroomingServiceType[]
   petGroomingAttributes: V3PetGroomingAttributes | null
 }> {
