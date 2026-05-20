@@ -10,6 +10,7 @@ interface Props {
   clinics: V3Clinic[]
   onSelect: (pet: V3Pet) => void
   onPetAdded: (pet: V3Pet) => void
+  isEligible?: (pet: V3Pet) => boolean
 }
 
 function PetIcon({ species }: { species?: string | null }) {
@@ -33,30 +34,54 @@ export default function StepPetSelect({
   clinics,
   onSelect,
   onPetAdded,
+  isEligible,
 }: Props) {
   const [showAddPet, setShowAddPet] = useState(false)
 
   return (
     <div>
       <div className="space-y-3">
-        {pets.map((pet) => (
-          <button
-            key={pet.id}
-            onClick={() => onSelect(pet)}
-            className="w-full flex items-center gap-4 p-4 rounded-xl border border-gray-200 hover:border-primary-2 hover:bg-primary-2/5 transition-all text-left group"
-          >
-            <div className="flex-shrink-0 h-14 w-14 rounded-full bg-primary-2/10 flex items-center justify-center">
-              <PetIcon species={pet.species} />
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="font-semibold text-primary-1 text-base">
-                {pet.name}
+        {pets.map((pet) => {
+          const eligible = !isEligible || isEligible(pet)
+          if (!eligible) {
+            return (
+              <div
+                key={pet.id}
+                className="w-full flex items-center gap-4 p-4 rounded-xl border border-gray-100 bg-gray-50 opacity-50 cursor-not-allowed text-left"
+              >
+                <div className="flex-shrink-0 h-14 w-14 rounded-full bg-gray-200 flex items-center justify-center">
+                  <PetIcon species={pet.species} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="font-semibold text-primary-1 text-base">
+                    {pet.name}
+                  </div>
+                  <div className="text-sm text-gray-400">
+                    Grooming is only available for dogs &amp; cats
+                  </div>
+                </div>
               </div>
-              <div className="text-sm text-gray-500">{petSubtitle(pet)}</div>
-            </div>
-            <ChevronRight className="h-5 w-5 text-gray-400 group-hover:text-primary-2 transition-colors flex-shrink-0" />
-          </button>
-        ))}
+            )
+          }
+          return (
+            <button
+              key={pet.id}
+              onClick={() => onSelect(pet)}
+              className="w-full flex items-center gap-4 p-4 rounded-xl border border-gray-200 hover:border-primary-2 hover:bg-primary-2/5 transition-all text-left group"
+            >
+              <div className="flex-shrink-0 h-14 w-14 rounded-full bg-primary-2/10 flex items-center justify-center">
+                <PetIcon species={pet.species} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="font-semibold text-primary-1 text-base">
+                  {pet.name}
+                </div>
+                <div className="text-sm text-gray-500">{petSubtitle(pet)}</div>
+              </div>
+              <ChevronRight className="h-5 w-5 text-gray-400 group-hover:text-primary-2 transition-colors flex-shrink-0" />
+            </button>
+          )
+        })}
 
         <button
           onClick={() => setShowAddPet(true)}
