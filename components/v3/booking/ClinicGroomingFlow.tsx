@@ -22,11 +22,13 @@ import {
   type V3Pet,
   type V3Clinic,
   type V3GroomingServiceType,
+  type V3PetGroomingAttributes,
   type V3GroomingSlot,
   type V3Appointment,
 } from "@/services/api.v3"
 import StepPetSelect from "./StepPetSelect"
 import StepClinicSelect from "./StepClinicSelect"
+import AddPetModal from "./AddPetModal"
 
 type SectionId = "groomingType" | "pet" | "clinic" | "datetime" | "confirm"
 
@@ -102,10 +104,14 @@ export default function ClinicGroomingFlow({
   const [groomingTypes, setGroomingTypes] = useState<V3GroomingServiceType[]>(
     [],
   )
+  const [petGroomingAttributes, setPetGroomingAttributes] =
+    useState<V3PetGroomingAttributes | null>(null)
   const [groomingTypesLoading, setGroomingTypesLoading] = useState(false)
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState<string | null>(null)
   const [appointment, setAppointment] = useState<V3Appointment | null>(null)
+  const [breedCheckPet, setBreedCheckPet] = useState<V3Pet | null>(null)
+  const [showEditBreedModal, setShowEditBreedModal] = useState(false)
 
   const [sel, setSel] = useState<Selection>({
     groomingType: null,
@@ -156,10 +162,13 @@ export default function ClinicGroomingFlow({
 
   async function fetchGroomingTypes(pet: V3Pet) {
     setGroomingTypes([])
+    setPetGroomingAttributes(null)
     setGroomingTypesLoading(true)
     try {
-      const types = await v3FetchGroomingServiceTypes(pet.species ?? undefined)
-      setGroomingTypes(types)
+      const { groomingTypes, petGroomingAttributes } =
+        await v3FetchGroomingServiceTypes(pet.id)
+      setGroomingTypes(groomingTypes)
+      setPetGroomingAttributes(petGroomingAttributes)
     } catch {
       setLoadError(
         "Failed to load grooming services. Please refresh and try again.",
@@ -335,40 +344,68 @@ export default function ClinicGroomingFlow({
             {isOpen && (
               <div className="px-4 py-5">
                 {id === "pet" && (
-                  <StepPetSelect
-                    pets={pets}
-                    clinics={clinics}
-                    onSelect={async (pet) => {
-                      setSel((s) => ({
-                        ...s,
-                        pet,
-                        groomingType: null,
-                        clinic: null,
-                        date: null,
-                        slot: null,
-                      }))
-                      await fetchGroomingTypes(pet)
-                      openAndScroll("groomingType")
-                    }}
-                    onPetAdded={async (pet) => {
-                      setPets((prev) => [...prev, pet])
-                      setSel((s) => ({
-                        ...s,
-                        pet,
-                        groomingType: null,
-                        clinic: null,
-                        date: null,
-                        slot: null,
-                      }))
-                      await fetchGroomingTypes(pet)
-                      openAndScroll("groomingType")
-                    }}
-                  />
+                  <>
+                    <StepPetSelect
+                      pets={pets}
+                      clinics={clinics}
+                      onSelect={async (pet) => {
+                        setSel((s) => ({
+                          ...s,
+                          pet,
+                          groomingType: null,
+                          clinic: null,
+                          date: null,
+                          slot: null,
+                        }))
+                        if (!pet.breed) {
+                          setBreedCheckPet(pet)
+                          return
+                        }
+                        setBreedCheckPet(null)
+                        await fetchGroomingTypes(pet)
+                        openAndScroll("groomingType")
+                      }}
+                      onPetAdded={async (pet) => {
+                        setPets((prev) => [...prev, pet])
+                        setSel((s) => ({
+                          ...s,
+                          pet,
+                          groomingType: null,
+                          clinic: null,
+                          date: null,
+                          slot: null,
+                        }))
+                        if (!pet.breed) {
+                          setBreedCheckPet(pet)
+                          return
+                        }
+                        setBreedCheckPet(null)
+                        await fetchGroomingTypes(pet)
+                        openAndScroll("groomingType")
+                      }}
+                    />
+                    {breedCheckPet && (
+                      <div className="mt-4 p-4 rounded-xl bg-amber-50 border border-amber-200 space-y-3">
+                        <p className="text-sm text-amber-800">
+                          We need <strong>{breedCheckPet.name}</strong>&apos;s
+                          breed to show the right grooming services and pricing.
+                          Please update their profile.
+                        </p>
+                        <button
+                          onClick={() => setShowEditBreedModal(true)}
+                          className="text-sm font-medium text-amber-800 underline underline-offset-2"
+                        >
+                          Set breed for {breedCheckPet.name} →
+                        </button>
+                      </div>
+                    )}
+                  </>
                 )}
 
                 {id === "groomingType" && (
                   <StepGroomingTypeSelect
                     groomingTypes={groomingTypes}
+                    petGroomingAttributes={petGroomingAttributes}
                     loading={groomingTypesLoading}
                     onSelect={(gt) => {
                       setSel((s) => ({
@@ -437,18 +474,65 @@ export default function ClinicGroomingFlow({
           </div>
         )
       })}
+
+      {showEditBreedModal && breedCheckPet && (
+        <AddPetModal
+          clinics={clinics}
+          petToEdit={breedCheckPet}
+          onClose={() => setShowEditBreedModal(false)}
+          onSaved={async (updatedPet) => {
+            setShowEditBreedModal(false)
+            setPets((prev) =>
+              prev.map((p) => (p.id === updatedPet.id ? updatedPet : p)),
+            )
+            if (updatedPet.breed) {
+              setBreedCheckPet(null)
+              setSel((s) => ({
+                ...s,
+                pet: updatedPet,
+                groomingType: null,
+                clinic: null,
+                date: null,
+                slot: null,
+              }))
+              await fetchGroomingTypes(updatedPet)
+              openAndScroll("groomingType")
+            } else {
+              setBreedCheckPet(updatedPet)
+            }
+          }}
+        />
+      )}
     </div>
   )
 }
 
 // ─── Step: grooming type selection ───────────────────────────────────────────
 
+function groomingAttributeLabel(
+  attrs: V3PetGroomingAttributes | null,
+): string | null {
+  if (!attrs) return null
+  const parts: string[] = []
+  if (attrs.bodySize)
+    parts.push(attrs.bodySize.charAt(0).toUpperCase() + attrs.bodySize.slice(1))
+  if (attrs.coatType)
+    parts.push(
+      attrs.coatType.charAt(0).toUpperCase() +
+        attrs.coatType.slice(1) +
+        " coat",
+    )
+  return parts.length > 0 ? parts.join(" · ") : null
+}
+
 function StepGroomingTypeSelect({
   groomingTypes,
+  petGroomingAttributes,
   loading,
   onSelect,
 }: {
   groomingTypes: V3GroomingServiceType[]
+  petGroomingAttributes: V3PetGroomingAttributes | null
   loading?: boolean
   onSelect: (gt: V3GroomingServiceType) => void
 }) {
@@ -459,6 +543,8 @@ function StepGroomingTypeSelect({
       </div>
     )
   }
+
+  const attributeLabel = groomingAttributeLabel(petGroomingAttributes)
 
   return (
     <div className="space-y-3">
@@ -473,11 +559,10 @@ function StepGroomingTypeSelect({
           </div>
           <div className="flex-1 min-w-0">
             <div className="font-semibold text-primary-1">{gt.displayName}</div>
-            {gt.priceInRupees != null && (
-              <div className="text-sm text-gray-500 mt-0.5">
-                ₹{gt.priceInRupees}
-              </div>
-            )}
+            <div className="text-sm text-gray-500 mt-0.5">
+              {attributeLabel && <span className="mr-2">{attributeLabel}</span>}
+              {gt.priceInRupees != null && <span>₹{gt.priceInRupees}</span>}
+            </div>
           </div>
           <ChevronRight className="h-5 w-5 text-gray-400 group-hover:text-primary-2 transition-colors flex-shrink-0" />
         </button>

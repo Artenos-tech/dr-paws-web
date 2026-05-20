@@ -641,6 +641,10 @@ export type V3GroomingServiceType = {
   displayName: string
   priceInRupees?: number
 }
+export type V3PetGroomingAttributes = {
+  coatType: string
+  bodySize: string | null
+}
 export type V3GroomingSlot = {
   startTime: string
   endTime: string
@@ -672,13 +676,20 @@ export async function v3FetchVetPrice(): Promise<{
   }
 }
 
-export async function v3FetchGroomingServiceTypes(
-  species?: string,
-): Promise<V3GroomingServiceType[]> {
+export async function v3FetchGroomingServiceTypes(petId?: string): Promise<{
+  groomingTypes: V3GroomingServiceType[]
+  petGroomingAttributes: V3PetGroomingAttributes | null
+}> {
   const data = await v3Get<
-    V3ApiResponse<{ groomingTypes: V3GroomingServiceType[] }>
-  >("/v3/booking/grooming/types", species ? { species } : undefined)
-  return data.groomingTypes
+    V3ApiResponse<{
+      groomingTypes: V3GroomingServiceType[]
+      petGroomingAttributes?: V3PetGroomingAttributes
+    }>
+  >("/v3/booking/grooming/types", petId ? { petId } : undefined)
+  return {
+    groomingTypes: data.groomingTypes,
+    petGroomingAttributes: data.petGroomingAttributes ?? null,
+  }
 }
 
 export async function v3FetchGroomingDates(
