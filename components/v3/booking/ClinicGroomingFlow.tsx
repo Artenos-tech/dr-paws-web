@@ -22,6 +22,7 @@ import {
   type V3Pet,
   type V3Clinic,
   type V3GroomingServiceType,
+  type V3PetGroomingAttributes,
   type V3GroomingSlot,
   type V3Appointment,
 } from "@/services/api.v3"
@@ -103,6 +104,8 @@ export default function ClinicGroomingFlow({
   const [groomingTypes, setGroomingTypes] = useState<V3GroomingServiceType[]>(
     [],
   )
+  const [petGroomingAttributes, setPetGroomingAttributes] =
+    useState<V3PetGroomingAttributes | null>(null)
   const [groomingTypesLoading, setGroomingTypesLoading] = useState(false)
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState<string | null>(null)
@@ -159,10 +162,13 @@ export default function ClinicGroomingFlow({
 
   async function fetchGroomingTypes(pet: V3Pet) {
     setGroomingTypes([])
+    setPetGroomingAttributes(null)
     setGroomingTypesLoading(true)
     try {
-      const types = await v3FetchGroomingServiceTypes(pet.id)
-      setGroomingTypes(types)
+      const { groomingTypes, petGroomingAttributes } =
+        await v3FetchGroomingServiceTypes(pet.id)
+      setGroomingTypes(groomingTypes)
+      setPetGroomingAttributes(petGroomingAttributes)
     } catch {
       setLoadError(
         "Failed to load grooming services. Please refresh and try again.",
@@ -399,6 +405,7 @@ export default function ClinicGroomingFlow({
                 {id === "groomingType" && (
                   <StepGroomingTypeSelect
                     groomingTypes={groomingTypes}
+                    petGroomingAttributes={petGroomingAttributes}
                     loading={groomingTypesLoading}
                     onSelect={(gt) => {
                       setSel((s) => ({
@@ -502,12 +509,30 @@ export default function ClinicGroomingFlow({
 
 // ─── Step: grooming type selection ───────────────────────────────────────────
 
+function groomingAttributeLabel(
+  attrs: V3PetGroomingAttributes | null,
+): string | null {
+  if (!attrs) return null
+  const parts: string[] = []
+  if (attrs.bodySize)
+    parts.push(attrs.bodySize.charAt(0).toUpperCase() + attrs.bodySize.slice(1))
+  if (attrs.coatType)
+    parts.push(
+      attrs.coatType.charAt(0).toUpperCase() +
+        attrs.coatType.slice(1) +
+        " coat",
+    )
+  return parts.length > 0 ? parts.join(" · ") : null
+}
+
 function StepGroomingTypeSelect({
   groomingTypes,
+  petGroomingAttributes,
   loading,
   onSelect,
 }: {
   groomingTypes: V3GroomingServiceType[]
+  petGroomingAttributes: V3PetGroomingAttributes | null
   loading?: boolean
   onSelect: (gt: V3GroomingServiceType) => void
 }) {
@@ -518,6 +543,8 @@ function StepGroomingTypeSelect({
       </div>
     )
   }
+
+  const attributeLabel = groomingAttributeLabel(petGroomingAttributes)
 
   return (
     <div className="space-y-3">
@@ -532,11 +559,10 @@ function StepGroomingTypeSelect({
           </div>
           <div className="flex-1 min-w-0">
             <div className="font-semibold text-primary-1">{gt.displayName}</div>
-            {gt.priceInRupees != null && (
-              <div className="text-sm text-gray-500 mt-0.5">
-                ₹{gt.priceInRupees}
-              </div>
-            )}
+            <div className="text-sm text-gray-500 mt-0.5">
+              {attributeLabel && <span className="mr-2">{attributeLabel}</span>}
+              {gt.priceInRupees != null && <span>₹{gt.priceInRupees}</span>}
+            </div>
           </div>
           <ChevronRight className="h-5 w-5 text-gray-400 group-hover:text-primary-2 transition-colors flex-shrink-0" />
         </button>
