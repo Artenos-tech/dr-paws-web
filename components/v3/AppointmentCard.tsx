@@ -1,4 +1,5 @@
 import { useState } from "react"
+import Link from "next/link"
 import {
   CalendarDays,
   Clock,
@@ -10,69 +11,22 @@ import {
 } from "lucide-react"
 import ClipLoader from "react-spinners/ClipLoader"
 import type { V3AppointmentListItem } from "@/services/api.v3"
-
-function formatDate(dateStr: string): string {
-  return new Date(dateStr + "T00:00:00").toLocaleDateString("en-IN", {
-    weekday: "short",
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  })
-}
-
-function formatTime(time: string): string {
-  const [h, m] = time.split(":").map(Number)
-  const period = h >= 12 ? "PM" : "AM"
-  const hour = h % 12 || 12
-  return `${hour}:${String(m).padStart(2, "0")} ${period}`
-}
-
-function formatAppointmentType(name: string | null): string | null {
-  if (!name) return null
-  if (name === "Consultation") return "Vet Consultation"
-  return name
-}
-
-function displayReason(
-  reasonForVisit: string | null,
-  isHomeVisit: boolean,
-): string | null {
-  if (!reasonForVisit) return null
-  if (isHomeVisit) {
-    const cutoff = reasonForVisit.indexOf("\nAddress:")
-    return cutoff !== -1 ? reasonForVisit.slice(0, cutoff) : reasonForVisit
-  }
-  return reasonForVisit
-}
-
-const STATUS_PILL_CLASSES: Record<string, string> = {
-  Scheduled: "bg-blue-50 text-blue-700 ring-blue-200",
-  "Awaiting Confirmation": "bg-amber-50 text-amber-700 ring-amber-200",
-  Confirmed: "bg-blue-50 text-blue-700 ring-blue-200",
-  "Vet Delayed": "bg-amber-50 text-amber-700 ring-amber-200",
-  "Vet Arrived": "bg-indigo-50 text-indigo-700 ring-indigo-200",
-  "Checked In": "bg-indigo-50 text-indigo-700 ring-indigo-200",
-  "In Progress": "bg-violet-50 text-violet-700 ring-violet-200",
-  "In Consultation": "bg-violet-50 text-violet-700 ring-violet-200",
-  "Checking Out": "bg-violet-50 text-violet-700 ring-violet-200",
-  Completed: "bg-emerald-50 text-emerald-700 ring-emerald-200",
-  Cancelled: "bg-rose-50 text-rose-700 ring-rose-200",
-  "No Show": "bg-gray-100 text-gray-600 ring-gray-200",
-  Missed: "bg-gray-100 text-gray-600 ring-gray-200",
-}
-
-function statusPillClasses(status: string): string {
-  return (
-    STATUS_PILL_CLASSES[status] ?? "bg-gray-100 text-gray-700 ring-gray-200"
-  )
-}
+import {
+  formatDate,
+  formatTime,
+  formatAppointmentType,
+  displayReason,
+  statusPillClasses,
+  isCancellableStatus,
+} from "@/lib/appointmentFormatters"
 
 interface Props {
   item: V3AppointmentListItem
+  href?: string
   onCancel?: (id: string) => Promise<void>
 }
 
-export default function AppointmentCard({ item, onCancel }: Props) {
+export default function AppointmentCard({ item, href, onCancel }: Props) {
   const isHomeVisit = item.bookingType === "HOME_VISIT"
   const isGrooming = item.category === "grooming"
   const status = isHomeVisit ? item.visitStatus : item.clinicStatus
@@ -99,14 +53,8 @@ export default function AppointmentCard({ item, onCancel }: Props) {
     }
   }
 
-  return (
-    <div
-      className={`rounded-xl border bg-white shadow-sm overflow-hidden ${
-        isHomeVisit
-          ? "border-primary-2/40 border-l-4 border-l-primary-2"
-          : "border-gray-200 border-l-4 border-l-primary-1"
-      }`}
-    >
+  const cardContent = (
+    <>
       {/* Header band */}
       <div
         className={`px-4 pt-3 pb-2 flex items-start justify-between gap-3 ${
@@ -114,7 +62,6 @@ export default function AppointmentCard({ item, onCancel }: Props) {
         }`}
       >
         <div className="min-w-0 flex items-start gap-2.5">
-          {/* Visit type icon */}
           <div
             className={`mt-0.5 shrink-0 rounded-full p-1.5 ${
               isHomeVisit
@@ -204,12 +151,33 @@ export default function AppointmentCard({ item, onCancel }: Props) {
           </p>
         )}
       </div>
+    </>
+  )
 
-      {item.canModifyOrCancel && onCancel && (
+  return (
+    <div
+      className={`rounded-xl border bg-white shadow-sm overflow-hidden ${
+        isHomeVisit
+          ? "border-primary-2/40 border-l-4 border-l-primary-2"
+          : "border-gray-200 border-l-4 border-l-primary-1"
+      }`}
+    >
+      {href ? (
+        <Link href={href} className="block">
+          {cardContent}
+        </Link>
+      ) : (
+        cardContent
+      )}
+
+      {item.canModifyOrCancel && isCancellableStatus(status) && onCancel && (
         <div className="px-4 pb-3 flex justify-end">
           <button
             type="button"
-            onClick={() => setConfirming(true)}
+            onClick={(e) => {
+              e.stopPropagation()
+              setConfirming(true)
+            }}
             className="inline-flex items-center gap-1 rounded-md border border-red-200 text-red-600 hover:bg-red-50 text-sm px-3 py-1.5"
           >
             <X className="h-4 w-4" /> Cancel

@@ -537,6 +537,15 @@ export async function v3FetchAppointments(
   return { items: data.appointments, hasNext: data.hasNext }
 }
 
+export async function v3GetAppointment(
+  id: string,
+): Promise<V3AppointmentListItem> {
+  const data = await v3Get<
+    V3ApiResponse<{ appointment: V3AppointmentListItem }>
+  >(`/v3/appointments/${encodeURIComponent(id)}`)
+  return data.appointment
+}
+
 // ─── Documents ────────────────────────────────────────────────────────────────
 
 export type V3DocumentType =
