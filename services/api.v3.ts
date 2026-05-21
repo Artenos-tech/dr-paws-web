@@ -499,6 +499,7 @@ type V3AppointmentCommon = {
   date: string
   startTime: string
   endTime: string
+  category: "veterinary" | "grooming" | null
   appointmentTypeName: string | null
   reasonForVisit: string | null
   canModifyOrCancel: boolean

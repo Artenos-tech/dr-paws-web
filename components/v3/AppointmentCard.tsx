@@ -1,5 +1,13 @@
 import { useState } from "react"
-import { CalendarDays, Clock, MapPin, Stethoscope, Home, X } from "lucide-react"
+import {
+  CalendarDays,
+  Clock,
+  MapPin,
+  Stethoscope,
+  Home,
+  X,
+  Scissors,
+} from "lucide-react"
 import ClipLoader from "react-spinners/ClipLoader"
 import type { V3AppointmentListItem } from "@/services/api.v3"
 
@@ -17,6 +25,24 @@ function formatTime(time: string): string {
   const period = h >= 12 ? "PM" : "AM"
   const hour = h % 12 || 12
   return `${hour}:${String(m).padStart(2, "0")} ${period}`
+}
+
+function formatAppointmentType(name: string | null): string | null {
+  if (!name) return null
+  if (name === "Consultation") return "Vet Consultation"
+  return name
+}
+
+function displayReason(
+  reasonForVisit: string | null,
+  isHomeVisit: boolean,
+): string | null {
+  if (!reasonForVisit) return null
+  if (isHomeVisit) {
+    const cutoff = reasonForVisit.indexOf("\nAddress:")
+    return cutoff !== -1 ? reasonForVisit.slice(0, cutoff) : reasonForVisit
+  }
+  return reasonForVisit
 }
 
 const STATUS_PILL_CLASSES: Record<string, string> = {
@@ -48,7 +74,12 @@ interface Props {
 
 export default function AppointmentCard({ item, onCancel }: Props) {
   const isHomeVisit = item.bookingType === "HOME_VISIT"
+  const isGrooming = item.category === "grooming"
   const status = isHomeVisit ? item.visitStatus : item.clinicStatus
+  const reason = displayReason(item.reasonForVisit, isHomeVisit)
+  const apptType = !isHomeVisit
+    ? formatAppointmentType(item.appointmentTypeName)
+    : null
 
   const [confirming, setConfirming] = useState(false)
   const [cancelling, setCancelling] = useState(false)
@@ -69,27 +100,61 @@ export default function AppointmentCard({ item, onCancel }: Props) {
   }
 
   return (
-    <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <div className="flex items-center gap-2 mb-1">
-            <h3 className="text-base font-semibold text-primary-1 truncate">
-              {item.petName}
-            </h3>
+    <div
+      className={`rounded-xl border bg-white shadow-sm overflow-hidden ${
+        isHomeVisit
+          ? "border-primary-2/40 border-l-4 border-l-primary-2"
+          : "border-gray-200 border-l-4 border-l-primary-1"
+      }`}
+    >
+      {/* Header band */}
+      <div
+        className={`px-4 pt-3 pb-2 flex items-start justify-between gap-3 ${
+          isHomeVisit ? "bg-primary-2/25" : "bg-secondary-1/20"
+        }`}
+      >
+        <div className="min-w-0 flex items-start gap-2.5">
+          {/* Visit type icon */}
+          <div
+            className={`mt-0.5 shrink-0 rounded-full p-1.5 ${
+              isHomeVisit
+                ? "bg-primary-2 text-primary-1"
+                : "bg-secondary-1 text-white"
+            }`}
+          >
             {isHomeVisit ? (
-              <span className="inline-flex items-center gap-1 rounded-full bg-primary-1/10 text-primary-1 text-xs px-2 py-0.5">
-                <Home className="h-3 w-3" /> Home Visit
-              </span>
+              <Home className="h-3.5 w-3.5" />
+            ) : isGrooming ? (
+              <Scissors className="h-3.5 w-3.5" />
             ) : (
-              <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 text-gray-600 text-xs px-2 py-0.5">
-                <Stethoscope className="h-3 w-3" /> Clinic Visit
+              <Stethoscope className="h-3.5 w-3.5" />
+            )}
+          </div>
+
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h3 className="text-base font-semibold text-primary-1 truncate">
+                {item.petName}
+              </h3>
+              <span
+                className={`inline-flex items-center gap-1 rounded-full text-xs font-semibold px-2.5 py-0.5 ${
+                  isHomeVisit
+                    ? "bg-primary-2 text-primary-1"
+                    : "bg-secondary-1 text-white"
+                }`}
+              >
+                {isHomeVisit ? "Home Visit" : "Clinic Visit"}
+              </span>
+            </div>
+
+            {apptType && (
+              <span className="mt-1 inline-block rounded-full bg-gray-100 text-gray-600 text-xs px-2.5 py-0.5">
+                {apptType}
               </span>
             )}
           </div>
-          {item.appointmentTypeName && (
-            <p className="text-sm text-gray-500">{item.appointmentTypeName}</p>
-          )}
         </div>
+
         <span
           className={`shrink-0 rounded-full text-xs font-medium px-2.5 py-1 ring-1 ring-inset ${statusPillClasses(status)}`}
         >
@@ -97,7 +162,8 @@ export default function AppointmentCard({ item, onCancel }: Props) {
         </span>
       </div>
 
-      <div className="mt-3 grid grid-cols-1 gap-1.5 text-sm text-gray-700">
+      {/* Body */}
+      <div className="px-4 py-3 grid grid-cols-1 gap-1.5 text-sm text-gray-700">
         <div className="flex items-center gap-2">
           <CalendarDays className="h-4 w-4 text-gray-400 shrink-0" />
           <span>{formatDate(item.date)}</span>
@@ -108,8 +174,9 @@ export default function AppointmentCard({ item, onCancel }: Props) {
             {formatTime(item.startTime)} – {formatTime(item.endTime)}
           </span>
         </div>
-        {isHomeVisit ? (
-          item.address ? (
+
+        {isHomeVisit &&
+          (item.address ? (
             <div className="flex items-start gap-2">
               <MapPin className="h-4 w-4 text-gray-400 shrink-0 mt-0.5" />
               <span className="min-w-0">
@@ -123,25 +190,23 @@ export default function AppointmentCard({ item, onCancel }: Props) {
               <MapPin className="h-4 w-4 text-gray-400 shrink-0" />
               <span>Address not available</span>
             </div>
-          )
-        ) : (
-          <div className="flex items-start gap-2">
-            {/* <MapPin className="h-4 w-4 text-gray-400 shrink-0 mt-0.5" />
-            <span className="min-w-0">{item.clinicName}</span> */}
+          ))}
+
+        {!isGrooming && (
+          <div className="text-sm text-gray-600">
+            With <span className="font-medium">{item.doctorName}</span>
           </div>
         )}
-        <div className="text-sm text-gray-600 mt-1">
-          With <span className="font-medium">{item.doctorName}</span>
-        </div>
-        {item.reasonForVisit && (
-          <p className="text-sm text-gray-500 italic mt-1 line-clamp-2">
-            “{item.reasonForVisit}”
+
+        {reason && (
+          <p className="text-sm text-gray-500 italic mt-0.5 whitespace-pre-line line-clamp-3">
+            &ldquo;{reason}&rdquo;
           </p>
         )}
       </div>
 
       {item.canModifyOrCancel && onCancel && (
-        <div className="mt-3 flex justify-end">
+        <div className="px-4 pb-3 flex justify-end">
           <button
             type="button"
             onClick={() => setConfirming(true)}
