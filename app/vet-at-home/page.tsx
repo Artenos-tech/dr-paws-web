@@ -561,7 +561,7 @@ export default function VetAtHomePage() {
         </div>
       </section>
 
-      <section className="relative overflow-hidden bg-[linear-gradient(180deg,#fffdf7_0%,#f9f4e7_45%,#ffffff_100%)] py-16 md:py-20">
+      {/* <section className="relative overflow-hidden bg-[linear-gradient(180deg,#fffdf7_0%,#f9f4e7_45%,#ffffff_100%)] py-16 md:py-20">
         <div className="mx-auto w-full px-8 md:px-16 lg:px-20 xl:px-40">
           <div className="mx-auto max-w-4xl text-center">
             <h2 className="text-3xl font-bold leading-tight text-primary-1 md:text-5xl">
@@ -569,7 +569,7 @@ export default function VetAtHomePage() {
             </h2>
           </div>
 
-          {/* <div className="relative mx-auto mt-10 max-w-5xl overflow-hidden rounded-[34px] bg-[linear-gradient(135deg,#ffe9b6_0%,#fdcf7b_52%,#f5bd59_100%)] shadow-[0_18px_42px_rgba(148,102,46,0.2)]">
+          <div className="relative mx-auto mt-10 max-w-5xl overflow-hidden rounded-[34px] bg-[linear-gradient(135deg,#ffe9b6_0%,#fdcf7b_52%,#f5bd59_100%)] shadow-[0_18px_42px_rgba(148,102,46,0.2)]">
             <div className="pointer-events-none absolute -right-10 top-[-80px] h-[240px] w-[240px] rounded-full bg-white/25 blur-[2px] md:h-[340px] md:w-[340px]" />
             <div className="pointer-events-none absolute bottom-[-60px] right-10 h-[180px] w-[180px] rounded-full bg-[#d79a34]/18 blur-[2px]" />
             <div className="grid gap-8 p-6 text-primary-1 md:p-8 lg:grid-cols-[1.25fr_0.85fr] lg:gap-10">
@@ -648,9 +648,9 @@ export default function VetAtHomePage() {
                 </div>
               </div>
             </div>
-          </div> */}
+          </div>
         </div>
-      </section>
+      </section> */}
 
       <section className="relative overflow-hidden bg-[linear-gradient(180deg,#f7f1de_0%,#fcf8ee_45%,#ffffff_100%)] py-16 md:py-20">
         <div className="pointer-events-none absolute -left-16 top-14 h-44 w-44 rounded-full bg-[radial-gradient(circle,rgba(253,199,118,0.28)_0%,rgba(253,199,118,0)_72%)]" />
