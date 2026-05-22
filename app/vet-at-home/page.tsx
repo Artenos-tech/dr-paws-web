@@ -353,7 +353,9 @@ export default function VetAtHomePage() {
   }
 
   const handleBookAtHomeVisit = (couponCode?: string) => {
-    const v3Destination = "/v3/book/home-visit"
+    const v3Destination = couponCode
+      ? `/v3/book/home-visit?couponCode=${encodeURIComponent(couponCode)}`
+      : "/v3/book/home-visit"
     const pettleDestination = couponCode
       ? `/user/book-appointment?home=true&coupon=${encodeURIComponent(couponCode)}`
       : "/user/book-appointment?home=true"
@@ -579,7 +581,7 @@ export default function VetAtHomePage() {
         </div>
       </section>
 
-      {/* <section className="relative overflow-hidden bg-[linear-gradient(180deg,#fffdf7_0%,#f9f4e7_45%,#ffffff_100%)] py-16 md:py-20">
+      <section className="relative overflow-hidden bg-[linear-gradient(180deg,#fffdf7_0%,#f9f4e7_45%,#ffffff_100%)] py-16 md:py-20">
         <div className="mx-auto w-full px-8 md:px-16 lg:px-20 xl:px-40">
           <div className="mx-auto max-w-4xl text-center">
             <h2 className="text-3xl font-bold leading-tight text-primary-1 md:text-5xl">
@@ -668,7 +670,7 @@ export default function VetAtHomePage() {
             </div>
           </div>
         </div>
-      </section> */}
+      </section>
 
       <section className="relative overflow-hidden bg-[linear-gradient(180deg,#f7f1de_0%,#fcf8ee_45%,#ffffff_100%)] py-16 md:py-20">
         <div className="pointer-events-none absolute -left-16 top-14 h-44 w-44 rounded-full bg-[radial-gradient(circle,rgba(253,199,118,0.28)_0%,rgba(253,199,118,0)_72%)]" />
