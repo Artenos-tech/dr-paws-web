@@ -5,6 +5,9 @@ import { useRouter } from "next/navigation"
 import React, { useState } from "react"
 import { Toaster } from "react-hot-toast"
 import { useUserContext } from "@/context/UserContext"
+import { useV3UserContext } from "@/context/V3UserContext"
+import { useV3Feature } from "@/hooks/useV3Feature"
+import V3LoginModal from "@/components/v3/V3LoginModal"
 import { CalendarClock } from "lucide-react"
 
 interface ClinicInfo {
@@ -30,8 +33,31 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
 
   const { initiateLogin, isLoggedIn } = useUserContext()
   const [modalVisible, setModalVisible] = useState(false)
+  const [v3ModalOpen, setV3ModalOpen] = useState(false)
+  const [v3PostLoginPath, setV3PostLoginPath] = useState<string | null>(null)
+  const isV3Enabled = useV3Feature()
+  const { isLoggedIn: isV3LoggedIn, login: v3Login } = useV3UserContext()
 
   const handleBookAVisit = () => {
+    if (isV3Enabled) {
+      if (!bookable) {
+        if (isV3LoggedIn) {
+          setModalVisible(true)
+        } else {
+          setV3PostLoginPath(null)
+          setV3ModalOpen(true)
+        }
+      } else {
+        if (isV3LoggedIn) {
+          router.push("/v3/book")
+        } else {
+          setV3PostLoginPath("/v3/book")
+          setV3ModalOpen(true)
+        }
+      }
+      return
+    }
+
     if (!bookable) {
       if (isLoggedIn) {
         setModalVisible(true)
@@ -117,6 +143,21 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
             </button>
           </div>
         </div>
+      )}
+
+      {v3ModalOpen && (
+        <V3LoginModal
+          onSuccess={(owner, token) => {
+            v3Login(owner, token)
+            setV3ModalOpen(false)
+            if (v3PostLoginPath !== null) {
+              router.push(v3PostLoginPath)
+            } else {
+              setModalVisible(true)
+            }
+          }}
+          onClose={() => setV3ModalOpen(false)}
+        />
       )}
     </>
   )

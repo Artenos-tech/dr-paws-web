@@ -86,10 +86,14 @@ export default function NavBar() {
 
   const handleBookAVisit = () => {
     if (isV3Enabled) {
+      const v3Destination =
+        isVetAtHomePage && isHomeVisitEnabled
+          ? "/v3/book/home-visit"
+          : "/v3/book"
       if (isV3LoggedIn) {
-        navigate.push("/v3/book")
+        navigate.push(v3Destination)
       } else {
-        setV3PostLoginPath("/v3/book")
+        setV3PostLoginPath(v3Destination)
         setV3ModalOpen(true)
       }
       return
