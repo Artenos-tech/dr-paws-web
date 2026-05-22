@@ -12,7 +12,6 @@ import {
   Scissors,
   Building2,
   ChevronLeft,
-  X,
   Navigation,
   AlertCircle,
 } from "lucide-react"
