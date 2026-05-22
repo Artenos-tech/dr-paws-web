@@ -31,6 +31,8 @@ import {
   statusPillClasses,
   isCancellableStatus,
 } from "@/lib/appointmentFormatters"
+import { useAppointmentStatusPoll } from "@/hooks/useAppointmentStatusPoll"
+import HomeVisitStatusBanner from "@/components/v3/HomeVisitStatusBanner"
 
 export default function AppointmentDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -67,6 +69,15 @@ export default function AppointmentDetailPage() {
     }
   }, [id, router])
 
+  const isHomeVisit = appt?.bookingType === "HOME_VISIT"
+  const baseStatus = appt
+    ? isHomeVisit
+      ? appt.visitStatus
+      : appt.clinicStatus
+    : ""
+
+  const polled = useAppointmentStatusPoll(id, !!appt && isHomeVisit, baseStatus)
+
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-[60vh]">
@@ -92,9 +103,12 @@ export default function AppointmentDetailPage() {
     )
   }
 
-  const isHomeVisit = appt.bookingType === "HOME_VISIT"
   const isGrooming = appt.category === "grooming"
-  const status = isHomeVisit ? appt.visitStatus : appt.clinicStatus
+  const status = polled?.visitStatus ?? baseStatus
+  const canModifyOrCancelLive =
+    polled?.canModifyOrCancel ?? appt.canModifyOrCancel
+  const startOtp = polled?.startOtp ?? null
+
   const reason = displayReason(appt.reasonForVisit, isHomeVisit)
   const apptType = !isHomeVisit
     ? formatAppointmentType(appt.appointmentTypeName)
@@ -176,6 +190,14 @@ export default function AppointmentDetailPage() {
           </div>
         </div>
       </div>
+
+      {isHomeVisit && (
+        <HomeVisitStatusBanner
+          visitStatus={status}
+          doctorName={appt.doctorName}
+          startOtp={startOtp}
+        />
+      )}
 
       {/* Details */}
       <div className="rounded-xl border border-gray-200 bg-white shadow-sm divide-y divide-gray-100">
@@ -261,7 +283,7 @@ export default function AppointmentDetailPage() {
       </div>
 
       {/* Cancel */}
-      {appt.canModifyOrCancel && isCancellableStatus(status) && (
+      {canModifyOrCancelLive && isCancellableStatus(status) && (
         <div className="mt-4">
           <button
             type="button"

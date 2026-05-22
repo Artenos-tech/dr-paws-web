@@ -546,6 +546,21 @@ export async function v3GetAppointment(
   return data.appointment
 }
 
+export type V3AppointmentStatus = {
+  visitStatus: string
+  canModifyOrCancel: boolean
+  startOtp: string | null
+}
+
+export async function v3GetAppointmentStatus(
+  id: string,
+): Promise<V3AppointmentStatus> {
+  const data = await v3Get<V3ApiResponse<V3AppointmentStatus>>(
+    `/v3/appointments/${encodeURIComponent(id)}/status`,
+  )
+  return data
+}
+
 // ─── Documents ────────────────────────────────────────────────────────────────
 
 export type V3DocumentType =
