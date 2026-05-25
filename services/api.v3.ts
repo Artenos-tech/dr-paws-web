@@ -514,24 +514,6 @@ export type V3HomeVisitPaymentOrderStatus =
   | "TERMINATED"
   | "TERMINATION_REQUESTED"
 
-export async function v3CreateHomeVisitPaymentOrder(input: {
-  addressId: string
-  petId: string
-  date: string
-  startTime: string
-  endTime: string
-  isEmergency: boolean
-  reasonCode: string
-  petParentNotes: string
-  couponCode?: string
-  bookingFlowSessionId?: string
-}): Promise<V3PaymentOrder> {
-  const data = await v3Post<
-    V3ApiResponse<{ data: { order: V3PaymentOrder } }>
-  >("/v3/booking/at-home/payments/orders", { ...input, platform: "WEB" })
-  return data.data.order
-}
-
 export type V3HomeVisitInitiateResponse =
   | {
       action: "PAYMENT_REQUIRED"
