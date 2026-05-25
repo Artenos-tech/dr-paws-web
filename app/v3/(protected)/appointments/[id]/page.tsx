@@ -276,6 +276,16 @@ export default function AppointmentDetailPage() {
           </div>
         )}
 
+        {/* Amount paid */}
+        {isHomeVisit && appt.payment && (
+          <div className="px-4 py-3">
+            <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-1">
+              Amount paid
+            </p>
+            <p className="text-sm text-gray-700">₹{appt.payment.amount}</p>
+          </div>
+        )}
+
         {/* Refund status */}
         {isHomeVisit && appt.refund && (
           <div className="px-4 py-3">

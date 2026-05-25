@@ -641,6 +641,7 @@ export type V3AppointmentListItem =
       visitStatus: string
       address: V3AppointmentListAddress | null
       cancellation: V3HomeVisitCancellation
+      payment: { amount: number } | null
       refund: V3HomeVisitRefundSummary | null
     })
 
