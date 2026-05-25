@@ -41,6 +41,7 @@ export function useAppointmentStatusPoll(
       }
     }
 
+    poll()
     intervalRef.current = setInterval(poll, POLL_INTERVAL_MS)
     return clear
   }, [id, enabled, initialStatus])
