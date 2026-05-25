@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useRef, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react"
+import { AlertCircle, Loader2 } from "lucide-react"
 
 import {
   v3GetHomeVisitPaymentOrderStatus,
@@ -20,10 +20,10 @@ function HomeVisitPaymentStatus() {
   const [status, setStatus] = useState<
     "loading" | V3HomeVisitPaymentOrderStatus | "PAID_TIMEOUT" | "error"
   >("loading")
-  const [appointmentId, setAppointmentId] = useState<string | null>(null)
   const pollingRef = useRef<NodeJS.Timeout | null>(null)
   const paidTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const activeTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const hasRedirectedRef = useRef(false)
 
   useEffect(() => {
     if (!orderId) {
@@ -59,10 +59,19 @@ function HomeVisitPaymentStatus() {
         }
 
         if (paymentStatus === "PAID" && result.appointment) {
-          setAppointmentId(result.appointment.id)
+          if (hasRedirectedRef.current) return
+          hasRedirectedRef.current = true
           stopPolling()
           stopPaidTimeout()
           stopActiveTimeout()
+          const appointmentId = result.appointment.id
+          setTimeout(() => {
+            router.replace(
+              `/v3/book/home-visit/success?appointmentId=${encodeURIComponent(
+                appointmentId,
+              )}`,
+            )
+          }, 1500)
         } else if (paymentStatus === "PAID") {
           stopActiveTimeout()
           if (!paidTimeoutRef.current) {
@@ -110,23 +119,6 @@ function HomeVisitPaymentStatus() {
   }
 
   const content = (() => {
-    if (appointmentId) {
-      return (
-        <div className="flex flex-col items-center gap-4">
-          <CheckCircle2 className="h-8 w-8 text-green-600" />
-          <p className="text-center text-primary-1">
-            Payment successful. Your home visit is confirmed.
-          </p>
-          <button
-            onClick={goToAppointments}
-            className="rounded-xl bg-secondary-1 px-5 py-2.5 text-sm font-semibold text-white"
-          >
-            View appointments
-          </button>
-        </div>
-      )
-    }
-
     if (status === "loading" || status === "PAID") {
       return (
         <div className="flex flex-col items-center gap-4">

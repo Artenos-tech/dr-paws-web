@@ -1146,7 +1146,7 @@ function SummaryRow({
   )
 }
 
-function HomeVisitSuccess({
+export function HomeVisitSuccess({
   appointment,
 }: {
   appointment: V3HomeVisitAppointment
