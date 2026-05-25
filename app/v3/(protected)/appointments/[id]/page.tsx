@@ -32,6 +32,7 @@ import {
 } from "@/lib/appointmentFormatters"
 import { useAppointmentStatusPoll } from "@/hooks/useAppointmentStatusPoll"
 import HomeVisitStatusBanner from "@/components/v3/HomeVisitStatusBanner"
+import CancelAppointmentDialog from "@/components/v3/CancelAppointmentDialog"
 
 export default function AppointmentDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -57,8 +58,18 @@ export default function AppointmentDetailPage() {
     setCancelling(true)
     setCancelError(null)
     try {
-      await v3CancelAppointment(id)
-      toast.success("Appointment cancelled")
+      const result = await v3CancelAppointment(id)
+      if (result.refund) {
+        toast.success(
+          `Appointment cancelled. ₹${result.refund.amount} refund initiated.`,
+        )
+      } else if (result.refundDeclinedReason === "PAST_REFUND_WINDOW") {
+        toast.success(
+          "Appointment cancelled. No refund — within 24 hours of the appointment.",
+        )
+      } else {
+        toast.success("Appointment cancelled")
+      }
       router.push("/v3/appointments")
     } catch (e) {
       setCancelError(
@@ -264,8 +275,43 @@ export default function AppointmentDetailPage() {
           </div>
         )}
 
-        {/* Modification deadline */}
-        {appt.modificationDeadline && (
+        {/* Cancellation policy */}
+        {isHomeVisit ? (
+          (() => {
+            // Refund cutoff = apptStart − 24h (in IST). appt.date is YYYY-MM-DD
+            // and appt.startTime is HH:mm in IST.
+            const apptStartIST = new Date(
+              `${appt.date}T${appt.startTime}:00+05:30`,
+            )
+            const refundCutoff = new Date(
+              apptStartIST.getTime() - 24 * 60 * 60 * 1000,
+            )
+            const fmt = (d: Date) =>
+              d.toLocaleString("en-IN", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+                hour: "numeric",
+                minute: "2-digit",
+                timeZone: "Asia/Kolkata",
+              })
+            return (
+              <div className="px-4 py-3 text-sm text-gray-500">
+                <p>
+                  <span className="font-medium text-gray-700">
+                    Cancellation policy:
+                  </span>{" "}
+                  Full refund if cancelled by{" "}
+                  <span className="font-medium text-gray-700">
+                    {fmt(refundCutoff)}
+                  </span>
+                  . You can still cancel after that, but no refund will be
+                  issued.
+                </p>
+              </div>
+            )
+          })()
+        ) : appt.modificationDeadline ? (
           <div className="px-4 py-3 text-sm text-gray-500">
             Can be cancelled until{" "}
             <span className="font-medium text-gray-700">
@@ -278,7 +324,7 @@ export default function AppointmentDetailPage() {
               })}
             </span>
           </div>
-        )}
+        ) : null}
       </div>
 
       {/* Cancel */}
@@ -294,53 +340,21 @@ export default function AppointmentDetailPage() {
         </div>
       )}
 
-      {/* Confirm cancel modal */}
-      {confirming && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
-          role="dialog"
-          aria-modal="true"
-        >
-          <div className="w-full max-w-sm rounded-xl bg-white p-5 shadow-lg">
-            <h4 className="font-roca text-lg text-primary-1 mb-1">
-              Cancel this appointment?
-            </h4>
-            <p className="text-sm text-gray-600">
-              {appt.petName}&apos;s{" "}
-              {isHomeVisit ? "home visit" : "clinic visit"} on{" "}
-              {formatDate(appt.date)} at {formatTime(appt.startTime)} will be
-              cancelled. This cannot be undone.
-            </p>
-            {cancelError && (
-              <div className="mt-3 rounded-md border border-red-200 bg-red-50 p-2 text-sm text-red-700">
-                {cancelError}
-              </div>
-            )}
-            <div className="mt-4 flex justify-end gap-2">
-              <button
-                type="button"
-                onClick={() => {
-                  setConfirming(false)
-                  setCancelError(null)
-                }}
-                disabled={cancelling}
-                className="rounded-md border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 text-sm px-3 py-1.5 disabled:opacity-60"
-              >
-                Keep it
-              </button>
-              <button
-                type="button"
-                onClick={handleCancel}
-                disabled={cancelling}
-                className="inline-flex items-center gap-2 rounded-md bg-red-600 text-white hover:bg-red-700 text-sm px-3 py-1.5 disabled:opacity-60"
-              >
-                {cancelling && <ClipLoader color="#ffffff" size={14} />}
-                {cancelling ? "Cancelling…" : "Yes, cancel"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <CancelAppointmentDialog
+        open={confirming}
+        isHomeVisit={isHomeVisit}
+        petName={appt.petName}
+        date={appt.date}
+        startTime={appt.startTime}
+        cancellation={isHomeVisit ? appt.cancellation : null}
+        cancelling={cancelling}
+        error={cancelError}
+        onConfirm={handleCancel}
+        onClose={() => {
+          setConfirming(false)
+          setCancelError(null)
+        }}
+      />
     </div>
   )
 }
