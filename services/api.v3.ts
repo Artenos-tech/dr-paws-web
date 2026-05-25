@@ -616,6 +616,12 @@ export type V3AppointmentListAddress = {
   directions: string | null
 }
 
+export type V3HomeVisitCancellation = {
+  allowed: boolean
+  disabledReason: "NIDANA_LOCKED" | "PAST_REFUND_WINDOW" | null
+  refund: { amount: number } | null
+}
+
 export type V3AppointmentListItem =
   | (V3AppointmentCommon & {
       bookingType: "CLINIC_VISIT"
@@ -625,6 +631,7 @@ export type V3AppointmentListItem =
       bookingType: "HOME_VISIT"
       visitStatus: string
       address: V3AppointmentListAddress | null
+      cancellation: V3HomeVisitCancellation
     })
 
 export async function v3FetchAppointments(
@@ -846,10 +853,17 @@ export async function v3CreateGroomingAppointment(input: {
   return data.appointment
 }
 
-export async function v3CancelAppointment(id: string): Promise<void> {
-  await v3Delete<V3ApiResponse<{}>>(
-    `/v3/appointments/${encodeURIComponent(id)}`,
-  )
+export type V3CancelAppointmentResult = {
+  refund: { amount: number } | null
+}
+
+export async function v3CancelAppointment(
+  id: string,
+): Promise<V3CancelAppointmentResult> {
+  const data = await v3Delete<
+    V3ApiResponse<{ refund: { amount: number } | null }>
+  >(`/v3/appointments/${encodeURIComponent(id)}`)
+  return { refund: data.refund ?? null }
 }
 
 export async function v3FetchSpecies(): Promise<V3SpeciesOption[]> {
