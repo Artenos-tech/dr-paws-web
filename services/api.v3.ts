@@ -603,6 +603,7 @@ type V3AppointmentCommon = {
   date: string
   startTime: string
   endTime: string
+  category: "veterinary" | "grooming" | null
   appointmentTypeName: string | null
   reasonForVisit: string | null
   canModifyOrCancel: boolean
@@ -646,6 +647,30 @@ export async function v3FetchAppointments(
     }>
   >("/v3/appointments", { page: String(page), pageSize: String(pageSize) })
   return { items: data.appointments, hasNext: data.hasNext }
+}
+
+export async function v3GetAppointment(
+  id: string,
+): Promise<V3AppointmentListItem> {
+  const data = await v3Get<
+    V3ApiResponse<{ appointment: V3AppointmentListItem }>
+  >(`/v3/appointments/${encodeURIComponent(id)}`)
+  return data.appointment
+}
+
+export type V3AppointmentStatus = {
+  visitStatus: string
+  canModifyOrCancel: boolean
+  startOtp: string | null
+}
+
+export async function v3GetAppointmentStatus(
+  id: string,
+): Promise<V3AppointmentStatus> {
+  const data = await v3Get<V3ApiResponse<V3AppointmentStatus>>(
+    `/v3/appointments/${encodeURIComponent(id)}/status`,
+  )
+  return data
 }
 
 // ─── Documents ────────────────────────────────────────────────────────────────
