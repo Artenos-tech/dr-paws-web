@@ -123,6 +123,7 @@ export default function V3AppointmentsPage() {
                         allowed: false,
                         disabledReason: "NIDANA_LOCKED",
                         refund: null,
+                        refundDeclinedReason: null,
                       },
                     }
                   }
@@ -136,6 +137,10 @@ export default function V3AppointmentsPage() {
               if (result.refund) {
                 toast.success(
                   `Appointment cancelled. ₹${result.refund.amount} refund initiated.`,
+                )
+              } else if (result.refundDeclinedReason === "PAST_REFUND_WINDOW") {
+                toast.success(
+                  "Appointment cancelled. No refund — within 24 hours of the appointment.",
                 )
               } else {
                 toast.success("Appointment cancelled")
