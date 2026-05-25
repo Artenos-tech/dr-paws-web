@@ -499,6 +499,67 @@ export async function v3CreateHomeVisitAppointment(input: {
   return data.appointment
 }
 
+export type V3PaymentOrder = {
+  orderId: string
+  paymentSessionId: string
+}
+
+export type V3HomeVisitPaymentOrderStatus =
+  | "ACTIVE"
+  | "PAID"
+  | "EXPIRED"
+  | "TERMINATED"
+  | "TERMINATION_REQUESTED"
+
+export async function v3CreateHomeVisitPaymentOrder(input: {
+  addressId: string
+  petId: string
+  date: string
+  startTime: string
+  endTime: string
+  isEmergency: boolean
+  reasonCode: string
+  petParentNotes: string
+  couponCode?: string
+  bookingFlowSessionId?: string
+}): Promise<V3PaymentOrder> {
+  const data = await v3Post<
+    V3ApiResponse<{ data: { order: V3PaymentOrder } }>
+  >("/v3/booking/at-home/payments/orders", { ...input, platform: "WEB" })
+  return data.data.order
+}
+
+export async function v3GetHomeVisitPaymentOrderStatus(
+  orderId: string,
+): Promise<{
+  order_payment: {
+    success: boolean
+    status: V3HomeVisitPaymentOrderStatus
+  }
+  appointment: {
+    id: string
+    nidanaAppointmentId: string
+  } | null
+}> {
+  const data = await v3Get<
+    V3ApiResponse<{
+      data: {
+        order_payment: {
+          success: boolean
+          status: V3HomeVisitPaymentOrderStatus
+        }
+        appointment: {
+          id: string
+          nidanaAppointmentId: string
+        } | null
+      }
+    }>
+  >(
+    `/v3/booking/at-home/payments/order/${encodeURIComponent(orderId)}/status`,
+  )
+  return data.data
+}
+
 export async function v3GetHomeVisitAppointment(
   id: string,
 ): Promise<V3HomeVisitAppointment> {
