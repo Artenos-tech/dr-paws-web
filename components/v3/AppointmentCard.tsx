@@ -53,6 +53,7 @@ export default function AppointmentCard({ item, onCancel }: Props) {
   const [confirming, setConfirming] = useState(false)
   const [cancelling, setCancelling] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [disabledMessage, setDisabledMessage] = useState<string | null>(null)
 
   const handleConfirmCancel = async () => {
     if (!onCancel) return
@@ -66,6 +67,34 @@ export default function AppointmentCard({ item, onCancel }: Props) {
     } finally {
       setCancelling(false)
     }
+  }
+
+  // Whether to render a cancel button at all. We use Nidana's
+  // canModifyOrCancel as the gate for "this is a live, cancellable
+  // appointment". For home visits, an additional Dr Paws refund-window
+  // policy may render the button disabled with an explanatory message.
+  const showCancelButton = item.canModifyOrCancel && !!onCancel
+  const hvCancellation = isHomeVisit ? item.cancellation : null
+  const cancelDisabled = hvCancellation ? !hvCancellation.allowed : false
+  const refundOnCancel = hvCancellation?.refund ?? null
+
+  function disabledReasonMessage() {
+    if (!hvCancellation) return null
+    if (hvCancellation.disabledReason === "PAST_REFUND_WINDOW") {
+      return "Cancellations are only allowed up to 24 hours before the appointment."
+    }
+    if (hvCancellation.disabledReason === "NIDANA_LOCKED") {
+      return "This appointment can no longer be cancelled."
+    }
+    return null
+  }
+
+  function handleCancelClick() {
+    if (cancelDisabled) {
+      setDisabledMessage(disabledReasonMessage())
+      return
+    }
+    setConfirming(true)
   }
 
   return (
@@ -140,15 +169,25 @@ export default function AppointmentCard({ item, onCancel }: Props) {
         )}
       </div>
 
-      {item.canModifyOrCancel && onCancel && (
-        <div className="mt-3 flex justify-end">
+      {showCancelButton && (
+        <div className="mt-3 flex flex-col items-end gap-1">
           <button
             type="button"
-            onClick={() => setConfirming(true)}
-            className="inline-flex items-center gap-1 rounded-md border border-red-200 text-red-600 hover:bg-red-50 text-sm px-3 py-1.5"
+            onClick={handleCancelClick}
+            aria-disabled={cancelDisabled}
+            className={
+              cancelDisabled
+                ? "inline-flex items-center gap-1 rounded-md border border-gray-200 text-gray-400 cursor-not-allowed text-sm px-3 py-1.5"
+                : "inline-flex items-center gap-1 rounded-md border border-red-200 text-red-600 hover:bg-red-50 text-sm px-3 py-1.5"
+            }
           >
             <X className="h-4 w-4" /> Cancel
           </button>
+          {disabledMessage && (
+            <p className="text-xs text-gray-500 max-w-xs text-right">
+              {disabledMessage}
+            </p>
+          )}
         </div>
       )}
 
@@ -168,6 +207,11 @@ export default function AppointmentCard({ item, onCancel }: Props) {
               {formatDate(item.date)} at {formatTime(item.startTime)} will be
               cancelled. This cannot be undone.
             </p>
+            {refundOnCancel && (
+              <p className="mt-2 text-sm text-emerald-700">
+                You&apos;ll receive a full refund of ₹{refundOnCancel.amount}.
+              </p>
+            )}
             {error && (
               <div className="mt-3 rounded-md border border-red-200 bg-red-50 p-2 text-sm text-red-700">
                 {error}

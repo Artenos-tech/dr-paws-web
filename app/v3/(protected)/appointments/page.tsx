@@ -100,8 +100,9 @@ export default function V3AppointmentsPage() {
             key={item.id}
             item={item}
             onCancel={async (id) => {
+              let result
               try {
-                await v3CancelAppointment(id)
+                result = await v3CancelAppointment(id)
               } catch (e) {
                 const message =
                   e instanceof Error
@@ -118,6 +119,11 @@ export default function V3AppointmentsPage() {
                       ...it,
                       visitStatus: "Cancelled",
                       canModifyOrCancel: false,
+                      cancellation: {
+                        allowed: false,
+                        disabledReason: "NIDANA_LOCKED",
+                        refund: null,
+                      },
                     }
                   }
                   return {
@@ -127,7 +133,13 @@ export default function V3AppointmentsPage() {
                   }
                 }),
               )
-              toast.success("Appointment cancelled")
+              if (result.refund) {
+                toast.success(
+                  `Appointment cancelled. ₹${result.refund.amount} refund initiated.`,
+                )
+              } else {
+                toast.success("Appointment cancelled")
+              }
             }}
           />
         ))}
