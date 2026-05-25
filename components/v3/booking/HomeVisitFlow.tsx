@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react"
 import {
+  CheckCircle2,
   Pencil,
   Home,
   MapPin,
@@ -19,13 +20,14 @@ import {
   v3CheckHomeVisitServiceable,
   v3FetchHomeVisitSlots,
   v3FetchHomeVisitPrice,
-  v3CreateHomeVisitPaymentOrder,
+  v3InitiateHomeVisitAppointment,
   v3StartBookingFlow,
   v3UpdateBookingFlowStep,
   type V3Pet,
   type V3Clinic,
   type V3Address,
   type V3HomeVisitSlot,
+  type V3HomeVisitAppointment,
   type V3NidanaHomeVisitBookingFlowStep,
 } from "@/services/api.v3"
 import { load } from "@cashfreepayments/cashfree-js"
@@ -104,6 +106,9 @@ export default function HomeVisitFlow({
   const [couponError, setCouponError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState<string | null>(null)
+  const [appointment, setAppointment] = useState<V3HomeVisitAppointment | null>(
+    null,
+  )
   const [bookingFlowSessionId, setBookingFlowSessionId] = useState<
     string | null
   >(null)
@@ -280,6 +285,10 @@ export default function HomeVisitFlow({
       </div>
     )
   }
+  if (appointment) {
+    return <HomeVisitSuccess appointment={appointment} />
+  }
+
   return (
     <div className="max-w-lg mx-auto px-4 py-8 space-y-3">
       {onBack && (
@@ -446,6 +455,7 @@ export default function HomeVisitFlow({
                       couponError={couponError}
                       couponCode={couponCode}
                       bookingFlowSessionId={bookingFlowSessionId}
+                      onSuccess={(appt) => setAppointment(appt)}
                       onEdit={editSection}
                     />
                   )}
@@ -952,6 +962,7 @@ function StepHomeVisitConfirm({
   couponError,
   couponCode,
   bookingFlowSessionId,
+  onSuccess,
   onEdit,
 }: {
   address: V3Address
@@ -965,6 +976,7 @@ function StepHomeVisitConfirm({
   couponError: string | null
   couponCode?: string
   bookingFlowSessionId: string | null
+  onSuccess: (appt: V3HomeVisitAppointment) => void
   onEdit: (section: SectionId) => void
 }) {
   const [submitting, setSubmitting] = useState(false)
@@ -974,7 +986,7 @@ function StepHomeVisitConfirm({
     setSubmitting(true)
     setError(null)
     try {
-      const order = await v3CreateHomeVisitPaymentOrder({
+      const result = await v3InitiateHomeVisitAppointment({
         addressId: address.id,
         petId: pet.id,
         date,
@@ -983,9 +995,13 @@ function StepHomeVisitConfirm({
         isEmergency: false,
         reasonCode: visitDetails.reasonCode,
         petParentNotes: visitDetails.petParentNotes,
-        couponCode,
+        couponCode: couponError ? undefined : couponCode,
         bookingFlowSessionId: bookingFlowSessionId ?? undefined,
       })
+      if (result.action === "APPOINTMENT_CONFIRMED") {
+        onSuccess(result.appointment)
+        return
+      }
       const cashfreeEnv = process.env.NEXT_PUBLIC_CASHFREE_ENVIRONMENT as
         | "sandbox"
         | "production"
@@ -995,11 +1011,11 @@ function StepHomeVisitConfirm({
       }
       const cashfree = await load({ mode: cashfreeEnv })
       await cashfree.checkout({
-        paymentSessionId: order.paymentSessionId,
+        paymentSessionId: result.order.paymentSessionId,
         returnUrl:
           window.location.origin +
           "/v3/book/home-visit/payment?order_id=" +
-          order.orderId,
+          result.order.orderId,
         redirectTarget: "_self",
       })
     } catch (e) {
@@ -1130,6 +1146,56 @@ function SummaryRow({
   )
 }
 
+function HomeVisitSuccess({
+  appointment,
+}: {
+  appointment: V3HomeVisitAppointment
+}) {
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" })
+  }, [])
+
+  return (
+    <div className="max-w-lg mx-auto px-4 py-12 text-center">
+      <div className="flex justify-center mb-5">
+        <div className="h-20 w-20 rounded-full bg-green-100 flex items-center justify-center">
+          <CheckCircle2 className="h-10 w-10 text-green-500" />
+        </div>
+      </div>
+      <h2 className="font-roca text-2xl text-primary-1 mb-2">
+        Home visit booked!
+      </h2>
+      <p className="text-gray-500 text-sm mb-8">
+        We&apos;ll send the vet&apos;s details closer to your appointment.
+      </p>
+
+      <div className="rounded-xl border border-gray-200 overflow-hidden divide-y divide-gray-100 text-left mb-8">
+        {[
+          { label: "Date", value: formatDateShort(appointment.apptDate) },
+          {
+            label: "Time",
+            value: `${formatTime(appointment.apptStart)} - ${formatTime(appointment.apptEnd)}`,
+          },
+          { label: "Status", value: appointment.visitStatus },
+        ].map(({ label, value }) => (
+          <div key={label} className="px-4 py-3 flex justify-between gap-4">
+            <span className="text-sm text-gray-500">{label}</span>
+            <span className="text-sm font-semibold text-primary-1 text-right">
+              {value}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      <a
+        href="/v3"
+        className="inline-flex items-center gap-2 rounded-xl bg-secondary-1 px-6 py-3 text-sm font-semibold text-white hover:opacity-90 transition-opacity w-full justify-center"
+      >
+        Back to home
+      </a>
+    </div>
+  )
+}
 
 function todayInIST(): string {
   const now = new Date()

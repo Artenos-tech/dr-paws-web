@@ -502,6 +502,9 @@ export async function v3CreateHomeVisitAppointment(input: {
 export type V3PaymentOrder = {
   orderId: string
   paymentSessionId: string
+  amount: number
+  currency: "INR"
+  expiresAt: string | null
 }
 
 export type V3HomeVisitPaymentOrderStatus =
@@ -527,6 +530,47 @@ export async function v3CreateHomeVisitPaymentOrder(input: {
     V3ApiResponse<{ data: { order: V3PaymentOrder } }>
   >("/v3/booking/at-home/payments/orders", { ...input, platform: "WEB" })
   return data.data.order
+}
+
+export type V3HomeVisitInitiateResponse =
+  | {
+      action: "PAYMENT_REQUIRED"
+      paymentRequired: true
+      order: V3PaymentOrder
+    }
+  | {
+      action: "APPOINTMENT_CONFIRMED"
+      paymentRequired: false
+      appointment: V3HomeVisitAppointment
+    }
+
+export async function v3InitiateHomeVisitAppointment(input: {
+  addressId: string
+  petId: string
+  date: string
+  startTime: string
+  endTime: string
+  isEmergency: boolean
+  reasonCode: string
+  petParentNotes: string
+  couponCode?: string
+  bookingFlowSessionId?: string
+}): Promise<V3HomeVisitInitiateResponse> {
+  const data = await v3Post<
+    V3ApiResponse<
+      | {
+          action: "PAYMENT_REQUIRED"
+          paymentRequired: true
+          order: V3PaymentOrder
+        }
+      | {
+          action: "APPOINTMENT_CONFIRMED"
+          paymentRequired: false
+          appointment: V3HomeVisitAppointment
+        }
+    >
+  >("/v3/booking/at-home/appointments/initiate", { ...input, platform: "WEB" })
+  return data
 }
 
 export async function v3GetHomeVisitPaymentOrderStatus(
