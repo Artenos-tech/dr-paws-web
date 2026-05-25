@@ -99,6 +99,7 @@ export default function V3AppointmentsPage() {
           <AppointmentCard
             key={item.id}
             item={item}
+            href={`/v3/appointments/${item.id}`}
             onCancel={async (id) => {
               try {
                 await v3CancelAppointment(id)
