@@ -19,6 +19,7 @@ import {
   isCancellableStatus,
 } from "@/lib/appointmentFormatters"
 import CancelAppointmentDialog from "@/components/v3/CancelAppointmentDialog"
+import RefundStatusLine from "@/components/v3/RefundStatusLine"
 
 interface Props {
   item: V3AppointmentListItem
@@ -154,6 +155,12 @@ export default function AppointmentCard({ item, href, onCancel }: Props) {
           <p className="text-sm text-gray-500 italic mt-0.5 whitespace-pre-line line-clamp-3">
             &ldquo;{reason}&rdquo;
           </p>
+        )}
+
+        {isHomeVisit && item.refund && (
+          <div className="mt-1">
+            <RefundStatusLine refund={item.refund} />
+          </div>
         )}
       </div>
     </>

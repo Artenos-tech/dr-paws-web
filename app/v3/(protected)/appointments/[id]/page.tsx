@@ -33,6 +33,7 @@ import {
 import { useAppointmentStatusPoll } from "@/hooks/useAppointmentStatusPoll"
 import HomeVisitStatusBanner from "@/components/v3/HomeVisitStatusBanner"
 import CancelAppointmentDialog from "@/components/v3/CancelAppointmentDialog"
+import RefundStatusLine from "@/components/v3/RefundStatusLine"
 
 export default function AppointmentDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -275,43 +276,59 @@ export default function AppointmentDetailPage() {
           </div>
         )}
 
-        {/* Cancellation policy */}
-        {isHomeVisit ? (
-          (() => {
-            // Refund cutoff = apptStart − 24h (in IST). appt.date is YYYY-MM-DD
-            // and appt.startTime is HH:mm in IST.
-            const apptStartIST = new Date(
-              `${appt.date}T${appt.startTime}:00+05:30`,
-            )
-            const refundCutoff = new Date(
-              apptStartIST.getTime() - 24 * 60 * 60 * 1000,
-            )
-            const fmt = (d: Date) =>
-              d.toLocaleString("en-IN", {
-                day: "numeric",
-                month: "short",
-                year: "numeric",
-                hour: "numeric",
-                minute: "2-digit",
-                timeZone: "Asia/Kolkata",
-              })
-            return (
-              <div className="px-4 py-3 text-sm text-gray-500">
-                <p>
-                  <span className="font-medium text-gray-700">
-                    Cancellation policy:
-                  </span>{" "}
-                  Full refund if cancelled by{" "}
-                  <span className="font-medium text-gray-700">
-                    {fmt(refundCutoff)}
-                  </span>
-                  . You can still cancel after that, but no refund will be
-                  issued.
-                </p>
-              </div>
-            )
-          })()
-        ) : appt.modificationDeadline ? (
+        {/* Refund status */}
+        {isHomeVisit && appt.refund && (
+          <div className="px-4 py-3">
+            <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-1">
+              Refund
+            </p>
+            <RefundStatusLine refund={appt.refund} verbose />
+          </div>
+        )}
+
+        {/* Cancellation policy — only relevant while the appointment is
+            still cancellable (i.e. not terminal). */}
+        {isHomeVisit && appt.cancellation.allowed && (
+          <>
+            {(() => {
+              // Refund cutoff = apptStart − 24h (in IST). appt.date is
+              // YYYY-MM-DD and appt.startTime is HH:mm in IST.
+              const apptStartIST = new Date(
+                `${appt.date}T${appt.startTime}:00+05:30`,
+              )
+              const refundCutoff = new Date(
+                apptStartIST.getTime() - 24 * 60 * 60 * 1000,
+              )
+              const fmt = (d: Date) =>
+                d.toLocaleString("en-IN", {
+                  day: "numeric",
+                  month: "short",
+                  year: "numeric",
+                  hour: "numeric",
+                  minute: "2-digit",
+                  timeZone: "Asia/Kolkata",
+                })
+              return (
+                <div className="px-4 py-3 text-sm text-gray-500">
+                  <p>
+                    <span className="font-medium text-gray-700">
+                      Cancellation policy:
+                    </span>{" "}
+                    Full refund if cancelled by{" "}
+                    <span className="font-medium text-gray-700">
+                      {fmt(refundCutoff)}
+                    </span>
+                    . You can still cancel after that, but no refund will be
+                    issued.
+                  </p>
+                </div>
+              )
+            })()}
+          </>
+        )}
+
+        {/* Clinic visit modification deadline */}
+        {!isHomeVisit && appt.modificationDeadline ? (
           <div className="px-4 py-3 text-sm text-gray-500">
             Can be cancelled until{" "}
             <span className="font-medium text-gray-700">

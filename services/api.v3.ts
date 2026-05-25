@@ -624,6 +624,13 @@ export type V3HomeVisitCancellation = {
   refundDeclinedReason: "PAST_REFUND_WINDOW" | null
 }
 
+export type V3HomeVisitRefundSummary = {
+  status: "INITIATED" | "COMPLETED" | "FAILED"
+  amount: number
+  initiatedAt: string
+  completedAt: string | null
+}
+
 export type V3AppointmentListItem =
   | (V3AppointmentCommon & {
       bookingType: "CLINIC_VISIT"
@@ -634,6 +641,7 @@ export type V3AppointmentListItem =
       visitStatus: string
       address: V3AppointmentListAddress | null
       cancellation: V3HomeVisitCancellation
+      refund: V3HomeVisitRefundSummary | null
     })
 
 export async function v3FetchAppointments(
