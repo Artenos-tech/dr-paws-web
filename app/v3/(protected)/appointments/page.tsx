@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import ClipLoader from "react-spinners/ClipLoader"
 import toast, { Toaster } from "react-hot-toast"
-import { CalendarX } from "lucide-react"
+import { CalendarX, RefreshCw } from "lucide-react"
 import AppointmentCard from "@/components/v3/AppointmentCard"
 import {
   v3CancelAppointment,
@@ -90,9 +90,18 @@ export default function V3AppointmentsPage() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-6">
       <Toaster position="top-center" />
-      <h1 className="font-roca text-2xl text-primary-1 mb-4">
-        My Appointments
-      </h1>
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="font-roca text-2xl text-primary-1">My Appointments</h1>
+        <button
+          type="button"
+          onClick={() => loadPage(1)}
+          disabled={loading}
+          className="p-2 rounded-full text-gray-400 hover:text-primary-1 hover:bg-gray-100 disabled:opacity-40 transition-colors"
+          aria-label="Refresh appointments"
+        >
+          <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
+        </button>
+      </div>
 
       <div className="space-y-3">
         {items.map((item) => (
