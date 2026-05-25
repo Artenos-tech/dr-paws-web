@@ -432,13 +432,32 @@ export type V3HomeVisitAppointment = {
   visitStatus: string
 }
 
-export async function v3FetchHomeVisitPrice(): Promise<{
+export async function v3FetchHomeVisitPrice(opts?: {
+  couponCode?: string
+}): Promise<{
   priceInRupees: number
+  originalPriceInRupees?: number
+  discountInRupees?: number
+  couponApplied?: string
+  couponError?: string
 }> {
-  const data = await v3Get<V3ApiResponse<{ priceInRupees: number }>>(
-    "/v3/booking/at-home/price",
-  )
-  return { priceInRupees: data.priceInRupees }
+  const params = opts?.couponCode ? { couponCode: opts.couponCode } : undefined
+  const data = await v3Get<
+    V3ApiResponse<{
+      priceInRupees: number
+      originalPriceInRupees?: number
+      discountInRupees?: number
+      couponApplied?: string
+      couponError?: string
+    }>
+  >("/v3/booking/at-home/price", params)
+  return {
+    priceInRupees: data.priceInRupees,
+    originalPriceInRupees: data.originalPriceInRupees,
+    discountInRupees: data.discountInRupees,
+    couponApplied: data.couponApplied,
+    couponError: data.couponError,
+  }
 }
 
 export async function v3CheckHomeVisitServiceable(

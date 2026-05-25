@@ -33,6 +33,9 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel"
 import { useUserContext } from "@/context/UserContext"
+import { useV3UserContext } from "@/context/V3UserContext"
+import { useV3Feature } from "@/hooks/useV3Feature"
+import V3LoginModal from "@/components/v3/V3LoginModal"
 
 type GTMEventPayload = {
   event: "vet_at_home_whatsapp_click" | "vet_at_home_phone_click"
@@ -246,6 +249,10 @@ export default function VetAtHomePage() {
   const [pincodeInput, setPincodeInput] = useState("")
   const router = useRouter()
   const { isLoggedIn, initiateLogin } = useUserContext()
+  const [v3ModalOpen, setV3ModalOpen] = useState(false)
+  const [v3PostLoginPath, setV3PostLoginPath] = useState("")
+  const isV3Enabled = useV3Feature()
+  const { isLoggedIn: isV3LoggedIn, login: v3Login } = useV3UserContext()
   const [pincodeStatus, setPincodeStatus] = useState<
     "idle" | "serviceable" | "notServiceable" | "invalid" | "error"
   >("idle")
@@ -346,16 +353,29 @@ export default function VetAtHomePage() {
   }
 
   const handleBookAtHomeVisit = (couponCode?: string) => {
-    const destination = couponCode
+    const v3Destination = couponCode
+      ? `/v3/book/home-visit?couponCode=${encodeURIComponent(couponCode)}`
+      : "/v3/book/home-visit"
+    const pettleDestination = couponCode
       ? `/user/book-appointment?home=true&coupon=${encodeURIComponent(couponCode)}`
       : "/user/book-appointment?home=true"
 
-    if (isLoggedIn) {
-      router.push(destination)
+    if (isV3Enabled) {
+      if (isV3LoggedIn) {
+        router.push(v3Destination)
+      } else {
+        setV3PostLoginPath(v3Destination)
+        setV3ModalOpen(true)
+      }
       return
     }
 
-    initiateLogin("Book an At-Home Visit", destination)
+    if (isLoggedIn) {
+      router.push(pettleDestination)
+      return
+    }
+
+    initiateLogin("Book an At-Home Visit", pettleDestination)
   }
 
   const isHomeVisitEnabled =
@@ -1184,12 +1204,13 @@ export default function VetAtHomePage() {
                 <div className="animate-pulse h-10 w-40 rounded-full bg-secondary-1/40" />
               )}
               {!isCheckingHomeVisitFeatureFlag && isHomeVisitEnabled && (
-                <Link
-                  href="/user/book-appointment?home=true"
+                <button
+                  type="button"
+                  onClick={() => handleBookAtHomeVisit()}
                   className="font-open-sans btn rounded-full bg-secondary-1 px-5 py-2 text-xs tracking-wider text-white md:px-10 md:text-base"
                 >
                   Book At-Home Visit
-                </Link>
+                </button>
               )}
 
               <Link
@@ -1243,6 +1264,17 @@ export default function VetAtHomePage() {
           </div>
         </div>
       </section>
+
+      {v3ModalOpen && (
+        <V3LoginModal
+          onSuccess={(owner, token) => {
+            v3Login(owner, token)
+            setV3ModalOpen(false)
+            router.push(v3PostLoginPath)
+          }}
+          onClose={() => setV3ModalOpen(false)}
+        />
+      )}
 
       <div className="fixed bottom-6 right-4 z-50 flex items-center gap-3 md:bottom-8 md:right-8">
         <button

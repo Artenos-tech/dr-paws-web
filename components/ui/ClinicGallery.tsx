@@ -8,6 +8,9 @@ import ReactModal from "react-modal"
 
 import CustomButton from "@/components/ui/CustomButton"
 import { useUserContext } from "@/context/UserContext"
+import { useV3UserContext } from "@/context/V3UserContext"
+import { useV3Feature } from "@/hooks/useV3Feature"
+import V3LoginModal from "@/components/v3/V3LoginModal"
 
 interface ClinicGalleryProps {
   clinicId: string
@@ -27,6 +30,10 @@ function ClinicGallery({
   const limitedGalleryItems = gallery.slice(0, 7) ?? []
   const [isMounted, setIsMounted] = useState(false)
   const { initiateLogin, isLoggedIn } = useUserContext()
+  const [v3ModalOpen, setV3ModalOpen] = useState(false)
+  const [v3PostLoginPath, setV3PostLoginPath] = useState("")
+  const isV3Enabled = useV3Feature()
+  const { isLoggedIn: isV3LoggedIn, login: v3Login } = useV3UserContext()
   const navigate = useRouter()
 
   useEffect(() => {
@@ -49,6 +56,15 @@ function ClinicGallery({
   }
 
   const handleBookAVisit = () => {
+    if (isV3Enabled) {
+      if (isV3LoggedIn) {
+        navigate.push("/v3/book")
+      } else {
+        setV3PostLoginPath("/v3/book")
+        setV3ModalOpen(true)
+      }
+      return
+    }
     const bookingPath = `/user/book-appointment?clinicId=${clinicId}`
     return isLoggedIn
       ? navigate.push(bookingPath)
@@ -169,6 +185,16 @@ function ClinicGallery({
         </div>
       </ReactModal>
       <Toaster />
+      {v3ModalOpen && (
+        <V3LoginModal
+          onSuccess={(owner, token) => {
+            v3Login(owner, token)
+            setV3ModalOpen(false)
+            navigate.push(v3PostLoginPath)
+          }}
+          onClose={() => setV3ModalOpen(false)}
+        />
+      )}
     </div>
   )
 }

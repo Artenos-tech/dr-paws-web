@@ -86,12 +86,23 @@ function formatTime(time: string): string {
   return `${hour}:${String(m).padStart(2, "0")} ${period}`
 }
 
-export default function HomeVisitFlow({ onBack }: { onBack?: () => void }) {
+export default function HomeVisitFlow({
+  onBack,
+  couponCode,
+}: {
+  onBack?: () => void
+  couponCode?: string
+}) {
   const [openSection, setOpenSection] = useState<SectionId>("address")
   const [pets, setPets] = useState<V3Pet[]>([])
   const [clinics, setClinics] = useState<V3Clinic[]>([])
   const [addresses, setAddresses] = useState<V3Address[]>([])
   const [priceInRupees, setPriceInRupees] = useState<number | null>(null)
+  const [originalPriceInRupees, setOriginalPriceInRupees] = useState<
+    number | null
+  >(null)
+  const [discountInRupees, setDiscountInRupees] = useState<number | null>(null)
+  const [couponError, setCouponError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState<string | null>(null)
   const [appointment, setAppointment] = useState<V3HomeVisitAppointment | null>(
@@ -126,13 +137,16 @@ export default function HomeVisitFlow({ onBack }: { onBack?: () => void }) {
       v3FetchPets(),
       v3FetchClinics(),
       v3FetchAddresses(),
-      v3FetchHomeVisitPrice(),
+      v3FetchHomeVisitPrice(couponCode ? { couponCode } : undefined),
     ])
       .then(([p, c, a, price]) => {
         setPets(p)
         setClinics(c)
         setAddresses(a)
         setPriceInRupees(price.priceInRupees)
+        setOriginalPriceInRupees(price.originalPriceInRupees ?? null)
+        setDiscountInRupees(price.discountInRupees ?? null)
+        setCouponError(price.couponError ?? null)
       })
       .catch(() =>
         setLoadError("Failed to load data. Please refresh and try again."),
@@ -435,6 +449,9 @@ export default function HomeVisitFlow({ onBack }: { onBack?: () => void }) {
                       date={sel.date}
                       slot={sel.slot}
                       priceInRupees={priceInRupees}
+                      originalPriceInRupees={originalPriceInRupees}
+                      discountInRupees={discountInRupees}
+                      couponError={couponError}
                       bookingFlowSessionId={bookingFlowSessionId}
                       onSuccess={(appt) => setAppointment(appt)}
                       onEdit={editSection}
@@ -938,6 +955,9 @@ function StepHomeVisitConfirm({
   date,
   slot,
   priceInRupees,
+  originalPriceInRupees,
+  discountInRupees,
+  couponError,
   bookingFlowSessionId,
   onSuccess,
   onEdit,
@@ -948,6 +968,9 @@ function StepHomeVisitConfirm({
   date: string
   slot: V3HomeVisitSlot
   priceInRupees: number | null
+  originalPriceInRupees: number | null
+  discountInRupees: number | null
+  couponError: string | null
   bookingFlowSessionId: string | null
   onSuccess: (appt: V3HomeVisitAppointment) => void
   onEdit: (section: SectionId) => void
@@ -1011,16 +1034,38 @@ function StepHomeVisitConfirm({
         />
       </div>
 
+      {couponError && (
+        <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+          {couponError}
+        </div>
+      )}
+
       {priceInRupees !== null && (
         <div className="mb-4 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
           <div className="flex items-baseline justify-between">
             <span className="text-sm font-medium text-gray-700">
               Home visit fee
             </span>
-            <span className="font-semibold text-primary-1">
-              ₹{priceInRupees}
-            </span>
+            {discountInRupees !== null && originalPriceInRupees !== null ? (
+              <div className="flex items-baseline gap-2">
+                <span className="text-sm text-gray-400 line-through">
+                  ₹{originalPriceInRupees}
+                </span>
+                <span className="font-semibold text-green-700">
+                  ₹{priceInRupees}
+                </span>
+              </div>
+            ) : (
+              <span className="font-semibold text-primary-1">
+                ₹{priceInRupees}
+              </span>
+            )}
           </div>
+          {discountInRupees !== null && (
+            <p className="mt-1 text-xs font-medium text-green-600">
+              You save ₹{discountInRupees} with this offer
+            </p>
+          )}
           <p className="mt-1 text-xs text-gray-500">
             Our team will reach out to collect payment.
           </p>
