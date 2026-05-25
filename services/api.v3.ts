@@ -580,9 +580,7 @@ export async function v3GetHomeVisitPaymentOrderStatus(
         } | null
       }
     }>
-  >(
-    `/v3/booking/at-home/payments/order/${encodeURIComponent(orderId)}/status`,
-  )
+  >(`/v3/booking/at-home/payments/order/${encodeURIComponent(orderId)}/status`)
   return data.data
 }
 
