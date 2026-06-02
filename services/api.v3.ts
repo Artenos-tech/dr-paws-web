@@ -519,6 +519,7 @@ type V3AppointmentCommon = {
   startTime: string
   endTime: string
   category: "veterinary" | "grooming" | null
+  groomingTypeKey: string | null
   appointmentTypeName: string | null
   reasonForVisit: string | null
   canModifyOrCancel: boolean
@@ -790,6 +791,21 @@ export async function v3CancelAppointment(id: string): Promise<void> {
   await v3Delete<V3ApiResponse<{}>>(
     `/v3/appointments/${encodeURIComponent(id)}`,
   )
+}
+
+export async function v3RescheduleAppointment(
+  id: string,
+  input: {
+    doctorId: string
+    date: string
+    startTime: string
+  },
+): Promise<V3Appointment> {
+  const data = await v3Put<V3ApiResponse<{ appointment: V3Appointment }>>(
+    `/v3/appointments/${encodeURIComponent(id)}/reschedule`,
+    input,
+  )
+  return data.appointment
 }
 
 export async function v3FetchSpecies(): Promise<V3SpeciesOption[]> {

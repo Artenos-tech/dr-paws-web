@@ -27,8 +27,10 @@ interface Props {
   initialDoctor?: V3Doctor | null
   priceInRupees: number
   seniorPriceInRupees: number
+  mode?: "booking" | "reschedule"
   onSelect: (doctor: V3Doctor, date: string, slot: V3TimeSlot) => void
   onSeniorVetPicked: (doctor: V3Doctor, date: string, slot: V3TimeSlot) => void
+  onSelectionInvalidated?: () => void
 }
 
 function formatDate(dateStr: string): string {
@@ -186,8 +188,10 @@ export default function StepVetDateTime({
   initialDoctor,
   priceInRupees,
   seniorPriceInRupees,
+  mode: flowMode = "booking",
   onSelect,
   onSeniorVetPicked,
+  onSelectionInvalidated,
 }: Props) {
   const [mode, setMode] = useState<"specific" | "best">("specific")
   const [seniorOnly, setSeniorOnly] = useState(false)
@@ -316,15 +320,30 @@ export default function StepVetDateTime({
   }, [bestSelectedDate, loadingBestSlots])
 
   const availableSlots = slots.filter((s) => s.isAvailable)
+  const isReschedule = flowMode === "reschedule"
+
+  function handleSlotPicked(
+    doctor: V3Doctor,
+    date: string,
+    slot: V3TimeSlot,
+  ) {
+    if (!isReschedule && doctor.isSenior && !seniorOnly) {
+      onSeniorVetPicked(doctor, date, slot)
+    } else {
+      onSelect(doctor, date, slot)
+    }
+  }
 
   function switchToBest() {
     setMode("best")
+    onSelectionInvalidated?.()
   }
 
   function switchToSpecific() {
     setMode("specific")
     setBestSelectedDate(null)
     setBestSlots([])
+    onSelectionInvalidated?.()
   }
 
   // ── Best-available UI ─────────────────────────────────────────────────────
@@ -356,7 +375,10 @@ export default function StepVetDateTime({
             <MiniCalendar
               availableDates={bestAvailableDates}
               selectedDate={bestSelectedDate}
-              onSelectDate={setBestSelectedDate}
+              onSelectDate={(date) => {
+                setBestSelectedDate(date)
+                onSelectionInvalidated?.()
+              }}
             />
           )}
           {!loadingBestDates && bestAvailableDates.size === 0 && (
@@ -400,15 +422,7 @@ export default function StepVetDateTime({
                           endTime: slot.endTime,
                           isAvailable: true,
                         }
-                        if (doctor.isSenior && !seniorOnly) {
-                          onSeniorVetPicked(
-                            doctor,
-                            bestSelectedDate,
-                            legacySlot,
-                          )
-                        } else {
-                          onSelect(doctor, bestSelectedDate, legacySlot)
-                        }
+                        handleSlotPicked(doctor, bestSelectedDate, legacySlot)
                       }}
                       className="rounded-xl border border-primary-2/30 bg-primary-2/5 px-3 py-2.5 text-sm font-medium text-primary-2 hover:bg-primary-2 hover:text-white hover:border-primary-2 transition-all text-center"
                     >
@@ -478,6 +492,7 @@ export default function StepVetDateTime({
                   setSelectedDoctor(null)
                   setSelectedDate(null)
                   setSlots([])
+                  onSelectionInvalidated?.()
                 }}
                 className={[
                   "relative inline-flex h-5 w-9 flex-shrink-0 rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none",
@@ -504,7 +519,10 @@ export default function StepVetDateTime({
               (doc) => (
                 <button
                   key={doc.id}
-                  onClick={() => setSelectedDoctor(doc)}
+                  onClick={() => {
+                    setSelectedDoctor(doc)
+                    onSelectionInvalidated?.()
+                  }}
                   className={[
                     "w-full flex items-center gap-3 px-4 py-3 rounded-xl border transition-all text-left",
                     selectedDoctor?.id === doc.id
@@ -541,11 +559,13 @@ export default function StepVetDateTime({
                         </span>
                       )}
                     </div>
-                    <div className="text-xs text-gray-400">
-                      {doc.isSenior
-                        ? `Senior Veterinarian · ₹${seniorPriceInRupees}`
-                        : `Veterinarian · ₹${priceInRupees}`}
-                    </div>
+                    {!isReschedule && (
+                      <div className="text-xs text-gray-400">
+                        {doc.isSenior
+                          ? `Senior Veterinarian · ₹${seniorPriceInRupees}`
+                          : `Veterinarian · ₹${priceInRupees}`}
+                      </div>
+                    )}
                   </div>
                   {selectedDoctor?.id === doc.id && (
                     <div
@@ -585,7 +605,10 @@ export default function StepVetDateTime({
             <MiniCalendar
               availableDates={availableDates}
               selectedDate={selectedDate}
-              onSelectDate={setSelectedDate}
+              onSelectDate={(date) => {
+                setSelectedDate(date)
+                onSelectionInvalidated?.()
+              }}
             />
           )}
           {!loadingDates && availableDates.size === 0 && (
@@ -618,13 +641,9 @@ export default function StepVetDateTime({
               {availableSlots.map((slot) => (
                 <button
                   key={slot.startTime}
-                  onClick={() => {
-                    if (selectedDoctor.isSenior && !seniorOnly) {
-                      onSeniorVetPicked(selectedDoctor, selectedDate, slot)
-                    } else {
-                      onSelect(selectedDoctor, selectedDate, slot)
-                    }
-                  }}
+                  onClick={() =>
+                    handleSlotPicked(selectedDoctor, selectedDate, slot)
+                  }
                   className="rounded-xl border border-primary-2/30 bg-primary-2/5 px-3 py-2.5 text-sm font-medium text-primary-2 hover:bg-primary-2 hover:text-white hover:border-primary-2 transition-all text-center"
                 >
                   {formatTime(slot.startTime)}
