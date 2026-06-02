@@ -70,7 +70,7 @@ export default function DocumentList({ type, petId }: Props) {
 
   useEffect(() => {
     const sentinel = sentinelRef.current
-    if (!sentinel || !hasNext || initialLoading) return
+    if (!sentinel || !hasNext || initialLoading || error) return
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && !loadingRef.current && hasNext) {
@@ -81,7 +81,7 @@ export default function DocumentList({ type, petId }: Props) {
     )
     observer.observe(sentinel)
     return () => observer.disconnect()
-  }, [hasNext, initialLoading, loadPage])
+  }, [hasNext, initialLoading, error, loadPage])
 
   if (initialLoading) {
     return (
