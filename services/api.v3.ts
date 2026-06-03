@@ -677,6 +677,30 @@ export async function v3GetDocumentDownloadUrl(
   }
 }
 
+// Fetches the document via our server proxy (which strips Content-Disposition:
+// attachment and has no CORS constraints against S3). Returns a blob object URL
+// suitable for window.open() inline viewing, or null on failure.
+export async function v3FetchDocumentView(
+  downloadId: string,
+  type: V3DocumentType,
+): Promise<string | null> {
+  const url = new URL(
+    `${API_BASE_URL}/v3/documents/${encodeURIComponent(downloadId)}/view`,
+  )
+  url.searchParams.set("type", type)
+  try {
+    const res = await fetch(url.toString(), {
+      headers: getV3Headers(),
+      credentials: "include",
+    })
+    if (!res.ok) return null
+    const blob = await res.blob()
+    return URL.createObjectURL(blob)
+  } catch {
+    return null
+  }
+}
+
 // ─── Visit / booking type meta ────────────────────────────────────────────────
 
 export type V3VisitType = { key: string; title: string; description: string }
