@@ -20,6 +20,7 @@ interface ClinicInfo {
   }
   bookable: boolean
   contact: string
+  comingSoon: boolean
 }
 
 interface ClinicItemProps {
@@ -28,7 +29,7 @@ interface ClinicItemProps {
 }
 
 const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
-  const { image, name, services, id, bookable, contact } = clinic
+  const { image, name, services, id, bookable, contact, comingSoon } = clinic
   const router = useRouter()
 
   const { initiateLogin, isLoggedIn } = useUserContext()
@@ -87,31 +88,47 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
           !enlargedView && "w-full lg:w-[50%] xl:w-[25%] min-h-[360px]"
         } flex flex-col justify-between h-full w-full shadow-md rounded-md`}
       >
-        <div onClick={goToClinicPage} className="cursor-pointer">
-          <div className="image-container">
+        <div
+          onClick={comingSoon ? undefined : goToClinicPage}
+          className={comingSoon ? "cursor-default" : "cursor-pointer"}
+        >
+          <div className="image-container relative">
             <Image
               src={
                 (image.type === "url" && image.value) ||
-                "/assets/images/clinic/clinicThumbnail.svg"
+                "/assets/images/clinic/ClinicImage.png"
               }
               alt={name + " image"}
               className="image rounded-t-md"
               layout="fill"
             />
+            {comingSoon && (
+              <div className="absolute top-3 left-0 bg-[#fdc776] text-[#33495f] text-xs font-bold px-3 py-1 rounded-r-full shadow-md tracking-wide">
+                Coming Soon
+              </div>
+            )}
           </div>
           <div className="p-2">
             <h1 className="text-primary-1 text-base">{name}</h1>
-            <div className="flex gap-2 text-primary-1 text-xs mt-2 ">
-              <p>{services}</p>
-            </div>
+            {services && (
+              <div className="flex gap-2 text-primary-1 text-xs mt-2">
+                <p>{services}</p>
+              </div>
+            )}
           </div>
         </div>
-        <button
-          onClick={handleBookAVisit}
-          className={`btn bg-secondary-1 rounded-none border-none z text-white w-full rounded-b-md py-3`}
-        >
-          Book a Visit
-        </button>
+        {comingSoon ? (
+          <div className="bg-[#fdc776] text-[#33495f] text-center w-full rounded-b-md py-3 text-sm font-semibold tracking-wide">
+            Opening Soon
+          </div>
+        ) : (
+          <button
+            onClick={handleBookAVisit}
+            className={`btn bg-secondary-1 rounded-none border-none z text-white w-full rounded-b-md py-3`}
+          >
+            Book a Visit
+          </button>
+        )}
         <Toaster />
       </div>
 

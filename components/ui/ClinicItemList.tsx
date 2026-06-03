@@ -23,6 +23,7 @@ const ClinicItemList = ({ showStaticCard, enlargedView }: ClinicItemProps) => {
       }
       bookable: boolean
       contact: string
+      comingSoon: boolean
     }[]
   >([])
   const { call: getClinicsList, loading: loadingClinicList } = useAPICall(

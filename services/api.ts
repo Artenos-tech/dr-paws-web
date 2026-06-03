@@ -1294,6 +1294,7 @@ export default createAPIClient({
             }),
             bookable: z.boolean(),
             contact: z.string(),
+            comingSoon: z.boolean(),
           }),
         ),
       }),
