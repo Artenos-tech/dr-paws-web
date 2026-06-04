@@ -90,7 +90,7 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
       >
         <div
           onClick={comingSoon ? undefined : goToClinicPage}
-          className={comingSoon ? "cursor-default" : "cursor-pointer"}
+          className={`flex-1 flex flex-col ${comingSoon ? "cursor-default" : "cursor-pointer"}`}
         >
           <div className="image-container relative">
             <Image
@@ -108,17 +108,27 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
               </div>
             )}
           </div>
-          <div className="p-2">
+          <div className="p-2 overflow-hidden">
             <h1 className="text-primary-1 text-base">{name}</h1>
-            {services && (
-              <div className="flex gap-2 text-primary-1 text-xs mt-2">
-                <p>{services}</p>
-              </div>
+            {comingSoon ? (
+              <>
+                <div className="border-t border-[#fdc776] my-3" />
+                <p className="text-[#33495f] text-xs leading-relaxed opacity-70">
+                  A new Dr. Paws clinic, coming to your city! We&apos;re getting
+                  everything ready to serve you and your furry friends.
+                </p>
+              </>
+            ) : (
+              services && (
+                <div className="flex gap-2 text-primary-1 text-xs mt-2">
+                  <p>{services}</p>
+                </div>
+              )
             )}
           </div>
         </div>
         {comingSoon ? (
-          <div className="bg-[#fdc776] text-[#33495f] text-center w-full rounded-b-md py-3 text-sm font-semibold tracking-wide">
+          <div className="bg-[#fdc776] text-[#33495f] text-center w-full rounded-b-md py-3 min-h-12 flex items-center justify-center text-sm font-semibold tracking-wide">
             Opening Soon
           </div>
         ) : (
