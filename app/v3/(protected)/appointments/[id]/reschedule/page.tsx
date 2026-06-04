@@ -89,11 +89,14 @@ export default function RescheduleAppointmentPage() {
     }
   }, [id, selection])
 
-  const handleSelectionChange = useCallback((nextSelection: Selection | null) => {
-    setSelection(nextSelection)
-    setSubmitError(null)
-    if (nextSelection) setEditingSelection(false)
-  }, [])
+  const handleSelectionChange = useCallback(
+    (nextSelection: Selection | null) => {
+      setSelection(nextSelection)
+      setSubmitError(null)
+      if (nextSelection) setEditingSelection(false)
+    },
+    [],
+  )
 
   const handleEditSelection = useCallback(() => {
     setEditingSelection(true)

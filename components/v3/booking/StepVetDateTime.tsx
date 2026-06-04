@@ -322,11 +322,7 @@ export default function StepVetDateTime({
   const availableSlots = slots.filter((s) => s.isAvailable)
   const isReschedule = flowMode === "reschedule"
 
-  function handleSlotPicked(
-    doctor: V3Doctor,
-    date: string,
-    slot: V3TimeSlot,
-  ) {
+  function handleSlotPicked(doctor: V3Doctor, date: string, slot: V3TimeSlot) {
     if (!isReschedule && doctor.isSenior && !seniorOnly) {
       onSeniorVetPicked(doctor, date, slot)
     } else {
