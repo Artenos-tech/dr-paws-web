@@ -11,7 +11,7 @@ import {
   UserRound,
 } from "lucide-react"
 import ClipLoader from "react-spinners/ClipLoader"
-import toast, { Toaster } from "react-hot-toast"
+import { Toaster } from "react-hot-toast"
 
 import {
   v3GetAppointment,
