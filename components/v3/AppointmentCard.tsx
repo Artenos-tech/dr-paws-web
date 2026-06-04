@@ -8,6 +8,7 @@ import {
   Home,
   X,
   Scissors,
+  CalendarClock,
 } from "lucide-react"
 import ClipLoader from "react-spinners/ClipLoader"
 import type { V3AppointmentListItem } from "@/services/api.v3"
@@ -23,10 +24,16 @@ import {
 interface Props {
   item: V3AppointmentListItem
   href?: string
+  rescheduleHref?: string
   onCancel?: (id: string) => Promise<void>
 }
 
-export default function AppointmentCard({ item, href, onCancel }: Props) {
+export default function AppointmentCard({
+  item,
+  href,
+  rescheduleHref,
+  onCancel,
+}: Props) {
   const isHomeVisit = item.bookingType === "HOME_VISIT"
   const isGrooming = item.category === "grooming"
   const status = isHomeVisit ? item.visitStatus : item.clinicStatus
@@ -38,6 +45,9 @@ export default function AppointmentCard({ item, href, onCancel }: Props) {
   const [confirming, setConfirming] = useState(false)
   const [cancelling, setCancelling] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const canModify = item.canModifyOrCancel && isCancellableStatus(status)
+  const canReschedule = !isHomeVisit && canModify && !!rescheduleHref
+  const canCancel = canModify && !!onCancel
 
   const handleConfirmCancel = async () => {
     if (!onCancel) return
@@ -170,18 +180,28 @@ export default function AppointmentCard({ item, href, onCancel }: Props) {
         cardContent
       )}
 
-      {item.canModifyOrCancel && isCancellableStatus(status) && onCancel && (
-        <div className="px-4 pb-3 flex justify-end">
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation()
-              setConfirming(true)
-            }}
-            className="inline-flex items-center gap-1 rounded-md border border-red-200 text-red-600 hover:bg-red-50 text-sm px-3 py-1.5"
-          >
-            <X className="h-4 w-4" /> Cancel
-          </button>
+      {(canReschedule || canCancel) && (
+        <div className="px-4 pb-3 flex flex-wrap justify-end gap-2">
+          {canReschedule && (
+            <Link
+              href={rescheduleHref}
+              className="inline-flex items-center gap-1 rounded-md border border-secondary-1 text-secondary-1 hover:bg-secondary-1/5 text-sm px-3 py-1.5"
+            >
+              <CalendarClock className="h-4 w-4" /> Reschedule
+            </Link>
+          )}
+          {canCancel && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation()
+                setConfirming(true)
+              }}
+              className="inline-flex items-center gap-1 rounded-md border border-red-200 text-red-600 hover:bg-red-50 text-sm px-3 py-1.5"
+            >
+              <X className="h-4 w-4" /> Cancel
+            </button>
+          )}
         </div>
       )}
 

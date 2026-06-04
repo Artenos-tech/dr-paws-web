@@ -51,6 +51,7 @@ export default function RescheduleAppointmentPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [selection, setSelection] = useState<Selection | null>(null)
+  const [editingSelection, setEditingSelection] = useState(false)
   const [confirmedSelection, setConfirmedSelection] =
     useState<Selection | null>(null)
   const [submitting, setSubmitting] = useState(false)
@@ -87,6 +88,17 @@ export default function RescheduleAppointmentPage() {
       setSubmitting(false)
     }
   }, [id, selection])
+
+  const handleSelectionChange = useCallback((nextSelection: Selection | null) => {
+    setSelection(nextSelection)
+    setSubmitError(null)
+    if (nextSelection) setEditingSelection(false)
+  }, [])
+
+  const handleEditSelection = useCallback(() => {
+    setEditingSelection(true)
+    setSubmitError(null)
+  }, [])
 
   if (loading) {
     return (
@@ -136,6 +148,7 @@ export default function RescheduleAppointmentPage() {
       <RescheduleConfirmed
         petName={appt.petName}
         clinicName={appt.clinicName}
+        isGrooming={isGrooming}
         previous={{
           date: appt.date,
           startTime: appt.startTime,
@@ -184,40 +197,69 @@ export default function RescheduleAppointmentPage() {
         </div>
       </div>
 
-      {isGrooming ? (
-        <GroomingReschedulePicker
-          appointment={appt}
-          onSelect={setSelection}
-        />
-      ) : (
-        <StepVetDateTime
-          clinicId={appt.clinicId}
-          priceInRupees={0}
-          seniorPriceInRupees={0}
-          mode="reschedule"
-          onSelect={(doctor, date, slot) =>
-            setSelection({
-              doctorId: doctor.id,
-              doctorName: doctor.name,
-              date,
-              startTime: slot.startTime,
-              endTime: slot.endTime,
-            })
-          }
-          onSeniorVetPicked={(doctor, date, slot) =>
-            setSelection({
-              doctorId: doctor.id,
-              doctorName: doctor.name,
-              date,
-              startTime: slot.startTime,
-              endTime: slot.endTime,
-            })
-          }
-          onSelectionInvalidated={() => setSelection(null)}
-        />
+      {(!selection || editingSelection) &&
+        (isGrooming ? (
+          <GroomingReschedulePicker
+            appointment={appt}
+            onSelect={handleSelectionChange}
+          />
+        ) : (
+          <StepVetDateTime
+            clinicId={appt.clinicId}
+            priceInRupees={0}
+            seniorPriceInRupees={0}
+            mode="reschedule"
+            onSelect={(doctor, date, slot) =>
+              handleSelectionChange({
+                doctorId: doctor.id,
+                doctorName: doctor.name,
+                date,
+                startTime: slot.startTime,
+                endTime: slot.endTime,
+              })
+            }
+            onSeniorVetPicked={(doctor, date, slot) =>
+              handleSelectionChange({
+                doctorId: doctor.id,
+                doctorName: doctor.name,
+                date,
+                startTime: slot.startTime,
+                endTime: slot.endTime,
+              })
+            }
+            onSelectionInvalidated={() => handleSelectionChange(null)}
+          />
+        ))}
+
+      {selection && !editingSelection && (
+        <div className="mt-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <p className="text-xs font-medium uppercase tracking-wide text-gray-400">
+                {isGrooming ? "Date & time" : "Vet & schedule"}
+              </p>
+              {!isGrooming && (
+                <p className="mt-1 font-semibold text-primary-1">
+                  {selection.doctorName}
+                </p>
+              )}
+              <p className="mt-1 text-sm text-gray-600">
+                {formatDate(selection.date)} at{" "}
+                {formatTime(selection.startTime)}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={handleEditSelection}
+              className="text-sm font-medium text-secondary-1 hover:underline"
+            >
+              Edit
+            </button>
+          </div>
+        </div>
       )}
 
-      {selection && (
+      {selection && !editingSelection && (
         <div className="mt-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
           <h2 className="font-roca text-lg text-primary-1">Review</h2>
           <div className="mt-3 grid gap-3 text-sm">
@@ -228,9 +270,11 @@ export default function RescheduleAppointmentPage() {
               <p className="mt-1 text-gray-400 line-through decoration-gray-400">
                 {formatDate(appt.date)} at {formatTime(appt.startTime)}
               </p>
-              <p className="text-gray-400 line-through decoration-gray-400">
-                {appt.doctorName}
-              </p>
+              {!isGrooming && (
+                <p className="text-gray-400 line-through decoration-gray-400">
+                  {appt.doctorName}
+                </p>
+              )}
             </div>
             <div className="rounded-xl border border-secondary-1/30 bg-secondary-1/5 px-3 py-3">
               <p className="text-xs font-medium uppercase tracking-wide text-secondary-1">
@@ -240,7 +284,9 @@ export default function RescheduleAppointmentPage() {
                 {formatDate(selection.date)} at{" "}
                 {formatTime(selection.startTime)}
               </p>
-              <p className="text-gray-600">{selection.doctorName}</p>
+              {!isGrooming && (
+                <p className="text-gray-600">{selection.doctorName}</p>
+              )}
             </div>
           </div>
           {submitError && (
@@ -303,11 +349,13 @@ function GroomingReschedulePicker({
 function RescheduleConfirmed({
   petName,
   clinicName,
+  isGrooming,
   previous,
   selection,
 }: {
   petName: string
   clinicName: string
+  isGrooming: boolean
   previous: {
     date: string
     startTime: string
@@ -336,9 +384,11 @@ function RescheduleConfirmed({
             <p className="mt-1 text-gray-400 line-through decoration-gray-400">
               {formatDate(previous.date)} at {formatTime(previous.startTime)}
             </p>
-            <p className="text-sm text-gray-400 line-through decoration-gray-400">
-              {previous.doctorName}
-            </p>
+            {!isGrooming && (
+              <p className="text-sm text-gray-400 line-through decoration-gray-400">
+                {previous.doctorName}
+              </p>
+            )}
           </div>
 
           <div className="rounded-xl border border-secondary-1/30 bg-secondary-1/5 px-4 py-3">
@@ -348,7 +398,9 @@ function RescheduleConfirmed({
             <p className="mt-1 font-semibold text-primary-1">
               {formatDate(selection.date)} at {formatTime(selection.startTime)}
             </p>
-            <p className="text-sm text-gray-600">{selection.doctorName}</p>
+            {!isGrooming && (
+              <p className="text-sm text-gray-600">{selection.doctorName}</p>
+            )}
           </div>
         </div>
 
