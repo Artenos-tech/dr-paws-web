@@ -27,6 +27,7 @@ export default function DocumentList({ type, petId }: Props) {
 
   const sentinelRef = useRef<HTMLDivElement | null>(null)
   const loadingRef = useRef(false)
+  const pageRef = useRef(1)
 
   const loadPage = useCallback(
     async (pageToLoad: number) => {
@@ -45,6 +46,7 @@ export default function DocumentList({ type, petId }: Props) {
           pageToLoad === 1 ? documents : [...prev, ...documents],
         )
         setHasNext(more)
+        pageRef.current = pageToLoad
         setPage(pageToLoad)
       } catch (e) {
         setError(e instanceof Error ? e.message : "Failed to load documents")
@@ -60,6 +62,7 @@ export default function DocumentList({ type, petId }: Props) {
   useEffect(() => {
     setItems([])
     setPage(1)
+    pageRef.current = 1
     setHasNext(true)
     setInitialLoading(true)
     loadPage(1)
@@ -67,18 +70,18 @@ export default function DocumentList({ type, petId }: Props) {
 
   useEffect(() => {
     const sentinel = sentinelRef.current
-    if (!sentinel || !hasNext || initialLoading) return
+    if (!sentinel || !hasNext || initialLoading || error) return
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && !loadingRef.current && hasNext) {
-          loadPage(page + 1)
+          loadPage(pageRef.current + 1)
         }
       },
       { rootMargin: "200px" },
     )
     observer.observe(sentinel)
     return () => observer.disconnect()
-  }, [hasNext, initialLoading, page, loadPage])
+  }, [hasNext, initialLoading, error, loadPage])
 
   if (initialLoading) {
     return (
@@ -110,7 +113,7 @@ export default function DocumentList({ type, petId }: Props) {
           {error}
           <button
             type="button"
-            onClick={() => loadPage(page === 0 ? 1 : page + 1)}
+            onClick={() => loadPage(page)}
             className="ml-2 underline"
           >
             Retry

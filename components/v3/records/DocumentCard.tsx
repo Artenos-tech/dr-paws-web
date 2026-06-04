@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react"
 import { FileText, Eye, Download, Loader2 } from "lucide-react"
 import {
   v3GetDocumentDownloadUrl,
+  v3FetchDocumentView,
   type V3Document,
   type V3DocumentType,
 } from "@/services/api.v3"
@@ -27,49 +28,13 @@ function formatAmount(amount: number): string {
   return `₹${amount.toLocaleString("en-IN")}`
 }
 
-// The pre-signed S3 URL from Nidana has Content-Disposition: attachment, so
-// window.open() on it always triggers a download. To view inline (PDFs, images),
-// we fetch the file as a blob first — blob object URLs have no Content-Disposition,
-// so the browser renders them inline based on Content-Type.
-async function fetchBlob(
-  url: string,
-): Promise<{ objectUrl: string; blob: Blob } | null> {
-  try {
-    const res = await fetch(url)
-    if (!res.ok) return null
-    const blob = await res.blob()
-    return { objectUrl: URL.createObjectURL(blob), blob }
-  } catch {
-    return null
-  }
-}
-
-async function viewUrl(url: string) {
-  const result = await fetchBlob(url)
-  if (result) {
-    window.open(result.objectUrl, "_blank", "noopener,noreferrer")
-    // Keep alive long enough for the user to read; browser cleans up on tab close anyway
-    setTimeout(() => URL.revokeObjectURL(result.objectUrl), 5 * 60 * 1000)
-  } else {
-    // CORS blocked — direct link still works for download, not ideal for view
-    window.open(url, "_blank", "noopener,noreferrer")
-  }
-}
-
 async function downloadUrl(url: string, fileName: string) {
-  const result = await fetchBlob(url)
-  if (result) {
-    const a = document.createElement("a")
-    a.href = result.objectUrl
-    a.download = fileName
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    setTimeout(() => URL.revokeObjectURL(result.objectUrl), 10000)
-  } else {
-    // CORS blocked — fall back to direct link (browser will download)
-    window.open(url, "_blank", "noopener,noreferrer")
-  }
+  const a = document.createElement("a")
+  a.href = url
+  a.download = fileName
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
 }
 
 function FileRow({
@@ -86,7 +51,6 @@ function FileRow({
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
 
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null)
-  const pendingActionRef = useRef<Action | null>(null)
   const attemptsRef = useRef(0)
 
   useEffect(() => {
@@ -99,14 +63,6 @@ function FileRow({
     if (pollRef.current) {
       clearInterval(pollRef.current)
       pollRef.current = null
-    }
-  }
-
-  async function executeAction(url: string, fileName: string, action: Action) {
-    if (action === "view") {
-      viewUrl(url)
-    } else {
-      await downloadUrl(url, fileName)
     }
   }
 
@@ -125,11 +81,7 @@ function FileRow({
         stopPolling()
         setIsGenerating(false)
         setActiveAction(null)
-        await executeAction(
-          result.url,
-          result.fileName,
-          pendingActionRef.current!,
-        )
+        await downloadUrl(result.url, result.fileName)
       }
     } catch {
       stopPolling()
@@ -139,22 +91,42 @@ function FileRow({
     }
   }
 
-  async function handleAction(action: Action) {
+  async function handleView() {
     if (activeAction) return
-    setActiveAction(action)
+    setActiveAction("view")
     setErrorMsg(null)
+    // Open the tab now, while we're still in the user-gesture context, so
+    // popup blockers don't interfere with the window.open() call after the await.
+    const newTab = window.open("", "_blank")
+    try {
+      const objectUrl = await v3FetchDocumentView(downloadId, type)
+      if (objectUrl && newTab) {
+        newTab.location.href = objectUrl
+        setTimeout(() => URL.revokeObjectURL(objectUrl), 5 * 60 * 1000)
+      } else {
+        newTab?.close()
+        setErrorMsg("Failed to open document.")
+      }
+    } catch {
+      newTab?.close()
+      setErrorMsg("Failed to open document.")
+    } finally {
+      setActiveAction(null)
+    }
+  }
 
+  async function handleDownload() {
+    if (activeAction) return
+    setActiveAction("download")
+    setErrorMsg(null)
     try {
       const result = await v3GetDocumentDownloadUrl(downloadId, type)
-
       if (!result.isGenerating && result.url) {
         setActiveAction(null)
-        await executeAction(result.url, result.fileName, action)
+        await downloadUrl(result.url, result.fileName)
         return
       }
-
       if (ASYNC_TYPES.has(type)) {
-        pendingActionRef.current = action
         attemptsRef.current = 0
         setIsGenerating(true)
         pollRef.current = setInterval(pollForUrl, POLL_INTERVAL_MS)
@@ -180,14 +152,14 @@ function FileRow({
             label="View"
             loading={activeAction === "view"}
             disabled={busy}
-            onClick={() => handleAction("view")}
+            onClick={handleView}
           />
           <ActionButton
             icon={<Download className="h-3 w-3" />}
             label="Download"
             loading={activeAction === "download"}
             disabled={busy}
-            onClick={() => handleAction("download")}
+            onClick={handleDownload}
           />
         </div>
       </div>
