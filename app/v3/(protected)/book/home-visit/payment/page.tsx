@@ -10,8 +10,10 @@ import {
 } from "@/services/api.v3"
 
 const POLL_INTERVAL_MS = 3000
+// Soft net for the rare case where payment is confirmed but appointment
+// linking lags. This is NOT an expiry decision — expiry is owned entirely by
+// the server, which reports EXPIRED once its booking deadline passes.
 const MAX_PAID_WAIT_MS = 30000
-const MAX_ACTIVE_WAIT_MS = 15000
 
 function HomeVisitPaymentStatus() {
   const router = useRouter()
@@ -22,7 +24,6 @@ function HomeVisitPaymentStatus() {
   >("loading")
   const pollingRef = useRef<NodeJS.Timeout | null>(null)
   const paidTimeoutRef = useRef<NodeJS.Timeout | null>(null)
-  const activeTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const hasRedirectedRef = useRef(false)
 
   useEffect(() => {
@@ -43,27 +44,17 @@ function HomeVisitPaymentStatus() {
         paidTimeoutRef.current = null
       }
     }
-    const stopActiveTimeout = () => {
-      if (activeTimeoutRef.current) {
-        clearTimeout(activeTimeoutRef.current)
-        activeTimeoutRef.current = null
-      }
-    }
 
     const verify = async () => {
       try {
         const result = await v3GetHomeVisitPaymentOrderStatus(orderId)
         const paymentStatus = result.order_payment.status
-        if (paymentStatus !== "ACTIVE") {
-          setStatus(paymentStatus)
-        }
 
         if (paymentStatus === "PAID" && result.appointment) {
           if (hasRedirectedRef.current) return
           hasRedirectedRef.current = true
           stopPolling()
           stopPaidTimeout()
-          stopActiveTimeout()
           const appointmentId = result.appointment.id
           setTimeout(() => {
             router.replace(
@@ -73,7 +64,9 @@ function HomeVisitPaymentStatus() {
             )
           }, 1500)
         } else if (paymentStatus === "PAID") {
-          stopActiveTimeout()
+          // Paid, but the appointment isn't linked yet — keep showing the
+          // confirming spinner and start a soft fallback.
+          setStatus("PAID")
           if (!paidTimeoutRef.current) {
             paidTimeoutRef.current = setTimeout(() => {
               stopPolling()
@@ -81,21 +74,18 @@ function HomeVisitPaymentStatus() {
             }, MAX_PAID_WAIT_MS)
           }
         } else if (paymentStatus === "ACTIVE") {
-          if (!activeTimeoutRef.current) {
-            activeTimeoutRef.current = setTimeout(() => {
-              stopPolling()
-              setStatus("ACTIVE")
-            }, MAX_ACTIVE_WAIT_MS)
-          }
+          // Still in progress. The server decides when this becomes terminal
+          // (EXPIRED); we just keep polling and showing the spinner.
         } else {
+          // Server-reported terminal status (EXPIRED / TERMINATED /
+          // TERMINATION_REQUESTED) — render it and stop.
           stopPolling()
           stopPaidTimeout()
-          stopActiveTimeout()
+          setStatus(paymentStatus)
         }
       } catch {
         stopPolling()
         stopPaidTimeout()
-        stopActiveTimeout()
         setStatus("error")
       }
     }
@@ -106,7 +96,6 @@ function HomeVisitPaymentStatus() {
     return () => {
       stopPolling()
       stopPaidTimeout()
-      stopActiveTimeout()
     }
   }, [orderId])
 
@@ -119,7 +108,7 @@ function HomeVisitPaymentStatus() {
   }
 
   const content = (() => {
-    if (status === "loading" || status === "PAID") {
+    if (status === "loading" || status === "ACTIVE" || status === "PAID") {
       return (
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="h-6 w-6 animate-spin" />
@@ -151,13 +140,11 @@ function HomeVisitPaymentStatus() {
     }
 
     const message =
-      status === "ACTIVE"
-        ? "Payment was not completed."
-        : status === "EXPIRED"
-          ? "Your payment session expired."
-          : status === "TERMINATED" || status === "TERMINATION_REQUESTED"
-            ? "This payment was cancelled."
-            : "We could not verify your payment status."
+      status === "EXPIRED"
+        ? "Your payment session expired. If any amount was charged, it will be refunded automatically — no action needed."
+        : status === "TERMINATED" || status === "TERMINATION_REQUESTED"
+          ? "This payment was cancelled."
+          : "We could not verify your payment status."
 
     return (
       <div className="flex flex-col items-center gap-4">
