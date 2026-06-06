@@ -50,7 +50,7 @@ function HomeVisitPaymentStatus() {
         const result = await v3GetHomeVisitPaymentOrderStatus(orderId)
         const paymentStatus = result.order_payment.status
 
-        if (paymentStatus === "PAID" && result.appointment) {
+        if (paymentStatus === "BOOKED" && result.appointment) {
           if (hasRedirectedRef.current) return
           hasRedirectedRef.current = true
           stopPolling()
@@ -63,22 +63,21 @@ function HomeVisitPaymentStatus() {
               )}`,
             )
           }, 1500)
-        } else if (paymentStatus === "PAID") {
+        } else if (paymentStatus === "BOOKED") {
           // Paid, but the appointment isn't linked yet — keep showing the
           // confirming spinner and start a soft fallback.
-          setStatus("PAID")
+          setStatus("BOOKED")
           if (!paidTimeoutRef.current) {
             paidTimeoutRef.current = setTimeout(() => {
               stopPolling()
               setStatus("PAID_TIMEOUT")
             }, MAX_PAID_WAIT_MS)
           }
-        } else if (paymentStatus === "ACTIVE") {
+        } else if (paymentStatus === "AWAITING_PAYMENT") {
           // Still in progress. The server decides when this becomes terminal
           // (EXPIRED); we just keep polling and showing the spinner.
         } else {
-          // Server-reported terminal status (EXPIRED / TERMINATED /
-          // TERMINATION_REQUESTED) — render it and stop.
+          // Server-reported terminal status (EXPIRED) — render it and stop.
           stopPolling()
           stopPaidTimeout()
           setStatus(paymentStatus)
@@ -108,12 +107,16 @@ function HomeVisitPaymentStatus() {
   }
 
   const content = (() => {
-    if (status === "loading" || status === "ACTIVE" || status === "PAID") {
+    if (
+      status === "loading" ||
+      status === "AWAITING_PAYMENT" ||
+      status === "BOOKED"
+    ) {
       return (
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="h-6 w-6 animate-spin" />
           <p className="text-center text-primary-1">
-            {status === "PAID"
+            {status === "BOOKED"
               ? "Payment successful. Confirming your appointment..."
               : "Verifying your payment..."}
           </p>
@@ -142,9 +145,7 @@ function HomeVisitPaymentStatus() {
     const message =
       status === "EXPIRED"
         ? "Your payment session expired. If any amount was charged, it will be refunded automatically — no action needed."
-        : status === "TERMINATED" || status === "TERMINATION_REQUESTED"
-          ? "This payment was cancelled."
-          : "We could not verify your payment status."
+        : "We could not verify your payment status."
 
     return (
       <div className="flex flex-col items-center gap-4">

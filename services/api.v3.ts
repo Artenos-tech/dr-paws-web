@@ -507,12 +507,11 @@ export type V3PaymentOrder = {
   expiresAt: string | null
 }
 
+// Our internal booking lifecycle, as reported by the order-status API.
 export type V3HomeVisitPaymentOrderStatus =
-  | "ACTIVE"
-  | "PAID"
+  | "AWAITING_PAYMENT"
+  | "BOOKED"
   | "EXPIRED"
-  | "TERMINATED"
-  | "TERMINATION_REQUESTED"
 
 export type V3HomeVisitInitiateResponse =
   | {
@@ -559,7 +558,6 @@ export async function v3GetHomeVisitPaymentOrderStatus(
   orderId: string,
 ): Promise<{
   order_payment: {
-    success: boolean
     status: V3HomeVisitPaymentOrderStatus
   }
   appointment: {
@@ -571,7 +569,6 @@ export async function v3GetHomeVisitPaymentOrderStatus(
     V3ApiResponse<{
       data: {
         order_payment: {
-          success: boolean
           status: V3HomeVisitPaymentOrderStatus
         }
         appointment: {
