@@ -20,7 +20,7 @@ import {
   v3CheckHomeVisitServiceable,
   v3FetchHomeVisitSlots,
   v3FetchHomeVisitPrice,
-  v3CreateHomeVisitAppointment,
+  v3InitiateHomeVisitAppointment,
   v3StartBookingFlow,
   v3UpdateBookingFlowStep,
   type V3Pet,
@@ -30,6 +30,7 @@ import {
   type V3HomeVisitAppointment,
   type V3NidanaHomeVisitBookingFlowStep,
 } from "@/services/api.v3"
+import { load } from "@cashfreepayments/cashfree-js"
 import StepPetSelect from "./StepPetSelect"
 import StepVisitDetails, {
   reasonLabel,
@@ -452,6 +453,7 @@ export default function HomeVisitFlow({
                       originalPriceInRupees={originalPriceInRupees}
                       discountInRupees={discountInRupees}
                       couponError={couponError}
+                      couponCode={couponCode}
                       bookingFlowSessionId={bookingFlowSessionId}
                       onSuccess={(appt) => setAppointment(appt)}
                       onEdit={editSection}
@@ -958,6 +960,7 @@ function StepHomeVisitConfirm({
   originalPriceInRupees,
   discountInRupees,
   couponError,
+  couponCode,
   bookingFlowSessionId,
   onSuccess,
   onEdit,
@@ -971,6 +974,7 @@ function StepHomeVisitConfirm({
   originalPriceInRupees: number | null
   discountInRupees: number | null
   couponError: string | null
+  couponCode?: string
   bookingFlowSessionId: string | null
   onSuccess: (appt: V3HomeVisitAppointment) => void
   onEdit: (section: SectionId) => void
@@ -982,23 +986,44 @@ function StepHomeVisitConfirm({
     setSubmitting(true)
     setError(null)
     try {
-      const appt = await v3CreateHomeVisitAppointment({
+      const result = await v3InitiateHomeVisitAppointment({
         addressId: address.id,
         petId: pet.id,
         date,
         startTime: slot.startTime,
+        endTime: slot.endTime,
         isEmergency: false,
         reasonCode: visitDetails.reasonCode,
         petParentNotes: visitDetails.petParentNotes,
+        couponCode: couponError ? undefined : couponCode,
         bookingFlowSessionId: bookingFlowSessionId ?? undefined,
       })
-      onSuccess(appt)
+      if (result.action === "APPOINTMENT_CONFIRMED") {
+        onSuccess(result.appointment)
+        return
+      }
+      const cashfreeEnv = process.env.NEXT_PUBLIC_CASHFREE_ENVIRONMENT as
+        | "sandbox"
+        | "production"
+        | undefined
+      if (!cashfreeEnv) {
+        throw new Error("Payment environment is not configured")
+      }
+      const cashfree = await load({ mode: cashfreeEnv })
+      await cashfree.checkout({
+        paymentSessionId: result.order.paymentSessionId,
+        returnUrl:
+          window.location.origin +
+          "/v3/book/home-visit/payment?order_id=" +
+          result.order.orderId,
+        redirectTarget: "_self",
+      })
     } catch (e) {
       const err = e as { errorCode?: string; message?: string }
       setError(
         err.errorCode === "SLOT_UNAVAILABLE"
           ? "This slot was just taken. Pick a different time above."
-          : (err.message ?? "Failed to book home visit. Please try again."),
+          : (err.message ?? "Failed to start payment. Please try again."),
       )
     } finally {
       setSubmitting(false)
@@ -1067,7 +1092,7 @@ function StepHomeVisitConfirm({
             </p>
           )}
           <p className="mt-1 text-xs text-gray-500">
-            Our team will reach out to collect payment.
+            Pay now to confirm your home visit.
           </p>
         </div>
       )}
@@ -1083,7 +1108,7 @@ function StepHomeVisitConfirm({
         disabled={submitting}
         className="w-full rounded-xl bg-secondary-1 py-3 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-60"
       >
-        {submitting ? "Booking…" : "Confirm home visit"}
+        {submitting ? "Starting payment..." : "Pay and confirm home visit"}
       </button>
     </div>
   )
@@ -1121,7 +1146,7 @@ function SummaryRow({
   )
 }
 
-function HomeVisitSuccess({
+export function HomeVisitSuccess({
   appointment,
 }: {
   appointment: V3HomeVisitAppointment
@@ -1149,7 +1174,7 @@ function HomeVisitSuccess({
           { label: "Date", value: formatDateShort(appointment.apptDate) },
           {
             label: "Time",
-            value: `${formatTime(appointment.apptStart)} – ${formatTime(appointment.apptEnd)}`,
+            value: `${formatTime(appointment.apptStart)} - ${formatTime(appointment.apptEnd)}`,
           },
           { label: "Status", value: appointment.visitStatus },
         ].map(({ label, value }) => (

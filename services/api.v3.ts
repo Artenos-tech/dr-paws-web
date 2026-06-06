@@ -499,6 +499,88 @@ export async function v3CreateHomeVisitAppointment(input: {
   return data.appointment
 }
 
+export type V3PaymentOrder = {
+  orderId: string
+  paymentSessionId: string
+  amount: number
+  currency: "INR"
+  expiresAt: string | null
+}
+
+// Our internal booking lifecycle, as reported by the order-status API.
+export type V3HomeVisitPaymentOrderStatus =
+  | "AWAITING_PAYMENT"
+  | "BOOKED"
+  | "EXPIRED"
+
+export type V3HomeVisitInitiateResponse =
+  | {
+      action: "PAYMENT_REQUIRED"
+      paymentRequired: true
+      order: V3PaymentOrder
+    }
+  | {
+      action: "APPOINTMENT_CONFIRMED"
+      paymentRequired: false
+      appointment: V3HomeVisitAppointment
+    }
+
+export async function v3InitiateHomeVisitAppointment(input: {
+  addressId: string
+  petId: string
+  date: string
+  startTime: string
+  endTime: string
+  isEmergency: boolean
+  reasonCode: string
+  petParentNotes: string
+  couponCode?: string
+  bookingFlowSessionId?: string
+}): Promise<V3HomeVisitInitiateResponse> {
+  const data = await v3Post<
+    V3ApiResponse<
+      | {
+          action: "PAYMENT_REQUIRED"
+          paymentRequired: true
+          order: V3PaymentOrder
+        }
+      | {
+          action: "APPOINTMENT_CONFIRMED"
+          paymentRequired: false
+          appointment: V3HomeVisitAppointment
+        }
+    >
+  >("/v3/booking/at-home/appointments/initiate", { ...input, platform: "WEB" })
+  return data
+}
+
+export async function v3GetHomeVisitPaymentOrderStatus(
+  orderId: string,
+): Promise<{
+  order_payment: {
+    status: V3HomeVisitPaymentOrderStatus
+  }
+  appointment: {
+    id: string
+    nidanaAppointmentId: string
+  } | null
+}> {
+  const data = await v3Get<
+    V3ApiResponse<{
+      data: {
+        order_payment: {
+          status: V3HomeVisitPaymentOrderStatus
+        }
+        appointment: {
+          id: string
+          nidanaAppointmentId: string
+        } | null
+      }
+    }>
+  >(`/v3/booking/at-home/payments/order/${encodeURIComponent(orderId)}/status`)
+  return data.data
+}
+
 export async function v3GetHomeVisitAppointment(
   id: string,
 ): Promise<V3HomeVisitAppointment> {
@@ -532,6 +614,20 @@ export type V3AppointmentListAddress = {
   directions: string | null
 }
 
+export type V3HomeVisitCancellation = {
+  allowed: boolean
+  disabledReason: "NIDANA_LOCKED" | null
+  refund: { amount: number } | null
+  refundDeclinedReason: "PAST_REFUND_WINDOW" | null
+}
+
+export type V3HomeVisitRefundSummary = {
+  status: "INITIATED" | "COMPLETED" | "FAILED"
+  amount: number
+  initiatedAt: string
+  completedAt: string | null
+}
+
 export type V3AppointmentListItem =
   | (V3AppointmentCommon & {
       bookingType: "CLINIC_VISIT"
@@ -541,6 +637,9 @@ export type V3AppointmentListItem =
       bookingType: "HOME_VISIT"
       visitStatus: string
       address: V3AppointmentListAddress | null
+      cancellation: V3HomeVisitCancellation
+      payment: { amount: number } | null
+      refund: V3HomeVisitRefundSummary | null
     })
 
 export async function v3FetchAppointments(
@@ -810,10 +909,24 @@ export async function v3CreateGroomingAppointment(input: {
   return data.appointment
 }
 
-export async function v3CancelAppointment(id: string): Promise<void> {
-  await v3Delete<V3ApiResponse<{}>>(
-    `/v3/appointments/${encodeURIComponent(id)}`,
-  )
+export type V3CancelAppointmentResult = {
+  refund: { amount: number } | null
+  refundDeclinedReason: "PAST_REFUND_WINDOW" | null
+}
+
+export async function v3CancelAppointment(
+  id: string,
+): Promise<V3CancelAppointmentResult> {
+  const data = await v3Delete<
+    V3ApiResponse<{
+      refund: { amount: number } | null
+      refundDeclinedReason: "PAST_REFUND_WINDOW" | null
+    }>
+  >(`/v3/appointments/${encodeURIComponent(id)}`)
+  return {
+    refund: data.refund ?? null,
+    refundDeclinedReason: data.refundDeclinedReason ?? null,
+  }
 }
 
 export async function v3FetchSpecies(): Promise<V3SpeciesOption[]> {

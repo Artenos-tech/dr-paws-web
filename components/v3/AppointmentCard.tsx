@@ -9,7 +9,6 @@ import {
   X,
   Scissors,
 } from "lucide-react"
-import ClipLoader from "react-spinners/ClipLoader"
 import type { V3AppointmentListItem } from "@/services/api.v3"
 import {
   formatDate,
@@ -19,6 +18,8 @@ import {
   statusPillClasses,
   isCancellableStatus,
 } from "@/lib/appointmentFormatters"
+import CancelAppointmentDialog from "@/components/v3/CancelAppointmentDialog"
+import RefundStatusLine from "@/components/v3/RefundStatusLine"
 
 interface Props {
   item: V3AppointmentListItem
@@ -52,6 +53,11 @@ export default function AppointmentCard({ item, href, onCancel }: Props) {
       setCancelling(false)
     }
   }
+
+  // The Dr Paws refund-window policy doesn't disable cancellation itself
+  // — it only affects whether a refund is issued. Past-window cancellations
+  // are still allowed; the confirm dialog explains the refund consequence.
+  const hvCancellation = isHomeVisit ? item.cancellation : null
 
   const cardContent = (
     <>
@@ -150,6 +156,12 @@ export default function AppointmentCard({ item, href, onCancel }: Props) {
             &ldquo;{reason}&rdquo;
           </p>
         )}
+
+        {isHomeVisit && item.refund && (
+          <div className="mt-1">
+            <RefundStatusLine refund={item.refund} />
+          </div>
+        )}
       </div>
     </>
   )
@@ -185,52 +197,21 @@ export default function AppointmentCard({ item, href, onCancel }: Props) {
         </div>
       )}
 
-      {confirming && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
-          role="dialog"
-          aria-modal="true"
-        >
-          <div className="w-full max-w-sm rounded-xl bg-white p-5 shadow-lg">
-            <h4 className="font-roca text-lg text-primary-1 mb-1">
-              Cancel this appointment?
-            </h4>
-            <p className="text-sm text-gray-600">
-              {item.petName}&apos;s{" "}
-              {isHomeVisit ? "home visit" : "clinic visit"} on{" "}
-              {formatDate(item.date)} at {formatTime(item.startTime)} will be
-              cancelled. This cannot be undone.
-            </p>
-            {error && (
-              <div className="mt-3 rounded-md border border-red-200 bg-red-50 p-2 text-sm text-red-700">
-                {error}
-              </div>
-            )}
-            <div className="mt-4 flex justify-end gap-2">
-              <button
-                type="button"
-                onClick={() => {
-                  setConfirming(false)
-                  setError(null)
-                }}
-                disabled={cancelling}
-                className="rounded-md border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 text-sm px-3 py-1.5 disabled:opacity-60"
-              >
-                Keep it
-              </button>
-              <button
-                type="button"
-                onClick={handleConfirmCancel}
-                disabled={cancelling}
-                className="inline-flex items-center gap-2 rounded-md bg-red-600 text-white hover:bg-red-700 text-sm px-3 py-1.5 disabled:opacity-60"
-              >
-                {cancelling && <ClipLoader color="#ffffff" size={14} />}
-                {cancelling ? "Cancelling…" : "Yes, cancel"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <CancelAppointmentDialog
+        open={confirming}
+        isHomeVisit={isHomeVisit}
+        petName={item.petName}
+        date={item.date}
+        startTime={item.startTime}
+        cancellation={hvCancellation}
+        cancelling={cancelling}
+        error={error}
+        onConfirm={handleConfirmCancel}
+        onClose={() => {
+          setConfirming(false)
+          setError(null)
+        }}
+      />
     </div>
   )
 }
