@@ -10,6 +10,7 @@ import {
   Loader2,
   Sparkles,
   Star,
+  Stethoscope,
 } from "lucide-react"
 import {
   v3FetchDoctors,
@@ -242,7 +243,7 @@ export default function StepVetDateTime({
 
     const today = new Date()
     const endDate = new Date(today)
-    endDate.setMonth(endDate.getMonth() + 2)
+    endDate.setDate(endDate.getDate() + 29)
 
     v3FetchAvailableDates(
       clinicId,
@@ -283,7 +284,7 @@ export default function StepVetDateTime({
 
     const today = new Date()
     const endDate = new Date(today)
-    endDate.setMonth(endDate.getMonth() + 2)
+    endDate.setDate(endDate.getDate() + 29)
 
     v3FetchAvailableDates(
       clinicId,
@@ -323,7 +324,7 @@ export default function StepVetDateTime({
   const isReschedule = flowMode === "reschedule"
 
   function handleSlotPicked(doctor: V3Doctor, date: string, slot: V3TimeSlot) {
-    if (!isReschedule && doctor.isSenior && !seniorOnly) {
+    if (doctor.isSenior && !seniorOnly) {
       onSeniorVetPicked(doctor, date, slot)
     } else {
       onSelect(doctor, date, slot)
@@ -449,32 +450,34 @@ export default function StepVetDateTime({
   // ── Specific-vet UI ───────────────────────────────────────────────────────
   return (
     <div className="space-y-6">
-      {/* Best available prompt */}
-      <button
-        onClick={switchToBest}
-        className="w-full flex items-center gap-3 rounded-xl border border-primary-2/40 bg-primary-2/5 px-4 py-3 text-left hover:bg-primary-2/10 transition-colors"
-      >
-        <div className="flex-shrink-0 h-9 w-9 rounded-full bg-primary-2/15 flex items-center justify-center">
-          <Sparkles className="h-4 w-4 text-primary-2" />
-        </div>
-        <div className="flex-1 min-w-0">
-          <div className="text-sm font-semibold text-primary-2">
-            Best available vet
-          </div>
-          <div className="text-xs text-gray-500">
-            Let us match you with the best available vet for your pet
-          </div>
-        </div>
-        <ChevronRight className="h-4 w-4 text-primary-2/60 flex-shrink-0" />
-      </button>
-
       {/* Vet selection */}
       <div>
+        <div className="flex items-center gap-2 mb-3">
+          <Stethoscope className="h-5 w-5 text-primary-2" />
+          <h3 className="font-semibold text-primary-1">Select a vet</h3>
+        </div>
+
+        {/* Best available prompt */}
+        <button
+          onClick={switchToBest}
+          className="w-full flex items-center gap-3 rounded-xl border border-primary-2/40 bg-primary-2/5 px-4 py-3 text-left hover:bg-primary-2/10 transition-colors mb-3"
+        >
+          <div className="flex-shrink-0 h-9 w-9 rounded-full bg-primary-2/15 flex items-center justify-center">
+            <Sparkles className="h-4 w-4 text-primary-2" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="text-sm font-semibold text-primary-2">
+              Best available vet
+            </div>
+            <div className="text-xs text-gray-500">
+              Let us match you with the best available vet for your pet
+            </div>
+          </div>
+          <ChevronRight className="h-4 w-4 text-primary-2/60 flex-shrink-0" />
+        </button>
+
         {!loadingDoctors && doctors.some((d) => d.isSenior) && (
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-medium text-gray-600">
-              Select a vet
-            </span>
+          <div className="flex items-center justify-end mb-3">
             <label className="flex items-center gap-2 cursor-pointer select-none">
               <span className="flex items-center gap-1 text-xs font-medium text-amber-700">
                 <Star className="h-3 w-3 fill-amber-500 text-amber-500" />

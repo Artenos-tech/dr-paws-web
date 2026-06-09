@@ -8,18 +8,24 @@ import {
   CheckCircle2,
   ChevronLeft,
   Clock,
-  UserRound,
+  MapPin,
+  PawPrint,
+  User,
 } from "lucide-react"
 import ClipLoader from "react-spinners/ClipLoader"
-import { Toaster } from "react-hot-toast"
+import toast, { Toaster } from "react-hot-toast"
 
 import {
   v3GetAppointment,
+  v3FetchVetPrice,
   v3RescheduleAppointment,
   type V3AppointmentListItem,
+  type V3Doctor,
   type V3GroomingSlot,
+  type V3TimeSlot,
 } from "@/services/api.v3"
 import StepVetDateTime from "@/components/v3/booking/StepVetDateTime"
+import SeniorVetModal from "@/components/v3/booking/SeniorVetModal"
 import { StepGroomingDateTime } from "@/components/v3/booking/ClinicGroomingFlow"
 import {
   formatAppointmentType,
@@ -50,16 +56,27 @@ export default function RescheduleAppointmentPage() {
   const [appt, setAppt] = useState<V3AppointmentListItem | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [priceInRupees, setPriceInRupees] = useState(0)
+  const [seniorPriceInRupees, setSeniorPriceInRupees] = useState(0)
   const [selection, setSelection] = useState<Selection | null>(null)
   const [editingSelection, setEditingSelection] = useState(false)
   const [confirmedSelection, setConfirmedSelection] =
     useState<Selection | null>(null)
+  const [pendingSeniorSelection, setPendingSeniorSelection] = useState<{
+    doctor: V3Doctor
+    date: string
+    slot: V3TimeSlot
+  } | null>(null)
   const [submitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
 
   useEffect(() => {
-    v3GetAppointment(id)
-      .then(setAppt)
+    Promise.all([v3GetAppointment(id), v3FetchVetPrice()])
+      .then(([a, price]) => {
+        setAppt(a)
+        setPriceInRupees(price.priceInRupees)
+        setSeniorPriceInRupees(price.seniorPriceInRupees)
+      })
       .catch((e) =>
         setError(e instanceof Error ? e.message : "Failed to load appointment"),
       )
@@ -84,7 +101,9 @@ export default function RescheduleAppointmentPage() {
       })
       setConfirmedSelection(selection)
     } catch (e) {
-      setSubmitError(displayError(e))
+      const msg = displayError(e)
+      setSubmitError(msg)
+      toast.error(msg)
       setSubmitting(false)
     }
   }, [id, selection])
@@ -177,64 +196,84 @@ export default function RescheduleAppointmentPage() {
         <h1 className="font-roca text-xl text-primary-1">
           Reschedule appointment
         </h1>
-        <div className="mt-3 grid gap-2 text-sm text-gray-700">
-          <div className="flex items-center gap-2">
-            <UserRound className="h-4 w-4 text-gray-400" />
-            <span>{appt.petName}</span>
+        <div className="mt-3 rounded-lg bg-gray-50 px-3 py-3">
+          <p className="mb-2 text-xs font-medium uppercase tracking-wide text-gray-400">
+            Current appointment
+          </p>
+          <div className="grid gap-1.5 text-sm text-gray-700">
+            <div className="flex items-center gap-2">
+              <PawPrint className="h-4 w-4 shrink-0 text-gray-400" />
+              <span>{appt.petName}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <MapPin className="h-4 w-4 shrink-0 text-gray-400" />
+              <span>{appt.clinicName}</span>
+            </div>
+            {!isGrooming && (
+              <div className="flex items-center gap-2">
+                <User className="h-4 w-4 shrink-0 text-gray-400" />
+                <span>{appt.doctorName}</span>
+              </div>
+            )}
+            <div className="flex items-center gap-2">
+              <CalendarDays className="h-4 w-4 shrink-0 text-gray-400" />
+              <span>{formatDate(appt.date)}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Clock className="h-4 w-4 shrink-0 text-gray-400" />
+              <span>
+                {formatTime(appt.startTime)} – {formatTime(appt.endTime)}
+              </span>
+            </div>
+            {appt.appointmentTypeName && (
+              <span className="mt-0.5 inline-block rounded-full bg-gray-200 px-2.5 py-0.5 text-xs text-gray-600">
+                {formatAppointmentType(appt.appointmentTypeName)}
+              </span>
+            )}
           </div>
-          <div className="flex items-center gap-2">
-            <CalendarDays className="h-4 w-4 text-gray-400" />
-            <span>{appt.clinicName}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Clock className="h-4 w-4 text-gray-400" />
-            <span>
-              Current: {formatDate(appt.date)} at {formatTime(appt.startTime)}
-            </span>
-          </div>
-          {appt.appointmentTypeName && (
-            <p className="text-xs text-gray-500">
-              {formatAppointmentType(appt.appointmentTypeName)}
-            </p>
-          )}
         </div>
       </div>
 
-      {(!selection || editingSelection) &&
-        (isGrooming ? (
-          <GroomingReschedulePicker
-            appointment={appt}
-            onSelect={handleSelectionChange}
-          />
-        ) : (
-          <StepVetDateTime
-            clinicId={appt.clinicId}
-            priceInRupees={0}
-            seniorPriceInRupees={0}
-            mode="reschedule"
-            onSelect={(doctor, date, slot) =>
-              handleSelectionChange({
-                doctorId: doctor.id,
-                doctorName: doctor.name,
-                date,
-                startTime: slot.startTime,
-                endTime: slot.endTime,
-              })
-            }
-            onSeniorVetPicked={(doctor, date, slot) =>
-              handleSelectionChange({
-                doctorId: doctor.id,
-                doctorName: doctor.name,
-                date,
-                startTime: slot.startTime,
-                endTime: slot.endTime,
-              })
-            }
-            onSelectionInvalidated={() => handleSelectionChange(null)}
-          />
-        ))}
+      {(!selection || editingSelection) && (
+        <>
+          <div className="mb-3 flex items-center gap-2">
+            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-secondary-1 text-xs font-bold text-white">
+              1
+            </span>
+            <h2 className="font-roca text-lg text-primary-1">
+              Choose vet, date & time
+            </h2>
+          </div>
+          {isGrooming ? (
+            <GroomingReschedulePicker
+              appointment={appt}
+              onSelect={handleSelectionChange}
+            />
+          ) : (
+            <StepVetDateTime
+              clinicId={appt.clinicId}
+              priceInRupees={priceInRupees}
+              seniorPriceInRupees={seniorPriceInRupees}
+              mode="reschedule"
+              onSelect={(doctor, date, slot) =>
+                handleSelectionChange({
+                  doctorId: doctor.id,
+                  doctorName: doctor.name,
+                  date,
+                  startTime: slot.startTime,
+                  endTime: slot.endTime,
+                })
+              }
+              onSeniorVetPicked={(doctor, date, slot) =>
+                setPendingSeniorSelection({ doctor, date, slot })
+              }
+              onSelectionInvalidated={() => handleSelectionChange(null)}
+            />
+          )}
+        </>
+      )}
 
-      {selection && !editingSelection && (
+      {selection && !editingSelection && !pendingSeniorSelection && (
         <div className="mt-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
           <div className="flex items-start justify-between gap-3">
             <div>
@@ -262,9 +301,16 @@ export default function RescheduleAppointmentPage() {
         </div>
       )}
 
-      {selection && !editingSelection && (
+      {selection && !editingSelection && !pendingSeniorSelection && (
         <div className="mt-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
-          <h2 className="font-roca text-lg text-primary-1">Review</h2>
+          <div className="flex items-center gap-2">
+            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-secondary-1 text-xs font-bold text-white">
+              2
+            </span>
+            <h2 className="font-roca text-lg text-primary-1">
+              Review & confirm
+            </h2>
+          </div>
           <div className="mt-3 grid gap-3 text-sm">
             <div className="rounded-xl border border-gray-100 bg-gray-50 px-3 py-3">
               <p className="text-xs font-medium uppercase tracking-wide text-gray-400">
@@ -307,6 +353,23 @@ export default function RescheduleAppointmentPage() {
             {submitting ? "Rescheduling..." : "Confirm reschedule"}
           </button>
         </div>
+      )}
+      {pendingSeniorSelection && seniorPriceInRupees > 0 && (
+        <SeniorVetModal
+          doctorName={pendingSeniorSelection.doctor.name}
+          seniorPrice={seniorPriceInRupees}
+          onDismiss={() => {
+            const { doctor, date, slot } = pendingSeniorSelection
+            setPendingSeniorSelection(null)
+            handleSelectionChange({
+              doctorId: doctor.id,
+              doctorName: doctor.name,
+              date,
+              startTime: slot.startTime,
+              endTime: slot.endTime,
+            })
+          }}
+        />
       )}
     </div>
   )
