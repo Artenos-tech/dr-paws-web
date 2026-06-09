@@ -10,8 +10,9 @@ import {
   HelpCircle,
   Star,
 } from "lucide-react"
+import { load } from "@cashfreepayments/cashfree-js"
 import {
-  v3CreateAppointment,
+  v3InitiateVetAppointment,
   type V3Pet,
   type V3Clinic,
   type V3Doctor,
@@ -76,7 +77,7 @@ export default function StepConfirm({
     setLoading(true)
     setError(null)
     try {
-      const appt = await v3CreateAppointment({
+      const result = await v3InitiateVetAppointment({
         clinicId: clinic.id,
         petId: pet.id,
         doctorId: doctor.id,
@@ -86,7 +87,26 @@ export default function StepConfirm({
         reasonForVisit: reason.trim() || undefined,
         bookingFlowSessionId: bookingFlowSessionId ?? undefined,
       })
-      onSuccess(appt)
+      if (result.action === "APPOINTMENT_CONFIRMED") {
+        onSuccess(result.appointment)
+        return
+      }
+      const cashfreeEnv = process.env.NEXT_PUBLIC_CASHFREE_ENVIRONMENT as
+        | "sandbox"
+        | "production"
+        | undefined
+      if (!cashfreeEnv) {
+        throw new Error("Payment environment is not configured")
+      }
+      const cashfree = await load({ mode: cashfreeEnv })
+      await cashfree.checkout({
+        paymentSessionId: result.order.paymentSessionId,
+        returnUrl:
+          window.location.origin +
+          "/v3/book/clinic-visit/payment?order_id=" +
+          result.order.orderId,
+        redirectTarget: "_self",
+      })
     } catch (e) {
       const err = e as { errorCode?: string; message?: string }
       setError(

@@ -10,13 +10,14 @@ import {
   ChevronRight,
 } from "lucide-react"
 import ClipLoader from "react-spinners/ClipLoader"
+import { load } from "@cashfreepayments/cashfree-js"
 
 import {
   v3FetchPets,
   v3FetchClinics,
   v3FetchGroomingServiceTypes,
   v3FetchGroomingSlots,
-  v3CreateGroomingAppointment,
+  v3InitiateGroomingAppointment,
   v3UpdateBookingFlowStep,
   type V3NidanaClinicBookingFlowStep,
   type V3Pet,
@@ -726,7 +727,7 @@ function StepGroomingConfirm({
     setSubmitting(true)
     setError(null)
     try {
-      const appt = await v3CreateGroomingAppointment({
+      const result = await v3InitiateGroomingAppointment({
         clinicId: clinic.id,
         petId: pet.id,
         groomerId,
@@ -736,7 +737,26 @@ function StepGroomingConfirm({
         endTime: slot.endTime,
         bookingFlowSessionId: bookingFlowSessionId ?? undefined,
       })
-      onSuccess(appt)
+      if (result.action === "APPOINTMENT_CONFIRMED") {
+        onSuccess(result.appointment)
+        return
+      }
+      const cashfreeEnv = process.env.NEXT_PUBLIC_CASHFREE_ENVIRONMENT as
+        | "sandbox"
+        | "production"
+        | undefined
+      if (!cashfreeEnv) {
+        throw new Error("Payment environment is not configured")
+      }
+      const cashfree = await load({ mode: cashfreeEnv })
+      await cashfree.checkout({
+        paymentSessionId: result.order.paymentSessionId,
+        returnUrl:
+          window.location.origin +
+          "/v3/book/clinic-visit/payment?order_id=" +
+          result.order.orderId,
+        redirectTarget: "_self",
+      })
     } catch (e) {
       const err = e as { errorCode?: string; message?: string }
       setError(

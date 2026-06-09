@@ -376,6 +376,80 @@ export async function v3CreateAppointment(input: {
   return data.appointment
 }
 
+// Our internal clinic-visit booking lifecycle, as reported by the order-status
+// API (mirrors the home-visit one).
+export type V3ClinicVisitPaymentOrderStatus =
+  | "AWAITING_PAYMENT"
+  | "BOOKED"
+  | "EXPIRED"
+
+export type V3ClinicVisitInitiateResponse =
+  | {
+      action: "PAYMENT_REQUIRED"
+      paymentRequired: true
+      order: V3PaymentOrder
+    }
+  | {
+      action: "APPOINTMENT_CONFIRMED"
+      paymentRequired: false
+      appointment: V3Appointment
+    }
+
+export async function v3InitiateVetAppointment(input: {
+  clinicId: string
+  petId: string
+  doctorId: string
+  date: string
+  startTime: string
+  endTime: string
+  reasonForVisit?: string
+  couponCode?: string
+  bookingFlowSessionId?: string
+}): Promise<V3ClinicVisitInitiateResponse> {
+  const data = await v3Post<V3ApiResponse<V3ClinicVisitInitiateResponse>>(
+    "/v3/appointments/initiate",
+    { ...input, platform: "WEB" },
+  )
+  return data
+}
+
+export async function v3InitiateGroomingAppointment(input: {
+  clinicId: string
+  petId: string
+  groomerId: string
+  groomingTypeKey: string
+  date: string
+  startTime: string
+  endTime: string
+  couponCode?: string
+  bookingFlowSessionId?: string
+}): Promise<V3ClinicVisitInitiateResponse> {
+  const data = await v3Post<V3ApiResponse<V3ClinicVisitInitiateResponse>>(
+    "/v3/appointments/grooming/initiate",
+    { ...input, platform: "WEB" },
+  )
+  return data
+}
+
+export async function v3GetClinicVisitPaymentOrderStatus(
+  orderId: string,
+): Promise<{
+  order_payment: { status: V3ClinicVisitPaymentOrderStatus }
+  appointment: { id: string; nidanaAppointmentId: string } | null
+}> {
+  const data = await v3Get<
+    V3ApiResponse<{
+      data: {
+        order_payment: { status: V3ClinicVisitPaymentOrderStatus }
+        appointment: { id: string; nidanaAppointmentId: string } | null
+      }
+    }>
+  >(
+    `/v3/appointments/payments/order/${encodeURIComponent(orderId)}/status`,
+  )
+  return data.data
+}
+
 export type V3Address = {
   id: string
   tag: string | null
@@ -632,6 +706,8 @@ export type V3AppointmentListItem =
   | (V3AppointmentCommon & {
       bookingType: "CLINIC_VISIT"
       clinicStatus: string
+      payment: { amount: number } | null
+      refund: V3HomeVisitRefundSummary | null
     })
   | (V3AppointmentCommon & {
       bookingType: "HOME_VISIT"
