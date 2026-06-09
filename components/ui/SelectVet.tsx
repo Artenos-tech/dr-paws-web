@@ -1016,7 +1016,7 @@ const SelectVet: React.FC<selectVetProps> = ({
                 availableSlots={availableSlots}
                 selectedSlot={selectedSlot}
                 onSlotSelected={handleSlotSelect}
-                maxSelectableDays={isGrooming ? groomingMaxSelectableDays : 20}
+                maxSelectableDays={isGrooming ? groomingMaxSelectableDays : 30}
               />
             ) : null) // result starts out as undefined before API call is made
         }

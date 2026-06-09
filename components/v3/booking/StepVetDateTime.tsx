@@ -10,6 +10,7 @@ import {
   Loader2,
   Sparkles,
   Star,
+  Stethoscope,
 } from "lucide-react"
 import {
   v3FetchDoctors,
@@ -27,8 +28,10 @@ interface Props {
   initialDoctor?: V3Doctor | null
   priceInRupees: number
   seniorPriceInRupees: number
+  mode?: "booking" | "reschedule"
   onSelect: (doctor: V3Doctor, date: string, slot: V3TimeSlot) => void
   onSeniorVetPicked: (doctor: V3Doctor, date: string, slot: V3TimeSlot) => void
+  onSelectionInvalidated?: () => void
 }
 
 function formatDate(dateStr: string): string {
@@ -186,8 +189,10 @@ export default function StepVetDateTime({
   initialDoctor,
   priceInRupees,
   seniorPriceInRupees,
+  mode: flowMode = "booking",
   onSelect,
   onSeniorVetPicked,
+  onSelectionInvalidated,
 }: Props) {
   const [mode, setMode] = useState<"specific" | "best">("specific")
   const [seniorOnly, setSeniorOnly] = useState(false)
@@ -238,7 +243,7 @@ export default function StepVetDateTime({
 
     const today = new Date()
     const endDate = new Date(today)
-    endDate.setMonth(endDate.getMonth() + 2)
+    endDate.setDate(endDate.getDate() + 29)
 
     v3FetchAvailableDates(
       clinicId,
@@ -279,7 +284,7 @@ export default function StepVetDateTime({
 
     const today = new Date()
     const endDate = new Date(today)
-    endDate.setMonth(endDate.getMonth() + 2)
+    endDate.setDate(endDate.getDate() + 29)
 
     v3FetchAvailableDates(
       clinicId,
@@ -316,15 +321,26 @@ export default function StepVetDateTime({
   }, [bestSelectedDate, loadingBestSlots])
 
   const availableSlots = slots.filter((s) => s.isAvailable)
+  const isReschedule = flowMode === "reschedule"
+
+  function handleSlotPicked(doctor: V3Doctor, date: string, slot: V3TimeSlot) {
+    if (doctor.isSenior && !seniorOnly) {
+      onSeniorVetPicked(doctor, date, slot)
+    } else {
+      onSelect(doctor, date, slot)
+    }
+  }
 
   function switchToBest() {
     setMode("best")
+    onSelectionInvalidated?.()
   }
 
   function switchToSpecific() {
     setMode("specific")
     setBestSelectedDate(null)
     setBestSlots([])
+    onSelectionInvalidated?.()
   }
 
   // ── Best-available UI ─────────────────────────────────────────────────────
@@ -356,7 +372,10 @@ export default function StepVetDateTime({
             <MiniCalendar
               availableDates={bestAvailableDates}
               selectedDate={bestSelectedDate}
-              onSelectDate={setBestSelectedDate}
+              onSelectDate={(date) => {
+                setBestSelectedDate(date)
+                onSelectionInvalidated?.()
+              }}
             />
           )}
           {!loadingBestDates && bestAvailableDates.size === 0 && (
@@ -400,15 +419,7 @@ export default function StepVetDateTime({
                           endTime: slot.endTime,
                           isAvailable: true,
                         }
-                        if (doctor.isSenior && !seniorOnly) {
-                          onSeniorVetPicked(
-                            doctor,
-                            bestSelectedDate,
-                            legacySlot,
-                          )
-                        } else {
-                          onSelect(doctor, bestSelectedDate, legacySlot)
-                        }
+                        handleSlotPicked(doctor, bestSelectedDate, legacySlot)
                       }}
                       className="rounded-xl border border-primary-2/30 bg-primary-2/5 px-3 py-2.5 text-sm font-medium text-primary-2 hover:bg-primary-2 hover:text-white hover:border-primary-2 transition-all text-center"
                     >
@@ -439,32 +450,34 @@ export default function StepVetDateTime({
   // ── Specific-vet UI ───────────────────────────────────────────────────────
   return (
     <div className="space-y-6">
-      {/* Best available prompt */}
-      <button
-        onClick={switchToBest}
-        className="w-full flex items-center gap-3 rounded-xl border border-primary-2/40 bg-primary-2/5 px-4 py-3 text-left hover:bg-primary-2/10 transition-colors"
-      >
-        <div className="flex-shrink-0 h-9 w-9 rounded-full bg-primary-2/15 flex items-center justify-center">
-          <Sparkles className="h-4 w-4 text-primary-2" />
-        </div>
-        <div className="flex-1 min-w-0">
-          <div className="text-sm font-semibold text-primary-2">
-            Best available vet
-          </div>
-          <div className="text-xs text-gray-500">
-            Let us match you with the best available vet for your pet
-          </div>
-        </div>
-        <ChevronRight className="h-4 w-4 text-primary-2/60 flex-shrink-0" />
-      </button>
-
       {/* Vet selection */}
       <div>
+        <div className="flex items-center gap-2 mb-3">
+          <Stethoscope className="h-5 w-5 text-primary-2" />
+          <h3 className="font-semibold text-primary-1">Select a vet</h3>
+        </div>
+
+        {/* Best available prompt */}
+        <button
+          onClick={switchToBest}
+          className="w-full flex items-center gap-3 rounded-xl border border-primary-2/40 bg-primary-2/5 px-4 py-3 text-left hover:bg-primary-2/10 transition-colors mb-3"
+        >
+          <div className="flex-shrink-0 h-9 w-9 rounded-full bg-primary-2/15 flex items-center justify-center">
+            <Sparkles className="h-4 w-4 text-primary-2" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="text-sm font-semibold text-primary-2">
+              Best available vet
+            </div>
+            <div className="text-xs text-gray-500">
+              Let us match you with the best available vet for your pet
+            </div>
+          </div>
+          <ChevronRight className="h-4 w-4 text-primary-2/60 flex-shrink-0" />
+        </button>
+
         {!loadingDoctors && doctors.some((d) => d.isSenior) && (
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-medium text-gray-600">
-              Select a vet
-            </span>
+          <div className="flex items-center justify-end mb-3">
             <label className="flex items-center gap-2 cursor-pointer select-none">
               <span className="flex items-center gap-1 text-xs font-medium text-amber-700">
                 <Star className="h-3 w-3 fill-amber-500 text-amber-500" />
@@ -478,6 +491,7 @@ export default function StepVetDateTime({
                   setSelectedDoctor(null)
                   setSelectedDate(null)
                   setSlots([])
+                  onSelectionInvalidated?.()
                 }}
                 className={[
                   "relative inline-flex h-5 w-9 flex-shrink-0 rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none",
@@ -504,7 +518,10 @@ export default function StepVetDateTime({
               (doc) => (
                 <button
                   key={doc.id}
-                  onClick={() => setSelectedDoctor(doc)}
+                  onClick={() => {
+                    setSelectedDoctor(doc)
+                    onSelectionInvalidated?.()
+                  }}
                   className={[
                     "w-full flex items-center gap-3 px-4 py-3 rounded-xl border transition-all text-left",
                     selectedDoctor?.id === doc.id
@@ -541,11 +558,13 @@ export default function StepVetDateTime({
                         </span>
                       )}
                     </div>
-                    <div className="text-xs text-gray-400">
-                      {doc.isSenior
-                        ? `Senior Veterinarian · ₹${seniorPriceInRupees}`
-                        : `Veterinarian · ₹${priceInRupees}`}
-                    </div>
+                    {!isReschedule && (
+                      <div className="text-xs text-gray-400">
+                        {doc.isSenior
+                          ? `Senior Veterinarian · ₹${seniorPriceInRupees}`
+                          : `Veterinarian · ₹${priceInRupees}`}
+                      </div>
+                    )}
                   </div>
                   {selectedDoctor?.id === doc.id && (
                     <div
@@ -585,7 +604,10 @@ export default function StepVetDateTime({
             <MiniCalendar
               availableDates={availableDates}
               selectedDate={selectedDate}
-              onSelectDate={setSelectedDate}
+              onSelectDate={(date) => {
+                setSelectedDate(date)
+                onSelectionInvalidated?.()
+              }}
             />
           )}
           {!loadingDates && availableDates.size === 0 && (
@@ -618,13 +640,9 @@ export default function StepVetDateTime({
               {availableSlots.map((slot) => (
                 <button
                   key={slot.startTime}
-                  onClick={() => {
-                    if (selectedDoctor.isSenior && !seniorOnly) {
-                      onSeniorVetPicked(selectedDoctor, selectedDate, slot)
-                    } else {
-                      onSelect(selectedDoctor, selectedDate, slot)
-                    }
-                  }}
+                  onClick={() =>
+                    handleSlotPicked(selectedDoctor, selectedDate, slot)
+                  }
                   className="rounded-xl border border-primary-2/30 bg-primary-2/5 px-3 py-2.5 text-sm font-medium text-primary-2 hover:bg-primary-2 hover:text-white hover:border-primary-2 transition-all text-center"
                 >
                   {formatTime(slot.startTime)}
