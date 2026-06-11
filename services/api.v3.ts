@@ -444,9 +444,7 @@ export async function v3GetClinicVisitPaymentOrderStatus(
         appointment: { id: string; nidanaAppointmentId: string } | null
       }
     }>
-  >(
-    `/v3/appointments/payments/order/${encodeURIComponent(orderId)}/status`,
-  )
+  >(`/v3/appointments/payments/order/${encodeURIComponent(orderId)}/status`)
   return data.data
 }
 
@@ -709,6 +707,9 @@ export type V3AppointmentListItem =
       clinicStatus: string
       payment: { amount: number } | null
       refund: V3HomeVisitRefundSummary | null
+      // Seniority tier of the booked vet; used to lock a prepaid reschedule to
+      // its paid tier. null for grooming / non-veterinary.
+      vetTier: "SENIOR" | "STANDARD" | null
     })
   | (V3AppointmentCommon & {
       bookingType: "HOME_VISIT"
