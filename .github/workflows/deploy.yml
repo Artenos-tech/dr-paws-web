@@ -8,6 +8,10 @@ jobs:
   build-and-push:
     name: Build and Push Docker Image
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        environment: [test, prod]
+    environment: ${{ matrix.environment }}
     env:
       REGION: ${{ vars.GCP_REGION }}
       PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}

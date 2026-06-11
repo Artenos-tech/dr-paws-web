@@ -597,16 +597,18 @@ function StepGroomingTypeSelect({
 
 // ─── Step: date & time ───────────────────────────────────────────────────────
 
-function StepGroomingDateTime({
+export function StepGroomingDateTime({
   clinicId,
   groomingTypeKey,
   petId,
   onSelect,
+  onSelectionInvalidated,
 }: {
   clinicId: string
   groomingTypeKey: string
   petId: string
   onSelect: (date: string, slot: V3GroomingSlot) => void
+  onSelectionInvalidated?: () => void
 }) {
   const [date, setDate] = useState(() => todayInIST())
   const [slots, setSlots] = useState<V3GroomingSlot[]>([])
@@ -642,7 +644,10 @@ function StepGroomingDateTime({
           return (
             <button
               key={d}
-              onClick={() => setDate(d)}
+              onClick={() => {
+                setDate(d)
+                onSelectionInvalidated?.()
+              }}
               className={[
                 "flex-shrink-0 rounded-xl border px-3 py-2 text-sm transition-all",
                 active
