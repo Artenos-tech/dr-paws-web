@@ -50,7 +50,9 @@ function ClinicVisitPaymentStatus() {
         const paymentStatus = result.order_payment.status
 
         if (paymentStatus === "BOOKED" && result.appointment) {
-          if (hasRedirectedRef.current) return
+          if (hasRedirectedRef.current) {
+            return
+          }
           hasRedirectedRef.current = true
           stopPolling()
           stopPaidTimeout()

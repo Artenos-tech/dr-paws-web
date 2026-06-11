@@ -98,10 +98,14 @@ function ClinicVisitSuccessContent() {
     let cancelled = false
     v3GetAppointment(appointmentId)
       .then((appt) => {
-        if (!cancelled) setAppointment(appt)
+        if (!cancelled) {
+          setAppointment(appt)
+        }
       })
       .catch(() => {
-        if (!cancelled) setError(true)
+        if (!cancelled) {
+          setError(true)
+        }
       })
     return () => {
       cancelled = true
