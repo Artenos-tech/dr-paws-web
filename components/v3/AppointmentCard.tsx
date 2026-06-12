@@ -15,7 +15,6 @@ import {
   formatDate,
   formatTime,
   formatAppointmentType,
-  displayReason,
   statusPillClasses,
   isCancellableStatus,
 } from "@/lib/appointmentFormatters"
@@ -38,7 +37,6 @@ export default function AppointmentCard({
   const isHomeVisit = item.bookingType === "HOME_VISIT"
   const isGrooming = item.category === "grooming"
   const status = isHomeVisit ? item.visitStatus : item.clinicStatus
-  const reason = displayReason(item.reasonForVisit, isHomeVisit)
   const apptType = !isHomeVisit
     ? formatAppointmentType(item.appointmentTypeName)
     : null
@@ -159,12 +157,6 @@ export default function AppointmentCard({
           <div className="text-sm text-gray-600">
             With <span className="font-medium">{item.doctorName}</span>
           </div>
-        )}
-
-        {reason && (
-          <p className="text-sm text-gray-500 italic mt-0.5 whitespace-pre-line line-clamp-3">
-            &ldquo;{reason}&rdquo;
-          </p>
         )}
 
         {isHomeVisit && item.refund && (

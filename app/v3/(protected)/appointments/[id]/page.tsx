@@ -26,7 +26,6 @@ import {
   formatDate,
   formatTime,
   formatAppointmentType,
-  displayReason,
   statusPillClasses,
   isCancellableStatus,
 } from "@/lib/appointmentFormatters"
@@ -120,7 +119,6 @@ export default function AppointmentDetailPage() {
     polled?.canModifyOrCancel ?? appt.canModifyOrCancel
   const startOtp = polled?.startOtp ?? null
 
-  const reason = displayReason(appt.reasonForVisit, isHomeVisit)
   const apptType = !isHomeVisit
     ? formatAppointmentType(appt.appointmentTypeName)
     : null
@@ -263,18 +261,6 @@ export default function AppointmentDetailPage() {
         {!isGrooming && (
           <div className="px-4 py-3 text-sm text-gray-700">
             With <span className="font-medium">{appt.doctorName}</span>
-          </div>
-        )}
-
-        {/* Reason for visit */}
-        {reason && (
-          <div className="px-4 py-3">
-            <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-1">
-              Reason for visit
-            </p>
-            <p className="text-sm text-gray-600 whitespace-pre-line">
-              {reason}
-            </p>
           </div>
         )}
 
