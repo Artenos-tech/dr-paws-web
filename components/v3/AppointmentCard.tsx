@@ -67,7 +67,8 @@ export default function AppointmentCard({
   // The Dr Paws refund-window policy doesn't disable cancellation itself
   // — it only affects whether a refund is issued. Past-window cancellations
   // are still allowed; the confirm dialog explains the refund consequence.
-  const hvCancellation = isHomeVisit ? item.cancellation : null
+  // Both booking types carry a cancellation policy.
+  const cancellation = item.cancellation
 
   const cardContent = (
     <>
@@ -167,7 +168,7 @@ export default function AppointmentCard({
           </p>
         )}
 
-        {isHomeVisit && item.refund && (
+        {item.refund && (
           <div className="mt-1">
             <RefundStatusLine refund={item.refund} />
           </div>
@@ -223,7 +224,7 @@ export default function AppointmentCard({
         petName={item.petName}
         date={item.date}
         startTime={item.startTime}
-        cancellation={hvCancellation}
+        cancellation={cancellation}
         cancelling={cancelling}
         error={error}
         onConfirm={handleConfirmCancel}

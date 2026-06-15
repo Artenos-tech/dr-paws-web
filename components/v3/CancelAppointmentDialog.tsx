@@ -1,6 +1,6 @@
 import ClipLoader from "react-spinners/ClipLoader"
 import { formatDate, formatTime } from "@/lib/appointmentFormatters"
-import type { V3HomeVisitCancellation } from "@/services/api.v3"
+import type { V3CancellationPolicy } from "@/services/api.v3"
 
 interface Props {
   open: boolean
@@ -10,9 +10,8 @@ interface Props {
   date: string
   // "HH:mm"
   startTime: string
-  // The home-visit cancellation policy snapshot for this appointment.
-  // Pass null for clinic visits (no refund concept).
-  cancellation: V3HomeVisitCancellation | null
+  // The cancellation policy snapshot for this appointment (both booking types).
+  cancellation: V3CancellationPolicy | null
   cancelling: boolean
   error: string | null
   onConfirm: () => void
@@ -62,7 +61,7 @@ export default function CancelAppointmentDialog({
             appointment is within 24 hours of the scheduled start time.
           </p>
         )}
-        {isHomeVisit && (
+        {(refund || refundDeclined) && (
           <p className="mt-3 text-xs text-gray-500">
             <span className="font-medium">Cancellation policy:</span> Full
             refund if cancelled at least 24 hours before the appointment. No

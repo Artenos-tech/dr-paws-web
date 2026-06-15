@@ -687,7 +687,8 @@ export type V3AppointmentListAddress = {
   directions: string | null
 }
 
-export type V3HomeVisitCancellation = {
+// Self-cancellation policy + refund preview. Returned for both booking types.
+export type V3CancellationPolicy = {
   allowed: boolean
   disabledReason: "NIDANA_LOCKED" | null
   refund: { amount: number } | null
@@ -705,6 +706,7 @@ export type V3AppointmentListItem =
   | (V3AppointmentCommon & {
       bookingType: "CLINIC_VISIT"
       clinicStatus: string
+      cancellation: V3CancellationPolicy
       payment: { amount: number } | null
       refund: V3HomeVisitRefundSummary | null
       // Seniority tier of the booked vet; used to lock a prepaid reschedule to
@@ -715,7 +717,7 @@ export type V3AppointmentListItem =
       bookingType: "HOME_VISIT"
       visitStatus: string
       address: V3AppointmentListAddress | null
-      cancellation: V3HomeVisitCancellation
+      cancellation: V3CancellationPolicy
       payment: { amount: number } | null
       refund: V3HomeVisitRefundSummary | null
     })

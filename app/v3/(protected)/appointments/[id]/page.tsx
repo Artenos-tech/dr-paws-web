@@ -279,7 +279,7 @@ export default function AppointmentDetailPage() {
         )}
 
         {/* Amount paid */}
-        {isHomeVisit && appt.payment && (
+        {appt.payment && (
           <div className="px-4 py-3">
             <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-1">
               Amount paid
@@ -289,7 +289,7 @@ export default function AppointmentDetailPage() {
         )}
 
         {/* Refund status */}
-        {isHomeVisit && appt.refund && (
+        {appt.refund && (
           <div className="px-4 py-3">
             <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-1">
               Refund
@@ -298,13 +298,16 @@ export default function AppointmentDetailPage() {
           </div>
         )}
 
-        {/* Cancellation policy — only relevant while the appointment is
-            still cancellable (i.e. not terminal). */}
-        {isHomeVisit && appt.cancellation.allowed && (
+        {/* Cancellation policy — shown for both booking types while the
+            appointment is still cancellable (i.e. not terminal). */}
+        {appt.cancellation.allowed && (
           <>
             {(() => {
               // Refund cutoff = apptStart − 24h (in IST). appt.date is
-              // YYYY-MM-DD and appt.startTime is HH:mm in IST.
+              // YYYY-MM-DD and appt.startTime is HH:mm in IST. The 24h window is
+              // the current default for both booking types; the authoritative
+              // refund decision always comes from the server (cancellation.refund
+              // / refundDeclinedReason on cancel).
               const apptStartIST = new Date(
                 `${appt.date}T${appt.startTime}:00+05:30`,
               )
@@ -384,7 +387,7 @@ export default function AppointmentDetailPage() {
         petName={appt.petName}
         date={appt.date}
         startTime={appt.startTime}
-        cancellation={isHomeVisit ? appt.cancellation : null}
+        cancellation={appt.cancellation}
         cancelling={cancelling}
         error={cancelError}
         onConfirm={handleCancel}
