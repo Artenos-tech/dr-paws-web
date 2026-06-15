@@ -11,6 +11,7 @@ import {
   Star,
 } from "lucide-react"
 import { load } from "@cashfreepayments/cashfree-js"
+import { useAppConfig } from "@/context/AppConfigContext"
 import {
   v3InitiateVetAppointment,
   type V3Pet,
@@ -72,6 +73,11 @@ export default function StepConfirm({
   const [loading, setLoading] = useState(false)
   const [reason, setReason] = useState("")
   const [error, setError] = useState<string | null>(null)
+  const { clinicVisitPaymentsEnabled } = useAppConfig()
+  // Until the flag resolves, fall back to the legacy "pay at clinic" copy so we
+  // never wrongly promise an up-front charge. Booking behaviour itself is
+  // server-driven (initiate returns PAYMENT_REQUIRED vs APPOINTMENT_CONFIRMED).
+  const paymentsEnabled = clinicVisitPaymentsEnabled === true
 
   async function handleConfirm() {
     setLoading(true)
@@ -236,7 +242,9 @@ export default function StepConfirm({
               isSeniorVet ? "text-amber-700" : "text-gray-500",
             ].join(" ")}
           >
-            Payment collected at the clinic.
+            {paymentsEnabled
+              ? "Pay now to confirm your appointment."
+              : "Payment collected at the clinic."}
           </p>
         </div>
       )}
@@ -268,7 +276,13 @@ export default function StepConfirm({
         disabled={loading}
         className="w-full rounded-xl bg-secondary-1 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-60"
       >
-        {loading ? "Booking…" : "Confirm appointment"}
+        {loading
+          ? paymentsEnabled
+            ? "Starting payment…"
+            : "Booking…"
+          : paymentsEnabled
+            ? "Pay & confirm appointment"
+            : "Confirm appointment"}
       </button>
     </div>
   )

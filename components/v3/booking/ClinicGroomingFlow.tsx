@@ -12,6 +12,7 @@ import {
 import ClipLoader from "react-spinners/ClipLoader"
 import { load } from "@cashfreepayments/cashfree-js"
 
+import { useAppConfig } from "@/context/AppConfigContext"
 import {
   v3FetchPets,
   v3FetchClinics,
@@ -721,6 +722,11 @@ function StepGroomingConfirm({
 }) {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const { clinicVisitPaymentsEnabled } = useAppConfig()
+  // Until the flag resolves, fall back to the legacy "pay at clinic" copy so we
+  // never wrongly promise an up-front charge. Booking behaviour itself is
+  // server-driven (initiate returns PAYMENT_REQUIRED vs APPOINTMENT_CONFIRMED).
+  const paymentsEnabled = clinicVisitPaymentsEnabled === true
 
   const groomerId = slot.groomerIds[0]
 
@@ -814,7 +820,9 @@ function StepGroomingConfirm({
             </span>
           </div>
           <p className="mt-1 text-xs text-gray-500">
-            Payment collected at the clinic.
+            {paymentsEnabled
+              ? "Pay now to confirm your booking."
+              : "Payment collected at the clinic."}
           </p>
         </div>
       )}
@@ -830,7 +838,13 @@ function StepGroomingConfirm({
         disabled={submitting}
         className="w-full rounded-xl bg-secondary-1 py-3 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-60"
       >
-        {submitting ? "Booking…" : "Confirm grooming"}
+        {submitting
+          ? paymentsEnabled
+            ? "Starting payment…"
+            : "Booking…"
+          : paymentsEnabled
+            ? "Pay & confirm grooming"
+            : "Confirm grooming"}
       </button>
     </div>
   )
