@@ -693,6 +693,13 @@ export type V3CancellationPolicy = {
   disabledReason: "NIDANA_LOCKED" | null
   refund: { amount: number } | null
   refundDeclinedReason: "PAST_REFUND_WINDOW" | null
+  // Refund window for this booking, sourced from the server so the policy copy
+  // isn't hardcoded. refundCutoffHours drives the relative phrasing ("at least N
+  // hours before"); refundCutoffAt is the resolved cutoff instant (ISO) for the
+  // absolute phrasing ("full refund if cancelled by …"). Optional for backward
+  // compatibility with older servers — clients fall back to 24h when absent.
+  refundCutoffHours?: number
+  refundCutoffAt?: string | null
 }
 
 export type V3HomeVisitRefundSummary = {

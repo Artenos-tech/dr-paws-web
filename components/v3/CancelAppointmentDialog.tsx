@@ -34,6 +34,8 @@ export default function CancelAppointmentDialog({
 
   const refund = cancellation?.refund ?? null
   const refundDeclined = cancellation?.refundDeclinedReason ?? null
+  // Server-sourced window; fall back to 24h for older servers.
+  const cutoffHours = cancellation?.refundCutoffHours ?? 24
 
   return (
     <div
@@ -58,14 +60,15 @@ export default function CancelAppointmentDialog({
         {refundDeclined === "PAST_REFUND_WINDOW" && (
           <p className="mt-2 text-sm text-amber-700">
             <span className="font-medium">No refund will be issued</span> — this
-            appointment is within 24 hours of the scheduled start time.
+            appointment is within {cutoffHours} hours of the scheduled start
+            time.
           </p>
         )}
         {(refund || refundDeclined) && (
           <p className="mt-3 text-xs text-gray-500">
             <span className="font-medium">Cancellation policy:</span> Full
-            refund if cancelled at least 24 hours before the appointment. No
-            refund for later cancellations.
+            refund if cancelled at least {cutoffHours} hours before the
+            appointment. No refund for later cancellations.
           </p>
         )}
         {error && (

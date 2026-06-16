@@ -66,7 +66,7 @@ export default function AppointmentDetailPage() {
         )
       } else if (result.refundDeclinedReason === "PAST_REFUND_WINDOW") {
         toast.success(
-          "Appointment cancelled. No refund — within 24 hours of the appointment.",
+          "Appointment cancelled. No refund — past the refund window.",
         )
       } else {
         toast.success("Appointment cancelled")
@@ -303,17 +303,18 @@ export default function AppointmentDetailPage() {
         {appt.cancellation.allowed && (
           <>
             {(() => {
-              // Refund cutoff = apptStart − 24h (in IST). appt.date is
-              // YYYY-MM-DD and appt.startTime is HH:mm in IST. The 24h window is
-              // the current default for both booking types; the authoritative
-              // refund decision always comes from the server (cancellation.refund
-              // / refundDeclinedReason on cancel).
+              // Refund cutoff comes from the server (cancellation.refundCutoffAt),
+              // so changing the server-side window updates this copy automatically.
+              // Fall back to apptStart − refundCutoffHours (default 24h, in IST)
+              // for older servers that don't send the resolved instant. appt.date
+              // is YYYY-MM-DD and appt.startTime is HH:mm in IST.
+              const hours = appt.cancellation.refundCutoffHours ?? 24
               const apptStartIST = new Date(
                 `${appt.date}T${appt.startTime}:00+05:30`,
               )
-              const refundCutoff = new Date(
-                apptStartIST.getTime() - 24 * 60 * 60 * 1000,
-              )
+              const refundCutoff = appt.cancellation.refundCutoffAt
+                ? new Date(appt.cancellation.refundCutoffAt)
+                : new Date(apptStartIST.getTime() - hours * 60 * 60 * 1000)
               const fmt = (d: Date) =>
                 d.toLocaleString("en-IN", {
                   day: "numeric",
