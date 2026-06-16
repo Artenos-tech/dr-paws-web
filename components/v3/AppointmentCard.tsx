@@ -15,9 +15,9 @@ import {
   formatDate,
   formatTime,
   formatAppointmentType,
-  displayReason,
   statusPillClasses,
   isCancellableStatus,
+  displayReason,
 } from "@/lib/appointmentFormatters"
 import CancelAppointmentDialog from "@/components/v3/CancelAppointmentDialog"
 import RefundStatusLine from "@/components/v3/RefundStatusLine"
@@ -38,10 +38,10 @@ export default function AppointmentCard({
   const isHomeVisit = item.bookingType === "HOME_VISIT"
   const isGrooming = item.category === "grooming"
   const status = isHomeVisit ? item.visitStatus : item.clinicStatus
-  const reason = displayReason(item.reasonForVisit, isHomeVisit)
   const apptType = !isHomeVisit
     ? formatAppointmentType(item.appointmentTypeName)
     : null
+  const reason = displayReason(item.reasonForVisit, isHomeVisit)
 
   const [confirming, setConfirming] = useState(false)
   const [cancelling, setCancelling] = useState(false)
