@@ -20,6 +20,18 @@ export function formatAppointmentType(name: string | null): string | null {
   return name
 }
 
+export function displayReason(
+  reasonForVisit: string | null,
+  isHomeVisit: boolean,
+): string | null {
+  if (!reasonForVisit) return null
+  if (isHomeVisit) {
+    const cutoff = reasonForVisit.indexOf("\nAddress:")
+    return cutoff !== -1 ? reasonForVisit.slice(0, cutoff) : reasonForVisit
+  }
+  return reasonForVisit
+}
+
 const STATUS_PILL_CLASSES: Record<string, string> = {
   // Active / upcoming — blue
   Scheduled: "bg-blue-50 text-blue-700 ring-blue-200",

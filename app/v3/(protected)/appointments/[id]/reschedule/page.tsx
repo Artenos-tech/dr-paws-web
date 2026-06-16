@@ -165,6 +165,15 @@ export default function RescheduleAppointmentPage() {
 
   const isGrooming = appt.category === "grooming"
 
+  // For a prepaid vet booking, lock rescheduling to the tier that was paid for
+  // (a senior <-> standard switch would change the already-paid price). The
+  // server enforces this too; this keeps the picker in sync so the user can't
+  // pick a vet that would be rejected.
+  const lockedVetTier: "SENIOR" | "STANDARD" | undefined =
+    appt.bookingType === "CLINIC_VISIT" && appt.payment && appt.vetTier
+      ? appt.vetTier
+      : undefined
+
   if (confirmedSelection) {
     return (
       <RescheduleConfirmed
@@ -255,6 +264,7 @@ export default function RescheduleAppointmentPage() {
               priceInRupees={priceInRupees}
               seniorPriceInRupees={seniorPriceInRupees}
               mode="reschedule"
+              lockedVetTier={lockedVetTier}
               onSelect={(doctor, date, slot) =>
                 handleSelectionChange({
                   doctorId: doctor.id,

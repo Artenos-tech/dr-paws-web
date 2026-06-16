@@ -29,6 +29,10 @@ interface Props {
   priceInRupees: number
   seniorPriceInRupees: number
   mode?: "booking" | "reschedule"
+  // When set (prepaid reschedule), the vet selection is locked to a single
+  // seniority tier — switching tiers would change the already-paid price, so
+  // only same-tier vets are shown and the senior-vet upcharge modal is skipped.
+  lockedVetTier?: "SENIOR" | "STANDARD"
   onSelect: (doctor: V3Doctor, date: string, slot: V3TimeSlot) => void
   onSeniorVetPicked: (doctor: V3Doctor, date: string, slot: V3TimeSlot) => void
   onSelectionInvalidated?: () => void
@@ -190,6 +194,7 @@ export default function StepVetDateTime({
   priceInRupees,
   seniorPriceInRupees,
   mode: flowMode = "booking",
+  lockedVetTier,
   onSelect,
   onSeniorVetPicked,
   onSelectionInvalidated,
@@ -323,8 +328,20 @@ export default function StepVetDateTime({
   const availableSlots = slots.filter((s) => s.isAvailable)
   const isReschedule = flowMode === "reschedule"
 
+  // Doctors visible for selection. A locked tier (prepaid reschedule) wins and
+  // restricts to that tier; otherwise the senior-only toggle applies.
+  const visibleDoctors = lockedVetTier
+    ? doctors.filter((d) =>
+        lockedVetTier === "SENIOR" ? d.isSenior : !d.isSenior,
+      )
+    : seniorOnly
+      ? doctors.filter((d) => d.isSenior)
+      : doctors
+
   function handleSlotPicked(doctor: V3Doctor, date: string, slot: V3TimeSlot) {
-    if (doctor.isSenior && !seniorOnly) {
+    // When the tier is locked the price is already settled, so never trigger
+    // the senior-vet upcharge modal — just select.
+    if (!lockedVetTier && doctor.isSenior && !seniorOnly) {
       onSeniorVetPicked(doctor, date, slot)
     } else {
       onSelect(doctor, date, slot)
@@ -457,132 +474,149 @@ export default function StepVetDateTime({
           <h3 className="font-semibold text-primary-1">Select a vet</h3>
         </div>
 
-        {/* Best available prompt */}
-        <button
-          onClick={switchToBest}
-          className="w-full flex items-center gap-3 rounded-xl border border-primary-2/40 bg-primary-2/5 px-4 py-3 text-left hover:bg-primary-2/10 transition-colors mb-3"
-        >
-          <div className="flex-shrink-0 h-9 w-9 rounded-full bg-primary-2/15 flex items-center justify-center">
-            <Sparkles className="h-4 w-4 text-primary-2" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="text-sm font-semibold text-primary-2">
-              Best available vet
-            </div>
-            <div className="text-xs text-gray-500">
-              Let us match you with the best available vet for your pet
-            </div>
-          </div>
-          <ChevronRight className="h-4 w-4 text-primary-2/60 flex-shrink-0" />
-        </button>
-
-        {!loadingDoctors && doctors.some((d) => d.isSenior) && (
-          <div className="flex items-center justify-end mb-3">
-            <label className="flex items-center gap-2 cursor-pointer select-none">
-              <span className="flex items-center gap-1 text-xs font-medium text-amber-700">
-                <Star className="h-3 w-3 fill-amber-500 text-amber-500" />
-                Senior vets
-              </span>
-              <button
-                role="switch"
-                aria-checked={seniorOnly}
-                onClick={() => {
-                  setSeniorOnly((v) => !v)
-                  setSelectedDoctor(null)
-                  setSelectedDate(null)
-                  setSlots([])
-                  onSelectionInvalidated?.()
-                }}
-                className={[
-                  "relative inline-flex h-5 w-9 flex-shrink-0 rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none",
-                  seniorOnly ? "bg-amber-400" : "bg-gray-200",
-                ].join(" ")}
-              >
-                <span
-                  className={[
-                    "pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform duration-200",
-                    seniorOnly ? "translate-x-4" : "translate-x-0",
-                  ].join(" ")}
-                />
-              </button>
-            </label>
+        {/* Locked-tier notice (prepaid reschedule) */}
+        {lockedVetTier && (
+          <div className="mb-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-800">
+            This booking is already paid for a{" "}
+            {lockedVetTier === "SENIOR" ? "senior" : "standard"} vet
+            consultation, so only{" "}
+            {lockedVetTier === "SENIOR" ? "senior" : "standard"} vets are shown.
+            To switch vet tier, cancel and rebook.
           </div>
         )}
+
+        {/* Best available prompt — hidden when a tier is locked, since the
+            best-available match can cross tiers. */}
+        {!lockedVetTier && (
+          <button
+            onClick={switchToBest}
+            className="w-full flex items-center gap-3 rounded-xl border border-primary-2/40 bg-primary-2/5 px-4 py-3 text-left hover:bg-primary-2/10 transition-colors mb-3"
+          >
+            <div className="flex-shrink-0 h-9 w-9 rounded-full bg-primary-2/15 flex items-center justify-center">
+              <Sparkles className="h-4 w-4 text-primary-2" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="text-sm font-semibold text-primary-2">
+                Best available vet
+              </div>
+              <div className="text-xs text-gray-500">
+                Let us match you with the best available vet for your pet
+              </div>
+            </div>
+            <ChevronRight className="h-4 w-4 text-primary-2/60 flex-shrink-0" />
+          </button>
+        )}
+
+        {!lockedVetTier &&
+          !loadingDoctors &&
+          doctors.some((d) => d.isSenior) && (
+            <div className="flex items-center justify-end mb-3">
+              <label className="flex items-center gap-2 cursor-pointer select-none">
+                <span className="flex items-center gap-1 text-xs font-medium text-amber-700">
+                  <Star className="h-3 w-3 fill-amber-500 text-amber-500" />
+                  Senior vets
+                </span>
+                <button
+                  role="switch"
+                  aria-checked={seniorOnly}
+                  onClick={() => {
+                    setSeniorOnly((v) => !v)
+                    setSelectedDoctor(null)
+                    setSelectedDate(null)
+                    setSlots([])
+                    onSelectionInvalidated?.()
+                  }}
+                  className={[
+                    "relative inline-flex h-5 w-9 flex-shrink-0 rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none",
+                    seniorOnly ? "bg-amber-400" : "bg-gray-200",
+                  ].join(" ")}
+                >
+                  <span
+                    className={[
+                      "pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform duration-200",
+                      seniorOnly ? "translate-x-4" : "translate-x-0",
+                    ].join(" ")}
+                  />
+                </button>
+              </label>
+            </div>
+          )}
         {loadingDoctors ? (
           <div className="flex justify-center py-8">
             <Loader2 className="h-6 w-6 animate-spin text-primary-2" />
           </div>
         ) : (
           <div className="space-y-2">
-            {(seniorOnly ? doctors.filter((d) => d.isSenior) : doctors).map(
-              (doc) => (
-                <button
-                  key={doc.id}
-                  onClick={() => {
-                    setSelectedDoctor(doc)
-                    onSelectionInvalidated?.()
-                  }}
+            {visibleDoctors.map((doc) => (
+              <button
+                key={doc.id}
+                onClick={() => {
+                  setSelectedDoctor(doc)
+                  onSelectionInvalidated?.()
+                }}
+                className={[
+                  "w-full flex items-center gap-3 px-4 py-3 rounded-xl border transition-all text-left",
+                  selectedDoctor?.id === doc.id
+                    ? doc.isSenior
+                      ? "border-amber-400 bg-amber-50 ring-1 ring-amber-400"
+                      : "border-primary-2 bg-primary-2/5 ring-1 ring-primary-2"
+                    : doc.isSenior
+                      ? "border-amber-300 bg-amber-50/60 hover:border-amber-400 hover:bg-amber-50"
+                      : "border-gray-200 hover:border-primary-2/50 hover:bg-gray-50",
+                ].join(" ")}
+              >
+                <div
                   className={[
-                    "w-full flex items-center gap-3 px-4 py-3 rounded-xl border transition-all text-left",
-                    selectedDoctor?.id === doc.id
-                      ? doc.isSenior
-                        ? "border-amber-400 bg-amber-50 ring-1 ring-amber-400"
-                        : "border-primary-2 bg-primary-2/5 ring-1 ring-primary-2"
-                      : doc.isSenior
-                        ? "border-amber-300 bg-amber-50/60 hover:border-amber-400 hover:bg-amber-50"
-                        : "border-gray-200 hover:border-primary-2/50 hover:bg-gray-50",
+                    "flex-shrink-0 h-10 w-10 rounded-full flex items-center justify-center",
+                    doc.isSenior ? "bg-amber-100" : "bg-primary-2/10",
                   ].join(" ")}
                 >
-                  <div
+                  <User
                     className={[
-                      "flex-shrink-0 h-10 w-10 rounded-full flex items-center justify-center",
-                      doc.isSenior ? "bg-amber-100" : "bg-primary-2/10",
+                      "h-5 w-5",
+                      doc.isSenior ? "text-amber-600" : "text-primary-2",
                     ].join(" ")}
-                  >
-                    <User
-                      className={[
-                        "h-5 w-5",
-                        doc.isSenior ? "text-amber-600" : "text-primary-2",
-                      ].join(" ")}
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium text-primary-1">
-                        {doc.name}
+                  />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium text-primary-1">
+                      {doc.name}
+                    </span>
+                    {doc.isSenior && (
+                      <span className="inline-flex items-center gap-0.5 rounded-full bg-amber-100 border border-amber-300 px-1.5 py-0.5 text-[10px] font-semibold text-amber-700">
+                        <Star className="h-2.5 w-2.5 fill-amber-500 text-amber-500" />
+                        Senior
                       </span>
-                      {doc.isSenior && (
-                        <span className="inline-flex items-center gap-0.5 rounded-full bg-amber-100 border border-amber-300 px-1.5 py-0.5 text-[10px] font-semibold text-amber-700">
-                          <Star className="h-2.5 w-2.5 fill-amber-500 text-amber-500" />
-                          Senior
-                        </span>
-                      )}
-                    </div>
-                    {!isReschedule && (
-                      <div className="text-xs text-gray-400">
-                        {doc.isSenior
-                          ? `Senior Veterinarian · ₹${seniorPriceInRupees}`
-                          : `Veterinarian · ₹${priceInRupees}`}
-                      </div>
                     )}
                   </div>
-                  {selectedDoctor?.id === doc.id && (
-                    <div
-                      className={[
-                        "h-2 w-2 rounded-full flex-shrink-0",
-                        doc.isSenior ? "bg-amber-500" : "bg-primary-2",
-                      ].join(" ")}
-                    />
+                  {!isReschedule && (
+                    <div className="text-xs text-gray-400">
+                      {doc.isSenior
+                        ? `Senior Veterinarian · ₹${seniorPriceInRupees}`
+                        : `Veterinarian · ₹${priceInRupees}`}
+                    </div>
                   )}
-                </button>
-              ),
-            )}
-            {(seniorOnly ? doctors.filter((d) => d.isSenior) : doctors)
-              .length === 0 && (
+                </div>
+                {selectedDoctor?.id === doc.id && (
+                  <div
+                    className={[
+                      "h-2 w-2 rounded-full flex-shrink-0",
+                      doc.isSenior ? "bg-amber-500" : "bg-primary-2",
+                    ].join(" ")}
+                  />
+                )}
+              </button>
+            ))}
+            {visibleDoctors.length === 0 && (
               <p className="text-center text-sm text-gray-500 py-6">
-                {seniorOnly
+                {lockedVetTier === "SENIOR"
                   ? "No senior vets available at this clinic."
-                  : "No doctors available at this clinic."}
+                  : lockedVetTier === "STANDARD"
+                    ? "No standard vets available at this clinic."
+                    : seniorOnly
+                      ? "No senior vets available at this clinic."
+                      : "No doctors available at this clinic."}
               </p>
             )}
           </div>

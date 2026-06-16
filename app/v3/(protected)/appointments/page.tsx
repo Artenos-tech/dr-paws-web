@@ -155,7 +155,7 @@ export default function V3AppointmentsPage() {
                 )
               } else if (result.refundDeclinedReason === "PAST_REFUND_WINDOW") {
                 toast.success(
-                  "Appointment cancelled. No refund — within 24 hours of the appointment.",
+                  "Appointment cancelled. No refund — past the refund window.",
                 )
               } else {
                 toast.success("Appointment cancelled")

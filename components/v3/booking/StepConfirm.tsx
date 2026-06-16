@@ -10,8 +10,10 @@ import {
   HelpCircle,
   Star,
 } from "lucide-react"
+import { load } from "@cashfreepayments/cashfree-js"
+import { useAppConfig } from "@/context/AppConfigContext"
 import {
-  v3CreateAppointment,
+  v3InitiateVetAppointment,
   type V3Pet,
   type V3Clinic,
   type V3Doctor,
@@ -71,12 +73,17 @@ export default function StepConfirm({
   const [loading, setLoading] = useState(false)
   const [reason, setReason] = useState("")
   const [error, setError] = useState<string | null>(null)
+  const { clinicVisitPaymentsEnabled } = useAppConfig()
+  // Until the flag resolves, fall back to the legacy "pay at clinic" copy so we
+  // never wrongly promise an up-front charge. Booking behaviour itself is
+  // server-driven (initiate returns PAYMENT_REQUIRED vs APPOINTMENT_CONFIRMED).
+  const paymentsEnabled = clinicVisitPaymentsEnabled === true
 
   async function handleConfirm() {
     setLoading(true)
     setError(null)
     try {
-      const appt = await v3CreateAppointment({
+      const result = await v3InitiateVetAppointment({
         clinicId: clinic.id,
         petId: pet.id,
         doctorId: doctor.id,
@@ -86,7 +93,26 @@ export default function StepConfirm({
         reasonForVisit: reason.trim() || undefined,
         bookingFlowSessionId: bookingFlowSessionId ?? undefined,
       })
-      onSuccess(appt)
+      if (result.action === "APPOINTMENT_CONFIRMED") {
+        onSuccess(result.appointment)
+        return
+      }
+      const cashfreeEnv = process.env.NEXT_PUBLIC_CASHFREE_ENVIRONMENT as
+        | "sandbox"
+        | "production"
+        | undefined
+      if (!cashfreeEnv) {
+        throw new Error("Payment environment is not configured")
+      }
+      const cashfree = await load({ mode: cashfreeEnv })
+      await cashfree.checkout({
+        paymentSessionId: result.order.paymentSessionId,
+        returnUrl:
+          window.location.origin +
+          "/v3/book/clinic-visit/payment?order_id=" +
+          result.order.orderId,
+        redirectTarget: "_self",
+      })
     } catch (e) {
       const err = e as { errorCode?: string; message?: string }
       setError(
@@ -216,7 +242,9 @@ export default function StepConfirm({
               isSeniorVet ? "text-amber-700" : "text-gray-500",
             ].join(" ")}
           >
-            Payment collected at the clinic.
+            {paymentsEnabled
+              ? "Pay now to confirm your appointment."
+              : "Payment collected at the clinic."}
           </p>
         </div>
       )}
@@ -248,7 +276,13 @@ export default function StepConfirm({
         disabled={loading}
         className="w-full rounded-xl bg-secondary-1 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-60"
       >
-        {loading ? "Booking…" : "Confirm appointment"}
+        {loading
+          ? paymentsEnabled
+            ? "Starting payment…"
+            : "Booking…"
+          : paymentsEnabled
+            ? "Pay & confirm appointment"
+            : "Confirm appointment"}
       </button>
     </div>
   )

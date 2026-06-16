@@ -376,6 +376,78 @@ export async function v3CreateAppointment(input: {
   return data.appointment
 }
 
+// Our internal clinic-visit booking lifecycle, as reported by the order-status
+// API (mirrors the home-visit one).
+export type V3ClinicVisitPaymentOrderStatus =
+  | "AWAITING_PAYMENT"
+  | "BOOKED"
+  | "EXPIRED"
+
+export type V3ClinicVisitInitiateResponse =
+  | {
+      action: "PAYMENT_REQUIRED"
+      paymentRequired: true
+      order: V3PaymentOrder
+    }
+  | {
+      action: "APPOINTMENT_CONFIRMED"
+      paymentRequired: false
+      appointment: V3Appointment
+    }
+
+export async function v3InitiateVetAppointment(input: {
+  clinicId: string
+  petId: string
+  doctorId: string
+  date: string
+  startTime: string
+  endTime: string
+  reasonForVisit?: string
+  couponCode?: string
+  bookingFlowSessionId?: string
+}): Promise<V3ClinicVisitInitiateResponse> {
+  const data = await v3Post<V3ApiResponse<V3ClinicVisitInitiateResponse>>(
+    "/v3/appointments/initiate",
+    { ...input, platform: "WEB" },
+  )
+  return data
+}
+
+export async function v3InitiateGroomingAppointment(input: {
+  clinicId: string
+  petId: string
+  groomerId: string
+  groomingTypeKey: string
+  date: string
+  startTime: string
+  endTime: string
+  couponCode?: string
+  bookingFlowSessionId?: string
+}): Promise<V3ClinicVisitInitiateResponse> {
+  const data = await v3Post<V3ApiResponse<V3ClinicVisitInitiateResponse>>(
+    "/v3/appointments/grooming/initiate",
+    { ...input, platform: "WEB" },
+  )
+  return data
+}
+
+export async function v3GetClinicVisitPaymentOrderStatus(
+  orderId: string,
+): Promise<{
+  order_payment: { status: V3ClinicVisitPaymentOrderStatus }
+  appointment: { id: string; nidanaAppointmentId: string } | null
+}> {
+  const data = await v3Get<
+    V3ApiResponse<{
+      data: {
+        order_payment: { status: V3ClinicVisitPaymentOrderStatus }
+        appointment: { id: string; nidanaAppointmentId: string } | null
+      }
+    }>
+  >(`/v3/appointments/payments/order/${encodeURIComponent(orderId)}/status`)
+  return data.data
+}
+
 export type V3Address = {
   id: string
   tag: string | null
@@ -615,11 +687,19 @@ export type V3AppointmentListAddress = {
   directions: string | null
 }
 
-export type V3HomeVisitCancellation = {
+// Self-cancellation policy + refund preview. Returned for both booking types.
+export type V3CancellationPolicy = {
   allowed: boolean
   disabledReason: "NIDANA_LOCKED" | null
   refund: { amount: number } | null
   refundDeclinedReason: "PAST_REFUND_WINDOW" | null
+  // Refund window for this booking, sourced from the server so the policy copy
+  // isn't hardcoded. refundCutoffHours drives the relative phrasing ("at least N
+  // hours before"); refundCutoffAt is the resolved cutoff instant (ISO) for the
+  // absolute phrasing ("full refund if cancelled by …"). Optional for backward
+  // compatibility with older servers — clients fall back to 24h when absent.
+  refundCutoffHours?: number
+  refundCutoffAt?: string | null
 }
 
 export type V3HomeVisitRefundSummary = {
@@ -633,12 +713,18 @@ export type V3AppointmentListItem =
   | (V3AppointmentCommon & {
       bookingType: "CLINIC_VISIT"
       clinicStatus: string
+      cancellation: V3CancellationPolicy
+      payment: { amount: number } | null
+      refund: V3HomeVisitRefundSummary | null
+      // Seniority tier of the booked vet; used to lock a prepaid reschedule to
+      // its paid tier. null for grooming / non-veterinary.
+      vetTier: "SENIOR" | "STANDARD" | null
     })
   | (V3AppointmentCommon & {
       bookingType: "HOME_VISIT"
       visitStatus: string
       address: V3AppointmentListAddress | null
-      cancellation: V3HomeVisitCancellation
+      cancellation: V3CancellationPolicy
       payment: { amount: number } | null
       refund: V3HomeVisitRefundSummary | null
     })

@@ -65,7 +65,7 @@ export default function AppointmentDetailPage() {
         )
       } else if (result.refundDeclinedReason === "PAST_REFUND_WINDOW") {
         toast.success(
-          "Appointment cancelled. No refund — within 24 hours of the appointment.",
+          "Appointment cancelled. No refund — past the refund window.",
         )
       } else {
         toast.success("Appointment cancelled")
@@ -265,7 +265,7 @@ export default function AppointmentDetailPage() {
         )}
 
         {/* Amount paid */}
-        {isHomeVisit && appt.payment && (
+        {appt.payment && (
           <div className="px-4 py-3">
             <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-1">
               Amount paid
@@ -275,7 +275,7 @@ export default function AppointmentDetailPage() {
         )}
 
         {/* Refund status */}
-        {isHomeVisit && appt.refund && (
+        {appt.refund && (
           <div className="px-4 py-3">
             <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-1">
               Refund
@@ -284,19 +284,23 @@ export default function AppointmentDetailPage() {
           </div>
         )}
 
-        {/* Cancellation policy — only relevant while the appointment is
-            still cancellable (i.e. not terminal). */}
-        {isHomeVisit && appt.cancellation.allowed && (
+        {/* Cancellation policy — shown for both booking types while the
+            appointment is still cancellable (i.e. not terminal). */}
+        {appt.cancellation.allowed && (
           <>
             {(() => {
-              // Refund cutoff = apptStart − 24h (in IST). appt.date is
-              // YYYY-MM-DD and appt.startTime is HH:mm in IST.
+              // Refund cutoff comes from the server (cancellation.refundCutoffAt),
+              // so changing the server-side window updates this copy automatically.
+              // Fall back to apptStart − refundCutoffHours (default 24h, in IST)
+              // for older servers that don't send the resolved instant. appt.date
+              // is YYYY-MM-DD and appt.startTime is HH:mm in IST.
+              const hours = appt.cancellation.refundCutoffHours ?? 24
               const apptStartIST = new Date(
                 `${appt.date}T${appt.startTime}:00+05:30`,
               )
-              const refundCutoff = new Date(
-                apptStartIST.getTime() - 24 * 60 * 60 * 1000,
-              )
+              const refundCutoff = appt.cancellation.refundCutoffAt
+                ? new Date(appt.cancellation.refundCutoffAt)
+                : new Date(apptStartIST.getTime() - hours * 60 * 60 * 1000)
               const fmt = (d: Date) =>
                 d.toLocaleString("en-IN", {
                   day: "numeric",
@@ -370,7 +374,7 @@ export default function AppointmentDetailPage() {
         petName={appt.petName}
         date={appt.date}
         startTime={appt.startTime}
-        cancellation={isHomeVisit ? appt.cancellation : null}
+        cancellation={appt.cancellation}
         cancelling={cancelling}
         error={cancelError}
         onConfirm={handleCancel}

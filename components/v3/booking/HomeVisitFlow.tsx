@@ -31,6 +31,7 @@ import {
   type V3NidanaHomeVisitBookingFlowStep,
 } from "@/services/api.v3"
 import { load } from "@cashfreepayments/cashfree-js"
+import { useAppConfig } from "@/context/AppConfigContext"
 import StepPetSelect from "./StepPetSelect"
 import StepVisitDetails, {
   reasonLabel,
@@ -981,6 +982,11 @@ function StepHomeVisitConfirm({
 }) {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const { homeVisitPaymentsEnabled } = useAppConfig()
+  // Until the flag resolves, fall back to the non-payment copy so we never
+  // wrongly promise an up-front charge. Booking behaviour itself is
+  // server-driven (initiate returns PAYMENT_REQUIRED vs APPOINTMENT_CONFIRMED).
+  const paymentsEnabled = homeVisitPaymentsEnabled === true
 
   async function handleConfirm() {
     setSubmitting(true)
@@ -1092,7 +1098,9 @@ function StepHomeVisitConfirm({
             </p>
           )}
           <p className="mt-1 text-xs text-gray-500">
-            Pay now to confirm your home visit.
+            {paymentsEnabled
+              ? "Pay now to confirm your home visit."
+              : "Payment collected at the time of the visit."}
           </p>
         </div>
       )}
@@ -1108,7 +1116,13 @@ function StepHomeVisitConfirm({
         disabled={submitting}
         className="w-full rounded-xl bg-secondary-1 py-3 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-60"
       >
-        {submitting ? "Starting payment..." : "Pay and confirm home visit"}
+        {submitting
+          ? paymentsEnabled
+            ? "Starting payment..."
+            : "Booking…"
+          : paymentsEnabled
+            ? "Pay and confirm home visit"
+            : "Confirm home visit"}
       </button>
     </div>
   )
