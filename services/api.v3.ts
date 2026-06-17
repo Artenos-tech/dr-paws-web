@@ -41,6 +41,7 @@ export type V3Doctor = {
   id: string
   name: string
   isSenior?: boolean
+  consultationAmount?: number
 }
 
 export type V3TimeSlot = {
@@ -292,6 +293,7 @@ export async function v3FetchAppointmentTypes(
 export async function v3FetchDoctors(clinicId: string): Promise<V3Doctor[]> {
   const data = await v3Get<V3ApiResponse<{ doctors: V3Doctor[] }>>(
     `/v3/clinics/${encodeURIComponent(clinicId)}/doctors`,
+    { platform: "web" },
   )
   return data.doctors
 }

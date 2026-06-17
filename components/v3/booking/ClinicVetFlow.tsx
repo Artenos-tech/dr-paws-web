@@ -378,9 +378,10 @@ export default function ClinicVetFlow({
                         slot={sel.slot}
                         isSeniorVet={!!sel.doctor.isSenior}
                         priceInRupees={
-                          sel.doctor.isSenior
+                          sel.doctor.consultationAmount ??
+                          (sel.doctor.isSenior
                             ? seniorPriceInRupees
-                            : priceInRupees
+                            : priceInRupees)
                         }
                         bookingFlowSessionId={bookingFlowSessionId}
                         onSuccess={(appt) => setAppointment(appt)}
