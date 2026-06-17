@@ -115,7 +115,10 @@ export default function V3LoginFlow({ onSuccess }: Props) {
       return
     }
     const { token, owner } = result.value.body
-    window.posthog?.identify(owner.id, { name: `${owner.firstName} ${owner.lastName}`, phone: owner.phoneNumber })
+    window.posthog?.identify(owner.id, {
+      name: `${owner.firstName} ${owner.lastName}`,
+      phone: owner.phoneNumber,
+    })
     onSuccess(owner, token)
   }
 
@@ -143,7 +146,14 @@ export default function V3LoginFlow({ onSuccess }: Props) {
       return
     }
     const { token, owner } = result.value.body
-    window.posthog?.identify(owner.id, { name: `${owner.firstName} ${owner.lastName}`, phone: owner.phoneNumber }, { is_new_user: true })
+    window.posthog?.identify(
+      owner.id,
+      {
+        name: `${owner.firstName} ${owner.lastName}`,
+        phone: owner.phoneNumber,
+      },
+      { is_new_user: true },
+    )
     onSuccess(owner, token)
   }
 
