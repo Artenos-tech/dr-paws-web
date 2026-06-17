@@ -377,7 +377,8 @@ export default function ClinicGroomingFlow({
                           pet.species !== "feline"
                         ) {
                           return {
-                            reason: "Grooming is only available for dogs & cats",
+                            reason:
+                              "Grooming is only available for dogs & cats",
                           }
                         }
                         const active = activeTypesByPet[pet.id]?.find(
