@@ -12,6 +12,8 @@ import { useAPICall } from "@/hooks/apicall"
 // import { useMarketingFeature } from "@/hooks/useMarketingFeature";
 import logo from "@/public/assets/images/logo/logo.svg"
 import Profile from "@/public/assets/images/profileThumnail.svg"
+import posthog from "posthog-js"
+
 import api, { clearAuthToken } from "@/services/api"
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
 import { useEffect, useRef, useState } from "react"
@@ -80,6 +82,7 @@ export default function NavBar() {
   const handleLogout = async () => {
     await logout({})
     clearAuthToken()
+    posthog.reset()
     navigate.push("/")
     refresh()
   }
