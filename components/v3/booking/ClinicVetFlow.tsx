@@ -7,7 +7,9 @@ import {
   v3FetchPets,
   v3FetchClinics,
   v3FetchVetPrice,
+  v3FetchActiveAppointmentTypesByPet,
   v3UpdateBookingFlowStep,
+  type V3ActiveApptBucket,
   type V3NidanaClinicBookingFlowStep,
   type V3Pet,
   type V3Clinic,
@@ -99,6 +101,9 @@ export default function ClinicVetFlow({
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState<string | null>(null)
   const [appointment, setAppointment] = useState<V3Appointment | null>(null)
+  const [activeTypesByPet, setActiveTypesByPet] = useState<
+    Record<string, V3ActiveApptBucket[]>
+  >({})
   const [pendingSeniorSelection, setPendingSeniorSelection] = useState<{
     doctor: V3Doctor
     date: string
@@ -127,12 +132,18 @@ export default function ClinicVetFlow({
   }
 
   useEffect(() => {
-    Promise.all([v3FetchPets(), v3FetchClinics(), v3FetchVetPrice()])
-      .then(([p, c, price]) => {
+    Promise.all([
+      v3FetchPets(),
+      v3FetchClinics(),
+      v3FetchVetPrice(),
+      v3FetchActiveAppointmentTypesByPet(),
+    ])
+      .then(([p, c, price, activeTypes]) => {
         setPets(p)
         setClinics(c)
         setPriceInRupees(price.priceInRupees)
         setSeniorPriceInRupees(price.seniorPriceInRupees)
+        setActiveTypesByPet(activeTypes)
       })
       .catch(() =>
         setLoadError("Failed to load data. Please refresh and try again."),
@@ -320,6 +331,11 @@ export default function ClinicVetFlow({
                     <StepPetSelect
                       pets={pets}
                       clinics={clinics}
+                      disabledReason={(pet) =>
+                        activeTypesByPet[pet.id]?.includes("CLINIC_VET")
+                          ? `${pet.name} already has an upcoming vet appointment. You can't book another until it's done or cancelled.`
+                          : null
+                      }
                       onSelect={(pet) => {
                         setSel((s) => ({ ...s, pet }))
                         openAndScroll("clinic")

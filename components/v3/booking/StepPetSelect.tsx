@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { Plus, Dog, Cat, Bird, HelpCircle, ChevronRight } from "lucide-react"
+import toast from "react-hot-toast"
 import type { V3Pet, V3Clinic } from "@/services/api.v3"
 import AddPetModal from "./AddPetModal"
 
@@ -10,7 +11,9 @@ interface Props {
   clinics: V3Clinic[]
   onSelect: (pet: V3Pet) => void
   onPetAdded: (pet: V3Pet) => void
-  isEligible?: (pet: V3Pet) => boolean
+  // Returns a reason string when the pet cannot be selected (rendered disabled,
+  // with the reason shown as a toast on tap), or null when it's selectable.
+  disabledReason?: (pet: V3Pet) => string | null
 }
 
 function PetIcon({ species }: { species?: string | null }) {
@@ -34,7 +37,7 @@ export default function StepPetSelect({
   clinics,
   onSelect,
   onPetAdded,
-  isEligible,
+  disabledReason,
 }: Props) {
   const [showAddPet, setShowAddPet] = useState(false)
 
@@ -42,11 +45,13 @@ export default function StepPetSelect({
     <div>
       <div className="space-y-3">
         {pets.map((pet) => {
-          const eligible = !isEligible || isEligible(pet)
-          if (!eligible) {
+          const reason = disabledReason?.(pet) ?? null
+          if (reason) {
             return (
-              <div
+              <button
                 key={pet.id}
+                type="button"
+                onClick={() => toast(reason)}
                 className="w-full flex items-center gap-4 p-4 rounded-xl border border-gray-100 bg-gray-50 opacity-50 cursor-not-allowed text-left"
               >
                 <div className="flex-shrink-0 h-14 w-14 rounded-full bg-gray-200 flex items-center justify-center">
@@ -56,11 +61,9 @@ export default function StepPetSelect({
                   <div className="font-semibold text-primary-1 text-base">
                     {pet.name}
                   </div>
-                  <div className="text-sm text-gray-400">
-                    Grooming is only available for dogs &amp; cats
-                  </div>
+                  <div className="text-sm text-gray-400">{reason}</div>
                 </div>
-              </div>
+              </button>
             )
           }
           return (
