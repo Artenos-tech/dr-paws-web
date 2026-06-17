@@ -162,6 +162,7 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
           setAuthToken(response.value.body.token)
           const user = response.value.body.user
           updateUserDetailsHandler(user)
+          window.posthog?.identify(user.id, { name: user.name, phone: user.mobile })
           setOtpErr("")
           onSuccess("logged in")
         } else {
@@ -199,6 +200,7 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
           setAuthToken(response.value.body.token)
           const user = response.value.body.user
           updateUserDetailsHandler(user)
+          window.posthog?.identify(user.id, { name: user.name, phone: user.mobile }, { is_new_user: true })
           setOtpErr("")
           onSuccess("signed up")
         } else {
