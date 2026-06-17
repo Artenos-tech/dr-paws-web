@@ -11,6 +11,7 @@ import api, { setAuthToken } from "@/services/api"
 import toast, { Toaster } from "react-hot-toast"
 import { useUserContext } from "@/context/UserContext"
 import { usePathname, useRouter } from "next/navigation"
+import posthog from "posthog-js"
 
 interface authenticationProps {
   isOpen: boolean
@@ -162,7 +163,7 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
           setAuthToken(response.value.body.token)
           const user = response.value.body.user
           updateUserDetailsHandler(user)
-          window.posthog?.identify(user.id, {
+          posthog.identify(user.id, {
             name: user.name,
             phone: user.mobile,
           })
@@ -203,7 +204,7 @@ const UserAuthenticationModal: React.FC<authenticationProps> = ({
           setAuthToken(response.value.body.token)
           const user = response.value.body.user
           updateUserDetailsHandler(user)
-          window.posthog?.identify(
+          posthog.identify(
             user.id,
             { name: user.name, phone: user.mobile },
             { is_new_user: true },
