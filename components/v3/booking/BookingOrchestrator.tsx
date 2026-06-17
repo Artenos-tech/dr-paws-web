@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { Toaster } from "react-hot-toast"
 import BookingTypeSelector from "./BookingTypeSelector"
 import ClinicVetFlow from "./ClinicVetFlow"
 import ClinicGroomingFlow from "./ClinicGroomingFlow"
@@ -35,51 +34,42 @@ export default function BookingOrchestrator() {
     }
   }
 
-  function renderFlow() {
-    if (bookingType === "HOME_VISIT") {
-      return <HomeVisitFlow onBack={() => setBookingType(null)} />
-    }
-    if (bookingType === "VET_CONSULTATION") {
-      return (
-        <ClinicVetFlow
-          bookingFlowSessionId={clinicBookingFlowSessionId}
-          onBack={() => {
-            setSelectorStep("clinic-subtype")
-            setBookingType(null)
-          }}
-        />
-      )
-    }
-    if (bookingType === "GROOMING") {
-      return (
-        <ClinicGroomingFlow
-          bookingFlowSessionId={clinicBookingFlowSessionId}
-          onBack={() => {
-            setSelectorStep("clinic-subtype")
-            setBookingType(null)
-          }}
-        />
-      )
-    }
-
+  if (bookingType === "HOME_VISIT") {
+    return <HomeVisitFlow onBack={() => setBookingType(null)} />
+  }
+  if (bookingType === "VET_CONSULTATION") {
     return (
-      <BookingTypeSelector
-        initialStep={selectorStep}
-        onClinicVisitSelect={() => {
-          void startClinicBookingFlowSession()
+      <ClinicVetFlow
+        bookingFlowSessionId={clinicBookingFlowSessionId}
+        onBack={() => {
+          setSelectorStep("clinic-subtype")
+          setBookingType(null)
         }}
-        onSelect={(type) => {
-          setSelectorStep("top")
-          setBookingType(type)
+      />
+    )
+  }
+  if (bookingType === "GROOMING") {
+    return (
+      <ClinicGroomingFlow
+        bookingFlowSessionId={clinicBookingFlowSessionId}
+        onBack={() => {
+          setSelectorStep("clinic-subtype")
+          setBookingType(null)
         }}
       />
     )
   }
 
   return (
-    <>
-      <Toaster position="top-center" />
-      {renderFlow()}
-    </>
+    <BookingTypeSelector
+      initialStep={selectorStep}
+      onClinicVisitSelect={() => {
+        void startClinicBookingFlowSession()
+      }}
+      onSelect={(type) => {
+        setSelectorStep("top")
+        setBookingType(type)
+      }}
+    />
   )
 }

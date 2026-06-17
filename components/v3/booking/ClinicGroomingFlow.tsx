@@ -21,7 +21,7 @@ import {
   v3InitiateGroomingAppointment,
   v3FetchActiveAppointmentTypesByPet,
   v3UpdateBookingFlowStep,
-  type V3ActiveApptBucket,
+  type V3ActiveApptForPet,
   type V3NidanaClinicBookingFlowStep,
   type V3Pet,
   type V3Clinic,
@@ -117,7 +117,7 @@ export default function ClinicGroomingFlow({
   const [breedCheckPet, setBreedCheckPet] = useState<V3Pet | null>(null)
   const [showEditBreedModal, setShowEditBreedModal] = useState(false)
   const [activeTypesByPet, setActiveTypesByPet] = useState<
-    Record<string, V3ActiveApptBucket[]>
+    Record<string, V3ActiveApptForPet[]>
   >({})
 
   const [sel, setSel] = useState<Selection>({
@@ -371,19 +371,24 @@ export default function ClinicGroomingFlow({
                     <StepPetSelect
                       pets={pets}
                       clinics={clinics}
-                      disabledReason={(pet) => {
+                      disabledInfo={(pet) => {
                         if (
                           pet.species !== "canine" &&
                           pet.species !== "feline"
                         ) {
-                          return "Grooming is only available for dogs & cats"
+                          return {
+                            reason: "Grooming is only available for dogs & cats",
+                          }
                         }
-                        if (
-                          activeTypesByPet[pet.id]?.includes("CLINIC_GROOMING")
-                        ) {
-                          return `${pet.name} already has an upcoming grooming appointment. You can't book another until it's done or cancelled.`
-                        }
-                        return null
+                        const active = activeTypesByPet[pet.id]?.find(
+                          (a) => a.bucket === "CLINIC_GROOMING",
+                        )
+                        return active
+                          ? {
+                              reason: `${pet.name} already has an upcoming grooming appointment. You can't book another until it's done or cancelled.`,
+                              appointmentId: active.appointmentId,
+                            }
+                          : null
                       }}
                       onSelect={async (pet) => {
                         setSel((s) => ({

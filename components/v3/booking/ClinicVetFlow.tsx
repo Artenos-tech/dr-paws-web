@@ -9,7 +9,7 @@ import {
   v3FetchVetPrice,
   v3FetchActiveAppointmentTypesByPet,
   v3UpdateBookingFlowStep,
-  type V3ActiveApptBucket,
+  type V3ActiveApptForPet,
   type V3NidanaClinicBookingFlowStep,
   type V3Pet,
   type V3Clinic,
@@ -102,7 +102,7 @@ export default function ClinicVetFlow({
   const [loadError, setLoadError] = useState<string | null>(null)
   const [appointment, setAppointment] = useState<V3Appointment | null>(null)
   const [activeTypesByPet, setActiveTypesByPet] = useState<
-    Record<string, V3ActiveApptBucket[]>
+    Record<string, V3ActiveApptForPet[]>
   >({})
   const [pendingSeniorSelection, setPendingSeniorSelection] = useState<{
     doctor: V3Doctor
@@ -331,11 +331,17 @@ export default function ClinicVetFlow({
                     <StepPetSelect
                       pets={pets}
                       clinics={clinics}
-                      disabledReason={(pet) =>
-                        activeTypesByPet[pet.id]?.includes("CLINIC_VET")
-                          ? `${pet.name} already has an upcoming vet appointment. You can't book another until it's done or cancelled.`
+                      disabledInfo={(pet) => {
+                        const active = activeTypesByPet[pet.id]?.find(
+                          (a) => a.bucket === "CLINIC_VET",
+                        )
+                        return active
+                          ? {
+                              reason: `${pet.name} already has an upcoming vet appointment. You can't book another until it's done or cancelled.`,
+                              appointmentId: active.appointmentId,
+                            }
                           : null
-                      }
+                      }}
                       onSelect={(pet) => {
                         setSel((s) => ({ ...s, pet }))
                         openAndScroll("clinic")

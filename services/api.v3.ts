@@ -744,14 +744,22 @@ export async function v3FetchAppointments(
 
 export type V3ActiveApptBucket = "CLINIC_VET" | "CLINIC_GROOMING" | "HOME_VISIT"
 
+// The active appointment blocking a given type bucket for a pet, including its
+// id so the booking flows can link to it for cancel/reschedule.
+export type V3ActiveApptForPet = {
+  bucket: V3ActiveApptBucket
+  appointmentId: string
+}
+
 // Per-pet map of the appointment-type buckets the user already has an active
 // (upcoming, still-scheduled) booking in. Used by the booking flows to disable
-// pets that can't take another appointment of the type being booked.
+// pets that can't take another appointment of the type being booked, and to
+// link to the existing appointment.
 export async function v3FetchActiveAppointmentTypesByPet(): Promise<
-  Record<string, V3ActiveApptBucket[]>
+  Record<string, V3ActiveApptForPet[]>
 > {
   const data = await v3Get<
-    V3ApiResponse<{ activeTypesByPet: Record<string, V3ActiveApptBucket[]> }>
+    V3ApiResponse<{ activeTypesByPet: Record<string, V3ActiveApptForPet[]> }>
   >("/v3/appointments/active-types")
   return data.activeTypesByPet
 }

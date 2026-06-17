@@ -24,7 +24,7 @@ import {
   v3FetchActiveAppointmentTypesByPet,
   v3StartBookingFlow,
   v3UpdateBookingFlowStep,
-  type V3ActiveApptBucket,
+  type V3ActiveApptForPet,
   type V3Pet,
   type V3Clinic,
   type V3Address,
@@ -116,7 +116,7 @@ export default function HomeVisitFlow({
     string | null
   >(null)
   const [activeTypesByPet, setActiveTypesByPet] = useState<
-    Record<string, V3ActiveApptBucket[]>
+    Record<string, V3ActiveApptForPet[]>
   >({})
 
   const [sel, setSel] = useState<Selection>({
@@ -409,11 +409,17 @@ export default function HomeVisitFlow({
                   <StepPetSelect
                     pets={pets}
                     clinics={clinics}
-                    disabledReason={(pet) =>
-                      activeTypesByPet[pet.id]?.includes("HOME_VISIT")
-                        ? `${pet.name} already has an upcoming home visit. You can't book another until it's done or cancelled.`
+                    disabledInfo={(pet) => {
+                      const active = activeTypesByPet[pet.id]?.find(
+                        (a) => a.bucket === "HOME_VISIT",
+                      )
+                      return active
+                        ? {
+                            reason: `${pet.name} already has an upcoming home visit. You can't book another until it's done or cancelled.`,
+                            appointmentId: active.appointmentId,
+                          }
                         : null
-                    }
+                    }}
                     onSelect={(pet) => {
                       setSel((s) => ({ ...s, pet }))
                       openAndScroll("visitDetails")
