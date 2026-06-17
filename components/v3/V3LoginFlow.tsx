@@ -3,6 +3,7 @@
 import { useRef, useState } from "react"
 import api, { type V3Owner } from "@/services/api.v3"
 import { ErrorResponseAPIError, SchemaAPIError } from "@/lib/apiclient"
+import posthog from "posthog-js"
 
 type Step = "phone" | "otp" | "signup"
 
@@ -115,6 +116,10 @@ export default function V3LoginFlow({ onSuccess }: Props) {
       return
     }
     const { token, owner } = result.value.body
+    posthog.identify(owner.id, {
+      name: `${owner.firstName} ${owner.lastName}`,
+      phone: owner.phoneNumber,
+    })
     onSuccess(owner, token)
   }
 
@@ -142,6 +147,14 @@ export default function V3LoginFlow({ onSuccess }: Props) {
       return
     }
     const { token, owner } = result.value.body
+    posthog.identify(
+      owner.id,
+      {
+        name: `${owner.firstName} ${owner.lastName}`,
+        phone: owner.phoneNumber,
+      },
+      { is_new_user: true },
+    )
     onSuccess(owner, token)
   }
 
