@@ -21,8 +21,10 @@ import {
   v3FetchHomeVisitSlots,
   v3FetchHomeVisitPrice,
   v3InitiateHomeVisitAppointment,
+  v3FetchActiveAppointmentTypesByPet,
   v3StartBookingFlow,
   v3UpdateBookingFlowStep,
+  type V3ActiveApptForPet,
   type V3Pet,
   type V3Clinic,
   type V3Address,
@@ -113,6 +115,9 @@ export default function HomeVisitFlow({
   const [bookingFlowSessionId, setBookingFlowSessionId] = useState<
     string | null
   >(null)
+  const [activeTypesByPet, setActiveTypesByPet] = useState<
+    Record<string, V3ActiveApptForPet[]>
+  >({})
 
   const [sel, setSel] = useState<Selection>({
     address: null,
@@ -140,8 +145,9 @@ export default function HomeVisitFlow({
       v3FetchClinics(),
       v3FetchAddresses(),
       v3FetchHomeVisitPrice(couponCode ? { couponCode } : undefined),
+      v3FetchActiveAppointmentTypesByPet(),
     ])
-      .then(([p, c, a, price]) => {
+      .then(([p, c, a, price, activeTypes]) => {
         setPets(p)
         setClinics(c)
         setAddresses(a)
@@ -149,6 +155,7 @@ export default function HomeVisitFlow({
         setOriginalPriceInRupees(price.originalPriceInRupees ?? null)
         setDiscountInRupees(price.discountInRupees ?? null)
         setCouponError(price.couponError ?? null)
+        setActiveTypesByPet(activeTypes)
       })
       .catch(() =>
         setLoadError("Failed to load data. Please refresh and try again."),
@@ -402,6 +409,17 @@ export default function HomeVisitFlow({
                   <StepPetSelect
                     pets={pets}
                     clinics={clinics}
+                    disabledInfo={(pet) => {
+                      const active = activeTypesByPet[pet.id]?.find(
+                        (a) => a.bucket === "HOME_VISIT",
+                      )
+                      return active
+                        ? {
+                            reason: `${pet.name} already has an upcoming home visit. You can't book another until it's done or cancelled.`,
+                            appointmentId: active.appointmentId,
+                          }
+                        : null
+                    }}
                     onSelect={(pet) => {
                       setSel((s) => ({ ...s, pet }))
                       openAndScroll("visitDetails")

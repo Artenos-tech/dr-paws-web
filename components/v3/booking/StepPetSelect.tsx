@@ -1,16 +1,27 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { Plus, Dog, Cat, Bird, HelpCircle, ChevronRight } from "lucide-react"
 import type { V3Pet, V3Clinic } from "@/services/api.v3"
 import AddPetModal from "./AddPetModal"
+
+// Why a pet can't be selected. `appointmentId` is set when the block is caused
+// by an existing appointment, so we can link the user to it for cancel/reschedule.
+export interface PetDisabledInfo {
+  reason: string
+  appointmentId?: string
+}
 
 interface Props {
   pets: V3Pet[]
   clinics: V3Clinic[]
   onSelect: (pet: V3Pet) => void
   onPetAdded: (pet: V3Pet) => void
-  isEligible?: (pet: V3Pet) => boolean
+  // Returns disabled info when the pet cannot be selected (rendered disabled,
+  // with the reason shown and, if applicable, a link to the existing
+  // appointment), or null when it's selectable.
+  disabledInfo?: (pet: V3Pet) => PetDisabledInfo | null
 }
 
 function PetIcon({ species }: { species?: string | null }) {
@@ -34,31 +45,43 @@ export default function StepPetSelect({
   clinics,
   onSelect,
   onPetAdded,
-  isEligible,
+  disabledInfo,
 }: Props) {
   const [showAddPet, setShowAddPet] = useState(false)
+  const router = useRouter()
 
   return (
     <div>
       <div className="space-y-3">
         {pets.map((pet) => {
-          const eligible = !isEligible || isEligible(pet)
-          if (!eligible) {
+          const disabled = disabledInfo?.(pet) ?? null
+          if (disabled) {
             return (
               <div
                 key={pet.id}
-                className="w-full flex items-center gap-4 p-4 rounded-xl border border-gray-100 bg-gray-50 opacity-50 cursor-not-allowed text-left"
+                className="w-full flex items-center gap-4 p-4 rounded-xl border border-gray-100 bg-gray-50 text-left"
               >
-                <div className="flex-shrink-0 h-14 w-14 rounded-full bg-gray-200 flex items-center justify-center">
+                <div className="flex-shrink-0 h-14 w-14 rounded-full bg-gray-200 flex items-center justify-center opacity-50">
                   <PetIcon species={pet.species} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="font-semibold text-primary-1 text-base">
+                  <div className="font-semibold text-primary-1 text-base opacity-50">
                     {pet.name}
                   </div>
-                  <div className="text-sm text-gray-400">
-                    Grooming is only available for dogs &amp; cats
-                  </div>
+                  <div className="text-sm text-gray-400">{disabled.reason}</div>
+                  {disabled.appointmentId && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        router.push(
+                          `/v3/appointments/${disabled.appointmentId}`,
+                        )
+                      }
+                      className="mt-1 text-sm font-medium text-primary-2 hover:underline"
+                    >
+                      View appointment →
+                    </button>
+                  )}
                 </div>
               </div>
             )

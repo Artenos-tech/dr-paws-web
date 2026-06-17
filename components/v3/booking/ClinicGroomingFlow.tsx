@@ -19,7 +19,9 @@ import {
   v3FetchGroomingServiceTypes,
   v3FetchGroomingSlots,
   v3InitiateGroomingAppointment,
+  v3FetchActiveAppointmentTypesByPet,
   v3UpdateBookingFlowStep,
+  type V3ActiveApptForPet,
   type V3NidanaClinicBookingFlowStep,
   type V3Pet,
   type V3Clinic,
@@ -114,6 +116,9 @@ export default function ClinicGroomingFlow({
   const [appointment, setAppointment] = useState<V3Appointment | null>(null)
   const [breedCheckPet, setBreedCheckPet] = useState<V3Pet | null>(null)
   const [showEditBreedModal, setShowEditBreedModal] = useState(false)
+  const [activeTypesByPet, setActiveTypesByPet] = useState<
+    Record<string, V3ActiveApptForPet[]>
+  >({})
 
   const [sel, setSel] = useState<Selection>({
     groomingType: null,
@@ -134,10 +139,15 @@ export default function ClinicGroomingFlow({
   const lastTrackedStepRef = useRef<V3NidanaClinicBookingFlowStep | null>(null)
 
   useEffect(() => {
-    Promise.all([v3FetchPets(), v3FetchClinics()])
-      .then(([p, c]) => {
+    Promise.all([
+      v3FetchPets(),
+      v3FetchClinics(),
+      v3FetchActiveAppointmentTypesByPet(),
+    ])
+      .then(([p, c, activeTypes]) => {
         setPets(p)
         setClinics(c)
+        setActiveTypesByPet(activeTypes)
       })
       .catch(() =>
         setLoadError("Failed to load data. Please refresh and try again."),
@@ -361,9 +371,26 @@ export default function ClinicGroomingFlow({
                     <StepPetSelect
                       pets={pets}
                       clinics={clinics}
-                      isEligible={(pet) =>
-                        pet.species === "canine" || pet.species === "feline"
-                      }
+                      disabledInfo={(pet) => {
+                        if (
+                          pet.species !== "canine" &&
+                          pet.species !== "feline"
+                        ) {
+                          return {
+                            reason:
+                              "Grooming is only available for dogs & cats",
+                          }
+                        }
+                        const active = activeTypesByPet[pet.id]?.find(
+                          (a) => a.bucket === "CLINIC_GROOMING",
+                        )
+                        return active
+                          ? {
+                              reason: `${pet.name} already has an upcoming grooming appointment. You can't book another until it's done or cancelled.`,
+                              appointmentId: active.appointmentId,
+                            }
+                          : null
+                      }}
                       onSelect={async (pet) => {
                         setSel((s) => ({
                           ...s,
