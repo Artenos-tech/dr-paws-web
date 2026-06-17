@@ -593,8 +593,8 @@ export default function StepVetDateTime({
                   {!isReschedule && (
                     <div className="text-xs text-gray-400">
                       {doc.isSenior
-                        ? `Senior Veterinarian · ₹${seniorPriceInRupees}`
-                        : `Veterinarian · ₹${priceInRupees}`}
+                        ? `Senior Veterinarian · ₹${doc.consultationAmount ?? seniorPriceInRupees}`
+                        : `Veterinarian · ₹${doc.consultationAmount ?? priceInRupees}`}
                     </div>
                   )}
                 </div>
