@@ -10,6 +10,8 @@ import {
   useState,
 } from "react"
 
+import posthog from "posthog-js"
+
 import api, {
   type V3Owner,
   V3_AUTH_TOKEN_KEY,
@@ -53,6 +55,10 @@ export function V3UserProvider({ children }: { children: ReactNode }) {
       const fresh = await v3GetMe()
       setOwner_(fresh)
       setIsLoggedIn(true)
+      posthog.identify(fresh.id, {
+        name: `${fresh.firstName} ${fresh.lastName}`,
+        phone: fresh.phoneNumber,
+      })
     } catch (e) {
       const status = (e as { status?: number })?.status
       if (status === 401) {
@@ -109,6 +115,7 @@ export function V3UserProvider({ children }: { children: ReactNode }) {
     clearV3Auth()
     setOwner_(null)
     setIsLoggedIn(false)
+    posthog.reset()
   }, [])
 
   return (

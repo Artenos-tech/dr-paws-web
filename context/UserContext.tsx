@@ -10,6 +10,8 @@ import {
   useState,
 } from "react"
 
+import posthog from "posthog-js"
+
 import UserAuthenticationModal from "@/components/ui/UserAuthenticationModal"
 import { useAPICall } from "@/hooks/apicall"
 import api from "@/services/api"
@@ -95,6 +97,10 @@ export const UserProvider = ({ children }: UserProviderProps) => {
           if (response.ok) {
             const userResponse = response.value.body.user
             setUser(userResponse)
+            posthog.identify(userResponse.id, {
+              name: userResponse.name,
+              phone: userResponse.mobile,
+            })
           }
         } catch (error) {
           console.error(error)
