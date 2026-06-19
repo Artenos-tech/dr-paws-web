@@ -40,6 +40,7 @@ import StepVisitDetails, {
   type VisitReasonCode,
 } from "./StepVisitDetails"
 import MapAddressPicker, { type GeocodedLocation } from "./MapAddressPicker"
+import CouponField, { type CouponPriceResult } from "./CouponField"
 
 type SectionId = "address" | "pet" | "visitDetails" | "datetime" | "confirm"
 
@@ -106,7 +107,11 @@ export default function HomeVisitFlow({
     number | null
   >(null)
   const [discountInRupees, setDiscountInRupees] = useState<number | null>(null)
-  const [couponError, setCouponError] = useState<string | null>(null)
+  // The coupon code that successfully applied; forwarded to the initiate call.
+  // null when none is applied (or the URL coupon was rejected).
+  const [appliedCouponCode, setAppliedCouponCode] = useState<string | null>(
+    null,
+  )
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState<string | null>(null)
   const [appointment, setAppointment] = useState<V3HomeVisitAppointment | null>(
@@ -154,13 +159,17 @@ export default function HomeVisitFlow({
         setPriceInRupees(price.priceInRupees)
         setOriginalPriceInRupees(price.originalPriceInRupees ?? null)
         setDiscountInRupees(price.discountInRupees ?? null)
-        setCouponError(price.couponError ?? null)
+        if (couponCode && !price.couponError) {
+          setAppliedCouponCode(couponCode)
+        }
         setActiveTypesByPet(activeTypes)
       })
       .catch(() =>
         setLoadError("Failed to load data. Please refresh and try again."),
       )
       .finally(() => setLoading(false))
+    // Runs once on mount; couponCode is a stable initial-prefill prop.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const trackStep = useCallback(
@@ -198,6 +207,16 @@ export default function HomeVisitFlow({
 
     void startSession()
   }, [trackStep])
+
+  function handleCouponResult(
+    result: CouponPriceResult,
+    appliedCode: string | null,
+  ) {
+    setPriceInRupees(result.priceInRupees)
+    setOriginalPriceInRupees(result.originalPriceInRupees ?? null)
+    setDiscountInRupees(result.discountInRupees ?? null)
+    setAppliedCouponCode(appliedCode)
+  }
 
   function openAndScroll(section: SectionId) {
     openSectionRef.current = section
@@ -471,8 +490,9 @@ export default function HomeVisitFlow({
                       priceInRupees={priceInRupees}
                       originalPriceInRupees={originalPriceInRupees}
                       discountInRupees={discountInRupees}
-                      couponError={couponError}
-                      couponCode={couponCode}
+                      couponCode={appliedCouponCode ?? undefined}
+                      initialCouponCode={couponCode}
+                      onCouponResult={handleCouponResult}
                       bookingFlowSessionId={bookingFlowSessionId}
                       onSuccess={(appt) => setAppointment(appt)}
                       onEdit={editSection}
@@ -978,8 +998,9 @@ function StepHomeVisitConfirm({
   priceInRupees,
   originalPriceInRupees,
   discountInRupees,
-  couponError,
   couponCode,
+  initialCouponCode,
+  onCouponResult,
   bookingFlowSessionId,
   onSuccess,
   onEdit,
@@ -992,8 +1013,12 @@ function StepHomeVisitConfirm({
   priceInRupees: number | null
   originalPriceInRupees: number | null
   discountInRupees: number | null
-  couponError: string | null
   couponCode?: string
+  initialCouponCode?: string
+  onCouponResult: (
+    result: CouponPriceResult,
+    appliedCouponCode: string | null,
+  ) => void
   bookingFlowSessionId: string | null
   onSuccess: (appt: V3HomeVisitAppointment) => void
   onEdit: (section: SectionId) => void
@@ -1019,7 +1044,7 @@ function StepHomeVisitConfirm({
         isEmergency: false,
         reasonCode: visitDetails.reasonCode,
         petParentNotes: visitDetails.petParentNotes,
-        couponCode: couponError ? undefined : couponCode,
+        couponCode: couponCode,
         bookingFlowSessionId: bookingFlowSessionId ?? undefined,
       })
       if (result.action === "APPOINTMENT_CONFIRMED") {
@@ -1083,11 +1108,13 @@ function StepHomeVisitConfirm({
         />
       </div>
 
-      {couponError && (
-        <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-          {couponError}
-        </div>
-      )}
+      <CouponField
+        initialCouponCode={initialCouponCode}
+        onFetchPrice={(code) =>
+          v3FetchHomeVisitPrice(code ? { couponCode: code } : undefined)
+        }
+        onResult={onCouponResult}
+      />
 
       {priceInRupees !== null && (
         <div className="mb-4 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
