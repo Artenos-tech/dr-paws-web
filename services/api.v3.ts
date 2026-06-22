@@ -484,9 +484,7 @@ export async function v3CreateAddress(input: {
 }
 
 export async function v3DeleteAddress(id: string): Promise<void> {
-  await v3Delete<V3ApiResponse<{}>>(
-    `/v3/addresses/${encodeURIComponent(id)}`,
-  )
+  await v3Delete<V3ApiResponse<{}>>(`/v3/addresses/${encodeURIComponent(id)}`)
 }
 
 export type V3HomeVisitSlot = {

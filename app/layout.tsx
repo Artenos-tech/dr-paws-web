@@ -61,9 +61,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${roca.variable} ${openSans.variable}`}>
-      <body
-        className={`w-full min-h-screen overflow-x-hidden flex flex-col`}
-      >
+      <body className={`w-full min-h-screen overflow-x-hidden flex flex-col`}>
         <PostHogProvider>
           <AppConfigProvider>
             <UserProvider>

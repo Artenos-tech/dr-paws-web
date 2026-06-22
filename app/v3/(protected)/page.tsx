@@ -179,7 +179,9 @@ export default function V3HomePage() {
   const [petModalOpen, setPetModalOpen] = useState(false)
   const [petToEdit, setPetToEdit] = useState<V3Pet | null>(null)
   const [addressModalOpen, setAddressModalOpen] = useState(false)
-  const [deletingAddressId, setDeletingAddressId] = useState<string | null>(null)
+  const [deletingAddressId, setDeletingAddressId] = useState<string | null>(
+    null,
+  )
 
   useEffect(() => {
     Promise.all([v3FetchPets(), v3FetchClinics()])
