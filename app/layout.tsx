@@ -60,14 +60,14 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <PostHogProvider>
-      <AppConfigProvider>
-        <UserProvider>
-          <V3UserProvider>
-            <html lang="en" className={`${roca.variable} ${openSans.variable}`}>
-              <body
-                className={`w-full min-h-screen overflow-x-hidden flex flex-col`}
-              >
+    <html lang="en" className={`${roca.variable} ${openSans.variable}`}>
+      <body
+        className={`w-full min-h-screen overflow-x-hidden flex flex-col`}
+      >
+        <PostHogProvider>
+          <AppConfigProvider>
+            <UserProvider>
+              <V3UserProvider>
                 <Script
                   id="gtm-script"
                   strategy="afterInteractive"
@@ -117,11 +117,11 @@ fbq('track', 'PageView');`,
                   <div className="mt-16 flex-grow">{children}</div>
                   <Footer />
                 </div>
-              </body>
-            </html>
-          </V3UserProvider>
-        </UserProvider>
-      </AppConfigProvider>
-    </PostHogProvider>
+              </V3UserProvider>
+            </UserProvider>
+          </AppConfigProvider>
+        </PostHogProvider>
+      </body>
+    </html>
   )
 }

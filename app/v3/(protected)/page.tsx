@@ -11,18 +11,24 @@ import {
   User,
   Mail,
   Phone,
+  MapPin,
+  Trash2,
 } from "lucide-react"
 import { X } from "lucide-react"
 import ClipLoader from "react-spinners/ClipLoader"
 import { useV3UserContext } from "@/context/V3UserContext"
 import AddPetModal from "@/components/v3/booking/AddPetModal"
+import AddAddressModal from "@/components/v3/profile/AddAddressModal"
 import {
   v3FetchPets,
   v3FetchClinics,
+  v3FetchAddresses,
+  v3DeleteAddress,
   v3UpdateOwner,
   type V3Pet,
   type V3Clinic,
   type V3Owner,
+  type V3Address,
 } from "@/services/api.v3"
 
 // ─── Pet species icon ─────────────────────────────────────────────────────────
@@ -165,11 +171,15 @@ export default function V3HomePage() {
 
   const [pets, setPets] = useState<V3Pet[]>([])
   const [clinics, setClinics] = useState<V3Clinic[]>([])
+  const [addresses, setAddresses] = useState<V3Address[]>([])
   const [petsLoading, setPetsLoading] = useState(true)
+  const [addressesLoading, setAddressesLoading] = useState(true)
 
   const [editingProfile, setEditingProfile] = useState(false)
   const [petModalOpen, setPetModalOpen] = useState(false)
   const [petToEdit, setPetToEdit] = useState<V3Pet | null>(null)
+  const [addressModalOpen, setAddressModalOpen] = useState(false)
+  const [deletingAddressId, setDeletingAddressId] = useState<string | null>(null)
 
   useEffect(() => {
     Promise.all([v3FetchPets(), v3FetchClinics()])
@@ -179,7 +189,23 @@ export default function V3HomePage() {
       })
       .catch(console.error)
       .finally(() => setPetsLoading(false))
+    v3FetchAddresses()
+      .then(setAddresses)
+      .catch(console.error)
+      .finally(() => setAddressesLoading(false))
   }, [])
+
+  async function handleDeleteAddress(id: string) {
+    setDeletingAddressId(id)
+    try {
+      await v3DeleteAddress(id)
+      setAddresses((prev) => prev.filter((a) => a.id !== id))
+    } catch (e) {
+      console.error("Failed to delete address", e)
+    } finally {
+      setDeletingAddressId(null)
+    }
+  }
 
   if (!owner) return null
 
@@ -292,6 +318,78 @@ export default function V3HomePage() {
         )}
       </div>
 
+      {/* Addresses section */}
+      <div className="rounded-2xl border border-gray-200 bg-white overflow-hidden">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+          <span className="text-sm font-semibold text-gray-700">
+            My Addresses
+          </span>
+          <button
+            onClick={() => setAddressModalOpen(true)}
+            className="flex items-center gap-1 text-xs font-medium text-primary-2 hover:underline"
+          >
+            <Plus className="h-3.5 w-3.5" />
+            Add address
+          </button>
+        </div>
+
+        {addressesLoading ? (
+          <div className="flex justify-center py-6">
+            <ClipLoader color="#33495f" size={22} />
+          </div>
+        ) : addresses.length === 0 ? (
+          <p className="text-sm text-gray-500 text-center py-6">
+            No addresses yet. Add one to get started.
+          </p>
+        ) : (
+          <div className="divide-y divide-gray-50">
+            {addresses.map((addr) => {
+              const subtitle = [addr.line2, addr.pincode]
+                .filter(Boolean)
+                .join(" - ")
+
+              return (
+                <div
+                  key={addr.id}
+                  className="flex items-center gap-3 px-4 py-3"
+                >
+                  <div className="flex-shrink-0 h-9 w-9 rounded-full bg-primary-2/10 flex items-center justify-center">
+                    <MapPin className="h-5 w-5 text-primary-2" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="font-semibold text-sm text-primary-1">
+                      {addr.tag || addr.line1}
+                    </div>
+                    {addr.tag && (
+                      <div className="text-xs text-gray-500 mt-0.5 truncate">
+                        {addr.line1}
+                      </div>
+                    )}
+                    {subtitle && (
+                      <div className="text-xs text-gray-500 mt-0.5">
+                        {subtitle}
+                      </div>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => handleDeleteAddress(addr.id)}
+                    disabled={deletingAddressId === addr.id}
+                    className="flex items-center gap-1 text-xs font-medium text-red-500 hover:underline flex-shrink-0 disabled:opacity-50"
+                  >
+                    {deletingAddressId === addr.id ? (
+                      <ClipLoader color="#ef4444" size={12} />
+                    ) : (
+                      <Trash2 className="h-3.5 w-3.5" />
+                    )}
+                    Delete
+                  </button>
+                </div>
+              )
+            })}
+          </div>
+        )}
+      </div>
+
       {/* Modals */}
       {editingProfile && (
         <EditProfileModal
@@ -316,6 +414,16 @@ export default function V3HomePage() {
                 : [...prev, saved],
             )
             setPetModalOpen(false)
+          }}
+        />
+      )}
+
+      {addressModalOpen && (
+        <AddAddressModal
+          onClose={() => setAddressModalOpen(false)}
+          onSaved={(addr) => {
+            setAddresses((prev) => [...prev, addr])
+            setAddressModalOpen(false)
           }}
         />
       )}
