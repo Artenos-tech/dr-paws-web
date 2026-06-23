@@ -57,12 +57,16 @@ export default function CouponField({
     setRequestError(null)
     try {
       const result = await onFetchPrice(code)
-      if (result.couponError) {
+      // Treat it as applied only when the server confirms it (couponApplied),
+      // not merely when there's no error — otherwise an unrecognised code (base
+      // price, no couponApplied) would wrongly render as "applied". Surface the
+      // server's reason when present, else a generic invalid message.
+      if (!result.couponApplied || result.couponError) {
         setAppliedCoupon(null)
         setDiscountInRupees(null)
         setOriginalPriceInRupees(null)
         setNewPriceInRupees(null)
-        setCouponError(result.couponError)
+        setCouponError(result.couponError ?? "Invalid coupon code")
         onResult(result, null)
         return
       }
