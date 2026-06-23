@@ -945,16 +945,77 @@ export async function v3FetchVisitTypes(): Promise<{
   return { visitTypes: data.visitTypes, clinicSubtypes: data.clinicSubtypes }
 }
 
-export async function v3FetchVetPrice(): Promise<{
+export async function v3FetchVetPrice(opts?: {
+  isSenior?: boolean
+  couponCode?: string
+}): Promise<{
   priceInRupees: number
   seniorPriceInRupees: number
+  originalPriceInRupees?: number
+  discountInRupees?: number
+  couponApplied?: string
+  couponError?: string
 }> {
+  const query: Record<string, string | undefined> = {}
+  if (opts?.isSenior !== undefined) {
+    query.isSenior = opts.isSenior ? "true" : "false"
+  }
+  if (opts?.couponCode) {
+    query.couponCode = opts.couponCode
+  }
   const data = await v3Get<
-    V3ApiResponse<{ priceInRupees: number; seniorPriceInRupees: number }>
-  >("/v3/booking/vet/price")
+    V3ApiResponse<{
+      priceInRupees: number
+      seniorPriceInRupees: number
+      originalPriceInRupees?: number
+      discountInRupees?: number
+      couponApplied?: string
+      couponError?: string
+    }>
+  >("/v3/booking/vet/price", Object.keys(query).length > 0 ? query : undefined)
   return {
     priceInRupees: data.priceInRupees,
     seniorPriceInRupees: data.seniorPriceInRupees,
+    originalPriceInRupees: data.originalPriceInRupees,
+    discountInRupees: data.discountInRupees,
+    couponApplied: data.couponApplied,
+    couponError: data.couponError,
+  }
+}
+
+export async function v3FetchGroomingPrice(input: {
+  petId: string
+  groomingTypeKey: string
+  couponCode?: string
+}): Promise<{
+  priceInRupees: number
+  originalPriceInRupees?: number
+  discountInRupees?: number
+  couponApplied?: string
+  couponError?: string
+}> {
+  const query: Record<string, string | undefined> = {
+    petId: input.petId,
+    groomingTypeKey: input.groomingTypeKey,
+  }
+  if (input.couponCode) {
+    query.couponCode = input.couponCode
+  }
+  const data = await v3Get<
+    V3ApiResponse<{
+      priceInRupees: number
+      originalPriceInRupees?: number
+      discountInRupees?: number
+      couponApplied?: string
+      couponError?: string
+    }>
+  >("/v3/booking/grooming/price", query)
+  return {
+    priceInRupees: data.priceInRupees,
+    originalPriceInRupees: data.originalPriceInRupees,
+    discountInRupees: data.discountInRupees,
+    couponApplied: data.couponApplied,
+    couponError: data.couponError,
   }
 }
 
