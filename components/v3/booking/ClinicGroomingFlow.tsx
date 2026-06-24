@@ -1028,10 +1028,10 @@ function GroomingBookingSuccess({
       </div>
 
       <a
-        href="/v3"
+        href="/v3/appointments"
         className="inline-flex items-center gap-2 rounded-xl bg-secondary-1 px-6 py-3 text-sm font-semibold text-white hover:opacity-90 transition-opacity w-full justify-center"
       >
-        Back to home
+        View appointments
       </a>
     </div>
   )
