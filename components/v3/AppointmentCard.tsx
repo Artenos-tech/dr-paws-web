@@ -17,7 +17,6 @@ import {
   formatAppointmentType,
   statusPillClasses,
   isCancellableStatus,
-  displayReason,
 } from "@/lib/appointmentFormatters"
 import CancelAppointmentDialog from "@/components/v3/CancelAppointmentDialog"
 import RefundStatusLine from "@/components/v3/RefundStatusLine"
@@ -41,7 +40,6 @@ export default function AppointmentCard({
   const apptType = !isHomeVisit
     ? formatAppointmentType(item.appointmentTypeName)
     : null
-  const reason = displayReason(item.reasonForVisit, isHomeVisit)
 
   const [confirming, setConfirming] = useState(false)
   const [cancelling, setCancelling] = useState(false)
@@ -160,12 +158,6 @@ export default function AppointmentCard({
           <div className="text-sm text-gray-600">
             With <span className="font-medium">{item.doctorName}</span>
           </div>
-        )}
-
-        {reason && (
-          <p className="text-sm text-gray-500 italic mt-0.5 whitespace-pre-line line-clamp-3">
-            &ldquo;{reason}&rdquo;
-          </p>
         )}
 
         {item.refund && (
