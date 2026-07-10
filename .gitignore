@@ -2,6 +2,7 @@
 
 # VS Code
 .vscode/
+.claude/
 
 # dependencies
 /node_modules

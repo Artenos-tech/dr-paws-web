@@ -23,6 +23,7 @@ import BestAvailableVetCard from "./BestAvailableVetCard"
 import ConfirmationModal from "./ConfirmationModal"
 import { Input, Modal, Switch } from "antd"
 import { PawPrint } from "lucide-react"
+import posthog from "posthog-js"
 
 export interface SelectedVet {
   id: string
@@ -813,12 +814,17 @@ const SelectVet: React.FC<selectVetProps> = ({
       setAppliedCoupon(null)
       return
     }
+
     try {
       const resp = await applyCouponCode({
         code: trimmedCouponCode,
         appt_start: selectedSlot?.startTime ?? "",
       })
       if (resp.ok) {
+        posthog.capture("coupon_applied", {
+          coupon_code: trimmedCouponCode,
+          user_id: user?.id ?? null,
+        })
         toast.success("Coupon applied!")
         setCouponError(null)
         setAppliedCoupon(trimmedCouponCode)
