@@ -9,6 +9,7 @@ import { useAPICall } from "@/hooks/apicall"
 import atHomeApiClient from "@/services/api.athome"
 import discountApiClient from "@/services/api.discount"
 import { useUserContext } from "@/context/UserContext"
+import { getApplicableDiscount } from "@/lib/discountCodes"
 
 type DiscountOutcome = "success" | "invalid" | "already_used" | null
 
@@ -47,14 +48,17 @@ const ThankYouPage = () => {
     }
   }, [result, appointment, router])
 
-  // Discount codes are only a clinic-visit concept — the home-visit flow has
-  // its own independent coupon system. Fires once, regardless of payment
-  // state, as soon as a real appointment with a coupon_code is available.
+  // Each discount code is configured (lib/discountCodes.ts) for specific
+  // offerings only — PAWS50 is vet-consultation-only today, so this also
+  // naturally excludes grooming and home-visit appointments. Fires once,
+  // regardless of payment state, as soon as a real appointment with a
+  // coupon_code is available.
   useEffect(() => {
     if (hasAppliedDiscountRef.current) return
     if (!appointment || !user) return
-    if (appointment.booking_type === "HOME_VISIT") return
     if (!appointment.coupon_code) return
+    if (!getApplicableDiscount(appointment.coupon_code, appointment.appt_type))
+      return
 
     hasAppliedDiscountRef.current = true
     applyDiscountCode({
