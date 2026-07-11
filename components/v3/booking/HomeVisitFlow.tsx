@@ -40,6 +40,7 @@ import StepVisitDetails, {
   type VisitReasonCode,
 } from "./StepVisitDetails"
 import MapAddressPicker, { type GeocodedLocation } from "./MapAddressPicker"
+import CouponField, { type CouponPriceResult } from "./CouponField"
 
 type SectionId = "address" | "pet" | "visitDetails" | "datetime" | "confirm"
 
@@ -106,7 +107,11 @@ export default function HomeVisitFlow({
     number | null
   >(null)
   const [discountInRupees, setDiscountInRupees] = useState<number | null>(null)
-  const [couponError, setCouponError] = useState<string | null>(null)
+  // The coupon code that successfully applied; forwarded to the initiate call.
+  // null when none is applied (or the URL coupon was rejected).
+  const [appliedCouponCode, setAppliedCouponCode] = useState<string | null>(
+    null,
+  )
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState<string | null>(null)
   const [appointment, setAppointment] = useState<V3HomeVisitAppointment | null>(
@@ -154,13 +159,17 @@ export default function HomeVisitFlow({
         setPriceInRupees(price.priceInRupees)
         setOriginalPriceInRupees(price.originalPriceInRupees ?? null)
         setDiscountInRupees(price.discountInRupees ?? null)
-        setCouponError(price.couponError ?? null)
+        if (couponCode && !price.couponError) {
+          setAppliedCouponCode(couponCode)
+        }
         setActiveTypesByPet(activeTypes)
       })
       .catch(() =>
         setLoadError("Failed to load data. Please refresh and try again."),
       )
       .finally(() => setLoading(false))
+    // Runs once on mount; couponCode is a stable initial-prefill prop.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const trackStep = useCallback(
@@ -198,6 +207,16 @@ export default function HomeVisitFlow({
 
     void startSession()
   }, [trackStep])
+
+  function handleCouponResult(
+    result: CouponPriceResult,
+    appliedCode: string | null,
+  ) {
+    setPriceInRupees(result.priceInRupees)
+    setOriginalPriceInRupees(result.originalPriceInRupees ?? null)
+    setDiscountInRupees(result.discountInRupees ?? null)
+    setAppliedCouponCode(appliedCode)
+  }
 
   function openAndScroll(section: SectionId) {
     openSectionRef.current = section
@@ -471,8 +490,9 @@ export default function HomeVisitFlow({
                       priceInRupees={priceInRupees}
                       originalPriceInRupees={originalPriceInRupees}
                       discountInRupees={discountInRupees}
-                      couponError={couponError}
-                      couponCode={couponCode}
+                      couponCode={appliedCouponCode ?? undefined}
+                      initialCouponCode={couponCode}
+                      onCouponResult={handleCouponResult}
                       bookingFlowSessionId={bookingFlowSessionId}
                       onSuccess={(appt) => setAppointment(appt)}
                       onEdit={editSection}
@@ -506,33 +526,107 @@ function StepAddressSelect({
   onAddressAdded: (address: V3Address) => void
 }) {
   const [showAdd, setShowAdd] = useState(false)
+  const [serviceableMap, setServiceableMap] = useState<
+    Record<string, boolean | "checking">
+  >({})
+
+  useEffect(() => {
+    let cancelled = false
+    const unchecked = addresses.filter((a) => !(a.id in serviceableMap))
+    if (unchecked.length === 0) return
+
+    const next: Record<string, boolean | "checking"> = {}
+    for (const a of unchecked) next[a.id] = "checking"
+    setServiceableMap((prev) => ({ ...prev, ...next }))
+
+    Promise.all(
+      unchecked.map(async (a) => {
+        try {
+          const { serviceable } = await v3CheckHomeVisitServiceable(a.pincode)
+          if (cancelled) return
+          setServiceableMap((prev) => ({ ...prev, [a.id]: serviceable }))
+        } catch {
+          if (cancelled) return
+          setServiceableMap((prev) => ({ ...prev, [a.id]: false }))
+        }
+      }),
+    )
+
+    return () => {
+      cancelled = true
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [addresses])
 
   return (
     <div>
       <div className="space-y-3">
-        {addresses.map((a) => (
-          <button
-            key={a.id}
-            onClick={() => onSelect(a)}
-            className="w-full flex items-center gap-4 p-4 rounded-xl border border-gray-200 hover:border-primary-2 hover:bg-primary-2/5 transition-all text-left group"
-          >
-            <div className="flex-shrink-0 h-12 w-12 rounded-full bg-primary-2/10 flex items-center justify-center">
-              <Home className="h-5 w-5 text-primary-2" />
-            </div>
-            <div className="flex-1 min-w-0">
-              {a.tag && (
-                <div className="font-semibold text-primary-1 text-sm">
-                  {a.tag}
-                </div>
-              )}
-              <div className="text-sm text-gray-700 truncate">{a.line1}</div>
-              <div className="text-xs text-gray-500 truncate">
-                {[a.line2, a.pincode].filter(Boolean).join(" · ")}
+        {addresses.map((a) => {
+          const serviceState = serviceableMap[a.id]
+          const isChecking = serviceState === "checking"
+          const isUnserviceable = serviceState === false
+
+          return (
+            <button
+              key={a.id}
+              onClick={() => {
+                if (!isChecking && !isUnserviceable) onSelect(a)
+              }}
+              disabled={isChecking || isUnserviceable}
+              className={`w-full flex items-center gap-4 p-4 rounded-xl border transition-all text-left group ${
+                isUnserviceable
+                  ? "border-gray-200 bg-gray-50 opacity-60 cursor-not-allowed"
+                  : isChecking
+                    ? "border-gray-200 opacity-70 cursor-wait"
+                    : "border-gray-200 hover:border-primary-2 hover:bg-primary-2/5"
+              }`}
+            >
+              <div
+                className={`flex-shrink-0 h-12 w-12 rounded-full flex items-center justify-center ${
+                  isUnserviceable ? "bg-gray-100" : "bg-primary-2/10"
+                }`}
+              >
+                {isChecking ? (
+                  <ClipLoader color="#5281a2" size={18} />
+                ) : (
+                  <Home
+                    className={`h-5 w-5 ${isUnserviceable ? "text-gray-400" : "text-primary-2"}`}
+                  />
+                )}
               </div>
-            </div>
-            <ChevronRight className="h-5 w-5 text-gray-400 group-hover:text-primary-2 transition-colors flex-shrink-0" />
-          </button>
-        ))}
+              <div className="flex-1 min-w-0">
+                {a.tag && (
+                  <div
+                    className={`font-semibold text-sm ${isUnserviceable ? "text-gray-400" : "text-primary-1"}`}
+                  >
+                    {a.tag}
+                  </div>
+                )}
+                <div
+                  className={`text-sm truncate ${isUnserviceable ? "text-gray-400" : "text-gray-700"}`}
+                >
+                  {a.line1}
+                </div>
+                {isUnserviceable ? (
+                  <div className="text-xs text-red-400 mt-0.5">
+                    Not serviceable in this area
+                  </div>
+                ) : isChecking ? (
+                  <div className="text-xs text-gray-400 mt-0.5">
+                    Checking serviceability…
+                  </div>
+                ) : (
+                  <div className="text-xs text-gray-500 truncate">
+                    {[a.line2, a.pincode].filter(Boolean).join(" · ")}
+                  </div>
+                )}
+              </div>
+              {!isChecking && !isUnserviceable && (
+                <ChevronRight className="h-5 w-5 text-gray-400 group-hover:text-primary-2 transition-colors flex-shrink-0" />
+              )}
+            </button>
+          )
+        })}
 
         <button
           onClick={() => setShowAdd(true)}
@@ -978,8 +1072,9 @@ function StepHomeVisitConfirm({
   priceInRupees,
   originalPriceInRupees,
   discountInRupees,
-  couponError,
   couponCode,
+  initialCouponCode,
+  onCouponResult,
   bookingFlowSessionId,
   onSuccess,
   onEdit,
@@ -992,8 +1087,12 @@ function StepHomeVisitConfirm({
   priceInRupees: number | null
   originalPriceInRupees: number | null
   discountInRupees: number | null
-  couponError: string | null
   couponCode?: string
+  initialCouponCode?: string
+  onCouponResult: (
+    result: CouponPriceResult,
+    appliedCouponCode: string | null,
+  ) => void
   bookingFlowSessionId: string | null
   onSuccess: (appt: V3HomeVisitAppointment) => void
   onEdit: (section: SectionId) => void
@@ -1019,7 +1118,7 @@ function StepHomeVisitConfirm({
         isEmergency: false,
         reasonCode: visitDetails.reasonCode,
         petParentNotes: visitDetails.petParentNotes,
-        couponCode: couponError ? undefined : couponCode,
+        couponCode: couponCode,
         bookingFlowSessionId: bookingFlowSessionId ?? undefined,
       })
       if (result.action === "APPOINTMENT_CONFIRMED") {
@@ -1083,11 +1182,13 @@ function StepHomeVisitConfirm({
         />
       </div>
 
-      {couponError && (
-        <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-          {couponError}
-        </div>
-      )}
+      <CouponField
+        initialCouponCode={initialCouponCode}
+        onFetchPrice={(code) =>
+          v3FetchHomeVisitPrice(code ? { couponCode: code } : undefined)
+        }
+        onResult={onCouponResult}
+      />
 
       {priceInRupees !== null && (
         <div className="mb-4 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">

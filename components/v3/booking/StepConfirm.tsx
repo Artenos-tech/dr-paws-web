@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import type { CouponPriceResult } from "./CouponField"
 import {
   CalendarDays,
   MapPin,
@@ -14,12 +15,14 @@ import { load } from "@cashfreepayments/cashfree-js"
 import { useAppConfig } from "@/context/AppConfigContext"
 import {
   v3InitiateVetAppointment,
+  v3FetchVetPrice,
   type V3Pet,
   type V3Clinic,
   type V3Doctor,
   type V3TimeSlot,
   type V3Appointment,
 } from "@/services/api.v3"
+import CouponField from "./CouponField"
 
 interface Props {
   pet: V3Pet
@@ -73,7 +76,40 @@ export default function StepConfirm({
   const [loading, setLoading] = useState(false)
   const [reason, setReason] = useState("")
   const [error, setError] = useState<string | null>(null)
+  // The coupon code that successfully applied; forwarded to initiate. null when
+  // none is applied.
+  const [appliedCouponCode, setAppliedCouponCode] = useState<string | null>(
+    null,
+  )
+  const [discountedPriceInRupees, setDiscountedPriceInRupees] = useState<
+    number | null
+  >(null)
+  const [originalPriceInRupees, setOriginalPriceInRupees] = useState<
+    number | null
+  >(null)
+  const [discountInRupees, setDiscountInRupees] = useState<number | null>(null)
   const { clinicVisitPaymentsEnabled } = useAppConfig()
+
+  function handleCouponResult(
+    result: CouponPriceResult,
+    appliedCode: string | null,
+  ) {
+    setAppliedCouponCode(appliedCode)
+    if (appliedCode && result.discountInRupees != null) {
+      setDiscountedPriceInRupees(result.priceInRupees)
+      setOriginalPriceInRupees(result.originalPriceInRupees ?? null)
+      setDiscountInRupees(result.discountInRupees)
+    } else {
+      setDiscountedPriceInRupees(null)
+      setOriginalPriceInRupees(null)
+      setDiscountInRupees(null)
+    }
+  }
+
+  // The fee actually shown / charged: the discounted price when a coupon is
+  // applied, otherwise the base price passed in by the parent.
+  const effectivePriceInRupees =
+    discountedPriceInRupees ?? priceInRupees ?? null
   // Until the flag resolves, fall back to the legacy "pay at clinic" copy so we
   // never wrongly promise an up-front charge. Booking behaviour itself is
   // server-driven (initiate returns PAYMENT_REQUIRED vs APPOINTMENT_CONFIRMED).
@@ -91,6 +127,7 @@ export default function StepConfirm({
         startTime: slot.startTime,
         endTime: slot.endTime,
         reasonForVisit: reason.trim() || undefined,
+        couponCode: appliedCouponCode ?? undefined,
         bookingFlowSessionId: bookingFlowSessionId ?? undefined,
       })
       if (result.action === "APPOINTMENT_CONFIRMED") {
@@ -209,7 +246,14 @@ export default function StepConfirm({
         </div>
       )}
 
-      {priceInRupees != null && (
+      <CouponField
+        onFetchPrice={(code) =>
+          v3FetchVetPrice({ isSenior: !!isSeniorVet, couponCode: code })
+        }
+        onResult={handleCouponResult}
+      />
+
+      {effectivePriceInRupees != null && (
         <div
           className={[
             "mb-5 rounded-xl border px-4 py-3",
@@ -227,15 +271,31 @@ export default function StepConfirm({
             >
               {isSeniorVet ? "Senior consultation fee" : "Consultation fee"}
             </span>
-            <span
-              className={[
-                "font-semibold",
-                isSeniorVet ? "text-amber-900" : "text-primary-1",
-              ].join(" ")}
-            >
-              ₹{priceInRupees}
-            </span>
+            {discountInRupees != null && originalPriceInRupees != null ? (
+              <div className="flex items-baseline gap-2">
+                <span className="text-sm text-gray-400 line-through">
+                  ₹{originalPriceInRupees}
+                </span>
+                <span className="font-semibold text-green-700">
+                  ₹{effectivePriceInRupees}
+                </span>
+              </div>
+            ) : (
+              <span
+                className={[
+                  "font-semibold",
+                  isSeniorVet ? "text-amber-900" : "text-primary-1",
+                ].join(" ")}
+              >
+                ₹{effectivePriceInRupees}
+              </span>
+            )}
           </div>
+          {discountInRupees != null && (
+            <p className="mt-1 text-xs font-medium text-green-600">
+              You save ₹{discountInRupees} with this offer
+            </p>
+          )}
           <p
             className={[
               "mt-1 text-xs",

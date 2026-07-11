@@ -18,6 +18,7 @@ import {
   v3FetchClinics,
   v3FetchGroomingServiceTypes,
   v3FetchGroomingSlots,
+  v3FetchGroomingPrice,
   v3InitiateGroomingAppointment,
   v3FetchActiveAppointmentTypesByPet,
   v3UpdateBookingFlowStep,
@@ -33,6 +34,7 @@ import {
 import StepPetSelect from "./StepPetSelect"
 import StepClinicSelect from "./StepClinicSelect"
 import AddPetModal from "./AddPetModal"
+import CouponField, { type CouponPriceResult } from "./CouponField"
 
 type SectionId = "groomingType" | "pet" | "clinic" | "datetime" | "confirm"
 
@@ -749,6 +751,18 @@ function StepGroomingConfirm({
 }) {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  // The coupon code that successfully applied; forwarded to initiate. null when
+  // none is applied.
+  const [appliedCouponCode, setAppliedCouponCode] = useState<string | null>(
+    null,
+  )
+  const [discountedPriceInRupees, setDiscountedPriceInRupees] = useState<
+    number | null
+  >(null)
+  const [originalPriceInRupees, setOriginalPriceInRupees] = useState<
+    number | null
+  >(null)
+  const [discountInRupees, setDiscountInRupees] = useState<number | null>(null)
   const { clinicVisitPaymentsEnabled } = useAppConfig()
   // Until the flag resolves, fall back to the legacy "pay at clinic" copy so we
   // never wrongly promise an up-front charge. Booking behaviour itself is
@@ -756,6 +770,26 @@ function StepGroomingConfirm({
   const paymentsEnabled = clinicVisitPaymentsEnabled === true
 
   const groomerId = slot.groomerIds[0]
+
+  function handleCouponResult(
+    result: CouponPriceResult,
+    appliedCode: string | null,
+  ) {
+    setAppliedCouponCode(appliedCode)
+    if (appliedCode && result.discountInRupees != null) {
+      setDiscountedPriceInRupees(result.priceInRupees)
+      setOriginalPriceInRupees(result.originalPriceInRupees ?? null)
+      setDiscountInRupees(result.discountInRupees)
+    } else {
+      setDiscountedPriceInRupees(null)
+      setOriginalPriceInRupees(null)
+      setDiscountInRupees(null)
+    }
+  }
+
+  // The fee actually shown / charged: discounted when a coupon is applied,
+  // otherwise the base grooming price passed in by the parent.
+  const effectivePriceInRupees = discountedPriceInRupees ?? priceInRupees
 
   async function handleConfirm() {
     if (!groomerId) {
@@ -773,6 +807,7 @@ function StepGroomingConfirm({
         date,
         startTime: slot.startTime,
         endTime: slot.endTime,
+        couponCode: appliedCouponCode ?? undefined,
         bookingFlowSessionId: bookingFlowSessionId ?? undefined,
       })
       if (result.action === "APPOINTMENT_CONFIRMED") {
@@ -836,16 +871,43 @@ function StepGroomingConfirm({
         />
       </div>
 
-      {priceInRupees != null && (
+      <CouponField
+        onFetchPrice={(code) =>
+          v3FetchGroomingPrice({
+            petId: pet.id,
+            groomingTypeKey: groomingType.key,
+            couponCode: code,
+          })
+        }
+        onResult={handleCouponResult}
+      />
+
+      {effectivePriceInRupees != null && (
         <div className="mb-5 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
           <div className="flex items-baseline justify-between">
             <span className="text-sm font-medium text-gray-700">
               Grooming fee
             </span>
-            <span className="font-semibold text-primary-1">
-              ₹{priceInRupees}
-            </span>
+            {discountInRupees != null && originalPriceInRupees != null ? (
+              <div className="flex items-baseline gap-2">
+                <span className="text-sm text-gray-400 line-through">
+                  ₹{originalPriceInRupees}
+                </span>
+                <span className="font-semibold text-green-700">
+                  ₹{effectivePriceInRupees}
+                </span>
+              </div>
+            ) : (
+              <span className="font-semibold text-primary-1">
+                ₹{effectivePriceInRupees}
+              </span>
+            )}
           </div>
+          {discountInRupees != null && (
+            <p className="mt-1 text-xs font-medium text-green-600">
+              You save ₹{discountInRupees} with this offer
+            </p>
+          )}
           <p className="mt-1 text-xs text-gray-500">
             {paymentsEnabled
               ? "Pay now to confirm your booking."
@@ -966,10 +1028,10 @@ function GroomingBookingSuccess({
       </div>
 
       <a
-        href="/v3"
+        href="/v3/appointments"
         className="inline-flex items-center gap-2 rounded-xl bg-secondary-1 px-6 py-3 text-sm font-semibold text-white hover:opacity-90 transition-opacity w-full justify-center"
       >
-        Back to home
+        View appointments
       </a>
     </div>
   )
