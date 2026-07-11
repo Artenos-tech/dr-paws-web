@@ -24,6 +24,7 @@ import ConfirmationModal from "./ConfirmationModal"
 import { Input, Modal, Switch } from "antd"
 import { PawPrint } from "lucide-react"
 import posthog from "posthog-js"
+import { getApplicableDiscount } from "@/lib/discountCodes"
 
 export interface SelectedVet {
   id: string
@@ -71,6 +72,7 @@ type ClinicPaymentPricing = {
 }
 
 const BEST_AVAILABLE_VET_ID = "best-available"
+
 const SelectVet: React.FC<selectVetProps> = ({
   selectedClinic,
   selectedSvcId,
@@ -908,6 +910,28 @@ const SelectVet: React.FC<selectVetProps> = ({
       ? groomingSlotsForSelectedDate
       : null
 
+  const appliedDisplayDiscount = getApplicableDiscount(
+    appliedCoupon,
+    isGrooming ? "GROOMING" : "VET_CONSULTATION",
+  )
+
+  const discountOnPayAtClinic =
+    clinicPaymentPricing && appliedDisplayDiscount
+      ? Math.round(
+          (clinicPaymentPricing.pay_at_clinic_amount *
+            appliedDisplayDiscount.value) /
+            100,
+        )
+      : 0
+
+  const discountedPayAtClinicAmount = clinicPaymentPricing
+    ? clinicPaymentPricing.pay_at_clinic_amount - discountOnPayAtClinic
+    : 0
+
+  const discountedFullAmount = clinicPaymentPricing
+    ? clinicPaymentPricing.full_amount - discountOnPayAtClinic
+    : 0
+
   const isNextButtonEnabled =
     (selectedDoctor !== null || isGrooming) &&
     // selectedDate !== null &&
@@ -1046,16 +1070,44 @@ const SelectVet: React.FC<selectVetProps> = ({
                 <div className="space-y-1.5">
                   <div className="flex justify-between gap-3">
                     <span>Total service price</span>
-                    <span className="font-semibold">
-                      INR {clinicPaymentPricing.full_amount}
-                    </span>
+                    {discountOnPayAtClinic > 0 ? (
+                      <span className="flex items-baseline gap-1.5">
+                        <span className="text-gray-400 line-through">
+                          INR {clinicPaymentPricing.full_amount}
+                        </span>
+                        <span className="font-semibold">
+                          INR {discountedFullAmount}
+                        </span>
+                      </span>
+                    ) : (
+                      <span className="font-semibold">
+                        INR {clinicPaymentPricing.full_amount}
+                      </span>
+                    )}
                   </div>
                   <div className="flex justify-between gap-3">
                     <span>Pay at clinic</span>
-                    <span className="font-semibold">
-                      INR {clinicPaymentPricing.pay_at_clinic_amount}
-                    </span>
+                    {discountOnPayAtClinic > 0 ? (
+                      <span className="flex items-baseline gap-1.5">
+                        <span className="text-gray-400 line-through">
+                          INR {clinicPaymentPricing.pay_at_clinic_amount}
+                        </span>
+                        <span className="font-semibold">
+                          INR {discountedPayAtClinicAmount}
+                        </span>
+                      </span>
+                    ) : (
+                      <span className="font-semibold">
+                        INR {clinicPaymentPricing.pay_at_clinic_amount}
+                      </span>
+                    )}
                   </div>
+                  {discountOnPayAtClinic > 0 && (
+                    <p className="text-sm font-medium text-green-600">
+                      Coupon {appliedCoupon} applied: INR {discountOnPayAtClinic}{" "}
+                      off
+                    </p>
+                  )}
                 </div>
                 <div className="my-2.5 border-t border-gray-300" />
                 <div className="flex items-center justify-between gap-3">
