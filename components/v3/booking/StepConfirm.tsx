@@ -75,6 +75,7 @@ export default function StepConfirm({
 }: Props) {
   const [loading, setLoading] = useState(false)
   const [reason, setReason] = useState("")
+  const [reasonError, setReasonError] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   // The coupon code that successfully applied; forwarded to initiate. null when
   // none is applied.
@@ -116,6 +117,15 @@ export default function StepConfirm({
   const paymentsEnabled = clinicVisitPaymentsEnabled === true
 
   async function handleConfirm() {
+    // The API still accepts a missing reason (older mobile clients), but new
+    // bookings from this UI must always carry one.
+    const trimmedReason = reason.trim()
+    if (trimmedReason.length < 3) {
+      setReasonError(
+        "Please tell us the reason for the visit (at least 3 characters).",
+      )
+      return
+    }
     setLoading(true)
     setError(null)
     try {
@@ -126,7 +136,7 @@ export default function StepConfirm({
         date,
         startTime: slot.startTime,
         endTime: slot.endTime,
-        reasonForVisit: reason.trim() || undefined,
+        reasonForVisit: trimmedReason,
         couponCode: appliedCouponCode ?? undefined,
         bookingFlowSessionId: bookingFlowSessionId ?? undefined,
       })
@@ -311,18 +321,26 @@ export default function StepConfirm({
 
       <div className="space-y-1 mb-5">
         <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">
-          Reason for visit{" "}
-          <span className="text-gray-400 font-normal normal-case">
-            (optional)
-          </span>
+          Reason for visit <span className="text-red-500">*</span>
         </label>
         <textarea
           value={reason}
-          onChange={(e) => setReason(e.target.value)}
+          onChange={(e) => {
+            setReason(e.target.value)
+            if (reasonError) {
+              setReasonError(null)
+            }
+          }}
           placeholder="e.g. Annual check-up, vaccination, not eating well…"
           rows={3}
-          className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:border-primary-2 focus:outline-none focus:ring-1 focus:ring-primary-2 resize-none"
+          className={[
+            "w-full rounded-lg border px-3 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-1 resize-none",
+            reasonError
+              ? "border-red-300 focus:border-red-400 focus:ring-red-400"
+              : "border-gray-200 focus:border-primary-2 focus:ring-primary-2",
+          ].join(" ")}
         />
+        {reasonError && <p className="text-xs text-red-600">{reasonError}</p>}
       </div>
 
       {error && (
