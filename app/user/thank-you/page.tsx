@@ -116,8 +116,8 @@ const ThankYouPage = () => {
               <PawPrint className="h-5 w-5 shrink-0" />
               <p className="text-sm font-medium">
                 Yay! Your coupon{" "}
-                <span className="font-bold">{appointment.coupon_code}</span>{" "}
-                was applied successfully. Enjoy the savings!
+                <span className="font-bold">{appointment.coupon_code}</span> was
+                applied successfully. Enjoy the savings!
               </p>
             </div>
           )}

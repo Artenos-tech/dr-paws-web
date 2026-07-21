@@ -1104,8 +1104,8 @@ const SelectVet: React.FC<selectVetProps> = ({
                   </div>
                   {discountOnPayAtClinic > 0 && (
                     <p className="text-sm font-medium text-green-600">
-                      Coupon {appliedCoupon} applied: INR {discountOnPayAtClinic}{" "}
-                      off
+                      Coupon {appliedCoupon} applied: INR{" "}
+                      {discountOnPayAtClinic} off
                     </p>
                   )}
                 </div>
