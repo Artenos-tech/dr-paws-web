@@ -20,12 +20,9 @@ import {
   v3FetchVetPrice,
   v3RescheduleAppointment,
   type V3AppointmentListItem,
-  type V3Doctor,
   type V3GroomingSlot,
-  type V3TimeSlot,
 } from "@/services/api.v3"
 import StepVetDateTime from "@/components/v3/booking/StepVetDateTime"
-import SeniorVetModal from "@/components/v3/booking/SeniorVetModal"
 import { StepGroomingDateTime } from "@/components/v3/booking/ClinicGroomingFlow"
 import {
   formatAppointmentType,
@@ -62,11 +59,6 @@ export default function RescheduleAppointmentPage() {
   const [editingSelection, setEditingSelection] = useState(false)
   const [confirmedSelection, setConfirmedSelection] =
     useState<Selection | null>(null)
-  const [pendingSeniorSelection, setPendingSeniorSelection] = useState<{
-    doctor: V3Doctor
-    date: string
-    slot: V3TimeSlot
-  } | null>(null)
   const [submitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
 
@@ -274,16 +266,13 @@ export default function RescheduleAppointmentPage() {
                   endTime: slot.endTime,
                 })
               }
-              onSeniorVetPicked={(doctor, date, slot) =>
-                setPendingSeniorSelection({ doctor, date, slot })
-              }
               onSelectionInvalidated={() => handleSelectionChange(null)}
             />
           )}
         </>
       )}
 
-      {selection && !editingSelection && !pendingSeniorSelection && (
+      {selection && !editingSelection && (
         <div className="mt-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
           <div className="flex items-start justify-between gap-3">
             <div>
@@ -311,7 +300,7 @@ export default function RescheduleAppointmentPage() {
         </div>
       )}
 
-      {selection && !editingSelection && !pendingSeniorSelection && (
+      {selection && !editingSelection && (
         <div className="mt-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
           <div className="flex items-center gap-2">
             <span className="flex h-6 w-6 items-center justify-center rounded-full bg-secondary-1 text-xs font-bold text-white">
@@ -363,23 +352,6 @@ export default function RescheduleAppointmentPage() {
             {submitting ? "Rescheduling..." : "Confirm reschedule"}
           </button>
         </div>
-      )}
-      {pendingSeniorSelection && seniorPriceInRupees > 0 && (
-        <SeniorVetModal
-          doctorName={pendingSeniorSelection.doctor.name}
-          seniorPrice={seniorPriceInRupees}
-          onDismiss={() => {
-            const { doctor, date, slot } = pendingSeniorSelection
-            setPendingSeniorSelection(null)
-            handleSelectionChange({
-              doctorId: doctor.id,
-              doctorName: doctor.name,
-              date,
-              startTime: slot.startTime,
-              endTime: slot.endTime,
-            })
-          }}
-        />
       )}
     </div>
   )

@@ -21,7 +21,6 @@ import StepPetSelect from "./StepPetSelect"
 import StepClinicSelect from "./StepClinicSelect"
 import StepVetDateTime from "./StepVetDateTime"
 import StepConfirm from "./StepConfirm"
-import SeniorVetModal from "./SeniorVetModal"
 
 type SectionId = "pet" | "clinic" | "datetime" | "confirm"
 
@@ -104,11 +103,6 @@ export default function ClinicVetFlow({
   const [activeTypesByPet, setActiveTypesByPet] = useState<
     Record<string, V3ActiveApptForPet[]>
   >({})
-  const [pendingSeniorSelection, setPendingSeniorSelection] = useState<{
-    doctor: V3Doctor
-    date: string
-    slot: V3TimeSlot
-  } | null>(null)
 
   const [sel, setSel] = useState<Selection>({
     pet: null,
@@ -380,9 +374,6 @@ export default function ClinicVetFlow({
                         setSel((s) => ({ ...s, doctor, date, slot }))
                         openAndScroll("confirm")
                       }}
-                      onSeniorVetPicked={(doctor, date, slot) => {
-                        setPendingSeniorSelection({ doctor, date, slot })
-                      }}
                     />
                   )}
 
@@ -416,19 +407,6 @@ export default function ClinicVetFlow({
           )
         })}
       </div>
-
-      {pendingSeniorSelection && seniorPriceInRupees && (
-        <SeniorVetModal
-          doctorName={pendingSeniorSelection.doctor.name}
-          seniorPrice={seniorPriceInRupees}
-          onDismiss={() => {
-            const { doctor, date, slot } = pendingSeniorSelection
-            setPendingSeniorSelection(null)
-            setSel((s) => ({ ...s, doctor, date, slot }))
-            openAndScroll("confirm")
-          }}
-        />
-      )}
     </>
   )
 }

@@ -872,6 +872,7 @@ function StepGroomingConfirm({
       </div>
 
       <CouponField
+        basePriceInRupees={priceInRupees}
         onFetchPrice={(code) =>
           v3FetchGroomingPrice({
             petId: pet.id,

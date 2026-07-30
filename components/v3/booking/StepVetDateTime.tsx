@@ -31,10 +31,9 @@ interface Props {
   mode?: "booking" | "reschedule"
   // When set (prepaid reschedule), the vet selection is locked to a single
   // seniority tier — switching tiers would change the already-paid price, so
-  // only same-tier vets are shown and the senior-vet upcharge modal is skipped.
+  // only same-tier vets are shown.
   lockedVetTier?: "SENIOR" | "STANDARD"
   onSelect: (doctor: V3Doctor, date: string, slot: V3TimeSlot) => void
-  onSeniorVetPicked: (doctor: V3Doctor, date: string, slot: V3TimeSlot) => void
   onSelectionInvalidated?: () => void
 }
 
@@ -196,7 +195,6 @@ export default function StepVetDateTime({
   mode: flowMode = "booking",
   lockedVetTier,
   onSelect,
-  onSeniorVetPicked,
   onSelectionInvalidated,
 }: Props) {
   const [mode, setMode] = useState<"specific" | "best">("specific")
@@ -339,13 +337,7 @@ export default function StepVetDateTime({
       : doctors
 
   function handleSlotPicked(doctor: V3Doctor, date: string, slot: V3TimeSlot) {
-    // When the tier is locked the price is already settled, so never trigger
-    // the senior-vet upcharge modal — just select.
-    if (!lockedVetTier && doctor.isSenior && !seniorOnly) {
-      onSeniorVetPicked(doctor, date, slot)
-    } else {
-      onSelect(doctor, date, slot)
-    }
+    onSelect(doctor, date, slot)
   }
 
   function switchToBest() {

@@ -257,8 +257,13 @@ export default function StepConfirm({
       )}
 
       <CouponField
+        basePriceInRupees={priceInRupees ?? null}
         onFetchPrice={(code) =>
-          v3FetchVetPrice({ isSenior: !!isSeniorVet, couponCode: code })
+          v3FetchVetPrice({
+            doctorId: doctor.id,
+            isSenior: !!isSeniorVet,
+            couponCode: code,
+          })
         }
         onResult={handleCouponResult}
       />

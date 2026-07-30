@@ -103,6 +103,12 @@ export default function HomeVisitFlow({
   const [clinics, setClinics] = useState<V3Clinic[]>([])
   const [addresses, setAddresses] = useState<V3Address[]>([])
   const [priceInRupees, setPriceInRupees] = useState<number | null>(null)
+  // The undiscounted price, captured once on load and left untouched by coupon
+  // apply/remove — CouponField needs a stable baseline to compute the discount
+  // against, since the server never returns one itself.
+  const [basePriceInRupees, setBasePriceInRupees] = useState<number | null>(
+    null,
+  )
   const [originalPriceInRupees, setOriginalPriceInRupees] = useState<
     number | null
   >(null)
@@ -157,6 +163,7 @@ export default function HomeVisitFlow({
         setClinics(c)
         setAddresses(a)
         setPriceInRupees(price.priceInRupees)
+        setBasePriceInRupees(price.priceInRupees)
         setOriginalPriceInRupees(price.originalPriceInRupees ?? null)
         setDiscountInRupees(price.discountInRupees ?? null)
         if (couponCode && !price.couponError) {
@@ -488,6 +495,7 @@ export default function HomeVisitFlow({
                       date={sel.date}
                       slot={sel.slot}
                       priceInRupees={priceInRupees}
+                      basePriceInRupees={basePriceInRupees}
                       originalPriceInRupees={originalPriceInRupees}
                       discountInRupees={discountInRupees}
                       couponCode={appliedCouponCode ?? undefined}
@@ -1070,6 +1078,7 @@ function StepHomeVisitConfirm({
   date,
   slot,
   priceInRupees,
+  basePriceInRupees,
   originalPriceInRupees,
   discountInRupees,
   couponCode,
@@ -1085,6 +1094,7 @@ function StepHomeVisitConfirm({
   date: string
   slot: V3HomeVisitSlot
   priceInRupees: number | null
+  basePriceInRupees: number | null
   originalPriceInRupees: number | null
   discountInRupees: number | null
   couponCode?: string
@@ -1183,6 +1193,7 @@ function StepHomeVisitConfirm({
       </div>
 
       <CouponField
+        basePriceInRupees={basePriceInRupees}
         initialCouponCode={initialCouponCode}
         onFetchPrice={(code) =>
           v3FetchHomeVisitPrice(code ? { couponCode: code } : undefined)
