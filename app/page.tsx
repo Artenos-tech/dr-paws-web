@@ -100,16 +100,16 @@ export default function Home() {
                   <Image
                     src={GreenBackground}
                     alt="Background Shape"
-                    layout="fill"
-                    objectFit="cover"
+                    fill
+                    className="object-cover"
                   />
                   {/* Lady Image */}
                   <div className="absolute bottom-0 left-0 w-[220px] h-[250px] md:w-[264px] md:h-[300px] lg:w-[348px] lg:h-[357px]">
                     <Image
                       src={Lady}
                       alt="Girl with Cat"
-                      layout="fill"
-                      objectFit="cover"
+                      fill
+                      className="object-cover"
                     />
                   </div>
                 </div>
