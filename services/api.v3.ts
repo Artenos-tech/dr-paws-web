@@ -946,6 +946,7 @@ export async function v3FetchVisitTypes(): Promise<{
 }
 
 export async function v3FetchVetPrice(opts?: {
+  doctorId?: string
   isSenior?: boolean
   couponCode?: string
 }): Promise<{
@@ -957,6 +958,9 @@ export async function v3FetchVetPrice(opts?: {
   couponError?: string
 }> {
   const query: Record<string, string | undefined> = {}
+  if (opts?.doctorId) {
+    query.doctorId = opts.doctorId
+  }
   if (opts?.isSenior !== undefined) {
     query.isSenior = opts.isSenior ? "true" : "false"
   }

@@ -58,7 +58,15 @@ export default function AddPetModal({
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    v3FetchSpecies().then(setSpeciesOptions).catch(console.error)
+    v3FetchSpecies()
+      .then((options) =>
+        setSpeciesOptions(
+          options.filter((o) =>
+            ["canine", "feline"].includes(o.value.toLowerCase()),
+          ),
+        ),
+      )
+      .catch(console.error)
   }, [])
 
   useEffect(() => {

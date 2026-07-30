@@ -12,7 +12,7 @@ export interface CouponPriceResult {
   originalPriceInRupees?: number
   discountInRupees?: number
   couponApplied?: string
-  couponError?: string
+  couponError?: string | null
 }
 
 interface Props {
@@ -20,6 +20,10 @@ interface Props {
   // parent owns the resulting price state; this component only drives the input
   // and renders applied/rejected feedback.
   onFetchPrice: (couponCode?: string) => Promise<CouponPriceResult>
+  // The price before any coupon, used to derive the discount/strikethrough
+  // shown here — the server only ever returns the resulting priceInRupees and
+  // a couponError, never a discount breakdown, so it's computed client-side.
+  basePriceInRupees: number | null
   // Prefill value (e.g. a coupon code that arrived via the URL).
   initialCouponCode?: string
   // Fired whenever a fetch resolves, so the parent can update its price display
@@ -32,6 +36,7 @@ interface Props {
 
 export default function CouponField({
   onFetchPrice,
+  basePriceInRupees,
   initialCouponCode,
   onResult,
 }: Props) {
@@ -57,24 +62,35 @@ export default function CouponField({
     setRequestError(null)
     try {
       const result = await onFetchPrice(code)
-      // Treat it as applied only when the server confirms it (couponApplied),
-      // not merely when there's no error — otherwise an unrecognised code (base
-      // price, no couponApplied) would wrongly render as "applied". Surface the
-      // server's reason when present, else a generic invalid message.
-      if (!result.couponApplied || result.couponError) {
+      // The server only ever signals rejection via couponError — it never
+      // sends a couponApplied flag, so gating on that (as this used to)
+      // treated every successful application as invalid.
+      if (result.couponError) {
         setAppliedCoupon(null)
         setDiscountInRupees(null)
         setOriginalPriceInRupees(null)
         setNewPriceInRupees(null)
-        setCouponError(result.couponError ?? "Invalid coupon code")
+        setCouponError(result.couponError)
         onResult(result, null)
         return
       }
+      const discount =
+        basePriceInRupees != null
+          ? Math.max(0, basePriceInRupees - result.priceInRupees)
+          : null
       setAppliedCoupon(code)
-      setDiscountInRupees(result.discountInRupees ?? null)
-      setOriginalPriceInRupees(result.originalPriceInRupees ?? null)
+      setDiscountInRupees(discount)
+      setOriginalPriceInRupees(basePriceInRupees)
       setNewPriceInRupees(result.priceInRupees)
-      onResult(result, code)
+      onResult(
+        {
+          ...result,
+          discountInRupees: discount ?? undefined,
+          originalPriceInRupees: basePriceInRupees ?? undefined,
+          couponApplied: code,
+        },
+        code,
+      )
     } catch (e) {
       setRequestError(
         (e as Error).message ?? "Couldn't apply that coupon. Try again.",
