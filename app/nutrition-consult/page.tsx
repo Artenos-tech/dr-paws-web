@@ -6,7 +6,6 @@ import {
   Bone,
   CalendarCheck,
   CheckCircle2,
-  ClipboardCheck,
   ScrollText,
   ShieldCheck,
   Sparkles,
@@ -217,31 +216,12 @@ const NutritionConsultPage = () => {
           </div>
         </div>
 
-        {/* Pricing */}
-        <div className="w-full flex flex-col items-center gap-6">
-          <div className="w-full max-w-md rounded-2xl border border-primary-1 bg-primary-3 p-6 text-center text-primary-1 flex flex-col items-center gap-3">
-            <ClipboardCheck className="text-secondary-1" size={28} />
-            <h3 className="text-base md:text-lg font-semibold">
-              Consultation Package
-            </h3>
-            <p className="text-sm md:text-base">
-              Dr. Paws Personalized Nutrition Program
-            </p>
-            <p className="text-3xl md:text-4xl font-bold">₹1,999</p>
-            <CustomButton
-              buttonText="Book a Nutrition Consultation"
-              buttonBackground="bg-secondary-1"
-              buttonClickEvent={() => setContactIsModalOpen(true)}
-            />
-          </div>
-        </div>
-
         {/* Bottom CTA */}
         <div className="w-[75%] flex flex-col items-center gap-4 md:gap-6">
           <ShieldCheck className="text-secondary-1" size={28} />
           <p className="text-center text-primary-1 text-sm font-sans italic font-semibold">
-            Help your pet thrive with a nutrition plan built around them.
-            Book a Personalized Nutrition Consultation with Dr. Paws today.
+            Let us help your pet live a healthier, happier life with a
+            nutrition plan tailored just for them.
           </p>
           <CustomButton
             buttonText="Book a Nutrition Consultation"
