@@ -1,6 +1,7 @@
 "use client"
 
 import Image from "next/image"
+import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { Toaster } from "react-hot-toast"
@@ -15,7 +16,7 @@ import V3LoginModal from "@/components/v3/V3LoginModal"
 import DescritionImage from "@/public/assets/images/ServicesPage/DescriptionImage.png"
 import { useAPICall } from "@/hooks/apicall"
 import api from "@/services/api"
-import { Loader } from "lucide-react"
+import { ArrowRight, Bone, Loader } from "lucide-react"
 
 const Services = () => {
   const [isContactModalOpen, setContactIsModalOpen] = useState(false)
@@ -75,6 +76,32 @@ const Services = () => {
             />
           </div>
         </div>
+        <div className="w-full">
+          <Link
+            href="/nutrition-consult"
+            className="flex items-center gap-4 rounded-xl border border-primary-1 bg-primary-3 p-4 md:p-5 text-primary-1 transition-colors hover:bg-primary-2"
+          >
+            <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-primary-2 text-secondary-1">
+              <Bone size={26} />
+            </span>
+            <span className="flex-1">
+              <span className="flex items-center gap-2">
+                <span className="text-base md:text-lg font-semibold">
+                  Nutritional Consult
+                </span>
+                <span className="rounded-full bg-secondary-2 px-2 py-0.5 text-[10px] md:text-xs font-semibold uppercase tracking-wider text-white">
+                  New
+                </span>
+              </span>
+              <span className="block text-xs md:text-sm mt-1">
+                Personalized nutrition plans tailored to your pet&apos;s age,
+                breed, and health needs.
+              </span>
+            </span>
+            <ArrowRight className="shrink-0" size={20} />
+          </Link>
+        </div>
+
         {loadingServicesDetails && <Loader />}
         {servicesDetails?.ok && (
           <div className="w-full">
