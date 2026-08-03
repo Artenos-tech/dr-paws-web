@@ -7,6 +7,7 @@ import LinkedIn from "@/public/assets/images/Footer/linkedin.svg"
 import Link from "next/link"
 import ContactInfoModal from "../ui/ContactInfoModal"
 import { useState } from "react"
+import { clinicLocations } from "@/lib/clinicLocations"
 
 const Footer = () => {
   const [isContactModalOpen, setContactIsModalOpen] = useState(false)
@@ -14,40 +15,36 @@ const Footer = () => {
   return (
     <footer className="bg-primary-3 py-10 w-full">
       <div className="mx-auto px-8 md:px-32 lg:px-20 xl:px-40">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          <div>
-            <Image src={logo} alt="Dr. Paws Logo" width={100} height={30} />
-            <Link
-              href="mailto:support@drpaws.care"
-              className="block mt-2 text-primary-1 hover:text-primary-2"
-            >
-              support@drpaws.care
-            </Link>
-            <div className="block mt-1 text-primary-1">
-              <div>Indiranagar Clinic</div>
-              <div>+91 9606994627</div>
+        <div className="mb-8">
+          <Image src={logo} alt="Dr. Paws Logo" width={100} height={30} />
+          <Link
+            href="mailto:support@drpaws.care"
+            className="block mt-2 text-primary-1 hover:text-primary-2"
+          >
+            support@drpaws.care
+          </Link>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-8 pb-8 border-b border-primary-1/20">
+          {clinicLocations.map((location) => (
+            <div key={location.region}>
+              <h6 className="font-sans text-primary-1 font-semibold mb-2">
+                {location.region}
+              </h6>
+              {location.clinics.map((clinic) => (
+                <div key={clinic.name} className="mt-1 text-primary-1">
+                  <div>{clinic.name}</div>
+                  <Link
+                    href={`tel:${clinic.phone.replace(/\s+/g, "")}`}
+                    className="block text-primary-1 hover:text-primary-2"
+                  >
+                    {clinic.phone}
+                  </Link>
+                </div>
+              ))}
             </div>
-            <div className="block mt-1 text-primary-1">
-              <div>RMV Clinic</div>
-              <div>+91 7204996899</div>
-            </div>
-            <div className="block mt-1 text-primary-1">
-              <div>HSR Clinic</div>
-              <div>+91 7204996902</div>
-            </div>
-            <div className="block mt-1 text-primary-1">
-              <div>Thanisandra Clinic</div>
-              <div>+91 9108467651</div>
-            </div>
-            <div className="block mt-1 text-primary-1">
-              <div>Jayanagar Clinic</div>
-              <div>+91 9108467650</div>
-            </div>
-            <div className="block mt-1 text-primary-1">
-              <div>Vet-At-Home</div>
-              <div>+91 9740141212</div>
-            </div>
-          </div>
+          ))}
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           <div>
             <h6 className="font-sans text-primary-1 font-semibold mb-2">
               Company
