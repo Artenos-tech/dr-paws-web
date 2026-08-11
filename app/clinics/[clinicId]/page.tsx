@@ -21,12 +21,6 @@ interface ClinicDetailsProps {
   }
 }
 
-type GTMEventPayload = {
-  event: "clinic_phone_button_click"
-  clinic_name: string
-  clinic_contact: string
-}
-
 const ClinicDetails: React.FC<ClinicDetailsProps> = ({ params }) => {
   const { clinicId } = params
   const { call: getClinic, loading: loadingClinic } = useAPICall(
@@ -102,19 +96,6 @@ const ClinicDetails: React.FC<ClinicDetailsProps> = ({ params }) => {
   }
 
   const copyClinicNumber = async () => {
-    if (typeof window !== "undefined") {
-      const windowWithDataLayer = window as Window & {
-        dataLayer?: GTMEventPayload[]
-      }
-
-      windowWithDataLayer.dataLayer = windowWithDataLayer.dataLayer || []
-      windowWithDataLayer.dataLayer.push({
-        event: "clinic_phone_button_click",
-        clinic_name: clinic.name,
-        clinic_contact: clinic.contact,
-      })
-    }
-
     try {
       await navigator.clipboard.writeText(clinic.contact)
       toast.success("Clinic number copied to clipboard")
