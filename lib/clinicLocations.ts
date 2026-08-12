@@ -19,6 +19,7 @@ export const clinicLocations: ClinicRegion[] = [
       { name: "Jayanagar Clinic", phone: "+91 9108467650" },
       { name: "HRBR Layout Clinic", phone: "+91 9187224115" },
       { name: "Rajajinagar Clinic", phone: "+91 9187224112" },
+      { name: "Whitefield", phone: "+91 9108467648" },
     ],
   },
   {
