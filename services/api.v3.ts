@@ -775,20 +775,10 @@ export async function v3FetchBreeds(species: string): Promise<V3BreedOption[]> {
 // ─── Clinics / doctors / availability ─────────────────────────────────────────
 
 export async function v3FetchClinics(): Promise<V3Clinic[]> {
+  // One request. Whether a clinic has bookable vets or grooming services is
+  // only looked up (lazily) once the user picks that clinic.
   const clinics = (await getAllClinics()).filter((c) => !isAtHomeClinic(c))
-  const grooming = await mapLimit(clinics, SLOT_CONCURRENCY, (c) =>
-    getGroomingCatalog(c.id)
-      .then((items) => items.length > 0)
-      .catch(() => false),
-  )
-  // Vet consultations are only offered where a vet has a configured
-  // veterinary appointment type (i.e. is bookable).
-  const consultation = await mapLimit(clinics, SLOT_CONCURRENCY, (c) =>
-    getVets(c.id)
-      .then((vets) => vets.length > 0)
-      .catch(() => false),
-  )
-  return clinics.map((c, i) => {
+  return clinics.map((c) => {
     const details = (c.details ?? {}) as Record<string, unknown>
     return {
       id: String(c.id),
@@ -802,8 +792,8 @@ export async function v3FetchClinics(): Promise<V3Clinic[]> {
           ? details.heroImageUrl
           : undefined,
       phone: c.phone ?? undefined,
-      vetEnabled: consultation[i],
-      groomingEnabled: grooming[i],
+      vetEnabled: true,
+      groomingEnabled: true,
     }
   })
 }
@@ -1076,16 +1066,14 @@ export async function v3FetchVetPrice(opts?: {
     base = (await findVetById(opts.doctorId))?.consultationPriceInRupees ?? null
   }
   if (base == null) {
-    // No specific vet yet: quote the lowest consultation fee on offer.
-    const clinics = (await getAllClinics()).filter((c) => !isAtHomeClinic(c))
-    const prices: number[] = []
-    for (const c of clinics.slice(0, 3)) {
-      const vets = await getAllVets(c.id).catch(() => [] as DpProvider[])
-      vets.forEach((v) => {
-        if (v.consultationPriceInRupees != null)
-          prices.push(v.consultationPriceInRupees)
-      })
-    }
+    // No specific vet yet: quote from the first clinic's vets only.
+    const first = (await getAllClinics()).find((c) => !isAtHomeClinic(c))
+    const vets = first
+      ? await getAllVets(first.id).catch(() => [] as DpProvider[])
+      : []
+    const prices = vets
+      .map((v) => v.consultationPriceInRupees)
+      .filter((p): p is number => p != null)
     base = prices.length > 0 ? Math.min(...prices) : 0
   }
   const quote = await withCoupon(base, opts?.couponCode)
@@ -1102,32 +1090,31 @@ async function groomingItemFor(
   return items.find((i) => i.name === key || String(i.id) === key) ?? null
 }
 
-export async function v3FetchGroomingServiceTypes(_petId?: string): Promise<{
+export async function v3FetchGroomingServiceTypes(
+  _petId?: string,
+  clinicId?: string,
+): Promise<{
   groomingTypes: V3GroomingServiceType[]
   petGroomingAttributes: V3PetGroomingAttributes | null
 }> {
-  const clinics = (await getAllClinics()).filter((c) => !isAtHomeClinic(c))
-  const catalogs = await mapLimit(clinics, SLOT_CONCURRENCY, (c) =>
-    getGroomingCatalog(c.id).catch(() => [] as DpGroomingItem[]),
-  )
-  const byName = new Map<string, V3GroomingServiceType>()
-  for (const item of catalogs.flat()) {
-    const existing = byName.get(item.name)
-    if (
-      !existing ||
-      (item.priceInRupees != null &&
-        (existing.priceInRupees == null ||
-          item.priceInRupees < existing.priceInRupees))
-    ) {
-      byName.set(item.name, {
-        key: item.name,
-        displayName: item.name,
-        priceInRupees: item.priceInRupees ?? undefined,
-      })
+  let items: DpGroomingItem[] = []
+  if (clinicId) {
+    items = await getGroomingCatalog(Number(clinicId))
+  } else {
+    // No clinic chosen yet: look clinic by clinic and stop at the first one
+    // that offers grooming, instead of loading every catalog.
+    const clinics = (await getAllClinics()).filter((c) => !isAtHomeClinic(c))
+    for (const c of clinics) {
+      items = await getGroomingCatalog(c.id).catch(() => [] as DpGroomingItem[])
+      if (items.length > 0) break
     }
   }
   return {
-    groomingTypes: Array.from(byName.values()),
+    groomingTypes: items.map((item) => ({
+      key: item.name,
+      displayName: item.name,
+      priceInRupees: item.priceInRupees ?? undefined,
+    })),
     petGroomingAttributes: null,
   }
 }
@@ -1314,26 +1301,6 @@ export async function v3FetchVisitTypes(): Promise<{
   visitTypes: V3VisitType[]
   clinicSubtypes: V3VisitType[]
 }> {
-  const clinics = (await getAllClinics()).filter((c) => !isAtHomeClinic(c))
-  const grooming = await mapLimit(clinics, SLOT_CONCURRENCY, (c) =>
-    getGroomingCatalog(c.id)
-      .then((items) => items.length > 0)
-      .catch(() => false),
-  )
-  const clinicSubtypes: V3VisitType[] = [
-    {
-      key: "VET_CONSULTATION",
-      title: "Vet Consultation",
-      description: "Consult a vet for check-ups, vaccinations and more",
-    },
-  ]
-  if (grooming.some(Boolean)) {
-    clinicSubtypes.push({
-      key: "GROOMING",
-      title: "Grooming",
-      description: "Professional grooming for your pet",
-    })
-  }
   return {
     visitTypes: [
       {
@@ -1342,7 +1309,18 @@ export async function v3FetchVisitTypes(): Promise<{
         description: "Book an appointment at one of our clinics",
       },
     ],
-    clinicSubtypes,
+    clinicSubtypes: [
+      {
+        key: "VET_CONSULTATION",
+        title: "Vet Consultation",
+        description: "Consult a vet for check-ups, vaccinations and more",
+      },
+      {
+        key: "GROOMING",
+        title: "Grooming",
+        description: "Professional grooming for your pet",
+      },
+    ],
   }
 }
 
@@ -1368,74 +1346,97 @@ const COUNT_KEY: Partial<Record<V3DocumentType, keyof V3DocumentCounts>> = {
   emr: "emrs",
 }
 
-async function loadDocuments(): Promise<V3Document[]> {
-  const appts = await dp.appointments(1, 30)
-  const withRecords = await mapLimit(appts, SLOT_CONCURRENCY, async (a) => ({
-    appt: a,
-    records: await dp.records(a.id).catch(() => null),
-  }))
-  const docs: V3Document[] = []
-  for (const { appt, records } of withRecords) {
-    if (!records) continue
-    const petId = appt.petId != null ? String(appt.petId) : null
-    const common = {
-      petId,
-      petName: appt.petName ?? null,
-      createdAt: toYMD(appt.date),
-      clinicId: String(appt.clinicId),
-    }
-    const doctorName = await providerName(appt.clinicId, appt.doctorId)
-    for (const inv of records.invoices ?? []) {
-      docs.push({
-        id: `invoice-${inv.documentId}`,
-        name: inv.invoiceNumber ? `Invoice ${inv.invoiceNumber}` : "Invoice",
-        type: "invoice",
-        amount: inv.amount ?? null,
-        doctorName: doctorName || null,
-        files: [
-          {
-            downloadId: String(inv.documentId),
-            name: inv.invoiceNumber ?? "Invoice",
-            fileType: "pdf",
-            createdAt: common.createdAt,
-          },
-        ],
-        ...common,
-      })
-    }
-    for (const rx of records.prescriptions ?? []) {
-      docs.push({
-        id: `prescription-${rx.documentId}`,
-        name: rx.referenceId
-          ? `Prescription ${rx.referenceId}`
-          : "Prescription",
-        type: "prescription",
-        amount: null,
-        doctorName: rx.prescribedByDoctorName ?? (doctorName || null),
-        files: [
-          {
-            downloadId: String(rx.documentId),
-            name: rx.referenceId ?? "Prescription",
-            fileType: "pdf",
-            createdAt: common.createdAt,
-          },
-        ],
-        ...common,
-      })
-    }
-    if (records.clinicalRecord?.clinicalNotes) {
-      docs.push({
-        id: `emr-${appt.id}`,
-        name: "Clinical notes",
-        type: "emr",
-        amount: null,
-        doctorName: doctorName || null,
-        files: [],
-        ...common,
-      })
-    }
+const DOCUMENT_APPT_PAGE = 5
+
+type DocumentCache = {
+  at: number
+  page: number
+  done: boolean
+  docs: V3Document[]
+}
+
+let documentCache: DocumentCache | null = null
+
+function docCache(): DocumentCache {
+  if (!documentCache || Date.now() - documentCache.at > CACHE_TTL_MS) {
+    documentCache = { at: Date.now(), page: 0, done: false, docs: [] }
   }
-  return docs.sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+  return documentCache
+}
+
+async function documentsForAppointment(
+  appt: DpAppointment,
+): Promise<V3Document[]> {
+  const records = await dp.records(appt.id).catch(() => null)
+  if (!records) return []
+  const petId = appt.petId != null ? String(appt.petId) : null
+  const common = {
+    petId,
+    petName: appt.petName ?? null,
+    createdAt: toYMD(appt.date),
+    clinicId: String(appt.clinicId),
+  }
+  const doctorName = await providerName(appt.clinicId, appt.doctorId)
+  const docs: V3Document[] = []
+  for (const inv of records.invoices ?? []) {
+    docs.push({
+      id: `invoice-${inv.documentId}`,
+      name: inv.invoiceNumber ? `Invoice ${inv.invoiceNumber}` : "Invoice",
+      type: "invoice",
+      amount: inv.amount ?? null,
+      doctorName: doctorName || null,
+      files: [
+        {
+          downloadId: String(inv.documentId),
+          name: inv.invoiceNumber ?? "Invoice",
+          fileType: "pdf",
+          createdAt: common.createdAt,
+        },
+      ],
+      ...common,
+    })
+  }
+  for (const rx of records.prescriptions ?? []) {
+    docs.push({
+      id: `prescription-${rx.documentId}`,
+      name: rx.referenceId ? `Prescription ${rx.referenceId}` : "Prescription",
+      type: "prescription",
+      amount: null,
+      doctorName: rx.prescribedByDoctorName ?? (doctorName || null),
+      files: [
+        {
+          downloadId: String(rx.documentId),
+          name: rx.referenceId ?? "Prescription",
+          fileType: "pdf",
+          createdAt: common.createdAt,
+        },
+      ],
+      ...common,
+    })
+  }
+  if (records.clinicalRecord?.clinicalNotes) {
+    docs.push({
+      id: `emr-${appt.id}`,
+      name: "Clinical notes",
+      type: "emr",
+      amount: null,
+      doctorName: doctorName || null,
+      files: [],
+      ...common,
+    })
+  }
+  return docs
+}
+
+/** Load the next few appointments' records (sequentially) into the cache. */
+async function loadMoreDocuments(cache: DocumentCache): Promise<void> {
+  if (cache.done) return
+  const appts = await dp.appointments(cache.page + 1, DOCUMENT_APPT_PAGE)
+  cache.page += 1
+  if (appts.length < DOCUMENT_APPT_PAGE) cache.done = true
+  for (const appt of appts) {
+    cache.docs.push(...(await documentsForAppointment(appt)))
+  }
 }
 
 export async function v3FetchDocuments(params: {
@@ -1448,22 +1449,36 @@ export async function v3FetchDocuments(params: {
   documents: V3Document[]
   hasNext: boolean
 }> {
-  const all = await loadDocuments()
-  const byPet = params.petId ? all.filter((d) => d.petId === params.petId) : all
+  const cache = docCache()
+  const pageSize = params.pageSize ?? 20
+  const start = ((params.page ?? 1) - 1) * pageSize
+  const matching = () =>
+    cache.docs.filter(
+      (d) =>
+        (!params.petId || d.petId === params.petId) &&
+        (!params.type || d.type === params.type),
+    )
+
+  // Pull in more appointments only until this page (plus one, to know whether
+  // there is a next page) can be filled.
+  while (matching().length < start + pageSize + 1 && !cache.done) {
+    await loadMoreDocuments(cache)
+  }
+
+  // Counts cover the records loaded so far and grow as more are fetched.
   const counts = emptyCounts()
-  for (const d of byPet) {
+  for (const d of cache.docs) {
+    if (params.petId && d.petId !== params.petId) continue
     const key = COUNT_KEY[d.type]
     if (key) counts[key] += 1
   }
-  const filtered = params.type
-    ? byPet.filter((d) => d.type === params.type)
-    : byPet
-  const pageSize = params.pageSize ?? filtered.length
-  const start = ((params.page ?? 1) - 1) * pageSize
+  const filtered = matching().sort((a, b) =>
+    b.createdAt.localeCompare(a.createdAt),
+  )
   return {
     counts,
     documents: filtered.slice(start, start + pageSize),
-    hasNext: start + pageSize < filtered.length,
+    hasNext: filtered.length > start + pageSize || !cache.done,
   }
 }
 
