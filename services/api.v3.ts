@@ -460,9 +460,58 @@ function isGroomer(p: DpProvider): boolean {
   return /groom/i.test(p.serviceType ?? "")
 }
 
-async function getVets(clinicId: number): Promise<DpProvider[]> {
+/** Every non-groomer provider at a clinic (used for names and pricing). */
+async function getAllVets(clinicId: number): Promise<DpProvider[]> {
   const providers = await getProviders(clinicId)
   return providers.filter((p) => !isGroomer(p))
+}
+
+/**
+ * Vets that can be booked for a consultation right now. The API only
+ * advertises a `nextAvailableAt` for providers with a configured veterinary
+ * appointment type and open slots; the rest answer slot lookups with
+ * "no configured appointment type for veterinary".
+ */
+async function getVets(clinicId: number): Promise<DpProvider[]> {
+  return (await getAllVets(clinicId)).filter((p) => !!p.nextAvailableAt)
+}
+
+/** Run `fn` over `items` with at most `limit` calls in flight. */
+async function mapLimit<T, R>(
+  items: T[],
+  limit: number,
+  fn: (item: T) => Promise<R>,
+): Promise<R[]> {
+  const out: R[] = new Array(items.length)
+  let next = 0
+  async function worker() {
+    while (next < items.length) {
+      const i = next++
+      out[i] = await fn(items[i])
+    }
+  }
+  await Promise.all(
+    Array.from({ length: Math.min(limit, items.length) }, worker),
+  )
+  return out
+}
+
+const SLOT_CONCURRENCY = 3
+
+/** The slot endpoints sometimes fail transiently under load; retry once. */
+async function withRetry<T>(fn: () => Promise<T>): Promise<T> {
+  try {
+    return await fn()
+  } catch (e) {
+    if (
+      e instanceof DrpawsError &&
+      /no configured appointment type/i.test(e.message)
+    ) {
+      await new Promise((r) => setTimeout(r, 400))
+      return fn()
+    }
+    throw e
+  }
 }
 
 async function clinicName(clinicId: number): Promise<string> {
@@ -753,6 +802,13 @@ export async function v3FetchClinics(): Promise<V3Clinic[]> {
         .catch(() => false),
     ),
   )
+  // Vet consultations are only offered where a vet has a configured
+  // veterinary appointment type (i.e. is bookable).
+  const consultation = await mapLimit(clinics, SLOT_CONCURRENCY, (c) =>
+    getVets(c.id)
+      .then((vets) => vets.length > 0)
+      .catch(() => false),
+  )
   return clinics.map((c, i) => {
     const details = (c.details ?? {}) as Record<string, unknown>
     return {
@@ -767,7 +823,7 @@ export async function v3FetchClinics(): Promise<V3Clinic[]> {
           ? details.heroImageUrl
           : undefined,
       phone: c.phone ?? undefined,
-      vetEnabled: true,
+      vetEnabled: consultation[i],
       groomingEnabled: grooming[i],
     }
   })
@@ -803,14 +859,12 @@ async function vetSlotsFor(
   const targets = doctorId
     ? vets.filter((p) => String(p.id) === doctorId)
     : vets
-  return Promise.all(
-    targets.map(async (provider) => ({
-      provider,
-      slots: await dp
-        .vetSlots({ clinicId, providerId: provider.id, date })
-        .catch(() => [] as DpSlot[]),
-    })),
-  )
+  return mapLimit(targets, SLOT_CONCURRENCY, async (provider) => ({
+    provider,
+    slots: await withRetry(() =>
+      dp.vetSlots({ clinicId, providerId: provider.id, date }),
+    ).catch(() => [] as DpSlot[]),
+  }))
 }
 
 export async function v3FetchAvailableDates(
@@ -824,17 +878,15 @@ export async function v3FetchAvailableDates(
   const targets = doctorId
     ? vets.filter((p) => String(p.id) === doctorId)
     : vets
-  const lists = await Promise.all(
-    targets.map((p) =>
-      dp
-        .vetDates({
-          clinicId: cid,
-          providerId: p.id,
-          startDate: startDate ?? today(),
-          endDate: endDate ?? plusDays(30),
-        })
-        .catch(() => [] as string[]),
-    ),
+  const lists = await mapLimit(targets, SLOT_CONCURRENCY, (p) =>
+    withRetry(() =>
+      dp.vetDates({
+        clinicId: cid,
+        providerId: p.id,
+        startDate: startDate ?? today(),
+        endDate: endDate ?? plusDays(30),
+      }),
+    ).catch(() => [] as string[]),
   )
   return Array.from(new Set(lists.flat().map(toYMD))).sort()
 }
@@ -1024,7 +1076,7 @@ async function withCoupon(
 async function findVetById(doctorId: string): Promise<DpProvider | null> {
   const clinics = (await getAllClinics()).filter((c) => !isAtHomeClinic(c))
   for (const c of clinics) {
-    const vets = await getVets(c.id).catch(() => [] as DpProvider[])
+    const vets = await getAllVets(c.id).catch(() => [] as DpProvider[])
     const hit = vets.find((p) => String(p.id) === doctorId)
     if (hit) return hit
   }
@@ -1049,7 +1101,7 @@ export async function v3FetchVetPrice(opts?: {
     const clinics = (await getAllClinics()).filter((c) => !isAtHomeClinic(c))
     const prices: number[] = []
     for (const c of clinics.slice(0, 3)) {
-      const vets = await getVets(c.id).catch(() => [] as DpProvider[])
+      const vets = await getAllVets(c.id).catch(() => [] as DpProvider[])
       vets.forEach((v) => {
         if (v.consultationPriceInRupees != null)
           prices.push(v.consultationPriceInRupees)
