@@ -12,6 +12,7 @@ import ClinicTabBar from "@/components/ui/ClinicTabBar"
 import Overview from "@/components/ui/OverView"
 
 import { useAPICall } from "@/hooks/apicall"
+import { useInView } from "@/hooks/useInView"
 import api from "@/services/api.display"
 import Loader from "@/components/ui/Loader"
 import { Clinic } from "@/model/typeDefinitions"
@@ -28,6 +29,7 @@ const ClinicDetails: React.FC = () => {
   } = useAPICall(api.getDoctorsForClinicForDisplay)
   const [activeTab, setActiveTab] = useState("OVERVIEW")
   const [clinic, setClinic] = useState<Clinic | null>(null)
+  const [contentRef, contentInView] = useInView<HTMLDivElement>()
 
   useEffect(() => {
     if (!clinicId) return
@@ -38,13 +40,17 @@ const ClinicDetails: React.FC = () => {
       }
     }
     fetchClinic()
-    getDoctorsForClinic({ clinicid: clinicId })
   }, [clinicId])
+
+  // Vets are only requested once the details section is on screen.
+  useEffect(() => {
+    if (clinicId && contentInView) getDoctorsForClinic({ clinicid: clinicId })
+  }, [clinicId, contentInView])
 
   const doctorsList =
     (doctorsResult?.ok && doctorsResult.value.body.doctors) || []
 
-  if (loadingClinic || loadingDoctors || !clinic) {
+  if (loadingClinic || !clinic) {
     return <Loader />
   }
 
@@ -116,9 +122,12 @@ const ClinicDetails: React.FC = () => {
             onTabChange={setActiveTab}
           />
         )}
-        {activeTab === "OVERVIEW" && tabs["OVERVIEW"].component}
-        {activeTab === "PHOTOS" && tabs["PHOTOS"].component}
-        {activeTab === "REVIEWS" && tabs["REVIEWS"].component}
+        <div ref={contentRef} className="w-full">
+          {activeTab === "OVERVIEW" && tabs["OVERVIEW"].component}
+          {activeTab === "PHOTOS" && tabs["PHOTOS"].component}
+          {activeTab === "REVIEWS" && tabs["REVIEWS"].component}
+          {activeTab === "OVERVIEW" && loadingDoctors && <Loader />}
+        </div>
       </main>
       <button
         type="button"

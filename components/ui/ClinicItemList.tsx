@@ -4,6 +4,7 @@ import ClinicThumbnail from "@/public/assets/images/clinic/clinicThumbnail.svg"
 import { useAPICall } from "@/hooks/apicall"
 import api from "@/services/api.display"
 import { useEffect, useState } from "react"
+import { useInView } from "@/hooks/useInView"
 import Loader from "./Loader"
 
 interface ClinicItemProps {
@@ -30,7 +31,11 @@ const ClinicItemList = ({ showStaticCard, enlargedView }: ClinicItemProps) => {
     api.getClinicsForDisplay,
   )
 
+  const [rootRef, inView] = useInView<HTMLDivElement>()
+
+  // Fetch when the list scrolls into view, not on page load.
   useEffect(() => {
+    if (!inView) return
     const fetchClinics = async () => {
       const clinics = await getClinicsList({})
       if (clinics.ok && clinics.value.body.clinics) {
@@ -38,13 +43,18 @@ const ClinicItemList = ({ showStaticCard, enlargedView }: ClinicItemProps) => {
       }
     }
     fetchClinics()
-  }, [])
+  }, [inView])
 
   if (loadingClinicList) {
-    return <Loader />
+    return (
+      <div ref={rootRef}>
+        <Loader />
+      </div>
+    )
   }
   return (
     <div
+      ref={rootRef}
       className={`${clinics.length >= 4 ? "gap-4" : "gap-12"} ${
         enlargedView
           ? "grid grid-cols-1 lg:grid-cols-4 "

@@ -8,6 +8,7 @@ import Image from "next/image"
 // import { servicesData } from "@/model/mockData"
 import CustomButton from "./CustomButton"
 import { useAPICall } from "@/hooks/apicall"
+import { useInView } from "@/hooks/useInView"
 import api from "@/services/api.display"
 import { Loader } from "lucide-react"
 
@@ -37,17 +38,25 @@ const Services: React.FC = () => {
       ? chosenCategory
       : ((serviceCategoriesOffered[0] as ServiceCategory) ?? "")
 
+  const [rootRef, inView] = useInView<HTMLDivElement>()
+
+  // Fetch when this section scrolls into view, not on page load.
   useEffect(() => {
+    if (!inView) return
     getServicesCategories({})
     getServicesOverview({})
-  }, [])
+  }, [inView])
 
   if (loadingServiceCategories || loadingServicesOverview) {
-    return <Loader />
+    return (
+      <div ref={rootRef}>
+        <Loader />
+      </div>
+    )
   }
 
   return (
-    <div className="flex">
+    <div ref={rootRef} className="flex">
       {/* Sidebar */}
       <div className="w-[50%] lg:w-[30%] min-h-[400px] flex-shrink-0 border bg-gray-100">
         {serviceCategoriesOffered.map((category) => (

@@ -12,7 +12,6 @@ import {
   drpawsFetch,
   dp,
   flattenClinics,
-  mapLimit,
   isAtHomeClinic,
   type DpClinic,
   type DpProvider,
@@ -83,8 +82,22 @@ function toClinicForDisplay(c: DpClinic): ClinicForDisplay {
   }
 }
 
+let clinicsCache: { at: number; value: Promise<DpClinic[]> } | null = null
+
 async function loadClinics(): Promise<DpClinic[]> {
-  return flattenClinics(await dp.clinics()).filter((c) => !isAtHomeClinic(c))
+  if (!clinicsCache || Date.now() - clinicsCache.at > 5 * 60 * 1000) {
+    const value = dp
+      .clinics()
+      .then((groups) =>
+        flattenClinics(groups).filter((c) => !isAtHomeClinic(c)),
+      )
+      .catch((e) => {
+        clinicsCache = null
+        throw e
+      })
+    clinicsCache = { at: Date.now(), value }
+  }
+  return clinicsCache.value
 }
 
 function mapsUrl(c: DpClinic): string {
@@ -117,39 +130,25 @@ function providerDetails(p: DpProvider) {
   }
 }
 
-type ClinicDoctors = { clinic: DpClinic; vets: DpProvider[] }
-
-async function loadClinicDoctors(): Promise<ClinicDoctors[]> {
-  const clinics = await loadClinics()
-  return mapLimit(clinics, 3, async (clinic) => {
-    const providers = await dp
-      .providers(clinic.id)
-      .catch(() => [] as DpProvider[])
-    return {
-      clinic,
-      vets: providers.filter((p) => !/groom/i.test(p.serviceType ?? "")),
-    }
-  })
-}
-
-type AggregatedDoctor = {
+type DisplayDoctor = {
   provider: DpProvider
   clinics: { id: string; name: string }[]
 }
 
-async function loadAllDoctors(): Promise<AggregatedDoctor[]> {
-  const byId = new Map<number, AggregatedDoctor>()
-  for (const { clinic, vets } of await loadClinicDoctors()) {
-    for (const vet of vets) {
-      const entry = byId.get(vet.id) ?? { provider: vet, clinics: [] }
-      entry.clinics.push({ id: String(clinic.id), name: clinic.name })
-      byId.set(vet.id, entry)
-    }
-  }
-  return Array.from(byId.values())
+/** One clinic's vets, fetched only when asked for. */
+async function loadClinicVets(clinicId: string): Promise<DisplayDoctor[]> {
+  const clinic = (await loadClinics()).find((c) => String(c.id) === clinicId)
+  if (!clinic) return []
+  const providers = await dp.providers(clinic.id)
+  return providers
+    .filter((p) => !/groom/i.test(p.serviceType ?? ""))
+    .map((provider) => ({
+      provider,
+      clinics: [{ id: String(clinic.id), name: clinic.name }],
+    }))
 }
 
-function toDoctorForDisplay(a: AggregatedDoctor): DoctorForDisplay {
+function toDoctorForDisplay(a: DisplayDoctor): DoctorForDisplay {
   const d = providerDetails(a.provider)
   return {
     id: String(a.provider.id),
@@ -189,9 +188,10 @@ async function loadServiceGroups(): Promise<ServiceGroup[]> {
     ],
   })
 
-  const grooming = (
-    await mapLimit(clinics, 3, (c) => dp.groomingItems(c.id).catch(() => []))
-  ).flat()
+  // Grooming/catalog come from the first clinic only (one request each);
+  // per-clinic detail is loaded when a clinic is opened.
+  const first = clinics[0]
+  const grooming = first ? await dp.groomingItems(first.id).catch(() => []) : []
   const groomingNames = Array.from(new Set(grooming.map((g) => g.name)))
   if (groomingNames.length > 0) {
     groups.push({
@@ -202,7 +202,6 @@ async function loadServiceGroups(): Promise<ServiceGroup[]> {
     })
   }
 
-  const first = clinics[0]
   if (first) {
     const categories = await drpawsFetch<
       { name: string; subcategories?: { name: string | null }[] }[]
@@ -270,9 +269,9 @@ const api = {
       }
     }),
 
-  getDoctorsForDisplay: (_params: object) =>
+  getDoctorsForClinicForDisplay: (params: { clinicid: string }) =>
     wrap(async () => {
-      const all = await loadAllDoctors()
+      const all = await loadClinicVets(params.clinicid)
       // Only vets with a published profile (photo/specialities) are shown.
       const featured = all.filter((a) => {
         const d = providerDetails(a.provider)
@@ -283,19 +282,9 @@ const api = {
       }
     }),
 
-  getDoctorsForClinicForDisplay: (params: { clinicid: string }) =>
+  getDoctorForDisplay: (params: { doctorid: string; clinicid: string }) =>
     wrap(async () => {
-      const all = await loadAllDoctors()
-      return {
-        doctors: all
-          .filter((a) => a.clinics.some((c) => c.id === params.clinicid))
-          .map(toDoctorForDisplay),
-      }
-    }),
-
-  getDoctorForDisplay: (params: { doctorid: string }) =>
-    wrap(async () => {
-      const found = (await loadAllDoctors()).find(
+      const found = (await loadClinicVets(params.clinicid)).find(
         (a) => String(a.provider.id) === params.doctorid,
       )
       if (!found) return { doctor: null }

@@ -26,6 +26,7 @@ const DoctorCard: React.FC<DoctorCardProps> = ({ doctor }) => {
   const handleViewProfile = async () => {
     const doctorDetails = await getDoctorProfile({
       doctorid: doctor.id,
+      clinicid: availableToDisplayAt[0]?.id ?? "",
     })
     if (doctorDetails.ok) {
       setModalOpen(true)
