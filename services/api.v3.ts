@@ -1277,17 +1277,6 @@ export async function v3CancelAppointment(
   return { refund: null, refundDeclinedReason: null }
 }
 
-export async function v3RescheduleAppointment(
-  id: string,
-  input: { doctorId: string; date: string; startTime: string },
-): Promise<V3Appointment> {
-  const updated = await dp.reschedule(Number(id), {
-    date: input.date,
-    startTime: input.startTime,
-  })
-  return mapAppointment(updated)
-}
-
 // ─── Visit types ──────────────────────────────────────────────────────────────
 
 export async function v3FetchVisitTypes(): Promise<{

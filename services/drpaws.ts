@@ -375,15 +375,6 @@ export const dp = {
     drpawsFetch<DpAppointment>("GET", `/drpaws/booking/appointments/${id}`),
   cancelAppointment: (id: number) =>
     drpawsFetch<unknown>("DELETE", `/drpaws/booking/appointments/${id}`),
-  // Note: sending `doctorId` makes the API answer 409 even for the same vet,
-  // so it is deliberately not part of the request.
-  reschedule: (
-    id: number,
-    input: { date: string; startTime: string; endTime?: string | null },
-  ) =>
-    drpawsFetch<DpAppointment>("POST", `/drpaws/appointment/${id}/reschedule`, {
-      body: input,
-    }),
   records: (appointmentId: number) =>
     drpawsFetch<DpRecords>("GET", `/drpaws/medical-records/${appointmentId}`),
   applyCoupon: (sessionId: string, code: string) =>

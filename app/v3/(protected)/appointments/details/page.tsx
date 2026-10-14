@@ -123,8 +123,6 @@ function AppointmentDetailInner() {
     ? formatAppointmentType(appt.appointmentTypeName)
     : null
   const address = isHomeVisit ? appt.address : null
-  const canReschedule =
-    !isHomeVisit && canModifyOrCancelLive && isCancellableStatus(status)
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-6">
@@ -347,17 +345,8 @@ function AppointmentDetailInner() {
       </div>
 
       {/* Actions */}
-      {(canReschedule ||
-        (canModifyOrCancelLive && isCancellableStatus(status))) && (
+      {canModifyOrCancelLive && isCancellableStatus(status) && (
         <div className="mt-4 space-y-2">
-          {canReschedule && (
-            <Link
-              href={`/v3/appointments/details/reschedule?id=${id}`}
-              className="block w-full rounded-xl border border-secondary-1 text-secondary-1 hover:bg-secondary-1/5 text-center text-sm font-medium py-3"
-            >
-              Reschedule appointment
-            </Link>
-          )}
           <button
             type="button"
             onClick={() => setConfirming(true)}
