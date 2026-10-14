@@ -5,7 +5,7 @@ import teamImg from "@/public/assets/images/team/teamImg.png"
 import DoctorCard from "@/components/ui/DoctorCard"
 import { DoctorBase } from "@/model/typeDefinitions"
 import { useAPICall } from "@/hooks/apicall"
-import api from "@/services/api"
+import api from "@/services/api.display"
 import Loader from "@/components/ui/Loader"
 
 const TeamPage = () => {

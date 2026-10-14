@@ -12,7 +12,7 @@ import ClinicTabBar from "@/components/ui/ClinicTabBar"
 import Overview from "@/components/ui/OverView"
 
 import { useAPICall } from "@/hooks/apicall"
-import api from "@/services/api"
+import api from "@/services/api.display"
 import Loader from "@/components/ui/Loader"
 import { Clinic } from "@/model/typeDefinitions"
 

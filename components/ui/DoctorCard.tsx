@@ -5,7 +5,7 @@ import Image from "next/image"
 import { CiLocationOn } from "react-icons/ci"
 import { DoctorBase } from "@/model/typeDefinitions"
 import DoctorDetailsModal from "./DoctorDetailsModal"
-import api from "@/services/api"
+import api from "@/services/api.display"
 import { useAPICall } from "@/hooks/apicall"
 import Loader from "./Loader"
 

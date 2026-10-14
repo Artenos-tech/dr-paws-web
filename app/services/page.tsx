@@ -13,7 +13,7 @@ import { useV3UserContext } from "@/context/V3UserContext"
 import V3LoginModal from "@/components/v3/V3LoginModal"
 import DescritionImage from "@/public/assets/images/ServicesPage/DescriptionImage.png"
 import { useAPICall } from "@/hooks/apicall"
-import api from "@/services/api"
+import api from "@/services/api.display"
 import { ArrowRight, Bone, Loader } from "lucide-react"
 
 const Services = () => {

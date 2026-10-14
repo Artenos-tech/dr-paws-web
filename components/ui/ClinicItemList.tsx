@@ -2,7 +2,7 @@ import Image from "next/image"
 import ClinicItem from "./ClinicItem"
 import ClinicThumbnail from "@/public/assets/images/clinic/clinicThumbnail.svg"
 import { useAPICall } from "@/hooks/apicall"
-import api from "@/services/api"
+import api from "@/services/api.display"
 import { useEffect, useState } from "react"
 import Loader from "./Loader"
 
