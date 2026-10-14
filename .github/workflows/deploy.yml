@@ -6,22 +6,16 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
-  id-token: write
 jobs:
   build-and-deploy:
     name: Build and Deploy to S3 / CloudFront
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        environment: [test, prod]
-    environment: ${{ matrix.environment }}
+    environment: prod
     env:
       AWS_REGION: ${{ vars.AWS_REGION }}
       S3_BUCKET: ${{ vars.S3_BUCKET }}
       CLOUDFRONT_DISTRIBUTION_ID: ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}
       NEXT_PUBLIC_API_BASE_URL: ${{ vars.NEXT_PUBLIC_API_BASE_URL }}
-      NEXT_PUBLIC_CASHFREE_ENVIRONMENT: ${{ vars.NEXT_PUBLIC_CASHFREE_ENVIRONMENT }}
-      NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: ${{ vars.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY }}
       NEXT_PUBLIC_MARKETING_FEATURE_ENABLED: "true"
     steps:
       - name: Checkout repository
@@ -40,7 +34,8 @@ jobs:
       - name: Authenticate to AWS
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
       - name: Upload hashed build assets (long cache)
         run: |

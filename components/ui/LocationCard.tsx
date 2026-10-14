@@ -19,14 +19,12 @@ export function LocationCard({ locationString }: LocationCardProps) {
   )
   const [address, setAddress] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const hasApiKey = !!process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
 
   useEffect(() => {
     const fetchPlaceDetails = async () => {
       const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
-      if (!apiKey) {
-        setError("Google Maps API key is not set")
-        return
-      }
+      if (!apiKey) return
 
       try {
         const response = await fetch(
@@ -61,7 +59,7 @@ export function LocationCard({ locationString }: LocationCardProps) {
   }, [locationString])
 
   const getDirections = () => {
-    if (location) {
+    if (location || !hasApiKey) {
       const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
         locationString,
       )}`
@@ -90,6 +88,11 @@ export function LocationCard({ locationString }: LocationCardProps) {
               />
             </GoogleMap>
           </LoadScript>
+        ) : !hasApiKey ? (
+          <iframe
+            title="Map unavailable"
+            className="w-full h-full rounded-lg bg-gray-100"
+          />
         ) : (
           <div className="flex items-center justify-center h-full bg-gray-100 text-gray-500">
             {error || "Loading Map..."}
@@ -104,14 +107,16 @@ export function LocationCard({ locationString }: LocationCardProps) {
           />
         </div>
         <p className="text-gray-600 font-roca">
-          {address || error || "Loading address..."}
+          {address ||
+            error ||
+            (hasApiKey ? "Loading address..." : locationString)}
         </p>
       </div>
       <button
         onClick={getDirections}
         className="bg-[#5281A2] text-white w-[175px] h-[40px] py-2 px-4 rounded-[20px] hover:bg-[#1e6ea6] transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         aria-label="Get directions to the clinic location"
-        disabled={!location}
+        disabled={!location && hasApiKey}
       >
         Get Directions
       </button>
