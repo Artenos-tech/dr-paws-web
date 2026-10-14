@@ -4,39 +4,58 @@ on:
     branches:
       - main
   workflow_dispatch:
+permissions:
+  contents: read
+  id-token: write
 jobs:
-  build-and-push:
-    name: Build and Push Docker Image
+  build-and-deploy:
+    name: Build and Deploy to S3 / CloudFront
     runs-on: ubuntu-latest
     strategy:
       matrix:
         environment: [test, prod]
     environment: ${{ matrix.environment }}
     env:
-      REGION: ${{ vars.GCP_REGION }}
-      PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
-      REPOSITORY: ${{ vars.GCP_REPOSITORY }}
-      IMAGE_NAME: ${{ vars.GCP_IMAGE_NAME }}
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      S3_BUCKET: ${{ vars.S3_BUCKET }}
+      CLOUDFRONT_DISTRIBUTION_ID: ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}
       NEXT_PUBLIC_API_BASE_URL: ${{ vars.NEXT_PUBLIC_API_BASE_URL }}
       NEXT_PUBLIC_CASHFREE_ENVIRONMENT: ${{ vars.NEXT_PUBLIC_CASHFREE_ENVIRONMENT }}
       NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: ${{ vars.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY }}
       NEXT_PUBLIC_MARKETING_FEATURE_ENABLED: "true"
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
-      - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v1
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          credentials_json: ${{ secrets.GCP_SA_KEY_JSON }}
-      - name: Configure Docker to use Google Cloud credentials
-        run: gcloud auth configure-docker $REGION-docker.pkg.dev --quiet
-      - name: Build and push the Docker image
+          node-version: 20
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Build static export
+        env:
+          NEXT_EXPORT: "true"
+        run: npm run build
+      - name: Authenticate to AWS
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+      - name: Upload hashed build assets (long cache)
         run: |
-          docker build \
-            -t $REGION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE_NAME:${{ github.sha }} \
-            --build-arg NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL \
-            --build-arg NEXT_PUBLIC_CASHFREE_ENVIRONMENT=$NEXT_PUBLIC_CASHFREE_ENVIRONMENT \
-            --build-arg NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=$NEXT_PUBLIC_GOOGLE_MAPS_API_KEY \
-            --build-arg NEXT_PUBLIC_MARKETING_FEATURE_ENABLED=$NEXT_PUBLIC_MARKETING_FEATURE_ENABLED \
-            . \
-            --push
+          aws s3 sync out/ s3://$S3_BUCKET/ \
+            --delete \
+            --exclude "*.html" \
+            --cache-control "public,max-age=31536000,immutable"
+      - name: Upload HTML (no cache)
+        run: |
+          aws s3 sync out/ s3://$S3_BUCKET/ \
+            --exclude "*" \
+            --include "*.html" \
+            --cache-control "public,max-age=0,must-revalidate"
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id $CLOUDFRONT_DISTRIBUTION_ID \
+            --paths "/*"
