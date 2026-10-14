@@ -239,15 +239,21 @@ export type DpRecords = {
 
 // ─── Endpoints ────────────────────────────────────────────────────────────────
 
+/** The API wants "<2-digit country code><10-digit number>"; the UI collects 10 digits. */
+export function withCountryCode(mobile: string, countryCode = "91"): string {
+  const digits = mobile.replace(/\D/g, "")
+  return digits.length === 10 ? `${countryCode}${digits}` : digits
+}
+
 export const dp = {
   requestOtp: (mobile: string) =>
     drpawsFetch<{ message: string }>("POST", "/drpaws/auth/login/otp", {
-      body: { mobile },
+      body: { mobile: withCountryCode(mobile) },
       auth: false,
     }),
   loginVerify: (mobile: string, otp: string) =>
     drpawsFetch<DpLoginVerify>("POST", "/drpaws/auth/login/verify", {
-      body: { mobile, otp },
+      body: { mobile: withCountryCode(mobile), otp },
       auth: false,
     }),
   signupVerify: (input: {
@@ -257,7 +263,7 @@ export const dp = {
     lastName: string
   }) =>
     drpawsFetch<DpLoginVerify>("POST", "/drpaws/auth/signup/verify", {
-      body: input,
+      body: { ...input, mobile: withCountryCode(input.mobile) },
       auth: false,
     }),
   logout: () =>
