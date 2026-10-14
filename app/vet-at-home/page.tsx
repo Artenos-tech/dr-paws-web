@@ -32,9 +32,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
-import { useUserContext } from "@/context/UserContext"
 import { useV3UserContext } from "@/context/V3UserContext"
-import { useV3Feature } from "@/hooks/useV3Feature"
 import V3LoginModal from "@/components/v3/V3LoginModal"
 
 const vetAtHomePhoneNumber = "9740141212"
@@ -244,10 +242,8 @@ export default function VetAtHomePage() {
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0)
   const [pincodeInput, setPincodeInput] = useState("")
   const router = useRouter()
-  const { isLoggedIn, initiateLogin } = useUserContext()
   const [v3ModalOpen, setV3ModalOpen] = useState(false)
   const [v3PostLoginPath, setV3PostLoginPath] = useState("")
-  const isV3Enabled = useV3Feature()
   const { isLoggedIn: isV3LoggedIn, login: v3Login } = useV3UserContext()
   const [pincodeStatus, setPincodeStatus] = useState<
     "idle" | "serviceable" | "notServiceable" | "invalid" | "error"
@@ -339,26 +335,13 @@ export default function VetAtHomePage() {
     const v3Destination = couponCode
       ? `/v3/book/home-visit?couponCode=${encodeURIComponent(couponCode)}`
       : "/v3/book/home-visit"
-    const pettleDestination = couponCode
-      ? `/user/book-appointment?home=true&coupon=${encodeURIComponent(couponCode)}`
-      : "/user/book-appointment?home=true"
 
-    if (isV3Enabled) {
-      if (isV3LoggedIn) {
-        router.push(v3Destination)
-      } else {
-        setV3PostLoginPath(v3Destination)
-        setV3ModalOpen(true)
-      }
-      return
+    if (isV3LoggedIn) {
+      router.push(v3Destination)
+    } else {
+      setV3PostLoginPath(v3Destination)
+      setV3ModalOpen(true)
     }
-
-    if (isLoggedIn) {
-      router.push(pettleDestination)
-      return
-    }
-
-    initiateLogin("Book an At-Home Visit", pettleDestination)
   }
 
   const isHomeVisitEnabled =

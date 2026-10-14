@@ -1,8 +1,8 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
+import { Suspense, useCallback, useEffect, useState } from "react"
 import Link from "next/link"
-import { useParams } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 import {
   CalendarDays,
   CheckCircle2,
@@ -47,8 +47,8 @@ function displayError(e: unknown): string {
   return e instanceof Error ? e.message : "Something went wrong"
 }
 
-export default function RescheduleAppointmentPage() {
-  const { id } = useParams<{ id: string }>()
+function RescheduleAppointmentInner() {
+  const id = useSearchParams().get("id") ?? ""
 
   const [appt, setAppt] = useState<V3AppointmentListItem | null>(null)
   const [loading, setLoading] = useState(true)
@@ -142,7 +142,7 @@ export default function RescheduleAppointmentPage() {
     return (
       <div className="mx-auto max-w-2xl px-4 py-6">
         <Link
-          href={`/v3/appointments/${id}`}
+          href={`/v3/appointments/details?id=${id}`}
           className="mb-4 inline-flex items-center gap-1 text-sm text-gray-500 hover:text-primary-1"
         >
           <ChevronLeft className="h-4 w-4" />
@@ -186,7 +186,7 @@ export default function RescheduleAppointmentPage() {
     <div className="mx-auto max-w-2xl px-4 py-6">
       <Toaster position="top-center" />
       <Link
-        href={`/v3/appointments/${id}`}
+        href={`/v3/appointments/details?id=${id}`}
         className="mb-4 inline-flex items-center gap-1 text-sm text-gray-500 hover:text-primary-1"
       >
         <ChevronLeft className="h-4 w-4" />
@@ -462,5 +462,13 @@ function RescheduleConfirmed({
         </div>
       </div>
     </div>
+  )
+}
+
+export default function RescheduleAppointmentPage() {
+  return (
+    <Suspense fallback={null}>
+      <RescheduleAppointmentInner />
+    </Suspense>
   )
 }
