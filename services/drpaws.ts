@@ -45,7 +45,9 @@ export class DrpawsError extends Error {
     super(message)
     this.status = status
     this.body = body
-    if (status === 409) this.errorCode = "SLOT_UNAVAILABLE"
+    if (status === 409 && /slot|unavailable|already booked/i.test(message)) {
+      this.errorCode = "SLOT_UNAVAILABLE"
+    }
   }
 }
 
@@ -373,14 +375,11 @@ export const dp = {
     drpawsFetch<DpAppointment>("GET", `/drpaws/booking/appointments/${id}`),
   cancelAppointment: (id: number) =>
     drpawsFetch<unknown>("DELETE", `/drpaws/booking/appointments/${id}`),
+  // Note: sending `doctorId` makes the API answer 409 even for the same vet,
+  // so it is deliberately not part of the request.
   reschedule: (
     id: number,
-    input: {
-      date: string
-      startTime: string
-      endTime?: string | null
-      doctorId?: string | null
-    },
+    input: { date: string; startTime: string; endTime?: string | null },
   ) =>
     drpawsFetch<DpAppointment>("POST", `/drpaws/appointment/${id}/reschedule`, {
       body: input,
@@ -400,10 +399,28 @@ export const dp = {
 
 // ─── Small helpers shared by the adapters ─────────────────────────────────────
 
-/** "2026-10-15T09:30:00" | "09:30:00" | "09:30" → "09:30" */
+const CLINIC_TIME_ZONE = "Asia/Kolkata"
+
+const clockFormat = new Intl.DateTimeFormat("en-GB", {
+  timeZone: CLINIC_TIME_ZONE,
+  hour: "2-digit",
+  minute: "2-digit",
+  hourCycle: "h23",
+})
+
+/**
+ * "12:30" | "12:30:00" → "12:30" (already clinic-local).
+ * "2026-10-15T07:00:00+00:00" → "12:30" (timestamps with an offset are real
+ * instants, so convert to clinic time).
+ */
 export function toHHMM(value: string | null | undefined): string {
   if (!value) return ""
-  const m = value.match(/(\d{2}):(\d{2})/)
+  if (/^\d{2}:\d{2}/.test(value)) return value.slice(0, 5)
+  if (/(Z|[+-]\d{2}:?\d{2})$/.test(value)) {
+    const d = new Date(value)
+    if (!Number.isNaN(d.getTime())) return clockFormat.format(d)
+  }
+  const m = value.match(/T(\d{2}):(\d{2})/)
   return m ? `${m[1]}:${m[2]}` : value
 }
 

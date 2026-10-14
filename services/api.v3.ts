@@ -1284,7 +1284,6 @@ export async function v3RescheduleAppointment(
   const updated = await dp.reschedule(Number(id), {
     date: input.date,
     startTime: input.startTime,
-    doctorId: input.doctorId || null,
   })
   return mapAppointment(updated)
 }
