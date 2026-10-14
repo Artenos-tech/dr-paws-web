@@ -13,7 +13,6 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
 import { useEffect, useRef, useState } from "react"
 import { ChevronDown } from "lucide-react"
 import ClipLoader from "react-spinners/ClipLoader"
-import { useHomeVisitFeature } from "@/hooks/useHomeVisitFeature"
 import { useV3UserContext } from "@/context/V3UserContext"
 import V3LoginModal from "@/components/v3/V3LoginModal"
 
@@ -27,7 +26,6 @@ export default function NavBar() {
   const isVetAtHomePage = pathname?.includes("/vet-at-home")
   // const isMarketingFeatureEnabled = useMarketingFeature();
 
-  const { isFeatureEnabled: isHomeVisitEnabled } = useHomeVisitFeature()
   const {
     isLoggedIn: isV3LoggedIn,
     owner: v3Owner,
@@ -58,12 +56,14 @@ export default function NavBar() {
   }, [dropdownRef])
 
   const handleBookAVisit = () => {
-    const v3Destination =
-      isVetAtHomePage && isHomeVisitEnabled ? "/v3/book/home-visit" : "/v3/book"
+    if (isVetAtHomePage) {
+      window.location.href = "tel:9740141212"
+      return
+    }
     if (isV3LoggedIn) {
-      navigate.push(v3Destination)
+      navigate.push("/v3/book")
     } else {
-      setV3PostLoginPath(v3Destination)
+      setV3PostLoginPath("/v3/book")
       setV3ModalOpen(true)
     }
   }
@@ -141,11 +141,11 @@ export default function NavBar() {
                   onClick={handleBookAVisit}
                   className="font-open-sans btn rounded-full bg-secondary-1 px-2.5 py-2 text-[10px] tracking-[0.04em] text-white whitespace-nowrap sm:px-3 sm:text-[11px] md:hidden"
                 >
-                  Book an At-Home Visit
+                  Call to Book At-Home
                 </button>
                 <div className="hidden md:block">
                   <CustomButton
-                    buttonText="Book an At-Home Visit"
+                    buttonText="Call to Book At-Home"
                     buttonBackground="bg-secondary-1"
                     buttonClickEvent={handleBookAVisit}
                   />
