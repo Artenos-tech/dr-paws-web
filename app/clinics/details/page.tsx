@@ -1,6 +1,7 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
+import { useSearchParams } from "next/navigation"
 import { Phone } from "lucide-react"
 import toast, { Toaster } from "react-hot-toast"
 
@@ -15,14 +16,8 @@ import api from "@/services/api"
 import Loader from "@/components/ui/Loader"
 import { Clinic } from "@/model/typeDefinitions"
 
-interface ClinicDetailsProps {
-  params: {
-    clinicId: string
-  }
-}
-
-const ClinicDetails: React.FC<ClinicDetailsProps> = ({ params }) => {
-  const { clinicId } = params
+const ClinicDetails: React.FC = () => {
+  const clinicId = useSearchParams().get("id") ?? ""
   const { call: getClinic, loading: loadingClinic } = useAPICall(
     api.getClinicForDisplay,
   )
@@ -35,6 +30,7 @@ const ClinicDetails: React.FC<ClinicDetailsProps> = ({ params }) => {
   const [clinic, setClinic] = useState<Clinic | null>(null)
 
   useEffect(() => {
+    if (!clinicId) return
     const fetchClinic = async () => {
       const clinic = await getClinic({ clinicid: clinicId })
       if (clinic.ok && clinic.value.body.clinic) {
@@ -137,4 +133,10 @@ const ClinicDetails: React.FC<ClinicDetailsProps> = ({ params }) => {
   )
 }
 
-export default ClinicDetails
+export default function ClinicDetailsPage() {
+  return (
+    <Suspense fallback={<Loader />}>
+      <ClinicDetails />
+    </Suspense>
+  )
+}

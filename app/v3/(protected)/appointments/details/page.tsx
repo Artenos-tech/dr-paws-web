@@ -1,7 +1,7 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
-import { useParams, useRouter } from "next/navigation"
+import { Suspense, useCallback, useEffect, useState } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import {
   CalendarDays,
@@ -34,8 +34,8 @@ import HomeVisitStatusBanner from "@/components/v3/HomeVisitStatusBanner"
 import CancelAppointmentDialog from "@/components/v3/CancelAppointmentDialog"
 import RefundStatusLine from "@/components/v3/RefundStatusLine"
 
-export default function AppointmentDetailPage() {
-  const { id } = useParams<{ id: string }>()
+function AppointmentDetailInner() {
+  const id = useSearchParams().get("id") ?? ""
   const router = useRouter()
 
   const [appt, setAppt] = useState<V3AppointmentListItem | null>(null)
@@ -352,7 +352,7 @@ export default function AppointmentDetailPage() {
         <div className="mt-4 space-y-2">
           {canReschedule && (
             <Link
-              href={`/v3/appointments/${id}/reschedule`}
+              href={`/v3/appointments/details/reschedule?id=${id}`}
               className="block w-full rounded-xl border border-secondary-1 text-secondary-1 hover:bg-secondary-1/5 text-center text-sm font-medium py-3"
             >
               Reschedule appointment
@@ -384,5 +384,13 @@ export default function AppointmentDetailPage() {
         }}
       />
     </div>
+  )
+}
+
+export default function AppointmentDetailPage() {
+  return (
+    <Suspense fallback={null}>
+      <AppointmentDetailInner />
+    </Suspense>
   )
 }

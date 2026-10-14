@@ -4,9 +4,7 @@ import Image from "next/image"
 import { useRouter } from "next/navigation"
 import React, { useState } from "react"
 import { Toaster } from "react-hot-toast"
-import { useUserContext } from "@/context/UserContext"
 import { useV3UserContext } from "@/context/V3UserContext"
-import { useV3Feature } from "@/hooks/useV3Feature"
 import V3LoginModal from "@/components/v3/V3LoginModal"
 import { CalendarClock } from "lucide-react"
 
@@ -32,45 +30,27 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
   const { image, name, services, id, bookable, contact, comingSoon } = clinic
   const router = useRouter()
 
-  const { initiateLogin, isLoggedIn } = useUserContext()
   const [modalVisible, setModalVisible] = useState(false)
   const [v3ModalOpen, setV3ModalOpen] = useState(false)
   const [v3PostLoginPath, setV3PostLoginPath] = useState<string | null>(null)
-  const isV3Enabled = useV3Feature()
   const { isLoggedIn: isV3LoggedIn, login: v3Login } = useV3UserContext()
 
   const handleBookAVisit = () => {
-    if (isV3Enabled) {
-      if (!bookable) {
-        if (isV3LoggedIn) {
-          setModalVisible(true)
-        } else {
-          setV3PostLoginPath(null)
-          setV3ModalOpen(true)
-        }
-      } else {
-        if (isV3LoggedIn) {
-          router.push("/v3/book")
-        } else {
-          setV3PostLoginPath("/v3/book")
-          setV3ModalOpen(true)
-        }
-      }
-      return
-    }
-
     if (!bookable) {
-      if (isLoggedIn) {
+      if (isV3LoggedIn) {
         setModalVisible(true)
       } else {
-        initiateLogin("Book a Visit", "/user/book-appointment")
+        setV3PostLoginPath(null)
+        setV3ModalOpen(true)
       }
-      return
+    } else {
+      if (isV3LoggedIn) {
+        router.push("/v3/book")
+      } else {
+        setV3PostLoginPath("/v3/book")
+        setV3ModalOpen(true)
+      }
     }
-    const bookingPath = `/user/book-appointment?clinicId=${id}`
-    return isLoggedIn
-      ? router.push(bookingPath)
-      : initiateLogin("Book a Visit", bookingPath)
   }
 
   const closeModal = () => {
@@ -78,7 +58,7 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
   }
 
   const goToClinicPage = () => {
-    router.push(`/clinics/${id}`)
+    router.push(`/clinics/details?id=${id}`)
   }
 
   return (

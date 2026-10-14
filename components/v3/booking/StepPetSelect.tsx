@@ -74,7 +74,7 @@ export default function StepPetSelect({
                       type="button"
                       onClick={() =>
                         router.push(
-                          `/v3/appointments/${disabled.appointmentId}`,
+                          `/v3/appointments/details?id=${disabled.appointmentId}`,
                         )
                       }
                       className="mt-1 text-sm font-medium text-primary-2 hover:underline"

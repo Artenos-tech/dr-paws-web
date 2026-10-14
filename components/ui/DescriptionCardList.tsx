@@ -4,13 +4,7 @@ import React, { useState } from "react"
 import DescriptionCard from "./DescriptionCard"
 import ContactInfoModal from "./ContactInfoModal"
 
-interface DescriptionCardListProps {
-  openLoginModal: (val: string) => void
-}
-
-const DescriptionCardList: React.FC<DescriptionCardListProps> = ({
-  openLoginModal,
-}) => {
+const DescriptionCardList: React.FC = () => {
   const [contactModalOpen, setContactModalOpen] = useState<boolean>(false)
   return (
     <>
@@ -20,7 +14,6 @@ const DescriptionCardList: React.FC<DescriptionCardListProps> = ({
             key={index}
             index={index}
             description={description}
-            openLoginModal={openLoginModal}
             openContactModal={() => setContactModalOpen(true)}
           />
         ))}
