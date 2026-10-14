@@ -49,6 +49,21 @@ jobs:
             --exclude "*" \
             --include "*.html" \
             --cache-control "public,max-age=0,must-revalidate"
+      - name: Serve directory URLs without a CloudFront function
+        # S3 has no "folder index", so /clinics/ 403s. Upload each
+        # <dir>/index.html a second time under the key "<dir>/".
+        run: |
+          cd out
+          find . -name index.html ! -path ./index.html | while read -r f; do
+            key="${f#./}"
+            key="${key%index.html}"
+            aws s3api put-object \
+              --bucket "$S3_BUCKET" \
+              --key "$key" \
+              --body "$f" \
+              --content-type "text/html" \
+              --cache-control "public,max-age=0,must-revalidate" > /dev/null
+          done
       - name: Invalidate CloudFront cache
         run: |
           aws cloudfront create-invalidation \
