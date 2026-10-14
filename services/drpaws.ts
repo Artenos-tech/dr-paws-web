@@ -320,7 +320,9 @@ export const dp = {
     drpawsFetch<DpGroomingItem[]>(
       "GET",
       "/drpaws/booking/catalog/grooming-items",
-      { query: { clinicId, petId }, auth: false },
+      // Only the basic "standalone" items: each one maps to a single
+      // appointment type (appointmentTypeId) that the slot endpoints need.
+      { query: { clinicId, petId, itemType: "standalone" }, auth: false },
     ),
   groomingDates: (q: {
     clinicId: number
@@ -434,4 +436,24 @@ export function isAtHomeClinic(clinic: Pick<DpClinic, "name">): boolean {
 
 export function flattenClinics(groups: DpClinicsByCity[]): DpClinic[] {
   return groups.flatMap((g) => g.clinics)
+}
+
+/** Run `fn` over `items` with at most `limit` calls in flight. */
+export async function mapLimit<T, R>(
+  items: T[],
+  limit: number,
+  fn: (item: T) => Promise<R>,
+): Promise<R[]> {
+  const out: R[] = new Array(items.length)
+  let next = 0
+  async function worker() {
+    while (next < items.length) {
+      const i = next++
+      out[i] = await fn(items[i])
+    }
+  }
+  await Promise.all(
+    Array.from({ length: Math.min(limit, items.length) }, worker),
+  )
+  return out
 }

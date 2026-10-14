@@ -6,6 +6,7 @@ import {
   flattenClinics,
   getAuthToken,
   isAtHomeClinic,
+  mapLimit,
   minutesBetween,
   removeAuthToken,
   storeAuthToken,
@@ -452,8 +453,8 @@ const getAllClinics = memo(async () => flattenClinics(await dp.clinics()))
 
 const getProviders = memoBy((clinicId: number) => dp.providers(clinicId))
 
-const getGroomingCatalog = memoBy((clinicId: number) =>
-  dp.groomingItems(clinicId),
+const getGroomingCatalog = memoBy(async (clinicId: number) =>
+  (await dp.groomingItems(clinicId)).filter((i) => !!i.appointmentTypeId),
 )
 
 function isGroomer(p: DpProvider): boolean {
@@ -474,26 +475,6 @@ async function getAllVets(clinicId: number): Promise<DpProvider[]> {
  */
 async function getVets(clinicId: number): Promise<DpProvider[]> {
   return (await getAllVets(clinicId)).filter((p) => !!p.nextAvailableAt)
-}
-
-/** Run `fn` over `items` with at most `limit` calls in flight. */
-async function mapLimit<T, R>(
-  items: T[],
-  limit: number,
-  fn: (item: T) => Promise<R>,
-): Promise<R[]> {
-  const out: R[] = new Array(items.length)
-  let next = 0
-  async function worker() {
-    while (next < items.length) {
-      const i = next++
-      out[i] = await fn(items[i])
-    }
-  }
-  await Promise.all(
-    Array.from({ length: Math.min(limit, items.length) }, worker),
-  )
-  return out
 }
 
 const SLOT_CONCURRENCY = 3
@@ -795,12 +776,10 @@ export async function v3FetchBreeds(species: string): Promise<V3BreedOption[]> {
 
 export async function v3FetchClinics(): Promise<V3Clinic[]> {
   const clinics = (await getAllClinics()).filter((c) => !isAtHomeClinic(c))
-  const grooming = await Promise.all(
-    clinics.map((c) =>
-      getGroomingCatalog(c.id)
-        .then((items) => items.length > 0)
-        .catch(() => false),
-    ),
+  const grooming = await mapLimit(clinics, SLOT_CONCURRENCY, (c) =>
+    getGroomingCatalog(c.id)
+      .then((items) => items.length > 0)
+      .catch(() => false),
   )
   // Vet consultations are only offered where a vet has a configured
   // veterinary appointment type (i.e. is bookable).
@@ -1128,8 +1107,8 @@ export async function v3FetchGroomingServiceTypes(_petId?: string): Promise<{
   petGroomingAttributes: V3PetGroomingAttributes | null
 }> {
   const clinics = (await getAllClinics()).filter((c) => !isAtHomeClinic(c))
-  const catalogs = await Promise.all(
-    clinics.map((c) => getGroomingCatalog(c.id).catch(() => [])),
+  const catalogs = await mapLimit(clinics, SLOT_CONCURRENCY, (c) =>
+    getGroomingCatalog(c.id).catch(() => [] as DpGroomingItem[]),
   )
   const byName = new Map<string, V3GroomingServiceType>()
   for (const item of catalogs.flat()) {
@@ -1336,12 +1315,10 @@ export async function v3FetchVisitTypes(): Promise<{
   clinicSubtypes: V3VisitType[]
 }> {
   const clinics = (await getAllClinics()).filter((c) => !isAtHomeClinic(c))
-  const grooming = await Promise.all(
-    clinics.map((c) =>
-      getGroomingCatalog(c.id)
-        .then((items) => items.length > 0)
-        .catch(() => false),
-    ),
+  const grooming = await mapLimit(clinics, SLOT_CONCURRENCY, (c) =>
+    getGroomingCatalog(c.id)
+      .then((items) => items.length > 0)
+      .catch(() => false),
   )
   const clinicSubtypes: V3VisitType[] = [
     {
@@ -1393,12 +1370,10 @@ const COUNT_KEY: Partial<Record<V3DocumentType, keyof V3DocumentCounts>> = {
 
 async function loadDocuments(): Promise<V3Document[]> {
   const appts = await dp.appointments(1, 30)
-  const withRecords = await Promise.all(
-    appts.map(async (a) => ({
-      appt: a,
-      records: await dp.records(a.id).catch(() => null),
-    })),
-  )
+  const withRecords = await mapLimit(appts, SLOT_CONCURRENCY, async (a) => ({
+    appt: a,
+    records: await dp.records(a.id).catch(() => null),
+  }))
   const docs: V3Document[] = []
   for (const { appt, records } of withRecords) {
     if (!records) continue
@@ -1523,8 +1498,22 @@ export async function v3GetDocumentDownloadUrl(
   downloadId: string,
   _type: V3DocumentType,
 ): Promise<V3DocumentDownload> {
-  const { url, fileName } = await fetchDocumentBlob(downloadId)
-  return { url, expiresIn: 300, fileName, isGenerating: false }
+  try {
+    const { url, fileName } = await fetchDocumentBlob(downloadId)
+    return { url, expiresIn: 300, fileName, isGenerating: false }
+  } catch (e) {
+    // The API answers 404 "Document file is not available" while a file has
+    // not been generated (or has been purged).
+    if (e instanceof DrpawsError && e.status === 404) {
+      return {
+        url: null,
+        expiresIn: 0,
+        fileName: "document",
+        isGenerating: false,
+      }
+    }
+    throw e
+  }
 }
 
 export async function v3FetchDocumentView(

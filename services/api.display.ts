@@ -12,6 +12,7 @@ import {
   drpawsFetch,
   dp,
   flattenClinics,
+  mapLimit,
   isAtHomeClinic,
   type DpClinic,
   type DpProvider,
@@ -120,17 +121,15 @@ type ClinicDoctors = { clinic: DpClinic; vets: DpProvider[] }
 
 async function loadClinicDoctors(): Promise<ClinicDoctors[]> {
   const clinics = await loadClinics()
-  return Promise.all(
-    clinics.map(async (clinic) => {
-      const providers = await dp
-        .providers(clinic.id)
-        .catch(() => [] as DpProvider[])
-      return {
-        clinic,
-        vets: providers.filter((p) => !/groom/i.test(p.serviceType ?? "")),
-      }
-    }),
-  )
+  return mapLimit(clinics, 3, async (clinic) => {
+    const providers = await dp
+      .providers(clinic.id)
+      .catch(() => [] as DpProvider[])
+    return {
+      clinic,
+      vets: providers.filter((p) => !/groom/i.test(p.serviceType ?? "")),
+    }
+  })
 }
 
 type AggregatedDoctor = {
@@ -191,9 +190,7 @@ async function loadServiceGroups(): Promise<ServiceGroup[]> {
   })
 
   const grooming = (
-    await Promise.all(
-      clinics.map((c) => dp.groomingItems(c.id).catch(() => [])),
-    )
+    await mapLimit(clinics, 3, (c) => dp.groomingItems(c.id).catch(() => []))
   ).flat()
   const groomingNames = Array.from(new Set(grooming.map((g) => g.name)))
   if (groomingNames.length > 0) {
