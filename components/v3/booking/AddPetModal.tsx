@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { X } from "lucide-react"
 import {
   v3CreatePet,
+  v3FetchClinics,
   v3UpdatePet,
   v3FetchSpecies,
   v3FetchBreeds,
@@ -104,14 +105,18 @@ export default function AddPetModal({
           reproductiveStatus: reproductiveStatus || null,
         })
       } else {
-        if (!clinics.length) {
+        // Clinics aren't preloaded by the booking flow; fetch them now.
+        const available = clinics.length
+          ? clinics
+          : await v3FetchClinics().catch(() => [] as V3Clinic[])
+        if (!available.length) {
           setError("No clinics available. Please try again later.")
           setLoading(false)
           return
         }
         pet = await v3CreatePet({
           name: name.trim(),
-          clinicId: clinics[0].id,
+          clinicId: available[0].id,
           species: species || undefined,
           breed: breed || undefined,
           gender: gender || undefined,

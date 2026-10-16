@@ -141,14 +141,10 @@ export default function ClinicGroomingFlow({
   const lastTrackedStepRef = useRef<V3NidanaClinicBookingFlowStep | null>(null)
 
   useEffect(() => {
-    Promise.all([
-      v3FetchPets(),
-      v3FetchClinics(),
-      v3FetchActiveAppointmentTypesByPet(),
-    ])
-      .then(([p, c, activeTypes]) => {
+    // Clinics are fetched when the clinic section is opened.
+    Promise.all([v3FetchPets(), v3FetchActiveAppointmentTypesByPet()])
+      .then(([p, activeTypes]) => {
         setPets(p)
-        setClinics(c)
         setActiveTypesByPet(activeTypes)
       })
       .catch(() =>
@@ -156,6 +152,15 @@ export default function ClinicGroomingFlow({
       )
       .finally(() => setLoading(false))
   }, [])
+
+  useEffect(() => {
+    if (openSection !== "clinic" || clinics.length > 0) return
+    v3FetchClinics()
+      .then(setClinics)
+      .catch(() =>
+        setLoadError("Failed to load clinics. Please refresh and try again."),
+      )
+  }, [openSection, clinics.length])
 
   const trackStep = useCallback(
     async (sessionId: string, stepName: V3NidanaClinicBookingFlowStep) => {

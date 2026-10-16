@@ -126,17 +126,11 @@ export default function ClinicVetFlow({
   }
 
   useEffect(() => {
-    Promise.all([
-      v3FetchPets(),
-      v3FetchClinics(),
-      v3FetchVetPrice(),
-      v3FetchActiveAppointmentTypesByPet(),
-    ])
-      .then(([p, c, price, activeTypes]) => {
+    // Only what the first (pet) section needs; clinics and pricing are
+    // fetched when their sections are opened.
+    Promise.all([v3FetchPets(), v3FetchActiveAppointmentTypesByPet()])
+      .then(([p, activeTypes]) => {
         setPets(p)
-        setClinics(c)
-        setPriceInRupees(price.priceInRupees)
-        setSeniorPriceInRupees(price.seniorPriceInRupees)
         setActiveTypesByPet(activeTypes)
       })
       .catch(() =>
@@ -144,6 +138,28 @@ export default function ClinicVetFlow({
       )
       .finally(() => setLoading(false))
   }, [])
+
+  useEffect(() => {
+    if (openSection !== "clinic" || clinics.length > 0) return
+    v3FetchClinics()
+      .then(setClinics)
+      .catch(() =>
+        setLoadError("Failed to load clinics. Please refresh and try again."),
+      )
+  }, [openSection, clinics.length])
+
+  useEffect(() => {
+    if (openSection !== "datetime" && openSection !== "confirm") return
+    if (priceInRupees !== null) return
+    v3FetchVetPrice()
+      .then((price) => {
+        setPriceInRupees(price.priceInRupees)
+        setSeniorPriceInRupees(price.seniorPriceInRupees)
+      })
+      .catch(() => {
+        // the step falls back to per-vet consultation amounts
+      })
+  }, [openSection, priceInRupees])
 
   const trackStep = useCallback(
     async (sessionId: string, stepName: V3NidanaClinicBookingFlowStep) => {
