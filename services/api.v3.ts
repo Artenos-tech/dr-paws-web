@@ -1251,7 +1251,7 @@ export async function v3FetchAppointments(
   pageSize: number,
 ): Promise<{ items: V3AppointmentListItem[]; hasNext: boolean }> {
   const raw = await dp.appointments(page, pageSize)
-  const items = await Promise.all(raw.map(mapListItem))
+  const items = await mapLimit(raw, SLOT_CONCURRENCY, mapListItem)
   return { items, hasNext: raw.length >= pageSize }
 }
 
