@@ -164,6 +164,7 @@ export type DpClinic = {
   name: string
   city?: string | null
   phone?: string | null
+  address?: string | null
   latitude?: number | null
   longitude?: number | null
   distanceKm?: number | null

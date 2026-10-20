@@ -46,6 +46,9 @@ export type ClinicForDisplay = {
   bookable: boolean
   contact: string
   comingSoon: boolean
+  address: string
+  city: string
+  gmapsUrl: string
 }
 
 export type DoctorForDisplay = {
@@ -74,11 +77,14 @@ function toClinicForDisplay(c: DpClinic): ClinicForDisplay {
     services: str(d.services) ?? "Veterinary care & grooming",
     image: {
       type: "url",
-      value: str(d.imageUrl) ?? str(d.image) ?? FALLBACK_CLINIC_IMAGE,
+      value: str(d.imageUrl) ?? FALLBACK_CLINIC_IMAGE,
     },
     bookable: d.comingSoon !== true,
     contact: c.phone ? `+${c.phone.replace(/^\+/, "")}` : "",
     comingSoon: d.comingSoon === true,
+    address: str(c.address) ?? "",
+    city: c.city ?? "",
+    gmapsUrl: str(d.locationLink) ?? mapsUrl(c),
   }
 }
 
@@ -246,9 +252,7 @@ const api = {
       return {
         clinic: {
           ...toClinicForDisplay(clinic),
-          gmapsUrl: str(d.gmapsUrl) ?? mapsUrl(clinic),
-          address: str(d.address) ?? clinic.city ?? "",
-          city: clinic.city ?? "",
+          address: str(clinic.address) ?? clinic.city ?? "",
           parkingInfo: str(d.parkingInfo) ?? "",
           timings: [] as {
             dayOfWeek: string | null
