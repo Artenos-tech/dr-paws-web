@@ -8,7 +8,8 @@ import Image from "next/image"
 // import { servicesData } from "@/model/mockData"
 import CustomButton from "./CustomButton"
 import { useAPICall } from "@/hooks/apicall"
-import api from "@/services/api"
+import { useInView } from "@/hooks/useInView"
+import api from "@/services/api.display"
 import { Loader } from "lucide-react"
 
 const Services: React.FC = () => {
@@ -30,21 +31,32 @@ const Services: React.FC = () => {
     (servicesOverview?.ok && servicesOverview.value.body.servicesOverview) || {}
   type ServiceCategory = keyof typeof servicesData
 
-  const [selectedCategory, setSelectedCategory] = useState<ServiceCategory>(
-    "Planned Visits" as string,
-  )
+  const [chosenCategory, setSelectedCategory] =
+    useState<ServiceCategory | null>(null)
+  const selectedCategory: ServiceCategory =
+    chosenCategory && chosenCategory in servicesData
+      ? chosenCategory
+      : ((serviceCategoriesOffered[0] as ServiceCategory) ?? "")
 
+  const [rootRef, inView] = useInView<HTMLDivElement>()
+
+  // Fetch when this section scrolls into view, not on page load.
   useEffect(() => {
+    if (!inView) return
     getServicesCategories({})
     getServicesOverview({})
-  }, [])
+  }, [inView])
 
   if (loadingServiceCategories || loadingServicesOverview) {
-    return <Loader />
+    return (
+      <div ref={rootRef}>
+        <Loader />
+      </div>
+    )
   }
 
   return (
-    <div className="flex">
+    <div ref={rootRef} className="flex">
       {/* Sidebar */}
       <div className="w-[50%] lg:w-[30%] min-h-[400px] flex-shrink-0 border bg-gray-100">
         {serviceCategoriesOffered.map((category) => (
@@ -70,7 +82,7 @@ const Services: React.FC = () => {
           </h2>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
             {Object.keys(servicesData).length > 0 &&
-              servicesData[selectedCategory].map((service) => (
+              (servicesData[selectedCategory] ?? []).map((service) => (
                 <div key={service.name} className="flex items-center space-x-2">
                   <Image src={UpSyringe} alt="Syringe" width={20} height={20} />
                   <span className="text-sm md:text-base">{service.name}</span>

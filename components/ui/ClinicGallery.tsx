@@ -7,9 +7,7 @@ import { IoIosArrowBack, IoIosArrowForward, IoMdClose } from "react-icons/io"
 import ReactModal from "react-modal"
 
 import CustomButton from "@/components/ui/CustomButton"
-import { useUserContext } from "@/context/UserContext"
 import { useV3UserContext } from "@/context/V3UserContext"
-import { useV3Feature } from "@/hooks/useV3Feature"
 import V3LoginModal from "@/components/v3/V3LoginModal"
 
 interface ClinicGalleryProps {
@@ -20,7 +18,6 @@ interface ClinicGalleryProps {
 }
 
 function ClinicGallery({
-  clinicId,
   name,
   services,
   gallery,
@@ -29,10 +26,8 @@ function ClinicGallery({
   const [currentIndex, setCurrentIndex] = useState(0)
   const limitedGalleryItems = gallery.slice(0, 7) ?? []
   const [isMounted, setIsMounted] = useState(false)
-  const { initiateLogin, isLoggedIn } = useUserContext()
   const [v3ModalOpen, setV3ModalOpen] = useState(false)
   const [v3PostLoginPath, setV3PostLoginPath] = useState("")
-  const isV3Enabled = useV3Feature()
   const { isLoggedIn: isV3LoggedIn, login: v3Login } = useV3UserContext()
   const navigate = useRouter()
 
@@ -56,19 +51,12 @@ function ClinicGallery({
   }
 
   const handleBookAVisit = () => {
-    if (isV3Enabled) {
-      if (isV3LoggedIn) {
-        navigate.push("/v3/book")
-      } else {
-        setV3PostLoginPath("/v3/book")
-        setV3ModalOpen(true)
-      }
-      return
+    if (isV3LoggedIn) {
+      navigate.push("/v3/book")
+    } else {
+      setV3PostLoginPath("/v3/book")
+      setV3ModalOpen(true)
     }
-    const bookingPath = `/user/book-appointment?clinicId=${clinicId}`
-    return isLoggedIn
-      ? navigate.push(bookingPath)
-      : initiateLogin("Book a Visit", bookingPath)
   }
 
   if (!isMounted) {

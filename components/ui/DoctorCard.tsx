@@ -5,7 +5,7 @@ import Image from "next/image"
 import { CiLocationOn } from "react-icons/ci"
 import { DoctorBase } from "@/model/typeDefinitions"
 import DoctorDetailsModal from "./DoctorDetailsModal"
-import api from "@/services/api"
+import api from "@/services/api.display"
 import { useAPICall } from "@/hooks/apicall"
 import Loader from "./Loader"
 
@@ -26,6 +26,7 @@ const DoctorCard: React.FC<DoctorCardProps> = ({ doctor }) => {
   const handleViewProfile = async () => {
     const doctorDetails = await getDoctorProfile({
       doctorid: doctor.id,
+      clinicid: availableToDisplayAt[0]?.id ?? "",
     })
     if (doctorDetails.ok) {
       setModalOpen(true)

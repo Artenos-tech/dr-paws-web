@@ -1,8 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import {
   ArrowRight,
   ChevronDown,
@@ -17,8 +16,6 @@ import {
   Stethoscope,
 } from "lucide-react"
 import { FaWhatsapp } from "react-icons/fa"
-import { useAPICall } from "@/hooks/apicall"
-import atHomeApiClient from "@/services/api.athome"
 import {
   Dialog,
   DialogContent,
@@ -32,10 +29,6 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
-import { useUserContext } from "@/context/UserContext"
-import { useV3UserContext } from "@/context/V3UserContext"
-import { useV3Feature } from "@/hooks/useV3Feature"
-import V3LoginModal from "@/components/v3/V3LoginModal"
 
 const vetAtHomePhoneNumber = "9740141212"
 
@@ -243,34 +236,11 @@ export default function VetAtHomePage() {
   const [isAmbulanceModalOpen, setIsAmbulanceModalOpen] = useState(false)
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0)
   const [pincodeInput, setPincodeInput] = useState("")
-  const router = useRouter()
-  const { isLoggedIn, initiateLogin } = useUserContext()
-  const [v3ModalOpen, setV3ModalOpen] = useState(false)
-  const [v3PostLoginPath, setV3PostLoginPath] = useState("")
-  const isV3Enabled = useV3Feature()
-  const { isLoggedIn: isV3LoggedIn, login: v3Login } = useV3UserContext()
   const [pincodeStatus, setPincodeStatus] = useState<
-    "idle" | "serviceable" | "notServiceable" | "invalid" | "error"
+    "idle" | "invalid" | "confirm"
   >("idle")
-  const { call: getServiceablePincodes, loading: isCheckingPincode } =
-    useAPICall(atHomeApiClient.getServiceablePincodes)
-  const {
-    call: getHomeVisitFeatureFlag,
-    loading: isCheckingHomeVisitFeatureFlag,
-    result: homeVisitFeatureFlagResult,
-  } = useAPICall(atHomeApiClient.getHomeVisitFeatureFlag)
 
-  const {
-    call: getEmergencyContact,
-    loading: isCheckingEmergencyContact,
-    result: emergencyContactResult,
-  } = useAPICall(atHomeApiClient.getEmergencyContact)
-
-  const emergencyContactNumber =
-    emergencyContactResult?.ok &&
-    emergencyContactResult.value.body.emergencyPhone
-      ? `+91 ${emergencyContactResult.value.body.emergencyPhone}`
-      : `+91 ${vetAtHomePhoneNumber}`
+  const emergencyContactNumber = `+91 ${vetAtHomePhoneNumber}`
   const emergencyWhatsAppNumber = emergencyContactNumber.replace(/\D/g, "")
 
   const whatsappBookingLink = `https://wa.me/${emergencyWhatsAppNumber}?text=Hello%2C%20I%27d%20like%20to%20book%20a%20Vet-At-Home%20appointment.`
@@ -279,17 +249,6 @@ export default function VetAtHomePage() {
     () => getFaqs(emergencyContactNumber),
     [emergencyContactNumber],
   )
-
-  useEffect(() => {
-    const fetchHomeVisitFeatureFlag = async () => {
-      await getHomeVisitFeatureFlag({ platform: "web" })
-    }
-    const fetchEmergencyContact = async () => {
-      await getEmergencyContact({})
-    }
-    fetchHomeVisitFeatureFlag()
-    fetchEmergencyContact()
-  }, [])
 
   const toggleServiceCard = (index: number) => {
     setExpandedServices((prev) =>
@@ -311,59 +270,15 @@ export default function VetAtHomePage() {
     }
   }
 
-  const handleCheckAvailability = async () => {
-    if (pincodeInput.length !== 6) {
-      setPincodeStatus("invalid")
-      return
-    }
-
-    const serviceablePincodesResult = await getServiceablePincodes({})
-    if (!serviceablePincodesResult?.ok) {
-      setPincodeStatus("error")
-      return
-    }
-
-    const isServiceable = serviceablePincodesResult.value.body.data.pincodes
-      .map((pincode) => pincode.trim())
-      .includes(pincodeInput)
-
-    setPincodeStatus(isServiceable ? "serviceable" : "notServiceable")
+  const handleCheckAvailability = () => {
+    // Serviceable areas are confirmed by our team over call/WhatsApp.
+    setPincodeStatus(pincodeInput.length === 6 ? "confirm" : "invalid")
   }
 
   const handleCallVetAtHomeNumber = () => {
     window.location.href = `tel:${emergencyContactNumber.replace(/\s/g, "")}`
     setIsAmbulanceModalOpen(false)
   }
-
-  const handleBookAtHomeVisit = (couponCode?: string) => {
-    const v3Destination = couponCode
-      ? `/v3/book/home-visit?couponCode=${encodeURIComponent(couponCode)}`
-      : "/v3/book/home-visit"
-    const pettleDestination = couponCode
-      ? `/user/book-appointment?home=true&coupon=${encodeURIComponent(couponCode)}`
-      : "/user/book-appointment?home=true"
-
-    if (isV3Enabled) {
-      if (isV3LoggedIn) {
-        router.push(v3Destination)
-      } else {
-        setV3PostLoginPath(v3Destination)
-        setV3ModalOpen(true)
-      }
-      return
-    }
-
-    if (isLoggedIn) {
-      router.push(pettleDestination)
-      return
-    }
-
-    initiateLogin("Book an At-Home Visit", pettleDestination)
-  }
-
-  const isHomeVisitEnabled =
-    homeVisitFeatureFlagResult?.ok &&
-    homeVisitFeatureFlagResult.value.body.enableHomeVisits
 
   return (
     <main className="w-full pb-20 md:pb-0">
@@ -449,18 +364,12 @@ export default function VetAtHomePage() {
                 </div>
 
                 <div className="flex flex-wrap gap-[14px] lg:flex-nowrap lg:items-center lg:gap-3">
-                  {isCheckingHomeVisitFeatureFlag && (
-                    <div className="h-10 w-48 animate-pulse rounded-full bg-primary-1/10 lg:w-[48%]" />
-                  )}
-                  {!isCheckingHomeVisitFeatureFlag && isHomeVisitEnabled && (
-                    <button
-                      type="button"
-                      onClick={() => handleBookAtHomeVisit()}
-                      className="font-open-sans btn rounded-full border border-[#efbf73] bg-primary-2 px-4 py-2 text-xs font-bold uppercase tracking-[0.12em] text-primary-1 shadow-[0_8px_18px_rgba(51,73,95,0.14)] transition-transform hover:translate-y-[-1px] md:px-10 md:text-base lg:flex-none lg:px-7 lg:py-3 lg:text-sm lg:whitespace-nowrap xl:px-8"
-                    >
-                      Book an At-Home Visit
-                    </button>
-                  )}
+                  <a
+                    href={`tel:${vetAtHomePhoneNumber}`}
+                    className="font-open-sans btn rounded-full border border-[#efbf73] bg-primary-2 px-4 py-2 text-xs font-bold uppercase tracking-[0.12em] text-primary-1 shadow-[0_8px_18px_rgba(51,73,95,0.14)] transition-transform hover:translate-y-[-1px] md:px-10 md:text-base lg:flex-none lg:px-7 lg:py-3 lg:text-sm lg:whitespace-nowrap xl:px-8"
+                  >
+                    Call to Book an At-Home Visit
+                  </a>
 
                   <Link
                     href={`https://wa.me/${emergencyWhatsAppNumber}`}
@@ -524,27 +433,16 @@ export default function VetAtHomePage() {
                 type="button"
                 onClick={handleCheckAvailability}
                 className="font-open-sans btn h-11 rounded-xl bg-secondary-1 px-5 text-xs tracking-wide text-white disabled:opacity-60 md:text-sm"
-                disabled={isCheckingPincode}
               >
-                {isCheckingPincode ? "Checking..." : "Check Availability"}
+                Check Availability
               </button>
             </div>
 
-            {pincodeStatus === "serviceable" && (
-              <div className="mt-4 rounded-xl border border-[#b9dfbf] bg-[#f3fff4] px-4 py-3">
-                <p className="text-sm font-semibold text-[#1f7a2e] md:text-base">
-                  Great news! We offer Vet-At-Home visits in your area.
-                </p>
-              </div>
-            )}
-
-            {pincodeStatus === "notServiceable" && (
+            {pincodeStatus === "confirm" && (
               <div className="mt-4 rounded-xl border border-[#f2d7a8] bg-[#fff9ef] px-4 py-3">
                 <p className="text-sm font-semibold text-[#8a5a1f] md:text-base">
-                  We&apos;re expanding quickly and may reach your area soon.
-                </p>
-                <p className="mt-1 text-sm text-[#7a5d2f] md:text-base">
-                  In the meantime, visit one of our clinics.
+                  Call or WhatsApp us at {emergencyContactNumber} and we&apos;ll
+                  confirm Vet-At-Home availability for {pincodeInput}.
                 </p>
               </div>
             )}
@@ -552,12 +450,6 @@ export default function VetAtHomePage() {
             {pincodeStatus === "invalid" && (
               <p className="mt-3 text-sm text-red-600">
                 Please enter a valid 6-digit pincode.
-              </p>
-            )}
-
-            {pincodeStatus === "error" && (
-              <p className="mt-3 text-sm text-red-600">
-                Unable to check availability right now. Please try again.
               </p>
             )}
           </div>
@@ -635,7 +527,7 @@ export default function VetAtHomePage() {
 
                   <button
                     type="button"
-                    onClick={() => handleBookAtHomeVisit("HOME400")}
+                    onClick={handleCallVetAtHomeNumber}
                     className="mt-8 block w-full rounded-[28px] border border-[#6f91aa] bg-[linear-gradient(180deg,#7ea6c2_0%,#5b84a0_100%)] px-5 py-5 text-left text-white shadow-[0_10px_22px_rgba(82,129,162,0.26)] transition-transform hover:translate-y-[-1px]"
                   >
                     <p className="text-xs font-bold uppercase tracking-[0.14em] text-white/78">
@@ -645,7 +537,7 @@ export default function VetAtHomePage() {
                       HOME400
                     </p>
                     <p className="mt-2 text-sm font-medium text-white/82 md:text-base">
-                      Tap to continue with this offer pre-applied.
+                      Call us and mention this code to avail the offer.
                     </p>
                   </button>
                 </div>
@@ -1022,12 +914,9 @@ export default function VetAtHomePage() {
                 <button
                   type="button"
                   onClick={handleCallVetAtHomeNumber}
-                  disabled={isCheckingEmergencyContact}
                   className="font-open-sans inline-flex items-center justify-center rounded-full border-0 bg-secondary-1 px-6 py-2 text-sm font-semibold tracking-wide text-white outline-none transition-colors hover:bg-[#94662e] focus:outline-none focus-visible:outline-none focus-visible:ring-0 disabled:opacity-60 disabled:cursor-not-allowed md:px-9 md:text-base"
                 >
-                  {isCheckingEmergencyContact
-                    ? "Loading..."
-                    : "Call Vet-At-Home"}
+                  Call Vet-At-Home
                 </button>
               </div>
             </div>
@@ -1183,18 +1072,12 @@ export default function VetAtHomePage() {
             </p>
 
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
-              {isCheckingHomeVisitFeatureFlag && (
-                <div className="animate-pulse h-10 w-40 rounded-full bg-secondary-1/40" />
-              )}
-              {!isCheckingHomeVisitFeatureFlag && isHomeVisitEnabled && (
-                <button
-                  type="button"
-                  onClick={() => handleBookAtHomeVisit()}
-                  className="font-open-sans btn rounded-full bg-secondary-1 px-5 py-2 text-xs tracking-wider text-white md:px-10 md:text-base"
-                >
-                  Book At-Home Visit
-                </button>
-              )}
+              <a
+                href={`tel:${vetAtHomePhoneNumber}`}
+                className="font-open-sans btn rounded-full bg-secondary-1 px-5 py-2 text-xs tracking-wider text-white md:px-10 md:text-base"
+              >
+                Call to Book
+              </a>
 
               <Link
                 href={`https://wa.me/${emergencyWhatsAppNumber}`}
@@ -1247,17 +1130,6 @@ export default function VetAtHomePage() {
           </div>
         </div>
       </section>
-
-      {v3ModalOpen && (
-        <V3LoginModal
-          onSuccess={(owner, token) => {
-            v3Login(owner, token)
-            setV3ModalOpen(false)
-            router.push(v3PostLoginPath)
-          }}
-          onClose={() => setV3ModalOpen(false)}
-        />
-      )}
 
       <div className="fixed bottom-6 right-4 z-50 flex items-center gap-3 md:bottom-8 md:right-8">
         <button

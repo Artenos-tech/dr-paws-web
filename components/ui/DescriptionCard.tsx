@@ -1,6 +1,4 @@
-import { useUserContext } from "@/context/UserContext"
 import { useV3UserContext } from "@/context/V3UserContext"
-import { useV3Feature } from "@/hooks/useV3Feature"
 import V3LoginModal from "@/components/v3/V3LoginModal"
 import Image, { StaticImageData } from "next/image"
 import React, { useState } from "react"
@@ -21,34 +19,24 @@ interface descriptionCardProps {
     }
   }
   openContactModal?: () => void
-  openLoginModal?: ((val: string) => void) | undefined
 }
 
 const DescriptionCard: React.FC<descriptionCardProps> = ({
   index,
   description,
   openContactModal,
-  openLoginModal,
 }) => {
   const { image, title, button } = description
-  const { isLoggedIn } = useUserContext()
   const [v3ModalOpen, setV3ModalOpen] = useState(false)
-  const isV3Enabled = useV3Feature()
   const { isLoggedIn: isV3LoggedIn, login: v3Login } = useV3UserContext()
   const navigate = useRouter()
 
   const handleBookAVisit = () => {
-    if (isV3Enabled) {
-      if (isV3LoggedIn) {
-        navigate.push("/v3/book")
-      } else {
-        setV3ModalOpen(true)
-      }
-      return
+    if (isV3LoggedIn) {
+      navigate.push("/v3/book")
+    } else {
+      setV3ModalOpen(true)
     }
-    return isLoggedIn
-      ? navigate.push("/user/book-appointment")
-      : openLoginModal && openLoginModal("Book a Visit")
   }
 
   const handleModalByButtonText = () => {
@@ -57,16 +45,7 @@ const DescriptionCard: React.FC<descriptionCardProps> = ({
     } else if (button.buttonText === "Book a Visit") {
       return <CustomButton {...button} buttonClickEvent={handleBookAVisit} />
     }
-    return (
-      <CustomButton
-        {...button}
-        buttonClickEvent={() => {
-          if (openLoginModal) {
-            openLoginModal(button.buttonText)
-          }
-        }}
-      />
-    )
+    return <CustomButton {...button} buttonClickEvent={handleBookAVisit} />
   }
 
   return (

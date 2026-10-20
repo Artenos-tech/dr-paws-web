@@ -37,10 +37,11 @@ export default function Clinics() {
         </div>
 
         {/* our clinics */}
-        <div className="flex flex-col items-center mx-auto py-2">
-          <h1 className="text-[28px] font-roca text-center mb-8">
-            Our Clinics
-          </h1>
+        <div className="flex flex-col items-center mx-auto w-full rounded-[2.5rem] bg-primary-3/60 px-4 py-10 md:px-10">
+          <h1 className="text-[28px] font-roca text-center">Our Clinics 🐾</h1>
+          <p className="mb-8 mt-2 text-center text-sm text-gray-600">
+            Pop in for a visit — tails wag and treats are waiting.
+          </p>
           <ClinicItemList showStaticCard={true} enlargedView={true} />
         </div>
 

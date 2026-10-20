@@ -9,20 +9,17 @@ import { Toaster } from "react-hot-toast"
 import ContactInfoModal from "@/components/ui/ContactInfoModal"
 import CustomButton from "@/components/ui/CustomButton"
 import ServicePageTab from "@/components/ui/ServicePageTab"
-import { useUserContext } from "@/context/UserContext"
 import { useV3UserContext } from "@/context/V3UserContext"
-import { useV3Feature } from "@/hooks/useV3Feature"
 import V3LoginModal from "@/components/v3/V3LoginModal"
 import DescritionImage from "@/public/assets/images/ServicesPage/DescriptionImage.png"
 import { useAPICall } from "@/hooks/apicall"
-import api from "@/services/api"
+import { useInView } from "@/hooks/useInView"
+import api from "@/services/api.display"
 import { ArrowRight, Bone, Loader } from "lucide-react"
 
 const Services = () => {
   const [isContactModalOpen, setContactIsModalOpen] = useState(false)
   const [v3ModalOpen, setV3ModalOpen] = useState(false)
-  const { initiateLogin, isLoggedIn } = useUserContext()
-  const isV3Enabled = useV3Feature()
   const { isLoggedIn: isV3LoggedIn, login: v3Login } = useV3UserContext()
   const navigate = useRouter()
 
@@ -32,21 +29,18 @@ const Services = () => {
     result: servicesDetails,
   } = useAPICall(api.getServicesDetails)
 
+  const [tabsRef, tabsInView] = useInView<HTMLDivElement>()
+
+  // Load the service tabs when they scroll into view.
   useEffect(() => {
-    getServicesDetails({})
-  }, [])
+    if (tabsInView) getServicesDetails({})
+  }, [tabsInView])
   const handleBookAVisit = () => {
-    if (isV3Enabled) {
-      if (isV3LoggedIn) {
-        navigate.push("/v3/book")
-      } else {
-        setV3ModalOpen(true)
-      }
-      return
+    if (isV3LoggedIn) {
+      navigate.push("/v3/book")
+    } else {
+      setV3ModalOpen(true)
     }
-    return isLoggedIn
-      ? navigate.push("/user/book-appointment")
-      : initiateLogin("Book a Visit", "/user/book-appointment")
   }
 
   return (
@@ -102,12 +96,15 @@ const Services = () => {
           </Link>
         </div>
 
-        {loadingServicesDetails && <Loader />}
-        {servicesDetails?.ok && (
-          <div className="w-full">
-            <ServicePageTab tabs={servicesDetails.value.body.servicesDetails} />
-          </div>
-        )}
+        <div ref={tabsRef} className="w-full min-h-[120px]">
+          {loadingServicesDetails && <Loader />}
+          {servicesDetails?.ok &&
+            servicesDetails.value.body.servicesDetails.length > 0 && (
+              <ServicePageTab
+                tabs={servicesDetails.value.body.servicesDetails}
+              />
+            )}
+        </div>
         <div className="w-[75%] flex flex-col items-center gap-4 md:gap-6 ">
           <p className="text-center text-primary-1 text-sm font-sans italic font-semibold">
             We&apos;ve listed our most commonly requested services, but cater to

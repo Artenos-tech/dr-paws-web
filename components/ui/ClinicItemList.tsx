@@ -2,8 +2,9 @@ import Image from "next/image"
 import ClinicItem from "./ClinicItem"
 import ClinicThumbnail from "@/public/assets/images/clinic/clinicThumbnail.svg"
 import { useAPICall } from "@/hooks/apicall"
-import api from "@/services/api"
+import api from "@/services/api.display"
 import { useEffect, useState } from "react"
+import { useInView } from "@/hooks/useInView"
 import Loader from "./Loader"
 
 interface ClinicItemProps {
@@ -24,13 +25,20 @@ const ClinicItemList = ({ showStaticCard, enlargedView }: ClinicItemProps) => {
       bookable: boolean
       contact: string
       comingSoon: boolean
+      address: string
+      city: string
+      gmapsUrl: string
     }[]
   >([])
   const { call: getClinicsList, loading: loadingClinicList } = useAPICall(
     api.getClinicsForDisplay,
   )
 
+  const [rootRef, inView] = useInView<HTMLDivElement>()
+
+  // Fetch when the list scrolls into view, not on page load.
   useEffect(() => {
+    if (!inView) return
     const fetchClinics = async () => {
       const clinics = await getClinicsList({})
       if (clinics.ok && clinics.value.body.clinics) {
@@ -38,16 +46,21 @@ const ClinicItemList = ({ showStaticCard, enlargedView }: ClinicItemProps) => {
       }
     }
     fetchClinics()
-  }, [])
+  }, [inView])
 
   if (loadingClinicList) {
-    return <Loader />
+    return (
+      <div ref={rootRef}>
+        <Loader />
+      </div>
+    )
   }
   return (
     <div
-      className={`${clinics.length >= 4 ? "gap-4" : "gap-12"} ${
+      ref={rootRef}
+      className={`${enlargedView ? "" : clinics.length >= 4 ? "gap-4" : "gap-12"} ${
         enlargedView
-          ? "grid grid-cols-1 lg:grid-cols-4 "
+          ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
           : "flex flex-col lg:flex-row lg:flex-wrap lg:items-center lg:justify-center"
       }`}
     >

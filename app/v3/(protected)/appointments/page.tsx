@@ -108,12 +108,7 @@ export default function V3AppointmentsPage() {
           <AppointmentCard
             key={item.id}
             item={item}
-            href={`/v3/appointments/${item.id}`}
-            rescheduleHref={
-              item.bookingType === "CLINIC_VISIT"
-                ? `/v3/appointments/${item.id}/reschedule`
-                : undefined
-            }
+            href={`/v3/appointments/details?id=${item.id}`}
             onCancel={async (id) => {
               let result
               try {
