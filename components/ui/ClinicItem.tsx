@@ -6,7 +6,7 @@ import React, { useState } from "react"
 import { Toaster } from "react-hot-toast"
 import { useV3UserContext } from "@/context/V3UserContext"
 import V3LoginModal from "@/components/v3/V3LoginModal"
-import { CalendarClock } from "lucide-react"
+import { CalendarClock, MapPin, Phone, Navigation } from "lucide-react"
 
 interface ClinicInfo {
   id: string
@@ -19,6 +19,9 @@ interface ClinicInfo {
   bookable: boolean
   contact: string
   comingSoon: boolean
+  address?: string
+  city?: string
+  gmapsUrl?: string
 }
 
 interface ClinicItemProps {
@@ -27,7 +30,18 @@ interface ClinicItemProps {
 }
 
 const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
-  const { image, name, services, id, bookable, contact, comingSoon } = clinic
+  const {
+    image,
+    name,
+    services,
+    id,
+    bookable,
+    contact,
+    comingSoon,
+    address,
+    city,
+    gmapsUrl,
+  } = clinic
   const router = useRouter()
 
   const [modalVisible, setModalVisible] = useState(false)
@@ -66,7 +80,11 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
       <div
         className={`bg-[#FFFCF3] ${
           !enlargedView && "w-full lg:w-[50%] xl:w-[25%] min-h-[360px]"
-        } flex flex-col justify-between h-full w-full shadow-md rounded-md`}
+        } flex flex-col justify-between h-full w-full shadow-md rounded-md ${
+          enlargedView
+            ? "overflow-hidden rounded-3xl border-2 border-[#fdc776]/60 transition-all duration-300 hover:-translate-y-1 hover:rotate-[-0.5deg] hover:shadow-xl"
+            : ""
+        }`}
       >
         <div
           onClick={comingSoon ? undefined : goToClinicPage}
@@ -79,7 +97,7 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
                 "/assets/images/clinic/ClinicImage.png"
               }
               alt={name + " image"}
-              className="image rounded-t-md"
+              className={`image ${enlargedView ? "transition-transform duration-500 hover:scale-105" : "rounded-t-md"}`}
               layout="fill"
             />
             {comingSoon && (
@@ -88,8 +106,13 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
               </div>
             )}
           </div>
-          <div className="p-2 overflow-hidden">
-            <h1 className="text-primary-1 text-base">{name}</h1>
+          <div className={`overflow-hidden ${enlargedView ? "p-4" : "p-2"}`}>
+            <h1
+              className={`text-primary-1 ${enlargedView ? "text-xl" : "text-base"}`}
+            >
+              {name}
+              {enlargedView && !comingSoon ? " 🐾" : ""}
+            </h1>
             {comingSoon ? (
               <>
                 <div className="border-t border-[#fdc776] my-3" />
@@ -105,8 +128,39 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
                 </div>
               )
             )}
+            {enlargedView && !comingSoon && (address || city) && (
+              <div className="mt-3 flex items-start gap-2 text-xs text-primary-1/80">
+                <MapPin
+                  size={16}
+                  className="mt-0.5 shrink-0 text-secondary-1"
+                />
+                <p className="leading-relaxed">
+                  {address}
+                  {address && city && !address.includes(city)
+                    ? `, ${city}`
+                    : ""}
+                  {!address && city}
+                </p>
+              </div>
+            )}
+            {enlargedView && !comingSoon && contact && (
+              <div className="mt-2 flex items-center gap-2 text-xs text-primary-1/80">
+                <Phone size={14} className="shrink-0 text-secondary-1" />
+                <span>{contact}</span>
+              </div>
+            )}
           </div>
         </div>
+        {enlargedView && !comingSoon && gmapsUrl && (
+          <a
+            href={gmapsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mx-3 mb-3 mt-1 inline-flex items-center justify-center gap-2 rounded-full border border-secondary-1 py-1.5 text-xs font-semibold text-secondary-1 transition-colors hover:bg-secondary-1 hover:text-white"
+          >
+            <Navigation size={14} /> Get directions
+          </a>
+        )}
         {comingSoon ? (
           <div className="bg-[#fdc776] text-[#33495f] text-center w-full rounded-b-md py-3 min-h-12 flex items-center justify-center text-sm font-semibold tracking-wide">
             Opening Soon
@@ -114,7 +168,7 @@ const ClinicItem: React.FC<ClinicItemProps> = ({ clinic, enlargedView }) => {
         ) : (
           <button
             onClick={handleBookAVisit}
-            className={`btn bg-secondary-1 rounded-none border-none z text-white w-full rounded-b-md py-3`}
+            className={`btn bg-secondary-1 rounded-none border-none z text-white w-full rounded-b-md py-3 ${enlargedView ? "rounded-b-none" : ""}`}
           >
             Book a Visit
           </button>

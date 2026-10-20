@@ -25,6 +25,9 @@ const ClinicItemList = ({ showStaticCard, enlargedView }: ClinicItemProps) => {
       bookable: boolean
       contact: string
       comingSoon: boolean
+      address: string
+      city: string
+      gmapsUrl: string
     }[]
   >([])
   const { call: getClinicsList, loading: loadingClinicList } = useAPICall(
@@ -55,9 +58,9 @@ const ClinicItemList = ({ showStaticCard, enlargedView }: ClinicItemProps) => {
   return (
     <div
       ref={rootRef}
-      className={`${clinics.length >= 4 ? "gap-4" : "gap-12"} ${
+      className={`${enlargedView ? "" : clinics.length >= 4 ? "gap-4" : "gap-12"} ${
         enlargedView
-          ? "grid grid-cols-1 lg:grid-cols-4 "
+          ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
           : "flex flex-col lg:flex-row lg:flex-wrap lg:items-center lg:justify-center"
       }`}
     >
